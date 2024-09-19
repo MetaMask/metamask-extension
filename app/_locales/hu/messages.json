@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Kapcsolatok szerkesztése"
   },
-  "ensRegistrationError": {
-    "message": "Hiba történt az ENS név regisztrációjakor"
-  },
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
   },
@@ -350,9 +347,6 @@
   "invalidAddressRecipient": {
     "message": "A címzett címe érvénytelen "
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nem ETH hálózat, állítsa kisbetűre"
-  },
   "invalidBlockExplorerURL": {
     "message": "Helytelen Block Explorer URL"
   },
@@ -452,9 +446,6 @@
   "next": {
     "message": "Következő"
   },
-  "noAddressForName": {
-    "message": "Nem lett cím beállítva ehhez a névhez."
-  },
   "noConversionRateAvailable": {
     "message": "Nincs elérhető átváltási díj"
   },
@@ -537,9 +528,6 @@
   },
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Keresés, nyilvános cím (0x) vagy ENS"
   },
   "reject": {
     "message": "Elutasítás"

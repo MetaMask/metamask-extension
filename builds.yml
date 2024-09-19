@@ -145,7 +145,7 @@ env:
   # The unlock password
   - PASSWORD: null
   - TEST_SRP: null
-  - SKIP_ONBOARDING: null
+  - WITH_STATE: null
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
@@ -230,6 +230,10 @@ env:
   - INFURA_PROJECT_ID
   # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
   - SEGMENT_WRITE_KEY: ''
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionSourceId
+  - ANALYTICS_DATA_DELETION_SOURCE_ID: null
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionEndpoint
+  - ANALYTICS_DATA_DELETION_ENDPOINT: null
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false

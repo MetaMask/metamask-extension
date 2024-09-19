@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Conecte sua carteira de hardware QR"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "O endereço na solicitação de entrada não coincide com o endereço da conta que você está usando para entrar."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Adicionar conta"
   },
+  "addAccountToMetaMask": {
+    "message": "Adicionar conta à MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Adicione os tokens que você adquiriu usando a MetaMask"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "Adicionar URL"
   },
+  "addingAccount": {
+    "message": "Adicionando conta"
+  },
   "addingCustomNetwork": {
     "message": "Adicionar rede"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "Redes adicionais"
-  },
-  "additionalRpcUrl": {
-    "message": "URL da RPC adicional"
   },
   "address": {
     "message": "Endereço"
@@ -660,9 +660,6 @@
   "back": {
     "message": "Voltar"
   },
-  "backup": {
-    "message": "Backup"
-  },
   "backupApprovalInfo": {
     "message": "Esse código secreto é obrigatório para recuperar sua carteira caso você perca seu dispositivo, esqueça sua senha, precise reinstalar a MetaMask ou queira acessar sua carteira em outro dispositivo."
   },
@@ -674,12 +671,6 @@
   },
   "backupNow": {
     "message": "Fazer backup agora"
-  },
-  "backupUserData": {
-    "message": "Faça backup dos seus dados"
-  },
-  "backupUserDataDescription": {
-    "message": "Você pode fazer backup de dados como seus contatos e preferências."
   },
   "balance": {
     "message": "Saldo"
@@ -1027,7 +1018,7 @@
   "confirmTitleDescSignature": {
     "message": "Confirme esta mensagem somente se você aprova o conteúdo e confia no site solicitante."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Solicitação de limite de gastos"
   },
   "confirmTitleSIWESignature": {
@@ -1528,6 +1519,9 @@
   "details": {
     "message": "Detalhes"
   },
+  "developerOptions": {
+    "message": "Opções para desenvolvedores"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” está desativado porque não satisfaz o aumento mínimo de 10% em relação à taxa de gás original.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1593,9 +1587,6 @@
   },
   "domain": {
     "message": "Domínio"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "A rede não suporta a consulta de domínio"
   },
   "done": {
     "message": "Concluído"
@@ -1770,12 +1761,6 @@
   "ensDomainsSettingTitle": {
     "message": "Exibir domínios ENS na barra de endereço"
   },
-  "ensIllegalCharacter": {
-    "message": "Caractere inválido para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Erro no registro do nome ENS"
-  },
   "ensUnknownError": {
     "message": "Falha na busca de ENS."
   },
@@ -1869,6 +1854,9 @@
   },
   "existingChainId": {
     "message": "As informações que você inseriu estão associadas a um ID de cadeia existente."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Para visualizar e confirmar sua solicitação mais recente, primeiro é necessário aprovar ou recusar as solicitações existentes."
   },
   "existingRpcUrl": {
     "message": "Este URL está associado a outro ID de cadeia."
@@ -2416,9 +2404,6 @@
   "invalidAddressRecipient": {
     "message": "O endereço do destinatário é inválido "
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Não é uma rede de ETH; configurar em minúsculas"
-  },
   "invalidAssetType": {
     "message": "Esse ativo é um NFT e precisa ser adicionado novamente à página Importar NFT, encontrada na aba NFTs."
   },
@@ -2893,6 +2878,10 @@
     "message": "Escolha um apelido...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 solicita sua aprovação para:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Deseja que este site faça o seguinte?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3138,9 +3127,6 @@
   },
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
-  },
-  "noAddressForName": {
-    "message": "Não foi configurado nenhum endereço para esse nome."
   },
   "noConnectedAccountDescription": {
     "message": "Selecione uma conta que você deseja usar neste site para continuar."
@@ -3508,6 +3494,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionais:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Saiba como protegemos sua privacidade durante a coleta de dados de utilização relacionados ao seu perfil."
   },
   "onboardingMetametricsTitle": {
     "message": "Ajude-nos a melhorar a MetaMask"
@@ -4146,12 +4135,6 @@
   "receive": {
     "message": "Receber"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Insira o endereço público (0x) ou o nome ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Insira o endereço público (0x) ou nome do domínio"
-  },
   "recommendedGasLabel": {
     "message": "Recomendado"
   },
@@ -4184,6 +4167,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "Ative para ver as solicitações de assinatura em um formato aprimorado."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Solicitações de transação aprimoradas"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Ative esta opção para ver as solicitações de transação em formato aprimorado."
   },
   "refreshList": {
     "message": "Atualizar lista"
@@ -4318,9 +4307,6 @@
   "restoreUserData": {
     "message": "Restaurar dados do usuário"
   },
-  "restoreUserDataDescription": {
-    "message": "Você pode restaurar dados como contatos e preferências a partir de um arquivo de backup."
-  },
   "resultPageError": {
     "message": "Erro"
   },
@@ -4381,6 +4367,9 @@
   },
   "reviewAlerts": {
     "message": "Conferir alertas"
+  },
+  "reviewPermissions": {
+    "message": "Revisar permissões"
   },
   "revokeAllTokensTitle": {
     "message": "Revogar permissão de acesso e transferência de todos os seus $1?",

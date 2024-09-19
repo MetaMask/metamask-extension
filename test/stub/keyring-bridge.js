@@ -1,32 +1,49 @@
+import { Transaction } from '@ethereumjs/tx';
+import { bufferToHex } from 'ethereumjs-util';
+import { addHexPrefix, Common } from './keyring-utils';
+
+// BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
+// BIP32 Private Key: xprvA1MLMFQnqSCfwD5C9sXAYo1NFG5oh4x6MD5mRhbV7JcVnFwtkka5ivtAYDYJsr9GS242p3QZMbsMZC1GZ2uskNeTj9VhYxrCqRG6U5UPXp5
 export const KNOWN_PUBLIC_KEY =
-  '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
+  '03752603a8131fd03fe726434e82a181c3a6bc227a44660ab774a482d29d1172c3';
+
+export const CHAIN_CODE =
+  '2b73df9ce5df820c728c8f77d51a72ec578e25c6a3c5e32b65fd43d2b4fb0e63';
 
 export const KNOWN_PUBLIC_KEY_ADDRESSES = [
   {
-    address: '0x0e122670701207DB7c6d7ba9aE07868a4572dB3f',
+    address: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
     balance: null,
     index: 0,
   },
   {
-    address: '0x2ae19DAd8b2569F7Bb4606D951Cc9495631e818E',
+    address: '0x9EE70472c9D1B1679A33f2f0549Ab5BFFCE118eF',
     balance: null,
     index: 1,
   },
   {
-    address: '0x0051140bAaDC3E9AC92A4a90D18Bb6760c87e7ac',
+    address: '0x3185aC9266D3DF3D95dC847e2B88b52F12A34C21',
     balance: null,
     index: 2,
   },
   {
-    address: '0x9DBCF67CC721dBd8Df28D7A0CbA0fa9b0aFc6472',
+    address: '0x49EED7a86c1C404e2666Ac12BF00Af63804AC78d',
     balance: null,
     index: 3,
   },
   {
-    address: '0x828B2c51c5C1bB0c57fCD2C108857212c95903DE',
+    address: '0x1d374341feBd02C2F30929d2B4a767676799E1f2',
     balance: null,
     index: 4,
   },
+];
+
+export const KNOWN_PRIVATE_KEYS = [
+  'd41051826c32a548e55aa3e0dee93e96425b0f355df1e06d1595ed69385f8dc3',
+  '780f45733fe48f03ab993b071a11e77147ca959d417e048c7da5ac06b8283e51',
+  'daf3144f471e0531e5efd6e81b4907a4154fec5fdb53cf4f94c4b4195e6473fb',
+  '841f90906439526b3771c0aa51f93f6aae5c5ee0fdc73d0d8ff7f8a9b28754d7',
+  '7df6c85f059939631c05e72b6fc3c54423754a5162ae4a69b14b38219c430665',
 ];
 
 export class FakeKeyringBridge {
@@ -52,7 +69,8 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
         success: true,
         payload: {
           publicKey: KNOWN_PUBLIC_KEY,
-          chainCode: '0x1',
+          chainCode: CHAIN_CODE,
+          address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
         },
       },
     });
@@ -60,6 +78,33 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
 
   async dispose() {
     return Promise.resolve();
+  }
+
+  async ethereumSignTransaction({ transaction }) {
+    const common = Common.custom({
+      chain: {
+        name: 'localhost',
+        chainId: transaction.chainId,
+        networkId: transaction.chainId,
+      },
+      chainId: transaction.chainId,
+      hardfork: 'istanbul',
+    });
+
+    const signedTransaction = Transaction.fromTxData(transaction, {
+      common,
+    }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+
+    return {
+      id: 1,
+      success: true,
+      payload: {
+        v: signedTransaction.v,
+        r: signedTransaction.r,
+        s: signedTransaction.s,
+        serializedTx: addHexPrefix(bufferToHex(signedTransaction.serialize())),
+      },
+    };
   }
 }
 

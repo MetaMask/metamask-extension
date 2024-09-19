@@ -705,12 +705,6 @@
     "message": "El punto de conexión devolvió un id. de cadena diferente: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensIllegalCharacter": {
-    "message": "Caracter ilegal para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Error en el registro del nombre de ENS"
-  },
   "ensUnknownError": {
     "message": "Error al buscar ENS."
   },
@@ -1019,9 +1013,6 @@
   },
   "invalidAddressRecipient": {
     "message": "La dirección del destinatario no es válida"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "No es una red ETH; configurar en minúsculas"
   },
   "invalidBlockExplorerURL": {
     "message": "Dirección URL del explorador de bloques no válida"
@@ -1336,9 +1327,6 @@
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
   },
-  "noAddressForName": {
-    "message": "No se estableció ninguna dirección para este nombre."
-  },
   "noConversionDateAvailable": {
     "message": "No hay fecha de conversión de moneda disponible"
   },
@@ -1558,9 +1546,6 @@
   },
   "receive": {
     "message": "Recibir"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Búsqueda, dirección pública (0x) o ENS"
   },
   "recommendedGasLabel": {
     "message": "Recomendado"

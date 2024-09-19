@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "QR 하드웨어 지갑을 연결하세요"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "로그인 요청 주소가 현재 로그인 계정의 주소와 일치하지 않습니다."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "계정 추가"
   },
+  "addAccountToMetaMask": {
+    "message": "MetaMask에 계정 추가"
+  },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "URL 추가"
   },
+  "addingAccount": {
+    "message": "계정 추가"
+  },
   "addingCustomNetwork": {
     "message": "네트워크 추가"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "추가 네트워크"
-  },
-  "additionalRpcUrl": {
-    "message": "추가 RPC URL"
   },
   "address": {
     "message": "주소"
@@ -660,9 +660,6 @@
   "back": {
     "message": "뒤로"
   },
-  "backup": {
-    "message": "백업"
-  },
   "backupApprovalInfo": {
     "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
@@ -674,12 +671,6 @@
   },
   "backupNow": {
     "message": "지금 백업"
-  },
-  "backupUserData": {
-    "message": "데이터를 백업하세요"
-  },
-  "backupUserDataDescription": {
-    "message": "기본 설정과 계약이 포함된 사용자 설정을 JSON 파일로 백업할 수 있습니다."
   },
   "balance": {
     "message": "잔액"
@@ -1027,7 +1018,7 @@
   "confirmTitleDescSignature": {
     "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 메시지를 컨펌하세요."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "지출 한도 요청"
   },
   "confirmTitleSIWESignature": {
@@ -1528,6 +1519,9 @@
   "details": {
     "message": "세부 정보"
   },
+  "developerOptions": {
+    "message": "개발자 옵션"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” 유형은 오리지널 가스비를 최소 10% 인상해야 하는 기준에 미치지 못하므로 비활성화되었습니다.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1593,9 +1587,6 @@
   },
   "domain": {
     "message": "도메인"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "네트워크에서 도메인 조회를 지원하지 않음"
   },
   "done": {
     "message": "완료"
@@ -1770,12 +1761,6 @@
   "ensDomainsSettingTitle": {
     "message": "주소창에 ENS 도메인 표시하기"
   },
-  "ensIllegalCharacter": {
-    "message": "ENS에 맞지 않는 문자입니다."
-  },
-  "ensRegistrationError": {
-    "message": "ENS 이름 등록 중 오류 발생"
-  },
   "ensUnknownError": {
     "message": "ENS를 조회하지 못했습니다."
   },
@@ -1869,6 +1854,9 @@
   },
   "existingChainId": {
     "message": "입력한 정보는 기존 체인 ID와 연결되어 있습니다."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "가장 최근 요청을 보고 확인하려면, 먼저 기존 요청을 승인하거나 거부해야 합니다."
   },
   "existingRpcUrl": {
     "message": "이 URL은 다른 체인 ID랑 연결되어 있습니다."
@@ -2416,9 +2404,6 @@
   "invalidAddressRecipient": {
     "message": "수신 주소가 올바르지 않음"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH 네트워크가 아닙니다. 소문자로 설정하세요."
-  },
   "invalidAssetType": {
     "message": "이 자산은 NFT이므로 NFT 탭에 있는 NFT 가져오기 페이지에서 다시 추가해야 합니다"
   },
@@ -2893,6 +2878,10 @@
     "message": "닉네임을 선택하세요...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1에서 다음 승인을 요청합니다:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "이 사이트가 다음을 수행하기 원하십니까?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3138,9 +3127,6 @@
   },
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
-  },
-  "noAddressForName": {
-    "message": "이 이름에 설정된 주소가 없습니다."
   },
   "noConnectedAccountDescription": {
     "message": "이 사이트에서 계속 사용하고자 하는 계정을 선택하세요."
@@ -3508,6 +3494,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "선택 사항:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "프로필의 사용 데이터를 수집하는 동안 개인정보를 보호하는 방법을 알아보세요."
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask 개선에 도움을 주세요"
@@ -4146,12 +4135,6 @@
   "receive": {
     "message": "받기"
   },
-  "recipientAddressPlaceholder": {
-    "message": "공개 주소(0x) 또는 ENS 제목 입력"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "공개 주소(0x) 또는 도메인 이름 입력"
-  },
   "recommendedGasLabel": {
     "message": "권장됨"
   },
@@ -4184,6 +4167,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "이 기능을 켜면 개선된 형식의 서명 요청을 확인할 수 있습니다."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "개선된 트랜잭션 요청"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "이 기능을 켜면 개선된 형식의 트랜잭션 요청을 확인할 수 있습니다."
   },
   "refreshList": {
     "message": "새로 고침 목록"
@@ -4318,9 +4307,6 @@
   "restoreUserData": {
     "message": "사용자 데이터 복구"
   },
-  "restoreUserDataDescription": {
-    "message": "이전에 백업한 JSON 파일에서 기본 설정과 계정 주소가 포함된 사용자 설정을 복구할 수 있습니다."
-  },
   "resultPageError": {
     "message": "오류"
   },
@@ -4381,6 +4367,9 @@
   },
   "reviewAlerts": {
     "message": "경고 검토하기"
+  },
+  "reviewPermissions": {
+    "message": "권한 검토"
   },
   "revokeAllTokensTitle": {
     "message": "모든 $1에 액세스할 수 있는 권한을 철회하시겠습니까?",

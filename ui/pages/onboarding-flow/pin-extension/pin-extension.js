@@ -1,12 +1,11 @@
 import React, {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useState,
-  useContext,
   ///: END:ONLY_INCLUDE_IF
 } from 'react';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import {
   setCompletedOnboarding,

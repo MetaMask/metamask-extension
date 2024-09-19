@@ -12,6 +12,7 @@ import Spinner from '../../../ui/spinner';
 
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { SECOND } from '../../../../../shared/constants/time';
+import { parseScanContent } from './scan-util';
 
 const READY_STATE = {
   ACCESSING_CAMERA: 'ACCESSING_CAMERA',
@@ -30,8 +31,8 @@ const parseContent = (content) => {
   // Ethereum address links - fox ex. ethereum:0x.....1111
   if (content.split('ethereum:').length > 1) {
     type = 'address';
-    values = { address: content.split('ethereum:')[1] };
-
+    // uses regex capture groups to match and extract address while ignoring everything else
+    values = { address: parseScanContent(content) };
     // Regular ethereum addresses - fox ex. 0x.....1111
   } else if (content.substring(0, 2).toLowerCase() === '0x') {
     type = 'address';

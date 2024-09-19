@@ -182,7 +182,7 @@ export const getBaseApi = function (type, chainId) {
 };
 
 export function calcTokenValue(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
+  const multiplier = new BigNumber(10).pow(new BigNumber(decimals));
   return new BigNumber(String(value)).times(multiplier);
 }
 

@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Hubungkan dompet perangkat keras QR Anda"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Alamat pada permintaan masuk tidak sesuai dengan alamat akun yang Anda gunakan untuk masuk."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Tambahkan akun"
   },
+  "addAccountToMetaMask": {
+    "message": "Tambahkan akun ke MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "Tambahkan URL"
   },
+  "addingAccount": {
+    "message": "Menambahkan akun"
+  },
   "addingCustomNetwork": {
     "message": "Menambahkan Jaringan"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "Jaringan tambahan"
-  },
-  "additionalRpcUrl": {
-    "message": "URL RPC Tambahan"
   },
   "address": {
     "message": "Alamat"
@@ -660,9 +660,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backup": {
-    "message": "Cadangkan"
-  },
   "backupApprovalInfo": {
     "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
   },
@@ -674,12 +671,6 @@
   },
   "backupNow": {
     "message": "Cadangkan sekarang"
-  },
-  "backupUserData": {
-    "message": "Cadangkan data Anda"
-  },
-  "backupUserDataDescription": {
-    "message": "Anda dapat mencadangkan data seperti kontak dan preferensi Anda."
   },
   "balance": {
     "message": "Saldo"
@@ -1027,7 +1018,7 @@
   "confirmTitleDescSignature": {
     "message": "Konfirmasikan pesan ini hanya jika Anda menyetujui isinya dan memercayai situs yang memintanya."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Permintaan batas penggunaan"
   },
   "confirmTitleSIWESignature": {
@@ -1528,6 +1519,9 @@
   "details": {
     "message": "Detail"
   },
+  "developerOptions": {
+    "message": "Opsi Pengembang"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” dinonaktifkan karena tidak memenuhi kenaikan minimum 10% dari biaya gas asli.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1593,9 +1587,6 @@
   },
   "domain": {
     "message": "Domain"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "Jaringan tidak mendukung pencarian domain"
   },
   "done": {
     "message": "Selesai"
@@ -1770,12 +1761,6 @@
   "ensDomainsSettingTitle": {
     "message": "Tampilkan domain ENS di bilah alamat"
   },
-  "ensIllegalCharacter": {
-    "message": "Karakter tidak sah untuk ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Terjadi kesalahan pada pendaftaran nama ENS"
-  },
   "ensUnknownError": {
     "message": "Pencarian ENS gagal."
   },
@@ -1869,6 +1854,9 @@
   },
   "existingChainId": {
     "message": "Informasi yang Anda masukkan terhubung dengan ID chain yang ada."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Untuk melihat dan mengonfirmasi permintaan terkini, Anda harus menyetujui atau menolak permintaan yang ada terlebih dahulu."
   },
   "existingRpcUrl": {
     "message": "URL ini terhubung dengan ID chain lain."
@@ -2416,9 +2404,6 @@
   "invalidAddressRecipient": {
     "message": "Alamat penerima tidak valid"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Bukan jaringan ETH, atur ke huruf kecil"
-  },
   "invalidAssetType": {
     "message": "Aset ini merupakan NFT dan harus ditambahkan kembali di halaman Impor NFT yang ada di bawah tab NFT"
   },
@@ -2893,6 +2878,10 @@
     "message": "Pilih nama panggilan...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 meminta persetujuan Anda untuk:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Ingin situs ini melakukan hal berikut?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3138,9 +3127,6 @@
   },
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
-  },
-  "noAddressForName": {
-    "message": "Alamat untuk nama ini belum diatur."
   },
   "noConnectedAccountDescription": {
     "message": "Pilih akun yang ingin Anda gunakan di situs ini untuk melanjutkan."
@@ -3508,6 +3494,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsional:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Pelajari cara kami melindungi privasi Anda saat mengumpulkan data penggunaan untuk profil Anda."
   },
   "onboardingMetametricsTitle": {
     "message": "Bantu kami meningkatkan MetaMask"
@@ -4146,12 +4135,6 @@
   "receive": {
     "message": "Terima"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Masukkan alamat publik (0x) atau nama ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Masukkan alamat publik (0x) atau nama domain"
-  },
   "recommendedGasLabel": {
     "message": "Direkomendasikan"
   },
@@ -4184,6 +4167,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "Aktifkan ini untuk melihat permintaan tanda tangan dalam format yang disempurnakan."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Penyempurnaan permintaan transaksi"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Aktifkan ini untuk melihat permintaan transaksi dalam format yang disempurnakan."
   },
   "refreshList": {
     "message": "Segarkan daftar"
@@ -4318,9 +4307,6 @@
   "restoreUserData": {
     "message": "Pulihkan data pengguna"
   },
-  "restoreUserDataDescription": {
-    "message": "Anda dapat memulihkan data seperti kontak dan preferensi dari file cadangan."
-  },
   "resultPageError": {
     "message": "Kesalahan"
   },
@@ -4381,6 +4367,9 @@
   },
   "reviewAlerts": {
     "message": "Tinjau peringatan"
+  },
+  "reviewPermissions": {
+    "message": "Tinjau izin"
   },
   "revokeAllTokensTitle": {
     "message": "Cabut izin untuk mengakses dan mentransfer seluruh $1 Anda?",

@@ -422,6 +422,17 @@ export default function PrivacySettings() {
                     setValue={(toggledValue) => {
                       if (toggledValue) {
                         dispatch(onboardingToggleBasicFunctionalityOn());
+                        trackEvent({
+                          category: MetaMetricsEventCategory.Onboarding,
+                          event: MetaMetricsEventName.SettingsUpdated,
+                          properties: {
+                            settings_group: 'onboarding_advanced_configuration',
+                            settings_type: 'basic_functionality',
+                            old_value: false,
+                            new_value: true,
+                            was_profile_syncing_on: false,
+                          },
+                        });
                       } else {
                         dispatch(openBasicFunctionalityModal());
                       }

@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Συνδέστε το πορτοφόλι υλικού μέσω QR"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Η διεύθυνση στο αίτημα σύνδεσης δεν ταιριάζει με τη διεύθυνση του λογαριασμού που χρησιμοποιείτε για να συνδεθείτε."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
   },
+  "addAccountToMetaMask": {
+    "message": "Προσθήκη λογαριασμού στο MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Προσθέστε τα tokens που αποκτήσατε χρησιμοποιώντας το MetaMask"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
   },
+  "addingAccount": {
+    "message": "Προσθήκη λογαριασμού"
+  },
   "addingCustomNetwork": {
     "message": "Προσθήκη δικτύου"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "Επιπλέον δίκτυα"
-  },
-  "additionalRpcUrl": {
-    "message": "Επιπλέον διεύθυνση URL RPC"
   },
   "address": {
     "message": "Διεύθυνση"
@@ -660,9 +660,6 @@
   "back": {
     "message": "Πίσω"
   },
-  "backup": {
-    "message": "Αντίγραφο ασφαλείας"
-  },
   "backupApprovalInfo": {
     "message": "Αυτός ο μυστικός κωδικός απαιτείται για ανάκτηση του πορτοφολιού σας σε περίπτωση που χάσετε τη συσκευή σας, ξεχάσετε τον κωδικό πρόσβασης, πρέπει να κάνετε επανεγκατάσταση του MetaMask, ή θέλετε να έχετε πρόσβαση στο πορτοφόλι σας από μια άλλη συσκευή."
   },
@@ -674,12 +671,6 @@
   },
   "backupNow": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας τώρα"
-  },
-  "backupUserData": {
-    "message": "Κάντε αντίγραφο ασφαλείας των δεδομένων σας"
-  },
-  "backupUserDataDescription": {
-    "message": "Μπορείτε να κάνετε αντίγραφο ασφαλείας των ρυθμίσεων χρήστη που περιλαμβάνουν τις προτιμήσεις και τις διευθύνσεις λογαριασμών σε ένα αρχείο JSON."
   },
   "balance": {
     "message": "Υπόλοιπο"
@@ -1027,7 +1018,7 @@
   "confirmTitleDescSignature": {
     "message": "Επιβεβαιώστε αυτό το μήνυμα μόνο εάν εγκρίνετε το περιεχόμενο και εμπιστεύεστε τον ιστότοπο που το ζητάει."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Αίτημα ανώτατου ορίου δαπανών"
   },
   "confirmTitleSIWESignature": {
@@ -1528,6 +1519,9 @@
   "details": {
     "message": "Λεπτομέρειες"
   },
+  "developerOptions": {
+    "message": "Επιλογές προγραμματιστών"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "Το \"1$\" είναι απενεργοποιημένο επειδή δεν πληροί την ελάχιστη αύξηση 10% σε σχέση με τα αρχικά τέλη συναλλαγής.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1593,9 +1587,6 @@
   },
   "domain": {
     "message": "Τομέας"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "Το δίκτυο δεν υποστηρίζει αναζήτηση τομέα"
   },
   "done": {
     "message": "Τέλος"
@@ -1770,12 +1761,6 @@
   "ensDomainsSettingTitle": {
     "message": "Εμφάνιση τομέων ENS στη γραμμή διευθύνσεων"
   },
-  "ensIllegalCharacter": {
-    "message": "Μη έγκυρος χαρακτήρας για το ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Σφάλμα στην καταχώριση ονόματος ENS"
-  },
   "ensUnknownError": {
     "message": "Η αναζήτηση ENS απέτυχε."
   },
@@ -1869,6 +1854,9 @@
   },
   "existingChainId": {
     "message": "Οι πληροφορίες που έχετε εισάγει συνδέονται με ένα υπάρχον αναγνωριστικό αλυσίδας."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Για να προβάλετε και να επιβεβαιώσετε το πιο πρόσφατο αίτημά σας, θα πρέπει πρώτα να εγκρίνετε ή να απορρίψετε τα υπάρχοντα αιτήματα."
   },
   "existingRpcUrl": {
     "message": "Αυτή η διεύθυνση URL συνδέεται με ένα άλλο αναγνωριστικό αλυσίδας."
@@ -2416,9 +2404,6 @@
   "invalidAddressRecipient": {
     "message": "Η διεύθυνση παραλήπτη δεν είναι έγκυρη"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Δεν είναι δίκτυο ETH, ορίστε με πεζά γράμματα"
-  },
   "invalidAssetType": {
     "message": "Αυτό το περιουσιακό στοιχείο είναι NFT και πρέπει να προστεθεί ξανά στη σελίδα «Εισαγωγή NFT» που βρίσκεται στην καρτέλα των NFT"
   },
@@ -2893,6 +2878,10 @@
     "message": "Επιλέξτε ένα ψευδώνυμο...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "Το $1 ζητάει την έγκρισή σας για:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Θέλετε αυτός ο ιστότοπος να κάνει τα εξής;",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3138,9 +3127,6 @@
   },
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
-  },
-  "noAddressForName": {
-    "message": "Δεν έχει οριστεί διεύθυνση για αυτό το όνομα."
   },
   "noConnectedAccountDescription": {
     "message": "Επιλέξτε έναν λογαριασμό που θέλετε να χρησιμοποιήσετε σε αυτόν τον ιστότοπο για να συνεχίσετε."
@@ -3508,6 +3494,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Προαιρετικές:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας ενώ συλλέγουμε δεδομένα χρήσης για το προφίλ σας."
   },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
@@ -4146,12 +4135,6 @@
   "receive": {
     "message": "Λήψη"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Εισάγετε τη δημόσια διεύθυνση (0x) ή το όνομα ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Εισαγάγετε τη δημόσια διεύθυνση (0x) ή το όνομα τομέα"
-  },
   "recommendedGasLabel": {
     "message": "Προτεινόμενο"
   },
@@ -4184,6 +4167,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "Ενεργοποιήστε το για να δείτε αιτήματα υπογραφών σε βελτιωμένη μορφή."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Βελτιωμένα αιτήματα συναλλαγών"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Ενεργοποιήστε το για να δείτε τα αιτήματα συναλλαγών σε βελτιωμένη μορφή."
   },
   "refreshList": {
     "message": "Ανανέωση λίστας"
@@ -4318,9 +4307,6 @@
   "restoreUserData": {
     "message": "Επαναφορά δεδομένων χρήστη"
   },
-  "restoreUserDataDescription": {
-    "message": "Μπορείτε να επαναφέρετε τις ρυθμίσεις χρήστη που περιλαμβάνουν τις προτιμήσεις και τις διευθύνσεις λογαριασμών από ένα αρχείο JSON για το οποίο έχει δημιουργηθεί στο παρελθόν αντίγραφο ασφαλείας."
-  },
   "resultPageError": {
     "message": "Σφάλμα"
   },
@@ -4381,6 +4367,9 @@
   },
   "reviewAlerts": {
     "message": "Έλεγχος ειδοποιήσεων"
+  },
+  "reviewPermissions": {
+    "message": "Έλεγχος αδειών"
   },
   "revokeAllTokensTitle": {
     "message": "Ανάκληση της άδειας πρόσβασης και μεταφοράς όλων των $1;",
