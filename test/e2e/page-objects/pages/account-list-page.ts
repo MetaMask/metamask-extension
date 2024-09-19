@@ -94,9 +94,8 @@ class AccountListPage {
    * @throws Will throw an error if the hidden accounts options menu fails to open.
    */
   async openHiddenAccountOptions(): Promise<void> {
-    console.log('Opening hidden accounts options menu');
+    console.log(`Open hidden accounts options menu`);
     await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
-    console.log('Hidden accounts options menu opened successfully');
   }
 
   /**
@@ -104,9 +103,8 @@ class AccountListPage {
    * @throws Will throw an error if the hidden accounts list fails to open.
    */
   async openHiddenAccountsList(): Promise<void> {
-    console.log('Opening hidden accounts list');
+    console.log(`Open hidden accounts option menu`);
     await this.driver.clickElement(this.hiddenAccountsList);
-    console.log('Hidden accounts list opened successfully');
   }
 
   /**
@@ -114,9 +112,8 @@ class AccountListPage {
    * @throws Will throw an error if the account pinning process fails.
    */
   async pinAccount(): Promise<void> {
-    console.log('Pinning account');
+    console.log(`Pin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
-    console.log('Account pinned successfully');
   }
 
   /**
@@ -124,9 +121,8 @@ class AccountListPage {
    * @throws Will throw an error if the account unhiding process fails.
    */
   async unhideAccount(): Promise<void> {
-    console.log('Unhiding account');
+    console.log(`Unhide account in account list`);
     await this.driver.clickElement(this.hideUnhideAccountButton);
-    console.log('Account unhidden successfully');
   }
 
   /**
@@ -134,9 +130,8 @@ class AccountListPage {
    * @throws Will throw an error if the account unpinning process fails.
    */
   async unpinAccount(): Promise<void> {
-    console.log('Unpinning account');
+    console.log(`Unpin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
-    console.log('Account unpinned successfully');
   }
 
   async check_accountIsDisplayed(): Promise<void> {
