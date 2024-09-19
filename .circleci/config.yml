@@ -360,11 +360,10 @@ workflows:
         value: << pipeline.git.branch >>
     jobs:
       - prep-deps
-      - get-changed-files-with-git-diff:
-          requires:
-            - prep-deps
+      - get-changed-files-with-git-diff
       - validate-locales-only:
           requires:
+            - prep-deps
             - get-changed-files-with-git-diff
       - test-lint:
           requires:
