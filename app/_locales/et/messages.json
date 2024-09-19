@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Muuda kontakti"
   },
-  "ensRegistrationError": {
-    "message": "Tõrge ENS-i nime registreerimisel"
-  },
   "enterPasswordContinue": {
     "message": "Jätkamiseks sisestage parool"
   },
@@ -350,9 +347,6 @@
   "invalidAddressRecipient": {
     "message": "Saaja aadress on vale"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Kehtetu ETH-võrk, kasutage väiketähti"
-  },
   "invalidBlockExplorerURL": {
     "message": "Vale Block Explorer URL"
   },
@@ -449,9 +443,6 @@
   "next": {
     "message": "Edasi"
   },
-  "noAddressForName": {
-    "message": "Sellele nimele pole registreeritud ühtegi aadressi."
-  },
   "noConversionRateAvailable": {
     "message": "Ühtegi vahetuskurssi pole saadaval"
   },
@@ -534,9 +525,6 @@
   },
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Otsing, avalik aadress (0x) või ENS"
   },
   "reject": {
     "message": "Lükka tagasi"
