@@ -79,7 +79,7 @@ export function useNftCollectionsMetadata(
     if (memoisedContracts.length > 0) {
       fetchCollections();
     }
-  }, [memoisedContracts, chainId]);
+  }, [JSON.stringify(memoisedContracts), chainId]);
 
   return collectionsMetadata;
 }
