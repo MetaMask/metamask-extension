@@ -20,6 +20,8 @@ class HomePage {
 
   private transactionAmountsInActivity: string;
 
+  private accountMenuButton: string;
+
   public headerNavbar: HeaderNavbar;
 
   constructor(driver: Driver) {
@@ -36,6 +38,7 @@ class HomePage {
     this.completedTransactions = '[data-testid="activity-list-item"]';
     this.transactionAmountsInActivity =
       '[data-testid="transaction-list-item-primary-currency"]';
+    this.accountMenuButton = '[data-testid="account-menu-icon"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -79,6 +82,11 @@ class HomePage {
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);
+  }
+
+  async openAccountMenu(): Promise<void> {
+    console.log(`Opening account menu`);
+    await this.driver.clickElement(this.accountMenuButton);
   }
 
   /**

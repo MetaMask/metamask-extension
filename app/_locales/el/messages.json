@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Επιπλέον δίκτυα"
   },
-  "additionalRpcUrl": {
-    "message": "Επιπλέον διεύθυνση URL RPC"
-  },
   "address": {
     "message": "Διεύθυνση"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Επιβεβαιώστε αυτό το μήνυμα μόνο εάν εγκρίνετε το περιεχόμενο και εμπιστεύεστε τον ιστότοπο που το ζητάει."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Αίτημα ανώτατου ορίου δαπανών"
   },
   "confirmTitleSIWESignature": {
@@ -1600,9 +1597,6 @@
   "domain": {
     "message": "Τομέας"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Το δίκτυο δεν υποστηρίζει αναζήτηση τομέα"
-  },
   "done": {
     "message": "Τέλος"
   },
@@ -1775,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Εμφάνιση τομέων ENS στη γραμμή διευθύνσεων"
-  },
-  "ensIllegalCharacter": {
-    "message": "Μη έγκυρος χαρακτήρας για το ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Σφάλμα στην καταχώριση ονόματος ENS"
   },
   "ensUnknownError": {
     "message": "Η αναζήτηση ENS απέτυχε."
@@ -2424,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Η διεύθυνση παραλήπτη δεν είναι έγκυρη"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Δεν είναι δίκτυο ETH, ορίστε με πεζά γράμματα"
   },
   "invalidAssetType": {
     "message": "Αυτό το περιουσιακό στοιχείο είναι NFT και πρέπει να προστεθεί ξανά στη σελίδα «Εισαγωγή NFT» που βρίσκεται στην καρτέλα των NFT"
@@ -3155,9 +3140,6 @@
   },
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
-  },
-  "noAddressForName": {
-    "message": "Δεν έχει οριστεί διεύθυνση για αυτό το όνομα."
   },
   "noConnectedAccountDescription": {
     "message": "Επιλέξτε έναν λογαριασμό που θέλετε να χρησιμοποιήσετε σε αυτόν τον ιστότοπο για να συνεχίσετε."
@@ -4169,12 +4151,6 @@
   },
   "receive": {
     "message": "Λήψη"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Εισάγετε τη δημόσια διεύθυνση (0x) ή το όνομα ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Εισαγάγετε τη δημόσια διεύθυνση (0x) ή το όνομα τομέα"
   },
   "recommendedGasLabel": {
     "message": "Προτεινόμενο"

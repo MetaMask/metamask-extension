@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
   },
-  "additionalRpcUrl": {
-    "message": "URL supplémentaire de RPC"
-  },
   "address": {
     "message": "Adresse"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Ne confirmez ce message que si vous approuvez son contenu et faites confiance au site demandeur."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Demande de plafonnement des dépenses"
   },
   "confirmTitleSIWESignature": {
@@ -1600,9 +1597,6 @@
   "domain": {
     "message": "Domaine"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Le réseau ne prend pas en charge la recherche de noms de domaine"
-  },
   "done": {
     "message": "Terminé"
   },
@@ -1775,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Afficher les domaines ENS dans la barre d’adresse"
-  },
-  "ensIllegalCharacter": {
-    "message": "Caractère invalide pour l’ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Erreur dans l’enregistrement du nom ENS"
   },
   "ensUnknownError": {
     "message": "La recherche d’ENS a échoué."
@@ -2424,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "L’adresse du destinataire n’est pas valide"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Pas de réseau ETH, régler en minuscules"
   },
   "invalidAssetType": {
     "message": "Cet actif est un NFT et doit être ajouté de nouveau à la page Importer des NFT qui se trouve sous l’onglet NFT"
@@ -3155,9 +3140,6 @@
   },
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
-  },
-  "noAddressForName": {
-    "message": "Aucune adresse n’a été définie pour ce nom."
   },
   "noConnectedAccountDescription": {
     "message": "Sélectionnez un compte que vous souhaitez utiliser sur ce site pour continuer."
@@ -4169,12 +4151,6 @@
   },
   "receive": {
     "message": "Recevoir"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Saisissez l’adresse publique (0x) ou le nom de domaine ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Saisissez l’adresse publique (0x) ou le nom de domaine"
   },
   "recommendedGasLabel": {
     "message": "Recommandé"
