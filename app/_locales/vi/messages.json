@@ -1597,9 +1597,6 @@
   "domain": {
     "message": "Tên miền"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Mạng không hỗ trợ tra cứu tên miền"
-  },
   "done": {
     "message": "Hoàn tất"
   },
@@ -1772,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Hiển thị tên miền ENS trong thanh địa chỉ"
-  },
-  "ensIllegalCharacter": {
-    "message": "Ký tự không hợp lệ đối với ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Lỗi khi đăng ký tên ENS"
   },
   "ensUnknownError": {
     "message": "Tra cứu ENS thất bại."
@@ -2421,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Địa chỉ người nhận không hợp lệ"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Không phải mạng ETH, hãy đặt thành chữ viết thường"
   },
   "invalidAssetType": {
     "message": "Tài sản này là một NFT và cần được thêm lại trên trang Nhập NFT bên dưới thẻ NFT"
@@ -3151,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
-  },
-  "noAddressForName": {
-    "message": "Chưa có địa chỉ nào được đặt cho tên này."
   },
   "noConnectedAccountDescription": {
     "message": "Chọn tài khoản mà bạn muốn sử dụng trên trang web này để tiếp tục."
@@ -4165,12 +4150,6 @@
   },
   "receive": {
     "message": "Nhận"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Nhập địa chỉ công khai (0x) hoặc tên ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Nhập địa chỉ công khai (0x) hoặc tên miền"
   },
   "recommendedGasLabel": {
     "message": "Được đề xuất"

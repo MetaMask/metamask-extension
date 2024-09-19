@@ -1,6 +1,16 @@
 import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
-import { ButtonVariant, UserInputEventType } from '@metamask/snaps-sdk';
-import { Button, ButtonSize, IconSize } from '../../../component-library';
+import {
+  ButtonType,
+  ButtonVariant,
+  UserInputEventType,
+} from '@metamask/snaps-sdk';
+import { useSelector } from 'react-redux';
+import {
+  Button,
+  ButtonLinkProps,
+  ButtonSize,
+  IconSize,
+} from '../../../component-library';
 import {
   AlignItems,
   Display,
@@ -8,6 +18,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
+import { getHideSnapBranding } from '../../../../selectors';
 
 type SnapFooterButtonProps = {
   name?: string;
@@ -15,17 +26,26 @@ type SnapFooterButtonProps = {
   onCancel?: () => void;
 };
 
-export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
+export const SnapFooterButton: FunctionComponent<
+  SnapFooterButtonProps & ButtonLinkProps<'button'>
+> = ({
   onCancel,
   name,
   children,
   isSnapAction = false,
+  type,
+  form,
   ...props
 }) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
+  const hideSnapBranding = useSelector((state) =>
+    getHideSnapBranding(state, snapId),
+  );
 
   const handleSnapAction = (event: ReactMouseEvent<HTMLElement>) => {
-    event.preventDefault();
+    if (type === ButtonType.Button) {
+      event.preventDefault();
+    }
 
     handleEvent({
       event: UserInputEventType.ButtonClickEvent,
@@ -38,6 +58,8 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
   return (
     <Button
       className="snap-footer-button"
+      type={type}
+      form={form}
       {...props}
       size={ButtonSize.Lg}
       block
@@ -49,7 +71,7 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
         flexDirection: FlexDirection.Row,
       }}
     >
-      {isSnapAction && (
+      {isSnapAction && !hideSnapBranding && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
       )}
       {children}
