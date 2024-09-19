@@ -1,38 +1,76 @@
-import browser from 'webextension-polyfill';
 import LocalStore from './local-store';
 
-jest.mock('webextension-polyfill', () => ({
-  runtime: { lastError: null },
-  storage: { local: true },
-}));
+const mockIDBRequest = (result, isError) => {
+  const request = {
+    onsuccess: null,
+    onerror: null,
+    result,
+  };
 
-const setup = ({ localMock = jest.fn() } = {}) => {
-  browser.storage.local = localMock;
-  return new LocalStore();
+  // Delay execution to simulate async behavior of IDBRequest
+  setTimeout(() => {
+    if (isError) {
+      if (typeof request.onerror === 'function') {
+        request.onerror({ target: { error: 'Mock error' } });
+      }
+    } else if (typeof request.onsuccess === 'function') {
+      request.onsuccess({ target: request });
+    }
+  }, 0);
+
+  return request;
 };
+
+const createEmptySetup = () =>
+  (global.indexedDB = {
+    open: jest.fn(() =>
+      mockIDBRequest({
+        transaction: jest.fn(() => ({
+          objectStore: jest.fn(() => ({
+            get: jest.fn(() => mockIDBRequest({})),
+            put: jest.fn(() => mockIDBRequest({})),
+          })),
+        })),
+      }),
+    ),
+  });
+
 describe('LocalStore', () => {
+  let setup;
+  beforeEach(() => {
+    setup = () => {
+      // Mock the indexedDB open function
+      global.indexedDB = {
+        open: jest.fn(() =>
+          mockIDBRequest({
+            transaction: jest.fn(() => ({
+              objectStore: jest.fn(() => ({
+                get: jest.fn(() =>
+                  mockIDBRequest({ appState: { test: true } }),
+                ),
+                put: jest.fn(() => mockIDBRequest({})),
+              })),
+            })),
+          }),
+        ),
+      };
+      return new LocalStore();
+    };
+  });
+
   afterEach(() => {
     jest.resetModules();
+    jest.clearAllMocks();
   });
-  describe('contructor', () => {
-    it('should set isSupported property to false when browser does not support local storage', () => {
-      const localStore = setup({ localMock: false });
 
-      expect(localStore.isSupported).toBe(false);
-    });
-
-    it('should set isSupported property to true when browser supports local storage', () => {
-      const localStore = setup();
-      expect(localStore.isSupported).toBe(true);
-    });
-
+  describe('constructor', () => {
     it('should initialize mostRecentRetrievedState to null', () => {
-      const localStore = setup({ localMock: false });
+      const localStore = setup();
       expect(localStore.mostRecentRetrievedState).toBeNull();
     });
 
     it('should initialize isExtensionInitialized to false', () => {
-      const localStore = setup({ localMock: false });
+      const localStore = setup();
       expect(localStore.isExtensionInitialized).toBeFalsy();
     });
   });
@@ -48,13 +86,6 @@ describe('LocalStore', () => {
   });
 
   describe('set', () => {
-    it('should throw an error if called in a browser that does not support local storage', async () => {
-      const localStore = setup({ localMock: false });
-      await expect(() => localStore.set()).rejects.toThrow(
-        'Metamask- cannot persist state to local store as this browser does not support this action',
-      );
-    });
-
     it('should throw an error if not passed a truthy value as an argument', async () => {
       const localStore = setup();
       await expect(() => localStore.set()).rejects.toThrow(
@@ -74,8 +105,8 @@ describe('LocalStore', () => {
     it('should not throw if passed a valid argument and metadata has been set', async () => {
       const localStore = setup();
       localStore.setMetadata({ version: 74 });
-      await expect(async function () {
-        localStore.set({ appState: { test: true } });
+      await expect(async () => {
+        await localStore.set({ appState: { test: true } });
       }).not.toThrow();
     });
 
@@ -88,22 +119,19 @@ describe('LocalStore', () => {
   });
 
   describe('get', () => {
-    it('should return undefined if called in a browser that does not support local storage', async () => {
-      const localStore = setup({ localMock: false });
+    it('should return undefined if no state is stored', async () => {
+      setup = () => {
+        createEmptySetup();
+        return new LocalStore();
+      };
+
+      const localStore = setup();
       const result = await localStore.get();
       expect(result).toStrictEqual(undefined);
     });
 
     it('should update mostRecentRetrievedState', async () => {
-      const localStore = setup({
-        localMock: {
-          get: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({ appState: { test: true } }),
-            ),
-        },
-      });
+      const localStore = setup();
 
       await localStore.get();
 
@@ -112,24 +140,19 @@ describe('LocalStore', () => {
       });
     });
 
-    it('should reset mostRecentRetrievedState to null if storage.local is empty', async () => {
-      const localStore = setup({
-        localMock: {
-          get: jest.fn().mockImplementation(() => Promise.resolve({})),
-        },
-      });
+    it('should reset mostRecentRetrievedState to null if storage is empty', async () => {
+      setup = () => {
+        createEmptySetup();
+        return new LocalStore();
+      };
 
+      const localStore = setup();
       await localStore.get();
-
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
     });
 
     it('should set mostRecentRetrievedState to current state if isExtensionInitialized is true', async () => {
-      const localStore = setup({
-        localMock: {
-          get: jest.fn().mockImplementation(() => Promise.resolve({})),
-        },
-      });
+      const localStore = setup();
       localStore.setMetadata({ version: 74 });
       await localStore.set({ appState: { test: true } });
       await localStore.get();
@@ -139,25 +162,14 @@ describe('LocalStore', () => {
 
   describe('cleanUpMostRecentRetrievedState', () => {
     it('should set mostRecentRetrievedState to null if it is defined', async () => {
-      const localStore = setup({
-        localMock: {
-          get: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({ appState: { test: true } }),
-            ),
-        },
-      });
+      const localStore = setup();
       await localStore.get();
-
-      // mostRecentRetrievedState should be { appState: { test: true } } at this stage
       await localStore.cleanUpMostRecentRetrievedState();
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
     });
 
     it('should not set mostRecentRetrievedState if it is null', async () => {
       const localStore = setup();
-
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
       await localStore.cleanUpMostRecentRetrievedState();
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
