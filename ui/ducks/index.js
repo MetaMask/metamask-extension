@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 import { AlertTypes } from '../../shared/constants/alerts';
-import confirmReducer from './confirm/confirm';
 import metamaskReducer from './metamask/metamask';
 import localeMessagesReducer from './locale/locale';
 import sendReducer from './send/send';
@@ -14,7 +13,7 @@ import bridgeReducer from './bridge/bridge';
 import historyReducer from './history/history';
 import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
-import multichainSend from './multichain-send/multichain-send';
+import multichainSendReducer from './multichain-send/multichain-send';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
@@ -25,8 +24,7 @@ export default combineReducers({
   DNS: domainReducer,
   history: historyReducer,
   send: sendReducer,
-  multichainSend,
-  confirm: confirmReducer,
+  multichainSend: multichainSendReducer,
   confirmAlerts: confirmAlertsReducer,
   confirmTransaction: confirmTransactionReducer,
   swaps: swapsReducer,

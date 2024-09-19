@@ -19,6 +19,7 @@ import {
 import { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
+jest.mock('@metamask/controller-utils');
 
 const SECURITY_ALERT_ID_MOCK = '123';
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
@@ -110,6 +111,14 @@ describe('PPOMMiddleware', () => {
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
     isChainSupportedMock.mockResolvedValue(true);
+
+    globalThis.sentry = {
+      withIsolationScope: jest
+        .fn()
+        .mockImplementation((fn) => fn({ setTags: jest.fn() })),
+      startSpan: jest.fn().mockImplementation((_, fn) => fn({})),
+      startSpanManual: jest.fn().mockImplementation((_, fn) => fn({})),
+    };
   });
 
   it('updates alert response after validating request', async () => {

@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Redes adicionais"
   },
-  "additionalRpcUrl": {
-    "message": "URL da RPC adicional"
-  },
   "address": {
     "message": "Endereço"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Confirme esta mensagem somente se você aprova o conteúdo e confia no site solicitante."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Solicitação de limite de gastos"
   },
   "confirmTitleSIWESignature": {
@@ -1600,9 +1597,6 @@
   "domain": {
     "message": "Domínio"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "A rede não suporta a consulta de domínio"
-  },
   "done": {
     "message": "Concluído"
   },
@@ -1775,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Exibir domínios ENS na barra de endereço"
-  },
-  "ensIllegalCharacter": {
-    "message": "Caractere inválido para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Erro no registro do nome ENS"
   },
   "ensUnknownError": {
     "message": "Falha na busca de ENS."
@@ -2424,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "O endereço do destinatário é inválido "
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Não é uma rede de ETH; configurar em minúsculas"
   },
   "invalidAssetType": {
     "message": "Esse ativo é um NFT e precisa ser adicionado novamente à página Importar NFT, encontrada na aba NFTs."
@@ -3154,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
-  },
-  "noAddressForName": {
-    "message": "Não foi configurado nenhum endereço para esse nome."
   },
   "noConnectedAccountDescription": {
     "message": "Selecione uma conta que você deseja usar neste site para continuar."
@@ -4168,12 +4150,6 @@
   },
   "receive": {
     "message": "Receber"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Insira o endereço público (0x) ou o nome ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Insira o endereço público (0x) ou nome do domínio"
   },
   "recommendedGasLabel": {
     "message": "Recomendado"

@@ -444,12 +444,6 @@
     "message": "這個 RPC 端點回傳了一個不同的鏈 ID：$1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensIllegalCharacter": {
-    "message": "Illegal Character for ENS."
-  },
-  "ensRegistrationError": {
-    "message": "ENS 名稱註冊錯誤"
-  },
   "ensUnknownError": {
     "message": "ENS Lookup failed."
   },
@@ -675,9 +669,6 @@
   "invalidAddressRecipient": {
     "message": "接收位址錯誤"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 網路，請設定至小寫"
-  },
   "invalidBlockExplorerURL": {
     "message": "無效的區塊鏈瀏覽器 URL"
   },
@@ -875,9 +866,6 @@
   "noAccountsFound": {
     "message": "指定的搜尋條件找不到帳戶"
   },
-  "noAddressForName": {
-    "message": "此 ENS 尚未指定位址。"
-  },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
   },
@@ -1004,9 +992,6 @@
   },
   "receive": {
     "message": "接收"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "搜尋、公開位址 (0x)、或 ENS"
   },
   "reject": {
     "message": "拒絕"

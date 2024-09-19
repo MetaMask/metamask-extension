@@ -128,6 +128,9 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
               marginLeft={1}
               color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
               size={IconSize.Sm}
+              {...(dataTestId
+                ? { 'data-testid': `${dataTestId}-tooltip` }
+                : {})}
             />
           </Tooltip>
         )}
