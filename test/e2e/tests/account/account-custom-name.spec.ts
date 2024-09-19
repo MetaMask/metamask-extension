@@ -3,7 +3,7 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 
 const newAccountLabel = 'Custom name';
@@ -20,37 +20,41 @@ describe('Account Custom Name Persistence', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        const homePage = new HomePage(driver);
-        await homePage.openAccountMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
 
-        // Change account label for existing account
+        // Change account label for existing account and verify edited account label
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
         await accountListPage.openAccountOptionsMenu();
         await accountListPage.changeAccountLabel(newAccountLabel);
+        await headerNavbar.check_accountLabel(newAccountLabel);
 
-        // Verify account label
-        await accountListPage.verifyAccountLabel(newAccountLabel);
-
-        // Add new account with custom label
+        // Add new account with custom label and verify new added account label
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
         await accountListPage.addNewAccountWithCustomLabel(anotherAccountLabel);
+        await headerNavbar.check_accountLabel(anotherAccountLabel);
 
-        // Verify initial custom account label after freshly added account was active
-        await accountListPage.verifyAccountLabel(anotherAccountLabel);
-
-        // Switch back to the first account
-        await homePage.openAccountMenu();
-        await accountListPage.verifyAccountLabel(newAccountLabel);
+        // Switch back to the first account and verify first custom account persists
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.check_accountDisplayedInAccountList(
+          newAccountLabel,
+        );
+        await accountListPage.switchToAccount(newAccountLabel);
 
         // Lock and unlock wallet
-        await homePage.headerNavbar.lockMetaMask();
+        await headerNavbar.lockMetaMask();
         await loginWithBalanceValidation(driver);
 
         // Verify both account labels persist after unlock
-        await accountListPage.verifyAccountLabel(newAccountLabel);
-        await homePage.openAccountMenu();
+        await headerNavbar.check_accountLabel(newAccountLabel);
+        await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.verifyAccountLabel(anotherAccountLabel);
+        await accountListPage.check_accountDisplayedInAccountList(
+          anotherAccountLabel,
+        );
       },
     );
   });
