@@ -2337,7 +2337,7 @@ export function createRetryTransaction(
 
 export function addNetwork(
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.addNetwork`, networkConfiguration);
     try {
@@ -2355,7 +2355,7 @@ export function addNetwork(
 export function updateNetwork(
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
   options: { replacementSelectedRpcEndpointIndex?: number } = {},
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.updateNetwork`, networkConfiguration);
     try {
