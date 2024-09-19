@@ -142,8 +142,6 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
-  console.log({ currentConfirmation });
-
   let isRevokeSetApprovalForAll = false;
   if (
     currentConfirmation?.type === TransactionType.tokenMethodSetApprovalForAll
