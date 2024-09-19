@@ -5,7 +5,7 @@ import { promisify } from 'util';
 
 const exec = promisify(execCallback);
 
-const MAIN_BRANCH = 'develop';
+const MAIN_BRANCH = 'ci-fix-git-diff';
 const SOURCE_BRANCH = `refs/pull/${process.env.CIRCLE_PR_NUMBER}/head`;
 
 /**
