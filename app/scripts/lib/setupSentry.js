@@ -44,9 +44,14 @@ export default function setupSentry() {
     throw new Error('Missing release');
   }
 
+  const sentryObject = {
+    ...Sentry,
+    getMetaMetricsEnabled,
+  };
+
   if (!getSentryTarget()) {
     log('Skipped initialization');
-    return undefined;
+    return sentryObject;
   }
 
   log('Initializing');
@@ -66,10 +71,7 @@ export default function setupSentry() {
   integrateLogging();
   setSentryClient();
 
-  return {
-    ...Sentry,
-    getMetaMetricsEnabled,
-  };
+  return sentryObject;
 }
 
 function getClientOptions() {
