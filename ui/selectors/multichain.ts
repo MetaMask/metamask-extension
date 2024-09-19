@@ -446,9 +446,7 @@ export function getCurrentMultichainDraftTransaction(
   state: MultichainReduxSendState,
 ): DraftTransaction {
   const draftTransactionExists = getCurrentMultichainDraftTransactionId(state);
-  if (!draftTransactionExists) {
-    return initialMultichainDraftTransaction;
-  }
+
   const draftTransaction =
     state.multichainSend.draftTransactions[draftTransactionExists];
   return draftTransaction;

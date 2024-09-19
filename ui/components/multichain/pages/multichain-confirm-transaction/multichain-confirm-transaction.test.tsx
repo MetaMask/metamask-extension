@@ -20,6 +20,10 @@ import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { getSelectedInternalAccount } from '../../../../selectors';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import messages from '../../../../../app/_locales/en/messages.json';
+import {
+  DEFAULT_ROUTE,
+  MULTICHAIN_SEND_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { MultichainConfirmTransactionPage } from './multichain-confirm-transaction';
 
 const mockHistoryPush = jest.fn();
@@ -81,7 +85,9 @@ const getExpectedValues = (state: unknown) => {
     currencyCode,
   );
 
-  const expectedSender = getSelectedInternalAccount(state).metadata.name;
+  const expectedSender = shortenAddress(
+    transaction?.transactionParams.sender.address,
+  );
   const expectedRecipient = shortenAddress(
     transaction?.transactionParams.recipient.address,
   );
@@ -147,11 +153,17 @@ describe('MultichainConfirmTransactionPage', () => {
   });
 
   it('redirects to send page if there is no draft transaction', () => {
-    const storeWithoutDraft = cloneDeep(baseStore);
-    storeWithoutDraft.multichainSend.currentTransactionUUID = '';
+    const storeWithoutDraft = {
+      ...baseStore,
+      multichainSend: {
+        ...baseStore.multichainSend,
+        currentTransactionUUID: '',
+        draftTransaction: {},
+      },
+    };
     render(storeWithoutDraft);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith('/multichain-send');
+    expect(mockHistoryPush).toHaveBeenCalledWith(MULTICHAIN_SEND_ROUTE);
   });
 
   it('redirects to the send page when the back button is clicked', () => {
@@ -175,7 +187,7 @@ describe('MultichainConfirmTransactionPage', () => {
     const cancelButton = getByText(messages.cancel.message);
     fireEvent.click(cancelButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith('/home');
+    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('triggers the signAndSend action when the confirm button is clicked', async () => {

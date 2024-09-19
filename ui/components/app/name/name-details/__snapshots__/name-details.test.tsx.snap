@@ -116,6 +116,7 @@ exports[`NameDetails renders proposed names 1`] = `
                   </div>
                   <p
                     class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+                    data-testid="sender-name"
                   >
                     TestName
                   </p>
@@ -336,6 +337,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                   />
                   <p
                     class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    data-testid="sender-address"
                   />
                 </div>
               </div>
@@ -519,6 +521,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                   />
                   <p
                     class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    data-testid="sender-address"
                   >
                     0xc0ffe...54979
                   </p>
@@ -709,6 +712,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                   </div>
                   <p
                     class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+                    data-testid="sender-name"
                   >
                     iZUMi Bond USD
                   </p>
@@ -934,6 +938,7 @@ exports[`NameDetails renders with saved name 1`] = `
                   </div>
                   <p
                     class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+                    data-testid="sender-name"
                   >
                     TestName
                   </p>

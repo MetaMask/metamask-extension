@@ -42,6 +42,7 @@ exports[`PermitSimulationValueDisplay renders component correctly 1`] = `
           />
           <p
             class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            data-testid="sender-address"
           >
             0xA0b86...6eB48
           </p>

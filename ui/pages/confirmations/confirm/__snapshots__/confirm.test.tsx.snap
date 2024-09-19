@@ -435,6 +435,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           />
                           <p
                             class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            data-testid="sender-address"
                           >
                             0xA0b86...6eB48
                           </p>
@@ -485,6 +486,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           />
                           <p
                             class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            data-testid="sender-address"
                           >
                             0xb0B86...6EB48
                           </p>
@@ -1481,6 +1483,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           />
                           <p
                             class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            data-testid="sender-address"
                           >
                             0xA0b86...6eB48
                           </p>
@@ -2924,6 +2927,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                         />
                         <p
                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                          data-testid="sender-address"
                         >
                           0xCcCCc...ccccC
                         </p>

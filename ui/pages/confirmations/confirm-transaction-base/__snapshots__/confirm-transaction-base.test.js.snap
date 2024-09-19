@@ -73,7 +73,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="sender-to-recipient sender-to-recipient--default"
+      class="mm-box sender-to-recipient sender-to-recipient--default"
       data-testid="sender-to-recipient"
     >
       <div
@@ -140,6 +140,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           >
             <div
               class="sender-to-recipient__name"
+              data-testid="sender-address"
             >
               Account 1
             </div>

@@ -87,6 +87,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
               />
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                data-testid="sender-address"
               >
                 0x07614...3ad68
               </p>

@@ -111,11 +111,11 @@ export class MockTransactionBuilder extends AbstractTransactionBuilder {
   }
 
   signTransaction(): Promise<string> {
-    throw new Error('Method not implemented.');
+    return Promise.resolve('mock');
   }
 
   sendTransaction(): Promise<string> {
-    throw new Error('Method not implemented.');
+    return Promise.resolve('mock');
   }
 
   setMaxSendAmount(): Promise<string> {

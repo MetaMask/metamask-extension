@@ -12,6 +12,7 @@ exports[`Name renders address with no saved name 1`] = `
       />
       <p
         class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+        data-testid="sender-address"
       >
         0xC0ffe...54977
       </p>
@@ -72,6 +73,7 @@ exports[`Name renders address with saved name 1`] = `
       </div>
       <p
         class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+        data-testid="sender-name"
       >
         TestName
       </p>
@@ -92,6 +94,7 @@ exports[`Name renders when no address value is passed 1`] = `
       />
       <p
         class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+        data-testid="sender-address"
       />
     </div>
   </div>

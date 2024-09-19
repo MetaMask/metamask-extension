@@ -96,7 +96,7 @@ export default function CurrencyInput({
   );
 
   const tokenRateToUse = isEvmChainSelected
-    ? tokenToFiatConversionRate?.toNumber()
+    ? tokenToFiatConversionRate
     : new Numeric(multichainConversionRate, 10); // non-EVM rates are stored as numbers and needs to be converted
 
   const isNonZeroConversionRate = Boolean(tokenRateToUse);

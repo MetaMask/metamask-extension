@@ -100,7 +100,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
         </div>
       </div>
       <div
-        class="sender-to-recipient sender-to-recipient--default"
+        class="mm-box sender-to-recipient sender-to-recipient--default"
         data-testid="sender-to-recipient"
       >
         <div
@@ -167,6 +167,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
             >
               <div
                 class="sender-to-recipient__name"
+                data-testid="sender-address"
               >
                 Test Account
               </div>

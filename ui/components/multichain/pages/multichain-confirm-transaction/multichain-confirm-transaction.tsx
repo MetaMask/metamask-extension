@@ -59,7 +59,7 @@ export const MultichainConfirmTransactionPage = () => {
   };
 
   const onBack = () => {
-    history.push('/multichain-send');
+    history.push(MULTICHAIN_SEND_ROUTE);
   };
 
   const confirmTranasction = async () => {

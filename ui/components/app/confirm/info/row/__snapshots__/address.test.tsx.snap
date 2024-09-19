@@ -325,6 +325,7 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames enabled 1`] =
         />
         <p
           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+          data-testid="sender-address"
         >
           0x5CfE7...6a7e1
         </p>

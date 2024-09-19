@@ -105,8 +105,7 @@ export const MultichainSendPage = () => {
     );
   };
 
-  const submitDisabled =
-    draftTransaction?.valid !== null && !draftTransaction?.valid;
+  const submitDisabled = !draftTransaction?.valid;
   const isSendFormShown = draftTransactionExists;
 
   return (

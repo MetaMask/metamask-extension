@@ -103,10 +103,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       ...this.transactionParams,
       sendAsset: {
         ...this.transactionParams.sendAsset,
-        assetDetails: {
-          ...this.transactionParams.sendAsset.assetDetails,
-          balance: amount,
-        },
+        amount,
         error: '',
       },
     };

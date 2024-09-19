@@ -47,7 +47,7 @@ exports[`SendPage render and initialization should render correctly even when a 
             From
           </label>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
             data-testid="send-page-account-picker"
           >
             <span

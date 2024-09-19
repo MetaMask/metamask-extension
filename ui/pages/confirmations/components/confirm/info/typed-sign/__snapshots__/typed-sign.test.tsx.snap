@@ -104,6 +104,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
                 />
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                  data-testid="sender-address"
                 >
                   0xCcCCc...ccccC
                 </p>

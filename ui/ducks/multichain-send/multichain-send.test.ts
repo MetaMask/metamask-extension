@@ -209,7 +209,7 @@ describe('multichainSend slice', () => {
           action,
         );
 
-        expect(result.currentTransactionUUID).toBeUndefined();
+        expect(result.currentTransactionUUID).toBe('');
         expect(result.draftTransactions).toEqual({});
         expect(result.stage).toBe(SEND_STAGES.DRAFT);
       });
@@ -689,15 +689,15 @@ describe('multichainSend slice', () => {
           meta: expect.any(Object),
         });
 
-        // The state should be the same
         expect(
           updatedState.multichainSend.draftTransactions[
             stateWithBTCDraft.currentTransactionUUID
           ].transactionParams.recipient,
-        ).toEqual(
-          stateWithBTCDraft.draftTransactions['test-uuid'].transactionParams
-            .recipient,
-        );
+        ).toEqual({
+          address: 'mock',
+          error: 'invalidAddressRecipient',
+          valid: false,
+        });
       });
     });
 
@@ -812,9 +812,7 @@ describe('multichainSend slice', () => {
         });
         expect(sendSpy).toHaveBeenCalled();
         expect(updatedState.multichainSend.stage).toBe(SEND_STAGES.DRAFT);
-        expect(
-          updatedState.multichainSend.currentTransactionUUID,
-        ).toBeUndefined();
+        expect(updatedState.multichainSend.currentTransactionUUID).toBe('');
         expect(updatedState.multichainSend.draftTransactions).toEqual({});
       });
 
