@@ -120,6 +120,14 @@ describe('PPOMMiddleware', () => {
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
     isChainSupportedMock.mockResolvedValue(true);
+
+    globalThis.sentry = {
+      withIsolationScope: jest
+        .fn()
+        .mockImplementation((fn) => fn({ setTags: jest.fn() })),
+      startSpan: jest.fn().mockImplementation((_, fn) => fn({})),
+      startSpanManual: jest.fn().mockImplementation((_, fn) => fn({})),
+    };
   });
 
   it('gets the network configuration for the request networkClientId', async () => {
