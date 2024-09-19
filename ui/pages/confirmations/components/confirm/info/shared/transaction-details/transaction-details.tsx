@@ -68,7 +68,7 @@ export const MethodDataRow = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const methodData = useFourByte(currentConfirmation);
 
-  if (!methodData) {
+  if (!methodData?.name) {
     return null;
   }
 
