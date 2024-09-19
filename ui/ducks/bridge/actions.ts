@@ -107,7 +107,6 @@ export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
 };
 export const signBridgeTransaction = (
   history: ReturnType<typeof useHistory>,
-  trackEvent: UITrackEventMethod,
 ) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
