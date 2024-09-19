@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Button } from '../../../components/component-library';
 import {
   getBridgeQuotes,
@@ -15,6 +16,7 @@ import { signBridgeTransaction } from '../../../ducks/bridge/actions';
 
 export const BridgeCTAButton = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const t = useI18nContext();
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
@@ -56,7 +58,7 @@ export const BridgeCTAButton = () => {
         if (isTxSubmittable) {
           // dispatch tx submission
           console.log('bridge CTA button clicked');
-          dispatch(signBridgeTransaction());
+          dispatch(signBridgeTransaction(history));
         }
       }}
       disabled={!isTxSubmittable}
