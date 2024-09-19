@@ -75,13 +75,8 @@ class AccountListPage {
    */
   async hideAccount(): Promise<void> {
     console.log('Hiding account');
-    try {
-      await this.driver.clickElement(this.hideUnhideAccountButton);
-      console.log('Account hidden successfully');
-    } catch (error) {
-      console.error('Failed to hide account', error);
-      throw new Error(`Unable to hide account: ${(error as Error).message}`);
-    }
+    await this.driver.clickElement(this.hideUnhideAccountButton);
+    console.log('Account hidden successfully');
   }
 
   /**
@@ -90,13 +85,8 @@ class AccountListPage {
    */
   async openAccountOptionsMenu(): Promise<void> {
     console.log('Opening account options menu');
-    try {
-      await this.driver.clickElement(this.accountOptionsMenuButton);
-      console.log('Account options menu opened successfully');
-    } catch (error) {
-      console.error('Failed to open account options menu', error);
-      throw new Error(`Unable to open account options menu: ${(error as Error).message}`);
-    }
+    await this.driver.clickElement(this.accountOptionsMenuButton);
+    console.log('Account options menu opened successfully');
   }
 
   /**
@@ -105,13 +95,8 @@ class AccountListPage {
    */
   async openHiddenAccountOptions(): Promise<void> {
     console.log('Opening hidden accounts options menu');
-    try {
-      await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
-      console.log('Hidden accounts options menu opened successfully');
-    } catch (error) {
-      console.error('Failed to open hidden accounts options menu', error);
-      throw new Error(`Unable to open hidden accounts options menu: ${(error as Error).message}`);
-    }
+    await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
+    console.log('Hidden accounts options menu opened successfully');
   }
 
   /**
@@ -120,13 +105,8 @@ class AccountListPage {
    */
   async openHiddenAccountsList(): Promise<void> {
     console.log('Opening hidden accounts list');
-    try {
-      await this.driver.clickElement(this.hiddenAccountsList);
-      console.log('Hidden accounts list opened successfully');
-    } catch (error) {
-      console.error('Failed to open hidden accounts list', error);
-      throw new Error(`Unable to open hidden accounts list: ${(error as Error).message}`);
-    }
+    await this.driver.clickElement(this.hiddenAccountsList);
+    console.log('Hidden accounts list opened successfully');
   }
 
   /**
@@ -135,13 +115,8 @@ class AccountListPage {
    */
   async pinAccount(): Promise<void> {
     console.log('Pinning account');
-    try {
-      await this.driver.clickElement(this.pinUnpinAccountButton);
-      console.log('Account pinned successfully');
-    } catch (error) {
-      console.error('Failed to pin account', error);
-      throw new Error(`Unable to pin account: ${(error as Error).message}`);
-    }
+    await this.driver.clickElement(this.pinUnpinAccountButton);
+    console.log('Account pinned successfully');
   }
 
   /**
@@ -150,13 +125,8 @@ class AccountListPage {
    */
   async unhideAccount(): Promise<void> {
     console.log('Unhiding account');
-    try {
-      await this.driver.clickElement(this.hideUnhideAccountButton);
-      console.log('Account unhidden successfully');
-    } catch (error) {
-      console.error('Failed to unhide account', error);
-      throw new Error(`Unable to unhide account: ${(error as Error).message}`);
-    }
+    await this.driver.clickElement(this.hideUnhideAccountButton);
+    console.log('Account unhidden successfully');
   }
 
   /**
@@ -165,18 +135,19 @@ class AccountListPage {
    */
   async unpinAccount(): Promise<void> {
     console.log('Unpinning account');
-    try {
-      await this.driver.clickElement(this.pinUnpinAccountButton);
-      console.log('Account unpinned successfully');
-    } catch (error) {
-      console.error('Failed to unpin account', error);
-      throw new Error(`Unable to unpin account: ${(error as Error).message}`);
-    }
+    await this.driver.clickElement(this.pinUnpinAccountButton);
+    console.log('Account unpinned successfully');
   }
 
   async check_accountIsDisplayed(): Promise<void> {
-    console.log(`Check that account is displayed in account list`);
-    await this.driver.waitForSelector(this.accountListItem);
+    console.log(`Checking that account is displayed in account list`);
+    try {
+      await this.driver.waitForSelector(this.accountListItem);
+      console.log('Account is displayed in the list');
+    } catch (error) {
+      console.error('Failed to find account in the list', error);
+      throw new Error(`Account is not displayed in the list: ${(error as Error).message}`);
+    }
   }
 
   async check_accountIsPinned(): Promise<void> {
