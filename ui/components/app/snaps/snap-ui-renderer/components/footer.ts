@@ -22,7 +22,7 @@ export const DEFAULT_FOOTER = {
     backgroundColor: BackgroundColor.backgroundDefault,
     style: {
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
-      height: '74px',
+      height: '80px',
       position: 'fixed',
       bottom: 0,
     },

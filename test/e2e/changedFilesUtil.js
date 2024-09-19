@@ -1,4 +1,4 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
 const BASE_PATH = path.resolve(__dirname, '..', '..');
@@ -11,15 +11,17 @@ const CHANGED_FILES_PATH = path.join(
 /**
  * Reads the list of changed files from the git diff file.
  *
- * @returns {Promise<string[]>} An array of changed file paths.
+ * @returns {<string[]>} An array of changed file paths.
  */
-async function readChangedFiles() {
+function readChangedFiles() {
   try {
-    const data = await fs.readFile(CHANGED_FILES_PATH, 'utf8');
+    const data = fs.readFileSync(CHANGED_FILES_PATH, 'utf8');
     const changedFiles = data.split('\n');
     return changedFiles;
   } catch (error) {
-    console.error('Error reading from file:', error);
+    if (error.code !== 'ENOENT') {
+      console.error('Error reading from file:', error);
+    }
     return [];
   }
 }
@@ -30,8 +32,8 @@ async function readChangedFiles() {
  *
  * @returns {Promise<{ e2eChangedFiles: string[], hasOnlyMdOrCsvFiles: boolean }>} An object containing the filtered E2E test file paths and a boolean indicating if all files have .md or .csv extensions.
  */
-async function filterE2eChangedFiles() {
-  const changedFiles = await readChangedFiles();
+function filterE2eChangedFiles() {
+  const changedFiles = readChangedFiles();
   const e2eChangedFiles = changedFiles
     .filter(
       (file) =>
@@ -47,4 +49,4 @@ async function filterE2eChangedFiles() {
   return {e2eChangedFiles, hasOnlyMdOrCsvFiles};
 }
 
-module.exports = { filterE2eChangedFiles, readChangedFiles, checkOnlyMdOrCsvFiles };
+module.exports = { filterE2eChangedFiles, readChangedFiles, hasOnlyMdOrCsvFiles };

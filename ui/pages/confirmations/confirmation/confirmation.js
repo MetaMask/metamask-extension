@@ -31,6 +31,7 @@ import {
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
   getSnapsMetadata,
+  getHideSnapBranding,
 } from '../../../selectors';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import Callout from '../../../components/ui/callout';
@@ -250,6 +251,10 @@ export default function ConfirmationPage({
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
   const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const hideSnapBranding = useSelector((state) =>
+    getHideSnapBranding(state, pendingConfirmation?.origin),
+  );
 
   const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
@@ -477,7 +482,7 @@ export default function ConfirmationPage({
   if (pendingConfirmations.length > 1) {
     contentMargin += NAVIGATION_CONTROLS_HEIGHT;
   }
-  if (isSnapCustomUIDialog) {
+  if (isSnapCustomUIDialog && !hideSnapBranding) {
     contentMargin += SNAP_DIALOG_HEADER_HEIGHT;
   }
 
@@ -518,7 +523,7 @@ export default function ConfirmationPage({
           </button>
         </Box>
       )}
-      {isSnapCustomUIDialog && (
+      {isSnapCustomUIDialog && !hideSnapBranding && (
         <Box
           width={BlockSize.Screen}
           style={{
@@ -535,7 +540,7 @@ export default function ConfirmationPage({
       )}
       <Box
         className="confirmation-page__content"
-        padding={process.env.CHAIN_PERMISSIONS ? 4 : 0}
+        padding={process.env.CHAIN_PERMISSIONS && !isSnapCustomUIDialog ? 4 : 0}
         style={{
           marginTop: `${contentMargin}px`,
           overflowY: 'auto',

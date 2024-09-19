@@ -26,18 +26,19 @@
     }
   },
   "accountsByChainId": {
-    "0x5": {
+    "0xaa36a7": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
         "balance": "0x15f6f0b9d4f8d000"
       }
     }
   },
   "addSnapAccountEnabled": false,
   "addressBook": {
-    "0x5": {
+    "0xaa36a7": {
       "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
         "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-        "chainId": "0x5",
+        "chainId": "0xaa36a7",
         "isEns": false,
         "memo": "",
         "name": "Address Book Account 1"
@@ -45,7 +46,7 @@
     }
   },
   "advancedGasFee": {
-    "0x5": {
+    "0xaa36a7": {
       "maxBaseFee": "75",
       "priorityFee": "2"
     }
@@ -92,6 +93,17 @@
           "createdDate": null,
           "schemaName": "ERC721",
           "externalLink": null
+        },
+        {
+          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+          "description": null,
+          "name": "Punk Generator",
+          "logo": null,
+          "symbol": "PUNK",
+          "assetContractType": "non-fungible",
+          "createdDate": null,
+          "schemaName": "ERC1155",
+          "externalLink": null
         }
       ],
       "0x5": [
@@ -104,17 +116,6 @@
           "assetContractType": "non-fungible",
           "createdDate": null,
           "schemaName": "ERC721",
-          "externalLink": null
-        },
-        {
-          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-          "description": null,
-          "name": "Punk Generator",
-          "logo": null,
-          "symbol": "PUNK",
-          "assetContractType": "non-fungible",
-          "createdDate": null,
-          "schemaName": "ERC1155",
           "externalLink": null
         }
       ],
@@ -155,7 +156,7 @@
           "standard": "ERC721"
         }
       ],
-      "0xaa36a7": [
+      "0x5": [
         {
           "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
           "tokenId": "1",
@@ -165,7 +166,7 @@
           "standard": "ERC721"
         }
       ],
-      "0x5": [
+      "0xaa36a7": [
         {
           "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
           "tokenId": "58076532811975507823669075598676816378162417803895263482849101575514658701313",
@@ -395,7 +396,7 @@
     "networkCongestion": 0.10625
   },
   "gasFeeEstimatesByChainId": {
-    "0x5": {
+    "0xaa36a7": {
       "estimatedGasFeeTimeBounds": {
         "lowerTimeBound": 15000,
         "upperTimeBound": 60000
@@ -462,7 +463,7 @@
     "0xe708": false,
     "0xfa": true,
     "0x5": false,
-    "0xaa36a7": true,
+    "0xaa36a7": false,
     "0xe704": true
   },
   "internalAccounts": {
@@ -656,18 +657,26 @@
   },
   "networkConfigurations": {
     "testNetworkConfigurationId": {
-      "rpcUrl": "https://testrpc.com",
       "chainId": "0x1",
+      "id": "testNetworkConfigurationId",
       "nickname": "Custom Mainnet RPC",
-      "type": "rpc",
-      "id": "testNetworkConfigurationId"
+      "rpcUrl": "https://testrpc.com",
+      "ticker": "ETH",
+      "type": "rpc"
     },
     "goerli-network-id": {
-      "type": "rpc",
       "chainId": "0x5",
-      "ticker": "ETH",
+      "id": "goerli-network-id",
       "nickname": "Chain 5",
-      "id": "goerli-network-id"
+      "ticker": "ETH",
+      "type": "rpc"
+    },
+    "sepolia": {
+      "type": "rpc",
+      "chainId": "0xaa36a7",
+      "ticker": "ETH",
+      "nickname": "Sepolia",
+      "id": "sepolia"
     }
   },
   "networksMetadata": {
@@ -682,11 +691,17 @@
         "1559": true
       },
       "status": "available"
+    },
+    "testNetworkConfigurationId": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
     }
   },
   "nftsDropdownState": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-      "0x5": {
+      "0xaa36a7": {
         "0x495f947276749Ce646f68AC8c248420045cb7b5e": false
       }
     }
@@ -749,16 +764,16 @@
   "previousAppVersion": "11.14.4",
   "previousMigrationVersion": 112,
   "providerConfig": {
-    "type": "rpc",
-    "nickname": "goerli",
-    "chainId": "0x5",
+    "type": "sepolia",
+    "nickname": "sepolia",
+    "chainId": "0xaa36a7",
     "ticker": "ETH",
-    "id": "chain5"
+    "id": "sepolia"
   },
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-  "selectedNetworkClientId": "goerli-network-id",
+  "selectedNetworkClientId": "sepolia",
   "showAccountBanner": false,
   "showBetaHeader": false,
   "showNetworkBanner": true,
@@ -771,7 +786,7 @@
     "liveness": true,
     "smartTransactions": {
       "0x1": [],
-      "0x5": []
+      "0xaa36a7": []
     },
     "userOptInV2": true
   },
@@ -1264,7 +1279,7 @@
       "id": 3387511061307736,
       "time": 1528133130531,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1279,7 +1294,7 @@
           "id": 3387511061307736,
           "time": 1528133130531,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1396,7 +1411,7 @@
       "id": 3387511061307737,
       "time": 1528133149983,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1411,7 +1426,7 @@
           "id": 3387511061307737,
           "time": 1528133149983,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1528,7 +1543,7 @@
       "id": 3387511061307738,
       "time": 1528133180635,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1543,7 +1558,7 @@
           "id": 3387511061307738,
           "time": 1528133180635,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1660,7 +1675,7 @@
       "id": 3387511061307739,
       "time": 1528133223918,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1676,7 +1691,7 @@
           "id": 3387511061307739,
           "time": 1528133223918,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1797,7 +1812,7 @@
       "id": 3387511061307740,
       "time": 1528133291381,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1813,7 +1828,7 @@
           "id": 3387511061307740,
           "time": 1528133291381,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1931,7 +1946,7 @@
       "id": 3387511061307741,
       "time": 1528133318440,
       "status": "rejected",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1945,7 +1960,7 @@
           "id": 3387511061307741,
           "time": 1528133318440,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -2022,12 +2037,12 @@
   "useTokenDetection": false,
   "useTransactionSimulations": true,
   "usedNetworks": {
-    "0x5": {
-      "rpcUrl": "https://goerli.infura.io/v3/8f8f7f9f6f4c4f3e8f8f7f9f6f4c4f3e",
-      "chainId": "0x5",
-      "nickname": "Goerli Test Network",
+    "0xaa36a7": {
+      "rpcUrl": "https://sepolia.infura.io/v3/8f8f7f9f6f4c4f3e8f8f7f9f6f4c4f3e",
+      "chainId": "0xaa36a7",
+      "nickname": "Sepolia Test Network",
       "ticker": "ETH",
-      "blockExplorerUrl": "https://goerli.etherscan.io"
+      "blockExplorerUrl": "https://sepolia.etherscan.io"
     }
   },
   "userOperations": {},

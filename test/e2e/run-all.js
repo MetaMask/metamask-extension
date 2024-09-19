@@ -6,7 +6,7 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
-const { filterE2eChangedFiles, checkOnlyMdOrCsvFiles } = require('./changedFilesUtil');
+const { filterE2eChangedFiles, hasOnlyMdOrCsvFiles } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = [];
@@ -41,7 +41,7 @@ const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
  * @param {string[]} changedOrNewTests - List of changed or new test paths.
  * @returns {string} The updated full test list.
  */
-async function applyQualityGate(fullTestList, changedOrNewTests) {
+function applyQualityGate(fullTestList, changedOrNewTests) {
   let qualityGatedList = fullTestList;
 
   if (changedOrNewTests.length > 0) {
@@ -73,7 +73,7 @@ async function runningOnCircleCI(testPaths) {
   }
   console.log('Changed or new test list:', changedOrNewTests);
 
-  const fullTestList = await applyQualityGate(
+  const fullTestList = applyQualityGate(
     testPaths.join('\n'),
     changedOrNewTests,
   );
@@ -254,7 +254,7 @@ async function main() {
   let changedOrNewTests;
   if (process.env.CIRCLECI) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
-      await runningOnCircleCI(testPaths));
+      runningOnCircleCI(testPaths));
   } else {
     myTestList = testPaths;
   }
