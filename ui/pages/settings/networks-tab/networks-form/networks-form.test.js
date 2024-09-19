@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { screen } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import nock from 'nock';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import {
@@ -11,7 +11,13 @@ import {
 } from '../../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { addNetwork } from '../../../../store/actions';
 import { NetworksForm } from './networks-form';
+
+jest.mock('../../../../../ui/store/actions', () => ({
+  ...jest.requireActual('../../../../../ui/store/actions'),
+  addNetwork: jest.fn(),
+}));
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
@@ -55,7 +61,6 @@ const propNetworkDisplay = {
   },
   onRpcAdd: () => ({}),
   onBlockExplorerAdd: () => ({}),
-  onSave: () => ({}),
 };
 
 describe('NetworkForm Component', () => {
@@ -384,5 +389,25 @@ describe('NetworkForm Component', () => {
     expect(
       await screen.queryByTestId('network-form-ticker-suggestion'),
     ).not.toBeInTheDocument();
+  });
+
+  it('should call addNetwork on save', async () => {
+    const { getByText } = renderComponent(propNetworkDisplay);
+    const saveButton = getByText('Save');
+    fireEvent.click(saveButton);
+    await waitFor(() => expect(addNetwork).toHaveBeenCalledTimes(1));
+    expect(addNetwork).toHaveBeenCalledWith({
+      chainId: '0x64',
+      name: 'Ethereum Mainnet',
+      nativeCurrency: 'ETH',
+      rpcEndpoints: [
+        {
+          url: 'https://mainnet.infura.io/v3/',
+        },
+      ],
+      defaultRpcEndpointIndex: 0,
+      blockExplorerUrls: [],
+      defaultBlockExplorerUrlIndex: undefined,
+    });
   });
 });

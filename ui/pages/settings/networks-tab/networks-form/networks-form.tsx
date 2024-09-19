@@ -79,7 +79,6 @@ export const NetworksForm = ({
   existingNetwork?: NetworkConfiguration;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
-  onSave?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
