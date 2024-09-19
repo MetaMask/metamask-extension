@@ -593,28 +593,24 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokenListController,
     });
 
-    this.assetsContractController = new AssetsContractController(
-      {
-        chainId: getCurrentChainId({ metamask: this.networkController.state }),
-        onPreferencesStateChange: (listener) =>
-          this.preferencesController.store.subscribe(listener),
-        onNetworkDidChange: (cb) =>
-          networkControllerMessenger.subscribe(
-            'NetworkController:networkDidChange',
-            () => {
-              const networkState = this.networkController.state;
-              return cb(networkState);
-            },
-          ),
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
-          this.networkController,
-        ),
-      },
-      {
-        provider: this.provider,
-      },
-      initState.AssetsContractController,
-    );
+    const assetsContractControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'AssetsContractController',
+        allowedActions: [
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getNetworkConfigurationByNetworkClientId',
+          'NetworkController:getSelectedNetworkClient',
+          'NetworkController:getState',
+        ],
+        allowedEvents: [
+          'PreferencesController:stateChange',
+          'NetworkController:networkDidChange',
+        ],
+      });
+    this.assetsContractController = new AssetsContractController({
+      messenger: assetsContractControllerMessenger,
+      chainId: getCurrentChainId({ metamask: this.networkController.state }),
+    });
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'TokensController',
@@ -650,32 +646,18 @@ export default class MetamaskController extends EventEmitter {
         `${this.networkController.name}:getNetworkClientById`,
         'AccountsController:getSelectedAccount',
         'AccountsController:getAccount',
+        'AssetsContractController:getERC721AssetName',
+        'AssetsContractController:getERC721AssetSymbol',
+        'AssetsContractController:getERC721TokenURI',
+        'AssetsContractController:getERC721OwnerOf',
+        'AssetsContractController:getERC1155BalanceOf',
+        'AssetsContractController:getERC1155TokenURI',
       ],
     });
     this.nftController = new NftController({
       state: initState.NftController,
       messenger: nftControllerMessenger,
       chainId: getCurrentChainId({ metamask: this.networkController.state }),
-      getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
-        this.assetsContractController,
-      ),
-      getERC721AssetSymbol:
-        this.assetsContractController.getERC721AssetSymbol.bind(
-          this.assetsContractController,
-        ),
-      getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
-        this.assetsContractController,
-      ),
-      getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
-        this.assetsContractController,
-      ),
-      getERC1155BalanceOf:
-        this.assetsContractController.getERC1155BalanceOf.bind(
-          this.assetsContractController,
-        ),
-      getERC1155TokenURI: this.assetsContractController.getERC1155TokenURI.bind(
-        this.assetsContractController,
-      ),
       onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.NftAdded,
