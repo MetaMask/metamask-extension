@@ -4,11 +4,7 @@ import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter'
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 
-import {
-  ContentDescriptorObject,
-  MethodObject,
-  OpenrpcDocument,
-} from '@open-rpc/meta-schema';
+import { OpenrpcDocument } from '@open-rpc/meta-schema';
 import { MetaMaskOpenRPCDocument } from '@metamask/api-specs';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 

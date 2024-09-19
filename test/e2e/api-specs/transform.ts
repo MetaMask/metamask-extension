@@ -127,7 +127,10 @@ const transformOpenRPCDocument = (
   );
 
   // delete invalid example until its fixed here: https://github.com/ethereum/execution-apis/pull/588
-  ((getProof as any).examples[0] as any)?.params[1].value.pop();
+  (
+    ((getProof as MethodObject).examples[0] as ExamplePairingObject)
+      ?.params[1] as ExampleObject
+  ).value.pop();
 
   const signTypedData4 = openrpcDocument.methods.find(
     (m) => (m as MethodObject).name === 'eth_signTypedData_v4',

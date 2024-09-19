@@ -2,7 +2,6 @@ import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
 import { JsonRpcResponse } from 'json-rpc-engine';
 import { JsonRpcFailure } from '@metamask/utils';
-import _ from 'lodash';
 import { Driver } from '../webdriver/driver';
 import { ScopeString } from '../../../app/scripts/lib/multichain-api/scope';
 

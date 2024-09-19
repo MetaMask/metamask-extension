@@ -7,6 +7,9 @@ import {
 } from '@metamask/api-specs';
 
 import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
+import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
+import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
+import { ScopeString } from '../../app/scripts/lib/multichain-api/scope';
 import { Driver, PAGES } from './webdriver/driver';
 
 import {
@@ -25,10 +28,7 @@ import {
 import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
-import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
-import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
-import { ScopeString } from '../../app/scripts/lib/multichain-api/scope';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -96,21 +96,24 @@ async function main() {
             ignoreMethods.includes(m);
           return !match;
         });
-      const confirmationMethods = methodsWithConfirmations.filter((m) =>
-        !ignoreMethods.includes(m),
+      const confirmationMethods = methodsWithConfirmations.filter(
+        (m) => !ignoreMethods.includes(m),
       );
       const scopeMap: Record<ScopeString, string[]> = {
         [`eip155:${chainId}`]: ethereumMethods,
         'wallet:eip155': walletEip155Methods,
         wallet: walletRpcMethods,
-      }
+      };
 
-      const reverseScopeMap = Object.entries(scopeMap).reduce((acc, [scope, methods]: [ScopeString, string[]]) => {
-        methods.forEach((method) => {
-          acc[method] = scope;
-        });
-        return acc;
-      }, {} as { [method: string]: ScopeString });
+      const reverseScopeMap = Object.entries(scopeMap).reduce(
+        (acc, [scope, methods]: [ScopeString, string[]]) => {
+          methods.forEach((method) => {
+            acc[method] = scope;
+          });
+          return acc;
+        },
+        {} as { [method: string]: ScopeString },
+      );
 
       // fix the example for wallet_createSession
       (providerAuthorize as MethodObject).examples = [
