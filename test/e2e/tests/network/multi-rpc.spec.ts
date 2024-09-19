@@ -11,9 +11,13 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
+import {
+  expectMockRequest,
+  expectNoMockRequest,
+} from '../../helpers/mock-server';
 
 describe('MultiRpc:', function (this: Suite) {
-  it('should migrate to multi rpc', async function () {
+  it('should migrate to multi rpc @no-mmi', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -117,6 +121,16 @@ describe('MultiRpc:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        await mockServer
+          .forPost('https://arbitrum-mainnet.infura.io/')
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              id: '1694444405781',
+              jsonrpc: '2.0',
+              result: '0xa4b1',
+            },
+          })),
       ];
     }
     await withFixtures(
@@ -151,7 +165,7 @@ describe('MultiRpc:', function (this: Suite) {
                 ticker: 'ETH',
               },
             },
-            selectedNetworkClientId: 'networkConfigurationId',
+            selectedNetworkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -159,8 +173,22 @@ describe('MultiRpc:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, mockedEndpoint }) => {
         await unlockWallet(driver);
+
+        const usedUrlBeforeSwitch = await mockedEndpoint[1].getSeenRequests();
+
+        // check the url first request send on the background to the mocked rpc after switch
+        assert.equal(
+          usedUrlBeforeSwitch[0].url,
+          'https://arbitrum-mainnet.infura.io/',
+        );
+
+        // check that requests are sent on the background for the url https://arbitrum-mainnet.infura.io/
+        await expectMockRequest(driver, mockedEndpoint[1], { timeout: 3000 });
+
+        // check that requests are sent on the background for the rpc https://responsive-rpc.test/
+        await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
 
         // Avoid a stale element error
         await driver.delay(regularDelayMs);
@@ -184,6 +212,13 @@ describe('MultiRpc:', function (this: Suite) {
           text: 'Arbitrum mainnet 2',
           tag: 'button',
         });
+
+        const usedUrl = await mockedEndpoint[0].getSeenRequests();
+        // check the url first request send on the background to the mocked rpc after switch
+        assert.equal(usedUrl[0].url, 'https://responsive-rpc.test/');
+
+        // check that requests are sent on the background for the url https://responsive-rpc.test/
+        await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
 
         const existRpcUsed = arbitrumRpcUsed !== undefined;
         assert.equal(existRpcUsed, true, 'Second Rpc is used');
@@ -304,7 +339,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-  it('should select rpc from settings', async function () {
+  it('should select rpc from settings @no-mmi', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
