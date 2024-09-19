@@ -774,9 +774,6 @@
     "message": "L'endpoint ha restituito un chain ID diverso: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensRegistrationError": {
-    "message": "Errore nella registrazione del nome ENS"
-  },
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
   },
@@ -955,9 +952,6 @@
   "invalidAddressRecipient": {
     "message": "Indirizzo destinatario invalido"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Rete non ETH, inserisci caratteri minuscoli"
-  },
   "invalidBlockExplorerURL": {
     "message": "URI Block Explorer invalido"
   },
@@ -1120,9 +1114,6 @@
   "noAccountsFound": {
     "message": "Nessun account trovato per la ricerca effettuata"
   },
-  "noAddressForName": {
-    "message": "Nessun indirizzo è stato impostato per questo nome."
-  },
   "noConversionRateAvailable": {
     "message": "Tasso di conversione non disponibile"
   },
@@ -1235,9 +1226,6 @@
   },
   "receive": {
     "message": "Ricevi"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Ricerca, indirizzo pubblico (0x) o ENS"
   },
   "reject": {
     "message": "Annulla"

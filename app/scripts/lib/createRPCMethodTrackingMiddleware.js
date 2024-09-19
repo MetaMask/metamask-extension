@@ -131,9 +131,9 @@ let globalRateLimitCount = 0;
  *
  * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
- * @param {object} properties
+ * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
  */
-function createSignatureFragment(metaMetricsController, req, properties) {
+function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
   metaMetricsController.createEventFragment({
     category: MetaMetricsEventCategory.InpageProvider,
     initialEvent: MetaMetricsEventName.SignatureRequested,
@@ -144,7 +144,7 @@ function createSignatureFragment(metaMetricsController, req, properties) {
     referrer: {
       url: req.origin,
     },
-    properties,
+    ...fragmentPayload,
   });
 }
 
@@ -153,23 +153,28 @@ function createSignatureFragment(metaMetricsController, req, properties) {
  *
  * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
- * @param {object}  options
- * @param {boolean} options.abandoned
- * @param {object}  options.properties
+ * @param {MetaMetricsFinalizeEventFragmentOptions}  finalizeEventOptions
+ * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
  */
 function finalizeSignatureFragment(
   metaMetricsController,
   req,
-  { abandoned, properties },
+  finalizeEventOptions,
+  fragmentPayload,
 ) {
   const signatureUniqueId = generateSignatureUniqueId(req.id);
 
-  metaMetricsController.updateEventFragment(signatureUniqueId, {
-    properties,
-  });
-  metaMetricsController.finalizeEventFragment(signatureUniqueId, {
-    abandoned,
-  });
+  if (fragmentPayload) {
+    metaMetricsController.updateEventFragment(
+      signatureUniqueId,
+      fragmentPayload,
+    );
+  }
+
+  metaMetricsController.finalizeEventFragment(
+    signatureUniqueId,
+    finalizeEventOptions,
+  );
 }
 
 /**
@@ -368,7 +373,9 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       if (event === MetaMetricsEventName.SignatureRequested) {
-        createSignatureFragment(metaMetricsController, req, eventProperties);
+        createSignatureFragment(metaMetricsController, req, {
+          properties: eventProperties,
+        });
       } else {
         metaMetricsController.trackEvent({
           event,
@@ -430,10 +437,19 @@ export default function createRPCMethodTrackingMiddleware({
       };
 
       if (signatureUniqueId) {
-        finalizeSignatureFragment(metaMetricsController, req, {
+        const finalizeOptions = {
           abandoned: event === eventType.REJECTED,
+        };
+        const fragmentPayload = {
           properties,
-        });
+        };
+
+        finalizeSignatureFragment(
+          metaMetricsController,
+          req,
+          finalizeOptions,
+          fragmentPayload,
+        );
       } else {
         metaMetricsController.trackEvent({
           event,

@@ -70,6 +70,10 @@ export default async function launchMetamaskUi(opts) {
 
   const store = await startApp(metamaskState, backgroundConnection, opts);
 
+  await promisify(
+    backgroundConnection.startPatches.bind(backgroundConnection),
+  )();
+
   setupStateHooks(store);
 
   return store;
