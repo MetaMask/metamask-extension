@@ -6,6 +6,7 @@ import { promisify } from 'util';
 const exec = promisify(execCallback);
 
 const MAIN_BRANCH = 'develop';
+const SOURCE_BRANCH = `refs/pull/${process.env.CIRCLE_PR_NUMBER}/head`;
 
 /**
  * Get the target branch for the given pull request.
@@ -29,8 +30,8 @@ async function getBaseRef(): Promise<string | null> {
  */
 async function fetchWithDepth(depth: number): Promise<boolean> {
   try {
-    await exec(`git fetch --depth ${depth} origin develop`);
-    await exec(`git fetch --depth ${depth} origin ${process.env.CIRCLE_BRANCH}`);
+    await exec(`git fetch --depth ${depth} origin ${MAIN_BRANCH}`);
+    await exec(`git fetch --depth ${depth} origin ${SOURCE_BRANCH}:${SOURCE_BRANCH}`);
     return true;
   } catch (error: unknown) {
     console.error(`Failed to fetch with depth ${depth}:`, error);
@@ -66,7 +67,7 @@ async function fetchUntilMergeBaseFound() {
       }
     }
   }
-  await exec(`git fetch --unshallow origin develop`);
+  await exec(`git fetch --unshallow origin ${MAIN_BRANCH}`);
 }
 
 /**
@@ -78,7 +79,7 @@ async function fetchUntilMergeBaseFound() {
  */
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
-  const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`);
+  const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${SOURCE_BRANCH}`);
   if (!diffResult) {
       throw new Error('Unable to get diff after full checkout.');
   }
