@@ -19,7 +19,7 @@ import {
 import { createMockImplementation, mock4byte } from '../../helpers';
 import {
   getMaliciousUnapprovedTransaction,
-  getUnapprovedTransaction,
+  getUnapprovedContractInteractionTransaction,
 } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
@@ -89,7 +89,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
       },
     },
     transactions: [
-      getUnapprovedTransaction(
+      getUnapprovedContractInteractionTransaction(
         accountAddress,
         pendingTransactionId,
         pendingTransactionTime,
