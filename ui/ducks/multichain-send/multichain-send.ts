@@ -21,6 +21,7 @@ import { NativeAsset } from '../../components/multichain/asset-picker-amount/ass
 import {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
+  INVALID_RECIPIENT_ADDRESS_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
 } from '../../pages/confirmations/send/send.constants';
 import {
@@ -646,6 +647,21 @@ export const multichainSendSlice = createSlice({
           valid: false,
         };
       })
+      .addCase(updateAndValidateRecipient.pending, (state, action) => {
+        if (!state.currentTransactionUUID) {
+          return;
+        }
+
+        state.draftTransactions[
+          state.currentTransactionUUID
+        ].transactionParams.recipient = {
+          address: action.meta.arg.recipient,
+          valid: false,
+          error: '',
+        };
+
+        multichainSendSlice.caseReducers.validateChecks(state);
+      })
       .addCase(updateAndValidateRecipient.fulfilled, (state, action) => {
         if (!state.currentTransactionUUID) {
           return;
@@ -654,6 +670,17 @@ export const multichainSendSlice = createSlice({
         state.draftTransactions[
           state.currentTransactionUUID
         ].transactionParams.recipient = action.payload;
+
+        multichainSendSlice.caseReducers.validateChecks(state);
+      })
+      .addCase(updateAndValidateRecipient.rejected, (state) => {
+        if (!state.currentTransactionUUID) {
+          return;
+        }
+
+        state.draftTransactions[
+          state.currentTransactionUUID
+        ].transactionParams.recipient.error = INVALID_RECIPIENT_ADDRESS_ERROR;
 
         multichainSendSlice.caseReducers.validateChecks(state);
       })

@@ -117,7 +117,7 @@ export const SendPageRecipientInput = ({
               flexDirection={FlexDirection.Column}
               marginRight={'auto'}
             >
-              <Text>{shortenedAddress}</Text>
+              <Text data-testid="multichain-recipient">{shortenedAddress}</Text>
               {shortenedAddress ? (
                 <Text
                   color={TextColor.textAlternative}
@@ -185,7 +185,7 @@ export const SendPageRecipientInput = ({
                       ? IconColor.iconDefault
                       : IconColor.primaryDefault
                   }
-                  data-testid="ens-qr-scan-button"
+                  data-testid="clear-button"
                 />
               )}
             </Box>
@@ -193,7 +193,11 @@ export const SendPageRecipientInput = ({
         )}
       </Box>
       {recipientError && (
-        <Text variant={TextVariant.bodySmMedium} color={TextColor.errorDefault}>
+        <Text
+          variant={TextVariant.bodySmMedium}
+          color={TextColor.errorDefault}
+          data-testid="multichain-recipient-error"
+        >
           {t('invalidAddressRecipient')}
         </Text>
       )}

@@ -47,7 +47,7 @@ exports[`MultichainSendPage renders correctly 1`] = `
             From
           </label>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
             data-testid="send-page-account-picker"
           >
             <span
@@ -184,17 +184,13 @@ exports[`MultichainSendPage renders correctly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
                       >
-                        <img
-                          alt="BTC logo"
-                          class="mm-avatar-token__token-image"
-                          src="./images/bitcoin-logo.svg"
-                        />
+                        m
                       </div>
                       <div
                         class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
                         >
                           <img
                             alt="Bitcoin logo"
@@ -207,15 +203,17 @@ exports[`MultichainSendPage renders correctly 1`] = `
                   </div>
                   <div>
                     <div
+                      aria-describedby="tippy-tooltip-2"
                       class=""
+                      data-original-title="mock-ticker"
+                      data-tooltipped=""
                       style="display: inline;"
                       tabindex="0"
-                      title=""
                     >
                       <p
                         class="mm-box mm-text asset-picker__symbol mm-text--body-md mm-box--color-text-default"
                       >
-                        BTC
+                        mock-t...
                       </p>
                     </div>
                   </div>
@@ -231,7 +229,7 @@ exports[`MultichainSendPage renders correctly 1`] = `
                 <div
                   class="unit-input__input-container"
                   style="display: inherit;"
-                  title="0.123"
+                  title=""
                 >
                   <input
                     class="unit-input__input"
@@ -240,9 +238,9 @@ exports[`MultichainSendPage renders correctly 1`] = `
                     min="0"
                     placeholder="0"
                     step="any"
-                    style="width: 5ch;"
+                    style="width: 1.5ch;"
                     type="number"
-                    value="0.123"
+                    value=""
                   />
                   <div
                     class="unit-input__suffix"
@@ -267,12 +265,12 @@ exports[`MultichainSendPage renders correctly 1`] = `
               </p>
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                title="20000000"
+                title="222222"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
                 >
-                  20000000
+                  222222
                 </span>
               </div>
             </div>
@@ -280,7 +278,7 @@ exports[`MultichainSendPage renders correctly 1`] = `
               class="mm-box mm-text mm-button-base asset-picker-amount__max-clear mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-auto mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               data-testid="max-clear-button"
             >
-              Clear
+              Max
             </button>
           </div>
         </div>
@@ -355,19 +353,9 @@ exports[`MultichainSendPage renders correctly 1`] = `
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row"
+              class="mm-box loading-item mm-box--display-flex mm-box--flex-direction-row"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-              >
-                $565.94
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-                data-testid="multichain-confirmation-fee"
-              >
-                0.01 BTC
-              </p>
+              Loading
             </div>
           </div>
           
@@ -395,8 +383,9 @@ exports[`MultichainSendPage renders correctly 1`] = `
           Cancel
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           data-theme="light"
+          disabled=""
         >
           Review
         </button>

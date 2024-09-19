@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, isEvmAccountType } from '@metamask/keyring-api';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   ButtonIcon,
@@ -37,6 +37,10 @@ import {
   updateStage,
 } from '../../../../ducks/multichain-send/multichain-send';
 import Spinner from '../../../ui/spinner';
+import {
+  DEFAULT_ROUTE,
+  MULTICHAIN_CONFIRM_TRANSACTION_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { MultichainFee } from './components/fee';
 import { SendPageRecipientInput } from './components/recipient-input';
 import { MultichainAssetPickerAmount } from './components/asset-picker-amount';
@@ -91,12 +95,14 @@ export const MultichainSendPage = () => {
 
   const onCancel = () => {
     dispatch(clearDraft());
-    history.push('/home');
+    history.push(DEFAULT_ROUTE);
   };
 
   const onSubmit = () => {
     dispatch(updateStage({ stage: SendStage.PENDING_CONFIRMATION }));
-    history.push(`/multichain-confirm-transaction/${draftTransactionExists}`);
+    history.push(
+      `${MULTICHAIN_CONFIRM_TRANSACTION_ROUTE}/${draftTransactionExists}`,
+    );
   };
 
   const submitDisabled =
@@ -126,7 +132,9 @@ export const MultichainSendPage = () => {
       </Header>
       {!loading && draftTransaction ? (
         <Content backgroundColor={BackgroundColor.backgroundAlternative}>
-          <SendPageAccountPicker />
+          <SendPageAccountPicker
+            allowedAccountTypes={[BtcAccountType.P2wpkh]}
+          />
           {isSendFormShown && (
             <MultichainAssetPickerAmount
               error={draftTransaction.transactionParams.sendAsset.error}
@@ -163,7 +171,6 @@ export const MultichainSendPage = () => {
 
         <ButtonPrimary
           onClick={onSubmit}
-          // loading={isSubmitting}
           size={ButtonPrimarySize.Lg}
           disabled={submitDisabled}
           block
