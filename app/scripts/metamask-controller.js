@@ -1478,10 +1478,36 @@ export default class MetamaskController extends EventEmitter {
       getMetaMetricsState: () =>
         this.metaMetricsController.state.participateInMetaMetrics ?? false,
       state: initState.UserStorageController,
+      config: {
+        accountSyncing: {
+          onAccountAdded: (profileId) => {
+            this.metaMetricsController.trackEvent({
+              category: MetaMetricsEventCategory.ProfileSyncing,
+              event: MetaMetricsEventName.AccountsSyncAccountAdded,
+              properties: {
+                profile_id: profileId,
+              },
+            });
+          },
+          onAccountNameUpdated: (profileId) => {
+            this.metaMetricsController.trackEvent({
+              category: MetaMetricsEventCategory.ProfileSyncing,
+              event: MetaMetricsEventName.AccountsSyncAccountNameUpdated,
+              properties: {
+                profile_id: profileId,
+              },
+            });
+          },
+        },
+      },
+      env: {
+        isAccountSyncingEnabled: true,
+      },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
         allowedActions: [
           'KeyringController:getState',
+          'KeyringController:addNewAccount',
           'SnapController:handleRequest',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
@@ -1490,6 +1516,8 @@ export default class MetamaskController extends EventEmitter {
           'AuthenticationController:performSignIn',
           'NotificationServicesController:disableNotificationServices',
           'NotificationServicesController:selectIsNotificationServicesEnabled',
+          'AccountsController:listAccounts',
+          'AccountsController:updateAccountMetadata',
         ],
         allowedEvents: [
           'KeyringController:lock',
@@ -3896,6 +3924,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       setIsProfileSyncingEnabled:
         userStorageController.setIsProfileSyncingEnabled.bind(
+          userStorageController,
+        ),
+      syncInternalAccountsWithUserStorage:
+        userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
         ),
 
