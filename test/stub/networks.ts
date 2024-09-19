@@ -12,7 +12,7 @@ import {
 } from '../../shared/constants/network';
 
 // TODO: This is intentionally the old network state, and could be
-// removed if the e2e tests bump `FIXTURE_STATE_METADATA_VERSION` to latest
+// removed if the e2e tests bump `FIXTURE_STATE_METADATA_VERSION` to >= 127
 export const mockNetworkStateOld = (
   ...networks: {
     id?: string;
