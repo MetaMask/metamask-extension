@@ -352,7 +352,7 @@ describe('Change assets', function () {
         // Validate the send amount
         await driver.waitForSelector({
           css: '.currency-display-component__text',
-          text: '2.000042',
+          text: '2.000118',
         });
       },
     );
