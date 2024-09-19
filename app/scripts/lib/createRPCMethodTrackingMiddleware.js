@@ -132,7 +132,9 @@ let globalRateLimitCount = 0;
  * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
  * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
  */
+function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
 function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
   metaMetricsController.createEventFragment({
     category: MetaMetricsEventCategory.InpageProvider,
@@ -147,6 +149,7 @@ function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
       url: req.origin,
     },
     ...fragmentPayload,
+    ...fragmentPayload,
   });
 }
 
@@ -157,15 +160,30 @@ function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
  * @param {OriginalRequest} req
  * @param {MetaMetricsFinalizeEventFragmentOptions}  finalizeEventOptions
  * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ * @param {MetaMetricsFinalizeEventFragmentOptions}  finalizeEventOptions
+ * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
  */
 function finalizeSignatureFragment(
   metaMetricsController,
   req,
   finalizeEventOptions,
   fragmentPayload,
+  finalizeEventOptions,
+  fragmentPayload,
 ) {
   const signatureUniqueId = generateSignatureUniqueId(req.id);
 
+  if (fragmentPayload) {
+    metaMetricsController.updateEventFragment(
+      signatureUniqueId,
+      fragmentPayload,
+    );
+  }
+
+  metaMetricsController.finalizeEventFragment(
+    signatureUniqueId,
+    finalizeEventOptions,
+  );
   if (fragmentPayload) {
     metaMetricsController.updateEventFragment(
       signatureUniqueId,

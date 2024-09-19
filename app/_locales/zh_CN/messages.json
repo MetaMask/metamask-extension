@@ -1027,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "仅在您批准该内容并信任请求网站的情况下，才能确认此消息。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "支出上限请求"
   },
   "confirmTitleSIWESignature": {
@@ -1597,9 +1597,6 @@
   "domain": {
     "message": "域"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "网络不支持域查找"
-  },
   "done": {
     "message": "完成"
   },
@@ -1772,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "在地址栏中显示ENS域"
-  },
-  "ensIllegalCharacter": {
-    "message": "ENS 的非法字符。"
-  },
-  "ensRegistrationError": {
-    "message": "ENS 名称注册错误"
   },
   "ensUnknownError": {
     "message": "ENS 查找失败。"
@@ -2421,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "接收方地址无效"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 网络，请使用小写"
   },
   "invalidAssetType": {
     "message": "该资产是NFT，需要在NFT选项卡下的“导入NFT”页面上重新添加"
@@ -3151,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
-  },
-  "noAddressForName": {
-    "message": "此名称尚未设置地址。"
   },
   "noConnectedAccountDescription": {
     "message": "选择要在此站点上使用的账户以继续。"
@@ -4165,12 +4150,6 @@
   },
   "receive": {
     "message": "收款"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "输入公钥 (0x) 或 ENS 名称"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "输入公钥 (0x) 或域名"
   },
   "recommendedGasLabel": {
     "message": "建议"

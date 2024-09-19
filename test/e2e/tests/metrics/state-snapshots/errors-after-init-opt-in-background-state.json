@@ -117,11 +117,16 @@
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
     "dataCollectionForMarketing": "boolean",
+    "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
+  },
+  "MetaMetricsDataDeletionController": {
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0
   },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
