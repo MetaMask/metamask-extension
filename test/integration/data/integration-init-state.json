@@ -2057,7 +2057,7 @@
   "useTransactionSimulations": true,
   "usedNetworks": {
     "0xaa36a7": {
-      "rpcUrl": "https://sepolia.infura.io/v3/8f8f7f9f6f4c4f3e8f8f7f9f6f4c4f3e",
+      "rpcUrl": "https://sepolia.infura.io/v3/dummy_key",
       "chainId": "0xaa36a7",
       "nickname": "Sepolia Test Network",
       "ticker": "ETH",
