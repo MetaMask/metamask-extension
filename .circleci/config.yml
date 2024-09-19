@@ -500,7 +500,6 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
-      - gh/install
       - run:
           name: Get changed files with git diff
           command: npx tsx .circleci/scripts/git-diff-develop.ts
