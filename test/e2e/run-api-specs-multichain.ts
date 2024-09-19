@@ -106,13 +106,13 @@ async function main() {
       };
 
       const reverseScopeMap = Object.entries(scopeMap).reduce(
-        (acc, [scope, methods]: [ScopeString, string[]]) => {
+        (acc, [scope, methods]: [string, string[]]) => {
           methods.forEach((method) => {
             acc[method] = scope;
           });
           return acc;
         },
-        {} as { [method: string]: ScopeString },
+        {} as { [method: string]: string },
       );
 
       // fix the example for wallet_createSession

@@ -128,7 +128,7 @@ const transformOpenRPCDocument = (
 
   // delete invalid example until its fixed here: https://github.com/ethereum/execution-apis/pull/588
   (
-    ((getProof as MethodObject).examples[0] as ExamplePairingObject)
+    ((getProof as MethodObject).examples?.[0] as ExamplePairingObject)
       ?.params[1] as ExampleObject
   ).value.pop();
 

@@ -79,7 +79,7 @@ export const pollForResult = async (
 
 export const createCaip27DriverTransport = (
   driver: Driver,
-  scopeMap: Record<string, ScopeString>,
+  scopeMap: Record<string, string>,
 ) => {
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
