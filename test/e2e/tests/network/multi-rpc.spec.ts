@@ -94,7 +94,9 @@ describe('MultiRpc:', function (this: Suite) {
         await driver.clickElement(
           '[data-testid="network-rpc-name-button-0xa4b1"]',
         );
-        const menuItems = await driver.findElements('.networks-tab__item');
+
+        // await driver.delay(5000000);
+        const menuItems = await driver.findElements('.select-rpc-url__item');
 
         // check rpc number
         assert.equal(menuItems.length, 2);
