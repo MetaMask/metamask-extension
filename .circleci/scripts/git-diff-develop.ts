@@ -14,16 +14,12 @@ const MAIN_BRANCH = 'develop';
  * @returns The name of the branch targeted by the PR.
  */
 async function getBaseRef(): Promise<string | null> {
-  if (!process.env.CIRCLE_PULL_REQUEST) {
+  if (!process.env.CIRCLE_PR_NUMBER) {
     return null;
   }
 
-  // We're referencing the CIRCLE_PULL_REQUEST environment variable within the script rather than
-  // passing it in because this makes it easier to use Bash parameter expansion to extract the
-  // PR number from the URL.
-  const result = await exec(`gh pr view --json baseRefName "\${CIRCLE_PULL_REQUEST##*/}" --jq '.baseRefName'`);
-  const baseRef = result.stdout.trim();
-  return baseRef;
+  const pull = await (await fetch(`https://api.github.com/repos/${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PR_REPONAME}/pulls/${process.env.CIRCLE_PR_NUMBER}`)).json();
+  return pull.base.ref;
 }
 
 /**
