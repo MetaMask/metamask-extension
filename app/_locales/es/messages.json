@@ -1588,9 +1588,6 @@
   "domain": {
     "message": "Dominio"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "La red no admite la búsqueda de dominios"
-  },
   "done": {
     "message": "Hecho"
   },
@@ -1763,12 +1760,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Mostrar dominios ENS en la barra de direcciones"
-  },
-  "ensIllegalCharacter": {
-    "message": "Caracter ilegal para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Error en el registro del nombre de ENS"
   },
   "ensUnknownError": {
     "message": "Error al buscar ENS."
@@ -2412,9 +2403,6 @@
   },
   "invalidAddressRecipient": {
     "message": "La dirección del destinatario no es válida"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "No es una red ETH; configurar en minúsculas"
   },
   "invalidAssetType": {
     "message": "Este activo es un NFT y debe volver a añadirse en la página de Importar NFTs que se encuentra en la pestaña de NFTs"
@@ -3142,9 +3130,6 @@
   },
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
-  },
-  "noAddressForName": {
-    "message": "No se estableció ninguna dirección para este nombre."
   },
   "noConnectedAccountDescription": {
     "message": "Seleccione una cuenta que desee utilizar en este sitio para continuar."
@@ -4156,12 +4141,6 @@
   },
   "receive": {
     "message": "Recibir"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Ingrese la dirección pública (0x) o el nombre de ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Ingrese la dirección pública (0x) o el nombre de dominio"
   },
   "recommendedGasLabel": {
     "message": "Recomendado"

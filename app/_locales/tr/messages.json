@@ -1591,9 +1591,6 @@
   "domain": {
     "message": "Alan"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Ağ alan aramasını desteklemiyor"
-  },
   "done": {
     "message": "Bitti"
   },
@@ -1766,12 +1763,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "ENS alanlarını adres çubuğunda göster"
-  },
-  "ensIllegalCharacter": {
-    "message": "ENS için uygun olmayan karakter."
-  },
-  "ensRegistrationError": {
-    "message": "ENS adı kaydında hata"
   },
   "ensUnknownError": {
     "message": "ENS arama başarısız oldu."
@@ -2415,9 +2406,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Alıcı adresi geçersiz"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH ağı yok, küçük harfle başlayın"
   },
   "invalidAssetType": {
     "message": "Bu varlık bir NFT'dir ve NFT'ler sekmesi altında bulunan NFT'leri İçe Aktar sayfasına yeniden eklenmesi gerekir"
@@ -3145,9 +3133,6 @@
   },
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
-  },
-  "noAddressForName": {
-    "message": "Bu isim için adres tanımlanmamış."
   },
   "noConnectedAccountDescription": {
     "message": "Devam etmek için bu sitede kullanmak istediğiniz bir hesap seçin."
@@ -4159,12 +4144,6 @@
   },
   "receive": {
     "message": "Al"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Genel adres (0x) veya ENS adı girin"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Genel adres (0x) veya alan adı girin"
   },
   "recommendedGasLabel": {
     "message": "Önerilen"

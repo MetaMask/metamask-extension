@@ -1591,9 +1591,6 @@
   "domain": {
     "message": "도메인"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "네트워크에서 도메인 조회를 지원하지 않음"
-  },
   "done": {
     "message": "완료"
   },
@@ -1766,12 +1763,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "주소창에 ENS 도메인 표시하기"
-  },
-  "ensIllegalCharacter": {
-    "message": "ENS에 맞지 않는 문자입니다."
-  },
-  "ensRegistrationError": {
-    "message": "ENS 이름 등록 중 오류 발생"
   },
   "ensUnknownError": {
     "message": "ENS를 조회하지 못했습니다."
@@ -2415,9 +2406,6 @@
   },
   "invalidAddressRecipient": {
     "message": "수신 주소가 올바르지 않음"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH 네트워크가 아닙니다. 소문자로 설정하세요."
   },
   "invalidAssetType": {
     "message": "이 자산은 NFT이므로 NFT 탭에 있는 NFT 가져오기 페이지에서 다시 추가해야 합니다"
@@ -3145,9 +3133,6 @@
   },
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
-  },
-  "noAddressForName": {
-    "message": "이 이름에 설정된 주소가 없습니다."
   },
   "noConnectedAccountDescription": {
     "message": "이 사이트에서 계속 사용하고자 하는 계정을 선택하세요."
@@ -4159,12 +4144,6 @@
   },
   "receive": {
     "message": "받기"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "공개 주소(0x) 또는 ENS 제목 입력"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "공개 주소(0x) 또는 도메인 이름 입력"
   },
   "recommendedGasLabel": {
     "message": "권장됨"

@@ -1591,9 +1591,6 @@
   "domain": {
     "message": "डोमेन"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "नेटवर्क, डोमेन लुकअप का सपोर्ट नहीं करता"
-  },
   "done": {
     "message": "हो गया"
   },
@@ -1766,12 +1763,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "एड्रेस बार में ENS डोमेन दिखाएँ"
-  },
-  "ensIllegalCharacter": {
-    "message": "ENS के लिए गैर-कानूनी कैरेक्टर।"
-  },
-  "ensRegistrationError": {
-    "message": "ENS नाम रजिस्ट्रेशन में गड़बड़ी"
   },
   "ensUnknownError": {
     "message": "ENS लुकअप नहीं हो पाया।"
@@ -2415,9 +2406,6 @@
   },
   "invalidAddressRecipient": {
     "message": "प्राप्तकर्ता का एड्रेस ग़लत है"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH नेटवर्क नहीं, लोअरकेस में सेट करें"
   },
   "invalidAssetType": {
     "message": "ये एसेट एक NFT है और इसे इंपोर्ट NFTज़ पेज पर फिर से जोड़ना होगा जो NFTज़ टैब के नीचे मिलेगा"
@@ -3145,9 +3133,6 @@
   },
   "noAccountsFound": {
     "message": "दी गई खोज क्वेरी के लिए कोई अकाउंट नहीं मिला"
-  },
-  "noAddressForName": {
-    "message": "इस नाम के लिए कोई एड्रेस नहीं सेट किया गया है।"
   },
   "noConnectedAccountDescription": {
     "message": "जारी रखने के लिए जिस अकाउंट को आप इस साइट पर उपयोग करना चाहते हैं वह अकाउंट चुनें।"
@@ -4159,12 +4144,6 @@
   },
   "receive": {
     "message": "प्राप्त करें"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "सार्वजनिक एड्रेस (0x) या ENS नाम डालें"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "पब्लिक एड्रेस (0x) या डोमेन नाम एंटर करें"
   },
   "recommendedGasLabel": {
     "message": "अनुशंसित"
