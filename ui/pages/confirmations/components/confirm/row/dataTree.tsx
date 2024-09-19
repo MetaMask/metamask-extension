@@ -35,6 +35,7 @@ enum Field {
   EndAmount = 'endAmount',
   EndTime = 'endTime',
   Expiration = 'expiration',
+  Expiry = 'expiry',
   SellAmount = 'sellAmount',
   SigDeadline = 'sigDeadline',
   StartAmount = 'startAmount',
@@ -56,6 +57,7 @@ const FIELD_DATE_PRIMARY_TYPES: Record<string, string[]> = {
   [Field.Deadline]: [...PRIMARY_TYPES_PERMIT],
   [Field.EndTime]: [...PRIMARY_TYPES_ORDER],
   [Field.Expiration]: [PrimaryType.PermitBatch, PrimaryType.PermitSingle],
+  [Field.Expiry]: [...PRIMARY_TYPES_PERMIT],
   [Field.SigDeadline]: [...PRIMARY_TYPES_PERMIT],
   [Field.StartTime]: [...PRIMARY_TYPES_ORDER],
   [Field.ValidTo]: [...PRIMARY_TYPES_ORDER],
@@ -167,9 +169,12 @@ const DataField = memo(
       );
     }
 
+    console.log('checking label: ', label, ', primaryType: ', primaryType);
+    console.log('checking value: ', value);
     if (isDateField(label, primaryType) && Boolean(value)) {
       const intValue = parseInt(value, 10);
 
+      console.log(intValue);
       return intValue === NONE_DATE_VALUE ? (
         <ConfirmInfoRowText text={t('none')}></ConfirmInfoRowText>
       ) : (
