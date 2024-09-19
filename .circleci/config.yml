@@ -118,11 +118,9 @@ workflows:
       - prep-deps
       - get-changed-files-with-git-diff:
           filters:
-              branches:
-                ignore:
-                  - master
-          requires:
-            - prep-deps
+            branches:
+              ignore:
+                - master
       - test-deps-audit:
           requires:
             - prep-deps
@@ -500,7 +498,6 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
-      - gh/install
       - run:
           name: Get changed files with git diff
           command: npx tsx .circleci/scripts/git-diff-develop.ts

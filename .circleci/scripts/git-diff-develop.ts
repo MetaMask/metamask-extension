@@ -18,7 +18,11 @@ async function getBaseRef(): Promise<string | null> {
     return null;
   }
 
-  const pull = await (await fetch(`https://api.github.com/repos/${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PR_REPONAME}/pulls/${process.env.CIRCLE_PR_NUMBER}`)).json();
+  const pull = await (
+    await fetch(
+      `https://api.github.com/repos/${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PR_REPONAME}/pulls/${process.env.CIRCLE_PR_NUMBER}`,
+    )
+  ).json();
   return pull.base.ref;
 }
 
@@ -31,7 +35,9 @@ async function getBaseRef(): Promise<string | null> {
 async function fetchWithDepth(depth: number): Promise<boolean> {
   try {
     await exec(`git fetch --depth ${depth} origin ${MAIN_BRANCH}`);
-    await exec(`git fetch --depth ${depth} origin ${SOURCE_BRANCH}:${SOURCE_BRANCH}`);
+    await exec(
+      `git fetch --depth ${depth} origin ${SOURCE_BRANCH}:${SOURCE_BRANCH}`,
+    );
     return true;
   } catch (error: unknown) {
     console.error(`Failed to fetch with depth ${depth}:`, error);
@@ -61,7 +67,9 @@ async function fetchUntilMergeBaseFound() {
         // @ts-expect-error
         error.code === 1
       ) {
-        console.error(`Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`);
+        console.error(
+          `Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`,
+        );
       } else {
         throw error;
       }
@@ -79,9 +87,11 @@ async function fetchUntilMergeBaseFound() {
  */
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
-  const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${SOURCE_BRANCH}`);
+  const { stdout: diffResult } = await exec(
+    `git diff --name-only origin/HEAD...${SOURCE_BRANCH}`,
+  );
   if (!diffResult) {
-      throw new Error('Unable to get diff after full checkout.');
+    throw new Error('Unable to get diff after full checkout.');
   }
   return diffResult;
 }
@@ -99,22 +109,24 @@ async function storeGitDiffOutput() {
     const outputDir = 'changed-files';
     fs.mkdirSync(outputDir, { recursive: true });
 
-    console.log(`Determining whether this run is for a PR targetting ${MAIN_BRANCH}`)
+    console.log(
+      `Determining whether this run is for a PR targetting ${MAIN_BRANCH}`,
+    );
     if (!process.env.CIRCLE_PULL_REQUEST) {
-      console.log("Not a PR, skipping git diff");
+      console.log('Not a PR, skipping git diff');
       return;
     }
 
     const baseRef = await getBaseRef();
     if (baseRef === null) {
-      console.log("Not a PR, skipping git diff");
+      console.log('Not a PR, skipping git diff');
       return;
     } else if (baseRef !== MAIN_BRANCH) {
       console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
       return;
     }
 
-    console.log("Attempting to get git diff...");
+    console.log('Attempting to get git diff...');
     const diffOutput = await gitDiff();
     console.log(diffOutput);
 
