@@ -6,6 +6,7 @@ import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useFirstPartyContractNames } from './useFirstPartyContractName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
+import { renderHook } from '@testing-library/react-hooks';
 
 jest.mock('react-redux', () => ({
   // TODO: Replace `any` with type
@@ -88,7 +89,8 @@ describe('useDisplayName', () => {
   });
 
   it('handles no name found', () => {
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+    expect(result.current).toEqual({
       name: null,
       hasPetname: false,
     });
@@ -108,7 +110,9 @@ describe('useDisplayName', () => {
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+
+    expect(result.current).toEqual({
       name: NAME_MOCK,
       hasPetname: true,
       contractDisplayName: CONTRACT_NAME_MOCK,
@@ -126,7 +130,9 @@ describe('useDisplayName', () => {
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+
+    expect(result.current).toEqual({
       name: FIRST_PARTY_CONTRACT_NAME_MOCK,
       hasPetname: false,
     });
@@ -142,7 +148,9 @@ describe('useDisplayName', () => {
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+
+    expect(result.current).toEqual({
       name: CONTRACT_NAME_MOCK,
       hasPetname: false,
       contractDisplayName: CONTRACT_NAME_MOCK,
@@ -154,7 +162,9 @@ describe('useDisplayName', () => {
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+
+    expect(result.current).toEqual({
       name: WATCHED_NFT_NAME_MOCK,
       hasPetname: false,
     });
@@ -171,7 +181,11 @@ describe('useDisplayName', () => {
       },
     });
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK, false)).toEqual({
+    const { result } = renderHook(() =>
+      useDisplayName(VALUE_MOCK, TYPE_MOCK, false),
+    );
+
+    expect(result.current).toEqual({
       name: CONTRACT_NAME_MOCK,
       hasPetname: false,
       contractDisplayName: undefined,
@@ -190,7 +204,11 @@ describe('useDisplayName', () => {
       },
     });
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK, false)).toEqual(
+    const { result } = renderHook(() =>
+      useDisplayName(VALUE_MOCK, TYPE_MOCK, false),
+    );
+
+    expect(result.current).toEqual(
       expect.objectContaining({
         name: null,
         image: undefined,

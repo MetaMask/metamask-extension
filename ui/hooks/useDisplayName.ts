@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import { getRemoteTokens } from '../selectors';
@@ -22,10 +23,10 @@ export type UseDisplayNameResponse = {
 export function useDisplayNames(
   requests: UseDisplayNameRequest[],
 ): UseDisplayNameResponse[] {
-  const nameRequests = requests.map(({ value, type }) => ({
-    value,
-    type,
-  }));
+  const nameRequests = useMemo(
+    () => requests.map(({ value, type }) => ({ value, type })),
+    [requests],
+  );
 
   const nameEntries = useNames(nameRequests);
   const firstPartyContractNames = useFirstPartyContractNames(nameRequests);
