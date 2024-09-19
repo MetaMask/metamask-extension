@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "他のネットワーク"
   },
-  "additionalRpcUrl": {
-    "message": "他のRPC URL"
-  },
   "address": {
     "message": "アドレス"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "戻る"
   },
-  "backup": {
-    "message": "バックアップ"
-  },
   "backupApprovalInfo": {
     "message": "このシークレット コードは、デバイスをなくしたとき、パスワードを忘れたとき、MetaMaskの再インストールが必要なとき、または別のデバイスでウォレットにアクセスするときに必要です。"
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "今すぐバックアップ"
-  },
-  "backupUserData": {
-    "message": "データをバックアップ"
-  },
-  "backupUserDataDescription": {
-    "message": "設定とアカウントアドレスを含むユーザー設定を、JSONファイルにバックアップできます。"
   },
   "balance": {
     "message": "残高"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "このメッセージの内容を承認し、要求元のサイトを信頼する場合にのみ確定してください。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "使用上限リクエスト"
   },
   "confirmTitleSIWESignature": {
@@ -1609,9 +1597,6 @@
   "domain": {
     "message": "ドメイン"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "ネットワークがドメイン検索をサポートしていません"
-  },
   "done": {
     "message": "完了"
   },
@@ -1784,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "アドレスバーにENSドメインを表示する"
-  },
-  "ensIllegalCharacter": {
-    "message": "ENSにサポートされていない文字が使用されています。"
-  },
-  "ensRegistrationError": {
-    "message": "ENS名の登録エラー"
   },
   "ensUnknownError": {
     "message": "ENSの検索に失敗しました。"
@@ -2433,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "送金先アドレスが無効です"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETHネットワークではありません。小文字にしてください。"
   },
   "invalidAssetType": {
     "message": "このアセットはNFTであるため、「NFT」タブの「NFTのインポート」ページで追加しなおす必要があります"
@@ -3163,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "指定された検索クエリでアカウントが見つかりませんでした"
-  },
-  "noAddressForName": {
-    "message": "この名前にアドレスが設定されていません。"
   },
   "noConnectedAccountDescription": {
     "message": "続行するには、このサイトで使用するアカウントを選択してください。"
@@ -4178,12 +4151,6 @@
   "receive": {
     "message": "受取"
   },
-  "recipientAddressPlaceholder": {
-    "message": "パブリックアドレス (0x) またはENS名を入力してください"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "パブリックアドレス (0x) またはドメイン名を入力してください"
-  },
   "recommendedGasLabel": {
     "message": "推奨"
   },
@@ -4358,9 +4325,6 @@
   },
   "restoreUserData": {
     "message": "ユーザーデータの復元"
-  },
-  "restoreUserDataDescription": {
-    "message": "以前バックアップされたJSONファイルから、設定とアカウントアドレスを含むユーザー設定を復元できます。"
   },
   "resultPageError": {
     "message": "エラー"

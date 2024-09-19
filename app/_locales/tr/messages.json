@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "İlave ağlar"
   },
-  "additionalRpcUrl": {
-    "message": "Diğer RPC URL"
-  },
   "address": {
     "message": "Adres"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Geri"
   },
-  "backup": {
-    "message": "Yedekle"
-  },
   "backupApprovalInfo": {
     "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Şimdi yedekle"
-  },
-  "backupUserData": {
-    "message": "Verilerini yedekle"
-  },
-  "backupUserDataDescription": {
-    "message": "Kişileriniz ve tercihleriniz gibi verileri yedekleyebilirsiniz."
   },
   "balance": {
     "message": "Bakiye"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Bu mesajı sadece içeriği onaylıyorsanız ve talepte bulunan siteye güveniyorsanız onaylayın."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Harcama üst limiti talebi"
   },
   "confirmTitleSIWESignature": {
@@ -1609,9 +1597,6 @@
   "domain": {
     "message": "Alan"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Ağ alan aramasını desteklemiyor"
-  },
   "done": {
     "message": "Bitti"
   },
@@ -1784,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "ENS alanlarını adres çubuğunda göster"
-  },
-  "ensIllegalCharacter": {
-    "message": "ENS için uygun olmayan karakter."
-  },
-  "ensRegistrationError": {
-    "message": "ENS adı kaydında hata"
   },
   "ensUnknownError": {
     "message": "ENS arama başarısız oldu."
@@ -2433,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Alıcı adresi geçersiz"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH ağı yok, küçük harfle başlayın"
   },
   "invalidAssetType": {
     "message": "Bu varlık bir NFT'dir ve NFT'ler sekmesi altında bulunan NFT'leri İçe Aktar sayfasına yeniden eklenmesi gerekir"
@@ -3163,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
-  },
-  "noAddressForName": {
-    "message": "Bu isim için adres tanımlanmamış."
   },
   "noConnectedAccountDescription": {
     "message": "Devam etmek için bu sitede kullanmak istediğiniz bir hesap seçin."
@@ -4178,12 +4151,6 @@
   "receive": {
     "message": "Al"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Genel adres (0x) veya ENS adı girin"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Genel adres (0x) veya alan adı girin"
-  },
   "recommendedGasLabel": {
     "message": "Önerilen"
   },
@@ -4358,9 +4325,6 @@
   },
   "restoreUserData": {
     "message": "Kullanıcı verilerini geri yükle"
-  },
-  "restoreUserDataDescription": {
-    "message": "Kişiler ve tercihler gibi verileri yedek bir dosyadan geri yükleyebilirsiniz."
   },
   "resultPageError": {
     "message": "Hata"

@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Mga karagdagang network"
   },
-  "additionalRpcUrl": {
-    "message": "Karagdagang RPC URL"
-  },
   "address": {
     "message": "Address"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Bumalik"
   },
-  "backup": {
-    "message": "I-backup"
-  },
   "backupApprovalInfo": {
     "message": "Ang lihim na code na ito ay kinakailangan para ma-recover ang iyong wallet sakaling maiwala mo ang iyong device, makalimutan ang iyong password, kailanganin mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "I-back up na"
-  },
-  "backupUserData": {
-    "message": "I-back up ang iyong datos"
-  },
-  "backupUserDataDescription": {
-    "message": "Maaari mong i-backup ang mga setting ng user na naglalaman ng mga kagustuhan at mga address ng account mula sa isang file na JSON."
   },
   "balance": {
     "message": "Balanse"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Kumpirmahin lamang ang mensaheng ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Hiling sa limitasyon ng paggastos"
   },
   "confirmTitleSIWESignature": {
@@ -1609,9 +1597,6 @@
   "domain": {
     "message": "Domain"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Hindi sinusuportahan ng network ang domain lookup"
-  },
   "done": {
     "message": "Tapos na"
   },
@@ -1784,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Ipinapakita ang mga ENS domain sa address bar"
-  },
-  "ensIllegalCharacter": {
-    "message": "Mga ilegal na character para sa ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Nagka-error sa pag-register ng ENS name"
   },
   "ensUnknownError": {
     "message": "Nabigong makita ang ENS."
@@ -2433,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Ang address ng tatanggap ay hindi wasto"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Hindi ETH network, itakda sa maliliit na letra"
   },
   "invalidAssetType": {
     "message": "Ang asset na ito ay isang NFT at kailangang idagdag muli sa pahina ng Mag-import ng mga NFT na matatagpuan sa ilalim ng tab ng mga NFT"
@@ -3163,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
-  },
-  "noAddressForName": {
-    "message": "Walang naitakdang address para sa pangalang ito."
   },
   "noConnectedAccountDescription": {
     "message": "Pumili ng account na gusto mong gamitin sa site na ito para magpatuloy."
@@ -4178,12 +4151,6 @@
   "receive": {
     "message": "Tumanggap"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Ilagay ang pampublikong address (0x) o ENS name"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Ilagay ang pampublikong address (0x) o pangalan ng domain"
-  },
   "recommendedGasLabel": {
     "message": "Nirekomenda"
   },
@@ -4358,9 +4325,6 @@
   },
   "restoreUserData": {
     "message": "Ibalik ang data ng user"
-  },
-  "restoreUserDataDescription": {
-    "message": "Maaari mong ibalik ang mga setting ng user na naglalaman ng mga kagustuhan at mga address ng account mula sa isang dating na-back up na file na JSON."
   },
   "resultPageError": {
     "message": "Error"

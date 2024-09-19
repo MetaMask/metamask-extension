@@ -40,6 +40,7 @@ exports[`<TransactionDetails /> renders component for transaction details 1`] = 
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-origin-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -80,6 +81,7 @@ exports[`<TransactionDetails /> renders component for transaction details 1`] = 
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-recipient-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>

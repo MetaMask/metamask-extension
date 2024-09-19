@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },
-  "additionalRpcUrl": {
-    "message": "Дополнительный URL-адрес RPC"
-  },
   "address": {
     "message": "Адрес"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Назад"
   },
-  "backup": {
-    "message": "Создать резервную копию"
-  },
   "backupApprovalInfo": {
     "message": "Этот секретный код необходим для восстановления вашего кошелька в случае, если вы потеряете свое устройство, забудете пароль, вам придется переустановить MetaMask или захотите получить доступ к своему кошельку на другом устройстве."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Создать резервную копию сейчас"
-  },
-  "backupUserData": {
-    "message": "Создайте резервную копию своих данных"
-  },
-  "backupUserDataDescription": {
-    "message": "Вы можете создавать резервные копии таких данных, как ваши контакты и настройки."
   },
   "balance": {
     "message": "Баланс"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Подтверждайте это сообщение только в том случае, если вы одобряете его содержание и доверяете запрашивающему сайту."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Запрос лимита расходов"
   },
   "confirmTitleSIWESignature": {
@@ -1609,9 +1597,6 @@
   "domain": {
     "message": "Домен"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Сеть не поддерживает поиск домена"
-  },
   "done": {
     "message": "Выполнено"
   },
@@ -1784,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Показать домены ENS в адресной строке"
-  },
-  "ensIllegalCharacter": {
-    "message": "Недопустимый символ для ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Ошибка при регистрации имени ENS"
   },
   "ensUnknownError": {
     "message": "Ошибка поиска ENS."
@@ -2433,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Неверный адрес получателя"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Не сеть ETH, задана в нижнем регистре"
   },
   "invalidAssetType": {
     "message": "Этот актив является NFT, и его необходимо повторно добавить на странице «Импорт NFT», которая находится на вкладке NFT."
@@ -3163,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
-  },
-  "noAddressForName": {
-    "message": "Для этого имени не задан адрес."
   },
   "noConnectedAccountDescription": {
     "message": "Для продолжения выберите счет, который вы хотите использовать на этом сайте."
@@ -4178,12 +4151,6 @@
   "receive": {
     "message": "Получить"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Введите публичный адрес (0x) или имя ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Введите публичный адрес (0x) или имя домена"
-  },
   "recommendedGasLabel": {
     "message": "Рекомендовано"
   },
@@ -4358,9 +4325,6 @@
   },
   "restoreUserData": {
     "message": "Восстановить пользовательские данные"
-  },
-  "restoreUserDataDescription": {
-    "message": "Вы можете восстановить пользовательские настройки, содержащие настройки и адреса счетов, из ранее сохраненного файла JSON."
   },
   "resultPageError": {
     "message": "Ошибка"

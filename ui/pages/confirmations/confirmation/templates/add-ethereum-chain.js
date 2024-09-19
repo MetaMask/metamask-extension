@@ -18,6 +18,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { BannerAlertSeverity } from '../../../../components/component-library';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
@@ -149,6 +150,8 @@ const MISMATCHED_NETWORK_RPC_CHAIN_ID = {
   },
 };
 
+const multichainFlag = process.env.CHAIN_PERMISSIONS;
+
 const ERROR_CONNECTING_TO_RPC = {
   id: 'ERROR_CONNECTING_TO_RPC',
   severity: Severity.Danger,
@@ -248,6 +251,82 @@ function getValues(pendingApproval, t, actions, history, data) {
             },
           },
         ],
+      },
+      multichainFlag && {
+        element: 'BannerAlert',
+        key: 'only-add-networks-you-trust',
+        children: [
+          {
+            element: 'Typography',
+            key: 'description',
+            props: {
+              style: { display: originIsMetaMask && '-webkit-box' },
+            },
+            children: [
+              `${t('unknownChainWarning')} `,
+              {
+                hide: !originIsMetaMask,
+                element: 'Tooltip',
+                key: 'tooltip-info',
+                props: {
+                  position: 'bottom',
+                  interactive: true,
+                  trigger: 'mouseenter',
+                  html: (
+                    <div
+                      style={{
+                        width: '180px',
+                        margin: '16px',
+                        textAlign: 'left',
+                      }}
+                    >
+                      <a
+                        key="zendesk_page_link"
+                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
+                        rel="noreferrer"
+                        target="_blank"
+                        style={{ color: 'var(--color-primary-default)' }}
+                      >
+                        {t('learnMoreUpperCase')}
+                      </a>
+                    </div>
+                  ),
+                },
+                children: [
+                  {
+                    element: 'i',
+                    key: 'info-circle',
+                    props: {
+                      className: 'fas fa-info-circle',
+                      style: {
+                        marginLeft: '4px',
+                        color: 'var(--color-icon-default)',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            element: 'a',
+            children: t('learnMoreUpperCase'),
+            key: 'learnMoreUpperCase',
+            props: {
+              href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
+              target: '__blank',
+            },
+          },
+        ],
+        props: {
+          severity: BannerAlertSeverity.Warning,
+          boxProps: {
+            margin: [0, 4],
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
+          },
+        },
       },
 
       {

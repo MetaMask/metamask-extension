@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Jaringan tambahan"
   },
-  "additionalRpcUrl": {
-    "message": "URL RPC Tambahan"
-  },
   "address": {
     "message": "Alamat"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backup": {
-    "message": "Cadangkan"
-  },
   "backupApprovalInfo": {
     "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Cadangkan sekarang"
-  },
-  "backupUserData": {
-    "message": "Cadangkan data Anda"
-  },
-  "backupUserDataDescription": {
-    "message": "Anda dapat mencadangkan data seperti kontak dan preferensi Anda."
   },
   "balance": {
     "message": "Saldo"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Konfirmasikan pesan ini hanya jika Anda menyetujui isinya dan memercayai situs yang memintanya."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Permintaan batas penggunaan"
   },
   "confirmTitleSIWESignature": {
@@ -1609,9 +1597,6 @@
   "domain": {
     "message": "Domain"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Jaringan tidak mendukung pencarian domain"
-  },
   "done": {
     "message": "Selesai"
   },
@@ -1784,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Tampilkan domain ENS di bilah alamat"
-  },
-  "ensIllegalCharacter": {
-    "message": "Karakter tidak sah untuk ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Terjadi kesalahan pada pendaftaran nama ENS"
   },
   "ensUnknownError": {
     "message": "Pencarian ENS gagal."
@@ -2433,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Alamat penerima tidak valid"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Bukan jaringan ETH, atur ke huruf kecil"
   },
   "invalidAssetType": {
     "message": "Aset ini merupakan NFT dan harus ditambahkan kembali di halaman Impor NFT yang ada di bawah tab NFT"
@@ -3163,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
-  },
-  "noAddressForName": {
-    "message": "Alamat untuk nama ini belum diatur."
   },
   "noConnectedAccountDescription": {
     "message": "Pilih akun yang ingin Anda gunakan di situs ini untuk melanjutkan."
@@ -4178,12 +4151,6 @@
   "receive": {
     "message": "Terima"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Masukkan alamat publik (0x) atau nama ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Masukkan alamat publik (0x) atau nama domain"
-  },
   "recommendedGasLabel": {
     "message": "Direkomendasikan"
   },
@@ -4358,9 +4325,6 @@
   },
   "restoreUserData": {
     "message": "Pulihkan data pengguna"
-  },
-  "restoreUserDataDescription": {
-    "message": "Anda dapat memulihkan data seperti kontak dan preferensi dari file cadangan."
   },
   "resultPageError": {
     "message": "Kesalahan"

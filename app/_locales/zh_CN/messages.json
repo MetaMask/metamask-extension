@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "其他网络"
   },
-  "additionalRpcUrl": {
-    "message": "其他 RPC（远程过程调用）URL"
-  },
   "address": {
     "message": "地址"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "返回"
   },
-  "backup": {
-    "message": "备份"
-  },
   "backupApprovalInfo": {
     "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "立即备份"
-  },
-  "backupUserData": {
-    "message": "将您的数据备份"
-  },
-  "backupUserDataDescription": {
-    "message": "您可以备份联系人和首选项等数据。"
   },
   "balance": {
     "message": "余额"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "仅在您批准该内容并信任请求网站的情况下，才能确认此消息。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "支出上限请求"
   },
   "confirmTitleSIWESignature": {
@@ -1609,9 +1597,6 @@
   "domain": {
     "message": "域"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "网络不支持域查找"
-  },
   "done": {
     "message": "完成"
   },
@@ -1784,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "在地址栏中显示ENS域"
-  },
-  "ensIllegalCharacter": {
-    "message": "ENS 的非法字符。"
-  },
-  "ensRegistrationError": {
-    "message": "ENS 名称注册错误"
   },
   "ensUnknownError": {
     "message": "ENS 查找失败。"
@@ -2433,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "接收方地址无效"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 网络，请使用小写"
   },
   "invalidAssetType": {
     "message": "该资产是NFT，需要在NFT选项卡下的“导入NFT”页面上重新添加"
@@ -3163,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
-  },
-  "noAddressForName": {
-    "message": "此名称尚未设置地址。"
   },
   "noConnectedAccountDescription": {
     "message": "选择要在此站点上使用的账户以继续。"
@@ -4178,12 +4151,6 @@
   "receive": {
     "message": "收款"
   },
-  "recipientAddressPlaceholder": {
-    "message": "输入公钥 (0x) 或 ENS 名称"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "输入公钥 (0x) 或域名"
-  },
   "recommendedGasLabel": {
     "message": "建议"
   },
@@ -4358,9 +4325,6 @@
   },
   "restoreUserData": {
     "message": "恢复用户数据"
-  },
-  "restoreUserDataDescription": {
-    "message": "您可以从备份文件中恢复联系人和首选项等数据。"
   },
   "resultPageError": {
     "message": "错误"

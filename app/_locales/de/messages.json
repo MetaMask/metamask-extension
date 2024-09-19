@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Zusätzliche Netzwerke"
   },
-  "additionalRpcUrl": {
-    "message": "Weitere RPC-URL"
-  },
   "address": {
     "message": "Adresse"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Zurück"
   },
-  "backup": {
-    "message": "Sichern"
-  },
   "backupApprovalInfo": {
     "message": "Dieser geheime Code ist zum Wiedererlangen Ihrer Wallet erforderlich, falls Sie Ihr Gerät verlieren, Ihr Passwort vergessen, MetaMask neu installieren müssen oder auf einem anderen Gerät auf Ihre Wallet zugreifen möchten."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Jetzt sichern"
-  },
-  "backupUserData": {
-    "message": "Sichern Sie Ihre Daten"
-  },
-  "backupUserDataDescription": {
-    "message": "Sie können Daten wie Ihre Kontakte und Einstellungen sichern."
   },
   "balance": {
     "message": "Guthaben:"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Bestätigen Sie diese Nachricht nur, wenn Sie dem Inhalt zustimmen und der anfragenden Website vertrauen."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Antrag auf Ausgabenobergrenze"
   },
   "confirmTitleSIWESignature": {
@@ -1609,9 +1597,6 @@
   "domain": {
     "message": "Domain"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Netzwerk unterstützt kein Domain-Lookup"
-  },
   "done": {
     "message": "Fertig"
   },
@@ -1784,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "ENS-Domains in der Adresszeile anzeigen"
-  },
-  "ensIllegalCharacter": {
-    "message": "Unzulässiges Zeichen für ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Fehler bei der ENS-Namensregistrierung"
   },
   "ensUnknownError": {
     "message": "ENS-Lookup fehlgeschlagen."
@@ -2433,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Empfängeradresse ist unzulässig"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Kein ETH-Netzwerk, auf Kleinschreibung gesetzt"
   },
   "invalidAssetType": {
     "message": "Dieses Asset ist ein NFT und muss auf der Seite „NFTs importieren“ unter dem Tab NFTs erneut hinzugefügt werden."
@@ -3163,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "Keine Konten für die angegebene Suchanfrage gefunden"
-  },
-  "noAddressForName": {
-    "message": "Für den angegebene Namen wurde keine Adresse eingegeben."
   },
   "noConnectedAccountDescription": {
     "message": "Wählen Sie ein Konto, das Sie auf dieser Website verwenden möchten, um fortzufahren."
@@ -4178,12 +4151,6 @@
   "receive": {
     "message": "Empfangen"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Öffentliche Adresse (0x) oder ENS-Name eingeben"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Öffentliche Adresse (0x) oder Domainname eingeben"
-  },
   "recommendedGasLabel": {
     "message": "Empfohlen"
   },
@@ -4358,9 +4325,6 @@
   },
   "restoreUserData": {
     "message": "Benutzerdaten wiederherstellen"
-  },
-  "restoreUserDataDescription": {
-    "message": "Sie können Daten wie Kontakte und Einstellungen aus einer Sicherungsdatei wiederherstellen."
   },
   "resultPageError": {
     "message": "Fehler"

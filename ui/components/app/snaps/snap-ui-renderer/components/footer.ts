@@ -21,7 +21,10 @@ export const DEFAULT_FOOTER = {
     className: 'snap-ui-renderer__footer',
     backgroundColor: BackgroundColor.backgroundDefault,
     style: {
-      boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      height: '80px',
+      position: 'fixed',
+      bottom: 0,
     },
   },
 };
