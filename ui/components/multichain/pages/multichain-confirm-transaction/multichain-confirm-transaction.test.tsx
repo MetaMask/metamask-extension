@@ -2,7 +2,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { BigNumber } from 'bignumber.js';
 import { fireEvent } from '@testing-library/react';
-import { cloneDeep } from 'lodash';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockMultichainSendState from '../../../../../test/data/mock-multichain-send-state.json';

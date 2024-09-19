@@ -28,7 +28,6 @@ import {
 import {
   DraftTransaction,
   FeeLevel,
-  initialMultichainDraftTransaction,
   MultichainSendState,
 } from '../ducks/multichain-send/multichain-send';
 import { AccountsState } from './accounts';
