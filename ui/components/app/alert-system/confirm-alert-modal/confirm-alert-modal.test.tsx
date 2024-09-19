@@ -136,7 +136,7 @@ describe('ConfirmAlertModal', () => {
   });
 
   describe('when there is a blocking alert', () => {
-    it.only('closes the modal when the "Got it" button is clicked', () => {
+    it('closes the modal when the "Got it" button is clicked', () => {
       const blockingAlert = { ...alertsMock[0], isBlocking: true };
       const mockStoreBlockingAlert = configureMockStore([])({
         ...STATE_MOCK,
