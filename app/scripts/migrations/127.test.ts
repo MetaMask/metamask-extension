@@ -382,7 +382,7 @@ describe(`migration #${version}`, () => {
     ]);
   });
 
-  it('dedupes if there are duplicate rpc urls within a chain id', async () => {
+  it('dedupes if there are duplicate rpc urls within a chain id, and none are the selected network', async () => {
     for (const [url1, url2] of [
       ['http://test.endpoint/bar', 'http://test.endpoint/bar'],
       // Check case insensitivity (network controller requires this)
@@ -437,6 +437,9 @@ describe(`migration #${version}`, () => {
       const networkConfiguration =
         networkConfigurationsByChainId[randomChainId];
       expect(networkConfiguration.defaultRpcEndpointIndex).toStrictEqual(0);
+
+      // The first duplicate encountered should be used to tie break
+      // duplicate endpoints, since none were the selected network
       expect(networkConfiguration.rpcEndpoints).toStrictEqual([
         {
           url: url1,
@@ -448,7 +451,75 @@ describe(`migration #${version}`, () => {
     }
   });
 
-  it('dedupes if there are duplicate rpc urls across chain ids', async () => {
+  it('dedupes if there are duplicate rpc urls within a chain id, and one is the selected network', async () => {
+    for (const [url1, url2] of [
+      ['http://test.endpoint/bar', 'http://test.endpoint/bar'],
+      // Check case insensitivity (network controller requires this)
+      ['http://test.endpoint/bar', 'HTTP://TEST.ENDPOINT/bar'],
+    ]) {
+      const randomChainId = '0x123456';
+
+      const oldState = {
+        meta: { version: oldVersion },
+        data: {
+          TransactionController: {},
+          NetworkController: {
+            selectedNetworkClientId: 'network-id-2',
+            networkConfigurations: {
+              'network-id-1': {
+                id: 'network-id-1',
+                chainId: randomChainId,
+                nickname: 'Random Network',
+                ticker: 'FOO',
+                rpcUrl: url1,
+              },
+              // I'm the selected network and should be
+              // used to tie break duplicate endpoints
+              'network-id-2': {
+                id: 'network-id-2',
+                chainId: randomChainId,
+                nickname: 'Random Network',
+                ticker: 'FOO',
+                rpcUrl: url2,
+              },
+            },
+          },
+        },
+      };
+
+      const newState = await migrate(oldState);
+
+      const { networkConfigurationsByChainId } = newState.data
+        .NetworkController as {
+        networkConfigurationsByChainId: Record<
+          string,
+          {
+            defaultRpcEndpointIndex: number;
+            rpcEndpoints: {
+              url: string;
+              type: string;
+              name: string;
+              networkClientId: string;
+            }[];
+          }
+        >;
+      };
+
+      const networkConfiguration =
+        networkConfigurationsByChainId[randomChainId];
+      expect(networkConfiguration.defaultRpcEndpointIndex).toStrictEqual(0);
+      expect(networkConfiguration.rpcEndpoints).toStrictEqual([
+        {
+          url: url2,
+          type: 'custom',
+          name: 'Random Network',
+          networkClientId: 'network-id-2',
+        },
+      ]);
+    }
+  });
+
+  it('dedupes if there are duplicate rpc urls across chain ids and none are the selected network', async () => {
     const randomChainId1 = '0x123456';
     const randomChainId2 = '0x123456789';
 
@@ -459,6 +530,8 @@ describe(`migration #${version}`, () => {
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
           networkConfigurations: {
+            // I'm the first encountered duplicate endpoint and should
+            // be used to tie break, since none are the selected network
             'network-id-1': {
               id: 'network-id-1',
               chainId: randomChainId1,
@@ -469,7 +542,7 @@ describe(`migration #${version}`, () => {
                 blockExplorerUrl: 'https://localhost/explorer',
               },
             },
-            // This endpoint is duplicated and should be omitted
+            // I'm the duplicate endpoint that lost the tie break and should be omitted
             'network-id-2': {
               id: 'network-id-2',
               chainId: randomChainId2,
@@ -529,6 +602,85 @@ describe(`migration #${version}`, () => {
           url: 'http://localhost/rpc/different',
         },
       ],
+    };
+
+    expect(newState.data.NetworkController).toStrictEqual(expectedState);
+  });
+
+  it('dedupes if there are duplicate rpc urls across chain ids and one is the selected network', async () => {
+    const randomChainId1 = '0x123456';
+    const randomChainId2 = '0x123456789';
+
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        TransactionController: {},
+        NetworkController: {
+          selectedNetworkClientId: 'network-id-2',
+          networkConfigurations: {
+            // This endpoint is duplicated but not the selected network, and should be omitted
+            'network-id-1': {
+              id: 'network-id-1',
+              chainId: randomChainId1,
+              nickname: 'Random Network',
+              ticker: 'FOO',
+              rpcUrl: 'http://localhost/rpc',
+              rpcPrefs: {
+                blockExplorerUrl: 'https://localhost/explorer',
+              },
+            },
+            // This is the selected network and should tie break duplicate endpoints
+            'network-id-2': {
+              id: 'network-id-2',
+              chainId: randomChainId2,
+              nickname: 'Random Network',
+              ticker: 'FOO',
+              rpcUrl: 'http://localhost/rpc',
+              rpcPrefs: {
+                blockExplorerUrl: 'https://localhost/explorer',
+              },
+            },
+            // I'm just an extra unique endpoint that should stay
+            'network-id-3': {
+              id: 'network-id-3',
+              chainId: randomChainId2,
+              nickname: 'Random Network',
+              ticker: 'FOO',
+              rpcUrl: 'http://localhost/rpc/different',
+              rpcPrefs: {
+                blockExplorerUrl: 'https://localhost/explorer',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const newState = await migrate(oldState);
+    const expectedState = defaultPostMigrationState();
+    expectedState.selectedNetworkClientId =
+      oldState.data.NetworkController.selectedNetworkClientId;
+    expectedState.networkConfigurationsByChainId[randomChainId2] = {
+      chainId: randomChainId2,
+      rpcEndpoints: [
+        {
+          networkClientId: 'network-id-2',
+          url: 'http://localhost/rpc',
+          type: 'custom',
+          name: 'Random Network',
+        },
+        {
+          networkClientId: 'network-id-3',
+          url: 'http://localhost/rpc/different',
+          type: 'custom',
+          name: 'Random Network',
+        },
+      ],
+      defaultRpcEndpointIndex: 0,
+      blockExplorerUrls: ['https://localhost/explorer'],
+      defaultBlockExplorerUrlIndex: 0,
+      name: 'Random Network',
+      nativeCurrency: 'FOO',
     };
 
     expect(newState.data.NetworkController).toStrictEqual(expectedState);
@@ -808,11 +960,7 @@ describe(`migration #${version}`, () => {
             // I should stay in the selected network controller
             'normal.com': 'normal-network-id',
             // I should be removed, as I never pointed to a network
-            'neverexisted.com': 'never-existed-id',
-            // I should be removed, since my url was invalid
-            'invalid-id': 'invalid-id',
-            // I should be removed, since I'm a duplicate
-            'duplicated-id': 'duplicated-id',
+            'neverexisted.com': 'never-existed-network-id',
           },
         },
         NetworkController: {
@@ -823,20 +971,6 @@ describe(`migration #${version}`, () => {
               chainId: randomChainId,
               nickname: 'Normal Network',
               ticker: 'TICK',
-              rpcUrl: 'https://localhost/rpc',
-            },
-            'invalid-network-id': {
-              id: 'invalid-network-id',
-              chainId: randomChainId,
-              nickname: 'Invalid Network',
-              ticker: 'FOO',
-              rpcUrl: 'invalid-url',
-            },
-            'duplicate-network-id': {
-              id: 'duplicate-network-id',
-              chainId: randomChainId,
-              nickname: 'Duplicate Network',
-              ticker: 'FOO',
               rpcUrl: 'https://localhost/rpc',
             },
           },

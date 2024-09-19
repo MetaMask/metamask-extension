@@ -190,37 +190,42 @@ function transformState(
     // Calculate the unique set of valid rpc endpoints for this chain id
     const rpcEndpoints = networks.reduce(
       (endpoints: RuntimeObject[], network) => {
-        if (network.id && network.rpcUrl) {
-          //
-          // Check if the endpoint is a duplicate, which the network controller doesn't allow
-          const isDuplicate = (endpoint: unknown) =>
-            isObject(endpoint) &&
-            ((typeof endpoint.url === 'string' &&
+        if (
+          network.id &&
+          network.rpcUrl &&
+          typeof network.rpcUrl === 'string' &&
+          isValidUrl(network.rpcUrl)
+        ) {
+          // Check if there's a different duplicate that's also the selected
+          // network. If so, it will be the preferred one we'll take.
+          const duplicateAndSelected = networkConfigurations.some(
+            (otherNetwork) =>
+              isObject(otherNetwork) &&
+              typeof otherNetwork.rpcUrl === 'string' &&
               typeof network.rpcUrl === 'string' &&
-              URI.equal(endpoint.url, network.rpcUrl)) ||
-              // This should not be possible, but protect against duplicate network client ids
-              endpoint.networkClientId === network.id);
+              otherNetwork.id !== network.id && // A different endpoint
+              URI.equal(otherNetwork.rpcUrl, network.rpcUrl) && // With the same URL
+              otherNetwork.id === networkState.selectedNetworkClientId, // That's currently selected
+          );
 
-          // The endpoint must be unique across all chains, not just within each
-          const duplicateWithinChain = endpoints.find(isDuplicate);
-          const duplicateAcrossChains = Object.values(acc)
-            .flatMap((n) => (isObject(n) ? n.rpcEndpoints : []))
-            .find(isDuplicate);
+          // Check if there's a duplicate that we've already processed. If none of
+          // the duplicates are the selected network, we'll take the first one seen.
+          const duplicateAlreadyAdded = [
+            // Chains we've already proccessed
+            ...Object.values(acc).flatMap((n) =>
+              isObject(n) ? n.rpcEndpoints : [],
+            ),
+            // Or the current chain we're processing
+            ...endpoints,
+          ].some(
+            (existingEndpoint) =>
+              isObject(existingEndpoint) &&
+              typeof existingEndpoint.url === 'string' &&
+              typeof network.rpcUrl === 'string' &&
+              URI.equal(existingEndpoint.url, network.rpcUrl),
+          );
 
-          if (
-            duplicateWithinChain &&
-            network.id === networkState.selectedNetworkClientId
-          ) {
-            // If there's a duplicate RPC url within a chain, and one of the
-            // networks is the globally selected network, prefer to use its network
-            // client id so that `selectedNetworkClientId` can remain unchanged.
-            duplicateWithinChain.networkClientId = network.id;
-          } else if (
-            !duplicateWithinChain &&
-            !duplicateAcrossChains &&
-            typeof network.rpcUrl === 'string' &&
-            isValidUrl(network.rpcUrl)
-          ) {
+          if (!duplicateAndSelected && !duplicateAlreadyAdded) {
             // The endpoint is unique and valid, so add it to the list
             endpoints.push({
               networkClientId: network.id,
