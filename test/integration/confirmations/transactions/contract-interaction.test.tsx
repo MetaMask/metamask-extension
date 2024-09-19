@@ -1,23 +1,21 @@
-import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionType } from '@metamask/transaction-controller';
 import {
-  act,
   fireEvent,
-  screen,
   waitFor,
   within,
+  screen,
+  act,
 } from '@testing-library/react';
+import { ApprovalType } from '@metamask/controller-utils';
 import nock from 'nock';
+import { TransactionType } from '@metamask/transaction-controller';
+import mockMetaMaskState from '../../data/integration-init-state.json';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import * as backgroundConnection from '../../../../ui/store/background-connection';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventLocation,
   MetaMetricsEventName,
+  MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
-import { useApproveTokenSimulation } from '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-approve-token-simulation';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
-import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { integrationTestRender } from '../../../lib/render-helpers';
-import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import {
   getMaliciousUnapprovedTransaction,
@@ -29,23 +27,6 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
   callBackgroundMethod: jest.fn(),
 }));
-
-jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
-  ...jest.requireActual(
-    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
-  ),
-  useAssetDetails: jest.fn(),
-}));
-
-jest.mock(
-  '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-approve-token-simulation',
-  () => ({
-    ...jest.requireActual(
-      '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-approve-token-simulation',
-    ),
-    useApproveTokenSimulation: jest.fn(),
-  }),
-);
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
@@ -167,26 +148,11 @@ const getMetaMaskStateWithMaliciousUnapprovedContractInteraction = (
 };
 
 describe('Contract Interaction Confirmation', () => {
-  let useAssetDetailsMock, useApproveTokenSimulationMock;
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
     const MINT_NFT_HEX_SIG = '0x3b4b1381';
     mock4byte(MINT_NFT_HEX_SIG);
-    useAssetDetailsMock = jest.fn().mockImplementation(() => ({
-      decimals: 18,
-      userBalance: '1000000',
-      tokenSymbol: 'TST',
-    }));
-    (useAssetDetails as jest.Mock).mockImplementation(useAssetDetailsMock);
-    useApproveTokenSimulationMock = jest.fn().mockImplementation(() => ({
-      spendingCap: '1000',
-      formattedSpendingCap: '1000',
-      value: '1000',
-    }));
-    (useApproveTokenSimulation as jest.Mock).mockImplementation(
-      useApproveTokenSimulationMock,
-    );
   });
 
   afterEach(() => {
