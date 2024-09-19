@@ -60,7 +60,8 @@ export class SwapPage {
 
   async enterQuote(options: { from?: string; to: string; qty: string }) {
     // Enter source token
-    if (options.from) {
+    const native = await this.page.$(`text=/${options.from}/`);
+    if (!native && options.from) {
       this.swapFromDropDown.click();
       await this.selectTokenFromList(options.from);
     }

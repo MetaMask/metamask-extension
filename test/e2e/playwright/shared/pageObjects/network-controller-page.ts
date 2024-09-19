@@ -27,6 +27,8 @@ export class NetworkController {
 
   readonly networkTicker: Locator;
 
+  readonly dismissBtn: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.networkDisplay = this.page.getByTestId('network-display');
@@ -45,26 +47,35 @@ export class NetworkController {
     this.networkRpc = this.page.getByTestId('network-form-rpc-url');
     this.networkChainId = this.page.getByTestId('network-form-chain-id');
     this.networkTicker = this.page.getByTestId('network-form-ticker-input');
+    this.dismissBtn = this.page.getByRole('button', { name: 'Dismiss' });
   }
 
-  async addCustomNetwork(options: {
-    name: string;
-    url: string;
-    chainID: string;
-    symbol: string;
-  }) {
+  async addCustomNetwork(
+    options: {
+      name: string;
+      url: string;
+      chainID: string;
+      symbol: string;
+    },
+    switchToNetwork: boolean,
+  ) {
     await this.networkDisplay.click();
     await this.addNetworkButton.click();
     await this.addNetworkManuallyButton.click();
 
-    await this.networkName.waitFor();
     await this.networkName.fill(options.name);
     await this.networkRpc.fill(options.url);
     await this.networkChainId.fill(options.chainID);
     await this.networkTicker.fill(options.symbol);
     await this.saveBtn.click();
-    await this.switchToNetworkBtn.click();
-    await this.waitForNetworkToSwitch(options.name);
+
+    if (switchToNetwork) {
+      await this.switchToNetworkBtn.click();
+      await this.waitForNetworkToSwitch(options.name);
+      try {
+        await this.gotItBtn.click({ timeout: 2000 });
+      } catch (e) {}
+    } else await this.dismissBtn.click();
   }
 
   async addPopularNetwork(options: { networkName: string }) {
@@ -75,14 +86,17 @@ export class NetworkController {
     await this.approveBtn.click();
     await this.switchToNetworkBtn.click();
     await this.gotItBtn.click();
-    await this.waitForNetworkToSwitch(options.networkName);
   }
 
   async selectNetwork(options: { networkName: string }) {
-    await this.networkDisplay.click();
+    const network = await this.page.$(`text=/${options.networkName}/`);
+    if (network) return; // if already selected we exit
+    await this.networkDisplay.getAttribute;
+    await this.networkDisplay.first().click();
     await this.networkSearch.fill(options.networkName);
-    await this.page.getByText(options.networkName).click();
+    await this.page.getByText(options.networkName).first().click();
     await this.waitForNetworkToSwitch(options.networkName);
+    await this.page.waitForTimeout(1000);
   }
 
   async waitForNetworkToSwitch(networkName: string) {

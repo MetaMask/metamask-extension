@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { test } from '@playwright/test';
 
 import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
@@ -6,117 +7,106 @@ import { NetworkController } from '../../shared/pageObjects/network-controller-p
 import { SwapPage } from '../pageObjects/swap-page';
 import { WalletPage } from '../../shared/pageObjects/wallet-page';
 import { ActivityListPage } from '../../shared/pageObjects/activity-list-page';
+import { Tenderly, addFundsToAccount } from '../tenderly-network';
 
 let swapPage: SwapPage;
 let networkController: NetworkController;
 let walletPage: WalletPage;
 let activityListPage: ActivityListPage;
 
-const Tenderly = {
-  Mainnet: {
-    name: 'Tenderly - Mainnet',
-    url: 'https://virtual.mainnet.rpc.tenderly.co/e63e2a2e-a04c-4f32-8379-c1fca19e82b6',
-    chainID: '1',
-    symbol: 'ETH',
+const testSet = [
+  {
+    quantity: '.5',
+    source: 'ETH',
+    type: 'native',
+    destination: 'DAI',
+    network: Tenderly.Mainnet.name,
   },
-  Arbitrum: {
-    name: 'Tenderly - Arbitrum',
-    url: 'https://virtual.arbitrum.rpc.tenderly.co/70c7bde4-54e7-46a6-9053-9c3c539dcecf',
-    chainID: '42161',
-    symbol: 'ETH',
+  {
+    quantity: '.5',
+    source: 'ETH',
+    type: 'native',
+    destination: 'USDC',
+    network: Tenderly.Optimism.name,
   },
-  Avalanche: {
-    name: 'Tenderly - Avalanche',
-    url: 'https://virtual.avalanche.rpc.tenderly.co/ff17f1b4-f8ef-456e-be68-07481bc853ec',
-    chainID: '43114',
-    symbol: 'AVAX',
+  {
+    quantity: '.5',
+    source: 'ETH',
+    type: 'native',
+    destination: 'USDT',
+    network: Tenderly.Abritrum.name,
   },
-};
+  {
+    quantity: '50',
+    source: 'DAI',
+    type: 'unapproved',
+    destination: 'ETH',
+    network: Tenderly.Mainnet.name,
+  },
+  {
+    source: 'ETH',
+    quantity: '.5',
+    type: 'native',
+    destination: 'WETH',
+    network: Tenderly.Mainnet.name,
+  },
+  {
+    quantity: '.3',
+    source: 'WETH',
+    type: 'wrapped',
+    destination: 'ETH',
+    network: Tenderly.Mainnet.name,
+  },
+  {
+    quantity: '50',
+    source: 'DAI',
+    type: 'ERC20->ERC20',
+    destination: 'USDC',
+    network: Tenderly.Mainnet.name,
+  },
+];
 
-test.beforeEach(
+test.beforeAll(
   'Initialize extension, import wallet and add custom networks',
   async () => {
     const extension = new ChromeExtensionPage();
     const page = await extension.initExtension();
 
+    const wallet = ethers.Wallet.createRandom();
+
+    await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
+    await addFundsToAccount(Tenderly.Optimism.url, wallet.address);
+    await addFundsToAccount(Tenderly.Abritrum.url, wallet.address);
+
     const signUp = new SignUpPage(page);
-    await signUp.importWallet();
+    await signUp.createWallet();
 
     networkController = new NetworkController(page);
     swapPage = new SwapPage(page);
     activityListPage = new ActivityListPage(page);
-
-    await networkController.addCustomNetwork(Tenderly.Mainnet);
     walletPage = new WalletPage(page);
-    await page.waitForTimeout(2000);
+
+    await networkController.addCustomNetwork(Tenderly.Optimism, false);
+    await networkController.addCustomNetwork(Tenderly.Abritrum, false);
+    await networkController.addCustomNetwork(Tenderly.Mainnet, true);
+    await walletPage.importAccount(wallet.privateKey);
   },
 );
-
-test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH', async () => {
-  await walletPage.importTokens();
-
-  await walletPage.selectSwapAction();
-  await swapPage.enterQuote({ from: 'ETH', to: 'DAI', qty: '.001' });
-  await swapPage.waitForQuote();
-  await swapPage.swap();
-  await swapPage.waitForTransactionToComplete();
-  await walletPage.selectActivityList();
-  await activityListPage.checkActivityIsConfirmed({
-    activity: 'Swap ETH to DAI',
-  });
-
-  await networkController.addPopularNetwork({ networkName: 'Arbitrum One' });
-  await walletPage.selectSwapAction();
-  await swapPage.enterQuote({ to: 'MATIC', qty: '.001' });
-  await swapPage.waitForInsufficentBalance();
-  await swapPage.gotBack();
-
-  await networkController.selectNetwork({ networkName: 'Tenderly - Mainnet' });
-  await walletPage.selectTokenWallet();
-  await walletPage.selectSwapAction();
-  await swapPage.enterQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
-  await swapPage.waitForQuote();
-  await swapPage.swap();
-  await swapPage.waitForTransactionToComplete();
-  await walletPage.selectActivityList();
-  await activityListPage.checkActivityIsConfirmed({
-    activity: 'Swap ETH to WETH',
-  });
-});
-
-test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC', async () => {
-  await walletPage.importTokens();
-
-  await walletPage.selectSwapAction();
-  await swapPage.enterQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
-  await swapPage.waitForQuote();
-  await swapPage.swap();
-  await swapPage.waitForTransactionToComplete();
-  await walletPage.selectActivityList();
-  await activityListPage.checkActivityIsConfirmed({
-    activity: 'Swap ETH to WETH',
-  });
-
-  await networkController.addPopularNetwork({
-    networkName: 'Avalanche Network C-Chain',
-  });
-  await walletPage.selectSwapAction();
-  await swapPage.enterQuote({ to: 'USDC', qty: '.001' });
-  await swapPage.waitForInsufficentBalance();
-
-  await swapPage.gotBack();
-
-  await networkController.selectNetwork({ networkName: 'Tenderly - Mainnet' });
-  await walletPage.selectTokenWallet();
-  await walletPage.selectSwapAction();
-  await swapPage.enterQuote({ from: 'DAI', to: 'USDC', qty: '.5' });
-  await swapPage.waitForQuote();
-  await swapPage.switchTokenOrder();
-  await swapPage.waitForQuote();
-  await swapPage.swap();
-  await swapPage.waitForTransactionToComplete();
-  await walletPage.selectActivityList();
-  await activityListPage.checkActivityIsConfirmed({
-    activity: 'Swap USDC to DAI',
+testSet.forEach((options) => {
+  test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network}'`, async () => {
+    await networkController.selectNetwork({ networkName: options.network });
+    await walletPage.selectSwapAction();
+    await swapPage.enterQuote({
+      from: options.source,
+      to: options.destination,
+      qty: options.quantity,
+    });
+    await swapPage.waitForQuote();
+    await swapPage.swap();
+    await swapPage.waitForTransactionToComplete();
+    await walletPage.selectActivityList();
+    await activityListPage.checkActivityIsConfirmed({
+      activity: `Swap ${options.source} to ${options.destination}`,
+    });
   });
 });
