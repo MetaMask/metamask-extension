@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "关联您的二维码硬件钱包"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "登录请求中的地址与您用于登录的账户地址不匹配。"
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "添加账户"
   },
+  "addAccountToMetaMask": {
+    "message": "向 MetaMask 添加账户"
+  },
   "addAcquiredTokens": {
     "message": "添加您通过MetaMask获得的代币"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "添加 URL"
   },
+  "addingAccount": {
+    "message": "添加账户"
+  },
   "addingCustomNetwork": {
     "message": "正在添加网络"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "其他网络"
-  },
-  "additionalRpcUrl": {
-    "message": "其他 RPC（远程过程调用）URL"
   },
   "address": {
     "message": "地址"
@@ -663,9 +663,6 @@
   "back": {
     "message": "返回"
   },
-  "backup": {
-    "message": "备份"
-  },
   "backupApprovalInfo": {
     "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
@@ -677,12 +674,6 @@
   },
   "backupNow": {
     "message": "立即备份"
-  },
-  "backupUserData": {
-    "message": "将您的数据备份"
-  },
-  "backupUserDataDescription": {
-    "message": "您可以备份联系人和首选项等数据。"
   },
   "balance": {
     "message": "余额"
@@ -1036,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "仅在您批准该内容并信任请求网站的情况下，才能确认此消息。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "支出上限请求"
   },
   "confirmTitleSIWESignature": {
@@ -1537,6 +1528,9 @@
   "details": {
     "message": "详细信息"
   },
+  "developerOptions": {
+    "message": "开发者选项"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1”已被禁用，因为它不满足在原来的燃料费用基础上至少增加10%的要求。",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1602,9 +1596,6 @@
   },
   "domain": {
     "message": "域"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "网络不支持域查找"
   },
   "done": {
     "message": "完成"
@@ -1779,12 +1770,6 @@
   "ensDomainsSettingTitle": {
     "message": "在地址栏中显示ENS域"
   },
-  "ensIllegalCharacter": {
-    "message": "ENS 的非法字符。"
-  },
-  "ensRegistrationError": {
-    "message": "ENS 名称注册错误"
-  },
   "ensUnknownError": {
     "message": "ENS 查找失败。"
   },
@@ -1878,6 +1863,9 @@
   },
   "existingChainId": {
     "message": "您输入的信息与现有的链 ID 相关联。"
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "如需查看和确认您的最新请求，您需要首先批准或拒绝现有请求。"
   },
   "existingRpcUrl": {
     "message": "此 URL 与另一个链 ID 相关联。"
@@ -2425,9 +2413,6 @@
   "invalidAddressRecipient": {
     "message": "接收方地址无效"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 网络，请使用小写"
-  },
   "invalidAssetType": {
     "message": "该资产是NFT，需要在NFT选项卡下的“导入NFT”页面上重新添加"
   },
@@ -2905,6 +2890,10 @@
     "message": "选择昵称......",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 请求您的批准，以便：",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "您希望此网站执行以下操作吗？",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3150,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
-  },
-  "noAddressForName": {
-    "message": "此名称尚未设置地址。"
   },
   "noConnectedAccountDescription": {
     "message": "选择要在此站点上使用的账户以继续。"
@@ -3520,6 +3506,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "可选："
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "了解我们如何在收集您的个人资料使用数据的同时保护您的隐私。"
   },
   "onboardingMetametricsTitle": {
     "message": "请帮助我们改进 MetaMask"
@@ -4162,12 +4151,6 @@
   "receive": {
     "message": "收款"
   },
-  "recipientAddressPlaceholder": {
-    "message": "输入公钥 (0x) 或 ENS 名称"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "输入公钥 (0x) 或域名"
-  },
   "recommendedGasLabel": {
     "message": "建议"
   },
@@ -4200,6 +4183,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "开启此选项以查看增强格式的签名请求。"
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "经过改进的交易请求"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "开启此选项以查看增强格式的交易请求。"
   },
   "refreshList": {
     "message": "刷新列表"
@@ -4337,9 +4326,6 @@
   "restoreUserData": {
     "message": "恢复用户数据"
   },
-  "restoreUserDataDescription": {
-    "message": "您可以从备份文件中恢复联系人和首选项等数据。"
-  },
   "resultPageError": {
     "message": "错误"
   },
@@ -4400,6 +4386,9 @@
   },
   "reviewAlerts": {
     "message": "查看提醒"
+  },
+  "reviewPermissions": {
+    "message": "查看许可"
   },
   "revokeAllTokensTitle": {
     "message": "撤销访问和转移您的所有 $1 的权限？",

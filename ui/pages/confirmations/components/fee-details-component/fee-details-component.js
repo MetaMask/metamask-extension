@@ -19,7 +19,7 @@ import {
   Text,
 } from '../../../../components/component-library';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import { getPreferences } from '../../../../selectors';
+import { getPreferences, getShouldShowFiat } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -34,6 +34,7 @@ export default function FeeDetailsComponent({
 }) {
   const layer1GasFee = txData?.layer1GasFee ?? null;
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
+  const shouldShowFiat = useSelector(getShouldShowFiat);
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
@@ -50,20 +51,22 @@ export default function FeeDetailsComponent({
       return (
         <div className="confirm-page-container-content__total-value">
           <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            key="total-detail-text"
-            value={value}
-            suffixProps={{
-              color: TextColor.textAlternative,
-              variant: TextVariant.bodySmBold,
-            }}
-            textProps={{
-              color: TextColor.textAlternative,
-              variant: TextVariant.bodySmBold,
-            }}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
+          {shouldShowFiat && (
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              key="total-detail-text"
+              value={value}
+              suffixProps={{
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodySmBold,
+              }}
+              textProps={{
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodySmBold,
+              }}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          )}
         </div>
       );
     },
@@ -75,20 +78,22 @@ export default function FeeDetailsComponent({
       return (
         <Box className="confirm-page-container-content__total-value">
           <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
-          <UserPreferencedCurrencyDisplay
-            type={PRIMARY}
-            key="total-detail-value"
-            value={value}
-            suffixProps={{
-              color: TextColor.textAlternative,
-              variant: TextVariant.bodySm,
-            }}
-            textProps={{
-              color: TextColor.textAlternative,
-              variant: TextVariant.bodySm,
-            }}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-          />
+          {shouldShowFiat && (
+            <UserPreferencedCurrencyDisplay
+              type={PRIMARY}
+              key="total-detail-value"
+              value={value}
+              suffixProps={{
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodySm,
+              }}
+              textProps={{
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodySm,
+              }}
+              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            />
+          )}
         </Box>
       );
     },
@@ -168,9 +173,7 @@ export default function FeeDetailsComponent({
                   {t('layer1Fees')}
                 </Text>
               }
-              detailText={
-                useCurrencyRateCheck && renderTotalDetailText(layer1GasFee)
-              }
+              detailText={shouldShowFiat && renderTotalDetailText(layer1GasFee)}
               detailTotal={renderTotalDetailValue(layer1GasFee)}
             />
           )}
@@ -178,8 +181,7 @@ export default function FeeDetailsComponent({
             <TransactionDetailItem
               detailTitle={t('total')}
               detailText={
-                useCurrencyRateCheck &&
-                renderTotalDetailText(getTransactionFeeTotal)
+                shouldShowFiat && renderTotalDetailText(getTransactionFeeTotal)
               }
               detailTotal={renderTotalDetailValue(getTransactionFeeTotal)}
             />

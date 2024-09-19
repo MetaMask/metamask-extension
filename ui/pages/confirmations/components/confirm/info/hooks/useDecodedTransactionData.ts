@@ -1,20 +1,18 @@
 import { Hex } from '@metamask/utils';
-import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
+
 import {
   AsyncResult,
   useAsyncResult,
 } from '../../../../../../hooks/useAsyncResult';
 import { decodeTransactionData } from '../../../../../../store/actions';
 import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
-import { currentConfirmationSelector } from '../../../../selectors';
+import { useConfirmContext } from '../../../../context/confirm';
 
 export function useDecodedTransactionData(): AsyncResult<
   DecodedTransactionDataResponse | undefined
 > {
-  const currentConfirmation = useSelector(currentConfirmationSelector) as
-    | TransactionMeta
-    | undefined;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const chainId = currentConfirmation?.chainId as Hex;
   const contractAddress = currentConfirmation?.txParams?.to as Hex;

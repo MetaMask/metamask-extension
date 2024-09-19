@@ -125,6 +125,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
             detail={t('notificationItemConfirmed') || ''}
             action={
               <NotificationDetailCopyButton
+                notification={notification}
                 text={notification.tx_hash}
                 displayText={t('notificationItemTransactionId') || ''}
               />

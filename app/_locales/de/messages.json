@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Verbinden Sie Ihre QR-basierte Hardware-Wallet."
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Die Adresse in der Anmeldeanfrage entspricht nicht der Adresse des Kontos, mit dem Sie sich anmelden."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Konto hinzufügen"
   },
+  "addAccountToMetaMask": {
+    "message": "Konto zu MetaMask hinzufügen"
+  },
   "addAcquiredTokens": {
     "message": "Fügen Sie die Tokens hinzu, die Sie mittels MetaMask erlangt haben."
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "URL hinzufügen"
   },
+  "addingAccount": {
+    "message": "Konto hinzufügen"
+  },
   "addingCustomNetwork": {
     "message": "Netzwerk wird hinzugefügt"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "Zusätzliche Netzwerke"
-  },
-  "additionalRpcUrl": {
-    "message": "Weitere RPC-URL"
   },
   "address": {
     "message": "Adresse"
@@ -663,9 +663,6 @@
   "back": {
     "message": "Zurück"
   },
-  "backup": {
-    "message": "Sichern"
-  },
   "backupApprovalInfo": {
     "message": "Dieser geheime Code ist zum Wiedererlangen Ihrer Wallet erforderlich, falls Sie Ihr Gerät verlieren, Ihr Passwort vergessen, MetaMask neu installieren müssen oder auf einem anderen Gerät auf Ihre Wallet zugreifen möchten."
   },
@@ -677,12 +674,6 @@
   },
   "backupNow": {
     "message": "Jetzt sichern"
-  },
-  "backupUserData": {
-    "message": "Sichern Sie Ihre Daten"
-  },
-  "backupUserDataDescription": {
-    "message": "Sie können Daten wie Ihre Kontakte und Einstellungen sichern."
   },
   "balance": {
     "message": "Guthaben:"
@@ -1036,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Bestätigen Sie diese Nachricht nur, wenn Sie dem Inhalt zustimmen und der anfragenden Website vertrauen."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Antrag auf Ausgabenobergrenze"
   },
   "confirmTitleSIWESignature": {
@@ -1537,6 +1528,9 @@
   "details": {
     "message": "Details"
   },
+  "developerOptions": {
+    "message": "Entwickler-Optionen"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” ist deaktiviert, weil es nicht das Minimum einer zehnprozentigen Erhöhung gegenüber der ursprünglichen Gasgebühr erfüllt.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1602,9 +1596,6 @@
   },
   "domain": {
     "message": "Domain"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "Netzwerk unterstützt kein Domain-Lookup"
   },
   "done": {
     "message": "Fertig"
@@ -1779,12 +1770,6 @@
   "ensDomainsSettingTitle": {
     "message": "ENS-Domains in der Adresszeile anzeigen"
   },
-  "ensIllegalCharacter": {
-    "message": "Unzulässiges Zeichen für ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Fehler bei der ENS-Namensregistrierung"
-  },
   "ensUnknownError": {
     "message": "ENS-Lookup fehlgeschlagen."
   },
@@ -1878,6 +1863,9 @@
   },
   "existingChainId": {
     "message": "Die von Ihnen eingegebenen Informationen sind mit einer bestehenden Chain-ID verknüpft."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Um sich Ihre jüngste Anfrage anzeigen zu lassen und diese zu bestätigen, müssen Sie zunächst bestehende Anfragen genehmigen oder ablehnen."
   },
   "existingRpcUrl": {
     "message": "Diese URL ist mit einer anderen Chain-ID verknüpft."
@@ -2425,9 +2413,6 @@
   "invalidAddressRecipient": {
     "message": "Empfängeradresse ist unzulässig"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Kein ETH-Netzwerk, auf Kleinschreibung gesetzt"
-  },
   "invalidAssetType": {
     "message": "Dieses Asset ist ein NFT und muss auf der Seite „NFTs importieren“ unter dem Tab NFTs erneut hinzugefügt werden."
   },
@@ -2905,6 +2890,10 @@
     "message": "Wählen Sie einen Spitznamen ...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 bittet um Ihre Zustimmung zu:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Möchten Sie, dass diese Website Folgendes tut?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3150,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "Keine Konten für die angegebene Suchanfrage gefunden"
-  },
-  "noAddressForName": {
-    "message": "Für den angegebene Namen wurde keine Adresse eingegeben."
   },
   "noConnectedAccountDescription": {
     "message": "Wählen Sie ein Konto, das Sie auf dieser Website verwenden möchten, um fortzufahren."
@@ -3520,6 +3506,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Erfahren Sie, wie wir Ihre Privatsphäre schützen, während wir Nutzungsdaten für Ihr Profil sammeln."
   },
   "onboardingMetametricsTitle": {
     "message": "Helfen Sie uns, MetaMask zu verbessern."
@@ -4162,12 +4151,6 @@
   "receive": {
     "message": "Empfangen"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Öffentliche Adresse (0x) oder ENS-Name eingeben"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Öffentliche Adresse (0x) oder Domainname eingeben"
-  },
   "recommendedGasLabel": {
     "message": "Empfohlen"
   },
@@ -4200,6 +4183,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "Schalten Sie dies ein, um sich Unterschriftsanfragen in einem erweiterten Format anzeigen zu lassen."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Verbesserte Transaktionsanfragen"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Schalten Sie dies ein, um sich Transaktionsanfragen in einem erweiterten Format anzeigen zu lassen."
   },
   "refreshList": {
     "message": "Liste aktualisieren"
@@ -4337,9 +4326,6 @@
   "restoreUserData": {
     "message": "Benutzerdaten wiederherstellen"
   },
-  "restoreUserDataDescription": {
-    "message": "Sie können Daten wie Kontakte und Einstellungen aus einer Sicherungsdatei wiederherstellen."
-  },
   "resultPageError": {
     "message": "Fehler"
   },
@@ -4400,6 +4386,9 @@
   },
   "reviewAlerts": {
     "message": "Benachrichtigungen überprüfen"
+  },
+  "reviewPermissions": {
+    "message": "Genehmigungen prüfen"
   },
   "revokeAllTokensTitle": {
     "message": "Genehmigung zum Zugriff auf alle Ihre $1 sowie deren Übertragung entziehen?",

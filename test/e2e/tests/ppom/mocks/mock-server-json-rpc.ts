@@ -43,7 +43,7 @@ const DEFAULT_VARIANT = 'default';
  *  ]);
  * ```
  */
-async function mockServerJsonRpc(
+export async function mockServerJsonRpc(
   mockServer: MockttpServer,
   listOfRequestConfigs: RequestConfig[],
 ) {

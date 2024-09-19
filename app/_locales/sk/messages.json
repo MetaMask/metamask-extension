@@ -223,9 +223,6 @@
   "editContact": {
     "message": "Upraviť kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Chyba pri registrácii názvu ENS"
-  },
   "enterPasswordContinue": {
     "message": "Pokračujte zadaním hesla"
   },
@@ -341,9 +338,6 @@
   "invalidAddressRecipient": {
     "message": "Adresa příjemce je neplatná"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nie sieť ETH, nastaviť malé písmená"
-  },
   "invalidBlockExplorerURL": {
     "message": "Neplatné Block Explorer URI"
   },
@@ -434,9 +428,6 @@
   "next": {
     "message": "Další"
   },
-  "noAddressForName": {
-    "message": "Pro toto jméno nebyla nastavena žádná adresa."
-  },
   "noConversionRateAvailable": {
     "message": "Nie je k dispozícii žiadna sadzba konverzie"
   },
@@ -516,9 +507,6 @@
   },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Vyhľadávať verejnú adresu (0x) alebo ENS"
   },
   "reject": {
     "message": "Odmítnout"
