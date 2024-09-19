@@ -588,7 +588,7 @@ describe('MultichainSendPage', () => {
       it('review is disabled if the transaction is invalid', async () => {
         const {
           result: { getByText },
-        } = await render(baseStoreWithDraft);
+        } = await render(baseStore);
 
         const reviewButton = getByText(messages.review.message);
         expect(reviewButton).toBeDisabled();
