@@ -1018,12 +1018,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
-  "confirmAlertModalDetails": {
-    "message": "To protect your assets and login information, we suggest you reject the request."
-  },
-  "confirmAlertModalTitle": {
-    "message": "This request is suspicious"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
   },
@@ -1086,6 +1080,12 @@
   },
   "confirmTitleTransaction": {
     "message": "Transaction request"
+  },
+  "confirmationAlertModalDetails": {
+    "message": "To protect your assets and login information, we suggest you reject the request."
+  },
+  "confirmationAlertModalTitle": {
+    "message": "This request is suspicious"
   },
   "confirmed": {
     "message": "Confirmed"

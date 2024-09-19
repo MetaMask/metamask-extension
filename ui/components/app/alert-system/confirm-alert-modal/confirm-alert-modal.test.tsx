@@ -134,4 +134,28 @@ describe('ConfirmAlertModal', () => {
       expect(getByText(DATA_ALERT_MESSAGE_MOCK)).toBeInTheDocument();
     });
   });
+
+  describe('when there is a blocking alert', () => {
+    it.only('closes the modal when the "Got it" button is clicked', () => {
+      const blockingAlert = { ...alertsMock[0], isBlocking: true };
+      const mockStoreBlockingAlert = configureMockStore([])({
+        ...STATE_MOCK,
+        confirmAlerts: {
+          alerts: { [OWNER_ID_MOCK]: [blockingAlert] },
+          confirmed: {
+            [OWNER_ID_MOCK]: {
+              [DATA_ALERT_KEY_MOCK]: false,
+            },
+          },
+        },
+      });
+      const { getByTestId } = renderWithProvider(
+        <ConfirmAlertModal {...defaultProps} />,
+        mockStoreBlockingAlert,
+      );
+
+      fireEvent.click(getByTestId('alert-modal-close-button'));
+      expect(onCloseMock).toHaveBeenCalledTimes(1);
+    });
+  });
 });

@@ -318,9 +318,8 @@ export function AlertModal({
     },
     [onClose],
   );
-  console.log('alertKey >>>>>>', alertKey, alerts);
+
   const selectedAlert = alerts.find((alert: Alert) => alert.key === alertKey);
-  console.log('selectedAlert >>>>>>', selectedAlert);
 
   useEffect(() => {
     if (selectedAlert) {

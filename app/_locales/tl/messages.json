@@ -985,12 +985,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Kinikilala ko ang mga alerto at nais ko pa rin magpatuloy"
   },
-  "confirmAlertModalDetails": {
-    "message": "Kung mag-sign in ka, maaaring kunin ng third party na kilala sa mga panloloko ang lahat ng iyong mga asset. Mangyaring suriin ang mga alerto bago ka magpatuloy."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Maaaring nasa panganib ang iyong mga asset"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Ire-redirect ka namin sa $1 sa pagpindot ng magpatuloy."
   },
