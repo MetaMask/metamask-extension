@@ -8,7 +8,7 @@ import {
   NameType,
   NameOrigin,
 } from '@metamask/name-controller';
-import type { Hex } from '@metamask/utils';
+import { Hex, isStrictHexString } from '@metamask/utils';
 import {
   AbstractPetnamesBridge,
   PetnamesBridgeMessenger,
@@ -55,6 +55,10 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge<
       const chainEntries = state.addressBook[chainId as Hex];
 
       for (const address of Object.keys(chainEntries)) {
+        if (!isStrictHexString(chainId)) {
+          continue;
+        }
+
         const entry = state.addressBook[chainId as Hex][address];
         const normalizedChainId = chainId.toLowerCase();
         const { name, isEns } = entry;
