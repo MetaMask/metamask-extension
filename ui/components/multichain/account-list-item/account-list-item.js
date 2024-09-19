@@ -255,6 +255,7 @@ const AccountListItem = ({
                   name={IconName.Pin}
                   size={IconSize.Xs}
                   className="account-pinned-icon"
+                  data-testid="account-pinned-icon"
                 />
               ) : null}
               {isHidden ? (
