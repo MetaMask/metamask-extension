@@ -44,7 +44,7 @@ type SiteCellProps = {
   onAccountsClick: () => void;
   onNetworksClick: () => void;
   onDisconnectClick: () => void;
-  approvedAccounts: { address: string }[];
+  approvedAccounts: string[];
   activeTabOrigin: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   combinedNetworks: any;
@@ -276,7 +276,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         <EditAccountsModal
           onClose={() => setShowEditAccountsModal(false)}
           onClick={onAccountsClick}
-          approvedAccounts={approvedAccounts.map((account) => account.address)} // Extracting addresses as strings
+          approvedAccounts={approvedAccounts}
           activeTabOrigin={activeTabOrigin}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
           onDisconnectClick={onDisconnectClick}
