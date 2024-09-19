@@ -40,7 +40,10 @@ export default function init() {
               chrome.runtime.sendMessage({
                 target: OffscreenCommunicationTarget.extension,
                 event: OffscreenCommunicationEvents.trezorDeviceConnect,
-                payload: event.payload.features.model,
+                payload: {
+                  model: event.payload.features.model,
+                  label: event.payload.features.label,
+                },
               });
             }
           });

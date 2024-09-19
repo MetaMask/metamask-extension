@@ -30,6 +30,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
+import { getHardwareDeviceName } from '../../../store/actions';
 
 const U2F_ERROR = 'U2F';
 const LEDGER_ERRORS_CODES = {
@@ -277,7 +278,7 @@ class ConnectHardwareForm extends Component {
       });
   };
 
-  onUnlockAccounts = (device, path) => {
+  onUnlockAccounts = async (device, path) => {
     const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
       this.props;
     const { selectedAccounts } = this.state;
@@ -290,6 +291,10 @@ class ConnectHardwareForm extends Component {
       MEW_PATH === path
         ? this.context.t('hardwareWalletLegacyDescription')
         : '';
+
+    // process device type. specially handle trezor for oneKey device.
+    const metricDeviceName = await getHardwareDeviceName(device, path);
+
     return unlockHardwareWalletAccounts(
       selectedAccounts,
       device,
@@ -302,7 +307,7 @@ class ConnectHardwareForm extends Component {
           event: MetaMetricsEventName.AccountAdded,
           properties: {
             account_type: MetaMetricsEventAccountType.Hardware,
-            account_hardware_type: device,
+            account_hardware_type: metricDeviceName,
           },
         });
         history.push(mostRecentOverviewPage);
@@ -313,7 +318,7 @@ class ConnectHardwareForm extends Component {
           event: MetaMetricsEventName.AccountAddFailed,
           properties: {
             account_type: MetaMetricsEventAccountType.Hardware,
-            account_hardware_type: device,
+            account_hardware_type: metricDeviceName,
             error: e.message,
           },
         });
@@ -459,6 +464,7 @@ const mapStateToProps = (state) => ({
   rpcPrefs: getRpcPrefsForCurrentProvider(state),
   accounts: getMetaMaskAccounts(state),
   connectedAccounts: getMetaMaskAccountsConnected(state),
+  getHardwareDeviceName: getHardwareDeviceName(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
   ledgerTransportType: state.metamask.ledgerTransportType,
@@ -471,6 +477,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     connectHardware: (deviceName, page, hdPath, t) => {
       return dispatch(actions.connectHardware(deviceName, page, hdPath, t));
+    },
+    getHardwareDeviceName: (deviceName, hdPath) => {
+      return dispatch(actions.getHardwareDeviceName(deviceName, hdPath));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));

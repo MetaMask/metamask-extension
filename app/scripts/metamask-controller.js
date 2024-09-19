@@ -3256,6 +3256,7 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
+      getHardwareDeviceName: this.getHardwareDeviceName.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
@@ -4581,13 +4582,36 @@ export default class MetamaskController extends EventEmitter {
   /**
    * get hardware account label
    *
+   * @param name
+   * @param index
+   * @param hdPathDescription
    * @returns string label
    */
-
   getAccountLabel(name, index, hdPathDescription) {
     return `${name[0].toUpperCase()}${name.slice(1)} ${
       parseInt(index, 10) + 1
     } ${hdPathDescription || ''}`.trim();
+  }
+
+  /**
+   * get hardware wallet Device name for metric logging in UI.
+   * Currently it only handle the special case for OneKeyDevice connect metamask via Trezor.
+   *
+   * @param deviceName - HardwareDeviceNames
+   * @param hdPath - string
+   * @returns {HardwareDeviceNames|*}
+   */
+  async getHardwareDeviceName(deviceName, hdPath) {
+    if (deviceName === HardwareDeviceNames.trezor) {
+      const keyring = await this.getKeyringForDevice(deviceName, hdPath);
+      const { label } = keyring.bridge;
+      if (label.includes('OneKey')) {
+        return HardwareDeviceNames.oneKeyViaTrezor;
+      }
+      return HardwareDeviceNames.trezor;
+    }
+
+    return deviceName;
   }
 
   /**

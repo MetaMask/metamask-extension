@@ -503,6 +503,13 @@ export function checkHardwareStatus(
   };
 }
 
+export const getHardwareDeviceName = (deviceName, hdPath) => {
+  return submitRequestToBackground('getHardwareDeviceName', [
+    deviceName,
+    hdPath,
+  ]);
+};
+
 export function forgetDevice(
   deviceName: HardwareDeviceNames,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

@@ -864,6 +864,74 @@ describe('MetaMaskController', () => {
         );
       });
 
+      describe('getHardwareDeviceName', () => {
+        it('should return the correct device name for Ledger', async () => {
+          const deviceName = 'ledger';
+          const hdPath = "m/44'/60'/0'/0/0";
+          const result = await metamaskController.getHardwareDeviceName(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('ledger');
+        });
+
+        it('should return the correct device name for Lattice', async () => {
+          const deviceName = 'lattice';
+          const hdPath = "m/44'/60'/0'/0/0";
+          const result = await metamaskController.getHardwareDeviceName(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('lattice');
+        });
+
+        it('should return the correct device name for Trezor', async () => {
+          const deviceName = 'trezor';
+          const hdPath = "m/44'/60'/0'/0";
+          jest
+            .spyOn(metamaskController, 'getKeyringForDevice')
+            .mockResolvedValue({
+              bridge: {
+                label: 'trezor',
+                model: 'T',
+              },
+            });
+          const result = await metamaskController.getHardwareDeviceName(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('trezor');
+        });
+
+        it('should return undefined for unknown device name', async () => {
+          const deviceName = 'unknown';
+          const hdPath = "m/44'/60'/0'/0/0";
+          const result = await metamaskController.getHardwareDeviceName(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe(deviceName);
+        });
+
+        it('should handle special case for OneKeyDevice via Trezor', async () => {
+          const deviceName = 'trezor';
+          const hdPath = "m/44'/60'/0'/0/0";
+          jest
+            .spyOn(metamaskController, 'getKeyringForDevice')
+            .mockResolvedValue({
+              bridge: {
+                label: 'OneKey Pro',
+                model: 'T',
+              },
+            });
+          const result = await metamaskController.getHardwareDeviceName(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('oneKey via trezor');
+        });
+      });
+
       describe('forgetDevice', () => {
         it('should throw if it receives an unknown device name', async () => {
           const result = metamaskController.forgetDevice(

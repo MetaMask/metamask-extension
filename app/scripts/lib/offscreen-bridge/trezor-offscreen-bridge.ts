@@ -30,6 +30,8 @@ import {
 export class TrezorOffscreenBridge implements TrezorBridge {
   model: string | undefined;
 
+  label: string | undefined;
+
   init(
     settings: {
       manifest: Manifest;
@@ -40,7 +42,8 @@ export class TrezorOffscreenBridge implements TrezorBridge {
         msg.target === OffscreenCommunicationTarget.extension &&
         msg.event === OffscreenCommunicationEvents.trezorDeviceConnect
       ) {
-        this.model = msg.payload;
+        this.model = msg.payload.model;
+        this.label = msg.payload.label;
       }
     });
 
