@@ -651,6 +651,15 @@ export function getNeverShowSwitchedNetworkMessage(state) {
   return state.metamask.switchedNetworkNeverShowMessage;
 }
 
+export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
+  (state) => state.metamask.networkConfigurationsByChainId,
+  /**
+   * @param networkConfigurationsByChainId
+   * @returns { import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']}
+   */
+  (networkConfigurationsByChainId) => networkConfigurationsByChainId,
+);
+
 export function getRequestingNetworkInfo(state, chainIds) {
   // If chainIds is undefined, set it to an empty array
   let processedChainIds = chainIds === undefined ? [] : chainIds;
@@ -2053,16 +2062,6 @@ export function getIsMultiRpcOnboarding(state) {
 
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
-}
-
-/**
- * Returns an object mapping chain IDs to network configurations.
- *
- * @param state
- * @returns { import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']}
- */
-export function getNetworkConfigurationsByChainId(state) {
-  return state.metamask.networkConfigurationsByChainId;
 }
 
 export const getAllEnabledNetworks = createDeepEqualSelector(
