@@ -89,18 +89,15 @@ const scuttlingConfigBase = {
     extra: '',
     stateHooks: '',
     nw: '',
+    // Sentry Custom Tracing
+    document: '',
+    isNaN: '',
+    parseInt: '',
   },
 };
 
 const mv3ScuttlingConfig = { ...scuttlingConfigBase };
-
-const standardScuttlingConfig = {
-  ...scuttlingConfigBase,
-  'scripts/sentry-install.js': {
-    ...scuttlingConfigBase['scripts/sentry-install.js'],
-    document: '',
-  },
-};
+const standardScuttlingConfig = { ...scuttlingConfigBase };
 
 const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
   callback(),
