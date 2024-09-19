@@ -1,35 +1,17 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
+import { BorderColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   AvatarAccount,
   AvatarAccountSize,
-  AvatarIcon,
-  AvatarIconSize,
-  Box,
-  ButtonLink,
-  Icon,
   IconName,
-  IconSize,
-  Text,
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
 import { getPermittedAccountsByOrigin } from '../../../../../selectors/permissions';
 import { AccountType } from '../../../connect-accounts-modal/connect-account-modal.types';
 import { SiteCellTooltip } from './site-cell-tooltip';
+import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
 // Define types for networks, accounts, and other props
 type Network = {
@@ -99,168 +81,43 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
   return (
     <>
-      <Box
-        data-testid="connection-list-item"
-        as="button"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.baseline}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        padding={4}
-        gap={4}
-        className="multichain-connection-list-item"
-      >
-        <AvatarIcon
-          iconName={IconName.Wallet}
-          size={AvatarIconSize.Md}
-          color={IconColor.iconAlternative}
-          backgroundColor={BackgroundColor.backgroundAlternative}
-        />
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.FiveTwelfths}
-          style={{ alignSelf: 'center', flexGrow: 1 }}
-        >
-          <Text
-            variant={TextVariant.bodyMd}
-            textAlign={TextAlign.Left}
-            ellipsis
-          >
-            {t('accountsPermissionsTitle')}
-          </Text>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            gap={1}
-          >
-            <Text
-              as="span"
-              width={BlockSize.Max}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-              ellipsis
-            >
-              {currentTabHasNoAccounts
-                ? accountMessageNotConnectedState
-                : accountMessageConnectedState}
-            </Text>
-            {accounts.length > 1 ? (
-              <SiteCellTooltip
-                accounts={accounts}
-                avatarAccountsData={avatarAccountsData}
-              />
-            ) : (
-              <AvatarAccount
-                address={accounts[0].address}
-                size={AvatarAccountSize.Xs}
-                borderColor={BorderColor.transparent}
-              />
-            )}
-          </Box>
-        </Box>
-        {currentTabHasNoAccounts ? (
-          <ButtonLink onClick={() => setShowEditAccountsModal(true)}>
-            {t('edit')}
-          </ButtonLink>
-        ) : (
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.flexEnd}
-            alignItems={AlignItems.center}
-            style={{ flex: 1, alignSelf: 'center' }}
-            gap={2}
-            onClick={() => setShowEditAccountsModal(true)}
-          >
-            <Icon
-              display={Display.Flex}
-              name={IconName.MoreVertical}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-              backgroundColor={BackgroundColor.backgroundDefault}
-            />
-          </Box>
-        )}
-      </Box>
-
-      <Box
-        data-testid="connection-list-item"
-        as="button"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.baseline}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        padding={4}
-        gap={4}
-        className="multichain-connection-list-item"
-      >
-        <AvatarIcon
-          iconName={IconName.Data}
-          size={AvatarIconSize.Md}
-          color={IconColor.iconAlternative}
-          backgroundColor={BackgroundColor.backgroundAlternative}
-        />
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.FiveTwelfths}
-          style={{ alignSelf: 'center', flexGrow: 1 }}
-        >
-          <Text
-            variant={TextVariant.bodyMd}
-            textAlign={TextAlign.Left}
-            ellipsis
-          >
-            {t('permission_walletSwitchEthereumChain')}
-          </Text>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            gap={1}
-          >
-            <Text
-              as="span"
-              width={BlockSize.Max}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-            >
-              {currentTabHasNoAccounts
-                ? t('requestingFor')
-                : t('connectedWith')}
-            </Text>
+      <SiteCellConnectionListItem
+        title={t('accountsPermissionsTitle')}
+        iconName={IconName.Wallet}
+        connectedMessage={accountMessageConnectedState}
+        unconnectedMessage={accountMessageNotConnectedState}
+        currentTabHasNoAccounts={currentTabHasNoAccounts}
+        onClick={() => setShowEditAccountsModal(true)}
+        content={
+          accounts.length > 1 ? (
             <SiteCellTooltip
-              networks={networks}
-              avatarNetworksData={avatarNetworksData}
+              accounts={accounts}
+              avatarAccountsData={avatarAccountsData}
             />
-          </Box>
-        </Box>
-        {currentTabHasNoAccounts ? (
-          <ButtonLink onClick={() => setShowEditNetworksModal(true)}>
-            {t('edit')}
-          </ButtonLink>
-        ) : (
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.flexEnd}
-            alignItems={AlignItems.center}
-            style={{ flex: 1, alignSelf: 'center' }}
-            gap={2}
-            onClick={() => setShowEditNetworksModal(true)}
-          >
-            <Icon
-              display={Display.Flex}
-              name={IconName.MoreVertical}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-              backgroundColor={BackgroundColor.backgroundDefault}
+          ) : (
+            <AvatarAccount
+              address={accounts[0].address}
+              size={AvatarAccountSize.Xs}
+              borderColor={BorderColor.transparent}
             />
-          </Box>
-        )}
-      </Box>
+          )
+        }
+      />
+
+      <SiteCellConnectionListItem
+        title={t('permission_walletSwitchEthereumChain')}
+        iconName={IconName.Data}
+        connectedMessage={t('connectedWith')}
+        unconnectedMessage={t('requestingFor')}
+        currentTabHasNoAccounts={currentTabHasNoAccounts}
+        onClick={() => setShowEditNetworksModal(true)}
+        content={
+          <SiteCellTooltip
+            networks={networks}
+            avatarNetworksData={avatarNetworksData}
+          />
+        }
+      />
 
       {showEditNetworksModal && (
         <EditNetworksModal
