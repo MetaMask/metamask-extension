@@ -115,7 +115,7 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
   };
 
   return startSpan(request, (spanOptions) =>
-    globalThis.sentry.startSpan(spanOptions, callback),
+    sentryStartSpan(spanOptions, callback),
   );
 }
 
@@ -139,7 +139,7 @@ function startTrace(request: TraceRequest): TraceContext {
   };
 
   return startSpan(request, (spanOptions) =>
-    globalThis.sentry.startSpanManual(spanOptions, callback),
+    sentryStartSpanManual(spanOptions, callback),
   );
 }
 
@@ -158,7 +158,7 @@ function startSpan<T>(
     startTime,
   };
 
-  return globalThis.sentry.withIsolationScope((scope: Sentry.Scope) => {
+  return sentryWithIsolationScope((scope: Sentry.Scope) => {
     scope.setTags(tags as Record<string, Primitive>);
 
     return callback(spanOptions);
@@ -207,4 +207,45 @@ function tryCatchMaybePromise<T>(
   }
 
   return undefined;
+}
+
+function sentryStartSpan<T>(
+  spanOptions: StartSpanOptions,
+  callback: (span: Sentry.Span | null) => T,
+): T {
+  const actual = globalThis.sentry?.startSpan;
+
+  if (!actual) {
+    return callback(null);
+  }
+
+  return actual(spanOptions, callback);
+}
+
+function sentryStartSpanManual<T>(
+  spanOptions: StartSpanOptions,
+  callback: (span: Sentry.Span | null) => T,
+): T {
+  const actual = globalThis.sentry?.startSpanManual;
+
+  if (!actual) {
+    return callback(null);
+  }
+
+  return actual(spanOptions, callback);
+}
+
+function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
+  const actual = globalThis.sentry?.withIsolationScope;
+
+  if (!actual) {
+    const scope = {
+      // eslint-disable-next-line no-empty-function
+      setTags: () => {},
+    } as unknown as Sentry.Scope;
+
+    return callback(scope);
+  }
+
+  return actual(callback);
 }
