@@ -1,6 +1,8 @@
 import React, {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useState,
+  useContext,
+  useSelector,
   ///: END:ONLY_INCLUDE_IF
 } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -63,9 +65,7 @@ export default function OnboardingPinExtension() {
   );
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
-  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleClick = async () => {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
