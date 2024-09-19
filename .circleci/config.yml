@@ -356,9 +356,10 @@ workflows:
 
   locales_only:
     when:
-      matches:
-        pattern: /^l10n_crowdin_action$/
-        value: << pipeline.git.branch >>
+      not:
+        matches:
+          pattern: /^l10n_crowdin_action$/
+          value: << pipeline.git.branch >>
     jobs:
       - prep-deps
       - get-changed-files-with-git-diff
