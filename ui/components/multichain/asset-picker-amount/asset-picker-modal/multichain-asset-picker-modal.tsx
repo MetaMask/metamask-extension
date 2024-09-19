@@ -28,9 +28,8 @@ import {
   getMultichainNativeCurrencyImage,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
-import { ERC20Asset, NativeAsset, NFT, AssetWithDisplayData } from './types';
+import { NativeAsset, AssetWithDisplayData } from './types';
 import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
-import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 
@@ -38,10 +37,8 @@ type AssetPickerModalProps = {
   header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
-  asset?: ERC20Asset | NativeAsset | Pick<NFT, 'type' | 'tokenId' | 'image'>;
-  onAssetChange: (
-    asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
-  ) => void;
+  asset?: NativeAsset;
+  onAssetChange: (asset: AssetWithDisplayData<NativeAsset>) => void;
   /**
    * Sending asset for UI treatments; only for dest component
    */
@@ -90,10 +87,7 @@ export function MultichainAssetPickerModal({
       type: AssetType.native,
     };
 
-    const filteredTokens: AssetWithDisplayData<ERC20Asset | NativeAsset>[] = [
-      nativeToken,
-    ];
-    // undefined would be the native token address
+    const filteredTokens: AssetWithDisplayData<NativeAsset>[] = [nativeToken];
 
     return filteredTokens;
   }, [
@@ -146,22 +140,11 @@ export function MultichainAssetPickerModal({
               />
               <AssetList
                 handleAssetChange={handleAssetChange}
-                asset={asset?.type === AssetType.NFT ? undefined : asset}
+                asset={asset}
                 tokenList={filteredTokenList}
               />
             </React.Fragment>
-            <AssetPickerModalNftTab
-              key={TabName.NFTS}
-              searchQuery={searchQuery}
-              onClose={onClose}
-              renderSearch={() => (
-                <Search
-                  isNFTSearch
-                  searchQuery={searchQuery}
-                  onChange={(value) => setSearchQuery(value)}
-                />
-              )}
-            />
+            <></>
           </AssetPickerModalTabs>
         </Box>
       </ModalContent>
