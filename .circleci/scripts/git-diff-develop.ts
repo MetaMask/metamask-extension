@@ -1,4 +1,3 @@
-import { hasProperty } from '@metamask/utils';
 import { exec as execCallback } from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -57,7 +56,8 @@ async function fetchUntilMergeBaseFound() {
     } catch (error: unknown) {
       if (
         error instanceof Error &&
-        hasProperty(error, 'code') &&
+        Object.hasOwnProperty.call(error, 'code') &&
+        // @ts-expect-error
         error.code === 1
       ) {
         console.error(`Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`);
