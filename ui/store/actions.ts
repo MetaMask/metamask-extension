@@ -1658,11 +1658,6 @@ export function lockMetamask(): ThunkAction<
 
     return backgroundSetLocked()
       .then(() => forceUpdateMetamaskState(dispatch))
-      .catch((error) => {
-        dispatch(displayWarning(error.message));
-        return Promise.reject(error);
-      })
-      .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => {
         dispatch(hideLoadingIndication());
         dispatch({ type: actionConstants.LOCK_METAMASK });
