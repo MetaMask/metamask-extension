@@ -181,6 +181,9 @@
   "accountsPermissionsTitle": {
     "message": "See your accounts and suggest transactions"
   },
+  "accountsSmallCase": {
+    "message": "accounts"
+  },
   "active": {
     "message": "Active"
   },
@@ -3179,9 +3182,6 @@
   },
   "networksSmallCase": {
     "message": "networks"
-  },
-  "accountsSmallCase": {
-    "message": "accounts"
   },
   "nevermind": {
     "message": "Nevermind"
