@@ -104,12 +104,12 @@ class AccountListPage {
   }
 
   async hideAccount(): Promise<void> {
-    console.log('Hide account');
+    console.log(`Hide account in account list`);
     await this.driver.clickElement(this.hideUnhideAccountButton);
   }
 
   async openAccountOptionsMenu(): Promise<void> {
-    console.log('Opening account options menu');
+    console.log(`Open account option menu`);
     await this.driver.clickElement(this.accountOptionsMenuButton);
   }
 
