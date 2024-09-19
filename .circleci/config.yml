@@ -49,6 +49,7 @@ develop_master_rc_only: &develop_master_rc_only
   filters:
     branches:
       only:
+        - ci-fix-git-diff
         - develop
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
@@ -355,9 +356,10 @@ workflows:
 
   locales_only:
     when:
-      matches:
-        pattern: /^l10n_crowdin_action$/
-        value: << pipeline.git.branch >>
+      not:
+        matches:
+          pattern: /^l10n_crowdin_action$/
+          value: << pipeline.git.branch >>
     jobs:
       - prep-deps
       - get-changed-files-with-git-diff

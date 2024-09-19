@@ -1,5 +1,6 @@
 {
   "QRHardwareInvalidTransactionTitle": {
+    "foo": "bar",
     "message": "Fehler"
   },
   "QRHardwareMismatchedSignId": {
