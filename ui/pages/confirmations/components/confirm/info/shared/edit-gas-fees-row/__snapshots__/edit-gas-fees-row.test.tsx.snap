@@ -27,6 +27,7 @@ exports[`<EditGasFeesRow /> renders component 1`] = `
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+            data-testid="edit-gas-fees-row-tooltip"
             style="mask-image: url('./images/icons/question.svg');"
           />
         </div>

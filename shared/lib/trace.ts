@@ -115,7 +115,7 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
   };
 
   return startSpan(request, (spanOptions) =>
-    Sentry.startSpan(spanOptions, callback),
+    globalThis.sentry.startSpan(spanOptions, callback),
   );
 }
 
@@ -139,7 +139,7 @@ function startTrace(request: TraceRequest): TraceContext {
   };
 
   return startSpan(request, (spanOptions) =>
-    Sentry.startSpanManual(spanOptions, callback),
+    globalThis.sentry.startSpanManual(spanOptions, callback),
   );
 }
 
@@ -158,7 +158,7 @@ function startSpan<T>(
     startTime,
   };
 
-  return Sentry.withIsolationScope((scope) => {
+  return globalThis.sentry.withIsolationScope((scope: Sentry.Scope) => {
     scope.setTags(tags as Record<string, Primitive>);
 
     return callback(spanOptions);
