@@ -316,6 +316,18 @@ function transformState(
     return acc;
   }, {});
 
+  // Given a network client id, returns the chain id it used to point to
+  const networkClientIdToChainId = (networkClientId: unknown) => {
+    const networkConfiguration = networkConfigurations.find(
+      (n) => isObject(n) && n.id === networkClientId,
+    );
+
+    return isObject(networkConfiguration) &&
+      typeof networkConfiguration?.chainId === 'string'
+      ? networkConfiguration?.chainId
+      : undefined;
+  };
+
   // Ensure that selectedNetworkClientId points to
   // some endpoint of some network configuration.
   let selectedNetworkClientId = Object.values(networkConfigurationsByChainId)
@@ -326,15 +338,25 @@ function transformState(
       (e) => e.networkClientId === networkState.selectedNetworkClientId,
     )?.networkClientId;
 
-  // It may not, if its endpoint was not well formed
-  // or a duplicate. In that case, fallback to mainnet
+  // It may not, if it's endpoint was not well formed.
   if (!selectedNetworkClientId) {
-    const mainnet = networkConfigurationsByChainId['0x1'];
+    //
+    // In that case, try to fallback to the default endpoint for the same chain
+    const chainId = networkClientIdToChainId(
+      networkState.selectedNetworkClientId,
+    );
+
+    // Or mainnet, if the entire chain had to be omitted due to invalid URLs
+    const networkConfiguration =
+      networkConfigurationsByChainId[chainId ?? '0x1'];
+
     selectedNetworkClientId =
-      isObject(mainnet) &&
-      Array.isArray(mainnet.rpcEndpoints) &&
-      typeof mainnet.defaultRpcEndpointIndex === 'number'
-        ? mainnet.rpcEndpoints[mainnet.defaultRpcEndpointIndex].networkClientId
+      isObject(networkConfiguration) &&
+      Array.isArray(networkConfiguration.rpcEndpoints) &&
+      typeof networkConfiguration.defaultRpcEndpointIndex === 'number'
+        ? networkConfiguration.rpcEndpoints[
+            networkConfiguration.defaultRpcEndpointIndex
+          ].networkClientId
         : 'mainnet';
   }
 
@@ -352,18 +374,10 @@ function transformState(
       let newNetworkClientId;
 
       // Fetch the chain id associated with the domain's network client
-      const oldNetworkConfiguration =
-        isObject(networkState.networkConfigurations) &&
-        typeof networkClientId === 'string'
-          ? networkState.networkConfigurations[networkClientId]
-          : undefined;
+      const chainId = networkClientIdToChainId(networkClientId);
 
-      const chainId = isObject(oldNetworkConfiguration)
-        ? oldNetworkConfiguration?.chainId
-        : undefined;
-
-      // Fetch the default rpc endpoint associated with that chain id
-      if (chainId && typeof chainId === 'string') {
+      if (chainId) {
+        // Fetch the default rpc endpoint associated with that chain id
         const networkConfiguration = networkConfigurationsByChainId[chainId];
         if (
           isObject(networkConfiguration) &&

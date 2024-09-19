@@ -783,13 +783,13 @@ describe(`migration #${version}`, () => {
     );
   });
 
-  it('handles the case where selectedNetworkClientId doesnt point to a valid endpoint', async () => {
+  it('handles the case where selectedNetworkClientId doesnt point to any endpoint', async () => {
     const oldState = {
       meta: { version: oldVersion },
       data: {
         TransactionController: {},
         NetworkController: {
-          selectedNetworkClientId: 'dont-point-to-anyuthing',
+          selectedNetworkClientId: 'dont-point-to-anything',
         },
       },
     };
@@ -802,12 +802,12 @@ describe(`migration #${version}`, () => {
     );
   });
 
-  it('handles the case where selectedNetworkClientId doesnt point to a valid endpoint and a custom endpoint is the default', async () => {
+  it('handles the case where selectedNetworkClientId doesnt point to any endpoint and a custom endpoint is the default', async () => {
     const oldState = {
       meta: { version: oldVersion },
       data: {
         NetworkController: {
-          selectedNetworkClientId: 'dont-point-to-anyuthing',
+          selectedNetworkClientId: 'dont-point-to-anything',
           networkConfigurations: {
             'custom-mainnet': {
               id: 'custom-mainnet',
@@ -837,6 +837,80 @@ describe(`migration #${version}`, () => {
       (newState.data.NetworkController as { selectedNetworkClientId: string })
         .selectedNetworkClientId,
     ).toStrictEqual('custom-mainnet');
+  });
+
+  it('handles the case where selectedNetworkClientId doesnt point to a valid endpoint and theres no fallback', async () => {
+    const randomChainId = '0x123456';
+
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'invalid-url',
+          networkConfigurations:
+            // The selected network client has an invaid url
+            {
+              'invalid-url': {
+                id: 'invalid-url',
+                chainId: randomChainId,
+                nickname: 'Random Chain',
+                ticker: 'ETH',
+                rpcUrl: 'foobar',
+              },
+              // And there are no other configurations on the same chain to fall back to
+            },
+        },
+        TransactionController: {},
+      },
+    };
+
+    const newState = await migrate(oldState);
+
+    // Fall back to mainnet
+    expect(
+      (newState.data.NetworkController as { selectedNetworkClientId: string })
+        .selectedNetworkClientId,
+    ).toStrictEqual('mainnet');
+  });
+
+  it('handles the case where selectedNetworkClientId doesnt point to a valid endpoint but theres a fallback', async () => {
+    const randomChainId = '0x123456';
+
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'invalid-url',
+          networkConfigurations:
+            // The selected network client has an invaid url
+            {
+              'invalid-url': {
+                id: 'invalid-url',
+                chainId: randomChainId,
+                nickname: 'Random Chain',
+                ticker: 'ETH',
+                rpcUrl: 'foobar',
+              },
+              // So it should fall back to me, on the same chain
+              'pick-me': {
+                id: 'pick-me',
+                chainId: randomChainId,
+                nickname: 'Random Chain',
+                ticker: 'ETH',
+                rpcUrl: 'http://localhost/rpc',
+              },
+            },
+        },
+        TransactionController: {},
+      },
+    };
+
+    const newState = await migrate(oldState);
+
+    expect(
+      (newState.data.NetworkController as { selectedNetworkClientId: string })
+        .selectedNetworkClientId,
+    ).toStrictEqual('pick-me');
   });
 
   it('migrates the netork order controller', async () => {
@@ -998,6 +1072,9 @@ it('updates the selected network controller to point domains to the default RPC 
           'untouched.com': 'untouched-network-id',
           'already-default.com': 'already-default-network-id',
           'redirected.com': 'redirected-network-id',
+          // Test the case where it pointed to a built in
+          // network, which would not have been in state before
+          'mainnet.com': 'mainnet',
         },
       },
       NetworkController: {
@@ -1035,6 +1112,7 @@ it('updates the selected network controller to point domains to the default RPC 
       'untouched.com': 'untouched-network-id',
       'already-default.com': 'already-default-network-id',
       'redirected.com': 'already-default-network-id',
+      'mainnet.com': 'mainnet',
     },
   });
 });
