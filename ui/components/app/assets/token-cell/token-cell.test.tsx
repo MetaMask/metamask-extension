@@ -92,9 +92,8 @@ describe('Token Cell', () => {
     image: '',
     onClick: jest.fn(),
   };
-<<<<<<< HEAD:ui/components/app/assets/token-cell/token-cell.test.js
   const useSelectorMock = useSelector;
-  useSelectorMock.mockImplementation((selector) => {
+  (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getTokenList) {
       return MOCK_GET_TOKEN_LIST;
     }
@@ -104,11 +103,7 @@ describe('Token Cell', () => {
     return undefined;
   });
   // useSelector.mockReturnValue(MOCK_GET_TOKEN_LIST);
-  useTokenFiatAmount.mockReturnValue('5.00');
-=======
-  (useSelector as jest.Mock).mockReturnValue(MOCK_GET_TOKEN_LIST);
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
->>>>>>> develop:ui/components/app/assets/token-cell/token-cell.test.tsx
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
