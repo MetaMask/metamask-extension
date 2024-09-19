@@ -15,6 +15,11 @@ class AccountListPage {
   private addAccountButtonSelector: string;
   private accountNameInputSelector: string;
   private addAccountConfirmButtonSelector: string;
+  private accountDetailsSelector: string;
+  private editableLabelButtonSelector: string;
+  private editableLabelInputSelector: string;
+  private saveAccountLabelSelector: string;
+  private closeButtonSelector: string;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -33,6 +38,11 @@ class AccountListPage {
     this.addAccountButtonSelector = '[data-testid="multichain-account-menu-popover-add-account"]';
     this.accountNameInputSelector = '[placeholder="Account 2"]';
     this.addAccountConfirmButtonSelector = 'button';
+    this.accountDetailsSelector = '[data-testid="account-list-menu-details"]';
+    this.editableLabelButtonSelector = '[data-testid="editable-label-button"]';
+    this.editableLabelInputSelector = '[data-testid="editable-label-input"]';
+    this.saveAccountLabelSelector = '[data-testid="save-account-label-input"]';
+    this.closeButtonSelector = 'button[aria-label="Close"]';
   }
 
   async openAccountMenu(): Promise<void> {
@@ -195,25 +205,20 @@ class AccountListPage {
       await this.driver.waitForSelector(this.accountOptionsMenuButton);
       await this.driver.clickElement(this.accountOptionsMenuButton);
 
-      const accountDetailsSelector = '[data-testid="account-list-menu-details"]';
-      await this.driver.waitForSelector(accountDetailsSelector);
-      await this.driver.clickElement(accountDetailsSelector);
+      await this.driver.waitForSelector(this.accountDetailsSelector);
+      await this.driver.clickElement(this.accountDetailsSelector);
 
-      const editableLabelButtonSelector = '[data-testid="editable-label-button"]';
-      await this.driver.waitForSelector(editableLabelButtonSelector);
-      await this.driver.clickElement(editableLabelButtonSelector);
+      await this.driver.waitForSelector(this.editableLabelButtonSelector);
+      await this.driver.clickElement(this.editableLabelButtonSelector);
 
-      const editableLabelInputSelector = '[data-testid="editable-label-input"]';
-      await this.driver.waitForSelector(editableLabelInputSelector);
-      await this.driver.fill(editableLabelInputSelector, newLabel);
+      await this.driver.waitForSelector(this.editableLabelInputSelector);
+      await this.driver.fill(this.editableLabelInputSelector, newLabel);
 
-      const saveAccountLabelSelector = '[data-testid="save-account-label-input"]';
-      await this.driver.waitForSelector(saveAccountLabelSelector);
-      await this.driver.clickElement(saveAccountLabelSelector);
+      await this.driver.waitForSelector(this.saveAccountLabelSelector);
+      await this.driver.clickElement(this.saveAccountLabelSelector);
 
-      const closeButtonSelector = 'button[aria-label="Close"]';
-      await this.driver.waitForSelector(closeButtonSelector);
-      await this.driver.clickElement(closeButtonSelector);
+      await this.driver.waitForSelector(this.closeButtonSelector);
+      await this.driver.clickElement(this.closeButtonSelector);
 
       // Verify the label change
       await this.verifyAccountLabel(newLabel);
@@ -289,12 +294,11 @@ class AccountListPage {
   async closeAccountMenu(): Promise<void> {
     console.log('Closing account menu');
     try {
-      const closeButtonSelector = 'button[aria-label="Close"]';
-      await this.driver.waitForSelector(closeButtonSelector);
-      await this.driver.clickElement(closeButtonSelector);
+      await this.driver.waitForSelector(this.closeButtonSelector);
+      await this.driver.clickElement(this.closeButtonSelector);
 
       // Verify that the menu is closed by checking that the close button is no longer present
-      await this.driver.assertElementNotPresent(closeButtonSelector);
+      await this.driver.assertElementNotPresent(this.closeButtonSelector);
       console.log('Account menu closed successfully');
     } catch (error) {
       console.error('Failed to close account menu', error);
