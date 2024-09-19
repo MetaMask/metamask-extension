@@ -105,14 +105,12 @@ async function main() {
         wallet: walletRpcMethods,
       }
 
-      const reverseScopeMap = Object.entries(scopeMap).reduce((acc, [scope, methods]) => {
+      const reverseScopeMap = Object.entries(scopeMap).reduce((acc, [scope, methods]: [ScopeString, string[]]) => {
         methods.forEach((method) => {
           acc[method] = scope;
         });
         return acc;
-      }, {} as any);
-      console.log('ethereumMethods', ethereumMethods);
-      console.log('confirmationMethods', confirmationMethods, methodsWithConfirmations);
+      }, {} as { [method: string]: ScopeString });
 
       // fix the example for wallet_createSession
       (providerAuthorize as MethodObject).examples = [
