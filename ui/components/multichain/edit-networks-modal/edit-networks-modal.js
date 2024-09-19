@@ -85,7 +85,7 @@ export const EditNetworksModal = ({
   };
 
   const checked = allAreSelected();
-  const isIndeterminate = selectedChains.length > 0 && !checked;
+  const isIndeterminate = !checked && selectedChains.length > 0;
 
   const managePermittedChains = (chains) => {
     grantPermittedChains(activeTabOrigin, chains);

@@ -55,7 +55,7 @@ export const ConnectAccountsModal = ({
   };
 
   const checked = allAreSelected();
-  const isIndeterminate = selectedAccounts.length > 0 && !checked;
+  const isIndeterminate = !checked && selectedAccounts.length > 0;
 
   return (
     <ConnectAccountsModalList
