@@ -194,20 +194,30 @@ class AccountListPage {
     try {
       await this.driver.waitForSelector(this.accountOptionsMenuButton);
       await this.driver.clickElement(this.accountOptionsMenuButton);
-      await this.driver.waitForSelector('[data-testid="account-list-menu-details"]');
-      await this.driver.clickElement('[data-testid="account-list-menu-details"]');
-      await this.driver.waitForSelector('[data-testid="editable-label-button"]');
-      await this.driver.clickElement('[data-testid="editable-label-button"]');
-      await this.driver.waitForSelector('[data-testid="editable-label-input"]');
-      await this.driver.fill('[data-testid="editable-label-input"]', newLabel);
-      await this.driver.waitForSelector('[data-testid="save-account-label-input"]');
-      await this.driver.clickElement('[data-testid="save-account-label-input"]');
-      await this.driver.waitForSelector('button[aria-label="Close"]');
-      await this.driver.clickElement('button[aria-label="Close"]');
+
+      const accountDetailsSelector = '[data-testid="account-list-menu-details"]';
+      await this.driver.waitForSelector(accountDetailsSelector);
+      await this.driver.clickElement(accountDetailsSelector);
+
+      const editableLabelButtonSelector = '[data-testid="editable-label-button"]';
+      await this.driver.waitForSelector(editableLabelButtonSelector);
+      await this.driver.clickElement(editableLabelButtonSelector);
+
+      const editableLabelInputSelector = '[data-testid="editable-label-input"]';
+      await this.driver.waitForSelector(editableLabelInputSelector);
+      await this.driver.fill(editableLabelInputSelector, newLabel);
+
+      const saveAccountLabelSelector = '[data-testid="save-account-label-input"]';
+      await this.driver.waitForSelector(saveAccountLabelSelector);
+      await this.driver.clickElement(saveAccountLabelSelector);
+
+      const closeButtonSelector = 'button[aria-label="Close"]';
+      await this.driver.waitForSelector(closeButtonSelector);
+      await this.driver.clickElement(closeButtonSelector);
 
       // Verify the label change
       await this.verifyAccountLabel(newLabel);
-      console.log(`Account label changed to: ${newLabel}`);
+      console.log(`Account label changed successfully to: ${newLabel}`);
     } catch (error) {
       console.error(`Failed to change account label to: ${newLabel}`, error);
       throw new Error(`Unable to change account label: ${(error as Error).message}`);
@@ -222,10 +232,9 @@ class AccountListPage {
   async verifyAccountLabel(expectedLabel: string): Promise<void> {
     console.log(`Verifying account label: ${expectedLabel}`);
     try {
-      const accountMenuIconSelector = '[data-testid="account-menu-icon"]';
-      await this.driver.waitForSelector(accountMenuIconSelector);
+      await this.driver.waitForSelector(this.accountMenuIcon);
       const accountLabel = await this.driver.findElement({
-        css: accountMenuIconSelector,
+        css: this.accountMenuIcon,
         text: expectedLabel,
       });
       const actualLabel = await accountLabel.getText();
