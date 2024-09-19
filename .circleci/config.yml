@@ -49,6 +49,7 @@ develop_master_rc_only: &develop_master_rc_only
   filters:
     branches:
       only:
+        - ci-fix-git-diff
         - develop
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
