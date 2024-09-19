@@ -12,11 +12,12 @@ import {
 } from '../../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { addNetwork } from '../../../../store/actions';
+import { addNetwork, updateNetwork } from '../../../../store/actions';
 import { NetworksForm } from './networks-form';
 
 jest.mock('../../../../../ui/store/actions', () => ({
   ...jest.requireActual('../../../../../ui/store/actions'),
+  updateNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
   addNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
@@ -392,7 +393,7 @@ describe('NetworkForm Component', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should call addNetwork on save', async () => {
+  it('should call addNetwork when saving a new network', async () => {
     const { getByText } = renderComponent(propNetworkDisplay);
     const saveButton = getByText('Save');
     fireEvent.click(saveButton);
@@ -411,6 +412,36 @@ describe('NetworkForm Component', () => {
         blockExplorerUrls: [],
         defaultBlockExplorerUrlIndex: undefined,
       });
+    });
+  });
+
+  it('should call updateNetwork when saving an existing network', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      existingNetwork: {},
+    });
+    const saveButton = getByText('Save');
+    fireEvent.click(saveButton);
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalledTimes(1);
+      expect(updateNetwork).toHaveBeenCalledWith(
+        {
+          chainId: '0x64',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+          blockExplorerUrls: [],
+          defaultBlockExplorerUrlIndex: undefined,
+        },
+        {
+          replacementSelectedRpcEndpointIndex: undefined,
+        },
+      );
     });
   });
 });
