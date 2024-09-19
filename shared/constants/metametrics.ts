@@ -156,7 +156,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
-  successEvent?: string;
+  successEvent: string;
   /**
    * The event name to fire when the fragment is closed with a rejection.
    */
@@ -169,7 +169,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event category to use for both the success and failure events.
    */
-  category?: string;
+  category: string;
   /**
    * Should this fragment be persisted in state and progressed after the
    * extension is locked and unlocked.
@@ -511,6 +511,8 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
+  AccountsSyncAccountAdded = 'Accounts Sync Account Added',
+  AccountsSyncAccountNameUpdated = 'Accounts Sync Account Name Updated',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
@@ -772,6 +774,7 @@ export enum MetaMetricsEventCategory {
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
   Phishing = 'Phishing',
+  ProfileSyncing = 'Profile Syncing',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
   Send = 'Send',
