@@ -77,7 +77,7 @@ describe('AccountListItem', () => {
     );
   });
 
-  it('should render correctly', async () => {
+  it('should render correctly', () => {
     const { container } = renderWithProvider(
       <AddressCopyButton address={SAMPLE_ADDRESS} />,
       mockStore,
