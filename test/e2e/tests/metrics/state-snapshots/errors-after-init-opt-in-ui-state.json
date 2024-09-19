@@ -181,8 +181,6 @@
     "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
     "cryptocurrencies": ["btc"],
     "snaps": "object",
-    "snapStates": "object",
-    "unencryptedSnapStates": "object",
     "jobs": "object",
     "database": null,
     "lastUpdated": null,

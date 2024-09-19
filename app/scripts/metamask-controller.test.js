@@ -326,6 +326,10 @@ describe('MetaMaskController', () => {
           },
         ]),
       );
+
+    globalThis.sentry = {
+      withIsolationScope: jest.fn(),
+    };
   });
 
   afterEach(() => {
