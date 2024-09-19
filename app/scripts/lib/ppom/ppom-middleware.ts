@@ -1,6 +1,9 @@
 import { AccountsController } from '@metamask/accounts-controller';
 import { PPOMController } from '@metamask/ppom-validator';
-import { NetworkController } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkController,
+} from '@metamask/network-controller';
 import {
   Json,
   JsonRpcParams,
@@ -33,6 +36,7 @@ const CONFIRMATION_METHODS = Object.freeze([
 export type PPOMMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
 > = Required<JsonRpcRequest<Params>> & {
+  networkClientId: NetworkClientId;
   securityAlertResponse?: SecurityAlertResponse | undefined;
   traceContext?: TraceContext;
 };
@@ -78,7 +82,13 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const chainId = getCurrentChainId({ metamask: networkController.state });
+      // This will always exist as the SelectedNetworkMiddleware
+      // adds networkClientId to the request before this middleware runs
+      const { chainId } =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        networkController.getNetworkConfigurationByNetworkClientId(
+          req.networkClientId,
+        )!;
       const isSupportedChain = await isChainSupported(chainId);
 
       if (
