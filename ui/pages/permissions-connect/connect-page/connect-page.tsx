@@ -1,8 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { InternalAccount } from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getNonTestNetworks,
+  getOrderedConnectedAccountsForConnectedDapp,
+  getPermittedChainsForSelectedTab,
   getSelectedAccountsForDappConnection,
   getSelectedInternalAccount,
   getSelectedNetworksForDappConnection,
@@ -68,23 +71,42 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const combinedNetworks = [...networksList, ...testNetworks];
 
   const currentAccount = useSelector(getSelectedInternalAccount);
-
+  const connectedAccounts = useSelector((state) =>
+    getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
+  ) as AccountType[];
+  const connectedAccountsAddresses = connectedAccounts?.map(
+    (account: InternalAccount) => account.address,
+  );
+  const connectedNetworks = useSelector((state) =>
+    getPermittedChainsForSelectedTab(state, activeTabOrigin),
+  ) as string[];
   const selectedAccountsForDappConnection = useSelector(
     getSelectedAccountsForDappConnection,
   );
+  const grantedNetworks = combinedNetworks.filter(
+    (net: { chainId: string }) =>
+      connectedNetworks?.indexOf(net.chainId) !== -1,
+  );
+  const defaultAccountsAddresses =
+    connectedAccounts?.length > 0
+      ? connectedAccountsAddresses
+      : [currentAccount?.address];
+
+  const defaultNetworksList =
+    grantedNetworks?.length > 0 ? grantedNetworks : networksList;
 
   // Filter networks based on chainId
   const filteredNetworks = Array.isArray(selectedNetworksList)
     ? combinedNetworks.filter((network) =>
         selectedNetworksList.includes(network.chainId),
       )
-    : networksList;
+    : defaultNetworksList;
 
   // Select approved accounts and networks
   const approvedAccounts =
     selectedAccountsForDappConnection.length > 0
       ? selectedAccountsForDappConnection
-      : [currentAccount?.address];
+      : defaultAccountsAddresses;
 
   // Handle confirmation
   const onConfirm = () => {
@@ -120,7 +142,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           onNetworksClick={() => null}
           approvedAccounts={approvedAccounts}
           activeTabOrigin={activeTabOrigin}
-          combinedNetworks={networksList}
+          combinedNetworks={defaultNetworksList}
           onDisconnectClick={() => null}
         />
       </Content>
