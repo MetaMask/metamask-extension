@@ -88,11 +88,6 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
-  async goToNotifiationsList(): Promise<void> {
-    this.headerNavbar.openAccountOptionsMenu();
-    this.accountOptionsMenu.clickNotificationsMenuItem();
-  }
-
   async openAccountMenu(): Promise<void> {
     console.log(`Opening account menu`);
     await this.driver.clickElement(this.accountMenuButton);

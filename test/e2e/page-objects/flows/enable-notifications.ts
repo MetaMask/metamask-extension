@@ -1,6 +1,6 @@
-import HomePage from '../pages/homepage';
 import { Driver } from '../../webdriver/driver';
 import FirstTimeTurnOnNotificationsModal from '../pages/notifications/first-time-turn-on-modal';
+import HeaderNavbar from '../pages/header-navbar';
 
 /**
  * This function enables the notifications through the header options menu from the home page
@@ -13,8 +13,8 @@ export const enableNotificationsFirstTime = async (
   driver: Driver,
 ): Promise<void> => {
   console.log(`Start enable notifications from home screen`);
-  const homePage = new HomePage(driver);
-  await homePage.goToNotifiationsList();
+  const header = new HeaderNavbar(driver);
+  await header.goToNotifiationsList();
 
   const turnOnNotificationsModal = new FirstTimeTurnOnNotificationsModal(
     driver,

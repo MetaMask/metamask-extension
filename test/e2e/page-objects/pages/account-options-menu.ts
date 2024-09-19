@@ -1,10 +1,10 @@
-import { testId } from '../../../../ui/selectors/util';
 import { Driver } from '../../webdriver/driver';
 
 class AccountOptionsMenu {
   private driver: Driver;
 
-  private readonly notificationsMenuItem = testId('notifications-menu-item');
+  private readonly notificationsMenuItem =
+    '[data-testid="notifications-menu-item"]';
 
   constructor(driver: Driver) {
     this.driver = driver;

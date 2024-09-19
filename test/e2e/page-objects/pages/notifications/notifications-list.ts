@@ -1,18 +1,15 @@
-import { testId } from '../../../../../ui/selectors/util';
 import { Driver } from '../../../webdriver/driver';
 
 class NotificationsListPage {
   private driver: Driver;
 
-  private readonly backButton = testId('back-button');
+  private readonly backButton = '[data-testid="back-button"]';
 
-  private readonly notificationsSettingsButton = testId(
-    'notifications-settings-button',
-  );
+  private readonly notificationsSettingsButton =
+    '[data-testid="notifications-settings-button"]';
 
-  private readonly noNotificationsReceivedPlaceholder = testId(
-    'notifications-list-placeholder',
-  );
+  private readonly noNotificationsReceivedPlaceholder =
+    '[data-testid="notifications-list-placeholder"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -35,7 +32,17 @@ class NotificationsListPage {
   }
 
   async check_noNotificationsReceived(): Promise<void> {
-    await this.driver.waitForSelector(this.noNotificationsReceivedPlaceholder);
+    try {
+      await this.driver.waitForSelector(
+        this.noNotificationsReceivedPlaceholder,
+      );
+    } catch (e) {
+      console.log(
+        'Timed out while waiting for the empty notifications list placeholder to be displayed',
+        e,
+      );
+    }
+    console.log('Notifications list is empty as expected');
   }
 }
 

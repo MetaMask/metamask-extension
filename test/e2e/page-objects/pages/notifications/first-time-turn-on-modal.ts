@@ -1,10 +1,10 @@
-import { testId } from '../../../../../ui/selectors/util';
 import { Driver } from '../../../webdriver/driver';
 
 class FirstTimeTurnOnNotificationsModal {
   private driver: Driver;
 
-  private readonly turnOnButton = testId('turn-on-notifications-button');
+  private readonly turnOnButton =
+    '[data-testid="turn-on-notifications-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
