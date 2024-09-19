@@ -301,7 +301,7 @@ export const getMetaMaskAccounts = createSelector(
       // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
       // We should consolidate the format to either hex or number
       if (isEvmAccountType(internalAccount.type)) {
-        if (balances[internalAccount.address]) {
+        if (balances?.[internalAccount.address]) {
           account = {
             ...account,
             ...balances[internalAccount.address],
@@ -1138,6 +1138,16 @@ export const getAnySnapUpdateAvailable = createSelector(
   [getAllSnapAvailableUpdates],
   (snapMap) => {
     return [...snapMap.values()].some((value) => value === true);
+  },
+);
+
+/**
+ * Return if the snap branding should show in the UI.
+ */
+export const getHideSnapBranding = createSelector(
+  [selectInstalledSnaps, selectSnapId],
+  (installedSnaps, snapId) => {
+    return installedSnaps[snapId]?.hideSnapBranding;
   },
 );
 

@@ -38,6 +38,7 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { Patch } from 'immer';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -427,8 +428,6 @@ export function importNewAccount(
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    let newState;
-
     dispatch(showLoadingIndication(loadingMessage));
 
     try {
@@ -437,16 +436,11 @@ export function importNewAccount(
         strategy,
         args,
       ]);
-      log.debug(`background.getState`);
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('getState');
     } finally {
       dispatch(hideLoadingIndication());
     }
 
-    dispatch(updateMetamaskState(newState));
-    return newState;
+    return await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -684,18 +678,17 @@ export function decryptMsgInline(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`actions calling background.decryptMessageInline`);
 
-    let newState;
     try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('decryptMessageInline', [decryptedMsgData]);
+      await submitRequestToBackground('decryptMessageInline', [
+        decryptedMsgData,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
       throw error;
     }
 
-    dispatch(updateMetamaskState(newState));
+    const newState = await forceUpdateMetamaskState(dispatch);
     return newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId];
   };
 }
@@ -713,11 +706,8 @@ export function decryptMsg(
     dispatch(showLoadingIndication());
     log.debug(`actions calling background.decryptMessage`);
 
-    let newState: MetaMaskReduxState['metamask'];
     try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('decryptMessage', [decryptedMsgData]);
+      await submitRequestToBackground('decryptMessage', [decryptedMsgData]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -726,7 +716,7 @@ export function decryptMsg(
       dispatch(hideLoadingIndication());
     }
 
-    dispatch(updateMetamaskState(newState));
+    await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(decryptedMsgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return decryptedMsgData;
@@ -746,11 +736,11 @@ export function encryptionPublicKeyMsg(
     dispatch(showLoadingIndication());
     log.debug(`actions calling background.encryptionPublicKey`);
 
-    let newState: MetaMaskReduxState['metamask'];
     try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('encryptionPublicKey', [msgData]);
+      await submitRequestToBackground<MetaMaskReduxState['metamask']>(
+        'encryptionPublicKey',
+        [msgData],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -759,7 +749,7 @@ export function encryptionPublicKeyMsg(
       dispatch(hideLoadingIndication());
     }
 
-    dispatch(updateMetamaskState(newState));
+    await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -772,27 +762,6 @@ export function updateCustomNonce(value: string) {
     value,
   };
 }
-
-const updateMetamaskStateFromBackground = (): Promise<
-  MetaMaskReduxState['metamask']
-> => {
-  log.debug(`background.getState`);
-
-  return new Promise((resolve, reject) => {
-    callBackgroundMethod<MetaMaskReduxState['metamask']>(
-      'getState',
-      [],
-      (error, newState) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-
-        resolve(newState as MetaMaskReduxState['metamask']);
-      },
-    );
-  });
-};
 
 /**
  * TODO: update previousGasParams to use typed gas params object
@@ -968,8 +937,7 @@ export function updateTransaction(
 
     try {
       dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-      const newState = await updateMetamaskStateFromBackground();
-      dispatch(updateMetamaskState(newState));
+      await forceUpdateMetamaskState(dispatch);
       dispatch(showConfTxPage({ id: txMeta.id }));
       return txMeta;
     } finally {
@@ -1019,7 +987,6 @@ export function addTransactionAndRouteToConfirmationPage(
       dispatch(displayWarning(error));
       throw error;
     }
-    return null;
   };
 }
 
@@ -1106,8 +1073,7 @@ export function updateAndApproveTx(
         },
       );
     })
-      .then(() => updateMetamaskStateFromBackground())
-      .then((newState) => dispatch(updateMetamaskState(newState)))
+      .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => {
         if (!getIsSendActive()) {
           dispatch(resetSendState());
@@ -1352,16 +1318,16 @@ export function cancelDecryptMsg(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
-    let newState;
     try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('cancelDecryptMessage', [msgData.id]);
+      await submitRequestToBackground<MetaMaskReduxState['metamask']>(
+        'cancelDecryptMessage',
+        [msgData.id],
+      );
     } finally {
       dispatch(hideLoadingIndication());
     }
 
-    dispatch(updateMetamaskState(newState));
+    await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(msgData.id));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -1379,16 +1345,16 @@ export function cancelEncryptionPublicKeyMsg(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
-    let newState;
     try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('cancelEncryptionPublicKey', [msgData.id]);
+      await submitRequestToBackground<MetaMaskReduxState['metamask']>(
+        'cancelEncryptionPublicKey',
+        [msgData.id],
+      );
     } finally {
       dispatch(hideLoadingIndication());
     }
 
-    dispatch(updateMetamaskState(newState));
+    await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(msgData.id));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -1423,8 +1389,7 @@ export function cancelTx(
         },
       );
     })
-      .then(() => updateMetamaskStateFromBackground())
-      .then((newState) => dispatch(updateMetamaskState(newState)))
+      .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => {
         dispatch(resetSendState());
         dispatch(completedTx(txMeta.id));
@@ -1477,8 +1442,7 @@ export function cancelTxs(
 
       await Promise.all(cancellations);
 
-      const newState = await updateMetamaskStateFromBackground();
-      dispatch(updateMetamaskState(newState));
+      await forceUpdateMetamaskState(dispatch);
       dispatch(resetSendState());
 
       txIds.forEach((id) => {
@@ -1565,13 +1529,18 @@ export function unlockSucceeded(message?: string) {
 }
 
 export function updateMetamaskState(
-  newState: MetaMaskReduxState['metamask'],
+  patches: Patch[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch, getState) => {
     const state = getState();
     const providerConfig = getProviderConfig(state);
     const { metamask: currentState } = state;
 
+    if (!patches?.length) {
+      return currentState;
+    }
+
+    const newState = applyPatches(currentState, patches);
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;
@@ -1663,6 +1632,8 @@ export function updateMetamaskState(
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     updateCustodyState(dispatch, newState, getState());
     ///: END:ONLY_INCLUDE_IF
+
+    return newState;
   };
 }
 
@@ -1690,13 +1661,12 @@ export function lockMetamask(): ThunkAction<
     dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
-      .then(() => updateMetamaskStateFromBackground())
+      .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         dispatch(displayWarning(error.message));
         return Promise.reject(error);
       })
-      .then((newState) => {
-        dispatch(updateMetamaskState(newState));
+      .then(() => {
         dispatch(hideLoadingIndication());
         dispatch({ type: actionConstants.LOCK_METAMASK });
       })
@@ -2312,12 +2282,12 @@ export function createCancelTransaction(
             const { id } =
               currentNetworkTxList[currentNetworkTxList.length - 1];
             newTxId = id;
-            resolve(newState);
+            resolve();
           }
         },
       );
     })
-      .then((newState) => dispatch(updateMetamaskState(newState)))
+      .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => newTxId);
   };
 }
@@ -2347,12 +2317,12 @@ export function createSpeedUpTransaction(
             const currentNetworkTxList =
               getCurrentNetworkTransactions(newState);
             newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
-            resolve(newState);
+            resolve();
           }
         },
       );
     })
-      .then((newState) => dispatch(updateMetamaskState(newState)))
+      .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => newTx);
   };
 }
@@ -2379,12 +2349,12 @@ export function createRetryTransaction(
             const currentNetworkTxList =
               getCurrentNetworkTransactions(newState);
             newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
-            resolve(newState);
+            resolve();
           }
         },
       );
     })
-      .then((newState) => dispatch(updateMetamaskState(newState)))
+      .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => newTx);
   };
 }
@@ -3195,20 +3165,18 @@ export function setServiceWorkerKeepAlivePreference(
 export async function forceUpdateMetamaskState(
   dispatch: MetaMaskReduxDispatch,
 ) {
-  log.debug(`background.getState`);
+  let pendingPatches: Patch[] | undefined;
 
-  let newState;
   try {
-    newState = await submitRequestToBackground<MetaMaskReduxState['metamask']>(
-      'getState',
+    pendingPatches = await submitRequestToBackground<Patch[]>(
+      'getStatePatches',
     );
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;
   }
 
-  dispatch(updateMetamaskState(newState));
-  return newState;
+  return dispatch(updateMetamaskState(pendingPatches));
 }
 
 export function toggleAccountMenu() {
@@ -4634,7 +4602,7 @@ export function createTransactionEventFragment(
 
 export function updateEventFragment(
   id: string,
-  payload: MetaMetricsEventFragment,
+  payload: Partial<MetaMetricsEventFragment>,
 ) {
   return submitRequestToBackground('updateEventFragment', [id, payload]);
 }
@@ -5449,6 +5417,33 @@ export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
 }
 
 /**
+ * Synchronizes accounts data with user storage between devices.
+ *
+ * This function sends a request to the background script to sync accounts data and update the state accordingly.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to synchronize accounts data with user storage between devices.
+ */
+export function syncInternalAccountsWithUserStorage(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'syncInternalAccountsWithUserStorage',
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
  * Marks MetaMask notifications as read.
  *
  * This function sends a request to the background script to mark the specified notifications as read.
@@ -5736,4 +5731,34 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   await submitRequestToBackground<void>('endTrace', [
     { ...request, timestamp },
   ]);
+}
+
+/**
+ * Apply the state patches from the background.
+ * Intentionally not using immer as a temporary measure to avoid
+ * freezing the resulting state and requiring further fixes
+ * to remove direct state mutations.
+ *
+ * @param oldState - The current state.
+ * @param patches - The patches to apply.
+ * Only supports 'replace' operations with a single path element.
+ * @returns The new state.
+ */
+function applyPatches(
+  oldState: Record<string, unknown>,
+  patches: Patch[],
+): Record<string, unknown> {
+  const newState = { ...oldState };
+
+  for (const patch of patches) {
+    const { op, path, value } = patch;
+
+    if (op === 'replace') {
+      newState[path[0]] = value;
+    } else {
+      throw new Error(`Unsupported patch operation: ${op}`);
+    }
+  }
+
+  return newState;
 }
