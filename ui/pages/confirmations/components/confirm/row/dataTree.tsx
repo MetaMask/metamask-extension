@@ -169,12 +169,9 @@ const DataField = memo(
       );
     }
 
-    console.log('checking label: ', label, ', primaryType: ', primaryType);
-    console.log('checking value: ', value);
     if (isDateField(label, primaryType) && Boolean(value)) {
       const intValue = parseInt(value, 10);
 
-      console.log(intValue);
       return intValue === NONE_DATE_VALUE ? (
         <ConfirmInfoRowText text={t('none')}></ConfirmInfoRowText>
       ) : (
