@@ -3177,6 +3177,12 @@
   "networks": {
     "message": "Networks"
   },
+  "networksSmallCase": {
+    "message": "networks"
+  },
+  "accountsSmallCase": {
+    "message": "accounts"
+  },
   "nevermind": {
     "message": "Nevermind"
   },
