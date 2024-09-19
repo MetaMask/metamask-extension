@@ -170,18 +170,22 @@ export const CoinOverview = ({
                   hideTitle
                 />
               )}
-              <div
-                onClick={handlePortfolioOnClick}
-                className="wallet-overview__portfolio_button"
-                data-testid="portfolio-link"
-              >
-                {t('portfolio')}
-                <Icon
-                  size={IconSize.Sm}
-                  name={IconName.Export}
-                  color={IconColor.primaryDefault}
-                />
-              </div>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                <div
+                  onClick={handlePortfolioOnClick}
+                  className="wallet-overview__portfolio_button"
+                  data-testid="portfolio-link"
+                >
+                  {t('portfolio')}
+                  <Icon
+                    size={IconSize.Sm}
+                    name={IconName.Export}
+                    color={IconColor.primaryDefault}
+                  />
+                </div>
+                ///: END:ONLY_INCLUDE_IF
+              }
             </div>
             {isEvm && (
               <PercentageAndAmountChange
