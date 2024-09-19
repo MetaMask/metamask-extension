@@ -47,7 +47,6 @@ import {
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
 } from '.';
-// import { NetworkConfiguration,  } from '@metamask/network-controller';
 
 type TestState = MultichainState &
   AccountsState & {
