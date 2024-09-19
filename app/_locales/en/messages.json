@@ -2497,6 +2497,9 @@
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Not ETH network, set to lowercase"
   },
+  "invalidAmount": {
+    "message": "Invalid amount."
+  },
   "invalidAssetType": {
     "message": "This asset is an NFT and needs to be re-added on the Import NFTs page found under the NFTs tab"
   },

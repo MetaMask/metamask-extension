@@ -37,7 +37,10 @@ import { handleSnapRequest } from '../../../store/actions';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 import { getBtcCachedBalance } from '../../../selectors/multichain';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../pages/confirmations/send/send.constants';
+import {
+  INVALID_AMOUNT_ERROR,
+  INVALID_RECIPIENT_ADDRESS_ERROR,
+} from '../../../pages/confirmations/send/send.constants';
 import { AbstractTransactionBuilder } from './abstract-transaction-builder';
 
 const SUPPORTED_BTC_NETWORKS = [
@@ -82,8 +85,18 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
   setAmount(
     amount: string,
   ): DraftTransaction['transactionParams']['sendAsset'] {
-    // amount should be a of type btc
-    // TODO: validate amount
+    const maxSatoshis = new BigNumber('21000000').mul(new BigNumber(10).pow(8));
+
+    if (new BigNumber(amount).gt(maxSatoshis) || new BigNumber(amount).lt(0)) {
+      this.transactionParams = {
+        ...this.transactionParams,
+        sendAsset: {
+          ...this.transactionParams.sendAsset,
+          error: INVALID_AMOUNT_ERROR,
+        },
+      };
+      return this.transactionParams.sendAsset;
+    }
 
     this.transaction.amounts[this.transactionParams.recipient.address] = amount;
     this.transactionParams = {
