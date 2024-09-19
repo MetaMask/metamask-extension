@@ -1,14 +1,16 @@
 module.exports = {
   collectCoverageFrom: [
-    '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
+    '<rootDir>/app/**/*.(js|ts|tsx)',
+    '<rootDir>/development/**/*.(js|ts|tsx)',
+    '<rootDir>/offscreen/**/*.(js|ts|tsx)',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
+    '<rootDir>/test/**/*.(js|ts|tsx)',
+    '<rootDir>/types/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
-    '<rootDir>/development/build/transforms/**/*.js',
-    '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
-  coverageDirectory: './coverage',
+  coverageDirectory: './coverage/unit',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
-  coverageReporters: process.env.CI ? ['json'] : ['html', 'json'],
+  coverageReporters: ['html', 'json'],
   reporters: [
     'default',
     [

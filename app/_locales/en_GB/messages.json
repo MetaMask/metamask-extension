@@ -1612,9 +1612,6 @@
   "domain": {
     "message": "Domain"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Network does not support domain lookup"
-  },
   "done": {
     "message": "Done"
   },
@@ -1799,12 +1796,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Show ENS domains in address bar"
-  },
-  "ensIllegalCharacter": {
-    "message": "Illegal character for ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Error in ENS name registration"
   },
   "ensUnknownError": {
     "message": "ENS lookup failed."
@@ -2454,9 +2445,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Recipient address is invalid"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Not ETH network, set to lowercase"
   },
   "invalidAssetType": {
     "message": "This asset is an NFT and needs to be re-added on the Import NFTs page found under the NFTs tab"
@@ -3180,9 +3168,6 @@
   },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
-  },
-  "noAddressForName": {
-    "message": "No address has been set for this name."
   },
   "noConnectedAccountDescription": {
     "message": "Select an account you want to use on this site to continue."
@@ -4199,9 +4184,6 @@
     "message": "Receive"
   },
   "recipientAddressPlaceholder": {
-    "message": "Enter public address (0x) or ENS name"
-  },
-  "recipientAddressPlaceholderFlask": {
     "message": "Enter public address (0x) or domain name"
   },
   "recommendedGasLabel": {

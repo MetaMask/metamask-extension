@@ -11,7 +11,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet @no-mmi', async function () {
-    const driverOptions = { responsive: true };
+    const driverOptions = { constrainWindowSize: true };
 
     await withFixtures(
       {
@@ -81,7 +81,7 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Importing existing wallet from lock page', async function () {
-    const driverOptions = { responsive: true };
+    const driverOptions = { constrainWindowSize: true };
 
     await withFixtures(
       {
@@ -115,7 +115,7 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Send Transaction from responsive window', async function () {
-    const driverOptions = { responsive: true };
+    const driverOptions = { constrainWindowSize: true };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -132,7 +132,7 @@ describe('MetaMask Responsive UI', function () {
         // starts to send a transaction
         await openActionMenuAndStartSendFlow(driver);
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
