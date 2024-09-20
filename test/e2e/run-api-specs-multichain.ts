@@ -193,9 +193,6 @@ async function main() {
         transport: createCaip27DriverTransport(driver, reverseScopeMap),
         reporters: [
           'console-streaming',
-          new HtmlReporter({
-            destination: `${process.cwd()}/html-report-caip27`,
-          }),
         ],
         skip: [
           'eth_coinbase',
