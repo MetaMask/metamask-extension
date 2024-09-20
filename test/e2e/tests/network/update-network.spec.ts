@@ -3,6 +3,7 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
+  tinyDelayMs,
   unlockWallet,
   withFixtures,
 } from '../../helpers';
@@ -42,9 +43,11 @@ const inputData = {
 };
 
 async function navigateToEditNetwork(driver: Driver) {
-  await driver.clickElement(selectors.accountOptionsMenuButton);
-  await driver.clickElement(selectors.settingsOption);
-  await driver.clickElement(selectors.networkOption);
+  await driver.clickElement('.mm-picker-network');
+  await driver.clickElement(
+    '[data-testid="network-list-item-options-button-0x539"]',
+  );
+  await driver.clickElement('[data-testid="network-list-item-options-edit"]');
 }
 
 describe('Update Network:', function (this: Suite) {
@@ -59,21 +62,25 @@ describe('Update Network:', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await navigateToEditNetwork(driver);
+
+        // Verify chain id is not editable when updating a network
+        const chainIdInput = await driver.findElement(
+          selectors.chainIdInputField,
+        );
+        assert.equal(
+          await chainIdInput.isEnabled(),
+          false,
+          'chain id input should be disabled',
+        );
+
+        // Update the network name
         await driver.fill(
           selectors.networkNameInputField,
           inputData.networkName,
         );
 
-        // We fill in the chain ID in two steps, allowing the error message time to disappear once the field is correctly completed.
-        await driver.fill(selectors.chainIdInputField, inputData.chainId_part1);
-        const chainIdInputField = await driver.findElement(
-          selectors.chainIdInputField,
-        );
-        await chainIdInputField.sendKeys(inputData.chainId_part2);
-
+        // Save, and verify the new network name is visible
         await driver.clickElement(selectors.saveButton);
-
-        // Validate the network name is updated
         const updatedNetworkNamePresent = await driver.isElementPresent(
           selectors.updatedNetworkDropDown,
         );
@@ -83,8 +90,23 @@ describe('Update Network:', function (this: Suite) {
           'Network name is not updated',
         );
 
+        // Start another edit
         await navigateToEditNetwork(driver);
-        await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
+
+        // Edit the RPC URL to something invalid
+        const rpcUrlInputDropDown = await driver.waitForSelector(
+          '[data-testid="test-add-rpc-drop-down"]',
+        );
+        await rpcUrlInputDropDown.click();
+        await driver.delay(tinyDelayMs);
+        await driver.clickElement({
+          text: 'Add RPC URL',
+          tag: 'button',
+        });
+        const rpcUrlInput = await driver.waitForSelector(
+          '[data-testid="rpc-url-input-test"]',
+        );
+        await rpcUrlInput.sendKeys(inputData.rpcUrl);
 
         // Validate the error message that appears for the invalid url format
         const errorMessage = await driver.isElementPresent(
@@ -97,35 +119,15 @@ describe('Update Network:', function (this: Suite) {
         );
 
         // Validate the Save button is disabled for the invalid url format
-        const saveButton = await driver.findElement(selectors.saveButton);
-        const saveButtonEnabled = await saveButton.isEnabled();
-        assert.equal(saveButtonEnabled, false, 'Save button is enabled');
-
-        // Validate the information symbol appears for chain id
-        const informationSymbolAppears = await driver.isElementPresent(
-          selectors.informationSymbol,
-        );
+        const addUrlButton = await driver.findElement({
+          text: 'Add URL',
+          tag: 'button',
+        });
         assert.equal(
-          informationSymbolAppears,
-          true,
-          'Information symbol did not appear for chain id',
+          await addUrlButton.isEnabled(),
+          false,
+          'Add url button should not be enabled',
         );
-
-        await driver.clickElement(selectors.ethereumNetwork);
-
-        // Validate the Save, Cancel, and Delete buttons are not present for the default network
-        await driver.assertElementNotPresent(selectors.deleteButton, {
-          findElementGuard: selectors.networkNameInputFieldSetToEthereumMainnet, // Wait for the network selection to complete
-        });
-        // The findElementGuard above is sufficient for the next two assertions
-        await driver.assertElementNotPresent(selectors.cancelButton);
-        await driver.assertElementNotPresent(selectors.saveButton);
-
-        // Validate the error does not appear on the General tab
-        await driver.clickElement(selectors.generalOption);
-        await driver.assertElementNotPresent(selectors.errorContainer, {
-          findElementGuard: selectors.generalTabHeader, // Wait for the General tab to load
-        });
       },
     );
   });
