@@ -267,6 +267,7 @@
     "encryptionKey": "string",
     "encryptionSalt": "string"
   },
+  "multichainSend": "object",
   "ramps": "object",
   "send": "object",
   "swaps": "object",
