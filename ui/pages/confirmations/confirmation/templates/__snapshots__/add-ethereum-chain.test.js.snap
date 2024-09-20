@@ -35,12 +35,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
       <h3
         class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
       >
-        Allow this site to add a network?
+        Update Test initial state
       </h3>
       <h6
         class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
       >
-        This will allow this network to be used within MetaMask.
+        This site is requesting to update your default network URL. You can edit defaults and network information any time.
       </h6>
       <h6
         class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"

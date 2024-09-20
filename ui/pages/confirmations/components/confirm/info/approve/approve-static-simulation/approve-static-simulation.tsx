@@ -88,7 +88,11 @@ export const ApproveStaticSimulation = () => {
     <StaticSimulation
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
-      description={t('simulationDetailsApproveDesc')}
+      description={t(
+        isNFT
+          ? 'simulationDetailsApproveDesc'
+          : 'simulationDetailsERC20ApproveDesc',
+      )}
       simulationHeading={
         isNFT ? t('simulationApproveHeading') : t('spendingCap')
       }

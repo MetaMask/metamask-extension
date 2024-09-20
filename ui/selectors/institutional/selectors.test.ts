@@ -1,6 +1,7 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { EthAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -69,6 +70,12 @@ const custodianMock = {
 function buildState(overrides = {}) {
   const defaultState = {
     metamask: {
+      networkConfigurationsByChainId: {
+        [toHex(1)]: {
+          chainId: toHex(1),
+          rpcEndpoints: [{}],
+        },
+      },
       internalAccounts: {
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         accounts: {
@@ -366,6 +373,12 @@ describe('Institutional selectors', () => {
           },
           keyrings: [],
           custodianSupportedChains: {},
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
+          },
         },
       });
 

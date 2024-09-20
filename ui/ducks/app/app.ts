@@ -87,9 +87,10 @@ type AppState = {
   newNetworkAddedName: string;
   editedNetwork:
     | {
-        networkConfigurationId: string;
-        nickname: string;
-        editCompleted: boolean;
+        chainId: string;
+        nickname?: string;
+        editCompleted?: boolean;
+        newNetwork?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;

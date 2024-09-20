@@ -198,7 +198,7 @@ describe('App Header', () => {
       const mockProviderConfig = {
         chainId: '0x1',
         rpcUrl: 'https://localhost:8545',
-        nickname: null,
+        nickname: undefined,
       };
 
       const { getByText } = render({

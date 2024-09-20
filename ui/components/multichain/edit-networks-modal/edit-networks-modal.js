@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -13,7 +13,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getOriginOfCurrentTab,
   getPermittedChainsForSelectedTab,
-  getTestNetworks,
+  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import {
   Modal,
@@ -37,6 +37,10 @@ import {
   setSelectedNetworksForDappConnection,
 } from '../../../store/actions';
 import { getURLHost } from '../../../helpers/utils/util';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 
 export const EditNetworksModal = ({
   onClose,
@@ -47,7 +51,19 @@ export const EditNetworksModal = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const testNetworks = useSelector(getTestNetworks);
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const [nonTestNetworks, testNetworks] = useMemo(
+    () =>
+      Object.entries(networkConfigurations).reduce(
+        ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
+          const isTest = TEST_CHAINS.includes(chainId);
+          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          return [nonTestNetworksList, testNetworksList];
+        },
+        [[], []],
+      ),
+    [networkConfigurations],
+  );
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const connectedNetworks = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, activeTabOrigin),
@@ -120,11 +136,11 @@ export const EditNetworksModal = ({
               isIndeterminate={isIndeterminate}
             />
           </Box>
-          {combinedNetworks.map((network) => (
+          {nonTestNetworks.map((network) => (
             <NetworkListItem
-              name={network.nickname}
-              iconSrc={network?.rpcPrefs?.imageUrl}
-              key={network.id}
+              name={network.name}
+              iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+              key={network.chainId}
               onClick={() => {
                 handleAccountClick(network.chainId);
               }}
@@ -140,9 +156,9 @@ export const EditNetworksModal = ({
           </Box>
           {testNetworks.map((network) => (
             <NetworkListItem
-              name={network.nickname}
-              iconSrc={network?.rpcPrefs?.imageUrl}
-              key={network.id}
+              name={network.name}
+              iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+              key={network.chainId}
               onClick={() => {
                 handleAccountClick(network.chainId);
               }}
