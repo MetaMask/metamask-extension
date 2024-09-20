@@ -516,12 +516,6 @@
   "prev": {
     "message": "Aiemp."
   },
-  "primaryCurrencySetting": {
-    "message": "Ensisijainen valuutta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Valitse natiivivaihtoehto näyttääksesi arvot ensisijaisesti ketjun natiivivaluutalla (esim. ETH). Valitse oletusmääräys asettaaksesi valitsemasi oletusvaluutan ensisijaiseksi."
-  },
   "privacyMsg": {
     "message": "Tietosuojakäytäntö"
   },

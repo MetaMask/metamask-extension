@@ -516,12 +516,6 @@
   "prev": {
     "message": "Prethodno"
   },
-  "primaryCurrencySetting": {
-    "message": "Glavna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Odaberite da se prvo prikazuju valute u osnovnoj valuti bloka (npr. ETH). Odaberite mogućnost Fiat za prikazivanje valuta u odabranoj valuti Fiat."
-  },
   "privacyMsg": {
     "message": "Pravilnik o zaštiti privatnosti"
   },

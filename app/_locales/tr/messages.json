@@ -3992,12 +3992,6 @@
   "priceUnavailable": {
     "message": "fiyat mevcut değil"
   },
-  "primaryCurrencySetting": {
-    "message": "Öncelikli para birimi"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Değerlerin zincirin yerli para biriminde (ör. ETH) görüntülenmesini önceliklendirmek için yerli seçimi yapın. Seçtiğiniz fiat parada değerlerin gösterilmesini önceliklendirmek için Fiat Para seçin."
-  },
   "primaryType": {
     "message": "Öncelikli tür"
   },

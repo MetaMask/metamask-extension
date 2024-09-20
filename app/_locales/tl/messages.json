@@ -3992,12 +3992,6 @@
   "priceUnavailable": {
     "message": "hindi available ang presyo"
   },
-  "primaryCurrencySetting": {
-    "message": "Pangunahing Currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Piliin ang native para maisapriyoridad ang pagpapakita ng mga value sa native na currency ng chain (hal. ETH). Piliin ang Fiat para maisapriyoridad ang pagpapakita ng mga value sa napili mong fiat na salapi."
-  },
   "primaryType": {
     "message": "Pangunahing uri"
   },

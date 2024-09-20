@@ -504,12 +504,6 @@
   "prev": {
     "message": "የቀደመ"
   },
-  "primaryCurrencySetting": {
-    "message": "ተቀዳሚ የገንዘብ ዓይነት"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "ዋጋዎች በራሳቸው የሰንሰለት ገንዘብ ዓይነት (ለምሳሌ ETH) በቅድሚያ እንዲታዪ ይምረጡ። ዋጋዎች በተመረጠ የፊያት ገንዘብ ዓይነት እንዲታዩ ደግሞ ፊያትን ይምረጡ።"
-  },
   "privacyMsg": {
     "message": "የግለኝነት መጠበቂያ ህግ"
   },

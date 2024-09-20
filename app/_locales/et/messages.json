@@ -513,12 +513,6 @@
   "prev": {
     "message": "Eelm"
   },
-  "primaryCurrencySetting": {
-    "message": "Põhivaluuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Valige omavääring, et prioriseerida vääringu kuvamist ahela omavääringus (nt ETH). Valige Fiat, et prioriseerida vääringu kuvamist valitud fiat-vääringus."
-  },
   "privacyMsg": {
     "message": "privaatsuspoliitika"
   },

@@ -491,12 +491,6 @@
   "prev": {
     "message": "Predchádzajúce"
   },
-  "primaryCurrencySetting": {
-    "message": "Primárna mena"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Vyberte natívne, ak chcete priorizovať zobrazovanie hodnôt v natívnej mene reťazca (napr. ETH). Ak chcete priorizovať zobrazovanie hodnôt vo svojej vybranej mene fiat, zvoľte možnosť Fiat."
-  },
   "privacyMsg": {
     "message": "Zásady ochrany osobních údajů"
   },

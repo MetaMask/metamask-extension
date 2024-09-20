@@ -1198,12 +1198,6 @@
   "prev": {
     "message": "Precedente"
   },
-  "primaryCurrencySetting": {
-    "message": "Moneta Primaria"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Seleziona ETH per privilegiare la visualizzazione dei valori nella moneta nativa della blockhain. Seleziona Fiat per privilegiare la visualizzazione dei valori nella moneta selezionata."
-  },
   "privacyMsg": {
     "message": "Politica sulla Privacy"
   },

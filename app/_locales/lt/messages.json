@@ -519,12 +519,6 @@
   "prev": {
     "message": "Peržiūra"
   },
-  "primaryCurrencySetting": {
-    "message": "Pagrindinė valiuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Rinkitės vietinę, kad vertės pirmiausia būtų rodomos vietine grandinės valiuta (pvz., ETH). Rinkitės standartinę, kad vertės pirmiausia būtų rodomos jūsų pasirinkta standartine valiuta."
-  },
   "privacyMsg": {
     "message": "Privatumo politika"
   },

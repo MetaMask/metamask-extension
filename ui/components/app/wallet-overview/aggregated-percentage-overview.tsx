@@ -17,7 +17,6 @@ import {
   Display,
   TextColor,
   TextVariant,
-  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
@@ -107,8 +106,7 @@ export const AggregatedPercentageOverview = () => {
   return (
     <Box display={Display.Flex}>
       <Text
-        fontWeight={FontWeight.Normal}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="aggregated-value-change"
         style={{ whiteSpace: 'pre' }}
@@ -117,8 +115,7 @@ export const AggregatedPercentageOverview = () => {
         {formattedAmountChange}
       </Text>
       <Text
-        fontWeight={FontWeight.Normal}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="aggregated-percentage-change"
         ellipsis

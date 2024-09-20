@@ -1509,12 +1509,6 @@
   "prev": {
     "message": "Ant."
   },
-  "primaryCurrencySetting": {
-    "message": "Moneda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Seleccione Nativa para dar prioridad a mostrar los valores en la moneda nativa de la cadena (p. ej., ETH). Seleccione Fiduciaria para dar prioridad a mostrar los valores en la moneda fiduciaria seleccionada."
-  },
   "priorityFee": {
     "message": "Tarifa de prioridad"
   },

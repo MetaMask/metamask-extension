@@ -3992,12 +3992,6 @@
   "priceUnavailable": {
     "message": "giá không khả dụng"
   },
-  "primaryCurrencySetting": {
-    "message": "Tiền tệ chính"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Chọn Gốc để ưu tiên hiển thị giá trị bằng đơn vị tiền tệ gốc của chuỗi (ví dụ: ETH). Chọn Pháp định để ưu tiên hiển thị giá trị bằng đơn vị tiền pháp định mà bạn chọn."
-  },
   "primaryType": {
     "message": "Loại chính"
   },

@@ -3477,6 +3477,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSwitchedNetworkNeverShowMessage.bind(
           appStateController,
         ),
+      setAggregatedBalancePopoverShown:
+        appStateController.setAggregatedBalancePopoverShown.bind(
+          appStateController,
+        ),
       getLastInteractedConfirmationInfo:
         appStateController.getLastInteractedConfirmationInfo.bind(
           appStateController,

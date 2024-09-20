@@ -3992,12 +3992,6 @@
   "priceUnavailable": {
     "message": "preço não disponível"
   },
-  "primaryCurrencySetting": {
-    "message": "Moeda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selecione Nativa para priorizar a exibição de valores na moeda nativa da cadeia (por ex., ETH). Selecione Fiduciária para priorizar a exibição de valores na moeda fiduciária selecionada."
-  },
   "primaryType": {
     "message": "Tipo primário"
   },

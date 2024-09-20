@@ -503,12 +503,6 @@
   "prev": {
     "message": "Sebelumnya"
   },
-  "primaryCurrencySetting": {
-    "message": "Mata Wang Utama"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Pilih natif untuk mengutamakan nilai paparan dalam mata wang natif rantaian (cth. ETH). Pilih Fiat untuk mengutamakan nilai paparan dalam mata wang fiat yang anda pilih."
-  },
   "privacyMsg": {
     "message": "Dasar Privasi"
   },
