@@ -583,7 +583,7 @@ jobs:
           steps:
             - run:
                 name: build:dist
-                command: BARAD_DUR=true yarn build dist
+                command: yarn build dist
       - when:
           condition:
             matches:
@@ -877,7 +877,7 @@ jobs:
           at: .
       - run:
           name: Build extension for testing
-          command: yarn build:test
+          command: BARAD_DUR=1 yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test
