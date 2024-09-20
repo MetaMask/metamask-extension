@@ -10,7 +10,12 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const { withFixtures, tinyDelayMs, unlockWallet } = require('./helpers');
+const {
+  defaultGanacheOptions,
+  tinyDelayMs,
+  unlockWallet,
+  withFixtures,
+} = require('./helpers');
 const { PAGES } = require('./webdriver/driver');
 const FixtureBuilder = require('./fixture-builder');
 
@@ -22,6 +27,7 @@ async function measurePage(pageName) {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
+      ganacheOptions: defaultGanacheOptions,
       disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
