@@ -183,9 +183,8 @@ describe('ERC20 Approve Confirmation', () => {
     );
     expect(simulationSection).toBeInTheDocument();
 
-    // TODO - fix this copy
     expect(simulationSection).toHaveTextContent(
-      "You're giving someone else permission to withdraw NFTs from your account",
+      "You're giving someone else permission to spend this amount from your account.",
     );
     expect(simulationSection).toHaveTextContent('Spending cap');
     const spendingCapValue = screen.getByTestId('simulation-token-value');
@@ -221,9 +220,9 @@ describe('ERC20 Approve Confirmation', () => {
     );
     expect(approveDetailsSpender).toContainElement(spenderTooltip);
     await testUser.hover(spenderTooltip);
-    // TODO - fix this copy
+
     const spenderTooltipContent = await screen.findByText(
-      'This is the address that will be able to withdraw your NFTs.',
+      'This is the address that will be able to spend your tokens on your behalf.',
     );
     expect(spenderTooltipContent).toBeInTheDocument();
 
