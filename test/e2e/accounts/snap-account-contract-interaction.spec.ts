@@ -1,4 +1,4 @@
-import GanacheContractAddressRegistry from '../seeder/contract-address-registry';
+import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { scrollAndConfirmAndAssertConfirm } from '../tests/confirmations/helpers';
 import {
   createDepositTransaction,
@@ -48,7 +48,7 @@ describe('Snap Account Contract interaction', function () {
 
         // Open DApp with contract
         const contractAddress = await (
-          contractRegistry as GanacheContractAddressRegistry
+          contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
         await openDapp(driver, contractAddress);
 
