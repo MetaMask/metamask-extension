@@ -1,4 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { isHexString } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -23,11 +24,20 @@ export const useApproveTokenSimulation = (
   const { value, pending } = decodedResponse;
 
   const decodedSpendingCap = useMemo(() => {
-    return value
-      ? new BigNumber(value.data[0].params[1].value)
-          .dividedBy(new BigNumber(10).pow(Number(decimals)))
-          .toNumber()
-      : 0;
+    if (!value) {
+      return 0;
+    }
+
+    const paramIndex = value.data[0].params.findIndex(
+      (param) => param.value !== undefined && !isHexString(param.value),
+    );
+    if (paramIndex === -1) {
+      return 0;
+    }
+
+    return new BigNumber(value.data[0].params[paramIndex].value)
+      .dividedBy(new BigNumber(10).pow(Number(decimals)))
+      .toNumber();
   }, [value, decimals]);
 
   const formattedSpendingCap = useMemo(() => {

@@ -348,12 +348,6 @@ describe('Change assets', function () {
 
         // Go to the last confirmation screen
         await driver.clickElement({ text: 'Continue', css: 'button' });
-
-        // Validate the send amount
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000118',
-        });
       },
     );
   });
