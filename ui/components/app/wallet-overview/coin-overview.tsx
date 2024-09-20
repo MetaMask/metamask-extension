@@ -277,6 +277,7 @@ export const CoinOverview = ({
                             iconName={IconName.Close}
                             justifyContent={JustifyContent.center}
                             ariaLabel="close"
+                            data-testid="popover-close"
                           />
                         </Box>
 

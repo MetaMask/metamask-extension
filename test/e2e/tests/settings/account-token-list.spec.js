@@ -71,6 +71,8 @@ describe('Settings', function () {
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
         );
+
+        await driver.clickElement('[data-testid="popover-close"]');
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
