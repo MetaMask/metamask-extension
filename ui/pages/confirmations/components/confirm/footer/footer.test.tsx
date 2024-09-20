@@ -301,6 +301,23 @@ describe('ConfirmFooter', () => {
       expect(getByText('Review alerts')).toBeInTheDocument();
     });
 
+    it('renders the "review alerts" button disabled when there are blocking alerts', () => {
+      const stateWithMultipleDangerAlerts = createStateWithAlerts(
+        [
+          alertsMock[0],
+          {
+            ...alertsMock[0],
+            key: 'From',
+            isBlocking: true,
+          },
+        ],
+        { [KEY_ALERT_KEY_MOCK]: false },
+      );
+      const { getByText } = render(stateWithMultipleDangerAlerts);
+      expect(getByText('Review alerts')).toBeInTheDocument();
+      expect(getByText('Review alerts')).toBeDisabled();
+    });
+
     it('renders the "review alert" button when there are unconfirmed alerts', () => {
       const { getByText } = render(stateWithAlertsMock);
       expect(getByText('Review alert')).toBeInTheDocument();

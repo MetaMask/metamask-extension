@@ -117,7 +117,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           {label}
         </Text>
         {labelChildren}
-        {!labelChildren && tooltip && tooltip.length > 0 && (
+        {!labelChildren && tooltip?.length && (
           <Tooltip
             position="bottom"
             title={tooltip}

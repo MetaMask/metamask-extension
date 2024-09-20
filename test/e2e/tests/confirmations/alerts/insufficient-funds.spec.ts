@@ -7,7 +7,6 @@ import {
   WINDOW_TITLES,
 } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
   TestSuiteArguments,
   openDAppWithContract,
@@ -47,10 +46,6 @@ describe('Alert for insufficient funds @no-mmi', function () {
         await mintNft(driver);
 
         await verifyAlertForInsufficientBalance(driver);
-
-        await scrollAndConfirmAndAssertConfirm(driver);
-
-        await displayAlertForInsufficientBalance(driver);
       },
     );
   });
@@ -63,7 +58,7 @@ async function verifyAlertForInsufficientBalance(driver: Driver) {
   await driver.clickElement('[data-testid="inline-alert"]');
 
   await displayAlertForInsufficientBalance(driver);
-  await driver.clickElement('[data-testid="alert-modal-close-button"]');
+  await driver.clickElement('[data-testid="alert-modal-button"]');
 }
 
 async function mintNft(driver: Driver) {
