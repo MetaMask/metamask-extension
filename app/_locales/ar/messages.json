@@ -209,9 +209,6 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteNetwork": {
-    "message": "هل تريد حذف الشبكة؟"
-  },
   "details": {
     "message": "التفاصيل"
   },
@@ -350,9 +347,6 @@
   },
   "invalidAddressRecipient": {
     "message": "عنوان المستلم غير صحيح"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "غير صحيح Block Explorer رابط"
   },
   "invalidRPC": {
     "message": "رابط آر بي سي غير صحيح"

@@ -205,9 +205,6 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteNetwork": {
-    "message": "Izbrisati mrežu?"
-  },
   "details": {
     "message": "Detalji"
   },
@@ -346,9 +343,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Adresa primatelja nije valjana"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nevaljani URL Block Explorer-a"
   },
   "invalidRPC": {
     "message": "Nevaljani URL RPC-a"

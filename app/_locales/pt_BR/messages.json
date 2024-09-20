@@ -534,9 +534,6 @@
   "delete": {
     "message": "Excluir"
   },
-  "deleteNetwork": {
-    "message": "Excluir rede?"
-  },
   "description": {
     "message": "Descrição"
   },
@@ -1014,9 +1011,6 @@
   "invalidAddressRecipient": {
     "message": "O endereço do destinatário é inválido"
   },
-  "invalidBlockExplorerURL": {
-    "message": "URL inválido do Block Explorer"
-  },
   "invalidChainIdTooBig": {
     "message": "ID de cadeia inválido. O ID de cadeia é muito grande."
   },
@@ -1263,9 +1257,6 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "O ID da cadeia é usado para assinar transações. É preciso ser igual ao ID da cadeia retornado pela rede. Você pode informar um número decimal ou um número hexadecimal com prefixo “0x”, mas exibiremos o número em casas decimais."
-  },
   "networkStatus": {
     "message": "Status da rede"
   },
@@ -1424,9 +1415,6 @@
     "message": "Os alertas de detecção de phishing dependem de comunicação com $1. O jsDeliver terá acesso ao seu endereço IP. Veja $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "Um provedor de rede mal-intencionado pode mentir sobre o estado do blockchain e registrar as atividades da sua rede. Adicione somente as redes personalizadas em que você confia."
-  },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em que você confia.",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -1437,9 +1425,6 @@
   },
   "optional": {
     "message": "Opcional"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Opcional)"
   },
   "or": {
     "message": "ou"
@@ -2429,9 +2414,6 @@
   },
   "urlErrorMsg": {
     "message": "Os URLs precisam do prefixo HTTP/HTTPS adequado."
-  },
-  "urlExistsErrorMsg": {
-    "message": "O ID da cadeia está sendo usado pela rede $1."
   },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
