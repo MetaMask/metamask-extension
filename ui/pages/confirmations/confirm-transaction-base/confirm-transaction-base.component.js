@@ -215,7 +215,6 @@ export default class ConfirmTransactionBase extends Component {
       useMaxValue,
       hasPriorityApprovalRequest,
       mostRecentOverviewPage,
-      updateCustomNonce,
     } = this.props;
 
     const {
@@ -701,7 +700,6 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   async handleCancel() {
-    console.log('into handle cancel')
     const {
       txData,
       cancelTransaction,
@@ -719,7 +717,6 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleSubmit() {
-    console.log('into handle submit')
     const { submitting } = this.state;
 
     if (submitting) {
