@@ -1113,7 +1113,7 @@ jobs:
           command: mv ./builds-test ./builds
       - gh/install
       - run:
-          name: test:api-specs
+          name: test:api-specs-multichain
           command: .circleci/scripts/test-run-e2e.sh yarn test:api-specs-multichain
           no_output_timeout: 5m
       - run:
