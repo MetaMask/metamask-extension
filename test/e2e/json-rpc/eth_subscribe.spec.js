@@ -14,7 +14,7 @@ describe('eth_subscribe', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        networkOptions: defaultGanacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {

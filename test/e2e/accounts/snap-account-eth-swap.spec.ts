@@ -30,7 +30,7 @@ describe('Snap Account - Swap', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        networkOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapsTransactionQuote,
       },

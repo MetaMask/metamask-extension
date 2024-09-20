@@ -33,7 +33,7 @@ describe('Snap Account Contract interaction', function () {
             },
           })
           .build(),
-        ganacheOptions: multipleGanacheOptionsForType2Transactions,
+        networkOptions: multipleGanacheOptionsForType2Transactions,
         smartContract,
         title: this.test?.fullTitle(),
       },
