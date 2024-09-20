@@ -48,13 +48,14 @@ export function useDisplayNames(
     const watchedNftName = watchedNftNames[value.toLowerCase()]?.name;
     const nftCollectionProperties = nftCollections[value.toLowerCase()];
 
-    let nftCollectionName;
-    let nftCollectionImage;
+    const isNotSpam = nftCollectionProperties?.isSpam === false;
 
-    if (nftCollectionProperties?.isSpam === false) {
-      nftCollectionName = nftCollectionProperties?.name;
-      nftCollectionImage = nftCollectionProperties?.image;
-    }
+    const nftCollectionName = isNotSpam
+      ? nftCollectionProperties?.name
+      : undefined;
+    const nftCollectionImage = isNotSpam
+      ? nftCollectionProperties?.image
+      : undefined;
 
     const contractDisplayName =
       preferContractSymbol && singleContractInfo?.symbol
