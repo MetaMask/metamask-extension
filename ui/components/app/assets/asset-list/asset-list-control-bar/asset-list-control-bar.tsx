@@ -10,6 +10,7 @@ import {
 } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
 import {
+  getPreferences,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
 } from '../../../../../selectors';
@@ -41,11 +42,10 @@ const AssetListControlBar = ({
   const [sorted, setSorted] = useState(false);
   const controlBarRef = useRef<HTMLDivElement>(null); // Create a ref
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tokenSortConfig = useSelector((state: any) => {
-    return state.metamask.preferences.tokenSortConfig;
-  });
+
+  const { useNativeCurrencyAsPrimaryCurrency, tokenSortConfig } =
+    useSelector(getPreferences);
+
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -63,10 +63,17 @@ const AssetListControlBar = ({
   const nativeTokenWithBalance = useNativeTokenBalance();
 
   useEffect(() => {
+    // this swap is needed when toggling primary currency type for native token in order to sort by fiat amounts only
+    if (useNativeCurrencyAsPrimaryCurrency) {
+      [nativeTokenWithBalance.string, nativeTokenWithBalance.tokenFiatAmount] =
+        [nativeTokenWithBalance.tokenFiatAmount, nativeTokenWithBalance.string];
+    }
+
     const sortedTokenList = sortAssets(
       [nativeTokenWithBalance, ...tokensWithBalances],
       tokenSortConfig,
     );
+
     setTokenList(sortedTokenList);
   }, [tokenSortConfig.key, loading, tokensWithBalances.length]);
 
