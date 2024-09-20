@@ -27,12 +27,11 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               />
             </div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
               <img
-                alt="Chain 5 logo"
+                alt="Goerli logo"
                 class="mm-avatar-network__network-image"
-                src=""
               />
             </div>
           </div>
@@ -49,7 +48,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Chain 5
+              Goerli
             </p>
           </div>
         </div>
@@ -261,9 +260,9 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               </div>
             </div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              C
+              G
             </div>
           </div>
           <div
@@ -277,7 +276,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Chain 5
+              Goerli
             </p>
           </div>
         </div>
@@ -906,7 +905,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                                   style="white-space: pre-wrap;"
                                 >
-                                  20 January 1970, 22:34
+                                  05 August 2024, 19:52
                                 </p>
                               </div>
                             </div>
@@ -1085,7 +1084,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                                   style="white-space: pre-wrap;"
                                 >
-                                  20 January 1970, 22:34
+                                  05 August 2024, 19:54
                                 </p>
                               </div>
                             </div>
@@ -1211,7 +1210,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                           style="white-space: pre-wrap;"
                         >
-                          20 January 1970, 21:51
+                          06 July 2024, 20:22
                         </p>
                       </div>
                     </div>
@@ -1307,9 +1306,9 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               </div>
             </div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              C
+              G
             </div>
           </div>
           <div
@@ -1323,7 +1322,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Chain 5
+              Goerli
             </p>
           </div>
         </div>
@@ -1885,7 +1884,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                               style="white-space: pre-wrap;"
                             >
-                              20 January 1970, 22:34
+                              05 August 2024, 19:52
                             </p>
                           </div>
                         </div>
@@ -2009,7 +2008,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                           style="white-space: pre-wrap;"
                         >
-                          20 January 1970, 21:51
+                          06 July 2024, 20:22
                         </p>
                       </div>
                     </div>
@@ -2069,12 +2068,11 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               />
             </div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
               <img
-                alt="Chain 5 logo"
+                alt="Goerli logo"
                 class="mm-avatar-network__network-image"
-                src=""
               />
             </div>
           </div>
@@ -2091,7 +2089,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Chain 5
+              Goerli
             </p>
           </div>
         </div>
@@ -2753,9 +2751,9 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               </div>
             </div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              C
+              G
             </div>
           </div>
           <div
@@ -2769,7 +2767,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Chain 5
+              Goerli
             </p>
           </div>
         </div>
@@ -3407,7 +3405,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                           style="white-space: pre-wrap;"
                         >
-                          02 August 1971, 16:53
+                          09 June 3554, 16:53
                         </p>
                       </div>
                     </div>
@@ -3503,9 +3501,9 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               </div>
             </div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              C
+              G
             </div>
           </div>
           <div
@@ -3519,7 +3517,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Chain 5
+              Goerli
             </p>
           </div>
         </div>

@@ -202,9 +202,6 @@
   "delete": {
     "message": "মুছুন"
   },
-  "deleteNetwork": {
-    "message": "নেটওয়ার্ক মুছবেন?"
-  },
   "details": {
     "message": "বিশদ বিবরণ"
   },
@@ -347,9 +344,6 @@
   },
   "invalidAddressRecipient": {
     "message": "প্রাপকের ঠিকানা অবৈধ"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "অবৈধ Block Explorer URL"
   },
   "invalidRPC": {
     "message": "অবৈধ RPC URL"

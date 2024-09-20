@@ -70,6 +70,10 @@ export default async function launchMetamaskUi(opts) {
 
   const store = await startApp(metamaskState, backgroundConnection, opts);
 
+  await promisify(
+    backgroundConnection.startPatches.bind(backgroundConnection),
+  )();
+
   setupStateHooks(store);
 
   return store;
@@ -303,12 +307,6 @@ function setupStateHooks(store) {
     return logsArray;
   };
 }
-
-// Check for local feature flags and represent them so they're avialable
-// to the front-end of the app
-window.metamaskFeatureFlags = {
-  networkMenuRedesign: Boolean(process.env.ENABLE_NETWORK_UI_REDESIGN),
-};
 
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();

@@ -202,9 +202,6 @@
   "delete": {
     "message": "Suprimeix"
   },
-  "deleteNetwork": {
-    "message": "Esborrar Xarxa?"
-  },
   "details": {
     "message": "Detalls"
   },
@@ -337,9 +334,6 @@
   },
   "invalidAddressRecipient": {
     "message": "L'adreça del recipient no és vàlida"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL de Block Explorer"
   },
   "invalidRPC": {
     "message": "URL de RPC"
