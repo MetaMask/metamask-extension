@@ -4626,10 +4626,9 @@ export default class MetamaskController extends EventEmitter {
     if (deviceName === HardwareDeviceNames.trezor) {
       const keyring = await this.getKeyringForDevice(deviceName, hdPath);
       const { label } = keyring.bridge;
-      if (label.includes('OneKey')) {
+      if (label && label.includes('OneKey')) {
         return HardwareDeviceNames.oneKeyViaTrezor;
       }
-      return HardwareDeviceNames.trezor;
     }
 
     return deviceName;
