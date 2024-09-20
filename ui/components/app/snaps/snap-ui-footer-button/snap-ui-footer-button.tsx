@@ -5,6 +5,7 @@ import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import {
   Button,
   ButtonProps,
@@ -19,7 +20,6 @@ import {
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
 import { getHideSnapBranding } from '../../../../selectors';
-import classnames from 'classnames';
 
 type SnapUIFooterButtonProps = {
   name?: string;
