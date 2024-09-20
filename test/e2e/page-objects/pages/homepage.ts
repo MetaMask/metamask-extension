@@ -6,21 +6,41 @@ import HeaderNavbar from './header-navbar';
 class HomePage {
   public readonly headerNavbar: HeaderNavbar;
 
+  private readonly driver: Driver;
+
   private readonly sendButton: string = '[data-testid="eth-overview-send"]';
-  private readonly activityTab: string = '[data-testid="account-overview__activity-tab"]';
-  private readonly tokensTab: string = '[data-testid="account-overview__asset-tab"]';
-  private readonly balance: string = '[data-testid="eth-overview__primary-currency"]';
-  private readonly completedTransactions: string = '[data-testid="activity-list-item"]';
+
+  private readonly activityTab: string =
+    '[data-testid="account-overview__activity-tab"]';
+
+  private readonly tokensTab: string =
+    '[data-testid="account-overview__asset-tab"]';
+
+  private readonly balance: string =
+    '[data-testid="eth-overview__primary-currency"]';
+
+  private readonly completedTransactions: string =
+    '[data-testid="activity-list-item"]';
+
   private readonly confirmedTransactions: object = {
     text: 'Confirmed',
     css: '.transaction-status-label--confirmed',
   };
-  private readonly transactionAmountsInActivity: string = '[data-testid="transaction-list-item-primary-currency"]';
-  private readonly accountMenuButton: string = '[data-testid="account-menu-icon"]';
-  private readonly addAccountButton: string = '[data-testid="multichain-account-menu-popover-action-button"]';
-  private readonly closeModalButton: string = '.mm-box button[aria-label="Close"]';
 
-  constructor(private readonly driver: Driver) {
+  private readonly transactionAmountsInActivity: string =
+    '[data-testid="transaction-list-item-primary-currency"]';
+
+  private readonly accountMenuButton: string =
+    '[data-testid="account-menu-icon"]';
+
+  private readonly addAccountButton: string =
+    '[data-testid="multichain-account-menu-popover-action-button"]';
+
+  private readonly closeModalButton: string =
+    '.mm-box button[aria-label="Close"]';
+
+  constructor(driver: Driver) {
+    this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
@@ -48,10 +68,14 @@ class HomePage {
         css: this.balance,
         text: `${expectedBalance} ETH`,
       });
-      console.log(`Expected balance ${expectedBalance} ETH is displayed on homepage`);
+      console.log(
+        `Expected balance ${expectedBalance} ETH is displayed on homepage`,
+      );
     } catch (error) {
       console.error(`Failed to verify balance: ${expectedBalance} ETH`, error);
-      throw new Error(`Balance verification failed: ${(error as Error).message}`);
+      throw new Error(
+        `Balance verification failed: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -73,7 +97,9 @@ class HomePage {
       console.log('Activity tab opened successfully');
     } catch (error) {
       console.error('Failed to open activity tab', error);
-      throw new Error(`Unable to open activity tab: ${(error as Error).message}`);
+      throw new Error(
+        `Unable to open activity tab: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -84,7 +110,9 @@ class HomePage {
       console.log('Account menu opened successfully');
     } catch (error) {
       console.error('Failed to open account menu', error);
-      throw new Error(`Unable to open account menu: ${(error as Error).message}`);
+      throw new Error(
+        `Unable to open account menu: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -95,7 +123,9 @@ class HomePage {
       console.log('Add account modal opened successfully');
     } catch (error) {
       console.error('Failed to open add account modal', error);
-      throw new Error(`Unable to open add account modal: ${(error as Error).message}`);
+      throw new Error(
+        `Unable to open add account modal: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -113,32 +143,58 @@ class HomePage {
   async check_confirmedTxNumberDisplayedInActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
-    console.log(`Checking for ${expectedNumber} confirmed transaction(s) in activity list`);
+    console.log(
+      `Checking for ${expectedNumber} confirmed transaction(s) in activity list`,
+    );
     try {
       await this.driver.wait(async () => {
-        const confirmedTxs = await this.driver.findElements(this.confirmedTransactions);
+        const confirmedTxs = await this.driver.findElements(
+          this.confirmedTransactions,
+        );
         return confirmedTxs.length === expectedNumber;
       }, 10000);
-      console.log(`${expectedNumber} confirmed transaction(s) found in activity list on homepage`);
+      console.log(
+        `${expectedNumber} confirmed transaction(s) found in activity list on homepage`,
+      );
     } catch (error) {
-      console.error(`Failed to find ${expectedNumber} confirmed transaction(s)`, error);
-      throw new Error(`Expected ${expectedNumber} confirmed transaction(s) not found in activity list: ${(error as Error).message}`);
+      console.error(
+        `Failed to find ${expectedNumber} confirmed transaction(s)`,
+        error,
+      );
+      throw new Error(
+        `Expected ${expectedNumber} confirmed transaction(s) not found in activity list: ${
+          (error as Error).message
+        }`,
+      );
     }
   }
 
   async check_completedTxNumberDisplayedInActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
-    console.log(`Checking for ${expectedNumber} completed transaction(s) in activity list`);
+    console.log(
+      `Checking for ${expectedNumber} completed transaction(s) in activity list`,
+    );
     try {
       await this.driver.wait(async () => {
-        const completedTxs = await this.driver.findElements(this.completedTransactions);
+        const completedTxs = await this.driver.findElements(
+          this.completedTransactions,
+        );
         return completedTxs.length === expectedNumber;
       }, 10000);
-      console.log(`${expectedNumber} completed transaction(s) found in activity list on homepage`);
+      console.log(
+        `${expectedNumber} completed transaction(s) found in activity list on homepage`,
+      );
     } catch (error) {
-      console.error(`Failed to find ${expectedNumber} completed transaction(s)`, error);
-      throw new Error(`Expected ${expectedNumber} completed transaction(s) not found in activity list: ${(error as Error).message}`);
+      console.error(
+        `Failed to find ${expectedNumber} completed transaction(s)`,
+        error,
+      );
+      throw new Error(
+        `Expected ${expectedNumber} completed transaction(s) not found in activity list: ${
+          (error as Error).message
+        }`,
+      );
     }
   }
 
@@ -146,19 +202,31 @@ class HomePage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
-    console.log(`Checking transaction amount for transaction ${expectedNumber}`);
+    console.log(
+      `Checking transaction amount for transaction ${expectedNumber}`,
+    );
     try {
-      const transactionAmounts = await this.driver.findElements(this.transactionAmountsInActivity);
-      const transactionAmountsText = await transactionAmounts[expectedNumber - 1].getText();
+      const transactionAmounts = await this.driver.findElements(
+        this.transactionAmountsInActivity,
+      );
+      const transactionAmountsText = await transactionAmounts[
+        expectedNumber - 1
+      ].getText();
       assert.strictEqual(
         transactionAmountsText,
         expectedAmount,
         `Transaction amount mismatch. Expected: ${expectedAmount}, Actual: ${transactionAmountsText} for transaction ${expectedNumber}`,
       );
-      console.log(`Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`);
+      console.log(
+        `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
+      );
     } catch (error) {
       console.error(`Failed to verify transaction amount`, error);
-      throw new Error(`Transaction amount verification failed for transaction ${expectedNumber}: ${(error as Error).message}`);
+      throw new Error(
+        `Transaction amount verification failed for transaction ${expectedNumber}: ${
+          (error as Error).message
+        }`,
+      );
     }
   }
 
@@ -175,12 +243,19 @@ class HomePage {
             text: 'Add a new Ethereum account',
             tag: 'button',
           },
-        }
+        },
       );
       console.log('Add account Snap button is not present as expected');
     } catch (error) {
-      console.error('Failed to assert Add account Snap button is not present', error);
-      throw new Error(`Add account Snap button is unexpectedly present: ${(error as Error).message}`);
+      console.error(
+        'Failed to assert Add account Snap button is not present',
+        error,
+      );
+      throw new Error(
+        `Add account Snap button is unexpectedly present: ${
+          (error as Error).message
+        }`,
+      );
     }
   }
 
@@ -193,8 +268,15 @@ class HomePage {
       });
       console.log('Add account Snap button is present as expected');
     } catch (error) {
-      console.error('Failed to assert Add account Snap button is present', error);
-      throw new Error(`Add account Snap button is unexpectedly not present: ${(error as Error).message}`);
+      console.error(
+        'Failed to assert Add account Snap button is present',
+        error,
+      );
+      throw new Error(
+        `Add account Snap button is unexpectedly not present: ${
+          (error as Error).message
+        }`,
+      );
     }
   }
 }
