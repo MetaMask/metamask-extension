@@ -136,10 +136,6 @@ export default class SettingsTab extends PureComponent {
   renderCurrentLocale() {
     const { t } = this.context;
     const { updateCurrentLocale, currentLocale } = this.props;
-    const currentLocaleMeta = locales.find(
-      (locale) => locale.code === currentLocale,
-    );
-    const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name : '';
 
     return (
       <Box
@@ -156,10 +152,6 @@ export default class SettingsTab extends PureComponent {
           >
             {t('currentLanguage')}
           </Text>
-
-          <span className="settings-page__content-description">
-            {currentLocaleName}
-          </span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
