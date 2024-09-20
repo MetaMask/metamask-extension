@@ -371,9 +371,6 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteNetwork": {
-    "message": "I-delete ang Network?"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -667,9 +664,6 @@
   "invalidAddressRecipient": {
     "message": "Hindi valid ang address ng tatanggap"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Invalid na URL ng Block Explorer"
-  },
   "invalidChainIdTooBig": {
     "message": "Invalid na chain ID. Masyadong malaki ang chain ID."
   },
@@ -832,9 +826,6 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "Ginagamit ang chain ID sa paglagda ng mga transaksyon. Dapat itong tumugma sa chain ID na ibinalik ng network. Puwede kang maglagay ng decimal o '0x'-prefixed hexadecimal number, pero ipapakita namin ang numero sa decimal."
-  },
   "networkURL": {
     "message": "URL ng Network"
   },
@@ -914,9 +905,6 @@
   },
   "on": {
     "message": "Naka-on"
-  },
-  "onlyAddTrustedNetworks": {
-    "message": "Magagawa ng nakakapinsalang network provider na magsinungaling tungkol sa status ng blockchain at itala ang aktibidad ng iyong network. Magdagdag lang ng mga custom na network na pinagkakatiwalaan mo."
   },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo.",
@@ -1672,9 +1660,6 @@
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URL ang naaangkop na HTTP/HTTPS prefix."
-  },
-  "urlExistsErrorMsg": {
-    "message": "Kasalukuyang ginagamit ng $1 network ang URL na ito."
   },
   "usePhishingDetection": {
     "message": "Gumamit ng Pag-detect ng Phishing"

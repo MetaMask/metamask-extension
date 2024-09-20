@@ -6,6 +6,7 @@ import {
   SignatureRequestType,
 } from '../../../ui/pages/confirmations/types/confirm';
 import mockState from '../mock-state.json';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   genUnapprovedApproveConfirmation,
   genUnapprovedContractInteractionConfirmation,
@@ -165,7 +166,7 @@ export const getMockContractInteractionConfirmState = (
   args: RootState = { metamask: {} },
 ) => {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
-    chainId: mockState.metamask.networkConfigurations.goerli.chainId,
+    chainId: CHAIN_IDS.GOERLI,
   });
   return getMockConfirmStateForTransaction(contractInteraction, args);
 };

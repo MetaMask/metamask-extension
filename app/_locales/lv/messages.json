@@ -205,9 +205,6 @@
   "delete": {
     "message": "Dzēst"
   },
-  "deleteNetwork": {
-    "message": "Dzēst tīklu?"
-  },
   "details": {
     "message": "Informācija"
   },
@@ -346,9 +343,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Nederīga saņēmēja adrese"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nederīgs Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Nederīgs RPC URL"

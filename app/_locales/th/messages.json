@@ -93,9 +93,6 @@
   "delete": {
     "message": "ลบ"
   },
-  "deleteNetwork": {
-    "message": "ลบเครือข่าย?"
-  },
   "details": {
     "message": "รายละเอียด"
   },
@@ -181,9 +178,6 @@
   },
   "invalidAddressRecipient": {
     "message": "แอดแดรสผู้รับไม่ถูกต้อง"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI ไม่ถูกต้อง"
   },
   "invalidRPC": {
     "message": "RPC URI ไม่ถูกต้อง"
