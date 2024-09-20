@@ -78,6 +78,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         isConnectFlow={isConnectFlow}
         onClick={() => setShowEditAccountsModal(true)}
         content={
+          // Why this difference?
           selectedAccounts.length === 1 ? (
             <AvatarAccount
               address={selectedAccounts[0].address}
