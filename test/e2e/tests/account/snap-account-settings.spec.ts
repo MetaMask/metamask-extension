@@ -2,11 +2,11 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import AccountSettingsPage from '../../page-objects/pages/account-settings-page';
-import HomePage from '../../page-objects/pages/homepage';
+import SettingsPage from '../../page-objects/pages/settings-page';
+import ExperimentalSettings from '../../page-objects/pages/experimental-settings';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
@@ -20,21 +20,22 @@ describe('Add snap account experimental settings', function (this: Suite) {
 
         // Make sure the "Add snap account" button is not visible.
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.openAddAccountModal();
-        await accountListPage.check_addAccountSnapButtonNotPresent();
-        await accountListPage.closeAccountModal();
+        const homePage = new HomePage(driver);
+        await homePage.openAccountMenu();
+        await homePage.openAddAccountModal();
+        await homePage.assertAddAccountSnapButtonNotPresent();
+        await homePage.closeModal();
 
         // Navigate to experimental settings and enable Add account Snap.
-        await headerNavbar.goToSettingsPage();
-        await new SettingsPage(driver).goToExperimentalSettings();
-        await new ExperimentalSettings( driver).toggleAddAccountSnap();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.goToExperimentalSettings();
+        const experimentalSettings = new ExperimentalSettings(driver);
+        await experimentalSettings.toggleAddAccountSnap();
 
         // Make sure the "Add account Snap" button is visible.
-        await headerNavbar.openAccountMenu();
-        await accountListPage.openAddAccountModal();
-        await accountListPage.check_addAccountSnapButtonIsDisplayed();
+        await homePage.openAccountMenu();
+        await homePage.openAddAccountModal();
+        await homePage.assertAddAccountSnapButtonPresent();
       },
     );
   });

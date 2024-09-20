@@ -168,6 +168,66 @@ class HomePage {
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
     );
   }
+
+  async openAddAccountModal(): Promise<void> {
+    console.log('Opening Add Account modal');
+    try {
+      await this.driver.clickElement(
+        '[data-testid="multichain-account-menu-popover-action-button"]',
+      );
+      console.log('Add Account modal opened successfully');
+    } catch (error) {
+      console.error('Failed to open Add Account modal', error);
+      throw new Error(`Unable to open Add Account modal: ${(error as Error).message}`);
+    }
+  }
+
+  async assertAddAccountSnapButtonNotPresent(): Promise<void> {
+    console.log('Asserting Add account Snap button is not present');
+    try {
+      await this.driver.assertElementNotPresent(
+        {
+          text: 'Add account Snap',
+          tag: 'button',
+        },
+        {
+          findElementGuard: {
+            text: 'Add a new Ethereum account',
+            tag: 'button',
+          },
+        },
+      );
+      console.log('Add account Snap button is not present as expected');
+    } catch (error) {
+      console.error('Failed to assert Add account Snap button is not present', error);
+      throw new Error(`Add account Snap button is unexpectedly present: ${(error as Error).message}`);
+    }
+  }
+
+  async assertAddAccountSnapButtonPresent(): Promise<void> {
+    console.log('Asserting Add account Snap button is present');
+    try {
+      await this.driver.findElement({
+        text: 'Add account Snap',
+        tag: 'button',
+      });
+      console.log('Add account Snap button is present as expected');
+    } catch (error) {
+      console.error('Failed to assert Add account Snap button is present', error);
+      throw new Error(`Add account Snap button is unexpectedly not present: ${(error as Error).message}`);
+    }
+  }
+
+  async closeModal(): Promise<void> {
+    console.log('Closing modal');
+    try {
+      await this.driver.clickElement('.mm-box button[aria-label="Close"]');
+      console.log('Modal closed successfully');
+    } catch (error) {
+      console.error('Failed to close modal', error);
+      throw new Error(`Unable to close modal: ${(error as Error).message}`);
+    }
+  }
 }
 
 export default HomePage;
