@@ -22,6 +22,7 @@ import {
 } from '../../../utils';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
+import { getIsRevokeSetApprovalForAll } from '../info/utils';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
@@ -148,9 +149,9 @@ const ConfirmTitle: React.FC = memo(() => {
   ) {
     const decodedResponse = useDecodedTransactionData();
 
-    isRevokeSetApprovalForAll =
-      decodedResponse.value?.data[0].name === 'setApprovalForAll' &&
-      decodedResponse.value?.data[0].params[1].value === false;
+    isRevokeSetApprovalForAll = getIsRevokeSetApprovalForAll(
+      decodedResponse.value,
+    );
   }
 
   const title = useMemo(

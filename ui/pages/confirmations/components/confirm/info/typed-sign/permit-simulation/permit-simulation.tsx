@@ -12,6 +12,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { SignatureRequestType } from '../../../../../types/confirm';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from './value-display/value-display';
+import { Hex } from '@metamask/utils';
 
 function extractTokenDetailsByPrimaryType(
   message: Record<string, unknown>,
@@ -49,43 +50,57 @@ const PermitSimulation: React.FC<object> = () => {
 
   const tokenDetails = extractTokenDetailsByPrimaryType(message, primaryType);
 
+  const TokenDetail = ({
+    token,
+    amount,
+    i,
+  }: {
+    token: Hex | string;
+    amount: number | string;
+    i: number;
+  }) => (
+    <PermitSimulationValueDisplay
+      key={`${token}-${i}`}
+      primaryType={primaryType}
+      tokenContract={token}
+      value={amount}
+    />
+  );
+
+  const SpendingCapRow = (
+    <ConfirmInfoRow label={t('spendingCap')}>
+      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+        {Array.isArray(tokenDetails) ? (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+          >
+            {tokenDetails.map(
+              (
+                { token, amount }: { token: string; amount: string },
+                i: number,
+              ) => (
+                <TokenDetail token={token} amount={amount} i={i} />
+              ),
+            )}
+          </Box>
+        ) : (
+          <PermitSimulationValueDisplay
+            tokenContract={verifyingContract}
+            value={message.value}
+          />
+        )}
+      </Box>
+    </ConfirmInfoRow>
+  );
+
   return (
     <StaticSimulation
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
       description={t('permitSimulationDetailInfo')}
-      simulationElements={
-        <ConfirmInfoRow label={t('spendingCap')}>
-          <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
-            {Array.isArray(tokenDetails) ? (
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={2}
-              >
-                {tokenDetails.map(
-                  (
-                    { token, amount }: { token: string; amount: string },
-                    i: number,
-                  ) => (
-                    <PermitSimulationValueDisplay
-                      key={`${token}-${i}`}
-                      primaryType={primaryType}
-                      tokenContract={token}
-                      value={amount}
-                    />
-                  ),
-                )}
-              </Box>
-            ) : (
-              <PermitSimulationValueDisplay
-                tokenContract={verifyingContract}
-                value={message.value}
-              />
-            )}
-          </Box>
-        </ConfirmInfoRow>
-      }
+      simulationElements={SpendingCapRow}
     />
   );
 };
