@@ -72,10 +72,9 @@ export class NetworkController {
     if (switchToNetwork) {
       await this.switchToNetworkBtn.click();
       await this.waitForNetworkToSwitch(options.name);
-      try {
-        await this.gotItBtn.click({ timeout: 2000 });
-      } catch (e) {}
-    } else await this.dismissBtn.click();
+    } else {
+      await this.dismissBtn.click({ timeout: 2000 });
+    }
   }
 
   async addPopularNetwork(options: { networkName: string }) {
@@ -89,14 +88,15 @@ export class NetworkController {
   }
 
   async selectNetwork(options: { networkName: string }) {
-    const network = await this.page.$(`text=/${options.networkName}/`);
-    if (network) return; // if already selected we exit
-    await this.networkDisplay.getAttribute;
-    await this.networkDisplay.first().click();
-    await this.networkSearch.fill(options.networkName);
-    await this.page.getByText(options.networkName).first().click();
-    await this.waitForNetworkToSwitch(options.networkName);
-    await this.page.waitForTimeout(1000);
+    const currentNetwork = await this.page.$(`text=/${options.networkName}/`);
+    if (!currentNetwork) {
+      // if already selected we exit
+      await this.networkDisplay.getAttribute;
+      await this.networkDisplay.first().click();
+      await this.networkSearch.fill(options.networkName);
+      await this.page.getByText(options.networkName).first().click();
+      await this.waitForNetworkToSwitch(options.networkName);
+    }
   }
 
   async waitForNetworkToSwitch(networkName: string) {

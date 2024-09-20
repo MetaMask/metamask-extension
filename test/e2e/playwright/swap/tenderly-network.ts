@@ -24,7 +24,7 @@ export const Tenderly = {
 export async function addFundsToAccount(
   rpcURL: string,
   account: string,
-  amount: string = '0xDE0B6B3A7640000', //1 ETH
+  amount: string = '0xDE0B6B3A7640000', // 1 ETH by default
 ) {
   const data = {
     jsonrpc: '2.0',
@@ -43,6 +43,5 @@ export async function addFundsToAccount(
     console.log(
       `ERROR: Failed to add funds to Tenderly VirtualTestNet\n${response.data.error}`,
     );
-    return null;
   }
 }
