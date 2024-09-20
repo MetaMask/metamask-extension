@@ -147,6 +147,16 @@ describe('Update Network:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        await mockServer
+          .forPost('https://arbitrum-mainnet.infura.io/')
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              id: '1694444405781',
+              jsonrpc: '2.0',
+              result: '0xa4b1',
+            },
+          })),
       ];
     }
     await withFixtures(
@@ -207,28 +217,46 @@ describe('Update Network:', function (this: Suite) {
         );
 
         await driver.delay(regularDelayMs);
-
         await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
-
         await driver.delay(regularDelayMs);
 
-        const arbitrumRpcToDelete = await driver.findElement({
+        // Assert the endpoint is in the list
+        await driver.findElement({
           text: 'responsive-rpc.test',
           tag: 'p',
         });
 
-        const existRpcToDelete = arbitrumRpcToDelete !== undefined;
-        assert.equal(existRpcToDelete, true, 'Rpc is not deleted');
+        // Delete it
+        await driver.clickElement('[data-testid="delete-item-1"]');
 
-        await driver.clickElement('[data-testid="delete-rpc-1"]');
-
-        const arbitrumRpcDeleted = await driver.findElement({
+        // Verify it went away
+        await driver.assertElementNotPresent({
           text: 'responsive-rpc.test',
           tag: 'p',
         });
 
-        const existRpcDeleted = arbitrumRpcDeleted !== undefined;
-        assert.equal(!existRpcDeleted, false, 'Rpc is deleted');
+        // Save the network
+        await driver.clickElement(selectors.saveButton);
+
+        //  Re-open the network menu
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Go back to edit the network
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-0xa4b1"]',
+        );
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+
+        // Verify the rpc endpoint is still deleted
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
+        await driver.assertElementNotPresent({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
       },
     );
   });
