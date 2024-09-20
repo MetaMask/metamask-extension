@@ -132,6 +132,7 @@ export default class ConfirmTransactionBase extends Component {
     image: PropTypes.string,
     type: PropTypes.string,
     getNextNonce: PropTypes.func,
+    setNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
     tryReverseResolveAddress: PropTypes.func.isRequired,
     hideSenderToRecipient: PropTypes.bool,
@@ -206,7 +207,6 @@ export default class ConfirmTransactionBase extends Component {
       clearConfirmTransaction,
       nextNonce,
       customNonceValue,
-      updateCustomNonce,
       toAddress,
       tryReverseResolveAddress,
       isEthGasPriceFetched,
@@ -215,6 +215,7 @@ export default class ConfirmTransactionBase extends Component {
       useMaxValue,
       hasPriorityApprovalRequest,
       mostRecentOverviewPage,
+      updateCustomNonce,
     } = this.props;
 
     const {
@@ -1081,6 +1082,9 @@ export default class ConfirmTransactionBase extends Component {
     this._beforeUnloadForGasPolling();
     this._removeBeforeUnload();
     this.props.clearConfirmTransaction();
+    const { setNextNonce, updateCustomNonce } = this.props;
+    setNextNonce(undefined);
+    updateCustomNonce(undefined);
   }
 
   supportsEIP1559 =
