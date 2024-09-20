@@ -200,6 +200,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           result_type: BlockaidResultType.Malicious,
           reason: BlockaidReason.maliciousDomain,
           securityAlertId: 1,
+          description: 'some_description',
         },
       };
 
@@ -218,6 +219,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_description: 'some_description',
         },
         referrer: { url: 'some.dapp' },
       });
@@ -294,7 +296,42 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    it(`should track a ${MetaMetricsEventName.SignatureRejected} event if the user approves`, async () => {
+    it(`should track a ${MetaMetricsEventName.Rejected} with sensitive properties for internal errors`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        origin: 'some.dapp',
+        params: [undefined, permitSignatureMsg.msgParams.data],
+      };
+
+      const res = {
+        error: {
+          code: errorCodes.rpc.internal,
+          message: 'Request rejected by user or snap.',
+        },
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureRejected,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        },
+        sensitiveProperties: {
+          eip712_verifyingContract:
+            '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+          eip712_domain_version: '1',
+          eip712_domain_name: 'MyToken',
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track a ${MetaMetricsEventName.SignatureRejected} event if the user rejects`, async () => {
       const req = {
         id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
@@ -602,6 +639,37 @@ describe('createRPCMethodTrackingMiddleware', () => {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           ui_customizations: [MetaMetricsEventUiCustomization.Permit],
           eip712_primary_type: 'Permit',
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track typed-sign order message if detected`, async () => {
+      const data = JSON.parse(permitSignatureMsg.msgParams.data);
+      data.primaryType = 'Order';
+      const params = JSON.stringify(data);
+
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        origin: 'some.dapp',
+        params: [undefined, params],
+      };
+
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          ui_customizations: [MetaMetricsEventUiCustomization.Order],
         },
         referrer: { url: 'some.dapp' },
       });
