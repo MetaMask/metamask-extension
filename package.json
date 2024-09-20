@@ -328,7 +328,7 @@
     "@metamask/logging-controller": "^6.0.0",
     "@metamask/logo": "^3.1.2",
     "@metamask/message-manager": "^10.1.0",
-    "@metamask/message-signing-snap": "^0.3.3",
+    "@metamask/message-signing-snap": "^0.4.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/name-controller": "^8.0.0",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
