@@ -1,3 +1,4 @@
+import { RpcEndpointType } from '@metamask/network-controller';
 import React from 'react';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import { Box, Text } from '../../component-library';
@@ -11,12 +12,6 @@ import {
   BackgroundColor,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-
-// TODO: Use version from network controller with v21 upgrade
-enum RpcEndpointType {
-  Custom = 'custom',
-  Infura = 'infura',
-}
 
 export const stripKeyFromInfuraUrl = (endpoint: string) => {
   let modifiedEndpoint = endpoint;

@@ -42,7 +42,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          You're giving someone else permission to withdraw NFTs from your account.
+          You're giving someone else permission to spend this amount from your account.
         </p>
       </div>
     </div>
@@ -118,7 +118,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           <div
             aria-describedby="tippy-tooltip-2"
             class=""
-            data-original-title="This is the address that will be able to withdraw your NFTs."
+            data-original-title="This is the address that will be able to spend your tokens on your behalf."
             data-tooltipped=""
             style="display: flex;"
             tabindex="0"

@@ -205,9 +205,6 @@
   "delete": {
     "message": "Padam"
   },
-  "deleteNetwork": {
-    "message": "Padamkan Rangkaian?"
-  },
   "details": {
     "message": "Butiran"
   },
@@ -339,9 +336,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Alamat penerima tidak sah"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer tidak sah"
   },
   "invalidRPC": {
     "message": "URL RPC tidak sah"

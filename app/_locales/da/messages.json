@@ -205,9 +205,6 @@
   "delete": {
     "message": "Slet"
   },
-  "deleteNetwork": {
-    "message": "Slet Netværk?"
-  },
   "details": {
     "message": "Detaljer"
   },
@@ -343,9 +340,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Modtageradressen er ugyldig"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Ugyldig Block Explorer-webadresse"
   },
   "invalidRPC": {
     "message": "Ugyldig RPC-webadresse"

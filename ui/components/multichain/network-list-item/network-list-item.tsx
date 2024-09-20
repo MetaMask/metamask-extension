@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   BorderRadius,
-  Color,
   Display,
   JustifyContent,
   TextColor,
-  Size,
   IconColor,
+  FlexDirection,
+  TextVariant,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -20,70 +20,74 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconName,
+  IconSize,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
-import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 
+// TODO: Consider increasing this. This tooltip is
+// rendering when it has enough room to see everything
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
 export const NetworkListItem = ({
   name,
   iconSrc,
   iconSize = AvatarNetworkSize.Md,
+  rpcEndpoint,
+  chainId,
   selected = false,
   focus = true,
   onClick,
   onDeleteClick,
   onEditClick,
+  onRpcEndpointClick,
   startAccessory,
   showEndAccessory = true,
+}: {
+  name: string;
+  iconSrc?: string;
+  iconSize?: AvatarNetworkSize;
+  rpcEndpoint?: { name?: string; url: string };
+  chainId?: string;
+  selected?: boolean;
+  onClick: () => void;
+  onRpcEndpointClick?: () => void;
+  onDeleteClick?: () => void;
+  onEditClick?: () => void;
+  focus?: boolean;
+  startAccessory?: ReactNode;
+  showEndAccessory?: boolean;
 }) => {
   const t = useI18nContext();
-  const networkRef = useRef();
+  const networkRef = useRef<HTMLInputElement>(null);
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =
     useState();
-  const setNetworkListItemMenuRef = (ref) => {
+
+  // I can't find a type that satisfies this.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setNetworkListItemMenuRef = (ref: any) => {
     setNetworkListItemMenuElement(ref);
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
-  const networkMenuRedesign = useSelector(
-    getLocalNetworkMenuRedesignFeatureFlag,
-  );
 
   const renderButton = () => {
-    if (networkMenuRedesign) {
-      return onDeleteClick || onEditClick ? (
-        <ButtonIcon
-          iconName={IconName.MoreVertical}
-          ref={setNetworkListItemMenuRef}
-          data-testid="network-list-item-options-button"
-          ariaLabel={t('networkOptions')}
-          onClick={(e) => {
-            e.stopPropagation();
-            setNetworkOptionsMenuOpen(true);
-          }}
-          size={ButtonIconSize.Sm}
-        />
-      ) : null;
-    }
-
-    return onDeleteClick ? (
+    return onDeleteClick || onEditClick ? (
       <ButtonIcon
-        className="multichain-network-list-item__delete"
-        color={IconColor.errorDefault}
-        iconName={IconName.Trash}
-        ariaLabel={t('deleteNetwork')}
-        size={Size.SM}
-        onClick={(e) => {
+        iconName={IconName.MoreVertical}
+        ref={setNetworkListItemMenuRef}
+        data-testid={`network-list-item-options-button-${chainId}`}
+        ariaLabel={t('networkOptions')}
+        onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
-          onDeleteClick();
+          setNetworkOptionsMenuOpen(true);
         }}
+        size={ButtonIconSize.Sm}
       />
     ) : null;
   };
@@ -93,7 +97,7 @@ export const NetworkListItem = ({
     }
   }, [networkRef, focus]);
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.stopPropagation(); // Prevent the event from reaching the parent container
       onClick();
@@ -102,9 +106,14 @@ export const NetworkListItem = ({
 
   return (
     <Box
-      padding={4}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingTop={rpcEndpoint ? 2 : 4}
+      paddingBottom={rpcEndpoint ? 2 : 4}
       gap={4}
-      backgroundColor={selected ? Color.primaryMuted : Color.transparent}
+      backgroundColor={
+        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
+      }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
       })}
@@ -119,42 +128,81 @@ export const NetworkListItem = ({
         <Box
           className="multichain-network-list-item__selected-indicator"
           borderRadius={BorderRadius.pill}
-          backgroundColor={Color.primaryDefault}
+          backgroundColor={BackgroundColor.primaryDefault}
         />
       )}
       <AvatarNetwork
+        borderColor={BorderColor.backgroundDefault}
         backgroundColor={getAvatarNetworkColor(name)}
         name={name}
         src={iconSrc}
         size={iconSize}
       />
       <Box
-        className="multichain-network-list-item__network-name"
         display={Display.Flex}
-        alignItems={AlignItems.center}
-        data-testid={name}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexStart}
+        justifyContent={JustifyContent.flexStart}
+        width={BlockSize.Full}
+        style={{ overflow: 'hidden' }}
       >
-        <Text
-          ref={networkRef}
-          color={TextColor.textDefault}
-          backgroundColor={BackgroundColor.transparent}
-          ellipsis
-          onKeyDown={handleKeyPress}
-          tabIndex="0" // Enable keyboard focus
+        <Box
+          width={BlockSize.Full}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          data-testid={name}
         >
-          {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-            <Tooltip
-              title={name}
-              position="bottom"
-              wrapperClassName="multichain-network-list-item__tooltip"
+          <Text
+            ref={networkRef}
+            color={TextColor.textDefault}
+            backgroundColor={BackgroundColor.transparent}
+            ellipsis
+            onKeyDown={handleKeyPress}
+            tabIndex={0} // Enable keyboard focus
+          >
+            {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+              <Tooltip
+                title={name}
+                position="bottom"
+                wrapperClassName="multichain-network-list-item__tooltip"
+              >
+                {name}
+              </Tooltip>
+            ) : (
+              name
+            )}
+          </Text>
+        </Box>
+        {rpcEndpoint && (
+          <Box
+            className="multichain-network-list-item__rpc-endpoint"
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            data-testid={`network-rpc-name-button-${chainId}`}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              onRpcEndpointClick?.();
+            }}
+          >
+            <Text
+              padding={0}
+              backgroundColor={BackgroundColor.transparent}
+              as="button"
+              variant={TextVariant.bodySmMedium}
+              color={TextColor.textAlternative}
             >
-              {name}
-            </Tooltip>
-          ) : (
-            name
-          )}
-        </Text>
+              {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
+            </Text>
+            <Icon
+              marginLeft={1}
+              color={IconColor.iconAlternative}
+              name={IconName.ArrowDown}
+              size={IconSize.Xs}
+            />
+          </Box>
+        )}
       </Box>
+
       {renderButton()}
       {showEndAccessory ? (
         <NetworkListItemMenu
