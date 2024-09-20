@@ -9,13 +9,13 @@ export const Tenderly = {
   },
   Optimism: {
     name: 'Tenderly - Optimism',
-    url: 'https://virtual.optimism.rpc.tenderly.co/8a89a4ef-a0b6-4c79-86bb-6a7ed56be4bc',
+    url: 'https://virtual.optimism.rpc.tenderly.co/3170a58e-fa67-4ccc-9697-b13aff0f5c1a',
     chainID: '10',
     symbol: 'ETH',
   },
   Abritrum: {
     name: 'Tenderly - Arbitrum',
-    url: 'https://virtual.arbitrum.rpc.tenderly.co/903b3e51-8d9b-4ced-b594-d1ee6b99681c',
+    url: 'https://virtual.arbitrum.rpc.tenderly.co/7d364996-41a7-4da6-a552-a19ab1ef9173',
     chainID: '42161',
     symbol: 'ETH',
   },
