@@ -176,10 +176,6 @@ async function main() {
         transport,
         reporters: [
           'console-streaming',
-          new HtmlReporter({
-            autoOpen: !process.env.CI,
-            destination: `${process.cwd()}/html-report-multichain`,
-          }),
         ],
         skip: ['wallet_invokeMethod'],
         rules: [
@@ -198,7 +194,6 @@ async function main() {
         reporters: [
           'console-streaming',
           new HtmlReporter({
-            autoOpen: !process.env.CI,
             destination: `${process.cwd()}/html-report-caip27`,
           }),
         ],
@@ -235,6 +230,13 @@ async function main() {
       const joinedResults = testCoverageResults.concat(
         testCoverageResultsCaip27,
       );
+
+      const htmlReporter = new HtmlReporter({
+        autoOpen: !process.env.CI,
+        destination: `${process.cwd()}/html-report-multichain`,
+      });
+
+      await htmlReporter.onEnd({} as any, joinedResults);
 
       await driver.quit();
 
