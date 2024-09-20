@@ -711,7 +711,7 @@ export default class ConfirmTransactionBase extends Component {
 
     this._removeBeforeUnload();
     updateCustomNonce('');
-    setNextNonce(undefined);
+    setNextNonce('');
     await cancelTransaction(txData);
     history.push(mostRecentOverviewPage);
   }
@@ -810,7 +810,7 @@ export default class ConfirmTransactionBase extends Component {
               () => {
                 history.push(mostRecentOverviewPage);
                 updateCustomNonce('');
-                setNextNonce(undefined);
+                setNextNonce('');
               },
             );
           })
@@ -823,7 +823,7 @@ export default class ConfirmTransactionBase extends Component {
               submitError: error.message,
             });
             updateCustomNonce('');
-            setNextNonce(undefined);
+            setNextNonce('');
           });
       },
     );
