@@ -224,8 +224,7 @@ export default function createRPCMethodTrackingMiddleware({
   ) {
     const { origin, method, params } = req;
 
-    const rateLimitType =
-      RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RANDOM_SAMPLE;
+    const rateLimitType = RATE_LIMIT_MAP[method];
 
     let isRateLimited;
     switch (rateLimitType) {
