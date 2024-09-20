@@ -581,74 +581,35 @@ describe('MetaMetricsController', function () {
   });
 
   describe('Change Signature XXX anonymous event names', function () {
-    it('should change "Siganture Requested" anonymous event names to "Signature Requested Anon"', function () {
-      const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
-      metaMetricsController.submitEvent({
-        event: 'Signature Requested',
-        category: 'Unit Test',
-        properties: { ...DEFAULT_EVENT_PROPERTIES },
-        sensitiveProperties: { foo: 'bar' },
-      });
+    it.each([
+      ['Signature Requested', 'Signature Requested Anon'],
+      ['Signature Rejected', 'Signature Rejected Anon'],
+      ['Signature Approved', 'Signature Approved Anon'],
+    ])(
+      'should change "%s" anonymous event names to "%s"',
+      (eventType, anonEventType) => {
+        const metaMetricsController = getMetaMetricsController();
+        const spy = jest.spyOn(segment, 'track');
+        metaMetricsController.submitEvent({
+          event: eventType,
+          category: 'Unit Test',
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+          sensitiveProperties: { foo: 'bar' },
+        });
 
-      expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledTimes(2);
 
-      expect(spy.mock.calls[0][0]).toMatchObject({
-        event: `Signature Requested Anon`,
-        properties: { foo: 'bar', ...DEFAULT_EVENT_PROPERTIES },
-      });
+        expect(spy.mock.calls[0][0]).toMatchObject({
+          event: anonEventType,
+          properties: { foo: 'bar', ...DEFAULT_EVENT_PROPERTIES },
+        });
 
-      expect(spy.mock.calls[1][0]).toMatchObject({
-        event: `Signature Requested`,
-        properties: { ...DEFAULT_EVENT_PROPERTIES },
-      });
-    });
-
-    it('should change "Siganture Rejected" anonymous event names to "Signature Rejected Anon"', function () {
-      const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
-      metaMetricsController.submitEvent({
-        event: 'Signature Rejected',
-        category: 'Unit Test',
-        properties: { ...DEFAULT_EVENT_PROPERTIES },
-        sensitiveProperties: { foo: 'bar' },
-      });
-
-      expect(spy).toHaveBeenCalledTimes(2);
-
-      expect(spy.mock.calls[0][0]).toMatchObject({
-        event: `Signature Rejected Anon`,
-        properties: { foo: 'bar', ...DEFAULT_EVENT_PROPERTIES },
-      });
-
-      expect(spy.mock.calls[1][0]).toMatchObject({
-        event: `Signature Rejected`,
-        properties: { ...DEFAULT_EVENT_PROPERTIES },
-      });
-    });
-
-    it('should change "Siganture Approved" anonymous event names to "Signature Approved Anon"', function () {
-      const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
-      metaMetricsController.submitEvent({
-        event: 'Signature Approved',
-        category: 'Unit Test',
-        properties: { ...DEFAULT_EVENT_PROPERTIES },
-        sensitiveProperties: { foo: 'bar' },
-      });
-
-      expect(spy).toHaveBeenCalledTimes(2);
-
-      expect(spy.mock.calls[0][0]).toMatchObject({
-        event: `Signature Approved Anon`,
-        properties: { foo: 'bar', ...DEFAULT_EVENT_PROPERTIES },
-      });
-
-      expect(spy.mock.calls[1][0]).toMatchObject({
-        event: `Signature Approved`,
-        properties: { ...DEFAULT_EVENT_PROPERTIES },
-      });
-    });
+        expect(spy.mock.calls[1][0]).toMatchObject({
+          event: eventType,
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+        });
+      },
+    );
   });
 
   describe('Change Transaction XXX anonymous event namnes', function () {
