@@ -896,7 +896,7 @@ describe('MetaMaskController', () => {
             .spyOn(metamaskController, 'getKeyringForDevice')
             .mockResolvedValue({
               bridge: {
-                label: 'trezor',
+                minorVersion: 1,
                 model: 'T',
               },
             });
@@ -924,8 +924,8 @@ describe('MetaMaskController', () => {
             .spyOn(metamaskController, 'getKeyringForDevice')
             .mockResolvedValue({
               bridge: {
-                label: 'OneKey Pro',
                 model: 'T',
+                minorVersion: 99
               },
             });
           const result = await metamaskController.getHardwareDeviceName(

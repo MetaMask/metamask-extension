@@ -42,7 +42,7 @@ export default function init() {
                 event: OffscreenCommunicationEvents.trezorDeviceConnect,
                 payload: {
                   model: event.payload.features.model,
-                  label: event.payload.features.label,
+                  minorVersion: event.payload.features.minor_version,
                 },
               });
             }

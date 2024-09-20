@@ -13,10 +13,12 @@ import ConnectHardwareForm from '.';
 
 const mockConnectHardware = jest.fn();
 const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
+const mockGetHardwareDeviceName = jest.fn().mockResolvedValue('ledger');
 
 jest.mock('../../../store/actions', () => ({
   connectHardware: () => mockConnectHardware,
   checkHardwareStatus: () => mockCheckHardwareStatus,
+  getHardwareDeviceName: () => mockGetHardwareDeviceName,
 }));
 
 jest.mock('../../../selectors', () => ({

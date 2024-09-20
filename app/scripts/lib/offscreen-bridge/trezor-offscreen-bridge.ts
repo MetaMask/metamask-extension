@@ -30,7 +30,7 @@ import {
 export class TrezorOffscreenBridge implements TrezorBridge {
   model: string | undefined;
 
-  label: string | undefined;
+  minorVersion: number | undefined;
 
   init(
     settings: {
@@ -43,7 +43,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
         msg.event === OffscreenCommunicationEvents.trezorDeviceConnect
       ) {
         this.model = msg.payload.model;
-        this.label = msg.payload.label;
+        this.minorVersion = msg.payload.minorVersion;
       }
     });
 

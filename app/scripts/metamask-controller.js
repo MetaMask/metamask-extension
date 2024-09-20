@@ -4625,8 +4625,9 @@ export default class MetamaskController extends EventEmitter {
   async getHardwareDeviceName(deviceName, hdPath) {
     if (deviceName === HardwareDeviceNames.trezor) {
       const keyring = await this.getKeyringForDevice(deviceName, hdPath);
-      const { label } = keyring.bridge;
-      if (label && label.includes('OneKey')) {
+      const { minorVersion } = keyring.bridge;
+      // OneKeyDevice can connect metamask via Trezor usb, and they use minorVersion 99 to differentiate oneKeyDevice and Trezor.
+      if (minorVersion && minorVersion === 99) {
         return HardwareDeviceNames.oneKeyViaTrezor;
       }
     }
