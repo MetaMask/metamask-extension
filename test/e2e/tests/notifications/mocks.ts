@@ -20,7 +20,7 @@ type MockResponse = {
 };
 
 /**
- * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications)
+ * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications, Profile syncing)
  *
  * @param server - server obj used to mock our endpoints
  */
