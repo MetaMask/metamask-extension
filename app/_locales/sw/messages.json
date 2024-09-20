@@ -199,9 +199,6 @@
   "delete": {
     "message": "Futa"
   },
-  "deleteNetwork": {
-    "message": "Futa Mtandao?"
-  },
   "details": {
     "message": "Maelezo"
   },
@@ -337,9 +334,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Anwani ya mpokeaji si halali"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URL batili"
   },
   "invalidRPC": {
     "message": "RPC URL batili"

@@ -205,9 +205,6 @@
   "delete": {
     "message": "Poista"
   },
-  "deleteNetwork": {
-    "message": "Poistetaanko verkko?"
-  },
   "details": {
     "message": "Tiedot"
   },
@@ -350,9 +347,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Vastaanottajan osoite on virheellinen"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Virheellinen Block Explorer URL-osoite"
   },
   "invalidRPC": {
     "message": "Virheellinen RPC:n URL-osoite"

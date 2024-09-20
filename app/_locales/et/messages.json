@@ -205,9 +205,6 @@
   "delete": {
     "message": "Kustuta"
   },
-  "deleteNetwork": {
-    "message": "Võrk kustutada?"
-  },
   "details": {
     "message": "Üksikasjad"
   },
@@ -346,9 +343,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Saaja aadress on vale"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Vale Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Vale RPC URL"
