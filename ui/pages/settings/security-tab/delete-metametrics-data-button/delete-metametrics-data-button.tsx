@@ -33,8 +33,7 @@ import { DeleteRegulationStatus } from '../../../../../shared/constants/metametr
 const DeleteMetaMetricsDataButton = ({
   wrapperRef,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  wrapperRef?: PolymorphicRef<any>;
+  wrapperRef?: PolymorphicRef<React.ElementType>;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();

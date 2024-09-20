@@ -104,6 +104,7 @@ export default function ClearMetaMetricsData() {
               {t('cancel')}
             </Button>
             <Button
+              data-testid="clear-metametrics-data"
               size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Primary}

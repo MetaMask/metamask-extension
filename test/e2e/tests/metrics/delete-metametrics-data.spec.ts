@@ -10,6 +10,7 @@ import {
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
+import { WebElementWithWaitForElementState } from '../../webdriver/types';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -121,10 +122,9 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         const deleteMetaMetricsDataButton = await driver.findElement(
           selectors.deleteMetaMetricsDataButton,
         );
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (deleteMetaMetricsDataButton as any).waitForElementState(
-          'disabled',
-        );
+        await (
+          deleteMetaMetricsDataButton as WebElementWithWaitForElementState
+        ).waitForElementState('disabled');
         assert.equal(
           await deleteMetaMetricsDataButton.isEnabled(),
           false,
@@ -195,10 +195,9 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         const deleteMetaMetricsDataButton = await driver.findElement(
           selectors.deleteMetaMetricsDataButton,
         );
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (deleteMetaMetricsDataButton as any).waitForElementState(
-          'disabled',
-        );
+        await (
+          deleteMetaMetricsDataButton as WebElementWithWaitForElementState
+        ).waitForElementState('disabled');
         assert.equal(
           await deleteMetaMetricsDataButton.isEnabled(),
           false,
@@ -221,10 +220,9 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         const deleteMetaMetricsDataButtonRefreshed = await driver.findElement(
           selectors.deleteMetaMetricsDataButton,
         );
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (deleteMetaMetricsDataButtonRefreshed as any).waitForElementState(
-          'disabled',
-        );
+        await (
+          deleteMetaMetricsDataButtonRefreshed as WebElementWithWaitForElementState
+        ).waitForElementState('disabled');
         assert.equal(
           await deleteMetaMetricsDataButtonRefreshed.isEnabled(),
           false,
