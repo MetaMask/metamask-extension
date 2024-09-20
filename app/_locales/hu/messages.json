@@ -205,9 +205,6 @@
   "delete": {
     "message": "Törlés"
   },
-  "deleteNetwork": {
-    "message": "Törli a hálózatot?"
-  },
   "details": {
     "message": "Részletek"
   },
@@ -346,9 +343,6 @@
   },
   "invalidAddressRecipient": {
     "message": "A címzett címe érvénytelen "
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Helytelen Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Helytelen RPC URL"
