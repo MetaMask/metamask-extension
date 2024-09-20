@@ -19,19 +19,21 @@ import {
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
 import { getHideSnapBranding } from '../../../../selectors';
+import classnames from 'classnames';
 
-type SnapFooterButtonProps = {
+type SnapUIFooterButtonProps = {
   name?: string;
   isSnapAction?: boolean;
   onCancel?: () => void;
 };
 
-export const SnapFooterButton: FunctionComponent<
-  SnapFooterButtonProps & ButtonLinkProps<'button'>
+export const SnapUIFooterButton: FunctionComponent<
+  SnapUIFooterButtonProps & ButtonLinkProps<'button'>
 > = ({
   onCancel,
   name,
   children,
+  disabled = false,
   isSnapAction = false,
   type,
   form,
@@ -57,12 +59,16 @@ export const SnapFooterButton: FunctionComponent<
 
   return (
     <Button
-      className="snap-footer-button"
+      className={classnames('snap-ui-renderer__footer-button', {
+        'snap-ui-renderer__footer-button--disabled': disabled,
+        'no-snap-branding': hideSnapBranding,
+      })}
       type={type}
       form={form}
       {...props}
       size={ButtonSize.Lg}
       block
+      disabled={disabled}
       variant={isSnapAction ? ButtonVariant.Primary : ButtonVariant.Secondary}
       onClick={handleClick}
       textProps={{

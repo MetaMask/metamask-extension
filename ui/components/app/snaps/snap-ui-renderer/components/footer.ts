@@ -17,6 +17,7 @@ export const DEFAULT_FOOTER = {
     display: Display.Flex,
     flexDirection: FlexDirection.Row,
     width: BlockSize.Full,
+    gap: 4,
     padding: 4,
     className: 'snap-ui-renderer__footer',
     backgroundColor: BackgroundColor.backgroundDefault,
@@ -39,7 +40,7 @@ const getDefaultButtons = (
   // If onCancel is omitted by the caller we assume that it is safe to not display the default footer.
   if (children.length === 1 && onCancel) {
     return {
-      element: 'SnapFooterButton',
+      element: 'SnapUIFooterButton',
       key: 'default-button',
       props: {
         onCancel,
@@ -67,7 +68,7 @@ export const footer: UIComponentFactory<FooterElement> = ({
         element: children,
       } as UIComponentParams<ButtonElement>);
       return {
-        element: 'SnapFooterButton',
+        element: 'SnapUIFooterButton',
         key: `snap-footer-button-${buttonMapped.props?.name ?? index}`,
         props: {
           ...buttonMapped.props,
