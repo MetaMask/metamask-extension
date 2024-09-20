@@ -371,7 +371,12 @@
       "showTestNetworks": true,
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": false
+      "petnamesEnabled": false,
+      "tokenSortConfig": {
+        "key": "tokenFiatAmount",
+        "order": "dsc",
+        "sortCallback": "stringNumeric"
+      }
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
