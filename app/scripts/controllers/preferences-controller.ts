@@ -105,6 +105,11 @@ export type Preferences = {
   showMultiRpcModal: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
+  tokenSortConfig: {
+    key: string;
+    order: string;
+    sortCriteria: string;
+  };
 };
 
 export type PreferencesControllerState = {
@@ -232,6 +237,11 @@ export default class PreferencesController {
         showMultiRpcModal: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
+        tokenSortConfig: {
+          key: 'tokenFiatAmount',
+          order: 'dsc',
+          sortCriteria: 'stringNumeric',
+        },
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
