@@ -22,7 +22,6 @@ async function measurePage(pageName) {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      ganacheOptions: {},
       disableServerMochaToBackground: true,
     },
     async ({ driver }) => {

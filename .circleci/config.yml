@@ -1452,6 +1452,7 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - foundry-install
       - run:
           name: Run page load benchmark
           command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
