@@ -5,6 +5,8 @@ import { Driver } from '../../webdriver/driver';
 import AccountSettingsPage from '../../page-objects/pages/account-settings-page';
 import HomePage from '../../page-objects/pages/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 
 describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
@@ -14,26 +16,25 @@ describe('Add snap account experimental settings', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const homePage = new HomePage(driver);
-        const accountSettingsPage = new AccountSettingsPage(driver);
-
         await loginWithBalanceValidation(driver);
 
         // Make sure the "Add snap account" button is not visible.
-        await homePage.openAccountMenu();
-        await homePage.openAddAccountModal();
-
-        await homePage.assertAddAccountSnapButtonNotPresent();
-        await homePage.closeModal();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.openAddAccountModal();
+        await accountListPage.check_addAccountSnapButtonNotPresent();
+        await accountListPage.closeAccountModal();
 
         // Navigate to experimental settings and enable Add account Snap.
-        await accountSettingsPage.navigateToExperimentalSettings();
-        await accountSettingsPage.toggleAddAccountSnap();
+        await headerNavbar.goToSettingsPage();
+        await new SettingsPage(driver).goToExperimentalSettings();
+        await new ExperimentalSettings( driver).toggleAddAccountSnap();
 
         // Make sure the "Add account Snap" button is visible.
-        await homePage.openAccountMenu();
-        await homePage.openAddAccountModal();
-        await homePage.assertAddAccountSnapButtonPresent();
+        await headerNavbar.openAccountMenu();
+        await accountListPage.openAddAccountModal();
+        await accountListPage.check_addAccountSnapButtonIsDisplayed();
       },
     );
   });

@@ -17,6 +17,14 @@ class AccountListPage {
 
   private pinUnpinAccountButton: string;
 
+  private createAccountButton: string;
+
+  private addEthereumAccountButton: string;
+
+  private addSnapAccountButton: object;
+
+  private closeAccountModalButton: string;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.accountOptionsMenuButton =
@@ -31,6 +39,15 @@ class AccountListPage {
     };
     this.hiddenAccountOptionsMenuButton =
       '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
+    this.createAccountButton =
+      '[data-testid="multichain-account-menu-popover-action-button"]';
+    this.addEthereumAccountButton =
+      '[data-testid="multichain-account-menu-popover-add-account"]';
+    this.addSnapAccountButton = {
+      text: 'Add account Snap',
+      tag: 'button',
+    };
+    this.closeAccountModalButton = 'button[aria-label="Close"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -46,6 +63,17 @@ class AccountListPage {
     console.log('Account list is loaded');
   }
 
+  async closeAccountModal(): Promise<void> {
+    console.log(`Open add account modal in account list`);
+    await this.driver.clickElementAndWaitToDisappear(this.closeAccountModalButton);
+  }
+
+  async openAddAccountModal(): Promise<void> {
+    console.log(`Open add account modal in account list`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.waitForSelector(this.addEthereumAccountButton);
+  }
+
   async hideAccount(): Promise<void> {
     console.log(`Hide account in account list`);
     await this.driver.clickElement(this.hideUnhideAccountButton);
@@ -53,6 +81,7 @@ class AccountListPage {
 
   async openAccountOptionsMenu(): Promise<void> {
     console.log(`Open account option menu`);
+    await this.driver.waitForSelector(this.accountListItem);
     await this.driver.clickElement(this.accountOptionsMenuButton);
   }
 
@@ -81,6 +110,16 @@ class AccountListPage {
     await this.driver.clickElement(this.pinUnpinAccountButton);
   }
 
+  async check_addAccountSnapButtonNotPresent(): Promise<void> {
+    console.log('Check add account snap button is not present');
+    await this.driver.assertElementNotPresent(this.addSnapAccountButton);
+  }
+
+  async check_addAccountSnapButtonIsDisplayed(): Promise<void> {
+    console.log('Check add account snap button is displayed');
+    await this.driver.waitForSelector(this.addSnapAccountButton);
+  }
+
   async check_accountIsDisplayed(): Promise<void> {
     console.log(`Check that account is displayed in account list`);
     await this.driver.waitForSelector(this.accountListItem);
@@ -100,6 +139,8 @@ class AccountListPage {
     console.log(`Check that hidden accounts list is displayed in account list`);
     await this.driver.waitForSelector(this.hiddenAccountsList);
   }
+
+
 }
 
 export default AccountListPage;
