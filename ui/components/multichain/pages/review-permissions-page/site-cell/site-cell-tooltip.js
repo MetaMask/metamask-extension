@@ -94,7 +94,7 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
                 >
                   <AvatarNetwork
                     size={AvatarNetworkSize.Xs}
-                    src={network.rpcPrefs?.imageUrl || ''}
+                    src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
                     name={network.name}
                     borderStyle={BorderStyle.none}
                   />
