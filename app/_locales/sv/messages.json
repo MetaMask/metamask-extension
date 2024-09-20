@@ -199,9 +199,6 @@
   "delete": {
     "message": "Radera"
   },
-  "deleteNetwork": {
-    "message": "Radera nätverk?"
-  },
   "details": {
     "message": "Info"
   },
@@ -340,9 +337,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Mottagarens adress är ogiltig"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Ogiltig Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"

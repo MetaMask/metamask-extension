@@ -59,10 +59,7 @@ import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { setSelectedNetworkConfigurationId } from '../../../store/actions';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { setEditedNetwork } from '../../../store/actions';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { PercentageChange } from './price/percentage-change/percentage-change';
@@ -121,9 +118,6 @@ export const TokenListItem = ({
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-  const environmentType = getEnvironmentType();
-  const providerConfig = useSelector(getProviderConfig);
-  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const history = useHistory();
 
   const getTokenTitle = () => {
@@ -431,14 +425,8 @@ export const TokenListItem = ({
             <ModalFooter>
               <ButtonSecondary
                 onClick={() => {
-                  dispatch(
-                    setSelectedNetworkConfigurationId(providerConfig.id),
-                  );
-                  if (isFullScreen) {
-                    history.push(NETWORKS_ROUTE);
-                  } else {
-                    global.platform.openExtensionInBrowser?.(NETWORKS_ROUTE);
-                  }
+                  dispatch(setEditedNetwork({ chainId }));
+                  history.push(NETWORKS_ROUTE);
                 }}
                 block
               >

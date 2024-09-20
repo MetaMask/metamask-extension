@@ -196,9 +196,6 @@
   "delete": {
     "message": "ሰርዝ"
   },
-  "deleteNetwork": {
-    "message": "አውታረ መረብ ይሰረዝ?"
-  },
   "details": {
     "message": "ዝርዝሮች"
   },
@@ -341,9 +338,6 @@
   },
   "invalidAddressRecipient": {
     "message": "የተቀባይ አድራሻ ትክክል አይደለም"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "ልክ ያልሆነ Block Explorer ዩአርኤል"
   },
   "invalidRPC": {
     "message": "ልክ ያልሆነ RPC ዩአርኤል"

@@ -1,4 +1,3 @@
-import type { Hex } from '@metamask/utils';
 import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
@@ -49,13 +48,6 @@ type SmartTransactionsMetaMaskState = {
     };
     smartTransactionsState: {
       liveness: boolean;
-    };
-    selectedNetworkClientId: string;
-    networkConfigurations?: {
-      [key: string]: {
-        chainId: Hex;
-        rpcUrl: string;
-      };
     };
   };
 };
