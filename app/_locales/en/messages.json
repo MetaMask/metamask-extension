@@ -3282,6 +3282,9 @@
   "nonceFieldHeading": {
     "message": "Custom nonce"
   },
+  "none": {
+    "message": "None"
+  },
   "notBusy": {
     "message": "Not busy"
   },
@@ -4831,6 +4834,9 @@
   "simulationDetailsApproveDesc": {
     "message": "You're giving someone else permission to withdraw NFTs from your account."
   },
+  "simulationDetailsERC20ApproveDesc": {
+    "message": "You're giving someone else permission to spend this amount from your account."
+  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
@@ -5175,6 +5181,9 @@
   },
   "spenderTooltipDesc": {
     "message": "This is the address that will be able to withdraw your NFTs."
+  },
+  "spenderTooltipERC20ApproveDesc": {
+    "message": "This is the address that will be able to spend your tokens on your behalf."
   },
   "spendingCap": {
     "message": "Spending cap"
