@@ -19,7 +19,6 @@ import { AppStateController } from '../../controllers/app-state';
 import { SecurityAlertResponse } from './types';
 import {
   getSecurityAlertsAPISupportedChainIds,
-  isSecurityAlertsAPIEnabled,
   SecurityAlertsAPIRequest,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
@@ -51,13 +50,11 @@ export async function validateRequestWithPPOM({
   try {
     const normalizedRequest = normalizePPOMRequest(request);
 
-    const ppomResponse = isSecurityAlertsAPIEnabled()
-      ? await validateWithAPI(ppomController, chainId, normalizedRequest)
-      : await validateWithController(
-          ppomController,
-          normalizedRequest,
-          chainId,
-        );
+    const ppomResponse = await validateWithAPI(
+      ppomController,
+      chainId,
+      normalizedRequest,
+    );
 
     return {
       ...ppomResponse,
@@ -126,9 +123,7 @@ export async function isChainSupported(chainId: Hex): Promise<boolean> {
   let supportedChainIds = SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS;
 
   try {
-    if (isSecurityAlertsAPIEnabled()) {
-      supportedChainIds = await getSecurityAlertsAPISupportedChainIds();
-    }
+    supportedChainIds = await getSecurityAlertsAPISupportedChainIds();
   } catch (error: unknown) {
     handlePPOMError(
       error,
