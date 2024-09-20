@@ -6,6 +6,7 @@ import HomePage from '../../page-objects/pages/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 
 const newPassword = 'this is the best password ever';
 
@@ -35,7 +36,11 @@ describe('Forgot password', function () {
         await homePage.headerNavbar.lockMetaMask();
 
         // Check user can log in with new password
-        await loginWithBalanceValidation(driver, newPassword);
+        await loginWithBalanceValidation(
+          driver,
+          DEFAULT_GANACHE_ETH_BALANCE_DEC,
+          newPassword,
+        );
       },
     );
   });
