@@ -205,9 +205,6 @@
   "delete": {
     "message": "Usuń"
   },
-  "deleteNetwork": {
-    "message": "Usunąć sieć?"
-  },
   "details": {
     "message": "Szczegóły"
   },
@@ -350,9 +347,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Nieprawidłowy adres odbiorcy"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nieprawidłowe Block Explorer URI"
   },
   "invalidRPC": {
     "message": "Nieprawidłowe RPC URI"
