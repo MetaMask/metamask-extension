@@ -1,6 +1,6 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   Modal,
   ModalContent,
@@ -22,6 +22,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { setShowMultiRpcModal } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getNetworkConfigurationsByChainId } from '../../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NetworkListItem from './network-list-item/network-list-item';
 
@@ -29,10 +30,7 @@ function MultiRpcEditModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-
-  // TODO: useSelector(getNetworkConfigurationsByChainId) with network controller v21 upgrade
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const networkConfigurations = {} as Record<Hex, any>;
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   return (
     <Modal
@@ -69,7 +67,7 @@ function MultiRpcEditModal() {
           <Box paddingBottom={6}>
             <Box marginTop={isPopUp ? 0 : 4} marginBottom={1}>
               {Object.values(networkConfigurations).map(
-                (networkConfiguration) =>
+                (networkConfiguration: NetworkConfiguration) =>
                   networkConfiguration.rpcEndpoints.length > 1 ? (
                     <NetworkListItem
                       networkConfiguration={networkConfiguration}

@@ -9,6 +9,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { unapprovedPersonalSignMsg } from '../../../../../test/data/confirmations/personal_sign';
 import { SignatureRequestType } from '../../types/confirm';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import useConfirmationOriginAlerts from './useConfirmationOriginAlerts';
 
 const expectedAlert = [
@@ -51,7 +52,7 @@ describe('useConfirmationOriginAlerts', () => {
 
   it('returns an alert for transaction with special characters in origin', () => {
     const contractInteraction = genUnapprovedContractInteractionConfirmation({
-      chainId: mockState.metamask.networkConfigurations.goerli.chainId,
+      chainId: CHAIN_IDS.GOERLI,
     });
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationOriginAlerts(),

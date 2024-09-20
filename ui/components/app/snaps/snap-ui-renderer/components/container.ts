@@ -82,7 +82,7 @@ export const container: UIComponentFactory<BoxElement> = ({
       className: 'snap-ui-renderer__container',
       style: {
         overflowY: 'auto',
-        paddingBottom: useFooter ? '74px' : 'initial',
+        paddingBottom: useFooter ? '80px' : 'initial',
       },
     },
   };

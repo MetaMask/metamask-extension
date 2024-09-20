@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+import { Mockttp } from 'mockttp';
 import { openDapp, unlockWallet } from '../../../helpers';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import ContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import { Driver } from '../../../webdriver/driver';
+import { MockedEndpoint } from '../../../mock-e2e';
 import {
   assertAdvancedGasDetails,
   confirmDepositTransaction,
@@ -90,8 +94,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
                 redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
+              useTransactionSimulations: false,
             })
-            .withTransactionControllerOPLayer2Transaction()
+            .withNetworkControllerOnOptimism()
             .build(),
           ganacheOptions: {
             ...defaultGanacheOptionsForType2Transactions,
@@ -100,9 +105,11 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           },
           smartContract,
           title: this.test?.fullTitle(),
+          testSpecificMock: mockOptimismOracle,
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await unlockWallet(driver);
+          await createLayer2Transaction(driver);
 
           const contractAddress = await (
             contractRegistry as ContractAddressRegistry
@@ -110,9 +117,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await openDapp(driver, contractAddress);
 
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await toggleAdvancedDetails(driver);
 
@@ -279,3 +284,34 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
   });
 });
+
+async function createLayer2Transaction(driver: Driver) {
+  await createDappTransaction(driver, {
+    data: '0x1234',
+    to: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+  });
+}
+
+async function mockOptimismOracle(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockServer
+      .forPost(/infura/u)
+      .withJsonBodyIncluding({
+        method: 'eth_call',
+        params: [{ to: '0x420000000000000000000000000000000000000f' }],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result:
+              '0x0000000000000000000000000000000000000000000000000000000c895f9d79',
+          },
+        };
+      }),
+  ];
+}
