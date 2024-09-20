@@ -289,20 +289,13 @@ describe('MultiRpc:', function (this: Suite) {
         await driver.clickElement('[data-testid="network-display"]');
 
         // Go to Edit Menu
-        const networkMenu = await driver.findElement(
+        await driver.clickElement(
           '[data-testid="network-list-item-options-button-0xa4b1"]',
         );
-        await networkMenu.click();
-
-        const editButton = await driver.findElement(
+        await driver.clickElement(
           '[data-testid="network-list-item-options-edit"]',
         );
-        editButton.click();
-
-        const rpcButtonMenu = await driver.findElement(
-          '[data-testid="test-add-rpc-drop-down"]',
-        );
-        rpcButtonMenu.click();
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
 
         await driver.delay(regularDelayMs);
         await driver.clickElement({
@@ -414,10 +407,7 @@ describe('MultiRpc:', function (this: Suite) {
           tag: 'p',
         });
 
-        const rpcButtonMenu = await driver.findElement(
-          '[data-testid="test-add-rpc-drop-down"]',
-        );
-        rpcButtonMenu.click();
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
 
         await driver.delay(regularDelayMs);
         await driver.clickElement({

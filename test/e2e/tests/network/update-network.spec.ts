@@ -197,23 +197,18 @@ describe('Update Network:', function (this: Suite) {
         await driver.clickElement('[data-testid="network-display"]');
 
         // Go to Edit Menu
-        const networkMenu = await driver.findElement(
+        await driver.clickElement(
           '[data-testid="network-list-item-options-button-0xa4b1"]',
         );
-        await networkMenu.click();
 
         await driver.delay(regularDelayMs);
-        const editButton = await driver.findElement(
+        await driver.clickElement(
           '[data-testid="network-list-item-options-edit"]',
         );
-        editButton.click();
 
         await driver.delay(regularDelayMs);
 
-        const rpcButtonMenu = await driver.findElement(
-          '[data-testid="test-add-rpc-drop-down"]',
-        );
-        rpcButtonMenu.click();
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
 
         await driver.delay(regularDelayMs);
 
@@ -225,10 +220,7 @@ describe('Update Network:', function (this: Suite) {
         const existRpcToDelete = arbitrumRpcToDelete !== undefined;
         assert.equal(existRpcToDelete, true, 'Rpc is not deleted');
 
-        const deleteRpcButton = await driver.findElement(
-          '[data-testid="delete-rpc-1"]',
-        );
-        deleteRpcButton.click();
+        await driver.clickElement('[data-testid="delete-rpc-1"]');
 
         const arbitrumRpcDeleted = await driver.findElement({
           text: 'responsive-rpc.test',
@@ -304,23 +296,19 @@ describe('Update Network:', function (this: Suite) {
         await driver.clickElement('[data-testid="network-display"]');
 
         // Go to Edit Menu
-        const networkMenu = await driver.findElement(
+        await driver.clickElement(
           '[data-testid="network-list-item-options-button-0xa4b1"]',
         );
-        await networkMenu.click();
 
         await driver.delay(regularDelayMs);
-        const editButton = await driver.findElement(
+
+        await driver.clickElement(
           '[data-testid="network-list-item-options-edit"]',
         );
-        editButton.click();
 
         await driver.delay(regularDelayMs);
 
-        const rpcButtonMenu = await driver.findElement(
-          '[data-testid="test-add-rpc-drop-down"]',
-        );
-        rpcButtonMenu.click();
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
 
         await driver.delay(regularDelayMs);
 
