@@ -11,6 +11,7 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
 import {
+  addToken,
   addTransactionAndWaitForPublish,
   forceUpdateMetamaskState,
 } from '../../store/actions';
@@ -26,7 +27,11 @@ import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { SwapsEthToken } from '../../selectors';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { checkNetworkAndAccountSupports1559 } from '../../selectors';
+import {
+  checkNetworkAndAccountSupports1559,
+  getNetworkConfigurations,
+  getSelectedNetworkClientId,
+} from '../../selectors';
 import { getGasFeeEstimates } from '../metamask/metamask';
 import {
   addHexes,
@@ -126,8 +131,8 @@ export const signBridgeTransaction = (
     //   return;
     // }
 
-    const bestQuote = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
-    // const bestQuote = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
+    const quoteMeta = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
+    // const quoteMeta = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
 
     // Track event TODO
 
@@ -158,22 +163,22 @@ export const signBridgeTransaction = (
       );
     }
 
-    // Approval tx fn
     const handleApprovalTx = async () => {
       console.log('Bridge', 'handleApprovalTx');
 
-      const hexChainId = new Numeric(bestQuote.approval.chainId, 10)
-        .toPrefixedHexString()
-        .toString() as `0x${string}`;
+      const hexChainId = new Numeric(
+        quoteMeta.approval.chainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
       if (!hexChainId) {
         throw new Error('Invalid chain ID');
       }
 
       const txMeta = await addTransactionAndWaitForPublish(
         {
-          ...bestQuote.approval,
+          ...quoteMeta.approval,
           chainId: hexChainId,
-          gasLimit: bestQuote.approval.gasLimit.toString(),
+          gasLimit: quoteMeta.approval.gasLimit.toString(),
           // maxFeePerGas,
           // maxPriorityFeePerGas,
         },
@@ -185,7 +190,7 @@ export const signBridgeTransaction = (
             hasApproveTx: true,
             meta: {
               type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
-              sourceTokenSymbol: bestQuote.quote.srcAsset.symbol,
+              sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
             },
           },
         },
@@ -195,21 +200,21 @@ export const signBridgeTransaction = (
       return txMeta.id;
     };
 
-    // Bridge tx fn
     const handleBridgeTx = async (approvalTxId: string | undefined) => {
       console.log('Bridge', 'handleBridgeTx');
-      const hexChainId = new Numeric(bestQuote.trade.chainId, 10)
-        .toPrefixedHexString()
-        .toString() as `0x${string}`;
+      const hexChainId = new Numeric(
+        quoteMeta.trade.chainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
       if (!hexChainId) {
         throw new Error('Invalid chain ID');
       }
 
       const txMeta = await addTransactionAndWaitForPublish(
         {
-          ...bestQuote.trade,
+          ...quoteMeta.trade,
           chainId: hexChainId,
-          gasLimit: bestQuote.trade.gasLimit.toString(),
+          gasLimit: quoteMeta.trade.gasLimit.toString(),
           // maxFeePerGas,
           // maxPriorityFeePerGas,
         },
@@ -218,21 +223,21 @@ export const signBridgeTransaction = (
           // @ts-expect-error Need TransactionController v37+, TODO add this type
           type: 'bridge', // TransactionType.bridge,
           bridge: {
-            hasApproveTx: Boolean(bestQuote?.approval),
+            hasApproveTx: Boolean(quoteMeta?.approval),
             meta: {
               // estimatedBaseFee: decEstimatedBaseFee,
               // swapMetaData,
               type: 'bridge', // TransactionType.bridge, // TODO add this type
-              sourceTokenSymbol: bestQuote.quote.srcAsset.symbol,
-              destinationTokenSymbol: bestQuote.quote.destAsset.symbol,
-              destinationTokenDecimals: bestQuote.quote.destAsset.decimals,
-              destinationTokenAddress: bestQuote.quote.destAsset.address,
+              sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
+              destinationTokenSymbol: quoteMeta.quote.destAsset.symbol,
+              destinationTokenDecimals: quoteMeta.quote.destAsset.decimals,
+              destinationTokenAddress: quoteMeta.quote.destAsset.address,
               approvalTxId,
               // this is the decimal (non atomic) amount (not USD value) of source token to swap
               swapTokenValue: new Numeric(
-                bestQuote.quote.srcTokenAmount,
+                quoteMeta.quote.srcTokenAmount,
                 10,
-              ).shiftedBy(bestQuote.quote.srcAsset.decimals),
+              ).shiftedBy(quoteMeta.quote.srcAsset.decimals),
             },
           },
         },
@@ -242,13 +247,69 @@ export const signBridgeTransaction = (
       return txMeta.id;
     };
 
-    // Transaction execution
+    const addSourceToken = () => {
+      const sourceNetworkClientId = getSelectedNetworkClientId(state);
+      const {
+        address,
+        decimals,
+        symbol,
+        icon: image,
+      } = quoteMeta.quote.srcAsset;
+      dispatch(
+        addToken({
+          address,
+          decimals,
+          symbol,
+          image,
+          networkClientId: sourceNetworkClientId,
+        }),
+      );
+    };
+
+    const addDestToken = () => {
+      const networkConfigurations = getNetworkConfigurations(state);
+      const networkConfigurationsArr = Object.values<{
+        chainId: Hex;
+        id: string;
+      }>(networkConfigurations);
+      const hexDestChainId = new Numeric(
+        quoteMeta.quote.destChainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
+      const destNetworkConfig = networkConfigurationsArr.find(
+        (networkConfig) => networkConfig.chainId === hexDestChainId,
+      );
+      if (destNetworkConfig) {
+        const {
+          address,
+          decimals,
+          symbol,
+          icon: image,
+        } = quoteMeta.quote.destAsset;
+        dispatch(
+          addToken({
+            address,
+            decimals,
+            symbol,
+            image,
+            networkClientId: destNetworkConfig.id,
+          }),
+        );
+      } else {
+        // TODO import the dest chain, then add the dest token
+      }
+    };
+
+    // Execute transaction(s)
     let approvalTxId: string | undefined;
-    if (bestQuote?.approval) {
+    if (quoteMeta?.approval) {
       approvalTxId = await handleApprovalTx();
     }
-
     await handleBridgeTx(approvalTxId);
+
+    // Add tokens
+    addSourceToken();
+    addDestToken();
 
     // Return user to home screen
     history.push(DEFAULT_ROUTE);
