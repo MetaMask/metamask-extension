@@ -11,7 +11,7 @@ export const THREE_MINUTES = MINUTE * 3;
  * @returns The expiry set.
  */
 const makeExpirySet = () => {
-  const map: Map<string | number, number> = new Map();
+  const map: Map<string | number | null, number> = new Map();
 
   setInterval(() => {
     const cutoffTime = Date.now() - THREE_MINUTES;
@@ -32,7 +32,7 @@ const makeExpirySet = () => {
      * @param value - The value to add.
      * @returns `true` if the value was added, and `false` if it already existed.
      */
-    add(value: string | number) {
+    add(value: string | number | null) {
       if (!map.has(value)) {
         map.set(value, Date.now());
         return true;
@@ -54,8 +54,7 @@ export default function createDupeReqFilterStream() {
     transform(chunk: JsonRpcRequest, _, cb) {
       // JSON-RPC notifications have no ids; our only recourse is to let them through.
       const hasNoId = chunk.id === undefined;
-      const requestNotYetSeen =
-        chunk.id !== null && seenRequestIds.add(chunk.id);
+      const requestNotYetSeen = seenRequestIds.add(chunk.id);
 
       if (hasNoId || requestNotYetSeen) {
         cb(null, chunk);

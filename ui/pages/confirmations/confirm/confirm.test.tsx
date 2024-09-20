@@ -6,6 +6,8 @@ import { act } from '@testing-library/react';
 import {
   orderSignatureMsg,
   permitSignatureMsg,
+  permitSingleSignatureMsg,
+  permitBatchSignatureMsg,
 } from '../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -16,6 +18,7 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
+import { fetchErc20Decimals } from '../utils/token';
 import Confirm from './confirm';
 
 jest.mock('react-router-dom', () => ({
@@ -30,15 +33,21 @@ const middleware = [thunk];
 describe('Confirm', () => {
   afterEach(() => {
     jest.resetAllMocks();
+
+    /** Reset memoized function using getTokenStandardAndDetails for each test */
+    fetchErc20Decimals?.cache?.clear?.();
   });
 
   it('should render', () => {
     const mockStore = configureMockStore(middleware)(mockState);
-    const { container } = renderWithConfirmContextProvider(
-      <Confirm />,
-      mockStore,
-    );
-    expect(container).toBeDefined();
+
+    act(() => {
+      const { container } = renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
+      expect(container).toBeDefined();
+    });
   });
 
   it('should match snapshot for signature - typed sign - permit', async () => {
@@ -68,14 +77,17 @@ describe('Confirm', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('matches snapshot for signature - personal sign type', () => {
+  it('matches snapshot for signature - personal sign type', async () => {
     const mockStatePersonalSign = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore(middleware)(mockStatePersonalSign);
-    const { container } = renderWithConfirmContextProvider(
-      <Confirm />,
-      mockStore,
-    );
-    expect(container).toMatchSnapshot();
+
+    await act(async () => {
+      const { container } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it('should match snapshot signature - typed sign - order', async () => {
@@ -110,10 +122,63 @@ describe('Confirm', () => {
   it('should match snapshot for signature - typed sign - V4', async () => {
     const mockStateTypedSign = getMockTypedSignConfirmState();
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
-    const { container } = renderWithConfirmContextProvider(
-      <Confirm />,
-      mockStore,
+
+    await act(async () => {
+      const { container } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('should match snapshot for signature - typed sign - V4 - PermitSingle', async () => {
+    const mockStateTypedSign = getMockTypedSignConfirmStateForRequest(
+      permitSingleSignatureMsg,
+      {
+        metamask: { useTransactionSimulations: true },
+      },
     );
-    expect(container).toMatchSnapshot();
+    const mockStore = configureMockStore(middleware)(mockStateTypedSign);
+
+    jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
+      decimals: '2',
+      standard: 'erc20',
+    });
+
+    await act(async () => {
+      const { container, findByText } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
+
+      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('should match snapshot for signature - typed sign - V4 - PermitBatch', async () => {
+    const mockStateTypedSign = getMockTypedSignConfirmStateForRequest(
+      permitBatchSignatureMsg,
+      {
+        metamask: { useTransactionSimulations: true },
+      },
+    );
+    const mockStore = configureMockStore(middleware)(mockStateTypedSign);
+
+    jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
+      decimals: '2',
+      standard: 'erc20',
+    });
+
+    await act(async () => {
+      const { container, findByText } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
+
+      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+      expect(container).toMatchSnapshot();
+    });
   });
 });

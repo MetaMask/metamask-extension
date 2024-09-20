@@ -1,10 +1,12 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { merge } from 'lodash';
 
 import {
   Confirmation,
   SignatureRequestType,
 } from '../../../ui/pages/confirmations/types/confirm';
 import mockState from '../mock-state.json';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   genUnapprovedApproveConfirmation,
   genUnapprovedContractInteractionConfirmation,
@@ -142,28 +144,31 @@ export const getMockConfirmStateForTransaction = (
   transaction: Confirmation,
   args: RootState = { metamask: {} },
 ) =>
-  getMockConfirmState({
-    ...args,
-    metamask: {
-      ...args.metamask,
-      pendingApprovals: {
-        [transaction.id]: {
-          id: transaction.id,
-          type: ApprovalType.Transaction,
+  getMockConfirmState(
+    merge(
+      {
+        metamask: {
+          ...args.metamask,
+          pendingApprovals: {
+            [transaction.id]: {
+              id: transaction.id,
+              type: ApprovalType.Transaction,
+            },
+          },
+          transactions: [transaction],
         },
       },
-      transactions: [transaction],
-    },
-    confirm: {
-      currentConfirmation: transaction,
-    },
-  });
+      args,
+    ),
+  );
 
-export const getMockContractInteractionConfirmState = () => {
+export const getMockContractInteractionConfirmState = (
+  args: RootState = { metamask: {} },
+) => {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
-    chainId: mockState.metamask.networkConfigurations.goerli.chainId,
+    chainId: CHAIN_IDS.GOERLI,
   });
-  return getMockConfirmStateForTransaction(contractInteraction);
+  return getMockConfirmStateForTransaction(contractInteraction, args);
 };
 
 export const getMockApproveConfirmState = () => {

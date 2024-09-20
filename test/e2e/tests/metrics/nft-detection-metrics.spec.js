@@ -102,7 +102,6 @@ describe('Nft detection event @no-mmi', function () {
           chain_id: '0x539',
           environment_type: 'fullscreen',
           is_profile_syncing_enabled: null,
-          is_signed_in: false,
         });
         assert.deepStrictEqual(events[2].properties, {
           nft_autodetection_enabled: true,

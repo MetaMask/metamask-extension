@@ -1,6 +1,5 @@
 /** Please import your files in alphabetical order **/
 @import 'account-list-item/index';
-@import 'add-network/index';
 @import 'app-loading-spinner/index';
 @import 'alerts/alerts';
 @import 'beta-header/index';
@@ -34,6 +33,7 @@
 @import 'snaps/show-more/index';
 @import 'snaps/insight-warnings/index';
 @import 'snaps/snap-authorship-header/index';
+@import 'snaps/snap-authorship-pill/index';
 @import 'snaps/snap-footer-button/index';
 @import 'hold-to-reveal-button/index';
 @import 'home-notification/index';
@@ -50,7 +50,6 @@
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
-@import 'smart-transactions/index';
 @import 'srp-input/srp-input';
 @import 'snaps/snap-privacy-warning/index';
 @import 'tab-bar/index';

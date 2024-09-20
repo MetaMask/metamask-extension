@@ -199,9 +199,6 @@
   "delete": {
     "message": "Futa"
   },
-  "deleteNetwork": {
-    "message": "Futa Mtandao?"
-  },
   "details": {
     "message": "Maelezo"
   },
@@ -222,9 +219,6 @@
   },
   "editContact": {
     "message": "Hariri Mawasiliano"
-  },
-  "ensRegistrationError": {
-    "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
   },
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
@@ -341,12 +335,6 @@
   "invalidAddressRecipient": {
     "message": "Anwani ya mpokeaji si halali"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Kwa mtandao wa ETH, weka herufi ndogo"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URL batili"
-  },
   "invalidRPC": {
     "message": "RPC URL batili"
   },
@@ -437,9 +425,6 @@
   "next": {
     "message": "Inayofuata"
   },
-  "noAddressForName": {
-    "message": "Hakuna anwani iliyoundwa kwa jina hili."
-  },
   "noConversionRateAvailable": {
     "message": "Hakuna Kiwango cha Ubadilishaji"
   },
@@ -522,9 +507,6 @@
   },
   "readdToken": {
     "message": "Unaweza kuongeza tena kianzio hiki hapo baadaye kwa kwenda kwenye \"Ongeza kianzio\" kwenye machaguo yako ya menyu ya akaunti."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Tafuta, anwani za umma (0x), au ENS"
   },
   "reject": {
     "message": "Kataa"

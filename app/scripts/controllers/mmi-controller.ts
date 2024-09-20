@@ -26,8 +26,8 @@ import {
 } from '@metamask/message-manager';
 import { NetworkController } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
+import { toHex } from '@metamask/controller-utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import {
   MMIControllerOptions,
@@ -41,7 +41,7 @@ import AccountTracker from '../lib/account-tracker';
 import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
-import { PreferencesController } from './preferences';
+import PreferencesController from './preferences-controller';
 import { AppStateController } from './app-state';
 
 type UpdateCustodianTransactionsParameters = {
@@ -759,15 +759,9 @@ export default class MMIController extends EventEmitter {
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
 
-    const { networkConfigurations: networkConfigurationsById } =
-      this.networkController.state;
-    const networkConfigurations = Object.values(networkConfigurationsById);
-
-    const networks = [
-      ...networkConfigurations,
-      { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.SEPOLIA },
-    ];
+    const networks = Object.values(
+      this.networkController.state.networkConfigurationsByChainId,
+    );
 
     return handleMmiPortfolio({
       keyringAccounts,
@@ -853,26 +847,24 @@ export default class MMIController extends EventEmitter {
         internalAccount.id,
       );
     }
-    const selectedChainId = parseInt(
-      getCurrentChainId({ metamask: this.networkController.state }),
-      16,
-    );
-    if (selectedChainId !== chainId && chainId === 1) {
-      await this.networkController.setActiveNetwork('mainnet');
-    } else if (selectedChainId !== chainId) {
-      const { networkConfigurations } = this.networkController.state;
 
-      const foundNetworkConfiguration = Object.values(
-        networkConfigurations,
-      ).find(
-        (networkConfiguration) =>
-          parseInt(networkConfiguration.chainId, 16) === chainId,
-      );
+    const selectedChainId = getCurrentChainId({
+      metamask: this.networkController.state,
+    });
 
-      if (foundNetworkConfiguration !== undefined) {
-        await this.networkController.setActiveNetwork(
-          foundNetworkConfiguration.id,
-        );
+    if (selectedChainId !== toHex(chainId)) {
+      const networkConfiguration =
+        this.networkController.state.networkConfigurationsByChainId[
+          toHex(chainId)
+        ];
+
+      const { networkClientId } =
+        networkConfiguration?.rpcEndpoints?.[
+          networkConfiguration.defaultRpcEndpointIndex
+        ] ?? {};
+
+      if (networkClientId) {
+        await this.networkController.setActiveNetwork(networkClientId);
       }
     }
 

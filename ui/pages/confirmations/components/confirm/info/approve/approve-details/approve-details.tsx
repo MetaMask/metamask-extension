@@ -1,3 +1,4 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -7,6 +8,7 @@ import {
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { Container } from '../../shared/transaction-data/transaction-data';
@@ -15,9 +17,15 @@ import {
   OriginRow,
   RecipientRow,
 } from '../../shared/transaction-details/transaction-details';
+import { useIsNFT } from '../hooks/use-is-nft';
 
 const Spender = () => {
   const t = useI18nContext();
+
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+
+  const { isNFT } = useIsNFT(transactionMeta);
 
   const decodedResponse = useDecodedTransactionData();
 
@@ -35,7 +43,13 @@ const Spender = () => {
 
   return (
     <>
-      <ConfirmInfoRow label={t('spender')} tooltip={t('spenderTooltipDesc')}>
+      <ConfirmInfoRow
+        label={t('spender')}
+        tooltip={t(
+          isNFT ? 'spenderTooltipDesc' : 'spenderTooltipERC20ApproveDesc',
+        )}
+        data-testid="confirmation__approve-spender"
+      >
         <ConfirmInfoRowAddress address={spender} />
       </ConfirmInfoRow>
 
@@ -50,7 +64,7 @@ export const ApproveDetails = () => {
   );
 
   return (
-    <ConfirmInfoSection>
+    <ConfirmInfoSection data-testid="confirmation__approve-details">
       <Spender />
       <OriginRow />
       {showAdvancedDetails && (

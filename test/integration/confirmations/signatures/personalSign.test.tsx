@@ -87,7 +87,7 @@ describe('PersonalSign Confirmation', () => {
 
     expect(getByTestId('header-account-name')).toHaveTextContent(accountName);
     expect(getByTestId('header-network-display-name')).toHaveTextContent(
-      'Chain 5',
+      'Sepolia',
     );
 
     fireEvent.click(getByTestId('header-info__account-details-button'));
@@ -106,7 +106,7 @@ describe('PersonalSign Confirmation', () => {
     );
     expect(
       getByTestId('confirmation-account-details-modal__account-balance'),
-    ).toHaveTextContent('1.58271596ETH');
+    ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
 
