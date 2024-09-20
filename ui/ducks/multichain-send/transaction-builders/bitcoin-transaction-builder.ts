@@ -82,6 +82,10 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
     this.transaction = { ...defaultSendManyTransaction };
   }
 
+  getTransactionParams(): TransactionParams {
+    return this.transactionParams;
+  }
+
   setAmount(
     amount: string,
   ): DraftTransaction['transactionParams']['sendAsset'] {
@@ -112,6 +116,21 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
   }
 
   buildTransaction(): void {
+    if (!this.transactionParams.recipient.address) {
+      throw new Error('Invalid recipient');
+    }
+
+    if (
+      !this.transactionParams.sendAsset.amount ||
+      new BigNumber(this.transactionParams.sendAsset.amount).lte(0)
+    ) {
+      throw new Error('Invalid amount');
+    }
+
+    if (!this.transactionParams.fee.fee) {
+      throw new Error('Invalid fee');
+    }
+
     const sendManyTransaction: SendManyTransaction = {
       amounts: {
         [this.transactionParams.recipient.address]: new BigNumber(
@@ -129,7 +148,12 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
     this.transaction = sendManyTransaction;
   }
 
-  async estimateGas(): Promise<DraftTransaction['transactionParams']['fee']> {
+  async estimateGas(): Promise<
+    Pick<
+      DraftTransaction['transactionParams']['fee'],
+      'fee' | 'unit' | 'error' | 'confirmationTime'
+    >
+  > {
     if (!this.transactionParams.sendAsset.amount) {
       this.transactionParams = {
         ...this.transactionParams,
@@ -166,14 +190,19 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
         fee: new BigNumber(estimatedFee.fee.amount)
           .mul(new BigNumber(10).pow(8))
           .toString(),
-        unit: estimatedFee.fee.unit,
+        unit: 'sats',
         error: '',
         // TODO: remove hardcode
         confirmationTime: '10 minutes',
       },
     };
 
-    return this.transactionParams.fee;
+    return {
+      fee: this.transactionParams.fee.fee,
+      unit: this.transactionParams.fee.unit,
+      error: this.transactionParams.fee.error,
+      confirmationTime: this.transactionParams.fee.confirmationTime,
+    };
   }
 
   async queryAssetBalance(): Promise<{
@@ -188,7 +217,9 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
   }
 
   validateTransaction(): boolean {
-    // TODO: Validate if send amount is sufficient
+    if (Object.keys(this.transaction.amounts).length === 0) {
+      throw new Error('Invalid recipient');
+    }
 
     return is(this.transaction, SendManyTransactionStruct);
   }
@@ -223,21 +254,11 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       return this.transactionParams.sendAsset;
     }
 
-    this.transactionParams = {
-      ...this.transactionParams,
-      sendAsset: {
-        ...this.transactionParams.sendAsset,
-        asset,
-        error: '',
-        valid: true,
-      },
-    };
-
     if (
-      ![
-        MultichainNativeAssets.BITCOIN,
-        MultichainNativeAssets.BITCOIN_TESTNET,
-      ].includes(asset as MultichainNativeAssets)
+      (asset !== MultichainNativeAssets.BITCOIN &&
+        this.network === MultichainNetworks.BITCOIN) ||
+      (asset !== MultichainNativeAssets.BITCOIN_TESTNET &&
+        this.network === MultichainNetworks.BITCOIN_TESTNET)
     ) {
       this.transactionParams = {
         ...this.transactionParams,
@@ -247,9 +268,20 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
           valid: false,
         },
       };
+      return this.transactionParams.sendAsset;
     }
 
     // TODO: allow asset to ordinals / runes / brc20
+
+    this.transactionParams = {
+      ...this.transactionParams,
+      sendAsset: {
+        ...this.transactionParams.sendAsset,
+        asset,
+        error: '',
+        valid: true,
+      },
+    };
 
     return this.transactionParams.sendAsset;
   }
@@ -276,6 +308,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
         error: '',
       },
     };
+    this.network = network;
     return this.transactionParams.network;
   }
 
@@ -320,11 +353,15 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
         ...this.transactionParams,
         fee: {
           ...this.transactionParams.fee,
-          fee: estimatedFee.fee.amount,
+          fee: new BigNumber(estimatedFee.fee.amount)
+            .mul(new BigNumber(10).pow(8))
+            .toString(),
           unit: estimatedFee.fee.unit,
           error: '',
           feeLevel: fee,
           valid: true,
+          isLoading: false,
+          confirmationTime: '10 minutes',
         },
       };
     } catch (e) {
@@ -348,7 +385,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
   ): DraftTransaction['transactionParams']['recipient'] {
     if (
       (this.network === MultichainNetworks.BITCOIN &&
-        validate(recipient, BitcoinNetwork.mainnet)) ||
+        !validate(recipient, BitcoinNetwork.mainnet)) ||
       (this.network === MultichainNetworks.BITCOIN_TESTNET &&
         !validate(recipient, BitcoinNetwork.testnet))
     ) {
@@ -363,6 +400,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       };
       return this.transactionParams.recipient;
     }
+
     this.transactionParams = {
       ...this.transactionParams,
       recipient: {
@@ -448,6 +486,13 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
     const maxAmountInSats = new BigNumber(maxAmount.balance.amount)
       .mul(new BigNumber(10).pow(8))
       .toString();
+
+    const fee = new BigNumber(maxAmount.fee.amount)
+      .mul(new BigNumber(10).pow(8))
+      .toString();
+
+    this.transactionParams.sendAsset.amount = maxAmountInSats;
+    this.transactionParams.fee.fee = fee;
 
     return maxAmountInSats;
   }

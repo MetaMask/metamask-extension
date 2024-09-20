@@ -38,7 +38,12 @@ export abstract class AbstractTransactionBuilder {
     this.transactionParams = transactionParams;
   }
 
-  abstract estimateGas(): Promise<DraftTransaction['transactionParams']['fee']>;
+  abstract estimateGas(): Promise<
+    Pick<
+      DraftTransaction['transactionParams']['fee'],
+      'fee' | 'unit' | 'error' | 'confirmationTime'
+    >
+  >;
 
   abstract queryAssetBalance(address: string): Promise<{
     amount: string;
@@ -79,4 +84,6 @@ export abstract class AbstractTransactionBuilder {
 
   // The maximum amount the user can send after fees
   abstract setMaxSendAmount(): Promise<string>;
+
+  abstract getTransactionParams(): TransactionParams;
 }
