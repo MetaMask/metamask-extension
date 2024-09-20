@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { unlockWallet } from '../../../helpers';
+import { DAPP_URL } from '../../../constants';
+import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
-import {
-  assertRevokeSetApprovalForAllTitle,
-  createERC1155RevokeSetApprovalForAllTransaction,
-  scrollToBottomOfConfirmationAndConfirm,
-} from '../../../page-objects/flows/transaction-redesign.flow';
+import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/set-approval-for-all-transaction-confirmation';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from '../helpers';
@@ -57,12 +55,19 @@ async function createTransactionAndAssertDetails(
     contractRegistry as GanacheContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.NFTS);
 
-  await createERC1155RevokeSetApprovalForAllTransaction(
-    driver,
-    contractAddress,
-  );
+  const testDapp = new TestDapp(driver);
 
-  await assertRevokeSetApprovalForAllTitle(driver);
+  await testDapp.open({ contractAddress, url: DAPP_URL });
 
-  await scrollToBottomOfConfirmationAndConfirm(driver);
+  await testDapp.clickERC1155RevokeSetApprovalForAllButton();
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  const setApprovalForAllConfirmation =
+    new SetApprovalForAllTransactionConfirmation(driver);
+
+  await setApprovalForAllConfirmation.check_revokeSetApprovalForAllTitle();
+
+  await setApprovalForAllConfirmation.clickScrollToBottomButton();
+  await setApprovalForAllConfirmation.clickFooterConfirmButton();
 }
