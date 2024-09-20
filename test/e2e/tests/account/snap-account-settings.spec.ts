@@ -8,7 +8,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 
-describe('Add snap account experimental settings', function (this: Suite) {
+describe('Add snap account experimental settings @no-mmi', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
     await withFixtures(
       {
