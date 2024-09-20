@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { unlockWallet } from '../../../helpers';
+import { DAPP_URL, unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
-import {
-  assertSetApprovalForAllTitle,
-  createERC721SetApprovalForAllTransaction,
-  scrollToBottomOfConfirmationAndConfirm,
-} from '../../../page-objects/flows/transaction-redesign.flow';
+import ApprovalTransactionConfirmation from '../../../page-objects/pages/approval-transaction-confirmation';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from '../helpers';
@@ -86,9 +83,18 @@ async function createTransactionAssertDetailsAndConfirm(
     contractRegistry as GanacheContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.NFTS);
 
-  await createERC721SetApprovalForAllTransaction(driver, contractAddress);
+  const testDapp = new TestDapp(driver);
 
-  await assertSetApprovalForAllTitle(driver);
+  await testDapp.open({ contractAddress, url: DAPP_URL });
+  await testDapp.clickERC721SetApprovalForAllButton();
 
-  await scrollToBottomOfConfirmationAndConfirm(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  const approvalConfirmation = new ApprovalTransactionConfirmation(driver);
+
+  await approvalConfirmation.check_setApprovalForAllTitle();
+  await approvalConfirmation.check_setApprovalForAllSubHeading();
+
+  await approvalConfirmation.clickScrollToBottomButton();
+  await approvalConfirmation.clickFooterConfirmButton();
 }

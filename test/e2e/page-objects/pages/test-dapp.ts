@@ -18,7 +18,7 @@ class TestDapp {
     this.erc1155SetApprovalForAllButton = '#setApprovalForAllERC1155Button';
   }
 
-  public async open({
+  async open({
     contractAddress,
     url = DAPP_URL,
   }: {
@@ -33,7 +33,7 @@ class TestDapp {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async request(method: string, params: any[]) {
+  async request(method: string, params: any[]) {
     await this.open({
       url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
         params,
@@ -41,11 +41,11 @@ class TestDapp {
     });
   }
 
-  public async clickERC721SetApprovalForAllButton() {
+  async clickERC721SetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721SetApprovalForAllButton);
   }
 
-  public async clickERC1155SetApprovalForAllButton() {
+  async clickERC1155SetApprovalForAllButton() {
     await this.driver.clickElement(this.erc1155SetApprovalForAllButton);
   }
 }
