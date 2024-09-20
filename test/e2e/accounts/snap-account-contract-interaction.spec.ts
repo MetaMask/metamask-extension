@@ -1,4 +1,4 @@
-import GanacheContractAddressRegistry from '../seeder/ganache-contract-address-registry';
+import GanacheContractAddressRegistry from '../seeder/contract-address-registry';
 import { scrollAndConfirmAndAssertConfirm } from '../tests/confirmations/helpers';
 import {
   createDepositTransaction,

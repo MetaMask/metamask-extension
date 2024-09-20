@@ -8,12 +8,13 @@ const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
+const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
-const { LocalNetwork } = require('./seeder/anvil');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
+const AnvilSeeder = require('./seeder/anvil-seeder');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
@@ -60,11 +61,10 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  */
 async function withFixtures(options, testSuite) {
   const {
-    anvil,
-    anvilOptions,
     dapp,
     fixtures,
     ganacheOptions,
+    networkOptions,
     smartContract,
     driverOptions,
     dappOptions,
@@ -85,13 +85,13 @@ async function withFixtures(options, testSuite) {
 
   const fixtureServer = new FixtureServer();
   let ganacheServer;
-  if (!disableGanache) {
-    ganacheServer = new Ganache();
-  }
+  let localNetworkServer;
 
-  let anvilServer;
-  if (anvil) {
-    anvilServer = new LocalNetwork();
+  // Temporary logic for network management until we remove ganache from all specs
+  if (networkOptions || (!ganacheOptions && !disableGanache)) {
+    localNetworkServer = new Anvil();
+  } else if (!disableGanache) {
+    ganacheServer = new Ganache();
   }
 
   const bundlerServer = new Bundler();
@@ -110,26 +110,40 @@ async function withFixtures(options, testSuite) {
   let driver;
   let failed = false;
   try {
-    if (!disableGanache) {
+    if (ganacheServer) {
       await ganacheServer.start(ganacheOptions);
     }
 
-    if (anvil) {
-      await anvilServer.start(anvilOptions);
+    if (localNetworkServer) {
+      await localNetworkServer.start(networkOptions || {});
     }
 
     let contractRegistry;
 
-    if (smartContract && !disableGanache) {
-      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
-      const contracts =
-        smartContract instanceof Array ? smartContract : [smartContract];
-      await Promise.all(
-        contracts.map((contract) =>
-          ganacheSeeder.deploySmartContract(contract),
-        ),
-      );
-      contractRegistry = ganacheSeeder.getContractRegistry();
+    if (smartContract) {
+      if (ganacheServer) {
+        const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+        const contracts =
+          smartContract instanceof Array ? smartContract : [smartContract];
+        await Promise.all(
+          contracts.map((contract) =>
+            ganacheSeeder.deploySmartContract(contract),
+          ),
+        );
+        contractRegistry = ganacheSeeder.getContractRegistry();
+      } else if (localNetworkServer) {
+        const localNetworkSeeder = new AnvilSeeder(
+          localNetworkServer.getProvider(),
+        );
+        const contracts =
+          smartContract instanceof Array ? smartContract : [smartContract];
+        await Promise.all(
+          contracts.map((contract) =>
+            localNetworkSeeder.deploySmartContract(contract),
+          ),
+        );
+        contractRegistry = localNetworkSeeder.getContractRegistry();
+      }
     }
 
     if (ganacheOptions?.concurrent) {
@@ -229,13 +243,14 @@ async function withFixtures(options, testSuite) {
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
-      driver: driverProxy ?? driver,
-      contractRegistry,
-      ganacheServer,
-      secondaryGanacheServer,
-      mockedEndpoint,
       bundlerServer,
+      contractRegistry,
+      driver: driverProxy ?? driver,
+      ganacheServer,
+      localNetworkServer,
+      mockedEndpoint,
       mockServer,
+      secondaryGanacheServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -319,8 +334,8 @@ async function withFixtures(options, testSuite) {
         await ganacheServer.quit();
       }
 
-      if (anvil) {
-        await anvilServer.quit();
+      if (localNetworkServer) {
+        await localNetworkServer.quit();
       }
 
       if (ganacheOptions?.concurrent) {
@@ -802,10 +817,6 @@ const defaultGanacheOptions = {
   ],
 };
 
-const defaultAnvilOptions = {
-  balance: 25,
-};
-
 const defaultGanacheOptionsForType2Transactions = {
   ...defaultGanacheOptions,
   // EVM version that supports type 2 transactions (EIP1559)
@@ -946,17 +957,17 @@ const TEST_SEED_PHRASE_TWO =
  * or after a transaction is made.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {Ganache} [localNetworkServer] - The local server instance (optional).
  * @param {string} [address] - The address to check the balance for (optional).
  */
 const locateAccountBalanceDOM = async (
   driver,
-  ganacheServer,
+  localNetworkServer,
   address = null,
 ) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (ganacheServer) {
-    const balance = await ganacheServer.getBalance(address);
+  if (localNetworkServer) {
+    const balance = await localNetworkServer.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -997,10 +1008,10 @@ async function unlockWallet(
   }
 }
 
-const logInWithBalanceValidation = async (driver, ganacheServer) => {
+const logInWithBalanceValidation = async (driver, localNetworkServer) => {
   await unlockWallet(driver);
   // Wait for balance to load
-  await locateAccountBalanceDOM(driver, ganacheServer);
+  await locateAccountBalanceDOM(driver, localNetworkServer);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
@@ -1291,7 +1302,6 @@ module.exports = {
   connectToDapp,
   multipleGanacheOptions,
   defaultGanacheOptions,
-  defaultAnvilOptions,
   defaultGanacheOptionsForType2Transactions,
   multipleGanacheOptionsForType2Transactions,
   sendTransaction,

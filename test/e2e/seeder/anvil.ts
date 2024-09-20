@@ -1,4 +1,4 @@
-import { createAnvil, Anvil } from '@viem/anvil';
+import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
 import { createAnvilClients } from './anvil-clients';
 
 type Hardfork =
@@ -21,25 +21,25 @@ type Hardfork =
   | 'Latest';
 
 const defaultOptions = {
-  host: '127.0.0.1',
-  port: 8545,
+  balance: 25,
   blockTime: 2,
   chainId: 1337,
-  mnemonic:
-    'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
-  hardfork: 'Muirglacier' as Hardfork,
   gasLimit: 30000000,
   gasPrice: 2000000000,
+  hardfork: 'Muirglacier' as Hardfork,
+  host: '127.0.0.1',
+  mnemonic:
+    'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
+  port: 8545,
 };
 
-export class LocalNetwork {
-  #server: Anvil | undefined;
+export class Anvil {
+  #server: AnvilType | undefined;
 
   async start(opts = defaultOptions): Promise<void> {
     const options = { ...defaultOptions, ...opts };
 
     this.#server = createAnvil(options);
-
     await this.#server.start();
   }
 
@@ -47,7 +47,6 @@ export class LocalNetwork {
     if (!this.#server) {
       throw new Error('Server not running yet');
     }
-
     const { walletClient, publicClient, testClient } = createAnvilClients(
       this.#server,
     );

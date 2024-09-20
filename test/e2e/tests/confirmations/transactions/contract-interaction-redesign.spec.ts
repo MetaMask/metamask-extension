@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { openDapp, unlockWallet } from '../../../helpers';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import {
   assertAdvancedGasDetails,
   confirmDepositTransaction,
@@ -105,7 +105,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await unlockWallet(driver);
 
           const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
+            contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
           await openDapp(driver, contractAddress);
