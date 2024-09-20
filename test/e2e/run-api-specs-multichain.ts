@@ -204,16 +204,16 @@ async function main() {
         ],
         skip: [
           'eth_coinbase',
-          // these 2 methods below are not supported by MetaMask extension yet and
-          // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
-          'eth_getBlockReceipts',
-          'eth_maxPriorityFeePerGas',
           'wallet_revokePermissions',
           'wallet_requestPermissions',
           'wallet_getPermissions',
           'eth_accounts',
           'eth_requestAccounts',
           'net_version', // not in the spec yet for some reason
+          // these 2 methods below are not supported by MetaMask extension yet and
+          // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
+          'eth_getBlockReceipts',
+          'eth_maxPriorityFeePerGas',
         ],
         rules: [
           new JsonSchemaFakerRule({
