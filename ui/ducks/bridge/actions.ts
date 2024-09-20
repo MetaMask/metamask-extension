@@ -25,13 +25,19 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { SwapsEthToken } from '../../selectors';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import { UITrackEventMethod } from '../../contexts/metametrics';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { checkNetworkAndAccountSupports1559 } from '../../selectors';
+import { getGasFeeEstimates } from '../metamask/metamask';
+import {
+  addHexes,
+  decGWEIToHexWEI,
+} from '../../../shared/modules/conversion.utils';
+import {
+  getCustomMaxFeePerGas,
+  getCustomMaxPriorityFeePerGas,
+} from '../swaps/swaps';
 import { bridgeSlice } from './bridge';
+import { DUMMY_QUOTES_APPROVAL } from './dummy-quotes';
 
 const {
   setToChainId,
@@ -112,7 +118,7 @@ export const signBridgeTransaction = (
     dispatch: MetaMaskReduxDispatch,
     getState: () => MetaMaskReduxState,
   ) => {
-    // const state = getState();
+    const state = getState();
 
     // TODO Check feature flags to see if enabled
     // if (!isLive) {
@@ -120,10 +126,37 @@ export const signBridgeTransaction = (
     //   return;
     // }
 
-    // const bestQuote = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
-    const bestQuote = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
+    const bestQuote = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
+    // const bestQuote = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
 
     // Track event TODO
+
+    let maxFeePerGas;
+    let maxPriorityFeePerGas;
+    let baseAndPriorityFeePerGas;
+    let decEstimatedBaseFee;
+
+    const networkAndAccountSupports1559 =
+      checkNetworkAndAccountSupports1559(state);
+    const customMaxFeePerGas = getCustomMaxFeePerGas(state);
+    const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
+
+    if (networkAndAccountSupports1559) {
+      const {
+        high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
+        estimatedBaseFee = '0',
+      } = getGasFeeEstimates(state);
+      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
+      maxFeePerGas =
+        customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
+      maxPriorityFeePerGas =
+        customMaxPriorityFeePerGas ||
+        decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+      baseAndPriorityFeePerGas = addHexes(
+        decEstimatedBaseFee,
+        maxPriorityFeePerGas,
+      );
+    }
 
     // Approval tx fn
     const handleApprovalTx = async () => {
@@ -136,11 +169,13 @@ export const signBridgeTransaction = (
         throw new Error('Invalid chain ID');
       }
 
-      const { id: approvalTxId } = await addTransactionAndWaitForPublish(
+      const txMeta = await addTransactionAndWaitForPublish(
         {
           ...bestQuote.approval,
           chainId: hexChainId,
           gasLimit: bestQuote.approval.gasLimit.toString(),
+          // maxFeePerGas,
+          // maxPriorityFeePerGas,
         },
         {
           requireApproval: false,
@@ -156,8 +191,8 @@ export const signBridgeTransaction = (
         },
       );
 
-      console.log('Bridge', { approvalTxId });
-      return approvalTxId;
+      console.log('Bridge', { approvalTxId: txMeta.id });
+      return txMeta.id;
     };
 
     // Bridge tx fn
@@ -170,11 +205,13 @@ export const signBridgeTransaction = (
         throw new Error('Invalid chain ID');
       }
 
-      const { id: bridgeTxId } = await addTransactionAndWaitForPublish(
+      const txMeta = await addTransactionAndWaitForPublish(
         {
           ...bestQuote.trade,
           chainId: hexChainId,
           gasLimit: bestQuote.trade.gasLimit.toString(),
+          // maxFeePerGas,
+          // maxPriorityFeePerGas,
         },
         {
           requireApproval: false,
@@ -201,8 +238,8 @@ export const signBridgeTransaction = (
         },
       );
 
-      console.log('Bridge', { bridgeTxId });
-      return bridgeTxId;
+      console.log('Bridge', { bridgeTxId: txMeta.id });
+      return txMeta.id;
     };
 
     // Transaction execution
