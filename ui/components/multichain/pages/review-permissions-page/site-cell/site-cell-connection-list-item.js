@@ -29,7 +29,7 @@ export const SiteCellConnectionListItem = ({
   iconName,
   connectedMessage,
   unconnectedMessage,
-  currentTabHasNoAccounts,
+  isConnectFlow,
   onClick,
   content,
 }) => {
@@ -76,12 +76,12 @@ export const SiteCellConnectionListItem = ({
             variant={TextVariant.bodyMd}
             ellipsis
           >
-            {currentTabHasNoAccounts ? unconnectedMessage : connectedMessage}
+            {isConnectFlow ? unconnectedMessage : connectedMessage}
           </Text>
           {content}
         </Box>
       </Box>
-      {currentTabHasNoAccounts ? (
+      {isConnectFlow ? (
         <ButtonLink onClick={() => onClick()}>{t('edit')}</ButtonLink>
       ) : (
         <Box
@@ -126,9 +126,9 @@ SiteCellConnectionListItem.propTypes = {
   unconnectedMessage: PropTypes.string,
 
   /**
-   * If the focused origin has connected accounts
+   * If the component should show context related to adding a connection or editing one
    */
-  currentTabHasNoAccounts: PropTypes.bool,
+  isConnectFlow: PropTypes.bool,
 
   /**
    * Handler called when the edit button is clicked

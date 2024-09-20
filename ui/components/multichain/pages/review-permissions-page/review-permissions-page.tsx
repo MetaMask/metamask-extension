@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   BlockSize,
   Display,
@@ -11,15 +12,19 @@ import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
+  getInternalAccounts,
   getNonTestNetworks,
-  getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
-  getPermittedAccountsByOrigin,
+  getPermittedAccountsForSelectedTab,
   getPermittedChainsForSelectedTab,
   getTestNetworks,
 } from '../../../../selectors';
 import {
+  addMorePermittedAccounts,
+  grantPermittedChains,
   removePermissionsFor,
+  removePermittedAccount,
+  removePermittedChain,
   requestAccountsAndChainPermissionsWithId,
 } from '../../../../store/actions';
 import {
@@ -43,12 +48,7 @@ import {
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
-import { AccountType } from './review-permission.types';
 import { SiteCell } from '.';
-
-type PermittedAccountsByOrigin = {
-  [key: string]: { address: string }[];
-};
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -61,61 +61,21 @@ export const ReviewPermissions = () => {
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
   const activeTabOrigin: string = securedOrigin;
 
-  // Define types for state
-  const { openMetaMaskTabs }: { openMetaMaskTabs: Record<string, boolean> } =
-    useSelector(
-      (state: { appState: { openMetaMaskTabs: Record<string, boolean> } }) =>
-        state.appState,
+  const requestAccountsAndChainPermissions = async () => {
+    const requestId = await dispatch(
+      requestAccountsAndChainPermissionsWithId(activeTabOrigin),
     );
-
-  const { id }: { id: string } = useSelector(
-    (state: { activeTab: { id: string } }) => state.activeTab,
-  );
+    history.push(`${CONNECT_ROUTE}/${requestId}`);
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
-
-  const connectedNetworks = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
-
-  const permittedAccountsByOrigin = useSelector(
-    getPermittedAccountsByOrigin,
-  ) as PermittedAccountsByOrigin;
-  const networksList = useSelector(getNonTestNetworks);
-  const testNetworks = useSelector(getTestNetworks);
-  const combinedNetworks = [...networksList, ...testNetworks];
-
-  const connectedAccounts = useSelector((state) =>
-    getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
-  ) as AccountType[];
   const subjects = useSelector(getPermissionSubjects);
-  const grantedNetworks = combinedNetworks.filter(
-    (net: { chainId: string }) => connectedNetworks.indexOf(net.chainId) !== -1,
-  );
 
-  const hostName = getURLHost(securedOrigin);
-  const currentTabHasNoAccounts =
-    !permittedAccountsByOrigin[activeTabOrigin]?.length;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let tabToConnect: { origin: any } = { origin: null }; // origin could be null or a string based on the connection status or screen view
-  if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
-    tabToConnect = {
-      origin: activeTabOrigin,
-    };
-  }
-
-  const requestAccountsAndChainPermissions = async () => {
-    const requestId = await dispatch(
-      requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
-    );
-    history.push(`${CONNECT_ROUTE}/${requestId}`);
-  };
-
-  const disconnectAllAccounts = () => {
+  const disconnectAllPermissions = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
     if (subject) {
@@ -131,7 +91,59 @@ export const ReviewPermissions = () => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
+
+    setShowDisconnectAllModal(true);
   };
+
+  const testNetworks = useSelector(getTestNetworks);
+  const nonTestNetworks = useSelector(getNonTestNetworks);
+  const connectedChainIds = useSelector((state) =>
+    getPermittedChainsForSelectedTab(state, activeTabOrigin),
+  ) as string[];
+
+  const handleSelectChainIds = async (chainIds: string[]) => {
+    if (chainIds.length === 0) {
+      setShowDisconnectAllModal(true);
+      return;
+    }
+
+    await grantPermittedChains(activeTabOrigin, chainIds);
+
+    connectedChainIds.forEach((chainId: string) => {
+      if (!chainIds.includes(chainId)) {
+        dispatch(removePermittedChain(activeTabOrigin, chainId));
+      }
+    });
+
+    setShowNetworkToast(true);
+  };
+
+  const internalAccounts = useSelector(getInternalAccounts);
+  const evmAccounts = internalAccounts.filter(({ type }) =>
+    isEvmAccountType(type),
+  );
+  const connectedAccountAddresses = useSelector((state) =>
+    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
+  ) as string[];
+
+  const handleSelectAccountAddresses = (addresses: string[]) => {
+    if (addresses.length === 0) {
+      setShowDisconnectAllModal(true);
+      return;
+    }
+
+    dispatch(addMorePermittedAccounts(activeTabOrigin, addresses));
+
+    connectedAccountAddresses.forEach((address: string) => {
+      if (!addresses.includes(address)) {
+        dispatch(removePermittedAccount(activeTabOrigin, address));
+      }
+    });
+
+    setShowAccountToast(true);
+  };
+
+  const hostName = getURLHost(securedOrigin);
 
   return (
     <Page
@@ -144,16 +156,16 @@ export const ReviewPermissions = () => {
           connectedSubjectsMetadata={connectedSubjectsMetadata}
         />
         <Content padding={0}>
-          {connectedAccounts.length > 0 ? (
+          {connectedAccountAddresses.length > 0 ? (
             <SiteCell
-              networks={grantedNetworks}
-              accounts={connectedAccounts}
-              onAccountsClick={() => setShowAccountToast(true)}
-              onNetworksClick={() => setShowNetworkToast(true)}
-              onDisconnectClick={() => setShowDisconnectAllModal(true)}
+              nonTestNetworks={nonTestNetworks}
+              testNetworks={testNetworks}
+              accounts={evmAccounts}
+              onSelectAccountAddresses={handleSelectAccountAddresses}
+              onSelectChainIds={handleSelectChainIds}
+              selectedAccountAddresses={connectedAccountAddresses}
+              selectedChainIds={connectedChainIds}
               activeTabOrigin={activeTabOrigin}
-              combinedNetworks={networksList}
-              approvedAccounts={[]}
             />
           ) : (
             <NoConnectionContent />
@@ -164,7 +176,7 @@ export const ReviewPermissions = () => {
               hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
-                disconnectAllAccounts();
+                disconnectAllPermissions();
                 setShowDisconnectAllModal(false);
               }}
             />
@@ -172,7 +184,7 @@ export const ReviewPermissions = () => {
         </Content>
         <Footer>
           <>
-            {connectedAccounts.length > 0 ? (
+            {connectedAccountAddresses.length > 0 ? (
               <Box
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
@@ -215,7 +227,7 @@ export const ReviewPermissions = () => {
                   variant={ButtonVariant.Secondary}
                   startIconName={IconName.Logout}
                   danger
-                  onClick={disconnectAllAccounts}
+                  onClick={() => setShowDisconnectAllModal(true)}
                 >
                   {t('disconnect')}
                 </Button>

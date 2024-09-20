@@ -1287,14 +1287,6 @@ export function getIpfsGateway(state) {
   return state.metamask.ipfsGateway;
 }
 
-export function getSelectedAccountsForDappConnection(state) {
-  return state.appState.selectedAccountsForDappConnection;
-}
-
-export function getSelectedNetworksForDappConnection(state) {
-  return state.appState.selectedNetworksForDappConnection;
-}
-
 export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
 }

@@ -26,12 +26,7 @@ import {
 import { getUseBlockie } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-export const SiteCellTooltip = ({
-  accounts,
-  avatarAccountsData,
-  networks,
-  avatarNetworksData,
-}) => {
+export const SiteCellTooltip = ({ accounts, networks }) => {
   const t = useI18nContext();
   const AVATAR_GROUP_LIMIT = 4;
   const TOOLTIP_LIMIT = 4;
@@ -39,6 +34,15 @@ export const SiteCellTooltip = ({
   const avatarAccountVariant = useBlockie
     ? AvatarAccountVariant.Blockies
     : AvatarAccountVariant.Jazzicon;
+
+  const avatarAccountsData = accounts?.map((account) => ({
+    avatarValue: account.address,
+  }));
+
+  const avatarNetworksData = networks?.map((network) => ({
+    avatarValue: network.rpcPrefs?.imageUrl || '',
+    symbol: network.nickname,
+  }));
 
   return (
     <Tooltip
@@ -136,18 +140,19 @@ export const SiteCellTooltip = ({
       theme="dark"
       tag="div"
     >
-      {accounts?.length > 0 ? (
+      {accounts?.length > 0 && (
         <AvatarGroup
           members={avatarAccountsData}
           limit={AVATAR_GROUP_LIMIT}
           avatarType={AvatarType.ACCOUNT}
           borderColor={BackgroundColor.backgroundDefault}
         />
-      ) : (
+      )}
+      {networks?.length > 0 && (
         <AvatarGroup
-          avatarType={AvatarType.TOKEN}
           members={avatarNetworksData}
           limit={AVATAR_GROUP_LIMIT}
+          avatarType={AvatarType.TOKEN}
         />
       )}
     </Tooltip>
@@ -169,16 +174,6 @@ SiteCellTooltip.propTypes = {
   ),
 
   /**
-   * Data for the avatar group component related to accounts.
-   * This array contains account avatar data to be rendered in the group.
-   */
-  avatarAccountsData: PropTypes.arrayOf(
-    PropTypes.shape({
-      address: PropTypes.string, // The account address to display.
-    }),
-  ),
-
-  /**
    * An array of network objects to display in the tooltip.
    */
   networks: PropTypes.arrayOf(
@@ -188,16 +183,6 @@ SiteCellTooltip.propTypes = {
       rpcPrefs: PropTypes.shape({
         imageUrl: PropTypes.string, // Optional URL for the network's image.
       }),
-    }),
-  ),
-
-  /**
-   * Data for the avatar group component related to networks.
-   */
-  avatarNetworksData: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string, // The network's name.
-      avatarUrl: PropTypes.string, // Optional URL for the network's avatar image.
     }),
   ),
 };

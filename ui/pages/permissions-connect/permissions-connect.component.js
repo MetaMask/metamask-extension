@@ -373,10 +373,6 @@ export default class PermissionConnect extends Component {
                     request={permissionsRequest}
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
-                    selectAccounts={(addresses) =>
-                      this.selectAccounts(addresses)
-                    }
-                    selectedAccountAddresses={selectedAccountAddresses}
                   />
                 ) : (
                   <PermissionPageContainer

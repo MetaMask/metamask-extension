@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { BorderColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -8,7 +7,6 @@ import {
   IconName,
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
-import { getPermittedAccountsByOrigin } from '../../../../../selectors/permissions';
 import { AccountType } from '../../../connect-accounts-modal/connect-account-modal.types';
 import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
@@ -17,67 +15,59 @@ import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 type Network = {
   rpcPrefs?: { imageUrl?: string };
   nickname: string;
-  chainId?: string;
+  chainId: string;
 };
 
 type SiteCellProps = {
-  networks: Network[];
+  nonTestNetworks: Network[];
+  testNetworks: Network[];
   accounts: AccountType[];
-  onAccountsClick: () => void;
-  onNetworksClick: () => void;
-  onDisconnectClick: () => void;
-  approvedAccounts: string[];
+  onSelectAccountAddresses: (addresses: string[]) => void;
+  onSelectChainIds: (chainIds: string[]) => void;
+  selectedAccountAddresses: string[];
+  selectedChainIds: string[];
   activeTabOrigin: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  combinedNetworks: any;
+  isConnectFlow?: boolean;
 };
 
 export const SiteCell: React.FC<SiteCellProps> = ({
-  networks,
+  nonTestNetworks,
+  testNetworks,
   accounts,
-  onAccountsClick,
-  onNetworksClick,
-  approvedAccounts,
+  onSelectAccountAddresses,
+  onSelectChainIds,
+  selectedAccountAddresses,
+  selectedChainIds,
   activeTabOrigin,
-  combinedNetworks,
-  onDisconnectClick,
+  isConnectFlow,
 }) => {
   const t = useI18nContext();
-  // Map networks and accounts to avatar data
-  const avatarNetworksData = networks.map((network) => ({
-    avatarValue: network.rpcPrefs?.imageUrl || '',
-    symbol: network.nickname,
-  }));
 
-  const avatarAccountsData = accounts.map((account) => ({
-    avatarValue: account.address,
-  }));
+  const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
+  const selectedAccounts = accounts.filter(({ address }) =>
+    selectedAccountAddresses.includes(address),
+  );
+  const selectedNetworks = allNetworks.filter(
+    ({ chainId }) => chainId && selectedChainIds.includes(chainId),
+  );
+
   // Determine the messages for connected and not connected states
   const accountMessageConnectedState =
-    accounts.length > 1
-      ? t('connectedWith')
-      : t('connectedWithAccount', [
-          accounts[0].label || accounts[0].metadata.name,
-        ]);
+    selectedAccounts.length === 1
+      ? t('connectedWithAccount', [
+          selectedAccounts[0].label || selectedAccounts[0].metadata.name,
+        ])
+      : t('connectedWith');
   const accountMessageNotConnectedState =
-    accounts.length > 1
-      ? t('requestingFor')
-      : t('requestingForAccount', [
-          accounts[0].label || accounts[0].metadata.name,
-        ]);
-
-  // Use selector to get permitted accounts by origin
-  const permittedAccountsByOrigin = useSelector(
-    getPermittedAccountsByOrigin,
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ) as { [key: string]: any[] };
-  const currentTabHasNoAccounts =
-    !permittedAccountsByOrigin[activeTabOrigin]?.length;
+    selectedAccounts.length === 1
+      ? t('requestingForAccount', [
+          selectedAccounts[0].label || selectedAccounts[0].metadata.name,
+        ])
+      : t('requestingFor');
 
   return (
     <>
@@ -86,57 +76,48 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         iconName={IconName.Wallet}
         connectedMessage={accountMessageConnectedState}
         unconnectedMessage={accountMessageNotConnectedState}
-        currentTabHasNoAccounts={currentTabHasNoAccounts}
+        isConnectFlow={isConnectFlow}
         onClick={() => setShowEditAccountsModal(true)}
         content={
-          accounts.length > 1 ? (
-            <SiteCellTooltip
-              accounts={accounts}
-              avatarAccountsData={avatarAccountsData}
-            />
-          ) : (
+          selectedAccounts.length === 1 ? (
             <AvatarAccount
-              address={accounts[0].address}
+              address={selectedAccounts[0].address}
               size={AvatarAccountSize.Xs}
               borderColor={BorderColor.transparent}
             />
+          ) : (
+            <SiteCellTooltip accounts={selectedAccounts} />
           )
         }
       />
-
       <SiteCellConnectionListItem
         title={t('permission_walletSwitchEthereumChain')}
         iconName={IconName.Data}
         connectedMessage={t('connectedWith')}
         unconnectedMessage={t('requestingFor')}
-        currentTabHasNoAccounts={currentTabHasNoAccounts}
+        isConnectFlow={isConnectFlow}
         onClick={() => setShowEditNetworksModal(true)}
-        content={
-          <SiteCellTooltip
-            networks={networks}
-            avatarNetworksData={avatarNetworksData}
-          />
-        }
+        content={<SiteCellTooltip networks={selectedNetworks} />}
       />
-
-      {showEditNetworksModal && (
-        <EditNetworksModal
-          onClose={() => setShowEditNetworksModal(false)}
-          onClick={onNetworksClick}
-          currentTabHasNoAccounts={currentTabHasNoAccounts}
-          combinedNetworks={combinedNetworks}
-          onDisconnectClick={onDisconnectClick}
-        />
-      )}
 
       {showEditAccountsModal && (
         <EditAccountsModal
-          onClose={() => setShowEditAccountsModal(false)}
-          onClick={onAccountsClick}
-          approvedAccounts={approvedAccounts}
           activeTabOrigin={activeTabOrigin}
-          currentTabHasNoAccounts={currentTabHasNoAccounts}
-          onDisconnectClick={onDisconnectClick}
+          accounts={accounts}
+          defaultSelectedAccountAddresses={selectedAccountAddresses}
+          onClose={() => setShowEditAccountsModal(false)}
+          onSubmit={onSelectAccountAddresses}
+        />
+      )}
+
+      {showEditNetworksModal && (
+        <EditNetworksModal
+          activeTabOrigin={activeTabOrigin}
+          nonTestNetworks={nonTestNetworks}
+          testNetworks={testNetworks}
+          defaultSelectedChainIds={selectedChainIds}
+          onClose={() => setShowEditNetworksModal(false)}
+          onSubmit={onSelectChainIds}
         />
       )}
     </>
