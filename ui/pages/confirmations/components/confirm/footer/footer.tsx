@@ -27,8 +27,8 @@ import {
   setNextNonce,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   updateAndApproveTx,
-  updateCustomNonce,
   ///: END:ONLY_INCLUDE_IF
+  updateCustomNonce,
 } from '../../../../../store/actions';
 import { selectUseTransactionSimulations } from '../../../selectors/preferences';
 
