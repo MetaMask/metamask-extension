@@ -3016,7 +3016,7 @@
     "description": "graceful fallback for when token symbol isn't found"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Incorrect Network Currency Symbol Entered",
+    "message": "Unexpected Native Token Symbol",
     "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
