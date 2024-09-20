@@ -84,12 +84,10 @@ const getTokenDecimalsOfDataTree = async (
     return undefined;
   }
 
-  const decimals = parseInt(
-    (await getTokenStandardAndDetails(tokenContract))?.decimals ?? '0',
-    10,
-  );
+  const tokenDetails = await getTokenStandardAndDetails(tokenContract);
+  const tokenDecimals = tokenDetails?.decimals;
 
-  return decimals;
+  return parseInt(tokenDecimals ?? '0', 10);
 };
 
 export const DataTree = ({
