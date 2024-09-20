@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { DAPP_URL, unlockWallet } from '../../../helpers';
+import { DAPP_URL, unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -87,6 +87,8 @@ async function createTransactionAssertDetailsAndConfirm(
 
   await testDapp.open({ contractAddress, url: DAPP_URL });
   await testDapp.clickERC721SetApprovalForAllButton();
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   const setApprovalForAllConfirmation =
     new SetApprovalForAllTransactionConfirmation(driver);
