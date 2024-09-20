@@ -102,7 +102,6 @@ describe('Token Cell', () => {
     }
     return undefined;
   });
-  // useSelector.mockReturnValue(MOCK_GET_TOKEN_LIST);
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
 
   it('should match snapshot', () => {
