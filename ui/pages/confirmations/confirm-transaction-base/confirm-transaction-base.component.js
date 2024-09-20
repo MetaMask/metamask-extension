@@ -246,13 +246,6 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
-    if (
-      nextNonce !== prevNextNonce &&
-      prevNextNonce === parseInt(customNonceValue, 10)
-    ) {
-      updateCustomNonce(nextNonce);
-    }
-
     if (statusUpdated && txDroppedOrConfirmed) {
       showTransactionConfirmedModal({
         onSubmit: () => {
@@ -708,21 +701,25 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   async handleCancel() {
+    console.log('into handle cancel')
     const {
       txData,
       cancelTransaction,
       history,
       mostRecentOverviewPage,
       updateCustomNonce,
+      setNextNonce,
     } = this.props;
 
     this._removeBeforeUnload();
     updateCustomNonce('');
+    setNextNonce(undefined);
     await cancelTransaction(txData);
     history.push(mostRecentOverviewPage);
   }
 
   handleSubmit() {
+    console.log('into handle submit')
     const { submitting } = this.state;
 
     if (submitting) {
@@ -741,6 +738,7 @@ export default class ConfirmTransactionBase extends Component {
       history,
       mostRecentOverviewPage,
       updateCustomNonce,
+      setNextNonce,
       methodData,
       maxFeePerGas,
       customTokenAmount,
@@ -815,6 +813,7 @@ export default class ConfirmTransactionBase extends Component {
               () => {
                 history.push(mostRecentOverviewPage);
                 updateCustomNonce('');
+                setNextNonce(undefined);
               },
             );
           })
@@ -827,6 +826,7 @@ export default class ConfirmTransactionBase extends Component {
               submitError: error.message,
             });
             updateCustomNonce('');
+            setNextNonce(undefined);
           });
       },
     );
@@ -1082,9 +1082,6 @@ export default class ConfirmTransactionBase extends Component {
     this._beforeUnloadForGasPolling();
     this._removeBeforeUnload();
     this.props.clearConfirmTransaction();
-    const { setNextNonce, updateCustomNonce } = this.props;
-    setNextNonce(undefined);
-    updateCustomNonce(undefined);
   }
 
   supportsEIP1559 =
