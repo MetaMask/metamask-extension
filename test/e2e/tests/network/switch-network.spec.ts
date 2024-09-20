@@ -15,7 +15,7 @@ import AddNetworkPage from '../../page-objects/pages/add-network-page';
 import NewNetworkAddedPopover from '../../page-objects/pages/popover-wrap/new-network-added';
 
 describe('Switch network', function (this: Suite) {
-  it('Ethereum Mainnet', async function () {
+  it('Ethereum Mainnet and Sepolia', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -30,6 +30,11 @@ describe('Switch network', function (this: Suite) {
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.clickEthereumMainnet();
         await homePage.check_expectedBalanceIsDisplayed();
+        await headerNavbar.check_networkNameSwitchDropDown('Ethereum Mainnet');
+        await headerNavbar.clickSwitchNetworkDropDown();
+        await selectNetwork.clickSepoliaNetwork();
+        await homePage.check_expectedBalanceIsDisplayed();
+        await headerNavbar.check_networkNameSwitchDropDown('Sepolia');
       },
     );
   });
