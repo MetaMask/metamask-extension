@@ -161,6 +161,42 @@ class HomePage {
       throw new Error(`Transaction amount verification failed for transaction ${expectedNumber}: ${(error as Error).message}`);
     }
   }
+
+  async assertAddAccountSnapButtonNotPresent(): Promise<void> {
+    console.log('Asserting Add account Snap button is not present');
+    try {
+      await this.driver.assertElementNotPresent(
+        {
+          text: 'Add account Snap',
+          tag: 'button',
+        },
+        {
+          findElementGuard: {
+            text: 'Add a new Ethereum account',
+            tag: 'button',
+          },
+        }
+      );
+      console.log('Add account Snap button is not present as expected');
+    } catch (error) {
+      console.error('Failed to assert Add account Snap button is not present', error);
+      throw new Error(`Add account Snap button is unexpectedly present: ${(error as Error).message}`);
+    }
+  }
+
+  async assertAddAccountSnapButtonPresent(): Promise<void> {
+    console.log('Asserting Add account Snap button is present');
+    try {
+      await this.driver.findElement({
+        text: 'Add account Snap',
+        tag: 'button',
+      });
+      console.log('Add account Snap button is present as expected');
+    } catch (error) {
+      console.error('Failed to assert Add account Snap button is present', error);
+      throw new Error(`Add account Snap button is unexpectedly not present: ${(error as Error).message}`);
+    }
+  }
 }
 
 export default HomePage;

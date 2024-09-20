@@ -1,10 +1,10 @@
 import { Suite } from 'mocha';
-import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
-import { Driver } from '../webdriver/driver';
-import AccountSettingsPage from '../page-objects/pages/account-settings-page';
-import LoginPage from '../page-objects/pages/login-page';
-import HomePage from '../page-objects/pages/homepage';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { Driver } from '../../webdriver/driver';
+import AccountSettingsPage from '../../page-objects/pages/account-settings-page';
+import LoginPage from '../../page-objects/pages/login-page';
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
@@ -25,18 +25,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
         await homePage.openAccountMenu();
         await homePage.openAddAccountModal();
 
-        await driver.assertElementNotPresent(
-          {
-            text: 'Add account Snap',
-            tag: 'button',
-          },
-          {
-            findElementGuard: {
-              text: 'Add a new Ethereum account',
-              tag: 'button',
-            },
-          },
-        );
+        await homePage.assertAddAccountSnapButtonNotPresent();
         await homePage.closeModal();
 
         // Navigate to experimental settings and enable Add account Snap.
@@ -46,10 +35,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
         // Make sure the "Add account Snap" button is visible.
         await homePage.openAccountMenu();
         await homePage.openAddAccountModal();
-        await driver.findElement({
-          text: 'Add account Snap',
-          tag: 'button',
-        });
+        await homePage.assertAddAccountSnapButtonPresent();
       },
     );
   });
