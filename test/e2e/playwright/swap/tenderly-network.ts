@@ -3,7 +3,7 @@ import axios from 'axios';
 export const Tenderly = {
   Mainnet: {
     name: 'Tenderly - Mainnet',
-    url: 'https://virtual.mainnet.rpc.tenderly.co/6c80ca53-d96a-49e8-967d-e184bb51d325',
+    url: 'https://virtual.mainnet.rpc.tenderly.co/03bb8912-7505-4856-839f-52819a26d0cd',
     chainID: '1',
     symbol: 'ETH',
   },
