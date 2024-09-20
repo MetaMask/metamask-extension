@@ -69,6 +69,11 @@ const SortControl = ({
   const tokenSortConfig = useSelector((state: any) => {
     return state.metamask.preferences.tokenSortConfig;
   });
+
+  const preferencesDebug = useSelector((state: any) => {
+    return state.metamask.preferences;
+  });
+  console.log('preferencesDebug', preferencesDebug);
   const dispatch = useDispatch();
 
   useEffect(() => {
