@@ -481,6 +481,10 @@ describe('MultichainSendPage', () => {
   });
 
   describe('Footer buttons', () => {
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
     describe('Cancel button', () => {
       it('clears the draft transaction on cancel', async () => {
         const {
