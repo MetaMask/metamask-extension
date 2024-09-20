@@ -206,6 +206,7 @@ export default class ConfirmTransactionBase extends Component {
       clearConfirmTransaction,
       nextNonce,
       customNonceValue,
+      updateCustomNonce,
       toAddress,
       tryReverseResolveAddress,
       isEthGasPriceFetched,
@@ -242,6 +243,13 @@ export default class ConfirmTransactionBase extends Component {
       } else {
         this.setState({ submitWarning: '' });
       }
+    }
+
+    if (
+      nextNonce !== prevNextNonce &&
+      prevNextNonce === parseInt(customNonceValue, 10)
+    ) {
+      updateCustomNonce(nextNonce);
     }
 
     if (statusUpdated && txDroppedOrConfirmed) {
