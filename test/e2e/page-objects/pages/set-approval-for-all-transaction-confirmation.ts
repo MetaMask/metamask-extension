@@ -3,7 +3,7 @@ import { Driver } from '../../webdriver/driver';
 import { RawLocator } from '../common';
 import TransactionConfirmation from './transaction-confirmation';
 
-class ApprovalTransactionConfirmation extends TransactionConfirmation {
+class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
   private setApprovalForAllTitleElement: RawLocator;
 
   private setApprovalForAllSubHeadingElement: RawLocator;
@@ -32,4 +32,4 @@ class ApprovalTransactionConfirmation extends TransactionConfirmation {
   }
 }
 
-export default ApprovalTransactionConfirmation;
+export default SetApprovalForAllTransactionConfirmation;

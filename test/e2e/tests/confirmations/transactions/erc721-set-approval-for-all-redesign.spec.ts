@@ -2,7 +2,7 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL, unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
-import ApprovalTransactionConfirmation from '../../../page-objects/pages/approval-transaction-confirmation';
+import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -90,11 +90,12 @@ async function createTransactionAssertDetailsAndConfirm(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  const approvalConfirmation = new ApprovalTransactionConfirmation(driver);
+  const setApprovalForAllConfirmation =
+    new SetApprovalForAllTransactionConfirmation(driver);
 
-  await approvalConfirmation.check_setApprovalForAllTitle();
-  await approvalConfirmation.check_setApprovalForAllSubHeading();
+  await setApprovalForAllConfirmation.check_setApprovalForAllTitle();
+  await setApprovalForAllConfirmation.check_setApprovalForAllSubHeading();
 
-  await approvalConfirmation.clickScrollToBottomButton();
-  await approvalConfirmation.clickFooterConfirmButton();
+  await setApprovalForAllConfirmation.clickScrollToBottomButton();
+  await setApprovalForAllConfirmation.clickFooterConfirmButton();
 }
