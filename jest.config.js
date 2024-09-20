@@ -9,7 +9,7 @@ module.exports = {
     '<rootDir>/ui/**/*.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
-  coveragePathIgnorePatterns: ['.stories.*', '.snap', '/types/'],
+  coveragePathIgnorePatterns: ['.stories.*', '.snap'],
   coverageReporters: ['html', 'json'],
   reporters: [
     'default',
