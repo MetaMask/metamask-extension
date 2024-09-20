@@ -205,9 +205,6 @@
   "delete": {
     "message": "מחיקה"
   },
-  "deleteNetwork": {
-    "message": "למחוק את הרשת?"
-  },
   "details": {
     "message": "פרטים"
   },
@@ -350,9 +347,6 @@
   },
   "invalidAddressRecipient": {
     "message": "כתובת הנמען אינה חוקית"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "כתובת URL לא חוקית של Block Explorer"
   },
   "invalidRPC": {
     "message": "כתובת URL לא חוקית של RPC"

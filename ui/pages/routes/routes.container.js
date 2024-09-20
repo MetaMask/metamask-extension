@@ -30,7 +30,6 @@ import {
   getNftDetectionEnablementToast,
   getCurrentNetwork,
 } from '../../selectors';
-import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
 import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
 import {
   lockMetamask,
@@ -147,7 +146,6 @@ function mapStateToProps(state) {
     newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
     showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
     showSurveyToast: getShowSurveyToast(state),
-    networkMenuRedesign: getLocalNetworkMenuRedesignFeatureFlag(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,

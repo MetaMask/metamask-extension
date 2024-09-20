@@ -27,6 +27,7 @@ import {
 } from '../../component-library';
 import { NetworkListItem } from '..';
 import { getURLHost } from '../../../helpers/utils/util';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 export const EditNetworksModal = ({
   activeTabOrigin,
@@ -105,9 +106,9 @@ export const EditNetworksModal = ({
           </Box>
           {nonTestNetworks.map((network) => (
             <NetworkListItem
-              name={network.nickname}
-              iconSrc={network?.rpcPrefs?.imageUrl}
-              key={network.id}
+              name={network.name}
+              iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+              key={network.chainId}
               onClick={() => {
                 handleNetworkClick(network.chainId);
               }}
@@ -123,9 +124,9 @@ export const EditNetworksModal = ({
           </Box>
           {testNetworks.map((network) => (
             <NetworkListItem
-              name={network.nickname}
-              iconSrc={network?.rpcPrefs?.imageUrl}
-              key={network.id}
+              name={network.name}
+              iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+              key={network.chainId}
               onClick={() => {
                 handleNetworkClick(network.chainId);
               }}

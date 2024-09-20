@@ -213,7 +213,6 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
-    networkMenuRedesign: PropTypes.bool.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
@@ -868,7 +867,6 @@ export default class Routes extends Component {
       hideDeprecatedNetworkModal,
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
-      networkMenuRedesign,
       clearEditedNetwork,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
@@ -959,7 +957,7 @@ export default class Routes extends Component {
             }}
           />
         ) : null}
-        {networkMenuRedesign ? <NetworkConfirmationPopover /> : null}
+        <NetworkConfirmationPopover />
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}

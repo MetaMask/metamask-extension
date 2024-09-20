@@ -71,7 +71,7 @@ export default class SecurityTab extends PureComponent {
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
     incomingTransactionsPreferences: PropTypes.object.isRequired,
-    allNetworks: PropTypes.array.isRequired,
+    networkConfigurations: PropTypes.object.isRequired,
     setIncomingTransactionsPreferences: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
@@ -259,14 +259,14 @@ export default class SecurityTab extends PureComponent {
   renderIncomingTransactionsOptIn() {
     const {
       incomingTransactionsPreferences,
-      allNetworks,
+      networkConfigurations,
       setIncomingTransactionsPreferences,
     } = this.props;
 
     return (
       <IncomingTransactionToggle
         wrapperRef={this.settingsRefs[2]}
-        allNetworks={allNetworks}
+        networkConfigurations={networkConfigurations}
         setIncomingTransactionsPreferences={setIncomingTransactionsPreferences}
         incomingTransactionsPreferences={incomingTransactionsPreferences}
       />

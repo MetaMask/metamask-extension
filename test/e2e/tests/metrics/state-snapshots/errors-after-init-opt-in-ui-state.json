@@ -17,6 +17,7 @@
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
     "networkConfigurations": "object",
+    "networkConfigurationsByChainId": "object",
     "addressBook": "object",
     "confirmationExchangeRates": {},
     "pendingTokens": "object",
@@ -35,7 +36,8 @@
       "petnamesEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean",
+      "showMultiRpcModal": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -146,7 +148,7 @@
     "permissionActivityLog": "object",
     "subjectMetadata": "object",
     "announcements": "object",
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
+    "orderedNetworkList": { "0": "object", "1": "object" },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
