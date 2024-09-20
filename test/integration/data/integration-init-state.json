@@ -655,28 +655,54 @@
       }
     }
   },
-  "networkConfigurations": {
-    "testNetworkConfigurationId": {
+  "networkConfigurationsByChainId": {
+    "0x1": {
       "chainId": "0x1",
-      "id": "testNetworkConfigurationId",
-      "nickname": "Custom Mainnet RPC",
-      "rpcUrl": "https://testrpc.com",
-      "ticker": "ETH",
-      "type": "rpc"
+      "rpcEndpoints": [
+        {
+          "networkClientId": "testNetworkConfigurationId",
+          "url": "https://testrpc.com",
+          "type": "custom",
+          "name": "Custom Mainnet RPC"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": [],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Custom Mainnet RPC",
+      "nativeCurrency": "ETH"
     },
-    "goerli-network-id": {
+    "0x5": {
       "chainId": "0x5",
-      "id": "goerli-network-id",
-      "nickname": "Chain 5",
-      "ticker": "ETH",
-      "type": "rpc"
+      "rpcEndpoints": [
+        {
+          "networkClientId": "goerli-network-id",
+          "url": "https://testrpc2.com",
+          "type": "custom",
+          "name": "Chain 5"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": [],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Chain 5",
+      "nativeCurrency": "ETH"
     },
-    "sepolia": {
-      "type": "rpc",
+    "0xaa36a7": {
       "chainId": "0xaa36a7",
-      "ticker": "ETH",
-      "nickname": "Sepolia",
-      "id": "sepolia"
+      "rpcEndpoints": [
+        {
+          "networkClientId": "sepolia",
+          "url": "https://sepolia.infura.io/v3/{infuraProjectId}",
+          "type": "infura",
+          "name": "Sepolia"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Sepolia",
+      "nativeCurrency": "SepoliaETH"
     }
   },
   "networksMetadata": {
@@ -763,13 +789,6 @@
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
   "previousMigrationVersion": 112,
-  "providerConfig": {
-    "type": "sepolia",
-    "nickname": "sepolia",
-    "chainId": "0xaa36a7",
-    "ticker": "ETH",
-    "id": "sepolia"
-  },
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -2038,7 +2057,7 @@
   "useTransactionSimulations": true,
   "usedNetworks": {
     "0xaa36a7": {
-      "rpcUrl": "https://sepolia.infura.io/v3/8f8f7f9f6f4c4f3e8f8f7f9f6f4c4f3e",
+      "rpcUrl": "https://sepolia.infura.io/v3/dummy_key",
       "chainId": "0xaa36a7",
       "nickname": "Sepolia Test Network",
       "ticker": "ETH",

@@ -35,7 +35,7 @@ const ZENDESK_URLS = {
   TOKEN_SAFETY_PRACTICES:
     'https://support.metamask.io/managing-my-tokens/token-safety-practices/',
   UNKNOWN_NETWORK:
-    'https://support.metamask.io/nl/networks-and-sidechains/managing-networks/the-risks-of-connecting-to-an-unknown-network/',
+    'https://support.metamask.io/networks-and-sidechains/managing-networks/the-risks-of-connecting-to-an-unknown-network/',
   USER_GUIDE_CUSTOM_NETWORKS:
     'https://support.metamask.io/networks-and-sidechains/managing-networks/user-guide-custom-networks-and-sidechains/',
   USER_GUIDE_DAPPS:

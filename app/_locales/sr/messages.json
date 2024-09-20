@@ -202,9 +202,6 @@
   "delete": {
     "message": "Избриши"
   },
-  "deleteNetwork": {
-    "message": "Da li želite da obrišete mrežu?"
-  },
   "details": {
     "message": "Детаљи"
   },
@@ -347,9 +344,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Adresa primaoca nije važeća"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nevažeći Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Nevažeći RPC URL"

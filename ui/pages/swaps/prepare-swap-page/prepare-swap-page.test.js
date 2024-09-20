@@ -13,6 +13,8 @@ import {
   setSwapToToken,
   setFromTokenInputValue,
 } from '../../../ducks/swaps/swaps';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import PrepareSwapPage from './prepare-swap-page';
 
 const middleware = [thunk];
@@ -113,7 +115,13 @@ describe('PrepareSwapPage', () => {
   it('renders the block explorer link, only 1 verified source', () => {
     const mockStore = createSwapsMockStore();
     mockStore.swaps.toToken.occurances = 1;
-    const store = configureMockStore(middleware)(mockStore);
+    const store = configureMockStore(middleware)({
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      },
+    });
     const props = createProps();
     const { getByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
@@ -130,7 +138,13 @@ describe('PrepareSwapPage', () => {
   it('renders the block explorer link, 0 verified sources', () => {
     const mockStore = createSwapsMockStore();
     mockStore.swaps.toToken.occurances = 0;
-    const store = configureMockStore(middleware)(mockStore);
+    const store = configureMockStore(middleware)({
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      },
+    });
     const props = createProps();
     const { getByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
@@ -148,7 +162,13 @@ describe('PrepareSwapPage', () => {
     global.platform = { openTab: jest.fn() };
     const mockStore = createSwapsMockStore();
     mockStore.swaps.toToken.occurances = 1;
-    const store = configureMockStore(middleware)(mockStore);
+    const store = configureMockStore(middleware)({
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      },
+    });
     const props = createProps();
     const { getByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
