@@ -70,6 +70,20 @@ describe('MultipleAlertModal', () => {
     onClose: onCloseMock,
   };
 
+  const mockStoreAcknowledgeAlerts = configureMockStore([])({
+    ...STATE_MOCK,
+    confirmAlerts: {
+      alerts: { [OWNER_ID_MOCK]: alertsMock },
+      confirmed: {
+        [OWNER_ID_MOCK]: {
+          [FROM_ALERT_KEY_MOCK]: true,
+          [DATA_ALERT_KEY_MOCK]: true,
+          [CONTRACT_ALERT_KEY_MOCK]: false,
+        },
+      },
+    },
+  });
+
   it('renders the multiple alert modal', () => {
     const { getByTestId } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} />,
@@ -80,19 +94,6 @@ describe('MultipleAlertModal', () => {
   });
 
   it('invokes the onFinalAcknowledgeClick when the button is clicked', () => {
-    const mockStoreAcknowledgeAlerts = configureMockStore([])({
-      ...STATE_MOCK,
-      confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: alertsMock },
-        confirmed: {
-          [OWNER_ID_MOCK]: {
-            [FROM_ALERT_KEY_MOCK]: true,
-            [DATA_ALERT_KEY_MOCK]: true,
-            [CONTRACT_ALERT_KEY_MOCK]: true,
-          },
-        },
-      },
-    });
     const { getByTestId } = renderWithProvider(
       <MultipleAlertModal
         {...defaultProps}
@@ -107,19 +108,6 @@ describe('MultipleAlertModal', () => {
   });
 
   it('render the next alert when the "Got it" button is clicked', () => {
-    const mockStoreAcknowledgeAlerts = configureMockStore([])({
-      ...STATE_MOCK,
-      confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: alertsMock },
-        confirmed: {
-          [OWNER_ID_MOCK]: {
-            [FROM_ALERT_KEY_MOCK]: true,
-            [DATA_ALERT_KEY_MOCK]: true,
-            [CONTRACT_ALERT_KEY_MOCK]: false,
-          },
-        },
-      },
-    });
     const { getByTestId, getByText } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
       mockStoreAcknowledgeAlerts,
@@ -128,6 +116,22 @@ describe('MultipleAlertModal', () => {
     fireEvent.click(getByTestId('alert-modal-button'));
 
     expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+  });
+
+  it('closes modal when the "Got it" button is clicked', () => {
+    onAcknowledgeClickMock.mockReset();
+    const { getByTestId } = renderWithProvider(
+      <MultipleAlertModal
+        {...defaultProps}
+        alertKey={DATA_ALERT_KEY_MOCK}
+        skipAlertNavigation={true}
+      />,
+      mockStoreAcknowledgeAlerts,
+    );
+
+    fireEvent.click(getByTestId('alert-modal-button'));
+
+    expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
   });
 
   describe('Navigation', () => {

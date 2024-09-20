@@ -62,6 +62,22 @@ function reviewAlertButtonText(
   return t('confirm');
 }
 
+function getButtonDisabledState(
+  hasUnconfirmedDangerAlerts: boolean,
+  hasBlockingAlerts: boolean,
+  disabled: boolean,
+) {
+  if (hasBlockingAlerts) {
+    return true;
+  }
+
+  if (hasUnconfirmedDangerAlerts) {
+    return false;
+  }
+
+  return disabled;
+}
+
 const ConfirmButton = ({
   alertOwnerId = '',
   disabled,
@@ -85,9 +101,13 @@ const ConfirmButton = ({
     isAlertConfirmed,
   } = useAlerts(alertOwnerId);
 
-  const unconfirmedDangerAlertsFields = fieldAlerts.filter(
+  const unconfirmedDangerAlerts = fieldAlerts.filter(
     (alert) =>
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+  );
+
+  const hasDangerBlockingAlerts = fieldAlerts.some(
+    (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
 
   const handleCloseConfirmModal = useCallback(() => {
@@ -113,16 +133,20 @@ const ConfirmButton = ({
           block
           danger
           data-testid="confirm-footer-button"
-          disabled={hasUnconfirmedDangerAlerts ? false : disabled}
+          disabled={getButtonDisabledState(
+            hasUnconfirmedDangerAlerts,
+            hasDangerBlockingAlerts,
+            disabled,
+          )}
           onClick={handleOpenConfirmModal}
           size={ButtonSize.Lg}
           startIconName={
-            unconfirmedDangerAlertsFields.length > 0
+            unconfirmedDangerAlerts.length > 0
               ? IconName.SecuritySearch
               : IconName.Danger
           }
         >
-          {reviewAlertButtonText(unconfirmedDangerAlertsFields, t)}
+          {reviewAlertButtonText(unconfirmedDangerAlerts, t)}
         </Button>
       ) : (
         <Button

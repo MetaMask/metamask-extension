@@ -236,11 +236,11 @@ describe('AlertModal', () => {
       );
 
       expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
-      expect(queryByTestId('alert-modal-button')).toBeNull();
+      expect(queryByTestId('alert-modal-button')).toBeInTheDocument();
       expect(getByText(ACTION_LABEL_MOCK)).toBeInTheDocument();
     });
 
-    it('renders acknowledge button and checkbox for non-blocking alerts', () => {
+    it('renders checkbox for non-blocking alerts', () => {
       const { getByTestId } = renderWithProvider(
         <AlertModal
           ownerId={OWNER_ID_MOCK}

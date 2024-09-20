@@ -75,6 +75,10 @@ export type AlertModalProps = {
    * The owner ID of the relevant alert from the `confirmAlerts` reducer.
    */
   ownerId: string;
+  /**
+   * Whether to show the close icon in the modal header.
+   */
+  showCloseIcon?: boolean;
 };
 
 function getSeverityStyle(severity?: Severity) {
@@ -237,10 +241,6 @@ function AcknowledgeButton({
 }) {
   const t = useI18nContext();
 
-  if (isBlocking) {
-    return null;
-  }
-
   return (
     <Button
       variant={hasActions ? ButtonVariant.Secondary : ButtonVariant.Primary}
@@ -248,7 +248,7 @@ function AcknowledgeButton({
       onClick={onAcknowledgeClick}
       size={ButtonSize.Lg}
       data-testid="alert-modal-button"
-      disabled={!isConfirmed}
+      disabled={!isBlocking && !isConfirmed}
     >
       {t('gotIt')}
     </Button>
@@ -308,6 +308,7 @@ export function AlertModal({
   customDetails,
   customAcknowledgeCheckbox,
   customAcknowledgeButton,
+  showCloseIcon = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
   const { trackAlertRender } = useAlertMetrics();
@@ -342,13 +343,14 @@ export function AlertModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
-          onClose={handleClose}
+          onClose={showCloseIcon ? handleClose : undefined}
           startAccessory={headerStartAccessory}
           paddingBottom={0}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
           closeButtonProps={{
             'data-testid': 'alert-modal-close-button',
           }}
+          endAccessory={showCloseIcon ? undefined : null} // Override endAccessory to omit the close icon
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
