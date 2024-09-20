@@ -1,10 +1,5 @@
-import { Driver } from '../../webdriver/driver';
 import Confirmation from './confirmation';
 
-class TransactionConfirmation extends Confirmation {
-  constructor(driver: Driver) {
-    super(driver);
-  }
-}
+class TransactionConfirmation extends Confirmation {}
 
 export default TransactionConfirmation;
