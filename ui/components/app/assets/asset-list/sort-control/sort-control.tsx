@@ -70,10 +70,6 @@ const SortControl = ({
     return state.metamask.preferences.tokenSortConfig;
   });
 
-  const preferencesDebug = useSelector((state: any) => {
-    return state.metamask.preferences;
-  });
-  console.log('preferencesDebug', preferencesDebug);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -84,7 +80,7 @@ const SortControl = ({
     const sortedAssets = sortAssets(dedupedTokenList, tokenSortConfig);
     setSorted(true);
     setTokenList(sortedAssets);
-  }, [tokenSortConfig]);
+  }, [tokenSortConfig.key]);
 
   const handleSort = (
     key: string,

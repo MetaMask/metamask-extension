@@ -33,7 +33,9 @@ function transformState(
   if (
     hasProperty(state, 'PreferencesController') &&
     isObject(state.PreferencesController) &&
-    !state.PreferencesController.tokenSortConfig
+    hasProperty(state.PreferencesController, 'preferences') &&
+    isObject(state.PreferencesController.preferences) &&
+    !state.PreferencesController.preferences.tokenSortConfig
   ) {
     state.PreferencesController.tokenSortConfig = {
       key: 'tokenFiatAmount',

@@ -62,23 +62,13 @@ const AssetListControlBar = ({
 
   const nativeTokenWithBalance = useNativeTokenBalance();
 
-  const handleSort = () => {
-    if (!sorted) {
-      if (tokenSortConfig) {
-        const sortedTokenList = sortAssets(
-          [nativeTokenWithBalance, ...tokensWithBalances],
-          tokenSortConfig,
-        );
-        setTokenList(sortedTokenList);
-      } else {
-        setTokenList([nativeTokenWithBalance, ...tokensWithBalances]);
-      }
-    }
-  };
-
   useEffect(() => {
-    handleSort();
-  }, [tokenSortConfig, loading, tokensWithBalances.length]);
+    const sortedTokenList = sortAssets(
+      [nativeTokenWithBalance, ...tokensWithBalances],
+      tokenSortConfig,
+    );
+    setTokenList(sortedTokenList);
+  }, [tokenSortConfig.key, loading, tokensWithBalances.length]);
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
