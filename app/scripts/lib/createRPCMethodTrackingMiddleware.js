@@ -166,12 +166,7 @@ function finalizeSignatureFragment(
 ) {
   const signatureUniqueId = generateSignatureUniqueId(req.id);
 
-  if (fragmentPayload) {
-    metaMetricsController.updateEventFragment(
-      signatureUniqueId,
-      fragmentPayload,
-    );
-  }
+  metaMetricsController.updateEventFragment(signatureUniqueId, fragmentPayload);
 
   metaMetricsController.finalizeEventFragment(
     signatureUniqueId,

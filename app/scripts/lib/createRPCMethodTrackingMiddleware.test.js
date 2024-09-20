@@ -655,6 +655,37 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
+    it('should track when message is not SIWE if detected', async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+      };
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+
+      detectSIWE.mockImplementation(() => {
+        return { isSIWEMessage: false };
+      });
+
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
     it('should track typed-sign permit message if detected', async () => {
       const req = {
         id: MOCK_ID,
@@ -685,6 +716,33 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
+    it('should track typed-sign message if detected', async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
+        origin: 'some.dapp',
+      };
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
     it(`should track typed-sign order message if detected`, async () => {
       const req = {
         id: MOCK_ID,
@@ -710,6 +768,41 @@ describe('createRPCMethodTrackingMiddleware', () => {
         },
         referrer: { url: 'some.dapp' },
       });
+    });
+
+    it(`should not track permit message if primary type is unknown`, async () => {
+      const params = JSON.parse(orderSignatureMsg.msgParams.data);
+      params.primaryType = 'Unknown';
+
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        origin: 'some.dapp',
+        params: [undefined, JSON.stringify(params)],
+      };
+
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          eip712_primary_type: 'Unknown',
+        },
+        referrer: { url: 'some.dapp' },
+      });
+
+      expect(trackEventSpy.mock.calls[1][0].properties).not.toHaveProperty(
+        'ui_customizations',
+      );
     });
 
     describe('when request is flagged as safe by security provider', () => {
