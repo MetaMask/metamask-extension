@@ -357,7 +357,7 @@ export function useTransactionDisplayData(transactionGroup) {
     category = TransactionGroupCategory.send;
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
-  } else if (type === 'bridgeApprove') {
+  } else if (type === 'bridgeApproval') {
     // TODO update type
     title = 'Bridge Approval';
   } else if (type === 'bridge') {
