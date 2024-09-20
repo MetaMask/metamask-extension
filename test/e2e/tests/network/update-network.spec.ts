@@ -299,14 +299,6 @@ describe('Update Network:', function (this: Suite) {
                 rpcUrl: 'https://arbitrum-mainnet.infura.io',
                 ticker: 'ETH',
               },
-              '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                chainId: '0xa4b1',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                nickname: 'Arbitrum mainnet 2',
-                rpcPrefs: {},
-                rpcUrl: 'https://responsive-rpc.test/',
-                ticker: 'ETH',
-              },
             },
             selectedNetworkClientId: 'networkConfigurationId',
           })
@@ -323,28 +315,23 @@ describe('Update Network:', function (this: Suite) {
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="network-display"]');
 
-        // Go to Edit Menu
+        // Go to edit the network
         await driver.clickElement(
           '[data-testid="network-list-item-options-button-0xa4b1"]',
         );
-
         await driver.delay(regularDelayMs);
-
         await driver.clickElement(
           '[data-testid="network-list-item-options-edit"]',
         );
 
+        // Add a new rpc url
         await driver.delay(regularDelayMs);
-
         await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
-
         await driver.delay(regularDelayMs);
-
         await driver.clickElement({
           text: 'Add RPC URL',
           tag: 'button',
         });
-
         const rpcUrlInput = await driver.waitForSelector(
           '[data-testid="rpc-url-input-test"]',
         );
@@ -355,20 +342,39 @@ describe('Update Network:', function (this: Suite) {
           '[data-testid="rpc-name-input-test"]',
         );
         await rpcNameInput.sendKeys('testName');
-
         await driver.clickElement({
           text: 'Add URL',
           tag: 'button',
         });
         await driver.delay(regularDelayMs);
 
-        const arbitrumRpcAdded = await driver.findElement({
+        // Verify it appears in the dropdown
+        await driver.findElement({
           text: 'responsive-rpc.test',
           tag: 'p',
         });
 
-        const existRpcAdded = arbitrumRpcAdded !== undefined;
-        assert.equal(existRpcAdded, true, 'Rpc is added');
+        // Save the network
+        await driver.clickElement(selectors.saveButton);
+
+        //  Re-open the network menu
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Go back to edit the network
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-0xa4b1"]',
+        );
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+
+        // Verify the new endpoint is still there
+        await driver.findElement({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
       },
     );
   });
