@@ -4,10 +4,18 @@ class AccountSettingsPage {
   private readonly driver: Driver;
 
   // Locators
-  private readonly accountOptionsMenuButton: string = '[data-testid="account-options-menu-button"]';
+  private readonly accountOptionsMenuButton: string =
+    '[data-testid="account-options-menu-button"]';
+
   private readonly settingsMenuItem: object = { text: 'Settings', tag: 'div' };
-  private readonly experimentalSettingsMenuItem: object = { text: 'Experimental', tag: 'div' };
-  private readonly addAccountSnapToggle: string = '[data-testid="add-account-snap-toggle-div"]';
+
+  private readonly experimentalSettingsMenuItem: object = {
+    text: 'Experimental',
+    tag: 'div',
+  };
+
+  private readonly addAccountSnapToggle: string =
+    '[data-testid="add-account-snap-toggle-div"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -20,7 +28,9 @@ class AccountSettingsPage {
       console.log('Account Settings page is loaded successfully');
     } catch (error) {
       console.error('Failed to load Account Settings page', error);
-      throw new Error(`Account Settings page failed to load: ${(error as Error).message}`);
+      throw new Error(
+        `Account Settings page failed to load: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -33,7 +43,11 @@ class AccountSettingsPage {
       console.log('Navigated to Experimental Settings successfully');
     } catch (error) {
       console.error('Failed to navigate to Experimental Settings', error);
-      throw new Error(`Unable to navigate to Experimental Settings: ${(error as Error).message}`);
+      throw new Error(
+        `Unable to navigate to Experimental Settings: ${
+          (error as Error).message
+        }`,
+      );
     }
   }
 
@@ -44,7 +58,11 @@ class AccountSettingsPage {
       console.log('Add Account Snap setting toggled successfully');
     } catch (error) {
       console.error('Failed to toggle Add Account Snap setting', error);
-      throw new Error(`Unable to toggle Add Account Snap setting: ${(error as Error).message}`);
+      throw new Error(
+        `Unable to toggle Add Account Snap setting: ${
+          (error as Error).message
+        }`,
+      );
     }
   }
 }

@@ -4,8 +4,11 @@ class LoginPage {
   private driver: Driver;
 
   private passwordInput: string;
+
   private unlockButton: string;
+
   private welcomeBackMessage: object;
+
   private forgotPasswordButton: object;
 
   constructor(driver: Driver) {
@@ -30,7 +33,9 @@ class LoginPage {
       console.log('Successfully navigated to login page');
     } catch (error) {
       console.error('Failed to navigate to login page', error);
-      throw new Error(`Unable to navigate to login page: ${(error as Error).message}`);
+      throw new Error(
+        `Unable to navigate to login page: ${(error as Error).message}`,
+      );
     }
   }
 
