@@ -107,8 +107,10 @@ export default class MetaMetricsController {
    * @param {object} options
    * @param {object} options.segment - an instance of analytics for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {object} options.preferencesStore - The preferences controller store, used
+   * @param {object} options.preferencesControllerState - The preferences controller state
    *  to access and subscribe to preferences that will be attached to events
+   * @param {Function} options.onPreferencesControllerStateChange - Used to attach a listener to the
+   *  networkDidChange event emitted by the networkController
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
@@ -121,7 +123,7 @@ export default class MetaMetricsController {
    */
   constructor({
     segment,
-    preferencesStore,
+    preferencesController,
     onNetworkDidChange,
     getCurrentChainId,
     version,
@@ -137,16 +139,15 @@ export default class MetaMetricsController {
         captureException(err);
       }
     };
-    const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
-    this.locale = prefState.currentLocale.replace('_', '-');
+    this.locale = preferencesController.state.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
     this.extension = extension;
     this.environment = environment;
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.selectedAddress = prefState.selectedAddress;
+    this.selectedAddress = preferencesController.state.selectedAddress;
     ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
@@ -170,9 +171,13 @@ export default class MetaMetricsController {
       },
     });
 
-    preferencesStore.subscribe(({ currentLocale }) => {
+    preferencesController.onStateChange(({ currentLocale }) => {
       this.locale = currentLocale.replace('_', '-');
     });
+
+    // preferencesStore.subscribe(({ currentLocale }) => {
+    //   this.locale = currentLocale.replace('_', '-');
+    // });
 
     onNetworkDidChange(() => {
       this.chainId = getCurrentChainId();

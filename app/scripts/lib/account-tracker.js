@@ -100,7 +100,7 @@ export default class AccountTracker {
       'AccountsController:selectedEvmAccountChange',
       (newAccount) => {
         const { useMultiAccountBalanceChecker } =
-          this.preferencesController.store.getState();
+          this.preferencesController.state;
 
         if (
           this.selectedAccount.id !== newAccount.id &&
@@ -468,8 +468,7 @@ export default class AccountTracker {
 
     const { chainId, provider, identifier } =
       this.#getCorrectNetworkClient(networkClientId);
-    const { useMultiAccountBalanceChecker } =
-      this.preferencesController.store.getState();
+    const { useMultiAccountBalanceChecker } = this.preferencesController.state;
 
     let addresses = [];
     if (useMultiAccountBalanceChecker) {
@@ -517,8 +516,7 @@ export default class AccountTracker {
    */
 
   async #updateAccount(address, provider, chainId) {
-    const { useMultiAccountBalanceChecker } =
-      this.preferencesController.store.getState();
+    const { useMultiAccountBalanceChecker } = this.preferencesController.state;
 
     let balance = '0x0';
 

@@ -27,7 +27,7 @@ export default class AppStateController extends EventEmitter {
       isUnlocked,
       initState,
       onInactiveTimeout,
-      preferencesStore,
+      preferences,
       messenger,
       extension,
     } = opts;
@@ -83,11 +83,13 @@ export default class AppStateController extends EventEmitter {
     this.waitingForUnlock = [];
     addUnlockListener(this.handleUnlock.bind(this));
 
-    preferencesStore.subscribe(({ preferences }) => {
-      const currentState = this.store.getState();
-      if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
-        this._setInactiveTimeout(preferences.autoLockTimeLimit);
-      }
+    messenger.subscribe(
+      'PreferencesController:stateChange',
+      ({ preferences }) => {
+        const currentState = this.store.getState();
+        if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
+          this._setInactiveTimeout(preferences.autoLockTimeLimit);
+        }
     });
 
     messenger.subscribe(
@@ -98,7 +100,6 @@ export default class AppStateController extends EventEmitter {
         }),
     );
 
-    const { preferences } = preferencesStore.getState();
     this._setInactiveTimeout(preferences.autoLockTimeLimit);
 
     this.messagingSystem = messenger;

@@ -7,8 +7,7 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import Backup from './backup';
 
 function getMockPreferencesController() {
-  const mcState = {
-    getSelectedAddress: jest.fn().mockReturnValue('0x01'),
+  const state = {
     selectedAddress: '0x01',
     identities: {
       '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B': {
@@ -24,15 +23,14 @@ function getMockPreferencesController() {
         name: 'Ledger 1',
       },
     },
-    update: (store) => (mcState.store = store),
   };
+  const getSelectedAddress = jest.fn().mockReturnValue('0x01');
 
-  mcState.store = {
-    getState: jest.fn().mockReturnValue(mcState),
-    updateState: (store) => (mcState.store = store),
-  };
-
-  return mcState;
+  return {
+    state,
+    getSelectedAddress,
+    update: jest.fn(),
+  }
 }
 
 function getMockAddressBookController() {
@@ -239,30 +237,30 @@ describe('Backup', function () {
       ).toStrictEqual('network-configuration-id-4');
       // make sure identities are not lost after restore
       expect(
-        backup.preferencesController.store.identities[
+        backup.preferencesController.state.identities[
           '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B'
         ].lastSelected,
       ).toStrictEqual(1655380342907);
 
       expect(
-        backup.preferencesController.store.identities[
+        backup.preferencesController.state.identities[
           '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B'
         ].name,
       ).toStrictEqual('Account 3');
 
       expect(
-        backup.preferencesController.store.lostIdentities[
+        backup.preferencesController.state.lostIdentities[
           '0xfd59bbe569376e3d3e4430297c3c69ea93f77435'
         ].lastSelected,
       ).toStrictEqual(1655379648197);
 
       expect(
-        backup.preferencesController.store.lostIdentities[
+        backup.preferencesController.state.lostIdentities[
           '0xfd59bbe569376e3d3e4430297c3c69ea93f77435'
         ].name,
       ).toStrictEqual('Ledger 1');
       // make sure selected address is not lost after restore
-      expect(backup.preferencesController.store.selectedAddress).toStrictEqual(
+      expect(backup.preferencesController.state.selectedAddress).toStrictEqual(
         '0x01',
       );
 

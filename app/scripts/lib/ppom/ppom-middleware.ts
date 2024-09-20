@@ -78,8 +78,7 @@ export function createPPOMMiddleware<
     next: () => void,
   ) => {
     try {
-      const securityAlertsEnabled =
-        preferencesController.store.getState()?.securityAlertsEnabled;
+      const { securityAlertsEnabled } = preferencesController.state;
 
       // This will always exist as the SelectedNetworkMiddleware
       // adds networkClientId to the request before this middleware runs

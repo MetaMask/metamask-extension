@@ -125,7 +125,7 @@ jest.mock(
       // jest.spyOn gets hoisted to the top of this function before controller is initialized.
       // This forces us to replace the function directly with a jest stub instead.
       // eslint-disable-next-line jest/prefer-spy-on
-      controller.store.subscribe = jest.fn();
+      // controller.messenger.subscribe = jest.fn();
       return controller;
     },
 );
@@ -357,7 +357,7 @@ describe('MetaMaskController', () => {
     let metamaskController;
 
     async function simulatePreferencesChange(preferences) {
-      metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+      metamaskController.preferencesController.messenger.subscribe.mock.lastCall[0](
         preferences,
       );
 
@@ -559,8 +559,7 @@ describe('MetaMaskController', () => {
         await localMetaMaskController.submitPassword(password);
 
         const identities = Object.keys(
-          localMetaMaskController.preferencesController.store.getState()
-            .identities,
+          localMetaMaskController.preferencesController.state.identities,
         );
         const addresses =
           await localMetaMaskController.keyringController.getAccounts();
@@ -884,8 +883,7 @@ describe('MetaMaskController', () => {
 
           expect(
             Object.keys(
-              metamaskController.preferencesController.store.getState()
-                .identities,
+              metamaskController.preferencesController.state.identities,
             ),
           ).not.toContain(hardwareKeyringAccount);
           expect(

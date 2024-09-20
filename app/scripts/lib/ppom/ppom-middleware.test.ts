@@ -49,17 +49,17 @@ const createMiddleware = (
   const ppomController = {};
 
   const preferenceController = {
-    store: {
-      getState: () => ({
-        securityAlertsEnabled: securityAlertsEnabled ?? true,
-      }),
+    state: {
+      securityAlertsEnabled: securityAlertsEnabled ?? true,
     },
   };
 
   if (error) {
-    preferenceController.store.getState = () => {
-      throw error;
-    };
+    Object.defineProperty(preferenceController, 'state', {
+      get() {
+        throw error;
+      }
+    });
   }
 
   const networkController = {

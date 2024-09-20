@@ -100,11 +100,8 @@ function buildAccountTracker({
     getNetworkClientById: getNetworkClientByIdStub,
     getNetworkIdentifier: jest.fn(),
     preferencesController: {
-      store: {
-        getState: () => ({
-          useMultiAccountBalanceChecker,
-        }),
-        subscribe: noop,
+      state: {
+        useMultiAccountBalanceChecker,
       },
     },
     onboardingController: {
