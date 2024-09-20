@@ -112,8 +112,8 @@ export const SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES = [
   TransactionType.swapAndSend,
   'bridgeApproval',
   'bridge',
-  // TransactionType.bridgeApproval,
-  // TransactionType.bridge,
+  // TransactionType.bridgeApproval, // TODO
+  // TransactionType.bridge, // TODO
 ];
 
 export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
