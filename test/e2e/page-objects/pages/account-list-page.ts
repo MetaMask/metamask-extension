@@ -65,7 +65,9 @@ class AccountListPage {
 
   async closeAccountModal(): Promise<void> {
     console.log(`Open add account modal in account list`);
-    await this.driver.clickElementAndWaitToDisappear(this.closeAccountModalButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.closeAccountModalButton,
+    );
   }
 
   async openAddAccountModal(): Promise<void> {
@@ -139,8 +141,6 @@ class AccountListPage {
     console.log(`Check that hidden accounts list is displayed in account list`);
     await this.driver.waitForSelector(this.hiddenAccountsList);
   }
-
-
 }
 
 export default AccountListPage;

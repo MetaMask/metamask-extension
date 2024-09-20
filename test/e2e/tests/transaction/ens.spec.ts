@@ -1,10 +1,6 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-  WALLET_PASSWORD,
-} from '../../helpers';
+import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -112,7 +108,7 @@ describe('ENS', function (this: Suite) {
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver, WALLET_PASSWORD, '<0.000001');
+        await loginWithBalanceValidation(driver, '<0.000001');
 
         // click send button on homepage to start send flow
         await new HomePage(driver).startSendFlow();

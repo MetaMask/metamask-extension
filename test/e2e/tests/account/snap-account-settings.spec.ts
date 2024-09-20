@@ -16,7 +16,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, '0');
 
         // Make sure the "Add snap account" button is not visible.
         const headerNavbar = new HeaderNavbar(driver);
@@ -27,10 +27,13 @@ describe('Add snap account experimental settings', function (this: Suite) {
         await accountListPage.closeAccountModal();
 
         // Navigate to experimental settings and enable Add account Snap.
-        await headerNavbar.clickSettingsButton();
+        await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
         await settingsPage.goToExperimentalSettings();
+
         const experimentalSettings = new ExperimentalSettings(driver);
+        await settingsPage.check_pageIsLoaded();
         await experimentalSettings.toggleAddAccountSnap();
 
         // Make sure the "Add account Snap" button is visible.
