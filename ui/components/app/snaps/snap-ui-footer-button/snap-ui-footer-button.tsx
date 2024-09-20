@@ -5,9 +5,10 @@ import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import {
   Button,
-  ButtonLinkProps,
+  ButtonProps,
   ButtonSize,
   IconSize,
 } from '../../../component-library';
@@ -20,20 +21,23 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
 import { getHideSnapBranding } from '../../../../selectors';
 
-type SnapFooterButtonProps = {
+type SnapUIFooterButtonProps = {
   name?: string;
+  variant?: ButtonVariant;
   isSnapAction?: boolean;
   onCancel?: () => void;
 };
 
-export const SnapFooterButton: FunctionComponent<
-  SnapFooterButtonProps & ButtonLinkProps<'button'>
+export const SnapUIFooterButton: FunctionComponent<
+  SnapUIFooterButtonProps & ButtonProps<'button'>
 > = ({
   onCancel,
   name,
   children,
+  disabled = false,
   isSnapAction = false,
   type,
+  variant = ButtonVariant.Primary,
   form,
   ...props
 }) => {
@@ -55,15 +59,25 @@ export const SnapFooterButton: FunctionComponent<
 
   const handleClick = isSnapAction ? handleSnapAction : onCancel;
 
+  const brandedButtonVariant = isSnapAction
+    ? ButtonVariant.Primary
+    : ButtonVariant.Secondary;
+
+  const buttonVariant = hideSnapBranding ? variant : brandedButtonVariant;
+
   return (
     <Button
-      className="snap-footer-button"
+      className={classnames('snap-ui-renderer__footer-button', {
+        'snap-ui-renderer__footer-button--disabled': disabled,
+        'hide-snap-branding': hideSnapBranding,
+      })}
       type={type}
       form={form}
       {...props}
       size={ButtonSize.Lg}
       block
-      variant={isSnapAction ? ButtonVariant.Primary : ButtonVariant.Secondary}
+      disabled={disabled}
+      variant={buttonVariant}
       onClick={handleClick}
       textProps={{
         display: Display.Flex,
