@@ -6044,6 +6044,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/preinstalled-example-snap@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/preinstalled-example-snap@npm:0.1.0"
+  dependencies:
+    "@metamask/snaps-sdk": "npm:^6.5.0"
+  checksum: 10/0540aa6c20b17171f3a3bcf9ea2a7be551d6abbf16de9bd55dce038c5602c62a3921c7e840b82a325b0db00f26b96f54568854bdcd091558bd3b8fa8c6188023
+  languageName: node
+  linkType: hard
+
 "@metamask/profile-sync-controller@npm:^0.8.0":
   version: 0.8.0
   resolution: "@metamask/profile-sync-controller@npm:0.8.0"
@@ -26126,6 +26135,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
+    "@metamask/preinstalled-example-snap": "npm:^0.1.0"
     "@metamask/profile-sync-controller": "npm:^0.8.0"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"
