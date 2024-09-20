@@ -7,7 +7,7 @@ import {
 import { useSelector } from 'react-redux';
 import {
   Button,
-  ButtonLinkProps,
+  ButtonProps,
   ButtonSize,
   IconSize,
 } from '../../../component-library';
@@ -23,12 +23,13 @@ import classnames from 'classnames';
 
 type SnapUIFooterButtonProps = {
   name?: string;
+  variant?: ButtonVariant;
   isSnapAction?: boolean;
   onCancel?: () => void;
 };
 
 export const SnapUIFooterButton: FunctionComponent<
-  SnapUIFooterButtonProps & ButtonLinkProps<'button'>
+  SnapUIFooterButtonProps & ButtonProps<'button'>
 > = ({
   onCancel,
   name,
@@ -36,6 +37,7 @@ export const SnapUIFooterButton: FunctionComponent<
   disabled = false,
   isSnapAction = false,
   type,
+  variant = ButtonVariant.Primary,
   form,
   ...props
 }) => {
@@ -57,6 +59,12 @@ export const SnapUIFooterButton: FunctionComponent<
 
   const handleClick = isSnapAction ? handleSnapAction : onCancel;
 
+  const brandedButtonVariant = isSnapAction
+    ? ButtonVariant.Primary
+    : ButtonVariant.Secondary;
+
+  const buttonVariant = hideSnapBranding ? variant : brandedButtonVariant;
+
   return (
     <Button
       className={classnames('snap-ui-renderer__footer-button', {
@@ -69,7 +77,7 @@ export const SnapUIFooterButton: FunctionComponent<
       size={ButtonSize.Lg}
       block
       disabled={disabled}
-      variant={isSnapAction ? ButtonVariant.Primary : ButtonVariant.Secondary}
+      variant={buttonVariant}
       onClick={handleClick}
       textProps={{
         display: Display.Flex,
