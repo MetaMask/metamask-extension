@@ -13,7 +13,10 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
-import { permitSignatureMsg } from '../../../test/data/confirmations/typed_sign';
+import {
+  permitSignatureMsg,
+  orderSignatureMsg,
+} from '../../../test/data/confirmations/typed_sign';
 import { createSegmentMock } from './segment';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
@@ -196,6 +199,44 @@ describe('createRPCMethodTrackingMiddleware', () => {
         id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
+        securityAlertResponse: {
+          result_type: BlockaidResultType.Malicious,
+          reason: BlockaidReason.maliciousDomain,
+          securityAlertId: 1,
+          description: 'some_description',
+        },
+      };
+
+      const res = {
+        error: null,
+      };
+      const { next } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
+          security_alert_response: BlockaidResultType.Malicious,
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_description: 'some_description',
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track a ${MetaMetricsEventName.SignatureRequested} event for personal sign`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+        params: [
+          { data: 'some-data' },
+          '0xb60e8dd61c5d32be8058bb8eb970870f07233155',
+        ],
         securityAlertResponse: {
           result_type: BlockaidResultType.Malicious,
           reason: BlockaidReason.maliciousDomain,
@@ -645,15 +686,11 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
 
     it(`should track typed-sign order message if detected`, async () => {
-      const data = JSON.parse(permitSignatureMsg.msgParams.data);
-      data.primaryType = 'Order';
-      const params = JSON.stringify(data);
-
       const req = {
         id: MOCK_ID,
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
-        params: [undefined, params],
+        params: [undefined, orderSignatureMsg.msgParams.data],
       };
 
       const res = {
