@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getInternalAccounts,
   getNonTestNetworks,
   getSelectedInternalAccount,
   getTestNetworks,
+  getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import {
   Box,
@@ -25,7 +28,8 @@ import {
   Display,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AccountType } from '../../../components/multichain/pages/review-permissions-page/review-permission.types';
+import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
 
 type Request = {
   id: string;
@@ -39,7 +43,6 @@ type ConnectPageProps = {
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
   approveConnection: (request: Request) => void;
-  accounts: AccountType[];
   activeTabOrigin: string;
 };
 
@@ -48,7 +51,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
-  accounts,
   activeTabOrigin,
 }) => {
   const t = useI18nContext();
@@ -59,6 +61,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
   );
+
+  const accounts = useSelector(getUpdatedAndSortedAccounts);
+  const internalAccounts = useSelector(getInternalAccounts);
+  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
+    return mergeAccounts(accounts, internalAccounts).filter(
+      (account: InternalAccount) => isEvmAccountType(account.type),
+    );
+  }, [accounts, internalAccounts]);
 
   const currentAccount = useSelector(getSelectedInternalAccount);
   const defaultAccountsAddresses = [currentAccount?.address];
@@ -88,7 +98,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         <SiteCell
           nonTestNetworks={nonTestNetworks}
           testNetworks={testNetworks}
-          accounts={accounts}
+          accounts={mergedAccounts}
           onSelectAccountAddresses={setSelectedAccountAddresses}
           onSelectChainIds={setSelectedChainIds}
           selectedAccountAddresses={selectedAccountAddresses}

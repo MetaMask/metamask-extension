@@ -29,11 +29,11 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import { getURLHost } from '../../../helpers/utils/util';
-import { AccountType } from '../connect-accounts-modal/connect-account-modal.types';
+import { MergedInternalAccount } from '../../../selectors/selectors.types';
 
 type EditAccountsModalProps = {
   activeTabOrigin: string;
-  accounts: AccountType[];
+  accounts: MergedInternalAccount[];
   defaultSelectedAccountAddresses: string[];
   onClose: () => void;
   onSubmit: (addresses: string[]) => void;
@@ -128,7 +128,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                     onClick={() => handleAccountClick(account.address)}
                     account={account}
                     key={account.address}
-                    // isPinned={Boolean(account.pinned)} // TODO: figure this out
+                    isPinned={Boolean(account.pinned)}
                     startAccessory={
                       <Checkbox
                         isChecked={selectedAccountAddresses.includes(

@@ -7,7 +7,7 @@ import {
   IconName,
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
-import { AccountType } from '../../../connect-accounts-modal/connect-account-modal.types';
+import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
 import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
@@ -21,7 +21,7 @@ type Network = {
 type SiteCellProps = {
   nonTestNetworks: Network[];
   testNetworks: Network[];
-  accounts: AccountType[];
+  accounts: MergedInternalAccount[];
   onSelectAccountAddresses: (addresses: string[]) => void;
   onSelectChainIds: (chainIds: string[]) => void;
   selectedAccountAddresses: string[];

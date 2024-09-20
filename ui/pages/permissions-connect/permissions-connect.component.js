@@ -365,7 +365,6 @@ export default class PermissionConnect extends Component {
               render={() =>
                 process.env.CHAIN_PERMISSIONS && !permissionsRequest?.diff ? (
                   <ConnectPage
-                    accounts={accounts}
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
                     }

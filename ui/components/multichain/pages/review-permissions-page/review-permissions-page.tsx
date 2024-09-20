@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import {
   BlockSize,
   Display,
@@ -18,6 +18,7 @@ import {
   getPermittedAccountsForSelectedTab,
   getPermittedChainsForSelectedTab,
   getTestNetworks,
+  getUpdatedAndSortedAccounts,
 } from '../../../../selectors';
 import {
   addMorePermittedAccounts,
@@ -48,6 +49,8 @@ import {
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
+import { mergeAccounts } from '../../account-list-menu/account-list-menu';
+import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { SiteCell } from '.';
 
 export const ReviewPermissions = () => {
@@ -118,10 +121,14 @@ export const ReviewPermissions = () => {
     setShowNetworkToast(true);
   };
 
+  const accounts = useSelector(getUpdatedAndSortedAccounts);
   const internalAccounts = useSelector(getInternalAccounts);
-  const evmAccounts = internalAccounts.filter(({ type }) =>
-    isEvmAccountType(type),
-  );
+  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
+    return mergeAccounts(accounts, internalAccounts).filter(
+      (account: InternalAccount) => isEvmAccountType(account.type),
+    );
+  }, [accounts, internalAccounts]);
+
   const connectedAccountAddresses = useSelector((state) =>
     getPermittedAccountsForSelectedTab(state, activeTabOrigin),
   ) as string[];
@@ -160,7 +167,7 @@ export const ReviewPermissions = () => {
             <SiteCell
               nonTestNetworks={nonTestNetworks}
               testNetworks={testNetworks}
-              accounts={evmAccounts}
+              accounts={mergedAccounts}
               onSelectAccountAddresses={handleSelectAccountAddresses}
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
