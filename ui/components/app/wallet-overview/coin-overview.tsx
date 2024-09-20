@@ -113,6 +113,7 @@ export const CoinOverview = ({
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
   const isTestnet = useSelector(getIsTestnet);
+  const { showFiatInTestnets } = useSelector(getPreferences);
 
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -242,7 +243,7 @@ export const CoinOverview = ({
                     />
                   </Box>
                   {shouldShowPopover &&
-                  !isTestnet &&
+                  (!isTestnet || (isTestnet && showFiatInTestnets)) &&
                   !showNativeTokenAsMainBalance ? (
                     <Popover
                       referenceElement={referenceElement}
