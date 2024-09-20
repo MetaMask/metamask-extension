@@ -7,6 +7,7 @@ import {
 } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
+import * as URI from 'uri-js';
 import {
   NetworkConfiguration,
   RpcEndpointType,
@@ -494,7 +495,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         <AddRpcUrlModal
           onAdded={(url, name) => {
             // Note: We could choose to rename the URL if it already exists with a different name
-            if (rpcUrls.rpcEndpoints?.every((e) => e.url !== url)) {
+            if (rpcUrls.rpcEndpoints?.every((e) => !URI.equal(e.url, url))) {
               setRpcUrls({
                 rpcEndpoints: [
                   ...rpcUrls.rpcEndpoints,
