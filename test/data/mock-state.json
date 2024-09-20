@@ -380,20 +380,32 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
-    "networkConfigurations": {
-      "testNetworkConfigurationId": {
-        "rpcUrl": "https://testrpc.com",
+    "networkConfigurationsByChainId": {
+      "0x1": {
         "chainId": "0x1",
-        "nickname": "Custom Mainnet RPC",
-        "type": "rpc",
-        "id": "testNetworkConfigurationId"
+        "name": "Custom Mainnet RPC",
+        "nativeCurrency": "ETH",
+        "defaultRpcEndpointIndex": 0,
+        "rpcEndpoints": [
+          {
+            "type": "custom",
+            "url": "https://testrpc.com",
+            "networkClientId": "testNetworkConfigurationId"
+          }
+        ]
       },
-      "goerli": {
-        "type": "rpc",
+      "0x5": {
         "chainId": "0x5",
-        "ticker": "ETH",
-        "nickname": "Chain 5",
-        "id": "goerli"
+        "name": "Goerli",
+        "nativeCurrency": "ETH",
+        "defaultRpcEndpointIndex": 0,
+        "rpcEndpoints": [
+          {
+            "type": "custom",
+            "url": "https://goerli.com",
+            "networkClientId": "goerli"
+          }
+        ]
       }
     },
     "internalAccounts": {

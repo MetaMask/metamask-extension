@@ -1044,15 +1044,15 @@ describe('util', () => {
     });
   });
 
-  describe('formatUTCDate', () => {
+  describe('formatUTCDateFromUnixTimestamp', () => {
     it('formats passed date string', () => {
-      expect(util.formatUTCDate(1633019124000)).toStrictEqual(
-        '30 September 2021, 16:25',
+      expect(util.formatUTCDateFromUnixTimestamp(2036528542)).toStrictEqual(
+        '14 July 2034, 22:22',
       );
     });
 
     it('returns empty string if empty string is passed', () => {
-      expect(util.formatUTCDate('')).toStrictEqual('');
+      expect(util.formatUTCDateFromUnixTimestamp('')).toStrictEqual('');
     });
   });
 

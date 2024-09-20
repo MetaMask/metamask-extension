@@ -39,13 +39,17 @@ export function formatDate(date, format = "M/d/y 'at' T") {
   return DateTime.fromMillis(date).toFormat(format);
 }
 
-export const formatUTCDate = (dateInMillis) => {
-  if (!dateInMillis) {
-    return dateInMillis;
+/**
+ * @param {number} unixTimestamp - timestamp as seconds since unix epoch
+ * @returns {string} formatted date string e.g. "14 July 2034, 22:22"
+ */
+export const formatUTCDateFromUnixTimestamp = (unixTimestamp) => {
+  if (!unixTimestamp) {
+    return unixTimestamp;
   }
 
-  return DateTime.fromMillis(dateInMillis)
-    .setZone('utc')
+  return DateTime.fromSeconds(unixTimestamp)
+    .toUTC()
     .toFormat('dd LLLL yyyy, HH:mm');
 };
 
@@ -562,7 +566,7 @@ export const sanitizeMessage = (msg, primaryType, types) => {
   return { value: sanitizedStruct, type: primaryType };
 };
 
-export function getAssetImageURL(image, ipfsGateway) {
+export async function getAssetImageURL(image, ipfsGateway) {
   if (!image || typeof image !== 'string') {
     return '';
   }
@@ -593,7 +597,7 @@ export function getAssetImageURL(image, ipfsGateway) {
     // In the future, we can look into solving the root cause, which might require
     // no longer using multiform's CID.parse() method within the assets-controller
     try {
-      return getFormattedIpfsUrl(ipfsGateway, image, true);
+      return await getFormattedIpfsUrl(ipfsGateway, image, true);
     } catch (e) {
       logErrorWithMessage(e);
       return '';

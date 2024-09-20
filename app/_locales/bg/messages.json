@@ -205,9 +205,6 @@
   "delete": {
     "message": "Изтриване"
   },
-  "deleteNetwork": {
-    "message": "Да се изтрие ли мрежата?"
-  },
   "details": {
     "message": "Подробности"
   },
@@ -228,9 +225,6 @@
   },
   "editContact": {
     "message": "Редактиране на контакт"
-  },
-  "ensRegistrationError": {
-    "message": "Грешка при регистрацията на име на ENS"
   },
   "enterPasswordContinue": {
     "message": "Въведете парола, за да продължите"
@@ -350,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "Адресът на получателя е невалиден"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Не е ETH мрежа, задаване на малки букви"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Невалиден Block Explorer URL адрес"
-  },
   "invalidRPC": {
     "message": "Невалиден RPC URL адрес"
   },
@@ -455,9 +443,6 @@
   "next": {
     "message": "Напред"
   },
-  "noAddressForName": {
-    "message": "За това име не е зададен адрес."
-  },
   "noConversionRateAvailable": {
     "message": "Няма наличен процент на преобръщане"
   },
@@ -534,9 +519,6 @@
   },
   "readdToken": {
     "message": "Можете да добавите този жетон в бъдеще, като отидете на „Добавяне на жетон“ в менюто с опции на акаунти."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Търсене, публичен адрес (0x) или ENS"
   },
   "reject": {
     "message": "Отхвърляне"

@@ -115,7 +115,16 @@ export default class SettingsTab extends PureComponent {
               id="select-currency"
               options={currencyOptions}
               selectedOption={currentCurrency}
-              onChange={(newCurrency) => setCurrentCurrency(newCurrency)}
+              onChange={(newCurrency) => {
+                setCurrentCurrency(newCurrency);
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.CurrentCurrency,
+                  properties: {
+                    current_currency: newCurrency,
+                  },
+                });
+              }}
               className="settings-page__content-item__dropdown"
             />
           </div>

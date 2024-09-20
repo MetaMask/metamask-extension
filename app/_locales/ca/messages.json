@@ -202,9 +202,6 @@
   "delete": {
     "message": "Suprimeix"
   },
-  "deleteNetwork": {
-    "message": "Esborrar Xarxa?"
-  },
   "details": {
     "message": "Detalls"
   },
@@ -225,9 +222,6 @@
   },
   "editContact": {
     "message": "Editar Contacte"
-  },
-  "ensRegistrationError": {
-    "message": "Error al registre de nom ENS"
   },
   "enterPasswordContinue": {
     "message": "Introdueix la contrasenya per continuar"
@@ -341,12 +335,6 @@
   "invalidAddressRecipient": {
     "message": "L'adreça del recipient no és vàlida"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "No hi ha xarxa ETH, posar en minúscules"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL de Block Explorer"
-  },
   "invalidRPC": {
     "message": "URL de RPC"
   },
@@ -443,9 +431,6 @@
   "next": {
     "message": "Següent"
   },
-  "noAddressForName": {
-    "message": "No existeix cap adreça amb aquest nom."
-  },
   "noConversionRateAvailable": {
     "message": "No hi ha cap tarifa de conversió disponible"
   },
@@ -519,9 +504,6 @@
   },
   "readdToken": {
     "message": "Pots tornar a afegir aquesta fitxa en el futur anant a \"Afegir fitxa\" al menu d'opcions dels teus comptes."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Cerca, adreça pública (0x), o ENS"
   },
   "reject": {
     "message": "Rebutja"

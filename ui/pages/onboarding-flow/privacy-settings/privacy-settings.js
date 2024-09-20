@@ -19,19 +19,16 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import {
   Box,
-  PickerNetwork,
   Text,
   TextField,
   ButtonPrimary,
   ButtonPrimarySize,
-  ButtonSecondary,
-  ButtonSecondarySize,
-  Icon,
   IconName,
   ButtonLink,
   AvatarNetwork,
   ButtonIcon,
   IconSize,
+  Icon,
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -46,10 +43,9 @@ import {
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getAllNetworks,
-  getCurrentNetwork,
   getPetnamesEnabled,
   getExternalServicesOnboardingToggleState,
+  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
 import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
@@ -69,6 +65,7 @@ import {
   setUseTransactionSimulations,
   setPetnamesEnabled,
   performSignIn,
+  setEditedNetwork,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -76,11 +73,9 @@ import {
 } from '../../../ducks/app/app';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import {
-  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
+  TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 import { Setting } from './setting';
 
 /**
@@ -155,8 +150,7 @@ export default function PrivacySettings() {
   const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const currentNetwork = useSelector(getCurrentNetwork);
-  const allNetworks = useSelector(getAllNetworks);
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
@@ -169,10 +163,6 @@ export default function PrivacySettings() {
 
   const profileSyncingProps = useProfileSyncingProps(
     externalServicesOnboardingToggleState,
-  );
-
-  const networkMenuRedesign = useSelector(
-    getLocalNetworkMenuRedesignFeatureFlag,
   );
 
   const handleSubmit = () => {
@@ -277,10 +267,11 @@ export default function PrivacySettings() {
                   category: MetaMetricsEventCategory.Onboarding,
                   event: MetaMetricsEventName.SettingsUpdated,
                   properties: {
-                    settings_group: 'advanced',
+                    settings_group: 'onboarding_advanced_configuration',
                     settings_type: 'basic_functionality',
                     old_value: false,
                     new_value: true,
+                    was_profile_syncing_on: false,
                   },
                 });
               }
@@ -299,7 +290,7 @@ export default function PrivacySettings() {
           />
 
           <IncomingTransactionToggle
-            allNetworks={allNetworks}
+            networkConfigurations={networkConfigurations}
             setIncomingTransactionsPreferences={(chainId, value) =>
               dispatch(setIncomingTransactionsPreferences(chainId, value))
             }
@@ -392,103 +383,85 @@ export default function PrivacySettings() {
                   </a>,
                 ])}
 
-                {networkMenuRedesign ? (
-                  <Box paddingTop={4}>
-                    <Box
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Column}
-                      gap={5}
-                    >
-                      {[CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].map(
-                        (chainId) => (
-                          <Box
-                            key={chainId}
-                            className="privacy-settings__customizable-network"
-                            onClick={() =>
-                              console.log(`chain ${chainId} clicked`)
-                            }
-                            display={Display.Flex}
-                            alignItems={AlignItems.center}
-                            justifyContent={JustifyContent.spaceBetween}
-                          >
-                            <Box
-                              display={Display.Flex}
-                              alignItems={AlignItems.center}
-                            >
-                              <AvatarNetwork
-                                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-                              />
-                              <Box textAlign={TextAlign.Left} marginLeft={3}>
-                                <Text variant={TextVariant.bodySmMedium}>
-                                  {NETWORK_TO_NAME_MAP[chainId]}
-                                </Text>
-                                <Text
-                                  variant={TextVariant.bodyXs}
-                                  color={TextColor.textAlternative}
-                                >
-                                  {
-                                    // Get just the protocol + domain, not the infura key in path
-                                    new URL(
-                                      allNetworks.find(
-                                        (network) =>
-                                          network.chainId === chainId,
-                                      )?.rpcUrl,
-                                    )?.origin
-                                  }
-                                </Text>
-                              </Box>
-                            </Box>
-                            <ButtonIcon
-                              iconName={IconName.ArrowRight}
-                              size={IconSize.Md}
-                            />
-                          </Box>
-                        ),
-                      )}
-                      <ButtonLink
-                        onClick={() => console.log('add a network clicked')}
-                        justifyContent={JustifyContent.Left}
-                        variant={ButtonVariant.link}
-                      >
+                <Box paddingTop={4}>
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Column}
+                    gap={5}
+                  >
+                    {Object.values(networkConfigurations)
+                      .filter(({ chainId }) => !TEST_CHAINS.includes(chainId))
+                      .map((network) => (
                         <Box
+                          key={network.chainId}
+                          className="privacy-settings__customizable-network"
+                          onClick={() => {
+                            dispatch(
+                              setEditedNetwork({ chainId: network.chainId }),
+                            );
+                            dispatch(toggleNetworkMenu());
+                          }}
                           display={Display.Flex}
                           alignItems={AlignItems.center}
+                          justifyContent={JustifyContent.spaceBetween}
                         >
-                          <Icon name={IconName.Add} marginRight={3} />
-                          <Text color={TextColor.primaryDefault}>
-                            {t('addANetwork')}
-                          </Text>
-                        </Box>
-                      </ButtonLink>
-                    </Box>
-                  </Box>
-                ) : (
-                  <Box paddingTop={2}>
-                    {currentNetwork ? (
-                      <div className="privacy-settings__network">
-                        <>
-                          <PickerNetwork
-                            label={currentNetwork?.nickname}
-                            src={currentNetwork?.rpcPrefs?.imageUrl}
-                            onClick={() => dispatch(toggleNetworkMenu())}
+                          <Box
+                            display={Display.Flex}
+                            alignItems={AlignItems.center}
+                          >
+                            <AvatarNetwork
+                              src={
+                                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                  network.chainId
+                                ]
+                              }
+                            />
+                            <Box textAlign={TextAlign.Left} marginLeft={3}>
+                              <Text variant={TextVariant.bodySmMedium}>
+                                {network.name}
+                              </Text>
+                              <Text
+                                variant={TextVariant.bodyXs}
+                                color={TextColor.textAlternative}
+                              >
+                                {
+                                  // Get just the protocol + domain, not the infura key in path
+                                  new URL(
+                                    network?.rpcEndpoints[
+                                      network?.defaultRpcEndpointIndex
+                                    ]?.url,
+                                  )?.origin
+                                }
+                              </Text>
+                            </Box>
+                          </Box>
+                          <ButtonIcon
+                            iconName={IconName.ArrowRight}
+                            size={IconSize.Md}
                           />
-                        </>
-                      </div>
-                    ) : (
-                      <ButtonSecondary
-                        size={ButtonSecondarySize.Lg}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          dispatch(
-                            showModal({ name: 'ONBOARDING_ADD_NETWORK' }),
-                          );
-                        }}
+                        </Box>
+                      ))}
+                    <ButtonLink
+                      onClick={() => {
+                        dispatch(
+                          toggleNetworkMenu({ isAddingNewNetwork: true }),
+                        );
+                      }}
+                      justifyContent={JustifyContent.Left}
+                      variant={ButtonVariant.link}
+                    >
+                      <Box
+                        display={Display.Flex}
+                        alignItems={AlignItems.center}
                       >
-                        {t('onboardingAdvancedPrivacyNetworkButton')}
-                      </ButtonSecondary>
-                    )}
+                        <Icon name={IconName.Add} marginRight={3} />
+                        <Text color={TextColor.primaryDefault}>
+                          {t('addANetwork')}
+                        </Text>
+                      </Box>
+                    </ButtonLink>
                   </Box>
-                )}
+                </Box>
               </>
             }
           />

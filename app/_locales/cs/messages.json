@@ -153,9 +153,6 @@
   "invalidAddressRecipient": {
     "message": "Adresa příjemce je neplatná"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Neplatné Block Explorer URI"
-  },
   "invalidRPC": {
     "message": "Neplatné RPC URI"
   },
@@ -215,9 +212,6 @@
   },
   "next": {
     "message": "Další"
-  },
-  "noAddressForName": {
-    "message": "Pro toto jméno nebyla nastavena žádná adresa."
   },
   "noTransactions": {
     "message": "Žádné transakce"

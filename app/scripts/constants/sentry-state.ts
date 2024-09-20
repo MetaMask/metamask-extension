@@ -279,8 +279,6 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
-    unencryptedSnapStates: false,
-    snapStates: false,
     snaps: false,
   },
   SnapInterfaceController: {

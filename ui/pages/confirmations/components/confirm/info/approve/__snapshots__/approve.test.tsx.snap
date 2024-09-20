@@ -42,7 +42,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          You're giving someone else permission to withdraw NFTs from your account.
+          You're giving someone else permission to spend this amount from your account.
         </p>
       </div>
     </div>
@@ -98,9 +98,11 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__approve-details"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation__approve-spender"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
@@ -116,13 +118,14 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           <div
             aria-describedby="tippy-tooltip-2"
             class=""
-            data-original-title="This is the address that will be able to withdraw your NFTs."
+            data-original-title="This is the address that will be able to spend your tokens on your behalf."
             data-tooltipped=""
             style="display: flex;"
             tabindex="0"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="confirmation__approve-spender-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -214,6 +217,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-origin-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -254,6 +258,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-recipient-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -320,6 +325,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__approve-spending-cap-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
@@ -351,6 +357,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation__approve-spending-cap-group"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
@@ -373,6 +380,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="confirmation__approve-spending-cap-group-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -430,6 +438,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="edit-gas-fees-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -442,13 +451,13 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
           data-testid="first-gas-field"
         >
-          0.004 ETH
+          0.0001 ETH
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
           data-testid="native-currency"
         >
-          $2.20
+          $0.04
         </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -529,6 +538,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="gas-fee-details-max-fee-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -540,12 +550,12 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
         >
-          0.1094 ETH
+          0.0011 ETH
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
-          $60.83
+          $0.60
         </p>
       </div>
     </div>
@@ -674,6 +684,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-0-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -762,6 +773,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-1-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>

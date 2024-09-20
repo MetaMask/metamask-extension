@@ -19,6 +19,13 @@ const inputLabelBase = {
   color: 'var(--color-text-default)',
 };
 
+const fontFamily = [
+  '"Euclid Circular B"',
+  'Helvetica',
+  'Arial',
+  'sans-serif',
+].join(', ');
+
 const styles = {
   materialLabel: {
     '&$materialFocused': {
@@ -60,6 +67,7 @@ const styles = {
   },
   // Non-material styles
   formLabel: {
+    fontFamily,
     '&$formLabelFocused': {
       color: 'var(--color-text-alternative)',
     },
@@ -70,6 +78,7 @@ const styles = {
   formLabelFocused: {},
   inputFocused: {},
   inputRoot: {
+    fontFamily,
     'label + &': {
       marginTop: '9px',
     },
@@ -85,7 +94,6 @@ const styles = {
     },
     borderRadius: '8px',
     fontSize: '0.875rem',
-    fontFamily: 'Euclid Circular B, Roboto, Helvetica, Arial, sans-serif',
   },
   largeInputLabel: {
     ...inputLabelBase,

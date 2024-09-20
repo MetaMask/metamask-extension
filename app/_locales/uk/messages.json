@@ -205,9 +205,6 @@
   "delete": {
     "message": "Видалити"
   },
-  "deleteNetwork": {
-    "message": "Видалити мережу?"
-  },
   "details": {
     "message": "Деталі"
   },
@@ -228,9 +225,6 @@
   },
   "editContact": {
     "message": "Редагувати контракт"
-  },
-  "ensRegistrationError": {
-    "message": "Помилка у реєстрації ENS ім'я"
   },
   "enterPasswordContinue": {
     "message": "Введіть пароль, щоб продовжити"
@@ -350,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "Недійсна адреса отримувача"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Не є мережею ETH, налаштуйте нижній регістр"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Недійсний Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Недійсний RPC URL"
   },
@@ -455,9 +443,6 @@
   "next": {
     "message": "Далі"
   },
-  "noAddressForName": {
-    "message": "На це ім'я не встановлено адреси."
-  },
   "noConversionRateAvailable": {
     "message": "Немає доступного обмінного курсу"
   },
@@ -534,9 +519,6 @@
   },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Пошук, публічна адреса (0x), або ENS"
   },
   "reject": {
     "message": "Відхилити"

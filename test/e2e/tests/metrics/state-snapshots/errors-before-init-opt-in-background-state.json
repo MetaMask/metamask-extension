@@ -115,7 +115,8 @@
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
         "showConfirmationAdvancedDetails": false,
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+        "showMultiRpcModal": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",

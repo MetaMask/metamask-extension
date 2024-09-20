@@ -187,9 +187,6 @@
   "invalidAddressRecipient": {
     "message": "பெறுநர் முகவரி தவறானது"
   },
-  "invalidBlockExplorerURL": {
-    "message": "தவறான Block Explorer URI"
-  },
   "invalidRPC": {
     "message": "தவறான RPC URI"
   },
@@ -258,9 +255,6 @@
   },
   "next": {
     "message": "அடுத்தது"
-  },
-  "noAddressForName": {
-    "message": "இந்த பெயருக்கான முகவரி அமைக்கப்படவில்லை."
   },
   "noTransactions": {
     "message": "பரிவர்த்தனைகள் இல்லை"
