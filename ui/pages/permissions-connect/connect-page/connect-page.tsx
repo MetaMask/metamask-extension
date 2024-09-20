@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccounts,
-  getNonTestNetworks,
+  getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
-  getTestNetworks,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import {
@@ -30,6 +30,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 
 type Request = {
   id: string;
@@ -55,8 +56,19 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
 
-  const testNetworks = useSelector(getTestNetworks);
-  const nonTestNetworks = useSelector(getNonTestNetworks);
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const [nonTestNetworks, testNetworks] = useMemo(
+    () =>
+      Object.entries(networkConfigurations).reduce(
+        ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
+          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          return [nonTestNetworksList, testNetworksList];
+        },
+        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+      ),
+    [networkConfigurations],
+  );
   const defaultSelectedChainIds = nonTestNetworks.map(({ chainId }) => chainId);
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,

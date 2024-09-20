@@ -25,6 +25,7 @@ import {
 } from '../../../../component-library';
 import { getUseBlockie } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 
 export const SiteCellTooltip = ({ accounts, networks }) => {
   const t = useI18nContext();
@@ -40,8 +41,8 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
   }));
 
   const avatarNetworksData = networks?.map((network) => ({
-    avatarValue: network.rpcPrefs?.imageUrl || '',
-    symbol: network.nickname,
+    avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+    symbol: network.name,
   }));
 
   return (

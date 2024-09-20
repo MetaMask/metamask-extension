@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   BlockSize,
   Display,
@@ -13,11 +14,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
   getInternalAccounts,
-  getNonTestNetworks,
+  getNetworkConfigurationsByChainId,
   getPermissionSubjects,
   getPermittedAccountsForSelectedTab,
   getPermittedChainsForSelectedTab,
-  getTestNetworks,
   getUpdatedAndSortedAccounts,
 } from '../../../../selectors';
 import {
@@ -51,6 +51,7 @@ import {
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
+import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { SiteCell } from '.';
 
 export const ReviewPermissions = () => {
@@ -98,8 +99,19 @@ export const ReviewPermissions = () => {
     setShowDisconnectAllModal(true);
   };
 
-  const testNetworks = useSelector(getTestNetworks);
-  const nonTestNetworks = useSelector(getNonTestNetworks);
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const [nonTestNetworks, testNetworks] = useMemo(
+    () =>
+      Object.entries(networkConfigurations).reduce(
+        ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
+          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          return [nonTestNetworksList, testNetworksList];
+        },
+        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+      ),
+    [networkConfigurations],
+  );
   const connectedChainIds = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as string[];

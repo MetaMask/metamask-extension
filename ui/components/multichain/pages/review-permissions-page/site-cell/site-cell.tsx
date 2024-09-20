@@ -13,8 +13,7 @@ import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
 // Define types for networks, accounts, and other props
 type Network = {
-  rpcPrefs?: { imageUrl?: string };
-  nickname: string;
+  name: string;
   chainId: string;
 };
 
@@ -51,8 +50,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const selectedAccounts = accounts.filter(({ address }) =>
     selectedAccountAddresses.includes(address),
   );
-  const selectedNetworks = allNetworks.filter(
-    ({ chainId }) => chainId && selectedChainIds.includes(chainId),
+  const selectedNetworks = allNetworks.filter(({ chainId }) =>
+    selectedChainIds.includes(chainId),
   );
 
   // Determine the messages for connected and not connected states

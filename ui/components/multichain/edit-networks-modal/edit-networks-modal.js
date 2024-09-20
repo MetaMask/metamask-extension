@@ -207,10 +207,7 @@ EditNetworksModal.propTypes = {
   nonTestNetworks: PropTypes.arrayOf(
     PropTypes.shape({
       chainId: PropTypes.string.isRequired, // The chain ID of the network
-      nickname: PropTypes.string.isRequired, // Display name of the network
-      rpcPrefs: PropTypes.shape({
-        imageUrl: PropTypes.string, // Optional image URL for the network icon
-      }),
+      name: PropTypes.string.isRequired, // Display name of the network
     }),
   ).isRequired,
 
@@ -220,10 +217,7 @@ EditNetworksModal.propTypes = {
   testNetworks: PropTypes.arrayOf(
     PropTypes.shape({
       chainId: PropTypes.string.isRequired, // The chain ID of the network
-      nickname: PropTypes.string.isRequired, // Display name of the network
-      rpcPrefs: PropTypes.shape({
-        imageUrl: PropTypes.string, // Optional image URL for the network icon
-      }),
+      name: PropTypes.string.isRequired, // Display name of the network
     }),
   ).isRequired,
 
