@@ -6,7 +6,7 @@ import SettingsPage from '../../page-objects/pages/settings-page';
 import ExperimentalSettings from '../../page-objects/pages/experimental-settings';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 
 describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
@@ -20,22 +20,23 @@ describe('Add snap account experimental settings', function (this: Suite) {
 
         // Make sure the "Add snap account" button is not visible.
         const headerNavbar = new HeaderNavbar(driver);
-        const homePage = new HomePage(driver);
-        await homePage.openAccountMenu();
-        await homePage.openAddAccountModal();
-        await homePage.assertAddAccountSnapButtonNotPresent();
-        await homePage.closeModal();
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.openAddAccountModal();
+        await accountListPage.check_addAccountSnapButtonNotPresent();
+        await accountListPage.closeAccountModal();
 
         // Navigate to experimental settings and enable Add account Snap.
+        await headerNavbar.clickSettingsButton();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.goToExperimentalSettings();
         const experimentalSettings = new ExperimentalSettings(driver);
         await experimentalSettings.toggleAddAccountSnap();
 
         // Make sure the "Add account Snap" button is visible.
-        await homePage.openAccountMenu();
-        await homePage.openAddAccountModal();
-        await homePage.assertAddAccountSnapButtonPresent();
+        await headerNavbar.openAccountMenu();
+        await accountListPage.openAddAccountModal();
+        await accountListPage.check_addAccountSnapButtonIsDisplayed();
       },
     );
   });
