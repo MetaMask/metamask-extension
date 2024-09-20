@@ -95,7 +95,7 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
                   <AvatarNetwork
                     size={AvatarNetworkSize.Xs}
                     src={network.rpcPrefs?.imageUrl || ''}
-                    name={network.nickname}
+                    name={network.name}
                     borderStyle={BorderStyle.none}
                   />
                   <Text
@@ -104,7 +104,7 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
                     data-testid="accounts-list-item-connected-account-name"
                     ellipsis
                   >
-                    {network.nickname}
+                    {network.name}
                   </Text>
                 </Box>
               );
@@ -180,10 +180,7 @@ SiteCellTooltip.propTypes = {
   networks: PropTypes.arrayOf(
     PropTypes.shape({
       chainId: PropTypes.string, // The unique chain ID of the network.
-      nickname: PropTypes.string, // The network's name.
-      rpcPrefs: PropTypes.shape({
-        imageUrl: PropTypes.string, // Optional URL for the network's image.
-      }),
+      name: PropTypes.string, // The network's name.
     }),
   ),
 };
