@@ -61,7 +61,7 @@ export const SnapUIFooterButton: FunctionComponent<
     <Button
       className={classnames('snap-ui-renderer__footer-button', {
         'snap-ui-renderer__footer-button--disabled': disabled,
-        'no-snap-branding': hideSnapBranding,
+        'hide-snap-branding': hideSnapBranding,
       })}
       type={type}
       form={form}
