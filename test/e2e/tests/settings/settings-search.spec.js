@@ -27,6 +27,7 @@ describe('Settings Search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        console.log('General test started', Date.now());
         await unlockWallet(driver);
 
         await openMenuSafe(driver);
@@ -41,6 +42,7 @@ describe('Settings Search', function () {
           true,
           `${settingsSearch.general} item does not redirect to ${page} view`,
         );
+        console.log('General test end', Date.now());
       },
     );
   });
@@ -52,6 +54,8 @@ describe('Settings Search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        console.log('Advanced test started', Date.now());
+
         await unlockWallet(driver);
 
         await openMenuSafe(driver);
@@ -67,6 +71,8 @@ describe('Settings Search', function () {
           true,
           `${settingsSearch.advanced} item does not redirect to ${page} view`,
         );
+        console.log('Advanced test ended', Date.now());
+
       },
     );
   });
@@ -78,6 +84,8 @@ describe('Settings Search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        console.log('Contacts test started', Date.now());
+
         await unlockWallet(driver);
 
         await openMenuSafe(driver);
@@ -93,6 +101,8 @@ describe('Settings Search', function () {
           true,
           `${settingsSearch.contacts} item does not redirect to ${page} view`,
         );
+        console.log('Contacts test ended', Date.now());
+
       },
     );
   });
@@ -104,6 +114,8 @@ describe('Settings Search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        console.log('Security & privacy test started', Date.now());
+
         await unlockWallet(driver);
 
         await openMenuSafe(driver);
@@ -119,6 +131,8 @@ describe('Settings Search', function () {
           true,
           `${settingsSearch.security} item does not redirect to ${page} view`,
         );
+        console.log('Security & privacy test ended', Date.now());
+
       },
     );
   });
@@ -130,6 +144,8 @@ describe('Settings Search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        console.log('Alerts test started', Date.now());
+
         await unlockWallet(driver);
 
         await openMenuSafe(driver);
@@ -145,6 +161,8 @@ describe('Settings Search', function () {
           true,
           `${settingsSearch.alerts} item does not redirect to ${page} view`,
         );
+        console.log('Alerts test ended', Date.now());
+
       },
     );
   });
@@ -156,6 +174,8 @@ describe('Settings Search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        console.log('Networks test started', Date.now());
+
         await unlockWallet(driver);
 
         await openMenuSafe(driver);
@@ -171,6 +191,8 @@ describe('Settings Search', function () {
           true,
           `${settingsSearch.networks} item does not redirect to ${page} view`,
         );
+        console.log('Networks test ended', Date.now());
+
       },
     );
   });
@@ -182,6 +204,8 @@ describe('Settings Search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        console.log('Experimental test started', Date.now());
+
         await unlockWallet(driver);
 
         await openMenuSafe(driver);
@@ -197,6 +221,8 @@ describe('Settings Search', function () {
           true,
           `${settingsSearch.experimental} item not redirect to ${page} view`,
         );
+        console.log('Experimental test ended', Date.now());
+
       },
     );
   });
@@ -208,6 +234,9 @@ describe('Settings Search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+
+        console.log('About test started', Date.now());
+
         await unlockWallet(driver);
 
         await openMenuSafe(driver);
@@ -223,6 +252,8 @@ describe('Settings Search', function () {
           true,
           `${settingsSearch.about} item does not redirect to ${page} view`,
         );
+        console.log('About test ended', Date.now());
+
       },
     );
   });
@@ -234,6 +265,8 @@ describe('Settings Search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        console.log('Element not found test started', Date.now());
+
         await unlockWallet(driver);
 
         await openMenuSafe(driver);
@@ -246,6 +279,8 @@ describe('Settings Search', function () {
           tag: 'span',
         });
         assert.equal(found, true, 'Non existent element was found');
+        console.log('Element not found test ended', Date.now());
+
       },
     );
   });

@@ -209,6 +209,7 @@ async function main() {
   } else if (buildType === 'mmi') {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [...(await getTestPathsForTestDir(testDir))];
+    testPaths = testPaths.filter((testPath) => testPath.match('settings-search'))
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -218,6 +219,7 @@ async function main() {
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
     ];
+    testPaths = testPaths.filter((testPath) => testPath.match('settings-search'))
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');

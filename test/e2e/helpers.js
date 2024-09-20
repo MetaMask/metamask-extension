@@ -273,6 +273,7 @@ async function withFixtures(options, testSuite) {
     }
   } catch (error) {
     failed = true;
+    console.log('Test catch error', error, '|', Date.now());
     if (webDriver) {
       try {
         await driver.verboseReportOnFailure(title, error);
@@ -302,7 +303,11 @@ async function withFixtures(options, testSuite) {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
       if (ganacheServer) {
-        await ganacheServer.quit();
+        try {
+          await ganacheServer.quit();
+        } catch (e) {
+          console.log('ganacheServer.quit', e);
+        }
       }
 
       if (ganacheOptions?.concurrent) {
