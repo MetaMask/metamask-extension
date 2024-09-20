@@ -3,8 +3,8 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import AccountSettingsPage from '../../page-objects/pages/account-settings-page';
-import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/homepage';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
@@ -14,12 +14,10 @@ describe('Add snap account experimental settings', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const loginPage = new LoginPage(driver);
         const homePage = new HomePage(driver);
         const accountSettingsPage = new AccountSettingsPage(driver);
 
-        await loginPage.navigate();
-        await loginPage.login('correct horse battery staple');
+        await loginWithBalanceValidation(driver);
 
         // Make sure the "Add snap account" button is not visible.
         await homePage.openAccountMenu();

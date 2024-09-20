@@ -4,230 +4,169 @@ import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 import HeaderNavbar from './header-navbar';
 
 class HomePage {
-  public readonly headerNavbar: HeaderNavbar;
+  private driver: Driver;
 
-  private readonly driver: Driver;
+  private sendButton: string;
 
-  private readonly sendButton: string = '[data-testid="eth-overview-send"]';
+  private activityTab: string;
 
-  private readonly activityTab: string =
-    '[data-testid="account-overview__activity-tab"]';
+  private tokensTab: string;
 
-  private readonly tokensTab: string =
-    '[data-testid="account-overview__asset-tab"]';
+  private balance: string;
 
-  private readonly balance: string =
-    '[data-testid="eth-overview__primary-currency"]';
+  private completedTransactions: string;
 
-  private readonly completedTransactions: string =
-    '[data-testid="activity-list-item"]';
+  private confirmedTransactions: object;
 
-  private readonly confirmedTransactions: object = {
-    text: 'Confirmed',
-    css: '.transaction-status-label--confirmed',
-  };
+  private transactionAmountsInActivity: string;
 
-  private readonly transactionAmountsInActivity: string =
-    '[data-testid="transaction-list-item-primary-currency"]';
+  private accountMenuButton: string;
 
-  private readonly accountMenuButton: string =
-    '[data-testid="account-menu-icon"]';
-
-  private readonly addAccountButton: string =
-    '[data-testid="multichain-account-menu-popover-action-button"]';
-
-  private readonly closeModalButton: string =
-    '.mm-box button[aria-label="Close"]';
+  public headerNavbar: HeaderNavbar;
 
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
+    this.sendButton = '[data-testid="eth-overview-send"]';
+    this.activityTab = '[data-testid="account-overview__activity-tab"]';
+    this.tokensTab = '[data-testid="account-overview__asset-tab"]';
+    this.confirmedTransactions = {
+      text: 'Confirmed',
+      css: '.transaction-status-label--confirmed',
+    };
+    this.balance = '[data-testid="eth-overview__primary-currency"]';
+    this.completedTransactions = '[data-testid="activity-list-item"]';
+    this.transactionAmountsInActivity =
+      '[data-testid="transaction-list-item-primary-currency"]';
+    this.accountMenuButton = '[data-testid="account-menu-icon"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
-    console.log('Checking if home page is loaded');
     try {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
         this.activityTab,
         this.tokensTab,
       ]);
-      console.log('Home page is loaded');
-    } catch (error) {
-      console.error('Timeout while waiting for home page to be loaded', error);
-      throw new Error(`Home page failed to load: ${(error as Error).message}`);
+    } catch (e) {
+      console.log('Timeout while waiting for home page to be loaded', e);
+      throw e;
     }
+    console.log('Home page is loaded');
   }
 
   async check_expectedBalanceIsDisplayed(
     expectedBalance: string = DEFAULT_GANACHE_ETH_BALANCE_DEC,
   ): Promise<void> {
-    console.log(`Checking for expected balance: ${expectedBalance} ETH`);
     try {
       await this.driver.waitForSelector({
         css: this.balance,
         text: `${expectedBalance} ETH`,
       });
-      console.log(
-        `Expected balance ${expectedBalance} ETH is displayed on homepage`,
-      );
-    } catch (error) {
-      console.error(`Failed to verify balance: ${expectedBalance} ETH`, error);
-      throw new Error(
-        `Balance verification failed: ${(error as Error).message}`,
-      );
+    } catch (e) {
+      const balance = await this.driver.waitForSelector(this.balance);
+      const currentBalance = parseFloat(await balance.getText());
+      const errorMessage = `Expected balance ${expectedBalance} ETH, got balance ${currentBalance} ETH`;
+      console.log(errorMessage, e);
+      throw e;
     }
+    console.log(
+      `Expected balance ${expectedBalance} ETH is displayed on homepage`,
+    );
   }
 
   async startSendFlow(): Promise<void> {
-    console.log('Starting send flow');
-    try {
-      await this.driver.clickElement(this.sendButton);
-      console.log('Send flow initiated successfully');
-    } catch (error) {
-      console.error('Failed to start send flow', error);
-      throw new Error(`Unable to start send flow: ${(error as Error).message}`);
-    }
+    await this.driver.clickElement(this.sendButton);
   }
 
   async goToActivityList(): Promise<void> {
-    console.log('Opening activity tab on homepage');
-    try {
-      await this.driver.clickElement(this.activityTab);
-      console.log('Activity tab opened successfully');
-    } catch (error) {
-      console.error('Failed to open activity tab', error);
-      throw new Error(
-        `Unable to open activity tab: ${(error as Error).message}`,
-      );
-    }
+    console.log(`Open activity tab on homepage`);
+    await this.driver.clickElement(this.activityTab);
   }
 
   async openAccountMenu(): Promise<void> {
-    console.log('Opening account menu');
-    try {
-      await this.driver.clickElement(this.accountMenuButton);
-      console.log('Account menu opened successfully');
-    } catch (error) {
-      console.error('Failed to open account menu', error);
-      throw new Error(
-        `Unable to open account menu: ${(error as Error).message}`,
-      );
-    }
+    console.log(`Opening account menu`);
+    await this.driver.clickElement(this.accountMenuButton);
   }
 
-  async openAddAccountModal(): Promise<void> {
-    console.log('Opening add account modal');
-    try {
-      await this.driver.clickElement(this.addAccountButton);
-      console.log('Add account modal opened successfully');
-    } catch (error) {
-      console.error('Failed to open add account modal', error);
-      throw new Error(
-        `Unable to open add account modal: ${(error as Error).message}`,
-      );
-    }
-  }
-
-  async closeModal(): Promise<void> {
-    console.log('Closing modal');
-    try {
-      await this.driver.clickElement(this.closeModalButton);
-      console.log('Modal closed successfully');
-    } catch (error) {
-      console.error('Failed to close modal', error);
-      throw new Error(`Unable to close modal: ${(error as Error).message}`);
-    }
-  }
-
+  /**
+   * This function checks if the specified number of confirmed transactions are displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of confirmed transactions to be visible.
+   *
+   * @param expectedNumber - The number of confirmed transactions expected to be displayed in activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of confirmed transactions is displayed within the timeout period.
+   */
   async check_confirmedTxNumberDisplayedInActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
     console.log(
-      `Checking for ${expectedNumber} confirmed transaction(s) in activity list`,
+      `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
     );
-    try {
-      await this.driver.wait(async () => {
-        const confirmedTxs = await this.driver.findElements(
-          this.confirmedTransactions,
-        );
-        return confirmedTxs.length === expectedNumber;
-      }, 10000);
-      console.log(
-        `${expectedNumber} confirmed transaction(s) found in activity list on homepage`,
+    await this.driver.wait(async () => {
+      const confirmedTxs = await this.driver.findElements(
+        this.confirmedTransactions,
       );
-    } catch (error) {
-      console.error(
-        `Failed to find ${expectedNumber} confirmed transaction(s)`,
-        error,
-      );
-      throw new Error(
-        `Expected ${expectedNumber} confirmed transaction(s) not found in activity list: ${
-          (error as Error).message
-        }`,
-      );
-    }
+      return confirmedTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} confirmed transactions found in activity list on homepage`,
+    );
   }
 
+  /**
+   * This function checks the specified number of completed transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
+   *
+   * @param expectedNumber - The number of completed transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of completed transactions is displayed within the timeout period.
+   */
   async check_completedTxNumberDisplayedInActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
     console.log(
-      `Checking for ${expectedNumber} completed transaction(s) in activity list`,
+      `Wait for ${expectedNumber} completed transactions to be displayed in activity list`,
     );
-    try {
-      await this.driver.wait(async () => {
-        const completedTxs = await this.driver.findElements(
-          this.completedTransactions,
-        );
-        return completedTxs.length === expectedNumber;
-      }, 10000);
-      console.log(
-        `${expectedNumber} completed transaction(s) found in activity list on homepage`,
+    await this.driver.wait(async () => {
+      const completedTxs = await this.driver.findElements(
+        this.completedTransactions,
       );
-    } catch (error) {
-      console.error(
-        `Failed to find ${expectedNumber} completed transaction(s)`,
-        error,
-      );
-      throw new Error(
-        `Expected ${expectedNumber} completed transaction(s) not found in activity list: ${
-          (error as Error).message
-        }`,
-      );
-    }
+      return completedTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} completed transactions found in activity list on homepage`,
+    );
   }
 
+  /**
+   * This function checks if a specified transaction amount at the specified index matches the expected one.
+   *
+   * @param expectedAmount - The expected transaction amount to be displayed. Defaults to '-1 ETH'.
+   * @param expectedNumber - The 1-based index of the transaction in the activity list whose amount is to be checked.
+   * Defaults to 1, indicating the first transaction in the list.
+   * @returns A promise that resolves if the transaction amount at the specified index matches the expected amount.
+   * The promise is rejected if the amounts do not match or if an error occurs during the process.
+   * @example
+   * // To check if the third transaction in the activity list displays an amount of '2 ETH'
+   * await check_txAmountInActivity('2 ETH', 3);
+   */
   async check_txAmountInActivity(
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
-    console.log(
-      `Checking transaction amount for transaction ${expectedNumber}`,
+    const transactionAmounts = await this.driver.findElements(
+      this.transactionAmountsInActivity,
     );
-    try {
-      const transactionAmounts = await this.driver.findElements(
-        this.transactionAmountsInActivity,
-      );
-      const transactionAmountsText = await transactionAmounts[
-        expectedNumber - 1
-      ].getText();
-      assert.strictEqual(
-        transactionAmountsText,
-        expectedAmount,
-        `Transaction amount mismatch. Expected: ${expectedAmount}, Actual: ${transactionAmountsText} for transaction ${expectedNumber}`,
-      );
-      console.log(
-        `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
-      );
-    } catch (error) {
-      console.error(`Failed to verify transaction amount`, error);
-      throw new Error(
-        `Transaction amount verification failed for transaction ${expectedNumber}: ${
-          (error as Error).message
-        }`,
-      );
-    }
+    const transactionAmountsText = await transactionAmounts[
+      expectedNumber - 1
+    ].getText();
+    assert.equal(
+      transactionAmountsText,
+      expectedAmount,
+      `${transactionAmountsText} is displayed as transaction amount instead of ${expectedAmount} for transaction ${expectedNumber}`,
+    );
+    console.log(
+      `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
+    );
   }
 
   async assertAddAccountSnapButtonNotPresent(): Promise<void> {
@@ -247,15 +186,8 @@ class HomePage {
       );
       console.log('Add account Snap button is not present as expected');
     } catch (error) {
-      console.error(
-        'Failed to assert Add account Snap button is not present',
-        error,
-      );
-      throw new Error(
-        `Add account Snap button is unexpectedly present: ${
-          (error as Error).message
-        }`,
-      );
+      console.error('Failed to assert Add account Snap button is not present', error);
+      throw new Error(`Add account Snap button is unexpectedly present: ${(error as Error).message}`);
     }
   }
 
@@ -268,15 +200,8 @@ class HomePage {
       });
       console.log('Add account Snap button is present as expected');
     } catch (error) {
-      console.error(
-        'Failed to assert Add account Snap button is present',
-        error,
-      );
-      throw new Error(
-        `Add account Snap button is unexpectedly not present: ${
-          (error as Error).message
-        }`,
-      );
+      console.error('Failed to assert Add account Snap button is present', error);
+      throw new Error(`Add account Snap button is unexpectedly not present: ${(error as Error).message}`);
     }
   }
 }
