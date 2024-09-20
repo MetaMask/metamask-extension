@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import { RpcEndpointType } from '@metamask/network-controller';
 
 import {
   infuraProjectId,
@@ -224,9 +225,31 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
-  const childrenTitleText = process.env.CHAIN_PERMISSIONS
-    ? t('addNetworkConfirmationTitle', [pendingApproval.requestData.chainName])
-    : t('addEthereumChainConfirmationTitle');
+
+  let title;
+  if (originIsMetaMask) {
+    title = t('wantToAddThisNetwork');
+  } else if (data.existingNetworkConfiguration) {
+    title = t('updateNetworkConfirmationTitle', [
+      data.existingNetworkConfiguration.name,
+    ]);
+  } else {
+    title = process.env.CHAIN_PERMISSIONS
+      ? t('addNetworkConfirmationTitle', [
+          pendingApproval.requestData.chainName,
+        ])
+      : t('addEthereumChainConfirmationTitle');
+  }
+
+  let subtitle;
+  if (data.existingNetworkConfiguration) {
+    subtitle = t('updateEthereumChainConfirmationDescription');
+  } else {
+    subtitle = process.env.CHAIN_PERMISSIONS
+      ? t('multichainAddEthereumChainConfirmationDescription')
+      : t('addEthereumChainConfirmationDescription');
+  }
+
   return {
     content: [
       {
@@ -332,9 +355,7 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'title',
-        children: originIsMetaMask
-          ? t('wantToAddThisNetwork')
-          : childrenTitleText,
+        children: title,
         props: {
           variant: TypographyVariant.H3,
           align: 'center',
@@ -347,9 +368,7 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'description',
-        children: process.env.CHAIN_PERMISSIONS
-          ? t('multichainAddEthereumChainConfirmationDescription')
-          : t('addEthereumChainConfirmationDescription'),
+        children: subtitle,
         props: {
           variant: TypographyVariant.H7,
           align: 'center',
@@ -515,18 +534,26 @@ function getValues(pendingApproval, t, actions, history, data) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-        const networkConfigurationId = await actions.upsertNetworkConfiguration(
-          {
-            ...pendingApproval.requestData,
-            nickname: pendingApproval.requestData.chainName,
-          },
-          {
-            setActive: false,
-            source: pendingApproval.requestData.source,
-          },
-        );
+        const blockExplorer =
+          pendingApproval.requestData.rpcPrefs.blockExplorerUrl;
+
+        const addedNetwork = await actions.addNetwork({
+          chainId: pendingApproval.requestData.chainId,
+          name: pendingApproval.requestData.chainName,
+          nativeCurrency: pendingApproval.requestData.ticker,
+          blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
+          defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: pendingApproval.requestData.rpcUrl,
+              type: RpcEndpointType.Custom,
+            },
+          ],
+        });
+
         await actions.setNewNetworkAdded({
-          networkConfigurationId,
+          networkConfigurationId: addedNetwork.rpcEndpoints[0].networkClientId,
           nickname: pendingApproval.requestData.chainName,
         });
 

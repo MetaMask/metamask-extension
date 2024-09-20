@@ -205,9 +205,6 @@
   "delete": {
     "message": "Видалити"
   },
-  "deleteNetwork": {
-    "message": "Видалити мережу?"
-  },
   "details": {
     "message": "Деталі"
   },
@@ -350,9 +347,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Недійсна адреса отримувача"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Недійсний Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Недійсний RPC URL"

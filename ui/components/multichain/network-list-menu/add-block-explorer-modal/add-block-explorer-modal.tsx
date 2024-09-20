@@ -60,6 +60,7 @@ const AddBlockExplorerModal = ({
             variant: TextVariant.bodyMdMedium,
           }}
           onChange={(e) => setUrl(e.target.value)}
+          autoFocus
         />
         {error && (
           <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>

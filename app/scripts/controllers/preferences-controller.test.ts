@@ -11,6 +11,7 @@ import {
   KeyringControllerAccountRemovedEvent,
 } from '@metamask/keyring-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
+import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -27,6 +28,7 @@ const NETWORK_CONFIGURATION_DATA = mockNetworkState(
     id: 'test-networkConfigurationId-1',
     rpcUrl: 'https://testrpc.com',
     chainId: CHAIN_IDS.GOERLI,
+    blockExplorerUrl: 'https://etherscan.io',
     nickname: '0X5',
   },
   {
@@ -36,7 +38,7 @@ const NETWORK_CONFIGURATION_DATA = mockNetworkState(
     ticker: 'ETH',
     nickname: 'Localhost 8545',
   },
-).networkConfigurations;
+).networkConfigurationsByChainId;
 
 describe('preferences controller', () => {
   let controllerMessenger: ControllerMessenger<
@@ -94,7 +96,7 @@ describe('preferences controller', () => {
 
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
-      networkConfigurations: NETWORK_CONFIGURATION_DATA,
+      networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
       messenger: preferencesMessenger,
     });
   });
@@ -403,7 +405,7 @@ describe('preferences controller', () => {
         initState: {
           useTokenDetection: false,
         },
-        networkConfigurations: NETWORK_CONFIGURATION_DATA,
+        networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
       });
       const state = preferencesControllerExistingUser.store.getState();
       expect(state.useTokenDetection).toStrictEqual(false);
@@ -520,8 +522,10 @@ describe('preferences controller', () => {
       expect(state.incomingTransactionsPreferences).toStrictEqual({
         [CHAIN_IDS.MAINNET]: true,
         [CHAIN_IDS.LINEA_MAINNET]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0]].chainId]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
+        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
+          true,
+        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
+          true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
@@ -539,8 +543,10 @@ describe('preferences controller', () => {
       expect(state.incomingTransactionsPreferences).toStrictEqual({
         [CHAIN_IDS.MAINNET]: true,
         [CHAIN_IDS.LINEA_MAINNET]: false,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0]].chainId]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
+        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
+          true,
+        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
+          true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,

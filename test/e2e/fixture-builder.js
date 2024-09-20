@@ -4,7 +4,7 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const { mockNetworkState } = require('../stub/networks');
+const { mockNetworkStateOld } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
@@ -44,7 +44,7 @@ function onboardingFixture() {
         },
       },
       NetworkController: {
-        ...mockNetworkState({
+        ...mockNetworkStateOld({
           id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
@@ -55,7 +55,7 @@ function onboardingFixture() {
         providerConfig: { id: 'networkConfigurationId' },
       },
       PreferencesController: {
-        advancedGasFee: null,
+        advancedGasFee: {},
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
         featureFlags: {},
@@ -74,6 +74,7 @@ function onboardingFixture() {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
+          showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
@@ -116,6 +117,7 @@ function onboardingFixture() {
         ignoredTokens: [],
         tokens: [],
       },
+      TransactionController: {},
       config: {},
       firstTimeInfo: {
         date: 1665507600000,
@@ -260,37 +262,29 @@ class FixtureBuilder {
   }
 
   withNetworkControllerDoubleGanache() {
-    const ganacheNetworks = mockNetworkState(
-      {
-        chainId: CHAIN_IDS.LOCALHOST,
-        nickname: 'Localhost 8545',
-        rpcUrl: 'http://localhost:8545',
-        ticker: 'ETH',
-      },
-      {
-        id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-        rpcUrl: 'http://localhost:8546',
-        chainId: '0x53a',
-        ticker: 'ETH',
-        nickname: 'Localhost 8546',
-      },
-    );
+    const ganacheNetworks = mockNetworkStateOld({
+      id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+      rpcUrl: 'http://localhost:8546',
+      chainId: '0x53a',
+      ticker: 'ETH',
+      nickname: 'Localhost 8546',
+    });
     delete ganacheNetworks.selectedNetworkClientId;
     return this.withNetworkController(ganacheNetworks);
   }
 
   withNetworkControllerTripleGanache() {
     this.withNetworkControllerDoubleGanache();
-    merge(
-      this.fixture.data.NetworkController,
-      mockNetworkState({
-        rpcUrl: 'http://localhost:7777',
-        chainId: '0x3e8',
-        ticker: 'ETH',
-        nickname: 'Localhost 7777',
-        blockExplorerUrl: undefined,
-      }),
-    );
+    const thirdGanache = mockNetworkStateOld({
+      rpcUrl: 'http://localhost:7777',
+      chainId: '0x3e8',
+      ticker: 'ETH',
+      nickname: 'Localhost 7777',
+      blockExplorerUrl: undefined,
+    });
+
+    delete thirdGanache.selectedNetworkClientId;
+    merge(this.fixture.data.NetworkController, thirdGanache);
     return this;
   }
 
