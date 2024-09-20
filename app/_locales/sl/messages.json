@@ -205,9 +205,6 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteNetwork": {
-    "message": "Izbrišem to omrežje?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -344,9 +341,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Neveljaven nasklov prejemnika"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Neveljaven Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Neveljaven RPC URL"

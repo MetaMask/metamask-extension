@@ -205,9 +205,6 @@
   "delete": {
     "message": "ಅಳಿಸಿ"
   },
-  "deleteNetwork": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಅಳಿಸುವುದೇ?"
-  },
   "details": {
     "message": "ವಿವರಗಳು"
   },
@@ -350,9 +347,6 @@
   },
   "invalidAddressRecipient": {
     "message": "ಸ್ವೀಕೃತಿದಾರರ ವಿಳಾಸವು ಅಮಾನ್ಯವಾಗಿದೆ"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
   },
   "invalidRPC": {
     "message": "ಅಮಾನ್ಯವಾದ RPC URL"

@@ -205,9 +205,6 @@
   "delete": {
     "message": "Șterge"
   },
-  "deleteNetwork": {
-    "message": "Ștergeți rețeaua?"
-  },
   "details": {
     "message": "Detalii"
   },
@@ -340,9 +337,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Adresa destinatarului nu este validă"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer nevalid"
   },
   "invalidRPC": {
     "message": "URL RPC nevalid"
