@@ -4,9 +4,25 @@ const {
   defaultGanacheOptions,
   logInWithBalanceValidation,
   unlockWallet,
+  getEventPayloads,
 } = require('../../helpers');
 
 const FixtureBuilder = require('../../fixture-builder');
+
+async function mockSegment(mockServer) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [{ type: 'track', event: 'Show native token as main balance' }],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      }),
+  ];
+}
 
 describe('Settings: Show native token as main balance', function () {
   it('Should show balance in crypto when toggle is on', async function () {
@@ -90,6 +106,85 @@ describe('Settings: Show native token as main balance', function () {
         );
 
         assert.equal(await accountTokenValue.getText(), '$42,500.00USD');
+      },
+    );
+  });
+
+  it('Should Successfully track the event when toggle is turned off', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-fd20',
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await unlockWallet(driver);
+
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({
+          text: 'General',
+          tag: 'div',
+        });
+        await driver.clickElement('.show-native-token-as-main-balance');
+
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.deepStrictEqual(events[0].properties, {
+          show_native_token_as_main_balance: false,
+          category: 'Settings',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'fullscreen',
+        });
+      },
+    );
+  });
+
+  it('Should Successfully track the event when toggle is turned on', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-fd20',
+            participateInMetaMetrics: true,
+          })
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .build(),
+        defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await unlockWallet(driver);
+
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({
+          text: 'General',
+          tag: 'div',
+        });
+        await driver.clickElement('.show-native-token-as-main-balance');
+
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.deepStrictEqual(events[0].properties, {
+          show_native_token_as_main_balance: true,
+          category: 'Settings',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'fullscreen',
+        });
       },
     );
   });
