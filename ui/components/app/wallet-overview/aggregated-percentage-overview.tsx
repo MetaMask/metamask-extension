@@ -82,15 +82,32 @@ export const AggregatedPercentageOverview = () => {
     true,
   );
 
-  const formattedAmountChange = isValidAmount(amountChange)
-    ? `${(amountChange as number) >= 0 ? '+' : ''}${Intl.NumberFormat(locale, {
-        notation: 'compact',
-        compactDisplay: 'short',
+  let formattedAmountChange = '';
+  if (isValidAmount(amountChange)) {
+    formattedAmountChange = (amountChange as number) >= 0 ? '+' : '';
+
+    const options = {
+      notation: 'compact',
+      compactDisplay: 'short',
+      maximumFractionDigits: 2,
+    } as const;
+
+    try {
+      // For currencies compliant with ISO 4217 Standard
+      formattedAmountChange += `${Intl.NumberFormat(locale, {
+        ...options,
         style: 'currency',
         currency: fiatCurrency,
-        maximumFractionDigits: 2,
-      }).format(amountChange as number)} `
-    : '';
+      }).format(amountChange as number)} `;
+    } catch {
+      // Non-standard Currency Codes
+      formattedAmountChange += `${Intl.NumberFormat(locale, {
+        ...options,
+        minimumFractionDigits: 2,
+        style: 'decimal',
+      }).format(amountChange as number)} `;
+    }
+  }
 
   let color = TextColor.textDefault;
 
