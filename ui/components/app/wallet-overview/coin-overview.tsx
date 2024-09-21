@@ -141,7 +141,7 @@ export const CoinOverview = ({
 
   const handleClick = () => {
     setIsOpen(!isOpen);
-    dispatch(setAggregatedBalancePopover());
+    setAggregatedBalancePopover();
   };
 
   const [referenceElement, setReferenceElement] = useState();
