@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
@@ -97,7 +97,6 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useContext(I18nContext);
-  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
   const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
