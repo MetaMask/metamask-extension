@@ -590,6 +590,14 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerShowNativeTokenAsMainBalanceDisabled() {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
+      },
+    });
+  }
+
   withPreferencesControllerTxSimulationsDisabled() {
     return this.withPreferencesController({
       useTransactionSimulations: false,
