@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionActivityLog Component should match snapshot 1`] = `
+<div>
+  <div
+    class="transaction-activity-log test-class"
+  >
+    <div
+      class="transaction-activity-log__title"
+    >
+      [activityLog]
+    </div>
+    <div
+      class="transaction-activity-log__activities-container"
+    >
+      <div
+        class="transaction-activity-log__activity"
+      >
+        <div
+          class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/add.svg');"
+          />
+        </div>
+        <div
+          class="transaction-activity-log__entry-container"
+        >
+          <div
+            class="transaction-activity-log__activity-text"
+            title="[transactionCreated]"
+          >
+            [transactionCreated]
+          </div>
+        </div>
+      </div>
+      <div
+        class="transaction-activity-log__activity"
+      >
+        <div
+          class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/arrow-up.svg');"
+          />
+        </div>
+        <div
+          class="transaction-activity-log__entry-container"
+        >
+          <div
+            class="transaction-activity-log__activity-text"
+            title="[transactionSubmitted]"
+          >
+            [transactionSubmitted]
+          </div>
+        </div>
+      </div>
+      <div
+        class="transaction-activity-log__activity"
+      >
+        <div
+          class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/programming-arrows.svg');"
+          />
+        </div>
+        <div
+          class="transaction-activity-log__entry-container"
+        >
+          <div
+            class="transaction-activity-log__activity-text"
+            title="[transactionResubmitted]"
+          >
+            [transactionResubmitted]
+          </div>
+        </div>
+      </div>
+      <div
+        class="transaction-activity-log__activity"
+      >
+        <div
+          class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/check.svg');"
+          />
+        </div>
+        <div
+          class="transaction-activity-log__entry-container"
+        >
+          <div
+            class="transaction-activity-log__activity-text"
+            title="[transactionConfirmed]"
+          >
+            [transactionConfirmed]
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

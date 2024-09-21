@@ -1,0 +1,60 @@
+.mm-button-link {
+  &:hover:not(&--disabled) {
+    color: var(--color-primary-default);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  &:active:not(&--disabled) {
+    color: var(--color-primary-alternative);
+  }
+
+  &--disabled {
+    &:active {
+      color: var(--color-primary-default);
+    }
+  }
+
+  &--type-danger:not(&--disabled) {
+    &:hover {
+      color: var(--color-error-default);
+    }
+
+    &:active {
+      color: var(--color-error-alternative);
+    }
+  }
+
+  &--type-danger#{&}--disabled:active {
+    color: var(--color-error-default);
+  }
+
+  &--size-auto {
+    height: auto;
+  }
+
+  &--size-inherit {
+    height: auto;
+    background-color: transparent;
+    vertical-align: top;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+
+    &__icon {
+      top: 0;
+    }
+  }
+
+  &--size-inherit:hover:not(&--disabled) {
+    text-decoration-thickness: auto;
+    text-underline-offset: 2px;
+  }
+
+  &--loading:hover:not(&--disabled) {
+    text-decoration: none;
+  }
+}

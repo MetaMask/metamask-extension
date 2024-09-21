@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tag should render a tag with an icon and a label 1`] = `
+<div>
+  <div
+    class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+    data-testid="tag"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
+      style="mask-image: url('./images/icons/snaps.svg');"
+    />
+    <p
+      class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+    >
+      Snap Name
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Tag should render a tag with an icon and a label and icon props 1`] = `
+<div>
+  <div
+    class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+    data-testid="tag"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-primary-default"
+      style="mask-image: url('./images/icons/snaps.svg');"
+    />
+    <p
+      class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+    >
+      Snap Name
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Tag should render the label inside the tag and match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+    data-testid="tag"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+    >
+      Imported
+    </p>
+  </div>
+</div>
+`;

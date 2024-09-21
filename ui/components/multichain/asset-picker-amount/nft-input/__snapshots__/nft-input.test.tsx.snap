@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NFTInput matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+        style="display: inherit;"
+        title="1"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="nft-input"
+          dir="ltr"
+          min="0"
+          placeholder="0"
+          step="any"
+          style="width: 1.5ch;"
+          type="number"
+          value="1"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

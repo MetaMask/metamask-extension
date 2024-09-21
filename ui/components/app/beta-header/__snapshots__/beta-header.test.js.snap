@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Beta Header should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box beta-header mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-warning-default"
+  >
+    <h6
+      class="mm-box mm-text beta-header__message mm-text--body-sm mm-box--color-warning-inverse"
+    >
+      <span>
+         
+        This is a beta version. Please report bugs 
+        <a
+          href="https://support.metamask.io"
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          here
+        </a>
+        
+         
+      </span>
+    </h6>
+    <button
+      aria-label="Close"
+      class="mm-box mm-button-icon mm-button-icon--size-sm beta-header__button mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-warning-inverse mm-box--background-color-transparent mm-box--rounded-lg"
+      data-testid="beta-header-close"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/close.svg');"
+      />
+    </button>
+  </div>
+</div>
+`;

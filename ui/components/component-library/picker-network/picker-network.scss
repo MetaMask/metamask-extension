@@ -1,0 +1,9 @@
+.mm-picker-network {
+  --picker-network-height: 32px;
+
+  height: var(--picker-network-height);
+
+  &:not([disabled]):active {
+    background-color: var(--color-background-default-hover);
+  }
+}

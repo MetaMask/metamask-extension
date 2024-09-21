@@ -1,0 +1,139 @@
+{
+  "data": {
+    "seedWords": null,
+    "fiatCurrency": "USD",
+    "isDisclaimerConfirmed": true,
+    "TOSHash": "a4f4e23f823a7ac51783e7ffba7914a911b09acdb97263296b7e14b527f80c5b",
+    "shapeShiftTxList": [
+      {
+        "depositAddress": "1L8BJCR6KHkCiVceDqibt7zJscqPpH7pFw",
+        "depositType": "BTC",
+        "key": "shapeshift",
+        "time": 1471564825772,
+        "response": {
+          "status": "complete",
+          "outgoingCoin": "100.00",
+          "incomingCoin": "1.000",
+          "transaction": "0x3701e0ac344a12a1fc5417cf251109a7c41f3edab922310202630d9c012414c8"
+        }
+      },
+      {
+        "depositAddress": "1L8BJCR6KHkCiVceDqibt7zJscqPpH7pFw",
+        "depositType": "BTC",
+        "key": "shapeshift",
+        "time": 1471566579224,
+        "response": {
+          "status": "no_deposits",
+          "depositAddress": "1L8BJCR6KHkCiVceDqibt7zJscqPpH7pFw"
+        }
+      },
+      {
+        "depositAddress": "1L8BJCR6KHkCiVceDqibt7zJscqPpH7pFw",
+        "depositType": "BTC",
+        "key": "shapeshift",
+        "time": 1471566565378,
+        "response": {
+          "status": "received",
+          "depositAddress": "1L8BJCR6KHkCiVceDqibt7zJscqPpH7pFw"
+        }
+      }
+    ],
+    "noticesList": [
+      {
+        "read": true,
+        "date": "Fri Dec 16 2016",
+        "title": "Ending Morden Support",
+        "body": "Due to [recent events](https://blog.ethereum.org/2016/11/20/from-morden-to-ropsten/), MetaMask is now deprecating support for the Morden Test Network.\n\nUsers will still be able to access Morden through a locally hosted node, but we will no longer be providing hosted access to this network through [Infura](http://infura.io/).\n\nPlease use the new Ropsten Network as your new default test network.\n\nYou can fund your Ropsten account using the buy button on your account page.\n\nBest wishes!\nThe MetaMask Team\n\n",
+        "id": 0
+      },
+      {
+        "read": false,
+        "date": "Sat Dec 17 2016",
+        "title": "Keeping It Real",
+        "body": "nonempty",
+        "id": 1
+      }
+    ],
+    "conversionRate": 12.66441492,
+    "conversionDate": 1487184182,
+    "vault": "{\"data\":\"Z5UFCeI/Tg9F9No0dC7eIhe4evCG91m6qeXhGpSeX48HHCQ/BepyNONKrh05YjB9hXCAd3Jy93judD+pcXNy7WS9zLujjmMI6sI90ToSrzThnMrOE6ixcH7HGS+TCcqvwBhZEsAQqUcQeHhT9CcdCQAxkKwBk8CK8W290MVeZoQVGK88hB2R8kL3mo/uayS5AnHPwWOS0rocgSfd/ioiucClpw==\",\"iv\":\"AYufeEPwp9f2Rdrfq7yS8g==\",\"salt\":\"g7BQIEx8tosH3IxWhPnrgZFu1XRkQn1Pp7l1ehTQQCo=\"}",
+    "config": {
+      "provider": {
+        "type": "testnet"
+      },
+      "selectedAccount": "0x0beb674745816b125fbc07285d39fd373e64895c"
+    },
+    "walletNicknames": {
+      "0x0beb674745816b125fbc07285d39fd373e64895c": "Account 1",
+      "0x433eb37d2e4895815b90f555425dfa123ddaed40": "Account 2"
+    },
+    "transactions": [
+      {
+        "id": 3922064325443430,
+        "time": 1487184358262,
+        "status": "confirmed",
+        "gasMultiplier": 1,
+        "metamaskNetworkId": "3",
+        "txParams": {
+          "from": "0x0beb674745816b125fbc07285d39fd373e64895c",
+          "to": "0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761",
+          "value": "0xde0b6b3a7640000",
+          "metamaskId": 3922064325443430,
+          "metamaskNetworkId": "3",
+          "gas": "0x5209",
+          "gasPrice": "0x04a817c800",
+          "nonce": "0x0",
+          "gasLimit": "0x5209"
+        },
+        "txFee": "17e0186e60800",
+        "txValue": "de0b6b3a7640000",
+        "maxCost": "de234b52e4a0800",
+        "hash": "0x0b36c5bb31528044e6a71e45a64e9872f5f365a14ac42ee1bea49e7766216c12"
+      },
+      {
+        "id": 3922064325443431,
+        "time": 1487184373172,
+        "status": "confirmed",
+        "gasMultiplier": 1,
+        "metamaskNetworkId": "3",
+        "txParams": {
+          "from": "0x0beb674745816b125fbc07285d39fd373e64895c",
+          "to": "0x433eb37d2e4895815b90f555425dfa123ddaed40",
+          "value": "0xde0b6b3a7640000",
+          "metamaskId": 3922064325443431,
+          "metamaskNetworkId": "3",
+          "gas": "0x5209",
+          "nonce": "0x01",
+          "gasPrice": "0x04a817c800",
+          "gasLimit": "0x5209"
+        },
+        "txFee": "17e0186e60800",
+        "txValue": "de0b6b3a7640000",
+        "maxCost": "de234b52e4a0800",
+        "hash": "0x305548a8b8bb72de0ca8cf77df45e4fe2b29383e58c4da6b7eac7e9bd59e85e9"
+      },
+      {
+        "id": 3922064325443432,
+        "time": 1487184391226,
+        "status": "unapproved",
+        "gasMultiplier": 1,
+        "metamaskNetworkId": "3",
+        "txParams": {
+          "from": "0x0beb674745816b125fbc07285d39fd373e64895c",
+          "to": "0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761",
+          "value": "0xde0b6b3a7640000",
+          "metamaskId": 3922064325443432,
+          "metamaskNetworkId": "3",
+          "gas": "0x5209"
+        },
+        "txFee": "17e0186e60800",
+        "txValue": "de0b6b3a7640000",
+        "maxCost": "de234b52e4a0800"
+      }
+    ],
+    "gasMultiplier": 1
+  },
+  "meta": {
+    "version": 4
+  }
+}

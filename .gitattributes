@@ -1,0 +1,24 @@
+* text=auto
+CHANGELOG.md merge=union
+
+.metamaskrc.dist linguist-language=ini
+
+# Reviewing the lockfile contents is an important step in verifying that
+# we're using the dependencies we expect to be using
+package-lock.json linguist-generated=false
+yarn.lock linguist-generated=false
+
+test/e2e/send-eth-with-private-key-test/ethereumjs-tx.js linguist-vendored linguist-generated -diff
+test/e2e/send-eth-with-private-key-test/web3js.js linguist-vendored linguist-generated -diff
+
+# Collapse changes to translation files by default in diffs as it is very common
+# to remove keys in PRs. Of course this means that PRs that solely update
+# translations will be a little harder to review but those do not get submitted
+# as often as other PRs.
+app/_locales/** linguist-generated
+
+# yarn berry suggested .gitattributes
+/.yarn/releases/** binary
+/.yarn/plugins/** binary
+
+app/*.html linguist-language=EJS

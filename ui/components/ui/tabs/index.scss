@@ -1,0 +1,13 @@
+@import 'tab/index';
+
+.tabs {
+  // Just for Firefox — https://github.com/MetaMask/metamask-extension/issues/8700
+  -moz-transform: translateZ(0);
+
+  &__list {
+    border-bottom: 1px solid var(--color-border-default);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+}

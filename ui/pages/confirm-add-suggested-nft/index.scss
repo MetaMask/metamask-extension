@@ -1,0 +1,81 @@
+@use "design-system";
+
+.confirm-add-suggested-nft {
+  &__card {
+    margin: 16px;
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+  }
+
+  &__header {
+    border-bottom: 1px solid var(--color-border-muted);
+  }
+
+  &__content {
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  &__nft-list {
+    padding: 8px;
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+  }
+
+  &__nft-list-item {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__nft-image {
+    margin-right: 12px;
+    width: 48px;
+    border-radius: 8px;
+    flex: 0 0 auto;
+  }
+
+  &__nft-image-default {
+    margin-right: 12px;
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    padding: 0 !important;
+  }
+
+  &__nft-sub-details {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__nft-name {
+    @include design-system.H6;
+
+    align-self: flex-start;
+  }
+
+  &__nft-tokenid {
+    @include design-system.H7;
+  }
+
+  &__nft-remove-tooltip {
+    background-color: black;
+    color: white;
+  }
+
+  &__nft-single-image {
+    border-radius: inherit;
+    width: 100%;
+  }
+
+  &__nft-single-image-default {
+    border-radius: inherit;
+  }
+
+  &__nft-single-sub-details {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

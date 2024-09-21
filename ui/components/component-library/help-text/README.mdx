@@ -1,0 +1,92 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { Text } from '..';
+
+import { HelpText } from './help-text';
+
+# HelpText
+
+The `HelpText` is used to provide instructions or feedback text under a form field including error, and success messages.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-helptext--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={HelpText} />
+
+`HelpText` accepts all [Text](/docs/components-componentlibrary-text--default-story#props) component props
+
+<ArgsTable of={Text} />
+
+### Children
+
+`HelpText` renders as a `<p>` tag if the child is a `string` or a `<div>` if the child is an `object`.
+
+```jsx
+import { IconColor } from '../../../helpers/constants/design-system';
+import { HelpText, Icon, IconName, IconSize } from '../../component-library';
+
+<HelpText>Plain text</HelpText> // renders as <p>Plain text</p>
+<HelpText>
+  <span>Text and icon</span>
+  <Icon
+    marginLeft={1}
+    color={IconColor.iconAlternative}
+    name={IconName.Warning}
+    size={IconSize.Inherit}
+  />
+</HelpText> // renders as <div><span>Text and icon</span> <div style={{background: icon/warning.svg}} /></div>
+```
+
+### Severity
+
+Use the `severity` prop and `HelpTextSeverity` enum to change the severity of the `HelpText`
+
+<Canvas>
+  <Story id="components-componentlibrary-helptext--severity-story" />
+</Canvas>
+
+```jsx
+import { HelpText, HelpTextSeverity } from '../../component-library';
+
+<HelpText>HelpText without severity prop</HelpText>
+<HelpText severity={HelpTextSeverity.Danger}>
+  HelpText with severity: SEVERITY.DANGER
+</HelpText>
+<HelpText severity={HelpTextSeverity.Success}>
+  HelpText with severity: SEVERITY.SUCCESS
+</HelpText>
+<HelpText severity={HelpTextSeverity.Warning}>
+  HelpText with severity: SEVERITY.WARNING
+</HelpText>
+<HelpText severity={HelpTextSeverity.Info}>
+  HelpText with severity: SEVERITY.INFO
+</HelpText>
+```
+
+### Color
+
+It may be useful to change the color of the `HelpText`. Use the `color` prop and the `TextColor` enum to change the color of the `HelpText`. Defaults to `TextColor.textDefault`.
+
+<Canvas>
+  <Story id="components-componentlibrary-helptext--color-story" />
+</Canvas>
+
+```jsx
+import { TextColor } from '../../../helpers/constants/design-system';
+import { HelpText } from '../../component-library';
+
+<HelpText color={TextColor.textDefault}>
+  This HelpText default color is TextColor.textDefault
+</HelpText>
+<HelpText color={TextColor.textAlternative}>
+  This HelpText color is TextColor.textAlternative
+</HelpText>
+<HelpText color={TextColor.textMuted}>
+  This HelpText color is TextColor.textMuted
+</HelpText>
+```

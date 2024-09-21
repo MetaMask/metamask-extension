@@ -1,0 +1,92 @@
+.edit-gas-item {
+  border-radius: 24px;
+  background: var(--color-background-default);
+  color: var(--color-text-alternative);
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+  padding: 4px 12px;
+  height: 32px;
+  width: 100%;
+
+  &:hover:not([disabled]) {
+    background-color: var(--color-background-default-hover);
+  }
+
+  &--selected {
+    background-color: var(--color-primary-muted);
+
+    &:hover:not([disabled]) {
+      background-color: var(--color-primary-muted);
+    }
+  }
+
+  button.edit-gas-item--disabled[disabled] {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  &__name {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-text-default);
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+    width: 36%;
+
+    &__sufix {
+      font-weight: 400;
+      margin-left: 4px;
+    }
+  }
+
+  &__icon {
+    font-size: 20px;
+    line-height: 1;
+    margin-right: 4px;
+
+    &-custom {
+      font-size: 22px;
+      line-height: 1;
+    }
+  }
+
+  &__maxfee {
+    position: relative;
+  }
+
+  &__time-estimate {
+    display: inline-block;
+    text-align: left;
+    width: 24%;
+  }
+
+  &__fee-estimate {
+    display: inline-block;
+    width: 30%;
+    white-space: nowrap;
+  }
+
+  &__tooltip {
+    display: inline-block;
+    text-align: right;
+    width: 10%;
+
+    .info-tooltip {
+      display: inline-block;
+    }
+  }
+
+  &__time-estimate-low,
+  &__fee-estimate-high {
+    color: var(--color-warning-default);
+  }
+
+  &__time-estimate-medium,
+  &__time-estimate-high {
+    color: var(--color-success-default);
+  }
+}

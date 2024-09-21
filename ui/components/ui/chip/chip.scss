@@ -1,0 +1,78 @@
+@use "design-system";
+
+.chip {
+  $self: &;
+
+  border-radius: 100px;
+  border: 1px solid var(--color-border-default);
+  padding: 8px 16px;
+  margin: 0 4px;
+  display: flex;
+  align-items: center;
+
+  &__left-icon,
+  &__right-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  &__left-url-icon {
+    margin-right: 8px;
+  };
+
+  @each $variant, $color in design-system.$color-map {
+    &--border-color-#{$variant} {
+      border-color: var($color);
+    }
+    &--background-color-#{$variant} {
+      background-color: var($color);
+    }
+  }
+
+  &--with-left-icon,
+  &--with-right-icon {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  &--with-left-icon {
+    padding-left: 4px;
+
+    #{$self}__label {
+      margin-left: 8px;
+    }
+  }
+
+  &--with-input &__input {
+    direction: ltr;
+    border: none;
+    background: transparent;
+    text-align: center;
+    width: 100%;
+    font-size: design-system.$font-size-h5;
+    color: var(--color-text-default);
+
+    &:focus {
+      text-align: left;
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  &--with-right-icon {
+    padding-right: 4px;
+    #{$self}__label {
+      margin-right: 8px;
+    }
+  }
+
+  &--max-content {
+    width: max-content;
+  }
+
+  &--display-inline-block {
+    display: inline-block;
+  }
+}

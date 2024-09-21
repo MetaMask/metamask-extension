@@ -1,0 +1,11 @@
+@use "design-system";
+
+.onboarding-successful {
+  @include design-system.screen-sm-min {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  max-width: 600px;
+}

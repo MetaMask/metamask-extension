@@ -1,0 +1,43 @@
+@use "design-system";
+
+.countdown-timer {
+  @include design-system.H7;
+
+  display: flex;
+  justify-content: center;
+
+  @include design-system.screen-sm-min {
+    margin: 0;
+  }
+
+  &__timer-container {
+    display: flex;
+    padding-right: 3px;
+    color: var(--color-text-alternative);
+
+    > span {
+      display: flex;
+      padding-left: 4px;
+    }
+
+    &--warning {
+      .countdown-timer__time {
+        color: var(--color-error-default);
+      }
+    }
+  }
+
+  &__time {
+    @include design-system.H7;
+
+    font-weight: bold;
+    width: 24px;
+    margin-left: 4px;
+    margin-right: 2px;
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+}

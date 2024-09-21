@@ -1,0 +1,184 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`All Connections render renders correctly 1`] = `
+<div>
+  <div
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+  >
+    <div
+      class="mm-box multichain-page__inner-container main-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="permissions-page"
+    >
+      <div
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full mm-box--background-color-background-default"
+      >
+        <div
+          class="mm-box"
+          style="min-width: 0px;"
+        >
+          <button
+            aria-label="Back"
+            class="mm-box mm-button-icon mm-button-icon--size-sm connections-header__start-accessory mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-left.svg');"
+            />
+          </button>
+        </div>
+        <div
+          class="mm-box"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          >
+            <span
+              class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--color-text-default"
+            >
+              Permissions
+            </span>
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-page-content mm-box--padding-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      >
+        <div
+          class="mm-box"
+        />
+        <button
+          class="mm-box multichain-connection-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+          data-testid="connection-list-item"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
+            style="align-self: center;"
+          >
+            <div
+              class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                data-testid="connection-list-item__avatar-favicon"
+              >
+                <img
+                  alt="avatar-favicon logo"
+                  class="mm-avatar-favicon__image"
+                  src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+                />
+              </div>
+              <div
+                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  data-testid="connection-list-item__avatar-network-badge"
+                >
+                  <img
+                    alt="Ethereum Mainnet logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
+            style="align-self: center; flex-grow: 1;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+            >
+              metamask.github.io
+            </p>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <span
+                class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
+              >
+                Connected with
+              </span>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="This can be changed in "Settings > Alerts""
+                data-tooltipped=""
+                style="display: inline;"
+              >
+                <div
+                  class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                  data-testid="avatar-group"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex"
+                  >
+                    <div
+                      class="mm-box mm-box--rounded-full"
+                      style="margin-left: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                      >
+                        <div
+                          class="mm-avatar-account__jazzicon"
+                        >
+                          <div
+                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
+                          >
+                            <svg
+                              height="16"
+                              width="16"
+                              x="0"
+                              y="0"
+                            >
+                              <rect
+                                fill="#18CDF2"
+                                height="16"
+                                transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
+                                width="16"
+                                x="0"
+                                y="0"
+                              />
+                              <rect
+                                fill="#035E56"
+                                height="16"
+                                transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
+                                width="16"
+                                x="0"
+                                y="0"
+                              />
+                              <rect
+                                fill="#F26602"
+                                height="16"
+                                transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
+                                width="16"
+                                x="0"
+                                y="0"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
+            style="flex: 1; align-self: center;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
+              style="mask-image: url('./images/icons/arrow-right.svg');"
+            />
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

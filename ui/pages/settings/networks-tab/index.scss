@@ -1,0 +1,196 @@
+@use "design-system";
+
+.networks-tab {
+  &__imageclose {
+    cursor: pointer;
+    color: var(--color-icon-default);
+  }
+
+  &__content {
+    &--with-networks-list-popup-footer {
+      // padding-bottom required to offset content from fixed footer: &__networks-list-popup-footer
+      padding-bottom: 80px;
+      // isolation contains stacking context(z-index) of &__networks-list-popup-footer
+      isolation: isolate;
+    }
+
+    @include design-system.screen-sm-min {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__icon-check {
+      max-width: 24px;
+      flex: 0 0 24px;
+    }
+
+    &__custom-image {
+      border: 1px solid var(--color-border-muted);
+    }
+
+    &__icon-with-fallback {
+      display: flex;
+      align-items: center;
+      padding: 0;
+      max-width: 24px;
+      flex: 0 0 24px;
+      color: var(--color-text-alternative);
+
+      @each $variant, $color in design-system.$color-map {
+        &--color-#{$variant} {
+          background: var($color);
+          color: var(--color-primary-inverse); // TODO: design-tokens needs network colors
+        }
+      }
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+
+    @include design-system.screen-sm-min {
+      margin-inline-end: 16px;
+      margin-bottom: 24px;
+    }
+  }
+
+  &__subheader {
+    display: none;
+
+    @include design-system.screen-sm-min {
+      @include design-system.H4;
+
+      padding: 16px 4px;
+      border-bottom: 1px solid var(--color-border-default);
+      height: 72px;
+      align-items: center;
+      display: flex;
+      gap: 8px;
+      flex-flow: row nowrap;
+    }
+  }
+
+  &__sub-header-text {
+    @include design-system.H4;
+
+    color: var(--color-text-muted);
+  }
+
+  &__scrollable {
+    overflow-y: auto;
+  }
+
+  &__network-form {
+    &__footer {
+      position: sticky;
+      bottom: 0;
+      box-shadow: 0 0 8px 0 var(--color-shadow-default);
+    }
+  }
+
+  &__networks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 24px;
+
+    @include design-system.screen-sm-min {
+      padding: 16px;
+      min-width: 160px; // Allow network form to take priority in the grid on resize
+      border-right: 1px solid var(--color-border-muted);
+    }
+
+    &__custom-search-network {
+      @include design-system.H6;
+
+      @include design-system.screen-sm-min {
+        @include design-system.Paragraph;
+      }
+    }
+  }
+
+  &__networks-list-popup-footer {
+    display: flex;
+    justify-content: center;
+    padding: 16px 24px;
+    border-top: 1px solid var(--color-border-default);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--color-background-default);
+
+    @include design-system.screen-sm-min {
+      display: none;
+    }
+  }
+
+  &__add-network-header-button-wrapper {
+    justify-content: center;
+
+    .button {
+      width: 138px;
+      padding: 10px;
+    }
+
+    @include design-system.screen-sm-max {
+      display: none;
+    }
+  }
+
+  &__networks-list--selection {
+    @include design-system.screen-sm-max {
+      display: none;
+    }
+  }
+
+  &__networks-list-item {
+    display: flex;
+    gap: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  &__networks-list-name {
+    @include design-system.Paragraph;
+
+    margin-left: 8px;
+    color: var(--color-text-alternative);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    flex-grow: 1;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    svg {
+      margin-inline-start: 15px;
+      padding-top: 3px;
+    }
+
+    @include design-system.screen-sm-max {
+      color: var(--color-text-default);
+    }
+  }
+
+  &__networks-list-name--selected {
+    font-weight: bold;
+    color: var(--color-text-default);
+
+    @include design-system.screen-sm-max {
+      font-weight: normal;
+      color: var(--color-text-default);
+    }
+  }
+
+  &__networks-list-name--disabled {
+    color: var(--color-text-muted);
+
+    @include design-system.screen-sm-max {
+      color: var(--color-text-default);
+    }
+  }
+}

@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserPreferencedCurrencyInput Component rendering should match snapshot 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+        style="display: inherit;"
+        title="0"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          disabled=""
+          min="0"
+          placeholder="0"
+          step="any"
+          style="width: 1.5ch;"
+          type="number"
+          value="0"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

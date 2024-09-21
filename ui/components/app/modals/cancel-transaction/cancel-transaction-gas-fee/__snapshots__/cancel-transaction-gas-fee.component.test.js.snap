@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CancelTransactionGasFee Component should render 1`] = `
+<div>
+  <div
+    class="cancel-transaction-gas-fee"
+  >
+    <div
+      class="mm-box currency-display-component cancel-transaction-gas-fee__eth mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+      title="<0.000001 ETH"
+    >
+      <span
+        class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      >
+        &lt;0.000001
+      </span>
+      <span
+        class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+      >
+        ETH
+      </span>
+    </div>
+    <div
+      class="mm-box currency-display-component cancel-transaction-gas-fee__fiat mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+      title="<0.000001 ETH"
+    >
+      <span
+        class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      >
+        &lt;0.000001
+      </span>
+      <span
+        class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+      >
+        ETH
+      </span>
+    </div>
+  </div>
+</div>
+`;

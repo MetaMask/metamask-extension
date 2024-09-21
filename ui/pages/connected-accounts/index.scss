@@ -1,0 +1,16 @@
+@use "design-system";
+
+.connected-accounts {
+  &__footer {
+    overflow: hidden;
+    margin-bottom: 8px;
+
+    a,
+    a:hover {
+      @include design-system.H6;
+
+      color: var(--color-primary-default);
+      cursor: pointer;
+    }
+  }
+}

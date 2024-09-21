@@ -1,0 +1,43 @@
+diff --git a/index.js b/index.js
+index e5be989387006f32a3ea450482a02b387970bcab..2dfa272e6e33dc01ec3b643553884bb29254011a 100644
+--- a/index.js
++++ b/index.js
+@@ -1,7 +1,5 @@
+ 'use strict';
+
+-var domain = require('domain');
+-
+ var eos = require('end-of-stream');
+ var p = require('process-nextick-args');
+ var once = require('once');
+@@ -30,13 +28,7 @@ function tryCatch(fn, args) {
+ function asyncDone(fn, cb) {
+   cb = once(cb);
+
+-  var d = domain.create();
+-  d.once('error', onError);
+-  var domainBoundFn = d.bind(fn);
+-
+   function done() {
+-    d.removeListener('error', onError);
+-    d.exit();
+     return tryCatch(cb, arguments);
+   }
+
+@@ -52,7 +44,7 @@ function asyncDone(fn, cb) {
+   }
+
+   function asyncRunner() {
+-    var result = domainBoundFn(done);
++    var result = fn(done);
+
+     function onNext(state) {
+       onNext.state = state;
+@@ -64,7 +56,6 @@ function asyncDone(fn, cb) {
+
+     if (result && typeof result.on === 'function') {
+       // Assume node stream
+-      d.add(result);
+       eos(exhaust(result), eosConfig, done);
+       return;
+     }

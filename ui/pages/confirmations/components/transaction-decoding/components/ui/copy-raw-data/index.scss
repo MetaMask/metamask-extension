@@ -1,0 +1,30 @@
+.copy-raw-data {
+  display: flex;
+  align-items: center;
+
+  &__button {
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    margin-top: 5px;
+    background-color: transparent;
+
+    &:hover {
+      background-color: var(--color-background-default-hover);
+    }
+
+    &:active {
+      background-color: var(--color-background-default-hover);
+    }
+  }
+
+  &__icon {
+    padding-inline-end: 6px;
+  }
+
+  &__label {
+    color: var(--color-text-alternative);
+  }
+}

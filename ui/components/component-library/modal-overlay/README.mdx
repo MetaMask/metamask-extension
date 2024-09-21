@@ -1,0 +1,40 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { ModalOverlay } from './modal-overlay';
+
+# ModalOverlay
+
+`ModalOverlay` is a transparent overlay that covers the entire screen. It is used to dim the background when a modal is open.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-modaloverlay--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={ModalOverlay} />
+
+### On Click
+
+Use the `onClick` prop to handle clicks on the overlay
+
+<Canvas>
+  <Story id="components-componentlibrary-modaloverlay--on-click" />
+</Canvas>
+
+```jsx
+import React, { useState } from 'react';
+import { ModalOverlay } from '../../component-library';
+
+const [open, setOpen] = useState(false);
+const handleOnClick = () => {
+  setOpen(!open);
+};
+
+<button onClick={handleOnClick}>Show modal overlay</button>;
+{
+  open && <ModalOverlay onClick={handleOnClick} />;
+}
+```

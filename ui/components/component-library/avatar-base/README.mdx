@@ -1,0 +1,101 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { AvatarBase } from './avatar-base';
+
+### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
+
+# AvatarBase
+
+The `AvatarBase` is a wrapper component responsible for enforcing dimensions and border radius for Avatar components
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-avatarbase--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={AvatarBase} />
+
+### Size
+
+Use the `size` prop to set the size of the `AvatarBase`.
+
+Possible sizes include:
+
+- `xs` 16px
+- `sm` 24px
+- `md` 32px
+- `lg` 40px
+- `xl` 48px
+
+Defaults to `md`
+
+The text styles of the `AvatarBase` is based on the `size` prop. To override this use the `Text` component's `variant` prop. `AvatarBase` also accepts all `Text` component props.
+
+<Canvas>
+  <Story id="components-componentlibrary-avatarbase--size" />
+</Canvas>
+
+```jsx
+import { AvatarBaseSize } from '../ui/component-library/avatar-base/avatar-base.types';
+import { AvatarBase } from '../../component-library/avatar-base';
+<AvatarBase size={AvatarBaseSize.XS} />
+<AvatarBase size={AvatarBaseSize.SM} />
+<AvatarBase size={AvatarBaseSize.MD} />
+<AvatarBase size={AvatarBaseSize.LG} />
+<AvatarBase size={AvatarBaseSize.XL} />
+```
+
+### Children
+
+The `AvatarBase` component can contain images, icons or text
+
+<Canvas>
+  <Story id="components-componentlibrary-avatarbase--children" />
+</Canvas>
+
+```jsx
+import { AvatarBase } from '../../component-library';
+<AvatarBase>
+  <img src="./images/eth_logo.svg" />
+</AvatarBase>
+<AvatarBase>
+  <img width="100%" src="./images/arbitrum.svg" />
+</AvatarBase>
+<AvatarBase>
+  <img width="100%" src="./images/avax-token.svg" />
+</AvatarBase>
+<AvatarBase>A</AvatarBase>
+```
+
+### Color, Background Color And Border Color
+
+Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarBase`.
+
+<Canvas>
+  <Story id="components-componentlibrary-avatarbase--color-background-color-and-border-color" />
+</Canvas>
+
+```jsx
+import {   TextColor,
+           BackgroundColor,
+           BorderColor } from '../../../helpers/constants/design-system';
+import { AvatarBase } from '../../component-library';
+<AvatarBase>B</AvatarBase>
+<AvatarBase
+    backgroundColor={BackgroundColor.goerli}
+    borderColor={BorderColor.goerli}
+    color={TextColor.primaryInverse}
+  >
+  G
+</AvatarBase>
+<AvatarBase
+   backgroundColor={BackgroundColor.sepolia}
+   borderColor={BorderColor.sepolia}
+   color={TextColor.primaryInverse}
+>
+  S
+</AvatarBase>
+```

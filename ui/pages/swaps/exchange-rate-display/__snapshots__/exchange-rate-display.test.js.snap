@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExchangeRateDisplay renders the component with initial props 1`] = `
+<div>
+  <div
+    class="exchange-rate-display"
+  >
+    <div
+      class="box exchange-rate-display__quote-rate--no-link box--display-flex box--gap-1 box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default"
+      data-testid="exchange-rate-display-quote-rate"
+    >
+      <span>
+        1
+      </span>
+      <span
+        class="exchange-rate-display__bold"
+        data-testid="exchange-rate-display-base-symbol"
+      >
+        ETH
+      </span>
+      <span>
+        =
+      </span>
+      <span>
+        0.1
+      </span>
+      <span
+        class="exchange-rate-display__bold"
+      >
+        BAT
+      </span>
+    </div>
+    <span
+      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+      data-testid="exchange-rate-display-switch"
+      style="mask-image: url('./images/icons/swap-horizontal.svg'); cursor: pointer;"
+      title="Switch"
+    />
+  </div>
+</div>
+`;

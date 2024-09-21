@@ -1,0 +1,203 @@
+import { Meta } from '@storybook/addon-docs';
+
+<Meta title="Getting Started / Documentation Guidelines" />
+
+# Documentation Guidelines
+
+> 💡 To improve the quality of our component documentation we are currently in the process of updating our storybook to use Storyboook's [controls](https://storybook.js.org/addons/@storybook/addon-controls/), [a11y](https://storybook.js.org/addons/@storybook/addon-a11y/) and [docs](https://storybook.js.org/addons/@storybook/addon-docs/) plugins. You will find most components currently without documentation and use [knobs](https://storybook.js.org/addons/@storybook/addon-knobs)(deprecated) for their primary interactivity. These will eventually be updated. Want to contribute? Check out the <a href="https://github.com/MetaMask/metamask-extension/issues?q=is%3Aopen+is%3Aissue+label%3Atype-story" targe="_blank">storybook issues on github</a>
+
+## General Guidelines
+
+Thorough documentation makes it much easier for a component to be found, adapted and reused. It also provides space for explanation and reasoning for a component. This is useful as components become more complex.
+
+Some general documentation best practices to follow:
+
+- Put yourself in the shoes of another developer trying to use the component you just created for the first time
+- Write a brief description of the component and what it's used for in the `README.mdx` file
+- Display the component's API using the `<ArgsTable of={YourComponent} />` component from storybook docs. Add descriptions of each prop by using jsDoc style comments in the `propTypes`.
+- Use the [controls](https://storybook.js.org/addons/@storybook/addon-controls/) over [knobs](https://storybook.js.org/addons/@storybook/addon-knobs)(deprecated)
+- Use the [action argType annotation](https://storybook.js.org/docs/react/essentials/actions#action-argtype-annotation) over importing the actions plugin directly
+
+See the [Button](https://metamask.github.io/metamask-storybook/index.html?path=/story/components-ui-button--default-story)(`ui/components/ui/button/button.stories.js`) component for reference
+
+## Creating a Story
+
+[Component Story Format (CSF)](https://storybook.js.org/docs/react/api/csf) is the recommended way to write stories. It's an open standard based on ES6 modules.
+
+A story **without MDX** documentation can be as simple as:
+
+```jsx
+import React from 'react';
+import MyComponent from '.';
+
+export default {
+  title: 'Components/UI/MyComponent', // title should follow the folder structure location of the component. Don't use spaces.
+
+};
+
+export const DefaultStory = () => <MyComponent />;
+
+DefaultStory.storyName = 'Default';
+```
+
+For a more in-depth and higher quality form of story and documentation, you can use controls and MDX docs.
+The example below displays the `Button` component and it explains how we should write our stories:
+
+```jsx
+// Button component example story
+
+import React from 'react';
+
+import IconTokenSearch from '../icon/icon-token-search';
+
+// The mdx file to document props and usage
+import README from './README.mdx';
+import Button from '.';
+
+// The default storybook component export should always follow the same template
+export default {
+  // The `title` effects the components tile and location in storybook
+  // It should follow the folder structure location of the component. Don't use spaces.
+  title: 'Components/UI/Button',
+  component: Button, // The component you are documenting
+  parameters: {
+    docs: {
+      page: README, // Reference to the docs page MDX file
+    },
+  },
+  // the controls plugin argTypes are used for the interactivity of the component
+  argTypes: {
+    children: { control: 'text' },
+    disabled: { control: 'boolean' },
+    // use the updated action API to log actions in the actions tab
+    onClick: { action: 'clicked' },
+    type: {
+      control: {
+        type: 'select',
+      },
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'warning',
+        'danger',
+        'danger-primary',
+        'link',
+      ],
+    },
+    submit: { control: 'boolean' },
+    large: { control: 'boolean' },
+    className: { control: 'text' },
+    icon: {
+      control: {
+        type: 'select',
+      },
+      options: ['IconTokenSearch'],
+      mapping: {
+        IconTokenSearch: <IconTokenSearch />,
+      },
+    },
+  },
+};
+
+// First story component should always be called "DefaultStory"
+// The `DefaultStory` should include argTypes and controls where appropriate
+export const DefaultStory = (args) => (
+  <Button {...args}>{args.children}</Button>
+);
+
+// The name of the DefaultStory component can be renamed to simply "Default"
+DefaultStory.storyName = 'Default';
+
+// More stories should be added for different usage examples
+// You can add as many stories as you think appropriate to comprehensively document the component
+// A good convention is to name the story component after the prop you are highlighting
+export const Type = (args) => (
+  <>
+    <Button {...args} type="default">
+      {args.children || 'Default'}
+    </Button>
+    <Button {...args} type="primary">
+      {args.children || 'Primary'}
+    </Button>
+    <Button {...args} type="secondary">
+      {args.children || 'Secondary'}
+    </Button>
+    <Button {...args} type="warning">
+      {args.children || 'Warning'}
+    </Button>
+    <Button {...args} type="danger">
+      {args.children || 'Danger'}
+    </Button>
+    <Button {...args} type="danger-primary">
+      {args.children || 'Danger primary'}
+    </Button>
+    <Button {...args} type="link">
+      {args.children || 'Link'}
+    </Button>
+  </>
+);
+```
+
+## Writing MDX Documentation
+
+Now the storybook components are complete, the `README.mdx` documentation should explain the component in detail. [MDX](https://mdxjs.com/) format lets you seamlessly use `JSX` in your markdown documents. You can import react components and stories into your documentation to enhance the developer experience.
+
+```md
+<!-- import the necessary blocks from storybook docs  -->
+
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+<!-- import the component to use for the ArgsTable under ## Props  -->
+
+import Button from '.';
+
+<!-- Title of the component  -->
+
+# Button
+
+<!-- Brief description of the component  -->
+
+Buttons communicate actions that users can take.
+
+<!-- Embed the DefaultStory using the storybook url  -->
+
+<Canvas>
+  <Story id="components-ui-button--default-story" />
+</Canvas>
+
+## Props
+
+<!-- Display the Props using the ArgsTable. Use JSDoc style comments in the PropTypes of your component to add descriptions for props. See button.component.js Button.propTypes for an example of jsDoc style comments
+-->
+
+<ArgsTable of={Button} />
+
+## Usage
+
+<!-- Further documentation on usage of the component  -->
+
+The following describes the props and example usage for this component.
+
+### Type
+
+By changing the `type` prop you can use different styles of the button.
+
+| type              | Description                                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| `default`         | default style of the button                                                                           |
+| `primary`         | the principle call to action on the page                                                              |
+| `secondary`       | secondary actions on each page                                                                        |
+| `warning`         | a warning action in the page                                                                          |
+| `danger`          | a negative action (such as Delete) on the page                                                        |
+| `danger--primary` | a negative principle call to action (such as Delete) on the page                                      |
+| `link`            | an optional action or navigation action out of the app changes root html tag from `<button>` to `<a>` |
+
+<!-- Embed other stories to further illustrate component usage  -->
+
+<Canvas>
+  <Story id="components-ui-button--type" />
+</Canvas>
+```
+
+Nice work! You're now ready to start creating comprehensive documentation using storybook 🎉👍

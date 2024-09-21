@@ -1,0 +1,81 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import Button from '.';
+
+# Button
+
+Buttons communicate actions that users can take.
+
+<Canvas>
+  <Story id="components-ui-button--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Button} />
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### Type
+
+By changing the `type` prop you can use different styles of the button.
+
+| type              | Description                                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| `default`         | default style of the button                                                                           |
+| `primary`         | the principle call to action on the page                                                              |
+| `secondary`       | secondary actions on each page                                                                        |
+| `warning`         | a warning action in the page                                                                          |
+| `danger`          | a negative action (such as Delete) on the page                                                        |
+| `danger--primary` | a negative principle call to action (such as Delete) on the page                                      |
+| `link`            | an optional action or navigation action out of the app changes root html tag from `<button>` to `<a>` |
+
+<Canvas>
+  <Story id="components-ui-button--type" />
+</Canvas>
+
+### Type Link
+
+By changing the `type` to `"link"` the root html element of the button changes from `<button>` to `<a>`.
+
+Rendered html
+
+```html
+<a class="button btn-link">Click me</a>
+```
+
+<Canvas>
+  <Story id="components-ui-button--type-link" />
+</Canvas>
+
+### Icon
+
+Pass an icon component to `icon` prop to add an icon to the left side of the Button.
+
+<Canvas>
+  <Story id="components-ui-button--icon" />
+</Canvas>
+
+## Submit
+
+If the `submit` prop is set to `true` the html type attribute will be set to `type="submit"`
+
+```html
+<button class="button btn--rounded btn-primary" type="submit">Submit</button>
+```
+
+<Canvas>
+  <Story id="components-ui-button--submit" />
+</Canvas>
+
+## OnClick
+
+If the `onClick` prop is provided and is of type `function` the button html will render with `role="button"` and `tabIndex="0"` attributes. It also provides keyboard functionality on press of the "Enter" key.
+
+```html
+<button class="button btn--rounded btn-default" role="button" tabindex="0">
+  Click me
+</button>
+```

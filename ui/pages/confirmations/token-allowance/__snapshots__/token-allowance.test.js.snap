@@ -1,0 +1,479 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
+<div>
+  <div
+    class="box token-allowance-container page-container box--flex-direction-row"
+  >
+    <div
+      class="box box--flex-direction-row"
+    >
+      <div
+        class="confirm-page-container-navigation"
+        style="display: none;"
+      >
+        <div
+          class="confirm-page-container-navigation__container"
+          data-testid="navigation-container"
+          style="visibility: hidden;"
+        >
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="first-page"
+          >
+            <i
+              class="fa fa-angle-double-left fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="previous-page"
+          >
+            <i
+              class="fa fa-angle-left fa-2x"
+            />
+          </button>
+        </div>
+        <div
+          class="confirm-page-container-navigation__textcontainer"
+        >
+          <div
+            class="confirm-page-container-navigation__navtext"
+          >
+            0
+             
+            of
+             
+            0
+          </div>
+          <div
+            class="confirm-page-container-navigation__longtext"
+          >
+            requests waiting to be acknowledged
+          </div>
+        </div>
+        <div
+          class="confirm-page-container-navigation__container"
+          style="visibility: hidden;"
+        >
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="next-page"
+          >
+            <i
+              class="fa fa-angle-right fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="last-page"
+          >
+            <i
+              class="fa fa-angle-double-right fa-2x"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="box box--padding-right-4 box--padding-left-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+    >
+      <div
+        class="box box--flex-direction-row"
+      />
+      <div
+        class="box box--flex-direction-row box--text-align-end"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-muted"
+        >
+          1
+           
+          of
+           2
+        </h6>
+      </div>
+    </div>
+    <div
+      class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+    >
+      <div
+        class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+      >
+        <div
+          class="box box--display-flex box--flex-direction-row box--align-items-center"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 32px; width: 32px; border-radius: 16px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+              >
+                <svg
+                  height="32"
+                  width="32"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#18CDF2"
+                    height="32"
+                    transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#035E56"
+                    height="32"
+                    transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26602"
+                    height="32"
+                    transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+            style="height: 16px; width: 16px;"
+          >
+            <span
+              class="icon-with-fallback__fallback"
+            >
+              M
+            </span>
+          </div>
+        </div>
+        <div
+          class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            data-testid="signature-request-network-display"
+          >
+            mainnet
+          </h6>
+          <h6
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+          >
+            Account 1
+          </h6>
+        </div>
+      </div>
+      <div
+        class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Balance
+        </h6>
+        <h6
+          align="end"
+          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+        >
+          10
+           
+          TST
+        </h6>
+      </div>
+    </div>
+    
+    <div
+      class="box box--display-flex box--flex-direction-row box--justify-content-center"
+    >
+      <div
+        class="box token-allowance-container__icon-display-content box--margin-top-6 box--margin-right-12 box--margin-bottom-8 box--margin-left-12 box--padding-top-2 box--padding-right-4 box--padding-bottom-2 box--padding-left-2 box--display-flex box--flex-direction-row box--align-items-center box--border-style-solid box--border-color-border-muted box--border-width-1"
+      >
+        <div
+          class=""
+        >
+          <img
+            alt="https://metamask.github.io"
+            class="url-icon token-allowance-container__icon-display-content__siteimage-identicon"
+            src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+          />
+        </div>
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
+        >
+          https://metamask.github.io
+        </h6>
+      </div>
+    </div>
+    <div
+      class="box box--margin-right-4 box--margin-left-4 box--flex-direction-row"
+    >
+      <h3
+        align="center"
+        class="mm-box mm-text mm-text--heading-md mm-box--color-text-default"
+      >
+        <span>
+           
+          Spending cap request for your 
+          <div
+            class="box box--margin-top-4 box--flex-direction-row"
+          >
+            <div
+              class="box contract-token-values box--display-flex box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center"
+            >
+              <div
+                class=""
+              >
+                <div
+                  class="identicon"
+                  style="height: 24px; width: 24px; border-radius: 12px;"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(242, 206, 2);"
+                  >
+                    <svg
+                      height="24"
+                      width="24"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#186FF2"
+                        height="24"
+                        transform="translate(4.5535541527659795 -0.012406777909352561) rotate(501.9 12 12)"
+                        width="24"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F97101"
+                        height="24"
+                        transform="translate(-10.003810991077078 6.326210026231173) rotate(323.7 12 12)"
+                        width="24"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FB1832"
+                        height="24"
+                        transform="translate(-22.151479903389234 -4.322407331572157) rotate(370.5 12 12)"
+                        width="24"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-bold mm-box--margin-top-0 mm-box--margin-bottom-0 mm-box--color-text-alternative"
+              >
+                TST
+              </h2>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-1"
+                  class=""
+                  data-original-title="Copy to clipboard"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <button
+                    aria-label="Copy to clipboard"
+                    class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/copy.svg');"
+                    />
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-2"
+                  class=""
+                  data-original-title="Open in block explorer"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <button
+                    aria-label="Open in block explorer"
+                    class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/export.svg');"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+           
+        </span>
+      </h3>
+    </div>
+    <div
+      class="box box--margin-top-1 box--display-flex box--flex-direction-row box--justify-content-center"
+    >
+      <a
+        class="button btn-link token-allowance-container__verify-link"
+        role="button"
+        tabindex="0"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
+        >
+          Verify third-party details
+        </h6>
+      </a>
+    </div>
+    <div
+      class="box box--margin-4 box--sm:margin-4 box--md:margin-3 box--lg:margin-4 box--flex-direction-row"
+    >
+      <div
+        class="mm-box custom-spending-cap mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--background-color-background-alternative mm-box--rounded-sm"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--width-full"
+        >
+          <div>
+            <label
+              class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--margin-right-1 mm-box--display-inline mm-box--align-items-center mm-box--color-text-default"
+              for="custom-spending-cap"
+            >
+              Custom spending cap
+            </label>
+            <div
+              class="mm-box mm-box--display-inline-flex mm-box--align-items-center"
+            >
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-3"
+                  class=""
+                  data-original-title="null"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-inherit mm-box--display-inline-block mm-box--color-icon-alternative"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-auto mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            Use site suggestion
+          </button>
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+        >
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--padding-inline-end-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="custom-spending-cap-input"
+            focused="true"
+            id="custom-spending-cap"
+            placeholder="Enter a number"
+            type="text"
+            value="1"
+          />
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            data-testid="custom-spending-cap-max-button"
+          >
+            Max
+          </button>
+        </div>
+        <div
+          class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"
+        >
+          <span>
+             
+            This allows the third party to spend 
+            <span
+              class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
+            >
+              1
+               
+              TST
+            </span>
+             from your current balance.
+             
+          </span>
+        </div>
+        <a
+          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          href="https://support.metamask.io/privacy-and-security/how-to-customize-token-approvals-with-a-spending-cap/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Learn more
+        </a>
+      </div>
+    </div>
+    <div
+      class="box box--margin-right-4 box--margin-left-4 box--flex-direction-row"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+      />
+    </div>
+    <div
+      class="box box--display-flex box--flex-direction-row box--justify-content-center"
+    >
+      <a
+        class="button btn-link token-allowance-container__view-details"
+        role="button"
+        tabindex="0"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-right-1 mm-box--color-primary-default"
+        >
+          View details
+        </h6>
+        <i
+          class="fa fa-sm fa-angle-down"
+        />
+      </a>
+    </div>
+    <div
+      class="page-container__footer"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          data-testid="page-container-footer-cancel"
+        >
+          Reject
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+        >
+          Next
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;

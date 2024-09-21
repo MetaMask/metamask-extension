@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectedToken renders the component with initial props 1`] = `
+<div>
+  <div
+    class="dropdown-search-list dropdown-search-list__selector-closed-container dropdown-input-pair__selector--closed"
+    data-testid="dropdown-search-list"
+    tabindex="0"
+  >
+    <div
+      class="dropdown-search-list__selector-closed"
+    >
+      <div
+        class=""
+      >
+        <img
+          alt="ETH"
+          class="url-icon dropdown-search-list__selector-closed-icon"
+          src="iconUrl"
+        />
+      </div>
+      <div
+        class="dropdown-search-list__labels dropdown-search-list__labels--with-icon"
+      >
+        <div
+          class="dropdown-search-list__item-labels"
+        >
+          <span
+            class="dropdown-search-list__closed-primary-label"
+          >
+            ETH
+          </span>
+        </div>
+      </div>
+    </div>
+    <span
+      class="mm-box mm-icon mm-icon--size-xs mm-box--margin-right-3 mm-box--display-inline-block mm-box--color-icon-alternative"
+      style="mask-image: url('./images/icons/arrow-down.svg');"
+    />
+  </div>
+</div>
+`;
+
+exports[`SelectedToken renders the component with no token selected 1`] = `
+<div>
+  <div
+    class="dropdown-search-list dropdown-search-list__selector-closed-container dropdown-input-pair__selector--closed"
+    data-testid="dropdown-search-list"
+    tabindex="0"
+  >
+    <div
+      class="dropdown-search-list__selector-closed"
+    >
+      <div
+        class="dropdown-search-list__labels"
+      >
+        <div
+          class="dropdown-search-list__item-labels"
+        >
+          <span
+            class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"
+          >
+            Select token
+          </span>
+        </div>
+      </div>
+    </div>
+    <span
+      class="mm-box mm-icon mm-icon--size-xs mm-box--margin-right-3 mm-box--display-inline-block mm-box--color-icon-alternative"
+      style="mask-image: url('./images/icons/arrow-down.svg');"
+    />
+  </div>
+</div>
+`;

@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Reject Transactions Model should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-container"
+  >
+    <div
+      class="modal-container__header"
+    >
+      <div
+        class="modal-container__header-text"
+      >
+        [rejectTxsN]
+      </div>
+      <div
+        class="modal-container__header-close"
+        data-testid="modal-header-close"
+      />
+    </div>
+    <div
+      class="modal-container__content"
+    >
+      <div>
+        <div
+          class="reject-transactions__description"
+        >
+          [rejectTxsDescription]
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-secondary modal-container__footer-button"
+      >
+        [cancel]
+      </button>
+      <button
+        class="button btn--rounded btn-primary modal-container__footer-button"
+      >
+        [rejectAll]
+      </button>
+    </div>
+  </div>
+</div>
+`;

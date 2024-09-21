@@ -1,0 +1,1477 @@
+{
+  "DNS": {
+    "resolution": ""
+  },
+  "activeTab": {
+    "id": 113,
+    "title": "E2E Test Dapp",
+    "origin": "https://metamask.github.io",
+    "protocol": "https:",
+    "url": "https://metamask.github.io/test-dapp/"
+  },
+  "appState": {
+    "networkDropdownOpen": false,
+    "importNftsModal": { "open": false },
+    "gasIsLoading": false,
+    "isLoading": false,
+    "importTokensModalOpen": false,
+    "modal": {
+      "open": false,
+      "modalState": {
+        "name": null,
+        "props": {}
+      },
+      "previousModalState": {
+        "name": null
+      }
+    },
+    "showIpfsModalOpen": false,
+    "showKeyringRemovalSnapModal": false,
+    "showWhatsNewPopup": false,
+    "warning": null,
+    "alertOpen": false
+  },
+  "confirmTransaction": {
+    "txData": {
+      "id": 3111025347726181,
+      "time": 1620723786838,
+      "status": "unapproved",
+      "chainId": "0x5",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
+        "to": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
+        "value": "0x0",
+        "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170",
+        "gas": "0xea60",
+        "gasPrice": "0x4a817c800"
+      },
+      "type": "transfer",
+      "origin": "https://metamask.github.io",
+      "transactionCategory": "approve"
+    }
+  },
+  "history": {
+    "mostRecentOverviewPage": "/mostRecentOverviewPage"
+  },
+  "invalidCustomNetwork": {
+    "state": "CLOSED",
+    "networkName": ""
+  },
+  "localeMessages": {
+    "currentLocale": "en"
+  },
+  "metamask": {
+    "ipfsGateway": "",
+    "dismissSeedBackUpReminder": false,
+    "usePhishDetect": true,
+    "participateInMetaMetrics": false,
+    "gasEstimateType": "fee-market",
+    "gasFeeEstimates": {
+      "low": {
+        "minWaitTimeEstimate": 180000,
+        "maxWaitTimeEstimate": 300000,
+        "suggestedMaxPriorityFeePerGas": "3",
+        "suggestedMaxFeePerGas": "53"
+      },
+      "medium": {
+        "minWaitTimeEstimate": 15000,
+        "maxWaitTimeEstimate": 60000,
+        "suggestedMaxPriorityFeePerGas": "7",
+        "suggestedMaxFeePerGas": "70"
+      },
+      "high": {
+        "minWaitTimeEstimate": 0,
+        "maxWaitTimeEstimate": 15000,
+        "suggestedMaxPriorityFeePerGas": "10",
+        "suggestedMaxFeePerGas": "100"
+      },
+      "estimatedBaseFee": "50",
+      "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
+      "baseFeeTrend": "up",
+      "latestPriorityFeeRange": ["1", "40"],
+      "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
+      "priorityFeeTrend": "down",
+      "networkCongestion": 0.90625
+    },
+    "gasFeeEstimatesByChainId": {
+      "0x5": {
+        "gasEstimateType": "fee-market",
+        "gasFeeEstimates": {
+          "low": {
+            "minWaitTimeEstimate": 180000,
+            "maxWaitTimeEstimate": 300000,
+            "suggestedMaxPriorityFeePerGas": "3",
+            "suggestedMaxFeePerGas": "53"
+          },
+          "medium": {
+            "minWaitTimeEstimate": 15000,
+            "maxWaitTimeEstimate": 60000,
+            "suggestedMaxPriorityFeePerGas": "7",
+            "suggestedMaxFeePerGas": "70"
+          },
+          "high": {
+            "minWaitTimeEstimate": 0,
+            "maxWaitTimeEstimate": 15000,
+            "suggestedMaxPriorityFeePerGas": "10",
+            "suggestedMaxFeePerGas": "100"
+          },
+          "estimatedBaseFee": "50",
+          "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
+          "baseFeeTrend": "up",
+          "latestPriorityFeeRange": ["1", "40"],
+          "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
+          "priorityFeeTrend": "down",
+          "networkCongestion": 0.90625
+        }
+      }
+    },
+    "snaps": [{}],
+    "preferences": {
+      "hideZeroBalanceTokens": false,
+      "showFiatInTestnets": false,
+      "showTestNetworks": true,
+      "useNativeCurrencyAsPrimaryCurrency": true
+    },
+    "seedPhraseBackedUp": null,
+    "ensResolutionsByAddress": {},
+    "isAccountMenuOpen": false,
+    "isUnlocked": true,
+    "completedOnboarding": true,
+    "usedNetworks": {
+      "0x1": true,
+      "0x5": true,
+      "0x539": true
+    },
+    "showTestnetMessageInDropdown": true,
+    "alertEnabledness": {
+      "unconnectedAccount": true
+    },
+    "featureFlags": {},
+    "network": "5",
+
+    "networkConfigurationsByChainId": {
+      "0x5": {
+        "nativeCurrency": "ETH",
+        "chainId": "0x5",
+        "defaultRpcEndpointIndex": 0,
+        "rpcEndpoints": [
+          {
+            "networkClientId": "goerli"
+          }
+        ]
+      }
+    },
+    "internalAccounts": {
+      "accounts": {
+        "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
+          "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "id": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+          "metadata": {
+            "keyring": {
+              "type": "HD Key Tree"
+            },
+            "name": "Test Account"
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sendTransaction",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v2",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "07c2cfec-36c9-46c4-8115-3836d3ac9047": {
+          "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+          "id": "07c2cfec-36c9-46c4-8115-3836d3ac9047",
+          "metadata": {
+            "keyring": {
+              "type": "HD Key Tree"
+            },
+            "name": "Test Account 2"
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sendTransaction",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v2",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "15e69915-2a1a-4019-93b3-916e11fd432f": {
+          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "id": "15e69915-2a1a-4019-93b3-916e11fd432f",
+          "metadata": {
+            "keyring": {
+              "type": "Ledger Hardware"
+            },
+            "name": "Ledger Hardware 2"
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sendTransaction",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v2",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "784225f4-d30b-4e77-a900-c8bbce735b88": {
+          "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+          "id": "784225f4-d30b-4e77-a900-c8bbce735b88",
+          "metadata": {
+            "keyring": {
+              "type": "HD Key Tree"
+            },
+            "name": "Test Account 3"
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sendTransaction",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v2",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        }
+      },
+      "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
+    },
+    "keyrings": [
+      {
+        "type": "HD Key Tree",
+        "accounts": [
+          "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
+        ]
+      },
+      {
+        "type": "Ledger Hardware",
+        "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"]
+      },
+      {
+        "type": "Simple Key Pair",
+        "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
+      }
+    ],
+    "identities": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+        "name": "Test Account"
+      },
+      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
+        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+        "name": "Test Account 2"
+      },
+      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "name": "Test Ledger 1"
+      },
+      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
+        "name": "Test Account 3",
+        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+      }
+    },
+    "selectedNetworkClientId": "goerli",
+    "networksMetadata": {
+      "goerli": {
+        "EIPS": {
+          "1559": true
+        },
+        "status": "available"
+      }
+    },
+    "frequentRpcListDetail": [],
+    "subjectMetadata": {},
+    "notifications": {
+      "test": {
+        "id": "test",
+        "origin": "local:http://localhost:8086/",
+        "createdDate": 1652967897732,
+        "readDate": null,
+        "message": "Hello, http://localhost:8086!"
+      },
+      "test2": {
+        "id": "test2",
+        "origin": "local:http://localhost:8086/",
+        "createdDate": 1652967897732,
+        "readDate": 1652967897732,
+        "message": "Hello, http://localhost:8086!"
+      }
+    },
+    "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "accounts": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "balance": "0x0",
+        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+      },
+      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
+        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+        "balance": "0x0"
+      },
+      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "balance": "0x0"
+      },
+      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
+        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+        "balance": "0x0"
+      }
+    },
+    "tokens": [
+      {
+        "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+        "symbol": "TEST",
+        "decimals": "0"
+      },
+      {
+        "address": "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5",
+        "decimals": "8",
+        "symbol": "TEST2"
+      },
+      {
+        "address": "0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4",
+        "symbol": "META",
+        "decimals": "18"
+      }
+    ],
+    "marketData": {
+      "0x1": {
+        "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
+          "price": 0.00039345803819379796,
+          "contractPercentChange1d": 0.004,
+          "priceChange1d": 0.00004
+        },
+        "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": {
+          "price": 0.00008189274407698049,
+          "contractPercentChange1d": 0.01,
+          "priceChange1d": 0.001
+        }
+      },
+      "0x5": {
+        "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
+          "price": 0.00039345803819379796,
+          "contractPercentChange1d": 0.004,
+          "priceChange1d": 0.00004
+        },
+        "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": {
+          "price": 0.00008189274407698049,
+          "contractPercentChange1d": 0.01,
+          "priceChange1d": 0.001
+        }
+      }
+    },
+    "ticker": "ETH",
+    "currentCurrency": "usd",
+    "currencyRates": {
+      "ETH": {
+        "conversionRate": 556.12
+      }
+    },
+    "addressBook": {
+      "0x5": {
+        "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "chainId": "0x5",
+          "isEns": false,
+          "memo": "",
+          "name": "Address Book Account 1"
+        }
+      }
+    },
+    "unapprovedPersonalMsgs": {},
+    "unapprovedPersonalMsgCount": 0,
+    "unapprovedDecryptMsgs": {},
+    "unapprovedDecryptMsgCount": 0,
+    "unapprovedEncryptionPublicKeyMsgs": {},
+    "unapprovedEncryptionPublicKeyMsgCount": 0,
+    "unapprovedTypedMessages": {},
+    "unapprovedTypedMessagesCount": 0,
+    "useTokenDetection": true,
+    "advancedGasFee": {
+      "maxBaseFee": "75",
+      "priorityFee": "2"
+    },
+    "tokenList": {
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+        "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "symbol": "WBTC",
+        "decimals": 8,
+        "name": "Wrapped Bitcoin",
+        "iconUrl": "https://s3.amazonaws.com/airswap-token-images/WBTC.png",
+        "aggregators": [
+          "airswapLight",
+          "bancor",
+          "cmc",
+          "coinGecko",
+          "kleros",
+          "oneInch",
+          "paraswap",
+          "pmm",
+          "totle",
+          "zapper",
+          "zerion",
+          "zeroEx"
+        ],
+        "occurrences": 12
+      },
+      "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e": {
+        "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
+        "symbol": "YFI",
+        "decimals": 18,
+        "name": "yearn.finance",
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png",
+        "aggregators": [
+          "airswapLight",
+          "bancor",
+          "cmc",
+          "coinGecko",
+          "kleros",
+          "oneInch",
+          "paraswap",
+          "pmm",
+          "totle",
+          "zapper",
+          "zerion",
+          "zeroEx"
+        ],
+        "occurrences": 12
+      }
+    },
+    "transactions": [
+      {
+        "id": 8393540981007587,
+        "time": 1536268017676,
+        "status": "unapproved",
+        "chainId": "0x4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "value": "0x0",
+          "gas": "0x5208",
+          "gasPrice": "0x3b9aca00"
+        },
+        "history": [
+          {
+            "id": 8393540981007587,
+            "time": 1536268017676,
+            "status": "unapproved",
+            "chainId": "0x4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+              "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+              "value": "0x0",
+              "gas": "0x5208",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1536268017685
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1536268017686
+            }
+          ]
+        ],
+        "origin": "MetaMask"
+      },
+      {
+        "id": 3387511061307736,
+        "time": 1528133130531,
+        "status": "confirmed",
+        "chainId": "0x4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+          "value": "0x1bc16d674ec80000",
+          "gas": "0xcf08",
+          "gasPrice": "0x3b9aca00",
+          "nonce": "0xb5"
+        },
+        "history": [
+          {
+            "id": 3387511061307736,
+            "time": 1528133130531,
+            "status": "unapproved",
+            "chainId": "0x4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+              "value": "0x1bc16d674ec80000",
+              "gas": "0xcf08",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133130666
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133130667
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133131716
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb5",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133131806
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133131825
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf86c81b5843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba03f879cd33a31180da38545d0f809822e00ddf35954d8b0ece83bacf22347ce54a06ad050487978e425ca6a014ed55ea8e9a190069863ed96a0eefa88d729ea1eda"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x516b77569173a04c76fdb6545cf279ebd0c75f5d25d6e4ce019925205f0e3709",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133131951
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133131951,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133131952
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133131955
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af6b",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133134414
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133158516
+            }
+          ]
+        ],
+        "origin": "MetaMask",
+        "rawTx": "0xf86c81b5843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba03f879cd33a31180da38545d0f809822e00ddf35954d8b0ece83bacf22347ce54a06ad050487978e425ca6a014ed55ea8e9a190069863ed96a0eefa88d729ea1eda",
+        "hash": "0x516b77569173a04c76fdb6545cf279ebd0c75f5d25d6e4ce019925205f0e3709",
+        "submittedTime": 1528133131951,
+        "firstRetryBlockNumber": "0x24af6b"
+      },
+      {
+        "id": 3387511061307737,
+        "time": 1528133149983,
+        "status": "confirmed",
+        "chainId": "0x4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+          "value": "0x1bc16d674ec80000",
+          "gas": "0xcf08",
+          "gasPrice": "0x3b9aca00",
+          "nonce": "0xb6"
+        },
+        "history": [
+          {
+            "id": 3387511061307737,
+            "time": 1528133149983,
+            "status": "unapproved",
+            "chainId": "0x4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+              "value": "0x1bc16d674ec80000",
+              "gas": "0xcf08",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133150011
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133150013
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133151102
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb6",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133151189
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133151203
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf86c81b6843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba0692deaabf0d79544d41e7c475ad43760679a4f25d0fee908b1da308db1a291a7a0384db85fc6c843ea25986a0760f3c50ab6504fc559fc71fc7f23f60950eb316d"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x9271b266d05022cfa841362fae43763ebafcee540d84278b0157ef4a68d4e26f",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133151342
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133151347,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133151347
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133151368
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af6d",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133158532
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133190636
+            }
+          ]
+        ],
+        "origin": "MetaMask",
+        "rawTx": "0xf86c81b6843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba0692deaabf0d79544d41e7c475ad43760679a4f25d0fee908b1da308db1a291a7a0384db85fc6c843ea25986a0760f3c50ab6504fc559fc71fc7f23f60950eb316d",
+        "hash": "0x9271b266d05022cfa841362fae43763ebafcee540d84278b0157ef4a68d4e26f",
+        "submittedTime": 1528133151347,
+        "firstRetryBlockNumber": "0x24af6d"
+      },
+      {
+        "id": 3387511061307738,
+        "time": 1528133180635,
+        "status": "confirmed",
+        "chainId": "0x4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+          "value": "0x1bc16d674ec80000",
+          "gas": "0xcf08",
+          "gasPrice": "0x12a05f200",
+          "nonce": "0xb7"
+        },
+        "history": [
+          {
+            "id": 3387511061307738,
+            "time": 1528133180635,
+            "status": "unapproved",
+            "chainId": "0x4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+              "value": "0x1bc16d674ec80000",
+              "gas": "0xcf08",
+              "gasPrice": "0x12a05f200"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133180720
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133180722
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133181623
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb7",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133181726
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133181749
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf86d81b785012a05f20082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba086f9846798be6988c39a5cf85f0dbe267e59ca0b96a6a7077e92cba33e10a258a064ffa52ac90c238ce21e6f085283216191b185a1eccd7daae6e2ab66ba26ada0"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x4e061e977c099735bc9e5203e717f7d9dccb3fcb2f82031a12a3ed326f95d43b",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133181885
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133181885,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133181885
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133181888
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af6f",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133190653
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133222745
+            }
+          ]
+        ],
+        "origin": "MetaMask",
+        "rawTx": "0xf86d81b785012a05f20082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba086f9846798be6988c39a5cf85f0dbe267e59ca0b96a6a7077e92cba33e10a258a064ffa52ac90c238ce21e6f085283216191b185a1eccd7daae6e2ab66ba26ada0",
+        "hash": "0x4e061e977c099735bc9e5203e717f7d9dccb3fcb2f82031a12a3ed326f95d43b",
+        "submittedTime": 1528133181885,
+        "firstRetryBlockNumber": "0x24af6f"
+      },
+      {
+        "id": 3387511061307739,
+        "time": 1528133223918,
+        "status": "confirmed",
+        "chainId": "0x4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
+          "value": "0xaa87bee538000",
+          "data": "0xea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de33",
+          "gasPrice": "0x3b9aca00",
+          "gas": "0x6169e",
+          "nonce": "0xb8"
+        },
+        "history": [
+          {
+            "id": 3387511061307739,
+            "time": 1528133223918,
+            "status": "unapproved",
+            "chainId": "0x4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
+              "value": "0xaa87bee538000",
+              "data": "0xea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de33",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "add",
+              "path": "/txParams/gas",
+              "value": "0x6169e",
+              "timestamp": 1528133225488
+            },
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false
+            }
+          ],
+          [
+            {
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "op": "add",
+              "path": "/origin",
+              "value": "crypko.ai"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133227279
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb8",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133227374
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133227405
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf8b181b8843b9aca008306169e94fe2149773b3513703e79ad23d05a778a185016ee870aa87bee538000b844ea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de332ca07bb2efbb8529d67606f9f89e7934c594a31d50c7d24a3286c20a2944a3b8c2a9a07b55ebd8aa28728ce0e38dd3b3503b78fccedae80053626d8649c68346c7c49c"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x466ae7d4b7c270121f0a8d68fbc6c9091ffc4aa976a553a5bfa56a79cf9f63dd",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133227534
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133227538,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133227538
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133227543
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af72",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133238980
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133255035
+            }
+          ]
+        ],
+        "origin": "crypko.ai",
+        "rawTx": "0xf8b181b8843b9aca008306169e94fe2149773b3513703e79ad23d05a778a185016ee870aa87bee538000b844ea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de332ca07bb2efbb8529d67606f9f89e7934c594a31d50c7d24a3286c20a2944a3b8c2a9a07b55ebd8aa28728ce0e38dd3b3503b78fccedae80053626d8649c68346c7c49c",
+        "hash": "0x466ae7d4b7c270121f0a8d68fbc6c9091ffc4aa976a553a5bfa56a79cf9f63dd",
+        "submittedTime": 1528133227538,
+        "firstRetryBlockNumber": "0x24af72"
+      },
+      {
+        "id": 3387511061307740,
+        "time": 1528133291381,
+        "status": "confirmed",
+        "chainId": "0x4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+          "value": "0x0",
+          "data": "0xa9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb330000000000000000000000000000000000000000000000000000000000000002",
+          "gas": "0xd508",
+          "gasPrice": "0x3b9aca00",
+          "nonce": "0xb9"
+        },
+        "history": [
+          {
+            "id": 3387511061307740,
+            "time": 1528133291381,
+            "status": "unapproved",
+            "chainId": "0x4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+              "value": "0x0",
+              "data": "0xa9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb330000000000000000000000000000000000000000000000000000000000000002",
+              "gas": "0xd508",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133291486
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133291486
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133293588
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb9",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133293706
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133293724
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf8a981b9843b9aca0082d50894108cf70c7d384c552f42c07c41c0e1e46d77ea0d80b844a9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb3300000000000000000000000000000000000000000000000000000000000000022ca04f05310490d3e3a9a159ae25f52cec9afb0a69527d30be832aaae12e64ff056ea075f81a5220bed481e764bab8830c57169c59fe528ca9cf3442f47f7618a9b4a9"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x3680dc9815cd05b620b6dd0017d949604ca7d92f051d5542fc8a5ecaa876af09",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133293853
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133293859,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133293862
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133293867
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af76",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133295200
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133327522
+            }
+          ]
+        ],
+        "origin": "MetaMask",
+        "rawTx": "0xf8a981b9843b9aca0082d50894108cf70c7d384c552f42c07c41c0e1e46d77ea0d80b844a9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb3300000000000000000000000000000000000000000000000000000000000000022ca04f05310490d3e3a9a159ae25f52cec9afb0a69527d30be832aaae12e64ff056ea075f81a5220bed481e764bab8830c57169c59fe528ca9cf3442f47f7618a9b4a9",
+        "hash": "0x3680dc9815cd05b620b6dd0017d949604ca7d92f051d5542fc8a5ecaa876af09",
+        "submittedTime": 1528133293859,
+        "firstRetryBlockNumber": "0x24af76"
+      },
+      {
+        "id": 3387511061307741,
+        "time": 1528133318440,
+        "status": "rejected",
+        "chainId": "0x4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "value": "0x0",
+          "gasPrice": "0x3b9aca00",
+          "gas": "0x5208"
+        },
+        "history": [
+          {
+            "id": 3387511061307741,
+            "time": 1528133318440,
+            "status": "unapproved",
+            "chainId": "0x4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62"
+            }
+          },
+          [
+            {
+              "op": "add",
+              "path": "/txParams/value",
+              "value": "0x0",
+              "timestamp": 1528133319641
+            },
+            {
+              "op": "add",
+              "path": "/txParams/gasPrice",
+              "value": "0x3b9aca00"
+            },
+            {
+              "op": "add",
+              "path": "/txParams/gas",
+              "value": "0x5208"
+            },
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "tmashuang.github.io",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133319642
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "rejected",
+              "note": "txStateManager: setting status to rejected",
+              "timestamp": 1528133320924
+            }
+          ]
+        ],
+        "origin": "tmashuang.github.io"
+      }
+    ],
+    "swapsState": {}
+  },
+  "ramps": {
+    "buyableChains": [
+      {
+        "active": true,
+        "chainId": 1,
+        "chainName": "Ethereum Mainnet",
+        "shortName": "Ethereum",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 10,
+        "chainName": "Optimism Mainnet",
+        "shortName": "Optimism",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 25,
+        "chainName": "Cronos Mainnet",
+        "shortName": "Cronos",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 56,
+        "chainName": "BNB Chain Mainnet",
+        "shortName": "BNB Chain",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 100,
+        "chainName": "Gnosis Mainnet",
+        "shortName": "Gnosis",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 137,
+        "chainName": "Polygon Mainnet",
+        "shortName": "Polygon",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 250,
+        "chainName": "Fantom Mainnet",
+        "shortName": "Fantom",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 324,
+        "chainName": "zkSync Era Mainnet",
+        "shortName": "zkSync Era",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1101,
+        "chainName": "Polygon zkEVM",
+        "shortName": "Polygon zkEVM",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1284,
+        "chainName": "Moonbeam Mainnet",
+        "shortName": "Moonbeam",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1285,
+        "chainName": "Moonriver Mainnet",
+        "shortName": "Moonriver",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 8453,
+        "chainName": "Base Mainnet",
+        "shortName": "Base",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 42161,
+        "chainName": "Arbitrum Mainnet",
+        "shortName": "Arbitrum",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 42220,
+        "chainName": "Celo Mainnet",
+        "shortName": "Celo",
+        "nativeTokenSupported": false
+      },
+      {
+        "active": true,
+        "chainId": 43114,
+        "chainName": "Avalanche C-Chain Mainnet",
+        "shortName": "Avalanche C-Chain",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 59144,
+        "chainName": "Linea",
+        "shortName": "Linea",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1313161554,
+        "chainName": "Aurora Mainnet",
+        "shortName": "Aurora",
+        "nativeTokenSupported": false
+      },
+      {
+        "active": true,
+        "chainId": 1666600000,
+        "chainName": "Harmony Mainnet (Shard 0)",
+        "shortName": "Harmony (Shard 0)",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 11297108109,
+        "chainName": "Palm Mainnet",
+        "shortName": "Palm",
+        "nativeTokenSupported": false
+      }
+    ]
+  },
+  "send": {
+    "amountMode": "INPUT",
+    "currentTransactionUUID": "1-tx",
+    "disabledSwapAndSendNetworks": [],
+    "draftTransactions": {
+      "1-tx": {
+        "amount": {
+          "error": null,
+          "value": "0xde0b6b3a7640000"
+        },
+        "fromAccount": null,
+        "gas": {
+          "error": null,
+          "gasLimit": "0x5208",
+          "gasPrice": "0x0",
+          "gasTotal": "0x1ca62a544678",
+          "maxFeePerGas": "0x59682f0f",
+          "maxPriorityFeePerGas": "0x59682f00",
+          "wasManuallyEdited": false
+        },
+        "history": [],
+        "id": null,
+        "isSwapQuoteLoading": false,
+        "quotes": null,
+        "receiveAsset": {
+          "balance": "0x0",
+          "details": null,
+          "error": null,
+          "type": "NATIVE"
+        },
+        "recipient": {
+          "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+          "error": null,
+          "nickname": "Account 2",
+          "warning": null,
+          "type": "",
+          "recipientWarningAcknowledged": false
+        },
+        "sendAsset": {
+          "balance": "0x1158e460913d00000",
+          "details": null,
+          "error": null,
+          "type": "NATIVE"
+        },
+        "status": "VALID",
+        "swapQuotesError": null,
+        "swapQuotesLatestRequestTimestamp": null,
+        "timeToFetchQuotes": null,
+        "transactionType": "0x2",
+        "userInputHexData": null
+      }
+    },
+    "eip1559support": true,
+    "gasEstimateIsLoading": false,
+    "gasEstimatePollToken": "",
+    "gasIsSetInModal": false,
+    "gasPriceEstimate": "0x0",
+    "gasLimitMinimum": "0x5208",
+    "gasTotalForLayer1": null,
+    "recipientMode": "CONTACT_LIST",
+    "recipientInput": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+    "selectedAccount": {
+      "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+      "balance": "0x4563918244f40000"
+    },
+    "stage": "DRAFT"
+  },
+  "swaps": {
+    "aggregatorMetadata": null,
+    "approveTxId": null,
+    "tradeTxId": null,
+    "balanceError": false,
+    "fetchingQuotes": false,
+    "fromToken": null,
+    "fromTokenInputValue": "",
+    "fromTokenError": null,
+    "isFeatureFlagLoaded": false,
+    "maxSlippage": "Slippage.default",
+    "quotesFetchStartTime": null,
+    "reviewSwapClickedTimestamp": null,
+    "topAssets": {},
+    "toToken": null,
+    "customGas": {
+      "price": null,
+      "limit": null,
+      "loading": "GAS_PRICES_LOADING_STATES.INITIAL",
+      "priceEstimates": {},
+      "fallBackPrice": null
+    },
+    "currentSmartTransactionsError": "",
+    "swapsSTXLoading": false,
+    "transactionSettingsOpened": false,
+    "latestAddedTokenTo": ""
+  },
+  "unconnectedAccount": {
+    "state": "CLOSED"
+  }
+}

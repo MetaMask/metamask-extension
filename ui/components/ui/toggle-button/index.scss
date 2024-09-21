@@ -1,0 +1,43 @@
+@use "design-system";
+
+.toggle-button {
+  display: flex;
+  cursor: pointer;
+  $self: &;
+
+  &__status {
+    @include design-system.Paragraph;
+
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    display: grid;
+  }
+
+  &__label-off,
+  &__label-on {
+    grid-area: 1 / 1 / 1 / 1;
+  }
+
+  &__label-off {
+    visibility: hidden;
+  }
+
+  &__label-on {
+    visibility: visible;
+  }
+
+  &--off {
+    #{ $self }__label-off {
+      visibility: visible;
+    }
+
+    #{ $self }__label-on {
+      visibility: hidden;
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+  }
+}

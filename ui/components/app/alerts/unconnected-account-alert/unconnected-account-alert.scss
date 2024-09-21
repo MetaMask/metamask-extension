@@ -1,0 +1,64 @@
+@use "design-system";
+
+.unconnected-account-alert {
+  &__content {
+    border-radius: 0 !important; // To override the box border radius because of popover
+  }
+
+  &__footer {
+    flex-direction: column;
+
+    > :only-child {
+      margin: 0;
+    }
+  }
+
+  &__footer-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  & &__dismiss-button {
+    background: var(--color-primary-default);
+    color: var(--color-primary-inverse);
+    height: 40px;
+    width: 100px;
+    border: 0;
+  }
+
+  &__error {
+    @include design-system.H6;
+
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid var(--color-error-default);
+    background: var(--color-error-muted);
+    border-radius: 3px;
+  }
+
+  &__checkbox-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &__checkbox {
+    margin-right: 8px;
+    margin-top: -2px;
+  }
+
+  &__checkbox-label {
+    @include design-system.H7;
+
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: var(--color-text-alternative);
+    align-items: center;
+  }
+
+  &__checkbox-label-tooltip {
+    margin-left: 8px;
+  }
+}

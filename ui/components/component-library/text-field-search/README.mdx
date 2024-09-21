@@ -1,0 +1,95 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { TextField } from '..';
+
+import { TextFieldSearch } from './text-field-search';
+
+# TextFieldSearch
+
+The `TextFieldSearch` allows users to enter text to search
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-textfieldsearch--default-story" />
+</Canvas>
+
+## Props
+
+The `TextFieldSearch` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
+
+<ArgsTable of={TextFieldSearch} />
+
+`TextFieldSearch` accepts all [TextField](/docs/components-componentlibrary-textfield--default-story#props)
+component props
+
+<ArgsTable of={TextField} />
+
+### Clear Button On Click
+
+`TextFieldSearch` displays a clear button when text is entered into the input. Use the `clearButtonOnClick` prop to pass an `onClick` event handler to clear the value of the input. To hide the clear button, pass `false` to the `showClearButton` prop.
+
+The clear button uses [ButtonIcon](/docs/components-componentlibrary-buttonicon--default-story) and accepts all props from that component.
+
+**NOTE: The `showClearButton` only works with a controlled input.**
+
+<Canvas>
+  <Story id="components-componentlibrary-textfieldsearch--clear-button-on-click" />
+</Canvas>
+
+```jsx
+import { TextFieldSearch } from '../../component-library';
+
+const [value, setValue] = useState('show clear');
+
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
+
+const handleOnClear = () => {
+  setValue('');
+};
+
+<TextFieldSearch
+  placeholder="Enter text to show clear"
+  value={value}
+  onChange={handleOnChange}
+  clearButtonOnClick={handleOnClear}
+/>;
+```
+
+### Clear Button Props
+
+Use the `clearButtonProps` to access other props of the clear button.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfieldsearch--clear-button-props" />
+</Canvas>
+
+```jsx
+import React, { useState } from 'react';
+import { Color, BorderRadius } from '../../../helpers/constants/design-system';
+
+import { TextFieldSearch } from '../../component-library';
+
+const [value, setValue] = useState('show clear');
+
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
+
+const handleOnClear = () => {
+  setValue('');
+};
+
+<TextFieldSearch
+  value={value}
+  onChange={handleOnChange}
+  clearButtonOnClick={handleOnClear}
+  clearButtonProps={{
+    backgroundColor: Color.backgroundAlternative,
+    borderRadius: BorderRadius.XS,
+    'data-testid': 'clear-button',
+  }}
+/>;
+```

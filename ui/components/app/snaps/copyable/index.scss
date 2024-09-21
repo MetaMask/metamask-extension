@@ -1,0 +1,106 @@
+.copyable {
+  cursor: pointer;
+  transition: background-color background 0.2s;
+
+  & .show-more__button {
+    background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
+  }
+
+  &:hover {
+    background-color: var(--color-primary-muted);
+    color: var(--color-primary-default) !important;
+
+    & .show-more__button {
+      background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
+    }
+
+    p,
+    .copyable__icon {
+      color: var(--color-primary-default);
+    }
+
+    .copyable__tooltip {
+      .mm-icon {
+        color: var(--color-primary-default);
+      }
+    }
+  }
+
+  &.clicked {
+    background-color: var(--color-primary-muted);
+    opacity: 0.75;
+
+    & .show-more__button {
+      background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
+    }
+
+    &:hover {
+      background-color: var(--color-primary-muted);
+
+      & .show-more__button {
+        background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
+      }
+    }
+  }
+
+  &.sensitive {
+    &.visible {
+      background-color: var(--color-error-muted);
+
+
+      & .show-more__button {
+        background: linear-gradient(90deg, transparent 0%, var(--color-error-muted) 33%);
+      }
+
+      &:hover {
+        background-color: var(--color-error-muted-hover);
+
+        & .show-more__button {
+          background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-hover) 33%);
+        }
+
+        p,
+        .copyable__icon {
+          color: var(--color-error-default);
+        }
+
+        .copyable__tooltip {
+          .mm-icon {
+            color: var(--color-error-default);
+          }
+        }
+      }
+
+      &.clicked {
+        opacity: 0.75;
+        background-color: var(--color-error-muted-pressed);
+
+        & .show-more__button {
+          background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-pressed) 33%);
+        }
+
+
+        &:hover {
+          background-color: var(--color-error-muted-pressed);
+
+          & .show-more__button {
+            background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-pressed) 33%);
+          }
+        }
+      }
+    }
+  }
+
+  &__icon {
+    margin-top: 2px;
+  }
+
+  &__tooltip {
+    display: flex;
+    align-items: center;
+
+    & > div {
+      display: flex !important;
+    }
+  }
+}

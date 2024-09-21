@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "allOf": [
+    {
+      "required": ["lavamoat"],
+      "properties": {
+        "scripts": {
+          "required": ["webpack", "webpack:clearcache", "postinstall"],
+          "properties": {
+            "start:dev": {
+              "description": "Runs `yarn start` with the addition of react/redux backend devtool servers enabled."
+            },
+            "webpack": {
+              "type": "string",
+              "description": "Builds the extension in \"dev\" mode. Run `yarn webpack --help` for usage information."
+            },
+            "webpack:clearcache": {
+              "type": "string",
+              "description": "Deletes webpack's build cache. Useful to force a rebuild (webpack not detecting changes, node_modules have changed, etc)."
+            },
+            "postinstall": {
+              "type": "string",
+              "description": "Runs automatically after running `yarn` (`yarn install`) in order to prime the webpack dev build."
+            }
+          }
+        },
+        "devDependencies": {
+          "required": ["lavamoat"],
+          "properties": {
+            "autoprefixer": {
+              "description": "Used by our build systems to automatically add prefixes to CSS rules based on our browserslist."
+            },
+            "@types/chrome": {
+              "type": "string",
+              "description": "Provides type definitions for the Chrome extension manifest.json files."
+            },
+            "buffer": {
+              "type": "string",
+              "description": "Provides a global Buffer object for use in the browser (webpack)"
+            },
+            "crypto-browserify": {
+              "type": "string",
+              "description": "Polyfill's node's crypto API for use in the browser (webpack)"
+            },
+            "dotenv": {
+              "type": "string",
+              "description": "Loads environment variables from a .metamaskrc file (webpack)"
+            },
+            "fflate": {
+              "type": "string",
+              "description": "Provides zip capabilities for bundling (webpack)"
+            },
+            "postcss-loader": {
+              "type": "string",
+              "description": "Loads postcss plugins (webpack)"
+            },
+            "process": {
+              "type": "string",
+              "description": "Provides a global process object for use in the browser (webpack)"
+            },
+            "schema-utils": {
+              "type": "string",
+              "description": "Provides utilities for validating options objects (webpack)"
+            },
+            "stream-http": {
+              "type": "string",
+              "description": "Polyfill's node's stream API for use in the browser (webpack)"
+            },
+            "@swc/core": {
+              "type": "string",
+              "description": "Transpiles javascript and typescript (webpack)"
+            },
+            "tsx": {
+              "type": "string",
+              "description": "Provides blazing fast typescript compilation (no type checking) (webpack)"
+            },
+            "rimraf": {
+              "type": "string",
+              "description": "Provides a cross-platform way of deleting files from the command line (webpack)"
+            },
+            "json-schema-to-ts": {
+              "type": "string",
+              "description": "Generates typescript types from json schemas (webpack)"
+            },
+            "@pmmmwh/react-refresh-webpack-plugin": {
+              "type": "string",
+              "description": "Provides hot reloading for react components (webpack)"
+            }
+          }
+        },
+        "lavamoat": {
+          "type": "object",
+          "required": ["allowScripts"],
+          "additionalProperties": false,
+          "properties": {
+            "allowScripts": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "boolean"
+              },
+              "description": "Defines which dependencies' scripts are allowed to run upon install. If this setting is true, the scripts are allowed. If false, the scripts are not allowed. Run `yarn allow-scripts auto` to add a dependency to this list (defaults to false)."
+            }
+          }
+        },
+        "resolutions": {
+          "type": "object",
+          "required": ["ts-mixer@npm:^6.0.3"],
+          "properties": {
+            "ts-mixer@npm:^6.0.3": {
+              "type": "string",
+              "description": "ts-mixer exports a `browser` field that points to the ESM version, but our build system can't process it. This resolution and patch file forces the CommonJS version to be used instead."
+            }
+          }
+        }
+      }
+    }
+  ],
+  "description": "An extension of the standard package.json schema used to document our package.json scripts, dependencies, and miscellaneous fields.",
+  "title": "Extended package.json Schema"
+}

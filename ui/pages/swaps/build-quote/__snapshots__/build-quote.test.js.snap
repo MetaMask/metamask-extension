@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BuildQuote renders the component with initial props 1`] = `
+<div
+  class="button-group slippage-buttons__button-group radio-button-group"
+  role="radiogroup"
+>
+  <button
+    aria-checked="true"
+    class="button-group__button radio-button button-group__button--active radio-button--active"
+    data-testid="button-group__button0"
+    role="radio"
+  >
+    2%
+  </button>
+  <button
+    aria-checked="false"
+    class="button-group__button radio-button"
+    data-testid="button-group__button1"
+    role="radio"
+  >
+    3%
+  </button>
+  <button
+    aria-checked="false"
+    class="button-group__button slippage-buttons__button-group-custom-button radio-button"
+    data-testid="button-group__button2"
+    role="radio"
+  >
+    custom
+  </button>
+</div>
+`;

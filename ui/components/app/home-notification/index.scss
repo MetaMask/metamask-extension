@@ -1,0 +1,93 @@
+@use "design-system";
+
+.home-notification {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  background: var(--color-background-default);
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+  border: 1px solid var(--color-border-muted);
+  border-radius: 8px;
+  min-height: 116px;
+  padding: 16px;
+
+  @include design-system.screen-sm-min {
+    min-width: 472px;
+  }
+
+  &__content-container {
+    display: flex;
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__text {
+    @include design-system.H7;
+
+    color: var(--color-text-default);
+  }
+
+  &__text-link {
+    @include design-system.H7;
+
+    color: var(--color-primary-default);
+    cursor: pointer;
+  }
+
+  &__checkbox-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    @include design-system.screen-sm-max {
+      width: 160px;
+    }
+  }
+
+  &__checkbox {
+    height: 13px;
+    width: 13px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  &__checkbox-label {
+    @include design-system.H7;
+
+    color: var(--color-text-default);
+    margin-left: 8px;
+    margin-top: 1px;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+  }
+
+  &__ignore-button.button {
+    width: auto;
+    padding: 8px 16px;
+  }
+
+  &__accept-button.button {
+    width: auto;
+    padding: 8px 16px;
+  }
+
+  &__buttons {
+    display: flex;
+    width: 100%;
+    padding-top: 8px;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+  }
+
+  &__tooltip-wrapper {
+    display: flex;
+    margin-left: 8px;
+  }
+}

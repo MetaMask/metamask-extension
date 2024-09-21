@@ -1,0 +1,53 @@
+.disclosure {
+  font-size: 14px;
+
+  &__summary {
+    position: relative;
+    font-weight: bold;
+    display: flex;
+    cursor: pointer;
+
+    &::-webkit-details-marker,
+    &::marker {
+      display: none;
+      content: '';
+    }
+  }
+
+  &__content {
+    padding-top: 10px;
+    margin-inline-start: 12px;
+    font-size: 14px;
+
+    &.small {
+      font-size: 12px;
+    }
+  }
+
+  // Arrow Summary
+
+  details[open] {
+    .disclosure__summary.is-arrow .disclosure__summary--icon {
+      transform: rotateX(0deg);
+    }
+  }
+
+  &__summary.is-arrow {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    + .disclosure__content {
+      margin-left: 0;
+    }
+
+    .disclosure__summary--icon {
+      transform: rotateX(180deg);
+      transition: 0.1s transform;
+    }
+  }
+}

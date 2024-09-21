@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeaderBase should render HeaderBase element correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-header-base mm-box--display-flex mm-box--justify-content-space-between"
+    data-testid="header-base"
+    title="HeaderBase test"
+  >
+    <div
+      class="mm-box"
+    >
+      should render HeaderBase element correctly
+    </div>
+  </div>
+</div>
+`;

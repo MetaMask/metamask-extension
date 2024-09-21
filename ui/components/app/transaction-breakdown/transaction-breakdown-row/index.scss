@@ -1,0 +1,24 @@
+@use "design-system";
+
+.transaction-breakdown-row {
+  @include design-system.H7;
+
+  color: var(--color-text-alternative);
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+
+  &--with-bottom-border {
+    border-bottom: 1px solid var(---color-border-muted);
+  }
+
+  &__title {
+    padding-right: 8px;
+    min-width: 40%;
+  }
+
+  &__value {
+    min-width: 0;
+    word-break: break-word;
+  }
+}

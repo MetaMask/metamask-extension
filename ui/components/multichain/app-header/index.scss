@@ -1,0 +1,103 @@
+@use "design-system";
+
+.multichain-app-header {
+  $height-screen-sm-max: 100%;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  flex-flow: column nowrap;
+  z-index: 55;
+  min-height: 68px;
+
+  &__contents {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    height: 68px;
+
+    @include design-system.screen-sm-max {
+      height: $height-screen-sm-max;
+
+      /* Ensures network picker column and icons column are always the same size */
+      grid-template-columns: 64px 2fr 64px;
+    }
+
+    @include design-system.screen-sm-min {
+      width: $width-screen-sm-min;
+    }
+
+    @include design-system.screen-md-min {
+      width: $width-screen-md-min;
+    }
+
+    @include design-system.screen-lg-min {
+      width: $width-screen-lg-min;
+    }
+
+    &__network-picker {
+      max-width: 250px;
+    }
+
+    &__container {
+      width: fit-content;
+    }
+  }
+
+  &__address-copy-button {
+    &:not([disabled]):hover,
+    &:not([disabled]):focus {
+      box-shadow: none;
+      background: var(--color-background-default-hover);
+    }
+  }
+
+  &__lock-contents {
+    flex-flow: row nowrap;
+    height: 68px;
+
+    @include design-system.screen-sm-max {
+      height: $height-screen-sm-max;
+    }
+
+    @include design-system.screen-sm-min {
+      width: $width-screen-sm-min;
+    }
+
+    @include design-system.screen-md-min {
+      width: $width-screen-md-min;
+    }
+
+    @include design-system.screen-lg-min {
+      width: $width-screen-lg-min;
+    }
+  }
+}
+
+.multichain-app-header-shadow {
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+}
+
+.multichain-app-header-logo {
+  height: 75px;
+  flex: 0 0 auto;
+}
+
+.app-header__metafox-logo {
+  &--icon {
+    height: 32px;
+
+    @include design-system.screen-sm-min {
+      display: none;
+    }
+  }
+
+  &--horizontal {
+    @include design-system.screen-sm-max {
+      display: none;
+    }
+  }
+}
+
+.multichain-app-header-counter {
+  position: absolute;
+}

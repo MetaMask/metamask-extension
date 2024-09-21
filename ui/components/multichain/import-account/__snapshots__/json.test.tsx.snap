@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Json should match snapshot 1`] = `
+<DocumentFragment>
+  <p
+    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
+  >
+    Used by a variety of different clients
+    <a
+      class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      href="https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      File import not working? Click here!
+    </a>
+  </p>
+  <input
+    data-testid="file-input"
+    id="file-input"
+    style="padding: 20px 0px 12px 15%; font-size: 16px; display: flex; justify-content: center; width: 100%;"
+    type="file"
+  />
+  <div
+    class="box mm-form-text-field box--margin-bottom-4 box--display-flex box--flex-direction-column"
+  >
+    <div
+      class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--error mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+    >
+      <input
+        aria-invalid="true"
+        autocomplete="off"
+        class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+        focused="true"
+        id="json-password-box"
+        placeholder="Enter optional password"
+        type="password"
+        value=""
+      />
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-4"
+  >
+    <button
+      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+    >
+      Cancel
+    </button>
+    <button
+      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+      data-testid="import-account-confirm-button"
+      data-theme="light"
+      disabled=""
+    >
+      Import
+    </button>
+  </div>
+</DocumentFragment>
+`;

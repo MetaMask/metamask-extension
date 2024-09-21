@@ -1,0 +1,47 @@
+@use "design-system";
+
+@import 'choose-account/index';
+@import 'snaps/snap-install/index';
+@import 'snaps/snap-update/index';
+@import 'snaps/snap-result/index';
+@import 'snaps/snaps-connect/index';
+
+.permissions-connect {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: var(--color-background-default);
+  display: flex;
+  flex-direction: column;
+
+  @include design-system.screen-sm-min {
+    .page-container {
+      max-height: none;
+      min-height: auto;
+    }
+  }
+
+  &__top-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 16px 16px 0 16px;
+    align-items: center;
+  }
+
+  &__back {
+    @include design-system.H7;
+
+    color: var(--color-icon-default);
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  &__page-count {
+    @include design-system.H7;
+
+    color: var(--color-text-default);
+    grid-column: 2;
+    justify-self: flex-end;
+    font-weight: bold;
+  }
+}

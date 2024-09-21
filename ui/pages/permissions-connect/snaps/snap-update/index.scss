@@ -1,0 +1,40 @@
+@use "design-system";
+
+.snap-update {
+  box-shadow: none;
+
+  &__content {
+    position: relative;
+
+    &__loader-container {
+      height: 100%;
+    }
+  }
+
+  &__scroll-button-area {
+    position: sticky;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 48px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative) 100%);
+  }
+
+  &__scroll-button {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: auto;
+  }
+
+  .page-container__footer {
+    width: 100%;
+    border-top: 0;
+
+    button {
+      padding: 0.75rem;
+    }
+  }
+}

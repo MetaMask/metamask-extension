@@ -1,0 +1,27 @@
+.snap-privacy-warning {
+  &__content {
+    max-height: 325px;
+    overflow-y: auto;
+
+    &__terms-link {
+      outline: none !important;
+
+      &:focus {
+        outline: none !important;
+      }
+
+      &:focus-visible {
+        outline: none !important;
+      }
+    }
+
+    &__scroll-button {
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      right: 0;
+      left: 0;
+      bottom: 0;
+    }
+  }
+}

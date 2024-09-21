@@ -1,0 +1,62 @@
+@use "design-system";
+
+.info-tab {
+  &__logo-wrapper {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__logo {
+    height: 80px;
+  }
+
+  &__item {
+    padding: 10px 0;
+  }
+
+  &__link-header {
+    padding-bottom: 15px;
+
+    @include design-system.screen-sm-max {
+      padding-bottom: 5px;
+    }
+  }
+
+  &__link-text {
+    width: max-content;
+    padding: 0;
+  }
+
+  &__link-item {
+    padding: 15px 0;
+
+    @include design-system.screen-sm-max {
+      padding: 5px 0;
+    }
+  }
+
+  &__version-number {
+    @include design-system.H6;
+
+    padding-top: 5px;
+    color: var(--color-text-muted);
+  }
+
+  &__separator {
+    margin: 15px 0;
+    width: 80px;
+    border: none;
+    height: 1px;
+    background-color: var(--color-border-muted);
+  }
+
+  &__about {
+    color: var(--color-text-muted);
+    margin-bottom: 15px;
+  }
+
+  &__tag {
+    margin-inline-start: 8px;
+  }
+}

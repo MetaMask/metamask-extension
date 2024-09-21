@@ -1,0 +1,38 @@
+.url-icon {
+  width: 24px;
+  height: 24px;
+  background-position: center;
+  border-radius: 50%;
+  background-color: var(--color-background-default);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  flex: 0 0 auto;
+  -moz-animation: fadein 1s;
+
+  /* Firefox */
+  -webkit-animation: fadein 1s;
+
+  /* Safari and Chrome */
+  -o-animation: fadein 1s;
+
+  &__fallback {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-background-alternative);
+    flex: 0 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2px;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

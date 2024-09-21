@@ -1,0 +1,34 @@
+@import 'transaction-breakdown-row/index';
+
+.transaction-breakdown {
+  &__title {
+    padding-bottom: 4px;
+    padding-top: 8px;
+    font-size: 14px;
+    color: var(--color-text-default);
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+
+  &__row-title {
+    text-transform: capitalize;
+  }
+
+  &__value {
+    display: flex;
+    justify-content: flex-end;
+    text-align: end;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--eth-total {
+      font-weight: bold;
+      color: var(--color-text-default);
+    }
+
+    &--amount {
+      font-weight: bold;
+      color: var(--color-text-default);
+    }
+  }
+}

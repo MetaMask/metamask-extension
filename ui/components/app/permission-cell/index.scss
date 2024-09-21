@@ -1,0 +1,11 @@
+.permission-cell {
+  &__title-revoked {
+    text-decoration: line-through;
+  }
+
+  &__status {
+    &__accounts-group-box {
+      vertical-align: sub;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JwtDropdown should render the Jwt dropdown component 1`] = `
+<div>
+  <div
+    class="mm-box"
+  >
+    <p
+      class="mm-box mm-text custody-search-jwt__select-title mm-text--body-md mm-box--padding-1 mm-box--color-text-default"
+    >
+      [selectJWT]
+    </p>
+    <div
+      class="dropdown custody-search-jwt__select"
+    >
+      <select
+        class="dropdown__select"
+        data-testid="jwt-dropdown"
+      >
+        <option
+          value="someToken"
+        >
+          someToken
+        </option>
+        <option
+          value="jwy1"
+        >
+          ...jwy1
+        </option>
+        <option
+          value="jwt2"
+        >
+          ...jwt2
+        </option>
+      </select>
+      <span
+        class="mm-box dropdown__icon-caret-down mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-down.svg');"
+      />
+    </div>
+  </div>
+</div>
+`;

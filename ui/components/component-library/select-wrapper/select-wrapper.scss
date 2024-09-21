@@ -1,0 +1,8 @@
+@use "design-system";
+
+.mm-select-wrapper {
+  &__popover {
+    overflow: hidden;
+    z-index: design-system.$dropdown-z-index;
+  }
+}

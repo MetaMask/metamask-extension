@@ -1,0 +1,270 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CurrencyInput Component rendering should disable unit input 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+        style="display: inherit;"
+        title="0.0000001"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          min="0"
+          placeholder="0"
+          step="any"
+          style="width: 9ch;"
+          type="number"
+          value="0"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+      <div
+        class="mm-box currency-display-component currency-input__conversion-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+        title="$0.00"
+      >
+        <span
+          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        >
+          $0.00
+        </span>
+      </div>
+    </div>
+    <button
+      class="currency-input__swap-component"
+      data-testid="currency-swap"
+    >
+      <i
+        class="fa fa-retweet fa-lg"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInput Component rendering should render properly with a fiat value 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+        style="display: inherit;"
+        title="1.00"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          min="0"
+          placeholder="0"
+          step="any"
+          style="width: 4ch;"
+          type="number"
+          value="0"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          USD
+        </div>
+      </div>
+      <div
+        class="mm-box currency-display-component currency-input__conversion-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+        title="0.004327880204275946 ETH"
+      >
+        <span
+          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        >
+          0.004327880204275946
+        </span>
+        <span
+          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+        >
+          ETH
+        </span>
+      </div>
+    </div>
+    <button
+      class="currency-input__swap-component"
+      data-testid="currency-swap"
+    >
+      <i
+        class="fa fa-retweet fa-lg"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInput Component rendering should render properly with a native value when hideSecondary is true 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+        style="display: inherit;"
+        title="0.004327880204275946"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          min="0"
+          placeholder="0"
+          step="any"
+          style="width: 20ch;"
+          type="number"
+          value="0"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInput Component rendering should render properly with an ETH value 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+        style="display: inherit;"
+        title="1"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          disabled=""
+          min="0"
+          placeholder="0"
+          step="any"
+          style="width: 1.5ch;"
+          type="number"
+          value="1"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+      <div
+        class="mm-box currency-display-component currency-input__conversion-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+        title="$231.06"
+      >
+        <span
+          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        >
+          $231.06
+        </span>
+      </div>
+    </div>
+    <button
+      class="currency-input__swap-component"
+      data-testid="currency-swap"
+    >
+      <i
+        class="fa fa-retweet fa-lg"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInput Component rendering should render properly without a suffix 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+        style="display: inherit;"
+        title="0"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          disabled=""
+          min="0"
+          placeholder="0"
+          step="any"
+          style="width: 1.5ch;"
+          type="number"
+          value="0"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+      <div
+        class="mm-box currency-display-component currency-input__conversion-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+        title="$0.00"
+      >
+        <span
+          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        >
+          $0.00
+        </span>
+      </div>
+    </div>
+    <button
+      class="currency-input__swap-component"
+      data-testid="currency-swap"
+    >
+      <i
+        class="fa fa-retweet fa-lg"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInput Component rendering should show skeleton state 1`] = `
+<div>
+  <div
+    class="mm-box currency-input__skeleton-container mm-box--padding-right-4"
+  >
+    <div
+      class="mm-box currency-input__pulsing-bar mm-box--width-1/2"
+    />
+    <div
+      class="mm-box currency-input__pulsing-bar mm-box--width-1/3"
+    />
+  </div>
+</div>
+`;

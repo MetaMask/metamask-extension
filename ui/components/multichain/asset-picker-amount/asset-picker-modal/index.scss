@@ -1,0 +1,113 @@
+@use "design-system";
+
+.asset-picker-modal {
+  $self: &;
+
+  &__search-list {
+    max-width: 100%;
+    overflow: auto;
+    max-height: 200px;
+
+    &:hover {
+      border-color: var(--color-primary-default);
+    }
+  }
+
+  &__autodetect {
+    vertical-align: unset;
+  }
+
+  .multichain-asset-picker-list-item {
+    position: relative;
+    cursor: pointer;
+    overflow-y: auto;
+    max-height: 50vh;
+
+    &:not(.multichain-asset-picker-list-item--selected) {
+      &:hover,
+      &:focus-within {
+        background: var(--color-background-default-hover);
+      }
+    }
+
+    @mixin disabled-token {
+      .multichain-token-list-item a {
+        cursor: not-allowed;
+        @content;
+      }
+    }
+
+    &--disabled,
+    &:disabled {
+      opacity: var(--opacity-disabled);
+      cursor: not-allowed;
+    }
+
+    &__selected-indicator {
+      width: 4px;
+      height: calc(100% - 8px);
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+  }
+
+  .tokens-main-view-modal {
+    max-height: 100%;
+  }
+
+  .modal-tab {
+    &__main-view {
+      max-height: 100%;
+      background: var(--color-background-default);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+    }
+
+    &__main-view &__tab {
+      @include design-system.H6;
+
+      flex-grow: 1;
+      color: var(--color-icon-default);
+      font-weight: 500;
+    }
+
+    &__main-view &__tab--active {
+      color: var(--color-primary-default);
+    }
+
+    &__main-view &__tab button {
+      padding: 8px;
+    }
+
+    &__tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 0;
+      padding-inline: 16px;
+    }
+
+    &__wrapper {
+      max-height: 100%;
+      overflow-y: scroll;
+    }
+
+    &__loading {
+      display: flex;
+      height: 200px;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    &__fetching {
+      display: flex;
+      height: 100px;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+  }
+}

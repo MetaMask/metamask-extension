@@ -1,0 +1,60 @@
+import { ArgsTable, Canvas, Story } from "@storybook/addon-docs";
+
+import { Tag } from "./tag";
+
+# Tag
+
+The `Tag` is a component used to display text within a container.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-tag--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Tag} />
+
+### Label
+
+The text content of the `Tag` component
+
+<Canvas>
+  <Story id="components-componentlibrary-tag--label" />
+</Canvas>
+
+### StartIconName
+
+Use the `startIconName` prop and the `IconName` enum to change the icon
+
+Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use
+
+<Canvas>
+  <Story id="components-componentlibrary-tag--start-icon-name-story" />
+</Canvas>
+
+```jsx
+import { Tag, IconName } from '../../component-library';
+
+<Tag startIconName={IconName.Snaps} label="Snap Name" />;
+```
+
+### StartIconProps
+
+Use the `startIconProps` prop to pass props to the icon component used in the parent Tag component
+
+<Canvas>
+  <Story id="components-componentlibrary-tag--start-icon-props-story" />
+</Canvas>
+
+```jsx
+import { Tag, IconName } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
+
+<Tag
+  startIconName={IconName.Snaps}
+  label="Snap Name"
+  startIconProps={{ color: IconColor.primaryDefault }}
+/>;
+```

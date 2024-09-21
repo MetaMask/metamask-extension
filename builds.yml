@@ -1,0 +1,297 @@
+# TODO(ritave): Add support for environments (<root>/development/build/constants.js:@ENVIRONMENT)
+# TODO(ritave): Add support for build targets (<root>/development/build/constants.js:@BUILD_TARGETS)
+# TODO(ritave): Warn if not all of declared variables have been defined / used
+
+# The priority order of variable definitions (most important to least important):
+# <hardcoded build code>; <environmental variables>; .metamaskprodrc; .metamaskrc; builds.yml:.buildTypes.<type>.env; builds.yml:.features.<feature>.env; builds.yml:.env
+
+# The build type to use when no build type provided in the cli
+default: &default main
+
+# Declaration of build types
+# Each build type is composed of features, env variables and assets.
+# Also known as productFlavors in Android lingo
+# Note: These build types should be kept in sync with the list in `.github/workflows/update-lavamoat-policies.yml`
+buildTypes:
+  main:
+    id: 10
+    features:
+      - build-main
+      - keyring-snaps
+    # Additional env variables that are specific to this build
+    env:
+      - INFURA_PROD_PROJECT_ID: abf1a1f11a924b4c9755f19069f0b769
+      - SEGMENT_PROD_WRITE_KEY
+      - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.7.0/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+    # Main build uses the default browser manifest
+    manifestOverrides: false
+    # Build name used in multiple user-readable places
+    # eg. eip6963
+    buildNameOverride: MetaMask
+
+  beta:
+    id: 11
+    features:
+      - build-beta
+      - keyring-snaps
+    env:
+      - INFURA_BETA_PROJECT_ID
+      - SEGMENT_BETA_WRITE_KEY
+      - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.7.0/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+    # Modifies how the version is displayed.
+    # eg. instead of 10.25.0 -> 10.25.0-beta.2
+    isPrerelease: true
+    # Folder which contains overrides to browser manifests
+    manifestOverrides: ./app/build-types/beta/manifest/
+    buildNameOverride: MetaMask Beta
+
+  flask:
+    id: 15
+    # Code surrounded using code fences for that feature
+    # will not be removed
+    features:
+      - build-flask
+      - keyring-snaps
+    env:
+      - INFURA_FLASK_PROJECT_ID
+      - SEGMENT_FLASK_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: true
+      - REQUIRE_SNAPS_ALLOWLIST: false
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.7.0/index.html
+      - SUPPORT_LINK: https://support.metamask.io/
+      - SUPPORT_REQUEST_LINK: https://support.metamask.io/
+      - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
+      - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
+    isPrerelease: true
+    manifestOverrides: ./app/build-types/flask/manifest/
+    buildNameOverride: MetaMask Flask
+
+  mmi:
+    id: 20
+    features:
+      - build-mmi
+    env:
+      - INFURA_MMI_PROJECT_ID
+      - SEGMENT_MMI_WRITE_KEY
+      - SENTRY_MMI_DSN
+      - INFURA_ENV_KEY_REF: INFURA_MMI_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.7.0/index.html
+      - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
+      - SUPPORT_LINK: https://support.metamask-institutional.io
+      - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
+      - SENTRY_DSN: SENTRY_MMI_DSN
+    # For some reason, MMI uses this type of versioning
+    # Leaving it on for backwards compatibility
+    isPrerelease: true
+    manifestOverrides: ./app/build-types/mmi/manifest/
+    buildNameOverride: MetaMask Institutional
+
+# Build types are composed of a set of features.
+# Each feature can have code fences that add new code
+# as well declaring, defining and overriding env variables
+features:
+  ###
+  # Build Type code extensions. Things like different support links, warning pages, banners
+  ###
+
+  build-main:
+  build-beta:
+    assets:
+      # Assets that will be copied
+      - src: ./app/build-types/beta/images/
+        dest: images
+      # Assets that are exclusively included in this feature and ignored in others
+      # Supports globs
+      - ./{app,shared,ui}/**/beta/**
+  build-mmi:
+    assets:
+      - src: ./app/build-types/mmi/images/
+        dest: images
+      - ./{app,shared,ui}/**/institutional/**
+  build-flask:
+    assets:
+      - src: ./app/build-types/flask/images/
+        dest: images
+      - ./{app,shared,ui}/**/flask/**
+  keyring-snaps:
+    assets:
+      - ./{app,shared,ui}/**/keyring-snaps/**
+
+# Env variables that are required for all types of builds
+#
+# env object supports both declarations (- FOO), and definitions (- FOO: BAR).
+# Variables that were declared have to be defined somewhere in the load chain before usage
+env:
+  - BRIDGE_USE_DEV_APIS: false
+  - SWAPS_USE_DEV_APIS: false
+  - PORTFOLIO_URL: https://portfolio.metamask.io
+  - TOKEN_ALLOWANCE_IMPROVEMENTS: false
+  - TRANSACTION_SECURITY_PROVIDER: false
+  # The unlock password
+  - PASSWORD: null
+  - TEST_SRP: null
+  - WITH_STATE: null
+  # Also see METAMASK_DEBUG and NODE_DEBUG
+  - DEBUG: null
+  - SUPPORT_LINK: https://support.metamask.io
+  - SUPPORT_REQUEST_LINK: https://support.metamask.io
+  - SKIP_BACKGROUND_INITIALIZATION: false
+  - PPOM_URI: ./ppom_bg.wasm
+  # CDN for blockaid files
+  - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
+  # Blockaid public key for verifying signatures of data files downloaded from CDN
+  - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
+
+  - ENABLE_MV3: true
+  # These are exclusively used for MV3
+  - USE_SNOW
+  - APPLY_LAVAMOAT
+  - FILE_NAMES
+
+  # This variable is read by Trezor's source and breaks build if not included
+  - ASSET_PREFIX: null
+  - SUITE_TYPE: null
+  - COMMITHASH: null
+  - VERSION: null
+  - IS_CODESIGN_BUILD: null
+
+  - SENTRY_MMI_DSN: ''
+
+  ###
+  # Notifications Feature
+  ###
+  - AUTH_API: https://authentication.api.cx.metamask.io
+  - OIDC_API: https://oidc.api.cx.metamask.io
+  - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
+  - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
+  - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
+  - CONTENTFUL_ACCESS_SPACE_ID:
+  - CONTENTFUL_ACCESS_TOKEN:
+  - NOTIFICATIONS_SERVICE_URL: https://notification.api.cx.metamask.io
+  - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
+  - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+  - VAPID_KEY:
+  - FIREBASE_API_KEY:
+  - FIREBASE_AUTH_DOMAIN:
+  - FIREBASE_STORAGE_BUCKET:
+  - FIREBASE_PROJECT_ID:
+  - FIREBASE_MESSAGING_SENDER_ID:
+  - FIREBASE_APP_ID:
+  - FIREBASE_MEASUREMENT_ID:
+  - __FIREBASE_DEFAULTS__: null
+
+  ###
+  # API keys to 3rd party services
+  ###
+
+  - PUBNUB_PUB_KEY: null
+  - PUBNUB_SUB_KEY: null
+  - SEGMENT_HOST: null
+  - SENTRY_DSN: null
+  - SENTRY_DSN_DEV: null
+  - OPENSEA_KEY: null
+  - ETHERSCAN_KEY: null
+  # also INFURA_PROJECT_ID below
+
+  ###
+  # Build system backwards compatibility
+  ###
+
+  - INFURA_ENV_KEY_REF
+  - SEGMENT_WRITE_KEY_REF
+
+  ###
+  # Variables that are modified with hardcoded code
+  ###
+
+  # Used to enable confirmation redesigned pages
+  - ENABLE_CONFIRMATION_REDESIGN: ''
+  # Determines if feature flagged Settings Page - Developer Options should be used
+  - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: false
+  # Used for debugging changes to the phishing warning page.
+  # Modified in <root>/development/build/scripts.js:@getPhishingWarningPageUrl
+  - PHISHING_WARNING_PAGE_URL: null
+  # Modified in <root>/development/build/scripts.js:@getInfuraProjectId
+  - INFURA_PROJECT_ID
+  # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
+  - SEGMENT_WRITE_KEY: ''
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionSourceId
+  - ANALYTICS_DATA_DELETION_SOURCE_ID: null
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionEndpoint
+  - ANALYTICS_DATA_DELETION_ENDPOINT: null
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  # Also see DEBUG and NODE_DEBUG
+  - METAMASK_DEBUG: false
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - IN_TEST
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_ENVIRONMENT
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_VERSION
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_TYPE
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_NAME
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_APP_ID
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_ICON
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - NODE_ENV
+  # Defined by node itself
+  # For the purposes of the build system we define it as empty below
+  # if it's not inside process.env
+  # Also see DEBUG and METAMASK_DEBUG
+  - NODE_DEBUG: ''
+  # Used by react-devtools-core
+  - EDITOR_URL: ''
+  # Determines if feature flagged Multichain Transactions should be used
+  - TRANSACTION_MULTICHAIN: ''
+  # Determines if Barad Dur features should be used
+  - BARAD_DUR: ''
+  # Determines if feature flagged Chain permissions
+  - CHAIN_PERMISSIONS: ''
+  # Enables use of test gas fee flow to debug gas fee estimation
+  - TEST_GAS_FEE_FLOWS: false
+  # Temporary mechanism to enable security alerts API prior to release
+  - SECURITY_ALERTS_API_ENABLED: ''
+  # URL of security alerts API used to validate dApp requests
+  - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
+
+    # Enables the notifications feature within the build:
+  - NOTIFICATIONS: ''
+
+  - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
+
+  ###
+  # Meta variables
+  ###
+
+  # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
+  - METAMASK_BUILD_TYPE_DEFAULT: *default
+
+  ###
+  # Account Abstraction (EIP-4337)
+  ###
+
+  - EIP_4337_ENTRYPOINT: null
+  ###
+  # Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
+  # This should NEVER be enabled in production since it slows down react
+  ###
+  - ENABLE_WHY_DID_YOU_RENDER: false

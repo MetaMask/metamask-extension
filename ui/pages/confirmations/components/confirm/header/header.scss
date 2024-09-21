@@ -1,0 +1,12 @@
+.confirm_header {
+  &__wrapper {
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+    height: 64px;
+    z-index: 1;
+  }
+
+  &__avatar-network {
+    margin-left: -12px;
+    margin-top: -4px;
+  }
+}

@@ -1,0 +1,74 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { Text } from '..';
+
+import { Label } from './label';
+
+# Label
+
+`Label` is used to describe the purpose of a form field
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-label--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Label} />
+
+`Label` accepts all [Text](/docs/components-componentlibrary-text--default-story#props) component props
+
+<ArgsTable of={Text} />
+
+### Children
+
+The `children` of the label can be text or a react node
+
+<Canvas>
+  <Story id="components-componentlibrary-label--children" />
+</Canvas>
+
+```jsx
+import { DISPLAY, AlignItems, FLEX_DIRECTION, Size, IconColor } from '../../../helpers/constants/design-system';
+import { Label, Icon, IconName, IconSize, TextField } from '../../component-library';
+
+<Label>Plain text</Label>
+<Label display={DISPLAY.FLEX} alignItems={AlignItems.flexStart}>
+  Text and icon
+      <Icon
+        color={IconColor.iconAlternative}
+        name={IconName.Info}
+        size={IconSize.Inherit}
+      />
+</Label>
+<Label
+      display={DISPLAY.INLINE_FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
+      alignItems={AlignItems.flexStart}
+>
+  Label that wraps an input
+  <TextField placeholder="Click label to focus" />
+</Label>
+```
+
+### Html For
+
+Use the `htmlFor` prop to allow the `Label` to focus on an input with the same id when clicked. The cursor will also change to a `pointer` when the `htmlFor` has a value.
+
+<Canvas>
+  <Story id="components-componentlibrary-label--html-for" />
+</Canvas>
+
+```jsx
+import { Label, TextField } from '../../component-library';
+
+<Label htmlFor="add-network">Add network</Label>
+<TextField id="add-network" placeholder="Enter network name" />
+```
+
+### Internal Resources
+
+- [Figma component](https://www.figma.com/file/HKpPKij9V3TpsyMV1TpV7C/branch/7uyrueQIFQBLqo9uzkxclr/DS-Components?node-id=13879%3A38076&t=dBHjnJTMSVE8N2UP-1)
+- [Insight report](https://www.figma.com/file/aGW8sk6X6Jf9ac0MRMD4kX/TextField-Audit?node-id=282%3A22&t=ZgCGFwGOBmOwQR5c-1)

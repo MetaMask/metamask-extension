@@ -1,0 +1,12 @@
+.nft-default {
+  padding-top: 100%;
+  position: relative;
+  background-image: url('/images/default_nft.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  &__button {
+    position: absolute;
+    bottom: 16px;
+  }
+}

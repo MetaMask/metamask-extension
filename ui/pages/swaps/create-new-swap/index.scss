@@ -1,0 +1,10 @@
+@use "design-system";
+
+.create-new-swap {
+  button {
+    @include design-system.H5;
+
+    color: var(--color-primary-default);
+    background-color: transparent;
+  }
+}

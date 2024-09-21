@@ -1,0 +1,87 @@
+@use "design-system";
+
+.first-view-main-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  padding: 0 10px;
+
+  > .first-view-main {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}
+
+
+@include design-system.screen-lg-min {
+  .first-view-main {
+    width: 62vw;
+  }
+}
+
+.import-account {
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 60px 0 30px 0;
+  position: relative;
+  max-width: initial;
+}
+
+@include design-system.screen-sm-max {
+  .import-account {
+    margin: 24px;
+    display: flex;
+    flex-flow: column nowrap;
+    width: calc(100vw - 80px);
+  }
+
+  .import-account__title {
+    width: initial !important;
+  }
+
+  .first-view-main {
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 12px;
+  }
+
+  .first-view-phone-invisible {
+    display: none;
+  }
+
+  .first-time-flow__input {
+    width: 100%;
+  }
+}
+
+.import-account {
+  &__back-button {
+    @include design-system.Paragraph;
+
+    margin-bottom: 18px;
+    color: var(--color-text-default);
+    position: absolute;
+    top: -25px;
+  }
+
+  &__link {
+    display: inline;
+    padding: 0;
+    font-size: inherit;
+  }
+}
+
+.reveal-seed {
+  &__tab {
+    display: flex;
+    flex: 1;
+  }
+
+  &__active-tab {
+    color: var(--color-primary-default);
+  }
+}

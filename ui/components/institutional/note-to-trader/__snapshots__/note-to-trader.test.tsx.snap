@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NoteToTrader should render the Note to trader component 1`] = `
+<div>
+  <div
+    class="mm-box confirm-page-container-content__data"
+  >
+    <div
+      class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box note-header mm-box--display-flex mm-box--justify-content-space-between"
+      >
+        <label
+          class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          for="transaction-note"
+        >
+          Transaction note
+        </label>
+        <p
+          class="mm-box mm-text note-header__counter mm-text--body-md mm-box--color-text-default"
+        >
+          9
+          /
+          280
+        </p>
+      </div>
+      <div
+        class="mm-box note-field mm-box--display-flex mm-box--flex-direction-column"
+      >
+        <textarea
+          data-testid="transaction-note"
+          id="transaction-note"
+          maxlength="280"
+          placeholder=""
+        >
+          some text
+        </textarea>
+      </div>
+    </div>
+  </div>
+</div>
+`;

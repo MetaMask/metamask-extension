@@ -1,0 +1,493 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmDecryptMessage Component should match snapshot when preference is ETH currency 1`] = `
+<div>
+  <div
+    class="request-encryption-public-key__container"
+  >
+    <div
+      class="request-encryption-public-key__header"
+    >
+      <div
+        class="request-encryption-public-key__header-background"
+      />
+      <div
+        class="request-encryption-public-key__header__text"
+      >
+        Request encryption public key
+      </div>
+      <div
+        class="request-encryption-public-key__header__tip-container"
+      >
+        <div
+          class="request-encryption-public-key__header__tip"
+        />
+      </div>
+    </div>
+    <div
+      class="request-encryption-public-key__body"
+    >
+      <div
+        class="request-encryption-public-key__account-info"
+      >
+        <div
+          class="request-encryption-public-key__account"
+        >
+          <div
+            class="request-encryption-public-key__account-text"
+          >
+            Account:
+          </div>
+          <div
+            class="request-encryption-public-key__account-item"
+          >
+            <div
+              class="account-list-item undefined"
+              data-testid="account-list-item"
+            >
+              <div
+                class="account-list-item__top-row"
+              >
+                <div
+                  class=""
+                >
+                  <div
+                    class="identicon account-list-item__identicon"
+                    style="height: 18px; width: 18px; border-radius: 9px;"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(245, 228, 0);"
+                    >
+                      <svg
+                        height="18"
+                        width="18"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#F2BE02"
+                          height="18"
+                          transform="translate(3.0840328880287724 -2.9223901886104127) rotate(387.1 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#01778E"
+                          height="18"
+                          transform="translate(-1.465568967274283 9.396341018731759) rotate(227.4 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#C81435"
+                          height="18"
+                          transform="translate(10.107951098008673 -7.083365091692127) rotate(422.3 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="account-list-item__account-name"
+                >
+                  Antonio
+                </div>
+                <div
+                  class="account-mismatch-warning__tooltip-wrapper"
+                >
+                  <div
+                    aria-describedby="tippy-tooltip-1"
+                    class="account-mismatch-warning__tooltip-container"
+                    data-original-title="null"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <div
+                      class="account-mismatch-warning__tooltip-container-icon"
+                      data-testid="account-mismatch-warning-tooltip"
+                    >
+                      <svg
+                        class="info-icon info-icon--warning"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M7.2 5.6H8.8V4H7.2V5.6ZM8 14.4C4.472 14.4 1.6 11.528 1.6 8C1.6 4.472 4.472 1.6 8 1.6C11.528 1.6 14.4 4.472 14.4 8C14.4 11.528 11.528 14.4 8 14.4ZM8 0C6.94943 0 5.90914 0.206926 4.93853 0.608964C3.96793 1.011 3.08601 1.60028 2.34315 2.34315C0.842855 3.84344 0 5.87827 0 8C0 10.1217 0.842855 12.1566 2.34315 13.6569C3.08601 14.3997 3.96793 14.989 4.93853 15.391C5.90914 15.7931 6.94943 16 8 16C10.1217 16 12.1566 15.1571 13.6569 13.6569C15.1571 12.1566 16 10.1217 16 8C16 6.94943 15.7931 5.90914 15.391 4.93853C14.989 3.96793 14.3997 3.08601 13.6569 2.34315C12.914 1.60028 12.0321 1.011 11.0615 0.608964C10.0909 0.206926 9.05058 0 8 0ZM7.2 12H8.8V7.2H7.2V12Z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="request-encryption-public-key__request-icon"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 40px; width: 40px; border-radius: 20px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 40px; height: 40px; display: inline-block; background: rgb(245, 228, 0);"
+              >
+                <svg
+                  height="40"
+                  width="40"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#F2BE02"
+                    height="40"
+                    transform="translate(6.853406417841717 -6.49420041913425) rotate(387.1 20 20)"
+                    width="40"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#01778E"
+                    height="40"
+                    transform="translate(-3.2568199272761853 20.88075781940391) rotate(227.4 20 20)"
+                    width="40"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#C81435"
+                    height="40"
+                    transform="translate(22.462113551130386 -15.740811314871396) rotate(422.3 20 20)"
+                    width="40"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="request-encryption-public-key__balance"
+        >
+          <div
+            class="request-encryption-public-key__balance-text"
+          >
+            Balance:
+          </div>
+          <div
+            class="request-encryption-public-key__balance-value"
+          >
+            966.987986 ABC
+          </div>
+        </div>
+      </div>
+      <div
+        class="request-encryption-public-key__visual"
+      >
+        <section>
+          <i
+            class="request-encryption-public-key__visual-identicon--default"
+          >
+            T
+          </i>
+          <div
+            class="request-encryption-public-key__notice"
+          >
+            <span>
+               
+              
+              <div
+                class="site-origin"
+              >
+                <bdi
+                  dir="ltr"
+                >
+                  test
+                </bdi>
+              </div>
+               would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.
+               
+            </span>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      class="page-container__footer"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          data-testid="page-container-footer-cancel"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+        >
+          Provide
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmDecryptMessage Component should match snapshot when preference is Fiat currency 1`] = `
+<div>
+  <div
+    class="request-encryption-public-key__container"
+  >
+    <div
+      class="request-encryption-public-key__header"
+    >
+      <div
+        class="request-encryption-public-key__header-background"
+      />
+      <div
+        class="request-encryption-public-key__header__text"
+      >
+        Request encryption public key
+      </div>
+      <div
+        class="request-encryption-public-key__header__tip-container"
+      >
+        <div
+          class="request-encryption-public-key__header__tip"
+        />
+      </div>
+    </div>
+    <div
+      class="request-encryption-public-key__body"
+    >
+      <div
+        class="request-encryption-public-key__account-info"
+      >
+        <div
+          class="request-encryption-public-key__account"
+        >
+          <div
+            class="request-encryption-public-key__account-text"
+          >
+            Account:
+          </div>
+          <div
+            class="request-encryption-public-key__account-item"
+          >
+            <div
+              class="account-list-item undefined"
+              data-testid="account-list-item"
+            >
+              <div
+                class="account-list-item__top-row"
+              >
+                <div
+                  class=""
+                >
+                  <div
+                    class="identicon account-list-item__identicon"
+                    style="height: 18px; width: 18px; border-radius: 9px;"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(245, 228, 0);"
+                    >
+                      <svg
+                        height="18"
+                        width="18"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#F2BE02"
+                          height="18"
+                          transform="translate(3.0840328880287724 -2.9223901886104127) rotate(387.1 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#01778E"
+                          height="18"
+                          transform="translate(-1.465568967274283 9.396341018731759) rotate(227.4 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#C81435"
+                          height="18"
+                          transform="translate(10.107951098008673 -7.083365091692127) rotate(422.3 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="account-list-item__account-name"
+                >
+                  Antonio
+                </div>
+                <div
+                  class="account-mismatch-warning__tooltip-wrapper"
+                >
+                  <div
+                    aria-describedby="tippy-tooltip-2"
+                    class="account-mismatch-warning__tooltip-container"
+                    data-original-title="null"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <div
+                      class="account-mismatch-warning__tooltip-container-icon"
+                      data-testid="account-mismatch-warning-tooltip"
+                    >
+                      <svg
+                        class="info-icon info-icon--warning"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M7.2 5.6H8.8V4H7.2V5.6ZM8 14.4C4.472 14.4 1.6 11.528 1.6 8C1.6 4.472 4.472 1.6 8 1.6C11.528 1.6 14.4 4.472 14.4 8C14.4 11.528 11.528 14.4 8 14.4ZM8 0C6.94943 0 5.90914 0.206926 4.93853 0.608964C3.96793 1.011 3.08601 1.60028 2.34315 2.34315C0.842855 3.84344 0 5.87827 0 8C0 10.1217 0.842855 12.1566 2.34315 13.6569C3.08601 14.3997 3.96793 14.989 4.93853 15.391C5.90914 15.7931 6.94943 16 8 16C10.1217 16 12.1566 15.1571 13.6569 13.6569C15.1571 12.1566 16 10.1217 16 8C16 6.94943 15.7931 5.90914 15.391 4.93853C14.989 3.96793 14.3997 3.08601 13.6569 2.34315C12.914 1.60028 12.0321 1.011 11.0615 0.608964C10.0909 0.206926 9.05058 0 8 0ZM7.2 12H8.8V7.2H7.2V12Z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="request-encryption-public-key__request-icon"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 40px; width: 40px; border-radius: 20px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 40px; height: 40px; display: inline-block; background: rgb(245, 228, 0);"
+              >
+                <svg
+                  height="40"
+                  width="40"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#F2BE02"
+                    height="40"
+                    transform="translate(6.853406417841717 -6.49420041913425) rotate(387.1 20 20)"
+                    width="40"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#01778E"
+                    height="40"
+                    transform="translate(-3.2568199272761853 20.88075781940391) rotate(227.4 20 20)"
+                    width="40"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#C81435"
+                    height="40"
+                    transform="translate(22.462113551130386 -15.740811314871396) rotate(422.3 20 20)"
+                    width="40"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="request-encryption-public-key__balance"
+        >
+          <div
+            class="request-encryption-public-key__balance-text"
+          >
+            Balance:
+          </div>
+          <div
+            class="request-encryption-public-key__balance-value"
+          >
+            1520956.064158 DEF
+          </div>
+        </div>
+      </div>
+      <div
+        class="request-encryption-public-key__visual"
+      >
+        <section>
+          <i
+            class="request-encryption-public-key__visual-identicon--default"
+          >
+            T
+          </i>
+          <div
+            class="request-encryption-public-key__notice"
+          >
+            <span>
+               
+              
+              <div
+                class="site-origin"
+              >
+                <bdi
+                  dir="ltr"
+                >
+                  test
+                </bdi>
+              </div>
+               would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.
+               
+            </span>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      class="page-container__footer"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          data-testid="page-container-footer-cancel"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+        >
+          Provide
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;

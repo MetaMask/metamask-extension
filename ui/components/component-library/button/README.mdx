@@ -1,0 +1,188 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { Button } from './button';
+import { ButtonBase } from '../button-base';
+import { ButtonLink } from '../button-link';
+
+# Button
+
+The `Button` is used for user actions. It unifies `ButtonPrimary`, `ButtonSecondary` and `ButtonLink`.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-button--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Button} />
+
+### Variant
+
+Use the `variant` prop and the `ButtonVariant` enum from `./ui/components/component-library` to change the `Button` variant.
+
+Possible variants include:
+
+- `ButtonVariant.Primary` (default)
+- `ButtonVariant.Secondary`
+- `ButtonVariant.Link`
+
+<Canvas>
+  <Story id="components-componentlibrary-button--variant" />
+</Canvas>
+
+```jsx
+import { Button, ButtonVariant } from '../ui/component-library/button';
+
+<Button variant={ButtonVariant.Primary}>Button Primary</Button>
+<Button variant={ButtonVariant.Secondary}>Button Secondary</Button>
+<Button variant={ButtonVariant.Link}>Button Link</Button>
+```
+
+### Size
+
+Use the `size` prop and the `ButtonSize` enum from `./ui/components/component-library` to change the size of `Button`. Defaults to `Buttonsize.Md`
+
+Possible sizes include:
+
+- `Buttonsize.Inherit` inherits the font-size of the parent element. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
+- `Buttonsize.Auto` inherits auto height, but keeps the same button font-size. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
+- `Buttonsize.Sm` 32px
+- `Buttonsize.Md` 40px
+- `Buttonsize.Lg` 48px
+
+<Canvas>
+  <Story id="components-componentlibrary-button--size-story" />
+</Canvas>
+
+```jsx
+import { Button, ButtonSize } from '../../component-library';
+
+<Button size={Buttonsize.Inherit} />
+<Button size={Buttonsize.Sm} />
+<Button size={Buttonsize.Md} />
+<Button size={Buttonsize.Lg} />
+```
+
+### Danger
+
+Use the `danger` boolean prop to change the `Button` to danger color.
+
+<Canvas>
+  <Story id="components-componentlibrary-button--danger" />
+</Canvas>
+
+```jsx
+import { Button } from '../../component-library';
+
+<Button>Normal</Button>
+<Button danger>Danger</Button>
+```
+
+### Href
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+<Canvas>
+  <Story id="components-componentlibrary-button--href" />
+</Canvas>
+
+```jsx
+import { Button } from '../../component-library';
+
+<Button href="/">Anchor Element</Button>;
+```
+
+### Block
+
+Use boolean `block` prop to quickly enable a full width block button
+
+<Canvas>
+  <Story id="components-componentlibrary-button--block" />
+</Canvas>
+
+```jsx
+import { Button } from '../../component-library';
+
+<Button>Default Button</Button>
+<Button block>Block Button</Button>
+```
+
+### As
+
+Use the `as` box prop to change the element of `Button`. Defaults to `button`.
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+Button `as` options:
+
+- `button`
+- `a`
+
+<Canvas>
+  <Story id="components-componentlibrary-button--as" />
+</Canvas>
+
+```jsx
+import { Button } from '../../component-library';
+
+
+<Button as="button">Button Element</Button>
+<Button as="a" href="#">
+  Anchor Element
+</Button>
+```
+
+### Disabled
+
+Use the boolean `disabled` prop to disable button
+
+<Canvas>
+  <Story id="components-componentlibrary-button--disabled" />
+</Canvas>
+
+```jsx
+import { Button } from '../../component-library';
+
+<Button disabled>Disabled Button</Button>;
+```
+
+### Loading
+
+Use the boolean `loading` prop to set loading spinner
+
+<Canvas>
+  <Story id="components-componentlibrary-button--loading" />
+</Canvas>
+
+```jsx
+import { Button } from '../../component-library';
+
+<Button loading>Loading Button</Button>;
+```
+
+### Icon Name
+
+Use the `startIconName` and/or `endIconName` prop and the `IconName` enum from `./ui/components/component-library/icon` to select icon.
+
+Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
+
+<Canvas>
+  <Story id="components-componentlibrary-button--start-icon-name" />
+</Canvas>
+
+```jsx
+import { Button, IconName } from '../../component-library';
+
+<Button startIconName={IconName.AddSquare}>Button</Button>;
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-button--end-icon-name" />
+</Canvas>
+
+```jsx
+import { Button, IconName } from '../../component-library';
+
+<Button endIconName={IconName.Arrow2Right}>Button</Button>;
+```

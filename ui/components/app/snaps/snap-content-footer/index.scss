@@ -1,0 +1,5 @@
+.snap-content-footer {
+  &__description {
+    max-width: 100%; // helps with snap name truncation
+  }
+}

@@ -1,0 +1,45 @@
+@use "design-system";
+
+.onboarding-metametrics {
+  @include design-system.screen-sm-min {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  p {
+    align-self: baseline;
+  }
+
+  ul {
+    margin: 24px 0 0 0;
+    width: 100%;
+
+    li {
+      padding-bottom: 20px;
+      display: flex;
+
+      > span {
+        width: 90%;
+      }
+    }
+  }
+
+  &__terms a {
+    color: var(--color-primary-default);
+  }
+
+  &__buttons {
+    margin-top: 24px;
+
+    @include design-system.screen-sm-min {
+      margin-top: 40px;
+    }
+
+    button {
+      margin-bottom: 24px;
+      width: 50%;
+    }
+  }
+}

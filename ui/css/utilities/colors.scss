@@ -1,0 +1,29 @@
+/*
+Disabling Stylelint's hex color rule so this file is ignored.
+Before adding a color here make sure that there isn't a design token available.
+*/
+/* stylelint-disable color-no-hex */
+:root {
+  // Accents
+  // Everything below this line is part of the new color system
+  --mainnet: #29b6af;
+  --inherit: inherit;
+  --transparent: transparent;
+  // DO NOT CHANGE
+  // Required for the QR reader to work properly
+  --qr-code-white-background: #fff;
+  // DEPRECATED
+  // These third party network colors have been deprecated and should be removed once they are no longer in use. We should be using images to represent these networks instead.
+  --color-network-goerli-default: #1098fc;
+  --color-network-sepolia-default: #cfb5f0;
+  --color-network-goerli-inverse: #fcfcfc;
+  --color-network-sepolia-inverse: #fcfcfc;
+  --color-network-localhost-default: #bbc0c5;
+  --color-network-localhost-inverse: #fcfcfc;
+  --color-network-linea-goerli-default: #61dfff;
+  --color-network-linea-goerli-inverse: #fcfcfc;
+  --color-network-linea-sepolia-default: #61dfff;
+  --color-network-linea-sepolia-inverse: #fcfcfc;
+  --color-network-linea-mainnet-default: #121212;
+  --color-network-linea-mainnet-inverse: #fcfcfc;
+}

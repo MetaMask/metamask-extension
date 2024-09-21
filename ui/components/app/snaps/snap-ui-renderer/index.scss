@@ -1,0 +1,72 @@
+.snap-ui-renderer {
+  &__content {
+    margin-bottom: 0 !important;
+  }
+
+  &__container {
+    & > *:first-child {
+      padding: 16px;
+    }
+  }
+
+  &__error {
+    margin-top: 0 !important;
+  }
+
+  &__spinner {
+    width: 30px;
+  }
+
+  &__divider {
+    width: 100%;
+    height: 1px;
+  }
+
+  &__input > .mm-text-field {
+    min-height: 48px;
+    border-radius: 8px;
+    border-color: var(--color-border-muted);
+
+    .mm-text--overflow-wrap-anywhere {
+      overflow-wrap: normal;
+    }
+
+    .snap-ui-renderer__image {
+      min-width: 24px;
+      max-width: 36px;
+      min-height: 24px;
+      max-height: 36px;
+    }
+  }
+
+  &__panel {
+    gap: 16px;
+
+    .mm-icon--size-inherit {
+      top: 0;
+    }
+  }
+
+  &__text {
+    i {
+      font-style: revert;
+    }
+
+    b {
+      font-weight: revert;
+    }
+
+    span {
+      font-style: inherit;
+      font-weight: inherit;
+    }
+  }
+
+  &__image {
+    max-width: 100%;
+  }
+
+  &__footer {
+    margin-top: auto;
+  }
+}

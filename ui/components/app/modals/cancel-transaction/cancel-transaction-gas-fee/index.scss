@@ -1,0 +1,20 @@
+@use "design-system";
+
+.cancel-transaction-gas-fee {
+  background: var(--color-background-alternative);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+
+  &__eth {
+    @include design-system.H3;
+
+    font-weight: 500;
+  }
+
+  &__fiat {
+    @include design-system.H7;
+  }
+}

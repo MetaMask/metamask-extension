@@ -1,0 +1,94 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { AvatarBase } from '../';
+import { AvatarIcon } from './avatar-icon';
+
+# AvatarIcon
+
+The `AvatarIcon` is an avatar component that renders only an icon inside and is built off the [AvatarBase](/docs/components-componentlibrary-avatarbase--default-story)) component
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-avataricon--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={AvatarIcon} />
+
+`AvatarIcon` accepts all [AvatarBase](/docs/components-componentlibrary-avatarbase--default-story))
+component props
+
+<ArgsTable of={AvatarBase} />
+
+### Size
+
+Use the `size` prop and the `AvatarIconSize` enum to change the size of `AvatarIcon`
+
+Possible sizes include:
+
+- `AvatarIconSize.Xs` 16px
+- `AvatarIconSize.Sm` 24px
+- `AvatarIconSize.Md` 32px
+- `AvatarIconSize.Lg` 40px
+- `AvatarIconSize.Xl` 48px
+
+Defaults to `AvatarIconSize.Md`
+
+<Canvas>
+  <Story id="components-componentlibrary-avataricon--size-story" />
+</Canvas>
+
+```jsx
+import { AvatarIcon, AvatarIconSize } from '../../component-library';
+
+    <AvatarIcon {...args} size={AvatarIconSize.Xs} />
+    <AvatarIcon {...args} size={AvatarIconSize.Sm} />
+    <AvatarIcon {...args} size={AvatarIconSize.Md} />
+    <AvatarIcon {...args} size={AvatarIconSize.Lg} />
+    <AvatarIcon {...args} size={AvatarIconSize.Xl} />
+```
+
+### Icon Name<span style={{ color: 'red' }}>\*</span>
+
+Use the required `iconName` prop with `IconName` enum from `./ui/components/component-library` to select icon
+
+Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
+
+<Canvas>
+  <Story id="components-componentlibrary-avataricon--icon-name-story" />
+</Canvas>
+
+```jsx
+import { AvatarIcon, IconName } from '../../component-library';
+
+<AvatarIcon iconName={IconName.SwapHorizontal} />
+<AvatarIcon iconName={IconName.Confirmation} />
+<AvatarIcon iconName={IconName.Info} />
+<AvatarIcon iconName={IconName.Warning} />
+<AvatarIcon iconName={IconName.Danger} />
+```
+
+### Color and Background Color
+
+Use the `color` and `backgroundColor` props with the `IconColor` and `BackgroundColor` object from `./ui/helpers/constants/design-system.js` to change the icon color and background color of `AvatarIcon`
+
+`color` default: `IconColor.primaryDefault`
+`backgroundColor` default: `BackgroundColor.primaryMuted`
+
+<Canvas>
+  <Story id="components-componentlibrary-avataricon--color-and-background-color" />
+</Canvas>
+
+```jsx
+import { BackgroundColor, IconColor } from '../../../helpers/constants/design-system';
+import { AvatarIcon } from '../../component-library';
+
+<AvatarIcon color={IconColor.primaryDefault} backgroundColor={BackgroundColor.primaryMuted} />
+<AvatarIcon color={IconColor.primaryInverse} backgroundColor={BackgroundColor.primaryDefault} />
+<AvatarIcon color={IconColor.successDefault} backgroundColor={BackgroundColor.successMuted} />
+<AvatarIcon color={IconColor.infoDefault} backgroundColor={BackgroundColor.infoMuted} />
+<AvatarIcon color={IconColor.warningDefault} backgroundColor={BackgroundColor.warningMuted} />
+<AvatarIcon color={IconColor.errorDefault} backgroundColor={BackgroundColor.errorMuted} />
+```

@@ -1,0 +1,798 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "رفض"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "مسح كود الاستجابة السريعة QR"
+  },
+  "about": {
+    "message": "حول"
+  },
+  "acceptTermsOfUse": {
+    "message": "لقد قرأت دولار واحد وأوافق عليه",
+    "description": "$1 is the `terms` message"
+  },
+  "accessingYourCamera": {
+    "message": "جاري استخدام كاميرتك..."
+  },
+  "account": {
+    "message": "الحساب"
+  },
+  "accountDetails": {
+    "message": "تفاصيل الحساب"
+  },
+  "accountName": {
+    "message": "اسم الحساب"
+  },
+  "accountOptions": {
+    "message": "خيارات الحساب"
+  },
+  "accountSelectionRequired": {
+    "message": "يجب عليك تحديد حساب!"
+  },
+  "activityLog": {
+    "message": "سجل النشاط"
+  },
+  "addAcquiredTokens": {
+    "message": "أضف العملات الرمزية التي اكتسبتها باستخدام MetaMask"
+  },
+  "addAlias": {
+    "message": "إضافة اسم مستعار"
+  },
+  "addNetwork": {
+    "message": "أضف شبكة"
+  },
+  "addSuggestedTokens": {
+    "message": "أضف العملات الرمزية المقترحة"
+  },
+  "addToken": {
+    "message": "إضافة عملة رمزية"
+  },
+  "advanced": {
+    "message": "إعدادات متقدمة"
+  },
+  "amount": {
+    "message": "المبلغ"
+  },
+  "appDescription": {
+    "message": "محفظة إيثيريوم في متصفحك",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "موافق"
+  },
+  "approved": {
+    "message": "تمت الموافقة"
+  },
+  "asset": {
+    "message": "الأصل"
+  },
+  "attributions": {
+    "message": "الصفات"
+  },
+  "autoLockTimeLimit": {
+    "message": "مؤقت تسجيل الخروج التلقائي (بالدقائق)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "اضبط مهلة السكون بالدقائق التي يقوم MetaMask بتسجيل الخروج بعدها تلقائيًا"
+  },
+  "average": {
+    "message": "المتوسط"
+  },
+  "back": {
+    "message": "الرجوع إلى الوراء"
+  },
+  "backupApprovalInfo": {
+    "message": "هذا الرمز السري مطلوب لاسترداد محفظتك في حالة فقد جهازك أو نسيان كلمة مرورك أو إعادة تثبيت MetaMask أو الرغبة في الوصول إلى محفظتك عبر جهاز آخر."
+  },
+  "backupApprovalNotice": {
+    "message": "قم بالنسخ الاحتياطي لرمز الاسترداد السري للحفاظ على محفظتك وأموالك بأمان."
+  },
+  "backupNow": {
+    "message": "قم بالنسخ الاحتياطي الآن"
+  },
+  "balance": {
+    "message": "الرصيد"
+  },
+  "balanceOutdated": {
+    "message": "قد يكون الرصيد لاغياً"
+  },
+  "basic": {
+    "message": "الأساسية"
+  },
+  "blockExplorerUrl": {
+    "message": "متصفح Block Explorer"
+  },
+  "blockExplorerView": {
+    "message": "عرض الحساب في $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "browserNotSupported": {
+    "message": "متصفحك غير مدعوم..."
+  },
+  "bytes": {
+    "message": "بايتات"
+  },
+  "cancel": {
+    "message": "إلغاء"
+  },
+  "cancelled": {
+    "message": "تم الإلغاء"
+  },
+  "chainId": {
+    "message": "معرّف السلسلة"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "تحتاج إلى استخدام MetaMask على Google Chrome للاتصال بمحفظة الأجهزة الخاصة بك."
+  },
+  "close": {
+    "message": "إغلاق"
+  },
+  "confirm": {
+    "message": "التأكيد"
+  },
+  "confirmPassword": {
+    "message": "تأكيد كلمة المرور"
+  },
+  "confirmed": {
+    "message": "تم التأكيد"
+  },
+  "connect": {
+    "message": "اتصال"
+  },
+  "connectingTo": {
+    "message": "جارِ الاتصال بـ $1"
+  },
+  "connectingToGoerli": {
+    "message": "الاتصال بشبكة اختبار Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "الاتصال بشبكة اختبار Linea Goerli"
+  },
+  "connectingToMainnet": {
+    "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
+  },
+  "contractDeployment": {
+    "message": "نشر العقد"
+  },
+  "contractInteraction": {
+    "message": "التفاعل على العقد"
+  },
+  "copiedExclamation": {
+    "message": "تم النسخ."
+  },
+  "copyAddress": {
+    "message": "نسخ العنوان إلى الحافظة"
+  },
+  "copyToClipboard": {
+    "message": "نسخ إلى الحافظة"
+  },
+  "copyTransactionId": {
+    "message": "نسخ هوية المعاملة"
+  },
+  "create": {
+    "message": "إنشاء"
+  },
+  "createPassword": {
+    "message": "إنشاء كلمة مرور"
+  },
+  "currencyConversion": {
+    "message": "تحويل العملات"
+  },
+  "currentLanguage": {
+    "message": "اللغة الحالية"
+  },
+  "custom": {
+    "message": "إعدادات متقدمة"
+  },
+  "customToken": {
+    "message": "عملة رمزية مخصصة"
+  },
+  "decimal": {
+    "message": "دقة بالكسور العشرية"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "يجب أن تكون الكسور العشرية صفراً على الأقل، وألا تزيد عن 36 كسراً."
+  },
+  "delete": {
+    "message": "حذف"
+  },
+  "details": {
+    "message": "التفاصيل"
+  },
+  "done": {
+    "message": "تم"
+  },
+  "downloadGoogleChrome": {
+    "message": "تنزيل جوجل كروم"
+  },
+  "downloadStateLogs": {
+    "message": "تنزيل سجلات الحالة"
+  },
+  "dropped": {
+    "message": "تم الإلقاء"
+  },
+  "edit": {
+    "message": "تحرير"
+  },
+  "editContact": {
+    "message": "تعديل جهة الاتصال"
+  },
+  "enterPasswordContinue": {
+    "message": "أدخل كلمة المرور للمتابعة"
+  },
+  "ethereumPublicAddress": {
+    "message": "عنوان الإيثيريوم العمومي"
+  },
+  "etherscanView": {
+    "message": "عرض الحساب على Etherscan"
+  },
+  "expandView": {
+    "message": "توسيع العرض"
+  },
+  "failed": {
+    "message": "فشل"
+  },
+  "fast": {
+    "message": "سريع"
+  },
+  "fileImportFail": {
+    "message": "استيراد الملف لا ينجح؟ انقر هنا!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "عدم تذكُّر هذا الجهاز"
+  },
+  "from": {
+    "message": "من"
+  },
+  "functionType": {
+    "message": "نوع الوظيفة"
+  },
+  "gasLimit": {
+    "message": "الحد الأقصى لوحدات جاس"
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "حد عملة جاس هو الحد الأقصى لمقدار وحدات جاس التي ترغب في إنفاقها."
+  },
+  "gasLimitTooLow": {
+    "message": "يجب أن يكون حد وحدات الجاس على الأقل 21000"
+  },
+  "gasPrice": {
+    "message": "سعر عملة جاس (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "سعر الجاس منخفض للغاية"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "يحدد سعر الغاز مقدار الإيثر الذي تكون على استعداد لدفعه لكل وحدة غاز."
+  },
+  "gasUsed": {
+    "message": "وحدات جاس المستخدمة"
+  },
+  "general": {
+    "message": "عام"
+  },
+  "goerli": {
+    "message": "شبكة اختبار Goerli "
+  },
+  "hardware": {
+    "message": "أجهزة"
+  },
+  "hardwareWalletConnected": {
+    "message": "تم الاتصال بمحفظة الأجهزة"
+  },
+  "hardwareWallets": {
+    "message": "الاتصال بمحفظة hardware wallet"
+  },
+  "hardwareWalletsMsg": {
+    "message": "حدد محفظة أجهزة ترغب في استخدامها مع MetaMask"
+  },
+  "here": {
+    "message": "هنا",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "بيانات سداسية"
+  },
+  "hide": {
+    "message": "إخفاء"
+  },
+  "hideTokenPrompt": {
+    "message": "أتريد إخفاء العملة الرمزية؟"
+  },
+  "history": {
+    "message": "السجل"
+  },
+  "import": {
+    "message": "الاستيراد",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "استيراد الحساب"
+  },
+  "importAccountMsg": {
+    "message": "لن يتم ربط الحسابات التي تم استيرادها بعبارة أمان حساب MetaMask الذي تم إنشاؤها في الأصل. تعرف على المزيد حول الحسابات المستوردة"
+  },
+  "imported": {
+    "message": "المستوردة",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "initialTransactionConfirmed": {
+    "message": "تم تأكيد المعاملة الأولية الخاصة بك بواسطة الشبكة. انقر فوق موافق للعودة."
+  },
+  "insufficientBalance": {
+    "message": "الرصيد غير كافٍ"
+  },
+  "insufficientFunds": {
+    "message": "رصيد غير كاف."
+  },
+  "insufficientTokens": {
+    "message": "العملات الرمزية غير كافية."
+  },
+  "invalidAddress": {
+    "message": "عنوان غير صالح"
+  },
+  "invalidAddressRecipient": {
+    "message": "عنوان المستلم غير صحيح"
+  },
+  "invalidRPC": {
+    "message": "رابط آر بي سي غير صحيح"
+  },
+  "invalidSeedPhrase": {
+    "message": "عبارة أمان غير صحيحة"
+  },
+  "jsonFile": {
+    "message": "ملف JSON ",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "عنوان العقد المعروف."
+  },
+  "learnMore": {
+    "message": "اكتشف المزيد"
+  },
+  "learnMoreUpperCase": {
+    "message": "اكتشف المزيد"
+  },
+  "ledgerAccountRestriction": {
+    "message": "أنت بحاجة إلى استخدام حسابك الأخير قبل أن تتمكن من إضافة حساب جديد."
+  },
+  "likeToImportTokens": {
+    "message": "هل ترغب في إضافة هذه الرموز؟"
+  },
+  "lineaGoerli": {
+    "message": "شبكة اختبار Linea Goerli"
+  },
+  "links": {
+    "message": "الروابط"
+  },
+  "loadMore": {
+    "message": "تحميل المزيد"
+  },
+  "loading": {
+    "message": "جارٍ التحميل..."
+  },
+  "loadingTokens": {
+    "message": "جارِ تحميل العملات الرمزية ..."
+  },
+  "localhost": {
+    "message": "المضيف المحلي 8545"
+  },
+  "lock": {
+    "message": "تسجيل الخروج"
+  },
+  "mainnet": {
+    "message": "شبكة الإيثيريوم الرئيسية"
+  },
+  "memo": {
+    "message": "مذكرة"
+  },
+  "message": {
+    "message": "رسالة"
+  },
+  "metamaskVersion": {
+    "message": "إصدار MetaMask "
+  },
+  "mustSelectOne": {
+    "message": "يجب تحديد عملة رمزية واحدة على الأقل."
+  },
+  "needImportFile": {
+    "message": "يلزم تحديد ملف للاستيراد.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "لا يمكن إرسال مبالغ سلبية من ETH."
+  },
+  "networkName": {
+    "message": "اسم الشبكة"
+  },
+  "networks": {
+    "message": "الشبكات"
+  },
+  "nevermind": {
+    "message": "لا يهم"
+  },
+  "newAccount": {
+    "message": "حساب جديد"
+  },
+  "newAccountNumberName": {
+    "message": "حساب $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "جهة اتصال جديدة"
+  },
+  "newContract": {
+    "message": "عقد جديد"
+  },
+  "newPassword": {
+    "message": "كلمة مرور جديدة (8 أحرف كحد أدنى)"
+  },
+  "next": {
+    "message": "التالي"
+  },
+  "noConversionRateAvailable": {
+    "message": "لا يوجد معدل تحويل متاح"
+  },
+  "noTransactions": {
+    "message": "لا توجد لديك معاملات"
+  },
+  "noWebcamFound": {
+    "message": "لم يتم العثور على كاميرا ويب للكمبيوتر الخاص بك. حاول مرة اخرى."
+  },
+  "noWebcamFoundTitle": {
+    "message": "لم يتم العثور على كاميرا متصلة بالإنترنت"
+  },
+  "notEnoughGas": {
+    "message": "لا توجد عملات جاس كافية"
+  },
+  "ofTextNofM": {
+    "message": "من"
+  },
+  "off": {
+    "message": "مقفل"
+  },
+  "ok": {
+    "message": "أوافق"
+  },
+  "on": {
+    "message": "تشغيل"
+  },
+  "origin": {
+    "message": "الأصل"
+  },
+  "parameters": {
+    "message": "معلّمات"
+  },
+  "participateInMetaMetrics": {
+    "message": "المشاركة في MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "شارك في MetaMetrics لمساعدتنا في جعل MetaMask أفضل"
+  },
+  "password": {
+    "message": "كلمة المرور"
+  },
+  "passwordNotLongEnough": {
+    "message": "كلمة المرور أقصر مما يلزم"
+  },
+  "passwordsDontMatch": {
+    "message": "كلمات المرور غير متطابقة"
+  },
+  "pastePrivateKey": {
+    "message": "الصق مقطع مفتاحك الخاص هنا:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "قيد الانتظار"
+  },
+  "personalAddressDetected": {
+    "message": "تم اكتشاف عنوان شخصي. يرجى إدخال عنوان عقد الرمز."
+  },
+  "prev": {
+    "message": "السابق"
+  },
+  "primaryCurrencySetting": {
+    "message": "العملة الأساسية"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "حدد خيار \"المحلية\" لتحديد أولويات عرض القيم بالعملة المحلية للسلسلة (مثلاً ETH). حدد Fiat لتحديد أولويات عرض القيم بعملات fiat المحددة الخاصة بك."
+  },
+  "privacyMsg": {
+    "message": "سياسة الخصوصية"
+  },
+  "privateKey": {
+    "message": "المفتاح الخاص",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "تنبيه: لا تكشف عن هذا المفتاح مطلقًا. يمكن لأي شخص لديه مفاتيحك الخاصة سرقة أي أصول تحتفظ بها في حسابك."
+  },
+  "privateNetwork": {
+    "message": "شبكة خاصة"
+  },
+  "readdToken": {
+    "message": "يمكنك إضافة هذه العملة الرمزية مرة أخرى في المستقبل من خلال الانتقال إلى \"إضافة عملة رمزية\" في قائمة خيارات الحسابات الخاصة بك."
+  },
+  "reject": {
+    "message": "رفض"
+  },
+  "rejectAll": {
+    "message": "رفض الكل"
+  },
+  "rejectTxsDescription": {
+    "message": "أنت بصدد رفض المعاملات بقيمة $1 بدفعة واحدة."
+  },
+  "rejectTxsN": {
+    "message": "رفض معاملات $1"
+  },
+  "rejected": {
+    "message": "مرفوض"
+  },
+  "remove": {
+    "message": "إزالة"
+  },
+  "removeAccount": {
+    "message": "إزالة الحساب"
+  },
+  "removeAccountDescription": {
+    "message": "ستتم إزالة هذا الحساب من محفظتك. يرجى التأكد من وجود عبارة الأمان الأصلية أو المفتاح الخاص لهذا الحساب الذي تم استيراده قبل المتابعة. يمكنك استيراد أو إنشاء حسابات مرة أخرى من القائمة المنسدلة للحساب."
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "طلبات في انتظار الاعتراف بها"
+  },
+  "required": {
+    "message": "مطلوب"
+  },
+  "reset": {
+    "message": "إعادة"
+  },
+  "restore": {
+    "message": "استعادة"
+  },
+  "revealSeedWords": {
+    "message": "كشف كلمات عبارات الأمان"
+  },
+  "revealSeedWordsWarning": {
+    "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "rpcUrl": {
+    "message": "عنوان جديد لاستدعاء الإجراء عن بعد"
+  },
+  "save": {
+    "message": "حفظ"
+  },
+  "scanInstructions": {
+    "message": "ضع رمز الاستجابة السريعة أمام الكاميرا"
+  },
+  "scanQrCode": {
+    "message": "مسح كود الاستجابة السريعة QR"
+  },
+  "search": {
+    "message": "البحث"
+  },
+  "securityAndPrivacy": {
+    "message": "الأمن والخصوصية"
+  },
+  "seedPhraseReq": {
+    "message": "طول الجمل البذرية 12 كلمة"
+  },
+  "selectAnAccount": {
+    "message": "قم بتحديد حساب"
+  },
+  "selectHdPath": {
+    "message": "حدد مسار HD "
+  },
+  "selectPathHelp": {
+    "message": "إذا لم تشاهد حسابات Ledger الحالية الخاصة بك أدناه، فحاول تبديل المسارات \"Legacy (MEW / MyCrypto)\""
+  },
+  "selectType": {
+    "message": "تحديد النوع"
+  },
+  "send": {
+    "message": "إرسال"
+  },
+  "settings": {
+    "message": "الإعدادات"
+  },
+  "showFiatConversionInTestnets": {
+    "message": "عرض التحويل على Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "حدد هذا لإظهار تحويل fiat على Testnets"
+  },
+  "showHexData": {
+    "message": "إظهار بيانات Hex"
+  },
+  "showHexDataDescription": {
+    "message": "حدد هذا لإظهار حقل بيانات سداسي عشرية على شاشة الإرسال"
+  },
+  "sigRequest": {
+    "message": "طلب التوقيع"
+  },
+  "sign": {
+    "message": "توقيع"
+  },
+  "signatureRequest": {
+    "message": "طلب التوقيع"
+  },
+  "signed": {
+    "message": "مسجل الدخول"
+  },
+  "somethingWentWrong": {
+    "message": "عذراً! حدث خطأ ما."
+  },
+  "speedUp": {
+    "message": "تعجيل"
+  },
+  "speedUpCancellation": {
+    "message": "تسريع هذا الإلغاء"
+  },
+  "speedUpTransaction": {
+    "message": "تعجيل هذه المعاملة"
+  },
+  "stateLogError": {
+    "message": "خطأ في استرداد سجلات الحالة."
+  },
+  "stateLogs": {
+    "message": "سجلات الحالة"
+  },
+  "stateLogsDescription": {
+    "message": "تحتوي سجلات الحالة على عناوين حسابك العامة والمعاملات المرسلة."
+  },
+  "submitted": {
+    "message": "المقدمة"
+  },
+  "supportCenter": {
+    "message": "تفضل بزيارة مركز الدعم الخاص بنا"
+  },
+  "switchNetworks": {
+    "message": "تبديل الشبكات"
+  },
+  "symbol": {
+    "message": "رمز"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "يجب أن يكون الرمز 11 حرفًا أو أقل."
+  },
+  "terms": {
+    "message": "شروط الاستخدام"
+  },
+  "tips": {
+    "message": "المكافآت"
+  },
+  "to": {
+    "message": "إلى"
+  },
+  "token": {
+    "message": "عملة رمزية"
+  },
+  "tokenAlreadyAdded": {
+    "message": "تمت إضافة العملة الرمزية بالفعل."
+  },
+  "tokenContractAddress": {
+    "message": "عنوان عقد العملة الرمزية"
+  },
+  "tokenSymbol": {
+    "message": "رمز العملة الرمزية"
+  },
+  "total": {
+    "message": "الإجمالي"
+  },
+  "transaction": {
+    "message": "المعاملة"
+  },
+  "transactionCancelAttempted": {
+    "message": "تمت محاولة إلغاء المعاملة برسوم $1 من عملة جاس في $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "تم إلغاء المعاملة بنجاح عند $2"
+  },
+  "transactionConfirmed": {
+    "message": "تم تأكيد المعاملة بقيمة $2."
+  },
+  "transactionCreated": {
+    "message": "تم إنشاء المعاملة بقيمة $1 عند $2."
+  },
+  "transactionDropped": {
+    "message": "انخفضت المعاملة عند $2."
+  },
+  "transactionError": {
+    "message": "خطأ في المعاملة. استثناء تم طرحه في التعليمات البرمجية للعقد."
+  },
+  "transactionErrorNoContract": {
+    "message": "جاري محاولة استدعاء وظيفة على عنوان غير ملتزم بعقد."
+  },
+  "transactionErrored": {
+    "message": "لقد حدث خطأ ما أثناء معالجة المعاملة."
+  },
+  "transactionFee": {
+    "message": "رسوم التحويل"
+  },
+  "transactionResubmitted": {
+    "message": "زادت رسوم جاس على المعاملة التي أعيد تقديمها إلى $1 عند $2"
+  },
+  "transactionSubmitted": {
+    "message": "تم تقديم المعاملة برسوم $1 من عملة جاس في $2."
+  },
+  "transactionUpdated": {
+    "message": "تم تحديث المعاملة في $2."
+  },
+  "transfer": {
+    "message": "تحويل"
+  },
+  "transferFrom": {
+    "message": "التحويل من"
+  },
+  "tryAgain": {
+    "message": "إعادة المحاولة"
+  },
+  "unapproved": {
+    "message": "تم الرفض"
+  },
+  "units": {
+    "message": "وحدات"
+  },
+  "unknown": {
+    "message": "غير معروف"
+  },
+  "unknownNetwork": {
+    "message": "شبكة خاصة مجهولة"
+  },
+  "unknownQrCode": {
+    "message": "خطأ: لم نتمكن من تحديد رمز الاستجابة السريعة هذا"
+  },
+  "unlock": {
+    "message": "فتح القفل"
+  },
+  "unlockMessage": {
+    "message": "شبكة الويب اللامركزية بانتظارك"
+  },
+  "updatedWithDate": {
+    "message": "تم تحديث $1"
+  },
+  "urlErrorMsg": {
+    "message": "تتطلب الروابط بادئة HTTP/HTTPS مناسبة."
+  },
+  "usedByClients": {
+    "message": "مستخدمة من قبل مجموعة متنوعة من العملاء المختلفة"
+  },
+  "userName": {
+    "message": "اسم المستخدم"
+  },
+  "viewContact": {
+    "message": "عرض جهة الاتصال"
+  },
+  "visitWebSite": {
+    "message": "قم بزيارة موقعنا على الإنترنت"
+  },
+  "welcomeBack": {
+    "message": "نرحب بعودتك!"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."
+  },
+  "youSign": {
+    "message": "أنت بصدد التوقيع"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "عبارة الأمان الشخصية الخاصة بك"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "سعر الغاز صفر عند التعجيل"
+  }
+}

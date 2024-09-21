@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm Delete Network should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-container"
+    data-testid="confirm-delete-network-modal"
+  >
+    <div
+      class="modal-container__content"
+    >
+      <div
+        class="modal-content"
+      >
+        <div
+          class="modal-content__title"
+        >
+          Delete Custom Mainnet RPC network?
+        </div>
+        <div
+          class="modal-content__description"
+        >
+          If you delete this network, you will need to add it again to view your assets in this network
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-secondary modal-container__footer-button"
+      >
+        Cancel
+      </button>
+      <button
+        class="button btn--rounded btn-danger-primary modal-container__footer-button"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+`;

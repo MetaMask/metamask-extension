@@ -1,0 +1,145 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "നിരസിക്കുക"
+  },
+  "about": {
+    "message": "വിവരം"
+  },
+  "account": {
+    "message": "അക്കൗണ്ട്"
+  },
+  "advanced": {
+    "message": "നൂതനം"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "back": {
+    "message": "പിന്നോട്ട്"
+  },
+  "basic": {
+    "message": "അടിസ്ഥാനം"
+  },
+  "cancel": {
+    "message": "റദ്ദാക്കൂ"
+  },
+  "close": {
+    "message": "അവസാനിപ്പിക്കുക"
+  },
+  "confirm": {
+    "message": "സ്ഥിരീകരിക്കുക"
+  },
+  "connect": {
+    "message": "കണക്‌റ്റുചെയ്യുക"
+  },
+  "copyToClipboard": {
+    "message": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക"
+  },
+  "create": {
+    "message": "സൃഷ്‌ടിക്കുക"
+  },
+  "custom": {
+    "message": "നൂതനം"
+  },
+  "delete": {
+    "message": "ഇല്ലാതാക്കുക"
+  },
+  "details": {
+    "message": "വിശദാംശങ്ങൾ‌"
+  },
+  "done": {
+    "message": "പൂർത്തിയാക്കി"
+  },
+  "edit": {
+    "message": "എഡിറ്റുചെയ്യുക"
+  },
+  "fast": {
+    "message": "വേഗത"
+  },
+  "forgetDevice": {
+    "message": "ഈ ഉപകരണം മറക്കുക"
+  },
+  "hide": {
+    "message": "മറയ്ക്കുക"
+  },
+  "history": {
+    "message": "ചരിത്രം"
+  },
+  "import": {
+    "message": "ഇറക്കുമതിചെയ്യുക",
+    "description": "Button to import an account from a selected file"
+  },
+  "imported": {
+    "message": "ഇറക്കുമതിചെയ്തു",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "loading": {
+    "message": "ലോഡ്ചെയ്യുന്നു..."
+  },
+  "next": {
+    "message": "അടുത്തത്"
+  },
+  "off": {
+    "message": "ഓഫാക്കുക"
+  },
+  "ok": {
+    "message": "ശരി"
+  },
+  "on": {
+    "message": "ഓൺ ചെയ്യുക"
+  },
+  "origin": {
+    "message": "ഉറവിടം"
+  },
+  "password": {
+    "message": "പാസ്‌വേഡ്"
+  },
+  "reject": {
+    "message": "നിരസിക്കുക"
+  },
+  "remove": {
+    "message": "നീക്കംചെയ്യുക"
+  },
+  "removeAccount": {
+    "message": "അക്കൗണ്ട് നീക്കംചെയ്യൽ"
+  },
+  "reset": {
+    "message": "വീണ്ടും സജ്ജീകരിക്കുക"
+  },
+  "restore": {
+    "message": "പുനഃസ്ഥാപിക്കുക"
+  },
+  "save": {
+    "message": "സംരക്ഷിക്കുക"
+  },
+  "search": {
+    "message": "തിരയൂ"
+  },
+  "send": {
+    "message": "അയയ്‌ക്കുക"
+  },
+  "settings": {
+    "message": "ക്രമീകരണങ്ങള്‍"
+  },
+  "tryAgain": {
+    "message": "വീണ്ടും ശ്രമിക്കുക"
+  },
+  "unknown": {
+    "message": "അറിഞ്ഞുകൂടാത്തത്"
+  },
+  "unlock": {
+    "message": "അണ്‍ലോക്ക് ചെയ്യുക"
+  },
+  "userName": {
+    "message": "ഉപയോക്തൃനാമം"
+  }
+}

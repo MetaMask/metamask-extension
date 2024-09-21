@@ -1,0 +1,245 @@
+name: Update LavaMoat policies
+
+on:
+  issue_comment:
+    types: created
+
+jobs:
+  is-fork-pull-request:
+    name: Determine whether this issue comment was on a pull request from a fork
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-policies') }}
+    runs-on: ubuntu-latest
+    outputs:
+      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Determine whether this PR is from a fork
+        id: is-fork
+        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+  react-to-comment:
+    name: React to the comment
+    runs-on: ubuntu-latest
+    needs: is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: React to the comment
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
+            -f content='+1'
+        env:
+          COMMENT_ID: ${{ github.event.comment.id }}
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          REPO: ${{ github.repository }}
+
+  prepare:
+    name: Prepare dependencies
+    runs-on: ubuntu-latest
+    needs: is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    outputs:
+      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+  update-lavamoat-build-policy:
+    name: Update LavaMoat build policy
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Update LavaMoat build policy
+        run: yarn lavamoat:build:auto
+      - name: Cache build policy
+        uses: actions/cache/save@v4
+        with:
+          path: lavamoat/build-system
+          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+
+  update-lavamoat-webapp-policy:
+    strategy:
+      matrix:
+        # Ensure this is synchronized with the list below in the "commit-updated-policies" job
+        # and with the build type list in `builds.yml`
+        build-type: [main, beta, flask, mmi]
+    name: Update LavaMoat ${{ matrix.build-type }} application policy
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - update-lavamoat-build-policy
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Restore build policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/build-system
+          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Update LavaMoat ${{ matrix.build-type }} policy
+        run: yarn lavamoat:webapp:auto:ci '--build-types=${{ matrix.build-type }}'
+        env:
+          INFURA_PROJECT_ID: 00000000000
+      - name: Cache ${{ matrix.build-type }} application policy
+        uses: actions/cache/save@v4
+        with:
+          path: lavamoat/browserify/${{ matrix.build-type }}
+          key: cache-${{ matrix.build-type }}-${{ needs.prepare.outputs.COMMIT_SHA }}
+
+  commit-updated-policies:
+    name: Commit the updated LavaMoat policies
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - is-fork-pull-request
+      - update-lavamoat-build-policy
+      - update-lavamoat-webapp-policy
+    # Ensure forks don't get access to the LavaMoat update token
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Use PAT to ensure that the commit later can trigger status check workflows
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Restore build policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/build-system
+          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      # One restore step per build type: [main, beta, flask, mmi]
+      # Ensure this is synchronized with the list above in the "update-lavamoat-webapp-policy" job
+      # and with the build type list in `builds.yml`
+      - name: Restore main application policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/browserify/main
+          key: cache-main-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Restore beta application policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/browserify/beta
+          key: cache-beta-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Restore flask application policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/browserify/flask
+          key: cache-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Restore mmi application policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/browserify/mmi
+          key: cache-mmi-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Check whether there are policy changes
+        id: policy-changes
+        run: |
+          if git diff --exit-code
+          then
+            echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "HAS_CHANGES=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Commit the updated policies
+        if: steps.policy-changes.outputs.HAS_CHANGES == 'true'
+        run: |
+          git config --global user.name 'MetaMask Bot'
+          git config --global user.email 'metamaskbot@users.noreply.github.com'
+          git commit -am "Update LavaMoat policies"
+          git push
+      - name: Post comment
+        run: |
+          if [[ $HAS_CHANGES == 'true' ]]
+          then
+            gh pr comment "${PR_NUMBER}" --body 'Policies updated'
+          else
+            gh pr comment "${PR_NUMBER}" --body 'No policy changes'
+          fi
+        env:
+          HAS_CHANGES: ${{ steps.policy-changes.outputs.HAS_CHANGES }}
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+  check-status:
+    name: Check whether the policy update succeeded
+    runs-on: ubuntu-latest
+    needs:
+      - commit-updated-policies
+    outputs:
+      PASSED: ${{ steps.set-output.outputs.PASSED }}
+    steps:
+      - name: Set PASSED output
+        id: set-output
+        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
+
+  failure-comment:
+    name: Comment about the policy update failure
+    if: ${{ always() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    needs:
+      - is-fork-pull-request
+      - check-status
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      - name: Post comment if the update failed
+        run: |
+          passed="${{ needs.check-status.outputs.PASSED }}"
+          if [[ $passed != "true" ]]; then
+            gh pr comment "${PR_NUMBER}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          ACTION_RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

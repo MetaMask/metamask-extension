@@ -1,0 +1,9 @@
+.icon-border {
+  border-radius: 50%;
+  border: 1px solid var(--color-border-muted);
+  background: var(--color-background-alternative);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}

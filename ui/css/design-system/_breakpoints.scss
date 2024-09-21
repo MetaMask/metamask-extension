@@ -1,0 +1,73 @@
+@use "sass:map";
+
+/*
+Responsive breakpoints
+*/
+
+// Screen sizes
+$screen-sizes-map: (
+  'sm':  576px,
+  'md': 768px,
+  'lg': 1280px,
+);
+
+// Max width screen size
+$screen-sm-max: calc(#{map.get($screen-sizes-map, "sm")} - 1px);
+$screen-md-max: calc(#{map.get($screen-sizes-map, "md")} - 1px);
+$screen-lg-max: calc(#{map.get($screen-sizes-map, "lg")} - 1px);
+
+// Min width screen size
+$screen-sm-min: map.get($screen-sizes-map, "sm");
+$screen-md-min: map.get($screen-sizes-map, "md");
+$screen-lg-min: map.get($screen-sizes-map, "lg");
+
+// Max width media query mixins
+@mixin screen-sm-max {
+  @media screen and (max-width: $screen-sm-max) {
+    @content;
+  };
+}
+
+@mixin screen-md-max {
+  @media screen and (max-width: $screen-md-max) {
+    @content;
+  };
+}
+
+@mixin screen-lg-max {
+  @media screen and (max-width: $screen-lg-max) {
+    @content;
+  };
+}
+
+// Min width media query mixins
+@mixin screen-sm-min {
+  @media screen and (min-width: $screen-sm-min) {
+    @content;
+  };
+}
+
+@mixin screen-md-min {
+  @media screen and (min-width: $screen-md-min) {
+    @content;
+  };
+}
+
+@mixin screen-lg-min {
+  @media screen and (min-width: $screen-lg-min) {
+    @content;
+  };
+}
+
+/*
+DEPRECATED
+*/
+$break-small: 575px;
+$break-midpoint: 780px;
+$break-large: 576px;
+
+$screen-sizes-map: (
+  'sm':  576px,
+  'md': 768px,
+  'lg': 1280px,
+);

@@ -1,0 +1,611 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { Text } from '../text';
+
+# Text
+
+Good typography improves readability, legibility and hierarchy of information.
+
+> Contribute to improving the UI consistency of the extension by helping to replace the deprecated `<Typography>` with `<Text>`. [See details](#converting-from-typography-to-text)
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-text--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Text} />
+
+### Variant
+
+Use the `variant` prop and the `TextVariant` enum from `./ui/helpers/constants/design-system.js` to change the font size of the component.
+
+`TextVariant` options:
+
+- TextVariant.displayMd (default renders as `h1` tag)
+- TextVariant.headingLg (default renders as `h2` tag)
+- TextVariant.headingMd (default renders as `h3` tag)
+- TextVariant.headingSm (default renders as `h4` tag)
+- TextVariant.bodyLgMedium (default renders as `p` tag)
+- TextVariant.bodyMd (default renders as `p` tag)
+- TextVariant.bodyMdBold (default renders as `p` tag)
+- TextVariant.bodyMdMedium (default renders as `p` tag)
+- TextVariant.bodySm (default renders as `p` tag)
+- TextVariant.bodySmMedium (default renders as `p` tag)
+- TextVariant.bodySmBold (default renders as `p` tag)
+- TextVariant.bodyXs (default renders as `p` tag)
+- TextVariant.bodyXsMedium (default renders as `p` tag)
+- TextVariant.inherit (default renders as `span` tag)
+
+<Canvas>
+  <Story id="components-componentlibrary-text--variant" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.displayMd}>display-md</Text>
+<Text variant={TextVariant.headingLg}>heading-lg</Text>
+<Text variant={TextVariant.headingMd}>heading-md</Text>
+<Text variant={TextVariant.headingSm}>heading-sm</Text>
+<Text variant={TextVariant.bodyLgMedium}>body-lg-medium</Text>
+<Text variant={TextVariant.bodyMd}>body-md</Text>
+<Text variant={TextVariant.bodyMdBold}>body-md-bold</Text>
+<Text variant={TextVariant.bodyMdMedium}>body-md-medium</Text>
+<Text variant={TextVariant.bodySm}>body-sm</Text>
+<Text variant={TextVariant.bodySmMedium}>body-sm-medium</Text>
+<Text variant={TextVariant.bodySmBold}>body-sm-bold</Text>
+<Text variant={TextVariant.bodyXs}>body-xs</Text>
+<Text variant={TextVariant.bodyXsMedium}>body-xs-medium</Text>
+<Text variant={TextVariant.inherit}>inherit</Text>
+```
+
+### Color
+
+Use the `color` prop and the `TextColor` enum from `./ui/helpers/constants/design-system.js` to change the color of the `Text` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-text--color-story" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+import { TextColor, BackgroundColor } from '../../../helpers/constants/design-system';
+
+<Text color={TextColor.textDefault}>
+  text-default
+</Text>
+<Text color={TextColor.textAlternative}>
+  text-alternative
+</Text>
+<Text color={TextColor.textMuted}>
+  text-muted
+</Text>
+<Text color={TextColor.primaryDefault}>
+  primary-default
+</Text>
+<Text color={TextColor.primaryInverse} backgroundColor={BackgroundColor.primaryDefault}>
+  primary-inverse
+</Text>
+<Text color={TextColor.errorDefault}>
+  error-default
+</Text>
+<Text color={TextColor.errorInverse} backgroundColor={BackgroundColor.errorDefault}>
+  error-inverse
+</Text>
+<Text color={TextColor.successDefault}>
+  success-default
+</Text>
+<Text color={TextColor.successInverse} backgroundColor={BackgroundColor.successDefault}>
+  success-inverse
+</Text>
+<Text color={TextColor.warningDefault}>
+  warning-default
+</Text>
+<Text color={TextColor.warningInverse} backgroundColor={BackgroundColor.warningDefault}>
+  warning-inverse
+</Text>
+<Text color={TextColor.infoDefault}>
+  info-default
+</Text>
+<Text color={TextColor.infoInverse} backgroundColor={BackgroundColor.infoDefault}>
+  info-inverse
+</Text>
+```
+
+### Font Weight
+
+Use the `fontWeight` prop and the `FontWeight` enum from `./ui/helpers/constants/design-system.js` to change the font weight of the `Text` component. There are 3 font weights:
+
+- `FontWeight.Normal` = `normal` || `400`
+- `FontWeight.Medium` = `medium` || `500`
+- `FontWeight.Bold` = `bold` || `700`
+
+<Canvas>
+  <Story id="components-componentlibrary-text--font-weight-story" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+import { FontWeight } from '../../../helpers/constants/design-system';
+
+<Text fontWeight={FontWeight.Normal}>
+  normal
+</Text>
+<Text fontWeight={FontWeight.Medium}>
+  medium
+</Text>
+<Text fontWeight={FontWeight.Bold}>
+  bold
+</Text>
+```
+
+### Font Style
+
+Use the `fontStyle` prop and the `FontStyle` enum from `./ui/helpers/constants/design-system.js` to change the font style of the `Text` component. There are 2 font styles:
+
+- `FontStyle.Normal`
+- `FontStyle.Italic`
+
+<Canvas>
+  <Story id="components-componentlibrary-text--font-style-story" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+import { FontStyle } from '../../../helpers/constants/design-system';
+
+<Text fontStyle={FontStyle.Normal}>
+  normal
+</Text>
+<Text fontStyle={FontStyle.Italic}>
+  bold
+</Text>
+```
+
+### Text Transform
+
+Use the `textTransform` prop and the `TextTransform` enum from `./ui/helpers/constants/design-system.ts` to change the text alignment of the `Text` component
+
+<Canvas>
+  <Story id="components-componentlibrary-text--text-transform-story" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+import { TextTransform } from '../../../helpers/constants/design-system';
+
+<Text textAlign={TextTransform.Uppercase}>
+  uppercase
+</Text>
+<Text textAlign={TextTransform.Lowercase}>
+  lowercase
+</Text>
+<Text textAlign={TextTransform.Capitalize}>
+  capitalize
+</Text>
+```
+
+### Text Align
+
+Use the `textAlign` prop and the `TextAlign` enum from `./ui/helpers/constants/design-system.ts` to change the text alignment of the `Text` component
+
+<Canvas>
+  <Story id="components-componentlibrary-text--text-align-story" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+import { TextAlign } from '../../../helpers/constants/design-system';
+
+<Text textAlign={TextAlign.Left}>
+  left
+</Text>
+<Text textAlign={TextAlign.Center}>
+  center
+</Text>
+<Text textAlign={TextAlign.Right}>
+  right
+</Text>
+<Text textAlign={TextAlign.Justify}>
+  justify
+</Text>
+<Text textAlign={TextAlign.End}>
+  end
+</Text>
+```
+
+### Overflow Wrap
+
+Use the `overflowWrap` prop and the `OverflowWrap` enum from `./ui/helpers/constants/design-system.ts` to change the overflow wrap of the `Text` component
+
+<Canvas>
+  <Story id="components-componentlibrary-text--overflow-wrap-story" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+import { OverflowWrap } from '../../../helpers/constants/design-system';
+
+<div
+  style={{
+    width: 250,
+    border: '1px solid var(--color-error-default)',
+    display: 'block',
+  }}
+>
+  <Text overflowWrap={OverflowWrap.Normal}>
+    {OverflowWrap.Normal}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+  </Text>
+  <Text overflowWrap={OverflowWrap.BreakWord}>
+    {OverflowWrap.BreakWord}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+  </Text>
+</div>;
+```
+
+### Ellipsis
+
+Use the boolean `ellipsis` prop to change the if the `Text` component to have an ellipsis.
+
+<Canvas>
+  <Story id="components-componentlibrary-text--ellipsis" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+
+<div
+  style={{
+    width: 250,
+    border: '1px solid var(--color-error-default)',
+    display: 'block',
+  }}
+>
+  <Text ellipsis>Ellipsis: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d</Text>
+  <Text>No Ellipsis: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d</Text>
+</div>;
+```
+
+### As
+
+Use the `as` prop to change the root html element of the `Text` component
+
+You can also utilize the `ValidTag` enum from `./text.types` to ensure that you are using a valid html element
+
+<Canvas>
+  <Story id="components-componentlibrary-text--as" />
+</Canvas>
+
+```jsx
+import { Display } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library'
+
+<Text as="dd">dd</Text>
+<Text as="div">div</Text>
+<Text as="dt">dt</Text>
+<Text as="em">em</Text>
+<Text as="h1">h1</Text>
+<Text as="h2">h2</Text>
+<Text as="h3">h3</Text>
+<Text as="h4">h4</Text>
+<Text as="h5">h5</Text>
+<Text as="h6">h6</Text>
+<Text as="li">li</Text>
+<Text as="p">p</Text>
+<Text display={Display.Block} as="span">span</Text>
+<Text display={Display.Block} as="strong">strong</Text>
+<Text as="ul">ul</Text>
+<Text as="label">label</Text>
+<Text as="header">header</Text>
+<Text as="input" placeholder="input" />
+```
+
+Renders the html:
+
+```html
+<dd>dd</dd>
+<div>div</div>
+<dt>dt</dt>
+<em>em</em>
+<h1>h1</h1>
+<h2>h2</h2>
+<h3>h3</h3>
+<h4>h4</h4>
+<h5>h5</h5>
+<h6>h6</h6>
+<li>li</li>
+<p>p</p>
+<span>span</span>
+<strong>strong</strong>
+<ul>
+  ul
+</ul>
+<label>label</label>
+<header>header</header>
+<input placeholder="input" />
+```
+
+### Text Direction
+
+Use the `textDirection` prop and the `TextDirection` enum from `./text.types` to change the text direction of `Text`
+
+<Canvas>
+  <Story id="components-componentlibrary-text--text-direction-story" />
+</Canvas>
+
+```jsx
+import { Text, TextDirection } from '../../component-library';
+
+<Text textDirection={TextDirection.LeftToRight}>
+  This is left to right (ltr) for English and most languages
+</Text>
+<Text textDirection={TextDirection.RightToLeft}>
+  This is right to left (rtl) for use with other languages such as Arabic. This English example is incorrect usage.
+</Text>
+<Text textDirection={TextDirection.Auto}>
+  Let the user agent decide with the auto option
+</Text>
+```
+
+### Strong
+
+Using the `as` prop with the value of `strong` will render the `Text` component as a `strong` element and any `strong` emlements used within a `Text` component will be supported with bold styles.
+
+<Canvas>
+  <Story id="components-componentlibrary-text--strong" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+
+<Text as="strong">
+  This is an as="strong" demo.
+</Text>
+<Text>
+  This is a <strong>strong element</strong> demo.
+</Text>
+```
+
+### Class Name
+
+Adds an additional class to the `Text` component
+
+### Children
+
+The text content of the `Text` component
+
+---
+
+# Converting from `Typography` to `Text`
+
+The `Typography` component has been deprecated in favor of the `Text` component. You can contribute by submitting a PR against [Replace deprecated Typography with Text component](https://github.com/MetaMask/metamask-extension/issues/17670) on GitHub. Below are code examples converting from `Typography` to `Text`.
+
+### Variant
+
+Table below is the 1:1 mapping of `TypographyVariant` to `TextVariant` and the html element that needs to be rendered.
+
+The new `Text` component does not have matching default elements for `TypographyVariant.H5`, `TypographyVariant.H6`, `TypographyVariant.H7` or `TypographyVariant.H8` or `TypographyVariant.H9` variant.
+
+If you need to use these variants, please use the `as` prop to render the correct html element.
+
+| TypographyVariant                                          | Typography Tag | TextVariant           | Text Default Tag |
+| ---------------------------------------------------------- | -------------- | --------------------- | ---------------- |
+| [TypographyVariant.H1](#typographyvarianth1)               | h1             | TextVariant.displayMd | h1               |
+| [TypographyVariant.H2](#typographyvarianth2)               | h2             | TextVariant.headingLg | h2               |
+| [TypographyVariant.H3](#typographyvarianth3)               | h3             | TextVariant.headingMd | h3               |
+| [TypographyVariant.H4](#typographyvarianth4)               | h4             | TextVariant.headingSm | h4               |
+| [TypographyVariant.H5](#typographyvarianth5)               | h5             | TextVariant.bodyMd    | p                |
+| [TypographyVariant.H6](#typographyvarianth6)               | h6             | TextVariant.bodySm    | p                |
+| [TypographyVariant.Paragraph](#typographyvariantparagraph) | p              | TextVariant.bodyMd    | p                |
+| [TypographyVariant.H7](#typographyvarianth7)               | h6             | TextVariant.bodySm    | p                |
+| [TypographyVariant.H8](#typographyvarianth8)               | h6             | TextVariant.bodyXs    | p                |
+| [TypographyVariant.H9](#typographyvarianth9)               | h6             | TextVariant.bodyXs    | p                |
+
+#### TypographyVariant.H1
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typography variant={TypographyVariant.H1}>Demo</Typography>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.displayMd}>Demo</Text>;
+```
+
+#### TypographyVariant.H2
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H2}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingLg}>Demo</Text>;
+```
+
+#### TypographyVariant.H3
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H3}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingMd}>Demo</Text>;
+```
+
+#### TypographyVariant.H4
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H4}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingSm}>Demo</Text>;
+```
+
+#### TypographyVariant.H5
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H5}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyMd} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.H6
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H6}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodySm} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.Paragraph
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.Paragraph}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyMd}>Demo</Text>;
+```
+
+#### TypographyVariant.H7
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H7}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodySm} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.H8
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H8}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyXs} as="h6">
+  Demo
+</Text>;
+```
+
+#### TypographyVariant.H9
+
+Requires `as="h6"` prop for 1:1 conversion
+
+```jsx
+// Before
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H9}>Demo</Typograpghy>;
+
+// After
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyXs} as="h6">
+  Demo
+</Text>;
+```
+
+### Align
+
+The prop name `align` has been deprecated in favor of `textAlign`
+
+Values using the `TextAlign` object from `./ui/helpers/constants/design-system.js` remain the same
+
+```jsx
+// Before
+<Typography align={TEXT_ALIGN.CENTER}>Demo</Typography>;
+
+// After
+<Text textAlign={TextAlign.Center}>Demo</Text>;
+```
+
+### Box Props
+
+Box props are now integrated with the `Text` component. Valid Box props: [Box](/docs/components-componentlibrary-box--docs#props)
+
+You no longer need to pass these props as an object through `boxProps`
+
+```jsx
+// Before
+<Typography
+  boxProps={{
+    backgroundColor: Color.infoMuted,
+    borderColor: Color.infoDefault,
+    padding: 4,
+    borderRadius: 4,
+  }}
+  color={Color.textDefault}
+>
+  Demo
+</Typography>;
+
+// After
+<Text
+  backgroundColor={Color.infoMuted}
+  borderColor={Color.infoDefault}
+  padding={4}
+  borderRadius={4}
+  color={Color.textDefault}
+>
+  Demo
+</Text>;
+```

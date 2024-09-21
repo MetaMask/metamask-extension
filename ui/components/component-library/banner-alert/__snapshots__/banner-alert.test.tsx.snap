@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BannerAlert should render BannerAlert element correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-info mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-primary-muted mm-box--rounded-sm"
+    data-testid="bannerAlert"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-primary-default"
+      style="mask-image: url('./images/icons/info.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
+      >
+        BannerAlert test
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      >
+        should render BannerAlert element correctly
+      </p>
+    </div>
+  </div>
+</div>
+`;

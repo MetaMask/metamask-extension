@@ -1,0 +1,270 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { Input } from './input';
+
+# Input
+
+`Input` lets user enter a text data. It’s a light-weighted borderless input used inside of custom inputs. See [TextField](/docs/components-componentlibrary-textfield--default-story#textfield) for common text input.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-input--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Input} />
+
+### Type
+
+Use the `type` prop to change the type of input.
+
+Possible types include:
+
+- `InputType.Text`
+- `InputType.Number`
+- `InputType.Password`
+- `InputType.Search`
+
+Defaults to `InputType.Text`.
+
+<Canvas>
+  <Story id="components-componentlibrary-input--type" />
+</Canvas>
+
+```jsx
+import { Input, InputType } from '../../component-library';
+
+<Input type={InputType.Text} />
+<Input type={InputType.Number} />
+<Input type={InputType.Password} />
+<Input type={InputType.Search} />
+```
+
+### Ref
+
+Use the `ref` prop to access the ref of the `<input />` html element of `Input`. This is useful for focusing the input from a button or other component.
+
+<Canvas>
+  <Story id="components-componentlibrary-input--ref" />
+</Canvas>
+
+```jsx
+import { Button, Input } from '../../component-library';
+
+const inputRef = useRef(null);
+const [value, setValue] = useState('');
+const handleOnClick = () => {
+  inputRef.current.focus();
+};
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
+
+<Input
+  ref={inputRef}
+  value={value}
+  onChange={handleOnChange}
+/>
+<Button marginLeft={1} onClick={handleOnClick}>
+  Edit
+</Button>
+```
+
+### Auto Complete
+
+Use the `autoComplete` prop to set the autocomplete html attribute. It allows the browser to predict the value based on earlier typed values.
+
+<Canvas>
+  <Story id="components-componentlibrary-input--auto-complete" />
+</Canvas>
+
+```jsx
+import { Input, InputType } from '../../component-library';
+
+<Input type={InputType.Password} autoComplete />;
+```
+
+### Auto Focus
+
+Use the `autoFocus` prop to focus the `Input` during the first mount
+
+To view story see [Canvas tab](/story/components-componentlibrary-input--auto-focus). Removing it from docs because created annoying reading experience 😁
+
+```jsx
+import { Input } from '../../component-library';
+
+<Input autoFocus />;
+```
+
+### Default Value
+
+Use the `defaultValue` prop to set the default value of the `Input`. Used for uncontrolled inputs.
+
+<Canvas>
+  <Story id="components-componentlibrary-input--default-value" />
+</Canvas>
+
+```jsx
+import { Input } from '../../component-library';
+
+<Input defaultValue="default value" />;
+```
+
+### Disabled
+
+Use the `disabled` prop to set the disabled state of the `Input`
+
+<Canvas>
+  <Story id="components-componentlibrary-input--disabled" />
+</Canvas>
+
+```jsx
+import { Input } from '../../component-library';
+
+<Input disabled />;
+```
+
+### Error
+
+Use the `error` prop to set `aria-invalid="true"`. This helps with screen readers for accessibility. There is no visual indicator for `error` this should be handled in the parent component.
+
+<Canvas>
+  <Story id="components-componentlibrary-input--error-story" />
+</Canvas>
+
+```jsx
+import { Input } from '../../component-library';
+
+<Input error />;
+```
+
+### Max Length
+
+Use the `maxLength` prop to set the maximum allowed input characters for the `Input`
+
+<Canvas>
+  <Story id="components-componentlibrary-input--max-length" />
+</Canvas>
+
+```jsx
+import { Input } from '../../component-library';
+
+<Input maxLength={10} />;
+```
+
+### Read Only
+
+Use the `readOnly` prop to set the `Input` to read only
+
+<Canvas>
+  <Story id="components-componentlibrary-input--read-only" />
+</Canvas>
+
+```jsx
+import { Input } from '../../component-library';
+
+<Input readOnly />;
+```
+
+### Required
+
+Use the `required` prop to set the html `required` attribute used by the browser api. There is no visual indicator for `required` this should be handled in the parent component.
+
+<Canvas>
+  <Story id="components-componentlibrary-input--required" />
+</Canvas>
+
+```jsx
+import { Input } from '../../component-library';
+
+// No visual indicator. Used by the browser api
+<Input required />;
+```
+
+### Disable Style States
+
+Use the `disableStyleStates` to remove disabled and focus styles
+
+#### IMPORTANT NOTE
+
+This sets the CSS to `outline: none` so ensure there is a proper fallback to enable accessibility for keyboard only and vision impaired users. Check `TextField` source code to see how it is done properly.
+
+<Canvas>
+  <Story id="components-componentlibrary-input--disable-state-styles" />
+</Canvas>
+
+```jsx
+import { Input } from '../../component-library';
+
+<Input disableStyleStates />;
+```
+
+### Text Variant
+
+Use the `textVariant` and `TextVariant` enum to change the font size and style of the input
+
+#### IMPORTANT NOTE
+
+This should RARELY be used but it is available for custom inputs that require larger text
+
+<Canvas>
+  <Story id="components-componentlibrary-input--text-variant-story" />
+</Canvas>
+
+```jsx
+import { TextVariant } from '../../../helpers/constants/design-system';
+import { Input } from '../../component-library';
+
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.displayMd}
+/>
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.headingLg}
+/>
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.headingMd}
+/>
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.headingSm}
+/>
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.bodyLgMedium}
+/>
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.bodyMdBold}
+/>
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.bodyMd}
+/>
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.bodySm}
+/>
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.bodySmBold}
+/>
+<Input
+  value={value}
+  onChange={handleOnChange}
+  textVariant={TextVariant.bodyXs}
+/>
+```

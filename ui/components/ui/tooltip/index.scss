@@ -1,0 +1,46 @@
+@use "design-system";
+
+.tippy-popper {
+  .tippy-tooltip.tippy-tooltip--mm-custom-theme {
+    background: var(--color-background-default);
+    color: var(--color-text-default);
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+    padding: 12px 16px;
+    padding-bottom: 11px;
+
+    .tippy-tooltip-content {
+      @include design-system.H7;
+
+      text-align: left;
+      color: var(--color-text-alternative);
+
+      a {
+        color: var(--color-primary-default);
+      }
+
+      p {
+        margin-bottom: 16px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  &[x-placement^='top'] .tippy-tooltip.tippy-tooltip--mm-custom-theme [x-arrow] {
+    border-top-color: var(--color-background-default);
+  }
+
+  &[x-placement^='right'] .tippy-tooltip.tippy-tooltip--mm-custom-theme [x-arrow] {
+    border-right-color: var(--color-background-default);
+  }
+
+  &[x-placement^='left'] .tippy-tooltip.tippy-tooltip--mm-custom-theme [x-arrow] {
+    border-left-color: var(--color-background-default);
+  }
+
+  &[x-placement^='bottom'] .tippy-tooltip.tippy-tooltip--mm-custom-theme [x-arrow] {
+    border-bottom-color: var(--color-background-default);
+  }
+}

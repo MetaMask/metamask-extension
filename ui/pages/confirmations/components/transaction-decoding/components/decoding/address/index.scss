@@ -1,0 +1,13 @@
+.tx-insight-component-address {
+  display: flex;
+  align-items: center;
+  overflow: visible;
+
+  &__sender-icon {
+    padding-right: 5px;
+  }
+
+  &__name {
+    cursor: pointer;
+  }
+}

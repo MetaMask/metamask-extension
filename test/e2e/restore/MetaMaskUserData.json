@@ -1,0 +1,52 @@
+{
+  "addressBook": {
+    "addressBook": {
+      "0x539": {
+        "0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb": {
+          "address": "0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb",
+          "chainId": "0x539",
+          "isEns": false,
+          "memo": "",
+          "name": "Test Account"
+        }
+      }
+    }
+  },
+  "preferences": {
+    "advancedGasFee": null,
+    "currentLocale": "en",
+    "dismissSeedBackUpReminder": true,
+    "featureFlags": {},
+    "forgottenPassword": false,
+    "frequentRpcListDetail": [
+      {
+        "chainId": "0x539",
+        "nickname": "Localhost 8545",
+        "rpcPrefs": {},
+        "rpcUrl": "http://localhost:8545",
+        "ticker": "ETH"
+      }
+    ],
+    "ipfsGateway": "dweb.link",
+    "knownMethodData": {},
+    "ledgerTransportType": "webhid",
+    "openSeaEnabled": false,
+    "preferences": {
+      "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
+      "showFiatInTestnets": false,
+      "showTestNetworks": false,
+      "smartTransactionsOptInStatus": false,
+      "useNativeCurrencyAsPrimaryCurrency": true
+    },
+    "theme": "light",
+    "useBlockie": false,
+    "useRequestQueue": true,
+    "useNftDetection": false,
+    "useNonceField": false,
+    "usePhishDetect": true,
+    "useTokenDetection": false,
+    "useCurrencyRateCheck": true,
+    "useMultiAccountBalanceChecker": true
+  }
+}

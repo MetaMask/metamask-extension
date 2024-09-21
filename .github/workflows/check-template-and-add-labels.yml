@@ -1,0 +1,23 @@
+name: Check template and add labels
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request_target:
+    types: [opened, edited]
+
+jobs:
+  check-template-and-add-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Check template and add labels
+        id: check-template-and-add-labels
+        env:
+          LABEL_TOKEN: ${{ secrets.LABEL_TOKEN }}
+        run: npm run check-template-and-add-labels

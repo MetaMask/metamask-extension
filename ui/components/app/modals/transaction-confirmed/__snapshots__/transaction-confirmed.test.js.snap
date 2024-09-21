@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Transaction Confirmed should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-container"
+  >
+    <div
+      class="modal-container__content"
+    >
+      <div
+        class="transaction-confirmed__content"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-success-default"
+          style="mask-image: url('./images/icons/check.svg');"
+        />
+        <h3
+          class="mm-box mm-text mm-text--heading-md mm-text--font-weight-medium mm-text--text-align-center mm-box--color-text-default"
+        >
+          [confirmed]!
+        </h3>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
+        >
+          [initialTransactionConfirmed]
+        </p>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-primary modal-container__footer-button"
+      >
+        [ok]
+      </button>
+    </div>
+  </div>
+</div>
+`;

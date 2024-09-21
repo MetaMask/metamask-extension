@@ -1,0 +1,37 @@
+/*
+  Utility Classes
+ */
+
+/* lib */
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+  transform-origin: center center;
+  transition: transform 50ms ease-in-out;
+}
+
+.cursor-pointer:hover {
+  transform: scale(1.05);
+}
+
+.cursor-pointer:active {
+  transform: scale(0.97);
+}
+
+.drop-menu-item {
+  display: flex;
+  align-items: center;
+}

@@ -1,0 +1,19 @@
+.info-icon {
+  margin: 0 4px;
+
+  &--success {
+    fill: var(--color-success-default);
+  }
+
+  &--info {
+    fill: var(--color-info-default);
+  }
+
+  &--warning {
+    fill: var(--color-warning-default);
+  }
+
+  &--danger {
+    fill: var(--color-error-default);
+  }
+}

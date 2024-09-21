@@ -1,0 +1,58 @@
+@use "design-system";
+
+.confirm-remove-account {
+  &__description {
+    @include design-system.H6;
+
+    text-align: center;
+  }
+
+  &__account {
+    border: 1px solid var(--color-border-default);
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+
+    &__identicon {
+      margin-right: 10px;
+    }
+
+    &__name,
+    &__address {
+      @include design-system.H6;
+
+      margin-right: 10px;
+    }
+
+    &__name {
+      width: 100px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__label {
+      @include design-system.H8;
+
+      display: block;
+      color: var(--color-text-muted);
+    }
+
+    &__link {
+      margin-top: 14px;
+    }
+
+    @include design-system.screen-sm-max {
+      &__name {
+        width: 90px;
+      }
+    }
+  }
+
+  &__link {
+    color: var(--color-primary-default);
+  }
+}

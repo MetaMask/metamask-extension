@@ -1,0 +1,14 @@
+{
+  "data": {
+    "wallet": "{\"encSeed\":{\"encStr\":\"rT1C1jjkFRfmrwefscFcwZohl4f+HfIFlBZ9AM4ZD8atJmfKDIQCVK11NYDKYv8ZMIY03f3t8MuoZvfzBL8IJsWnZUhpzVTNNiARQJD2WpGA19eNBzgZm4vd0GwkIUruUDeJXu0iv2j9wU8hOQUqPbOePPy2Am5ro97iuvMAroRTnEKD60qFVg==\",\"nonce\":\"YUY2mwNq2v3FV0Fi94QnSiKFOLYfDR95\"},\"ksData\":{\"m/44'/60'/0'/0\":{\"info\":{\"curve\":\"secp256k1\",\"purpose\":\"sign\"},\"encHdPathPriv\":{\"encStr\":\"Iyi7ft4JQ9UtwrSXRT6ZIHPtZqJhe99rh0uWhNc6QLan6GanY2ZQeU0tt76CBealEWJyrJReSxGQdqDmSDYjpjH3m4JO5l0DfPLPseCqzXV/W+dzM0ubJ8lztLwpwi0L+vULNMqCx4dQtoNbNBq1QZUnjtpm6O8mWpScspboww==\",\"nonce\":\"Z7RqtjNjC6FrLUj5wVW1+HkjOW6Hib6K\"},\"hdIndex\":3,\"encPrivKeys\":{\"edb81c10122f34040cc4bef719a272fbbb1cf897\":{\"key\":\"8ab81tKBd4+CLAbzvS7SBFRTd6VWXBs86uBE43lgcmBu2U7UB22xdH64Q2hUf9eB\",\"nonce\":\"aGUEqI033FY39zKjWmZSI6PQrCLvkiRP\"},\"8bd7d5c000cf05284e98356370dc5ccaa3dbfc38\":{\"key\":\"+i3wmf4b+B898QtlOBfL0Ixirjg59/LLPX61vQ2L0xRPjXzNog0O4Wn15RemM5mY\",\"nonce\":\"imKrlkuoC5uuFkzJBbuDBluGCPJXNTKm\"},\"2340695474656e3124b8eba1172fbfb00eeac8f8\":{\"key\":\"pi+H9D8LYKsdCQKrfaJtsGFjE+X9s74xN675tsoIKrbPXhtpxMLOIQVtSqYveF62\",\"nonce\":\"49g80wDTovHwbguVVYf2FsYbp7Db5OAR\"}},\"addresses\":[\"edb81c10122f34040cc4bef719a272fbbb1cf897\",\"8bd7d5c000cf05284e98356370dc5ccaa3dbfc38\",\"2340695474656e3124b8eba1172fbfb00eeac8f8\"]}},\"version\":2}",
+    "config": {
+      "provider": {
+        "type": "etherscan"
+      }
+    }
+  },
+  "meta": {
+    "version": 0
+  },
+  "version": 0
+}

@@ -1,0 +1,50 @@
+@use "design-system";
+
+.menu {
+  &__container {
+    @include design-system.H6;
+
+    background: var(--color-background-default);
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+    border-radius: 8px;
+    width: 225px;
+    color: var(--color-text-default);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1050;
+  }
+
+  &__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1050;
+  }
+}
+
+.menu-item {
+  background: none;
+  font-size: inherit;
+  display: grid;
+  grid-template-columns: min-content auto;
+  text-align: start;
+  align-items: center;
+  width: 100%;
+  padding: 14px 16px;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover,
+  &:active {
+    background: var(--color-background-default-hover);
+  }
+
+  &__icon {
+    margin-right: 8px;
+    grid-row: 1 / span 2;
+    color: var(--color-icon-alternative);
+  }
+}

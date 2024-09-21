@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionBreakdownRow Component should match snapshot 1`] = `
+<div>
+  <div
+    class="transaction-breakdown-row test-class"
+    data-testid="transaction-breakdown-row"
+  >
+    <div
+      class="transaction-breakdown-row__title"
+      data-testid="transaction-breakdown-row-title"
+    >
+      test
+    </div>
+    <div
+      class="transaction-breakdown-row__value"
+      data-testid="transaction-breakdown-row-value"
+    >
+      <button
+        class="button btn--rounded btn-default"
+      >
+        Button
+      </button>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,10 @@
+@use "design-system";
+
+.view-on-block-explorer {
+  button {
+    @include design-system.H7;
+
+    color: var(--color-primary-default);
+    background-color: transparent;
+  }
+}

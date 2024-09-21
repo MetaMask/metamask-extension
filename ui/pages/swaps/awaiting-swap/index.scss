@@ -1,0 +1,79 @@
+@use "design-system";
+
+.awaiting-swap {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+
+  &__content {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    height: 100%;
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  div {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__status-image {
+    margin-top: 12px;
+    margin-bottom: 16px;
+  }
+
+  &__header {
+    @include design-system.H3;
+
+    color: var(--color-text-default);
+  }
+
+  &__main-description {
+    @include design-system.H6;
+
+    color: var(--color-text-alternative);
+    margin-top: 16px;
+    width: 100%;
+  }
+
+  &__time-estimate {
+    @include design-system.H7;
+
+    color: var(--color-text-default);
+    margin-top: 20px;
+    font-style: italic;
+
+    > span {
+      display: flex;
+    }
+
+    &--invisible {
+      visibility: hidden;
+    }
+  }
+
+  &__time-estimate-text {
+    margin-right: 2px;
+    font-weight: bold;
+  }
+
+  &__support-link {
+    color: var(--color-primary-default);
+    margin-top: 24px;
+    cursor: pointer;
+  }
+
+  &__support-link {
+    @include design-system.H6;
+  }
+
+  &__amount-and-symbol {
+    color: var(--color-text-default);
+    font-weight: bold;
+  }
+}

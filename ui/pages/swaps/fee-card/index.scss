@@ -1,0 +1,218 @@
+@use "design-system";
+
+.fee-card {
+  width: 100%;
+
+  @include design-system.H7;
+
+  .transaction-detail-rows {
+    margin-top: 8px;
+
+    .transaction-detail-item {
+      &:last-of-type {
+        margin-bottom: 8px;
+      }
+    }
+  }
+
+  &__savings-and-quotes-header {
+    display: flex;
+    position: relative;
+    align-items: center;
+  }
+
+  &__savings-text {
+    @include design-system.H6;
+
+    font-weight: bold;
+    color: var(--color-primary-default);
+  }
+
+  &__quote-link-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__quote-link-text {
+    @include design-system.H7;
+
+    color: var(--color-primary-default);
+    cursor: pointer;
+    padding-right: 4px;
+  }
+
+  &__caret-right {
+    color: var(--color-primary-default);
+    width: 6px;
+    height: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 6px;
+
+    i {
+      transform: rotate(90deg);
+    }
+  }
+
+  &__main {
+    .transaction-detail {
+      border-top: 1px solid var(--color-border-muted);
+      border-bottom: 1px solid var(--color-border-muted);
+      margin-bottom: 12px;
+    }
+  }
+
+  &__row-header {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    justify-content: space-between;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__row-header-text,
+  &__row-header-text--bold {
+    margin-right: 4px;
+  }
+
+  &__row-header-text--bold {
+    color: var(--color-text-default);
+  }
+
+  &__row-header-text {
+    display: block;
+    white-space: nowrap;
+
+    .info-tooltip {
+      padding-left: 4px;
+      padding-bottom: 2px;
+    }
+  }
+
+  &__row,
+  &__top-bordered-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  &__top-bordered-row {
+    border-top: 1px solid var(--color-border-muted);
+    padding-top: 12px;
+  }
+
+  &__row-label {
+    display: flex;
+    align-items: flex-start;
+
+    img {
+      height: 10px;
+      width: 10px;
+      cursor: pointer;
+    }
+  }
+
+  &__info-tooltip-container {
+    height: 10px;
+    width: 10px;
+    justify-content: center;
+
+    div {
+      // Needed to override the style property added by the react-tippy library
+      display: flex !important;
+      height: 10px;
+    }
+  }
+
+  &__info-tooltip-paragraph {
+    margin-bottom: 8px;
+  }
+
+  &__info-tooltip-paragraph:last-of-type {
+    margin-bottom: 0;
+  }
+
+  &__row-fee {
+    margin-right: 4px;
+  }
+
+  &__link,
+  &__link:hover {
+    color: var(--color-primary-default);
+    cursor: pointer;
+  }
+
+  &__edit-link {
+    color: var(--color-primary-default);
+    cursor: pointer;
+    padding-left: 6px;
+  }
+
+  &__total-box {
+    border-top: 1px solid var(--color-border-muted);
+    padding: 12px 16px 16px 16px;
+  }
+
+  &__total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  &__total-secondary {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    font-weight: bold;
+    color: var(--color-text-alternative);
+    margin-top: 4px;
+  }
+
+  &__row-header-secondary,
+  &__row-header-secondary--bold {
+    color: var(--color-text-alternative);
+  }
+
+  &__row-header-secondary,
+  &__row-header-secondary--bold {
+    margin-right: 12px;
+  }
+
+  &__row-header-primary {
+    color: var(--color-text-alternative);
+  }
+
+  &__row-header-primary--bold {
+    color: var(--color-text-default);
+  }
+
+  &__row-header-text--bold,
+  &__row-header-secondary--bold,
+  &__row-header-primary--bold {
+    font-weight: bold;
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+}
+
+.info-tooltip {
+  > div {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+  }
+}

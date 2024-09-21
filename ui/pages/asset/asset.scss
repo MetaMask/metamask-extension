@@ -1,0 +1,46 @@
+@use "design-system";
+
+.asset {
+  &__container {
+    background-color: var(--color-background-default);
+  }
+
+  &__content {
+    max-width: 650px;
+  }
+}
+
+.asset-navigation {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  height: 64px;
+}
+
+.asset-breadcrumb {
+  @include design-system.H6;
+
+  color: var(--color-text-default);
+  background-color: inherit;
+
+  &__asset {
+    font-weight: bold;
+  }
+}
+
+.time-range-button {
+  height: 24px;
+
+  &:hover {
+    background-color: var(--color-background-default-hover);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  }
+
+  &__selected {
+    color: var(--color-text-default);
+    background-color: var(--color-background-default-pressed);
+  }
+}
+
+.chart-up { stroke: var(--color-success-default); }
+.chart-down { stroke: var(--color-error-default); }

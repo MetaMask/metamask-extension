@@ -1,0 +1,155 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import Approve from './approve-icon.component';
+import InfoIcon from './info-icon.component';
+import InfoIconInverted from './info-icon-inverted.component';
+import Interaction from './interaction-icon.component';
+import Preloader from './preloader';
+import ReceiveIcon from './receive-icon.component';
+import SendIcon from './send-icon.component';
+import Sign from './sign-icon.component';
+import SunCheck from './sun-check-icon.component';
+import Swap from './swap-icon-for-list.component';
+
+# Icon
+
+A range of SVG icon components
+
+> 💡 A lot of the our icons have different props and are not consistent we will need to work on fixing this.
+
+## Props
+
+<ArgsTable of={SunCheck} />
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### Size
+
+Use the `size` prop to change the size of the icon it should adhere to an `8px` grid e.g. `16px`, `24px`, `32px`
+
+<Canvas>
+  <Story id="components-ui-icon--size-story" />
+</Canvas>
+
+### Color
+
+Use the `color` prop to change the color of the icon. `color` accepts any css value. Should use the valid design token css variables
+
+<Canvas>
+  <Story id="components-ui-icon--color" />
+</Canvas>
+
+### AriaLabel
+
+Use the `ariaLabel` prop with icons intended to be used without text. e.g. back buttons or icons that should provide extra information to screen readers
+
+<Canvas>
+  <Story id="components-ui-icon--aria-label" />
+</Canvas>
+
+Will render the html
+
+```html
+<svg
+  width="24"
+  height="24"
+  fill="currentColor"
+  aria-label="back"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 512 512"
+>
+  <path
+    d="m335 113c8 8 8 22 0 30l-113 113 113 113c8 8 8 22 0 30-8 8-22 8-30 0l-128-128c-8-8-8-22 0-30l128-128c8-8 22-8 30 0z"
+  ></path>
+</svg>
+```
+
+### ClassName
+
+Use the `className` prop to add an additional class to the icon. This additional class is recommend to be used with layout of positioning css
+
+# DEPRECATED ICONS
+
+> The icons below use many different prop combinations and should be updated to the above api
+
+## Approve
+
+<Canvas>
+  <Story id="components-ui-icon--approve-story" />
+</Canvas>
+
+<ArgsTable of={Approve} />
+
+## Sign
+
+<Canvas>
+  <Story id="components-ui-icon--sign-story" />
+</Canvas>
+
+<ArgsTable of={Sign} />
+
+## Swap
+
+<Canvas>
+  <Story id="components-ui-icon--swap-story" />
+</Canvas>
+
+<ArgsTable of={Swap} />
+
+## SendIcon
+
+<Canvas>
+  <Story id="components-ui-icon--send-icon-story" />
+</Canvas>
+
+<ArgsTable of={SendIcon} />
+
+## ReceiveIcon
+
+<Canvas>
+  <Story id="components-ui-icon--receive-icon-story" />
+</Canvas>
+
+<ArgsTable of={ReceiveIcon} />
+
+## Interaction
+
+<Canvas>
+  <Story id="components-ui-icon--interaction-story" />
+</Canvas>
+
+<ArgsTable of={Interaction} />
+
+## InfoIcon
+
+<Canvas>
+  <Story id="components-ui-icon--info-icon-story" />
+</Canvas>
+
+<ArgsTable of={InfoIcon} />
+
+## InfoIconInverted
+
+<Canvas>
+  <Story id="components-ui-icon--info-icon-inverted-story" />
+</Canvas>
+
+<ArgsTable of={InfoIconInverted} />
+
+## SunCheck
+
+<Canvas>
+  <Story id="components-ui-icon--sun-check-story" />
+</Canvas>
+
+<ArgsTable of={SunCheck} />
+
+## Preloader
+
+<Canvas>
+  <Story id="components-ui-icon--preloader-story" />
+</Canvas>
+
+<ArgsTable of={Preloader} />

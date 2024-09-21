@@ -1,0 +1,2183 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionData renders decoded data with names and descriptions 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+      />
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Data
+        </p>
+      </div>
+      <div
+        class="mm-box"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Function
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            WRAP_ETH
+          </p>
+        </div>
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="mm-box expandable"
+    >
+      <div
+        class="mm-box"
+        style="margin-top: -8px;"
+      >
+        <div
+          class="mm-box mm-box--padding-left-2"
+        >
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Recipient
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-4"
+                  class=""
+                  data-original-title="address - The recipient of the WETH"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <div
+                    class="mm-avatar-account__jazzicon"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                  data-testid="confirm-info-row-display-name"
+                >
+                  0x00000...00002
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Amount Min
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-5"
+                  class=""
+                  data-original-title="uint256 - The amount of ETH to wrap"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                123456
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Function
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            V3_SWAP_EXACT_IN
+          </p>
+        </div>
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="mm-box expandable"
+    >
+      <div
+        class="mm-box"
+        style="margin-top: -8px;"
+      >
+        <div
+          class="mm-box mm-box--padding-left-2"
+        >
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Recipient
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-6"
+                  class=""
+                  data-original-title="address - The recipient of the output of the trade"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <div
+                    class="mm-avatar-account__jazzicon"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                  data-testid="confirm-info-row-display-name"
+                >
+                  0x00000...00002
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Amount In
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-7"
+                  class=""
+                  data-original-title="uint256 - The amount of input tokens for the trade"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                123456
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-2"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Amount Out Min
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-8"
+                  class=""
+                  data-original-title="uint256 - The minimum amount of output tokens the user wants"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                123456
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-3"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Path
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-9"
+                  class=""
+                  data-original-title="bytes - The UniswapV3 encoded path to trade along"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-3-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--justify-content-flex-end"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    />
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0xC02aa...56Cc2
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  500
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    />
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0xA0b86...6eB48
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  100
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    />
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0xd02Aa...56cc3
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-4"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Payer Is User
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-10"
+                  class=""
+                  data-original-title="bool - A flag for whether the input tokens should come from the msg.sender (through Permit2) or whether the funds are already in the UniversalRouter"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-4-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                false
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Function
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            PAY_PORTION
+          </p>
+        </div>
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="mm-box expandable"
+    >
+      <div
+        class="mm-box"
+        style="margin-top: -8px;"
+      >
+        <div
+          class="mm-box mm-box--padding-left-2"
+        >
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Token
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-11"
+                  class=""
+                  data-original-title="address - The ERC20 token to transfer (or Constants.ETH for ETH)"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <div
+                    class="mm-avatar-account__jazzicon"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                  data-testid="confirm-info-row-display-name"
+                >
+                  0xA0b86...6eB48
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Recipient
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-12"
+                  class=""
+                  data-original-title="address - The recipient of the transfer"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <div
+                    class="mm-avatar-account__jazzicon"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                  data-testid="confirm-info-row-display-name"
+                >
+                  0x27213...71c47
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-2"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Bips
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-13"
+                  class=""
+                  data-original-title="uint256 - In basis points, the percentage of the contract’s balance to transfer"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                123456
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Function
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            SWEEP
+          </p>
+        </div>
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="mm-box expandable"
+    >
+      <div
+        class="mm-box"
+        style="margin-top: -8px;"
+      >
+        <div
+          class="mm-box mm-box--padding-left-2"
+        >
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Token
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-14"
+                  class=""
+                  data-original-title="address - The ERC20 token to sweep (or Constants.ETH for ETH)"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <div
+                    class="mm-avatar-account__jazzicon"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                  data-testid="confirm-info-row-display-name"
+                >
+                  0xA0b86...6eB48
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Recipient
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-15"
+                  class=""
+                  data-original-title="address - The recipient of the sweep"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <div
+                    class="mm-avatar-account__jazzicon"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                  data-testid="confirm-info-row-display-name"
+                >
+                  0x00000...00001
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-2"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Amount Min
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-16"
+                  class=""
+                  data-original-title="uint256 - The minimum required tokens to receive from the sweep"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                123456
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TransactionData renders decoded data with no names 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+      />
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Data
+        </p>
+      </div>
+      <div
+        class="mm-box"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="advanced-details-data-function"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Function
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          someFunction
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-left-2"
+    >
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-0"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Param #1
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-1"
+              class=""
+              data-original-title="uint256"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-0-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            123456
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-1"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Param #2
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-2"
+              class=""
+              data-original-title="address"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-1-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            >
+              <div
+                class="mm-avatar-account__jazzicon"
+              />
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+              data-testid="confirm-info-row-display-name"
+            >
+              0x12345...67890
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-2"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Param #3
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-3"
+              class=""
+              data-original-title="bytes"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-2-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            0x123
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+      />
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Data
+        </p>
+      </div>
+      <div
+        class="mm-box"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="advanced-details-data-function"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Function
+        </p>
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-17"
+            class=""
+            data-original-title="Permit a spender to the signed amounts of the owners tokens via the owner's EIP-712 signature"
+            data-tooltipped=""
+            style="display: flex;"
+            tabindex="0"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="advanced-details-data-function-tooltip"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          permit
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-left-2"
+    >
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-0"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Owner
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-18"
+              class=""
+              data-original-title="address - The owner of the tokens being approved"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-0-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            >
+              <div
+                class="mm-avatar-account__jazzicon"
+              />
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+              data-testid="confirm-info-row-display-name"
+            >
+              0xBe3be...06AFe
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-1"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Permit Batch
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-19"
+              class=""
+              data-original-title="tuple - Data signed over by the owner specifying the terms of approval"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-1-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--padding-left-2"
+      >
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+          data-testid="advanced-details-data-param-0"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              Details
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-20"
+                class=""
+                data-original-title="tuple[]"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-0-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--padding-left-2"
+        >
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Item 1
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-21"
+                  class=""
+                  data-original-title="tuple"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--padding-left-2"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Token
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-22"
+                    class=""
+                    data-original-title="address"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    />
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0x0305f...2Cc0B
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Amount
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-23"
+                    class=""
+                    data-original-title="uint160"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0xffffffffffffffffffffffffffffffffffffffff
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-2"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Expiration
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-24"
+                    class=""
+                    data-original-title="uint48"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1749259022275
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-3"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Nonce
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-25"
+                    class=""
+                    data-original-title="uint48"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-3-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Item 2
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-26"
+                  class=""
+                  data-original-title="tuple"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--padding-left-2"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Token
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-27"
+                    class=""
+                    data-original-title="address"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    />
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0x43853...83449
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Amount
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-28"
+                    class=""
+                    data-original-title="uint160"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0xffffffffffffffffffffffffffffffffffffffff
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-2"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Expiration
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-29"
+                    class=""
+                    data-original-title="uint48"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1749259022275
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-3"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Nonce
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-30"
+                    class=""
+                    data-original-title="uint48"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-3-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-2"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Item 3
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-31"
+                  class=""
+                  data-original-title="tuple"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--padding-left-2"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Token
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-32"
+                    class=""
+                    data-original-title="address"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    />
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0xdAC17...31ec7
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Amount
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-33"
+                    class=""
+                    data-original-title="uint160"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0xffffffffffffffffffffffffffffffffffffffff
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-2"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Expiration
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-34"
+                    class=""
+                    data-original-title="uint48"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1749259022275
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-3"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Nonce
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-35"
+                    class=""
+                    data-original-title="uint48"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-3-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+          data-testid="advanced-details-data-param-1"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              Spender
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-36"
+                class=""
+                data-original-title="address"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-1-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              >
+                <div
+                  class="mm-avatar-account__jazzicon"
+                />
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                data-testid="confirm-info-row-display-name"
+              >
+                0xCC97F...6ee0a
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+          data-testid="advanced-details-data-param-2"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              Sig Deadline
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-37"
+                class=""
+                data-original-title="uint256"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-2-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+              style="white-space: pre-wrap;"
+            >
+              0x19747f66fc3
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-2"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Signature
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-38"
+              class=""
+              data-original-title="bytes - The owner's signature over the permit data"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-2-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            0x56e1fabfaf96d309b0039896d1f68b51e27f0e25b4481db8cad059b7e8db95d918bdc43ab1d03a0b6a84c7ea2219bf01133ceab4e7ca4e38055e4ed8af78a63b1b
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TransactionData renders nothing if no transaction data 1`] = `<div />`;
+
+exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+      />
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Data
+        </p>
+      </div>
+      <div
+        class="mm-box"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Hex
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        data-testid="advanced-details-transaction-hex"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          0x123456
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

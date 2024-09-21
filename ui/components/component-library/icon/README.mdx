@@ -1,0 +1,205 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { Icon } from './icon';
+
+# Icon
+
+The `Icon` component in conjunction with `IconName` can be used for all icons in the extension
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-icon--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Icon} />
+
+### Name
+
+Use the `name` prop and the `IconName` enum to change the icon.
+
+Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
+
+<Canvas>
+  <Story id="components-componentlibrary-icon--name" />
+</Canvas>
+
+```jsx
+import { Icon, IconName } from '../../component-library';
+
+<Icon name={IconName.AddSquare} />
+<Icon name={IconName.Bank} />
+<Icon name={IconName.Calculator} />
+<Icon name={IconName.Coin} />
+// etc...
+```
+
+### Size
+
+Use the `size` prop and the `IconSize` enum to change the size of `Icon`. Defaults to `IconSize.Sm`
+
+Possible sizes include:
+
+- `IconSize.Xs` 12px
+- `IconSize.Sm` 16px
+- `IconSize.Md` 20px
+- `IconSize.Lg` 24px
+- `IconSize.Xl` 32px
+- `IconSize.Inherit` inherits the font-size from parent element. This is useful for inline icons in text.
+
+<Canvas>
+  <Story id="components-componentlibrary-icon--size-story" />
+</Canvas>
+
+```jsx
+import { TextVariant } from '../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
+
+<Icon name={IconName.AddSquare} size={IconSize.Xs} />
+<Icon name={IconName.AddSquare} size={IconSize.Sm} />
+<Icon name={IconName.AddSquare} size={IconSize.Md} />
+<Icon name={IconName.AddSquare} size={IconSize.Lg} />
+<Icon name={IconName.AddSquare} size={IconSize.Xl} />
+<Text as="p" variant={TextVariant.bodySm}>
+    <Icon size={IconSize.Inherit} />  inherits the
+    font-size of the parent element.
+</Text>
+```
+
+### Color
+
+Use the `color` prop and the `IconColor` enum from `./ui/helpers/constants/design-system.js` to change the color of `Icon`. Defaults to `IconColor.inherit` which will use the text color of the parent element. This is useful for inline icons.
+
+<Canvas>
+  <Story id="components-componentlibrary-icon--color-story" />
+</Canvas>
+
+```jsx
+import { IconColor } from '../../../helpers/constants/design-system';
+import { Icon, IconName } from '../../component-library';
+
+<Icon name={IconName.AddSquare} color={IconColor.inherit} />
+<Icon name={IconName.AddSquare} color={IconColor.iconDefault} />
+<Icon name={IconName.AddSquare} color={IconColor.iconAlternative} />
+<Icon name={IconName.AddSquare} color={IconColor.iconMuted} />
+<Icon name={IconName.AddSquare} color={IconColor.overlayInverse} />
+<Icon name={IconName.AddSquare} color={IconColor.primaryDefault} />
+<Icon name={IconName.AddSquare} color={IconColor.primaryInverse} />
+<Icon name={IconName.AddSquare} color={IconColor.errorDefault} />
+<Icon name={IconName.AddSquare} color={IconColor.errorInverse} />
+<Icon name={IconName.AddSquare} color={IconColor.successDefault} />
+<Icon name={IconName.AddSquare} color={IconColor.successInverse} />
+<Icon name={IconName.AddSquare} color={IconColor.warningDefault} />
+<Icon name={IconName.AddSquare} color={IconColor.warningInverse} />
+<Icon name={IconName.AddSquare} color={IconColor.infoDefault} />
+<Icon name={IconName.AddSquare} color={IconColor.infoInverse} />
+```
+
+### Layout & Spacing
+
+The `Icon` component accepts all [Box](/docs/components-ui-box--default-story#props) component props including `marginTop`, `marginRight`, ` marginBottom`, `marginLeft` which you can use directly to adjust the space between icons and other components like `Text`
+
+Some examples of `Icon` with `Text` using [Box](/docs/components-ui-box--default-story#props) component props
+
+<Canvas>
+  <Story id="components-componentlibrary-icon--layout-and-spacing" />
+</Canvas>
+
+```jsx
+import {
+  AlignItems,
+  Display,
+  IconColor,
+  FlexDirection,
+  BorderColor,
+  BorderRadius,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box/box';
+
+import { IconName, Icon, IconSize, Text, Label } from '../../component-library';
+
+<Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+  <Box display={Display.Flex} alignItems={AlignItems.center}>
+    <Icon
+      name={IconName.Check}
+      color={IconColor.successDefault}
+      marginRight={1}
+    />
+    <Text>Always allow you to opt-out via Settings</Text>
+  </Box>
+  <Box
+    as="button"
+    display={Display.Flex}
+    alignItems={AlignItems.center}
+    borderRadius={BorderRadius.pill}
+    backgroundColor={BackgroundColor.primaryMuted}
+    marginRight="auto"
+  >
+    <Text color={Color.primaryDefault}>
+      0x79fAaFe7B6D5DB5D8c63FE88DFF0AF1Fe53358db
+    </Text>
+    <Icon
+      name={IconName.Copy}
+      color={IconColor.primaryDefault}
+      marginLeft={1}
+    />
+  </Box>
+  <Box
+    as="button"
+    display={Display.Flex}
+    alignItems={AlignItems.center}
+    padding={4}
+    borderColor={BorderColor.borderMuted}
+    backgroundColor={BackgroundColor.backgroundDefault}
+  >
+    <Icon name={IconName.Add} color={IconColor.iconDefault} marginRight={2} />
+    <Text>Create account</Text>
+  </Box>
+  <Label>
+    Custom spending cap{' '}
+    <Icon name={IconName.Info} size={IconSize.Inherit} marginLeft={1} />
+  </Label>
+  <div>
+    <Text>
+      <Icon
+        name={IconName.Warning}
+        size={IconSize.Inherit}
+        marginLeft={1}
+        color={IconColor.warningDefault}
+      />{' '}
+      Warning
+    </Text>
+  </div>
+</Box>;
+```
+
+### Adding a new icon
+
+In order to ensure that a new icon is added correctly, there are a few steps that need to be followed:
+
+#### Step 1.
+
+Optimize the svg using [Fontastic](https://fontastic.me/). This will remove any unnecessary code from the svg. Your svg should only contain a single path.
+
+Example of a correctly optimized svg `add-square-filled.svg`:
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <path d="m337 51l-171 0c-75 0-119 45-119 119l0 172c0 74 44 119 119 119l171 0c75 0 119-45 119-119l0-172c1-74-44-119-119-119z m-3 220l-67 0 0 67c0 8-7 15-15 15-9 0-16-7-16-15l0-67-66 0c-9 0-16-7-16-15 0-8 7-15 16-15l66 0 0-67c0-8 7-15 16-15 8 0 15 7 15 15l0 67 67 0c8 0 15 7 15 15 0 8-7 15-15 15z" />
+</svg>
+```
+
+If your svg **does not** contain a single path, you will need to get a designer to join all paths and outline strokes into a single path.
+
+#### Step 2.
+
+Add your optimized svg file to `app/images/icons`
+
+#### Step 3.
+
+Add your icon to the `IconName` enum in `./ui/components/ui/icon/icon.types.ts`
+
+If you have any questions please reach out to the design system team in the [#metamask-design-system](https://consensys.slack.com/archives/C0354T27M5M) channel on slack.

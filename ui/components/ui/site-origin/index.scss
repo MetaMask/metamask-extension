@@ -1,0 +1,25 @@
+.site-origin {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+
+  .chip {
+    max-width: 100%;
+
+    &__left-icon {
+      padding: 4px 0 4px 8px;
+    }
+  }
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    /*rtl:ignore*/
+    direction: rtl;
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,64 @@
+.form-combo-field {
+  width: 100%;
+
+  ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background: var(--color-icon-muted);
+  }
+
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+
+  &__value > div {
+    outline: 0;
+    width: 100%;
+  }
+
+  &__value-dropdown-visible > div {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &__dropdown {
+    border: 1px solid var(--color-border-default);
+    border-top-width: 0;
+    position: absolute;
+    overflow-y: scroll;
+    z-index: 1;
+    background-color: var(--color-background-default);
+
+    &__scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+  }
+
+  &__option {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 16px 10px 16px;
+    line-height: normal;
+    font-weight: normal;
+  }
+
+  &__option:hover {
+    background-color: var(--color-background-default-hover);
+  }
+
+  &__option-primary {
+    padding-bottom: 4px;
+  }
+
+  &__option-secondary {
+    color: var(--color-text-alternative);
+    font-size: 12px;
+  }
+
+  &__option-primary,
+  &__option-secondary {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}

@@ -1,0 +1,41 @@
+.notification-list-item {
+  position: relative;
+  background-color: transparent;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.notification-list-item__icon {
+  padding-top: 6px;
+}
+
+.notification-list-item--unread {
+  background-color: rgba(3, 109, 185, 0.05); // #0376C9 at 5% opacity
+
+  &:hover {
+    background-color: rgba(3, 109, 185, 0.1); // #0376C9 at 10% opacity
+  }
+}
+
+.notification-list-item__unread-dot__wrapper {
+  position: absolute;
+  top: 24px;
+  left: 11px;
+}
+
+.notification-list-item__unread-dot__wrapper--snap {
+  position: absolute;
+  top: 22px;
+  left: 11px;
+}
+
+.notification-list-item__unread-dot__dot {
+  width: 6px;
+  height: 6px;
+}
+
+.notification-list-item__right-container {
+  flex-shrink: 0;
+}

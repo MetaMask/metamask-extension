@@ -1,0 +1,144 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { TagUrl } from './tag-url';
+
+# Tag Url
+
+The `TagUrl` is a component used to display dApp information
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={TagUrl} />
+
+### Action Button Label
+
+Use the `actionButtonLabel` to add a `ButtonLink` inside of `TagUrl`. Use the `actionButtonProps` prop object to add the necessary `href` or `onClick`.
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--action-button-label" />
+</Canvas>
+
+```jsx
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+<TagUrl
+  label="app.uniswap.org"
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  actionButtonLabel="Permissions"
+  actionButtonProps={{
+    externalLink: true,
+    href: 'https://metamask.io',
+  }}
+/>
+<TagUrl
+  label="app.uniswap.org"
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  actionButtonLabel="Action"
+  actionButtonProps={{
+    externalLink: true,
+    href: 'https://metamask.io',
+  }}
+/>
+<TagUrl
+  label="app.uniswap.org"
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  actionButtonLabel="Click"
+  actionButtonProps={{
+    externalLink: true,
+    href: 'https://metamask.io',
+  }}
+/>
+```
+
+### Show Lock Icon
+
+Use the `showLockIcon` prop to render a lock icon next to the `label`. It's intended use is to display if the url uses `https`. This logic should be added during implementation and is not included in the component.
+
+`false` by default.
+
+Props for the lock icon can be changed using the `lockIconProps`
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--show-lock-icon" />
+</Canvas>
+
+```jsx
+import { TagUrl } from '../../ui/component-library';
+
+<TagUrl
+  label="app.uniswap.org"
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  actionButtonLabel="Permissions"
+/>
+
+<TagUrl src="" label="http://notsecure.com" />
+```
+
+### Src
+
+Use the `src` prop with an image url to render the `AvatarFavicon`.
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--src" />
+</Canvas>
+
+```jsx
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+<TagUrl
+  src="https://uniswap.org/favicon.ico"
+  label="app.uniswap.org"
+  showLockIcon
+/>
+<TagUrl
+  src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+  label="metamask.github.io"
+  showLockIcon
+/>
+<TagUrl
+  src="https://1inch.exchange/assets/favicon/favicon-32x32.png"
+  label="1inch.exchange"
+  showLockIcon
+/>
+<TagUrl label="fallback" src="" />
+```
+
+### Label
+
+Use the `label` prop for the text content of the `TagUrl` component
+
+Note: `TagUrl` doesn't not contain string manipulation logic to detect `https` or `http` it will display whatever is passed to `label`
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--label" />
+</Canvas>
+
+```jsx
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+<TagUrl
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  label="app.uniswap.org"
+/>
+<TagUrl
+  src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+  showLockIcon
+  label="metamask.github.io"
+/>
+<TagUrl
+  src=""
+  showLockIcon
+  label="metamask.github.io"
+/>
+```

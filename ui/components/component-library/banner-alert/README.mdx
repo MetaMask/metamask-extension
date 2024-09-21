@@ -1,0 +1,152 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { BannerAlert } from './banner-alert';
+import { BannerBase } from '..';
+
+# BannerAlert
+
+`BannerAlert` is an inline notification that notifies users of important information & sometimes time-sensitive changes.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-banneralert--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={BannerAlert} />
+
+### Severity
+
+Use the `severity` prop and the `BannerAlertSeverity` enum from `../../component-library` to change the context of `BannerAlert`.
+
+Possible options:
+
+- `BannerAlertSeverity.Info` Default
+- `BannerAlertSeverity.Warning`
+- `BannerAlertSeverity.Danger`
+- `BannerAlertSeverity.Success`
+
+<Canvas>
+  <Story id="components-componentlibrary-banneralert--severity-story" />
+</Canvas>
+
+```jsx
+import { BannerAlert, BannerAlertSeverity } from '../../component-library';
+
+<BannerAlert title="Info">
+  This is a demo of severity Info.
+</BannerAlert>
+<BannerAlert severity={BannerAlertSeverity.Warning} title="Warning">
+  This is a demo of severity Warning.
+</BannerAlert>
+<BannerAlert severity={BannerAlertSeverity.Danger} title="Danger">
+  This is a demo of severity Danger.
+</BannerAlert>
+<BannerAlert severity={BannerAlertSeverity.Success} title="Success">
+  This is a demo of severity Success.
+</BannerAlert>
+```
+
+### Title
+
+Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-banneralert--title" />
+</Canvas>
+
+```jsx
+import { BannerAlert } from '../../component-library';
+
+<BannerAlert title="Title is sentence case no period">
+  Pass only a string through the title prop
+</BannerAlert>;
+```
+
+### Description
+
+The `description` is the content area of the `BannerAlert` that must be a string. Description shouldn't repeat title and only 1-3 lines.
+
+If content requires more than a string, see `children` prop below.
+
+<Canvas>
+  <Story id="components-componentlibrary-banneralert--description" />
+</Canvas>
+
+```jsx
+import { BannerAlert } from '../../component-library';
+<BannerAlert
+  title="Description vs children"
+  description="Pass only a string through the description prop or you can use children if the contents require more"
+/>;
+```
+
+### Children
+
+The `children` prop is an alternative to `description` for `BannerAlert` when more than a string is needed. Children content shouldn't repeat title and only 1-3 lines.
+
+<Canvas>
+  <Story id="components-componentlibrary-banneralert--children" />
+</Canvas>
+
+```jsx
+import { BannerAlert, ButtonLinkSize } from '../../component-library';
+
+<BannerAlert>
+  {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
+  <ButtonLink
+    size={ButtonLinkSize.Auto}
+    href="https://metamask.io/"
+    target="_blank"
+  >
+    hyperlink.
+  </ButtonLink>
+</BannerAlert>;
+```
+
+### Action Button Label, onClick, & Props
+
+Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/components-componentlibrary-buttonlink--default-story) for the action
+
+<Canvas>
+  <Story id="components-componentlibrary-banneralert--action-button" />
+</Canvas>
+
+```jsx
+import { BannerAlert, IconName } from '../../component-library';
+
+<BannerAlert
+  title="Action prop demo"
+  actionButtonLabel="Action"
+  actionButtonProps={{
+    endIconName: IconName.Arrow2Right,
+  }}
+  actionButtonOnClick={() => console.log('ButtonLink actionButtonOnClick demo')}
+>
+  Use actionButtonLabel for action text, actionButtonOnClick for the onClick
+  handler, and actionButtonProps to pass any ButtonLink prop types such as
+  iconName
+</BannerAlert>;
+```
+
+### On Close
+
+Use the `onClose` prop to pass a function to the close button. The close button will appear when this prop is used.
+
+Additional props can be passed to the close button with `closeButtonProps`
+
+<Canvas>
+  <Story id="components-componentlibrary-banneralert--on-close" />
+</Canvas>
+
+```jsx
+import { BannerAlert } from '../../component-library';
+
+<BannerAlert
+  title="onClose demo"
+  onClose={() => console.log('close button clicked')}
+>
+  Click the close button icon to hide this notifcation
+</BannerAlert>;
+```

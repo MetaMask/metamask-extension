@@ -1,0 +1,15 @@
+.name-details {
+  &__display-name {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  &__address .mm-text-field {
+    padding-right: 5px;
+  }
+
+  &__modal-body {
+    // Allows the name suggestion combobox dropdown to overflow the modal body.
+    overflow-y: visible;
+  }
+}

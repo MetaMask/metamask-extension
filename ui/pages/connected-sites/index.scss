@@ -1,0 +1,39 @@
+@use "design-system";
+
+.connected-sites {
+  h2 {
+    text-overflow: ellipsis;
+    margin-right: 10px;
+  }
+
+  &__confirmation {
+    flex-direction: column;
+
+    button:first-child {
+      margin-right: 24px;
+    }
+  }
+
+  &__footer-row {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__footer-row + &__footer-row {
+    margin-top: 15px;
+  }
+
+  a {
+    @include design-system.H6;
+
+    color: var(--color-primary-default);
+    cursor: pointer;
+  }
+
+  a:hover {
+    color: var(--color-primary-alternative);
+  }
+}

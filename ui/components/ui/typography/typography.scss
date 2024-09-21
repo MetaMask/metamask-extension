@@ -1,0 +1,61 @@
+/**
+ * @deprecated `<Typography />` has been deprecated in favor of the `<Text />` component in ./ui/components/component-library/text/text.js
+ *
+ * See storybook documentation for Text here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-text--default-story#text
+ *
+ * Help to replace `Typography` with `Text` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/17670
+ */
+
+@use "design-system";
+@use "sass:map";
+
+.typography {
+  @include design-system.Paragraph;
+
+  & b,
+  & strong {
+    font-weight: 700;
+  }
+
+  @each $variant in map.keys(design-system.$typography-variants) {
+    &--#{$variant} {
+      @include design-system.typography($variant);
+    }
+  }
+
+  @each $variant, $color in design-system.$color-map {
+    &--color-#{$variant} {
+      color: var($color);
+    }
+  }
+
+  @each $weight in design-system.$font-weight {
+    &--weight-#{$weight} {
+      font-weight: $weight;
+    }
+  }
+
+  @each $style in design-system.$font-style {
+    &--style-#{$style} {
+      font-style: $style;
+    }
+  }
+
+  @each $alignment in design-system.$text-align {
+    &--align-#{$alignment} {
+      text-align: $alignment;
+    }
+  }
+
+  @each $overflow in design-system.$overflow-wrap {
+    &--overflowwrap-#{$overflow} {
+      overflow-wrap: $overflow;
+    }
+  }
+
+  @for $i from 1 through 8 {
+    &--spacing-#{$i} {
+      margin: #{$i * 4}px auto;
+    }
+  }
+}

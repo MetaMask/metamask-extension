@@ -1,0 +1,60 @@
+@use "design-system";
+
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  &__completed-transactions {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  &__header {
+    @include design-system.H6;
+
+    flex: 0 0 auto;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border-muted);
+    padding: 8px 0 8px 20px;
+
+    @include design-system.screen-sm-max {
+      padding: 8px 0 8px 16px;
+    }
+  }
+
+  &__transactions {
+    flex: 1;
+  }
+
+  &__pending-transactions {
+    margin-bottom: 16px;
+  }
+
+  &__empty {
+    flex: 1;
+    display: grid;
+    grid-template-rows: auto;
+    padding-top: 24px;
+  }
+
+  &__empty-text {
+    grid-row-start: 2;
+    display: flex;
+    justify-content: center;
+    color: var(--color-text-muted);
+  }
+
+  &__view-more {
+    margin: 16px auto;
+    max-width: 200px;
+  }
+
+  &__view-on-block-explorer {
+    grid-row-start: 2;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+  }
+}

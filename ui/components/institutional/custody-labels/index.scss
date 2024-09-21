@@ -1,0 +1,9 @@
+.custody-label {
+  z-index: 1;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  max-width: 150px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: block;
+}

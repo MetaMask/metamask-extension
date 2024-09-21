@@ -1,0 +1,36 @@
+/*
+  MetaMask design system imports
+*/
+@import './reset.scss';
+@import './utilities/fonts.scss';
+@import './utilities/pending-colors.scss';
+@import './utilities/colors.scss';
+@import './utilities/opacity.scss';
+@import './base-styles.scss';
+@import '../components/component-library/component-library-components.scss';
+@import '../components/app/app-components';
+@import '../components/ui/ui-components';
+@import '../components/institutional/institutional-components';
+@import '../components/multichain/multichain-components.scss';
+@import '../pages/pages';
+@import './errors.scss';
+@import './loading.scss';
+
+/*
+  ITCSS
+
+  http://www.creativebloq.com/web-design/manage-large-css-projects-itcss-101517528
+  https://www.xfive.co/blog/itcss-scalable-maintainable-css-architecture/
+
+  DEPRECATED: This CSS architecture is deprecated. The following imports will be removed
+  overtime.
+ */
+@import './itcss/settings/index';
+@import './itcss/tools/index';
+@import './itcss/components/index';
+
+/*
+  Third Party Library Styles
+*/
+@import 'react-tippy/dist/tippy';
+@import '@metamask/design-tokens/dist/styles';

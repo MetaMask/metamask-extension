@@ -1,0 +1,472 @@
+{
+  "accounts": { "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {} },
+  "accountsByChainId": {},
+  "addSnapAccountEnabled": false,
+  "addressBook": {
+    "*": {
+      "0x03Cf1158B58CcDfc04dd518F11f85C3ee7fA0189": {
+        "address": "0x03Cf1158B58CcDfc04dd518F11f85C3ee7fA0189",
+        "chainId": "*",
+        "isEns": false,
+        "memo": "",
+        "name": "Account 1"
+      }
+    }
+  },
+  "advancedGasFee": {},
+  "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
+  "allDetectedTokens": {},
+  "allIgnoredTokens": {},
+  "allNftContracts": {},
+  "allNfts": {},
+  "allTokens": {},
+  "announcements": {
+    "8": { "id": 8, "date": "2021-11-01", "isShown": false },
+    "20": { "id": 20, "date": null, "isShown": false },
+    "24": { "id": 24, "date": null, "isShown": false },
+    "25": { "id": 25, "date": null, "isShown": false },
+    "28": { "id": 28, "date": null, "isShown": false },
+    "29": { "id": 29, "date": null, "isShown": false },
+    "30": {
+      "id": 30,
+      "date": null,
+      "image": {
+        "src": "images/staking-light-mode-preview.png",
+        "width": "100%"
+      },
+      "isShown": false
+    },
+    "31": {
+      "id": 31,
+      "date": null,
+      "image": {
+        "src": "images/petnames-whatsnew-banner.svg",
+        "width": "100%"
+      },
+      "isShown": false
+    },
+    "32": {
+      "id": 32,
+      "date": null,
+      "image": {
+        "src": "images/portfolio-v2-whatsnew-banner.png",
+        "width": "100%"
+      },
+      "isShown": false
+    },
+    "33": { "id": 33, "date": "2024-04-09", "isShown": false }
+  },
+  "approvalFlows": [],
+  "bridgeState": {
+    "bridgeFeatureFlags": {
+      "extensionSupport": false
+    }
+  },
+  "browserEnvironment": { "os": "mac", "browser": "firefox" },
+  "completedOnboarding": false,
+  "confirmationExchangeRates": {},
+  "connectedStatusPopoverHasBeenShown": true,
+  "contractExchangeRates": {},
+  "contractExchangeRatesByChainId": {},
+  "currencyRates": {
+    "ETH": {
+      "conversionDate": 0,
+      "conversionRate": 0,
+      "usdConversionRate": null
+    }
+  },
+  "currentAppVersion": "11.14.4-flask.0",
+  "currentBlockGasLimit": "",
+  "currentBlockGasLimitByChainId": {},
+  "currentCurrency": "usd",
+  "currentExtensionPopupId": 1715943310719,
+  "currentLocale": "en",
+  "currentMigrationVersion": 119,
+  "customNonceValue": "",
+  "database": null,
+  "databaseUnavailable": false,
+  "defaultHomeActiveTabName": null,
+  "desktopEnabled": false,
+  "detectedTokens": [],
+  "dismissSeedBackUpReminder": false,
+  "domains": {},
+  "enableMV3TimestampSave": true,
+  "encryptionKey": "{\"key\":{\"alg\":\"A256GCM\",\"ext\":true,\"k\":\"IWP6tqC2WeYfTxhHhTFU2m1hhO9GD5YhgYe2iRzu5GU\",\"key_ops\":[\"encrypt\",\"decrypt\"],\"kty\":\"oct\"},\"derivationOptions\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}}}",
+  "encryptionSalt": "6AA1VP9N1aU5bglaSiAhmE9PdLH3YCqiKJagv+wQCR8=",
+  "ensEntries": {},
+  "ensResolutionsByAddress": {},
+  "estimatedGasFeeTimeBounds": {},
+  "eventsBeforeMetricsOptIn": [],
+  "featureFlags": {},
+  "firstTimeFlowType": "create",
+  "forgottenPassword": false,
+  "fragments": {},
+  "fullScreenGasPollTokens": [],
+  "gasEstimateType": "none",
+  "gasFeeEstimates": {},
+  "gasFeeEstimatesByChainId": {},
+  "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+  "hasDismissedOpenSeaToBlockaidBanner": false,
+  "hiddenAccountList": [],
+  "identities": {
+    "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {
+      "name": "Account 1",
+      "address": "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189",
+      "lastSelected": 1715944041809
+    }
+  },
+  "ignoredNfts": [],
+  "ignoredTokens": [],
+  "incomingTransactionsPreferences": {
+    "0x1": true,
+    "0xe708": true,
+    "0x5": true,
+    "0xaa36a7": true,
+    "0xe705": true
+  },
+  "interfaces": {},
+  "internalAccounts": {
+    "accounts": {
+      "51737ecb-beb4-4a2b-bcab-c99d0f587a33": {
+        "id": "51737ecb-beb4-4a2b-bcab-c99d0f587a33",
+        "address": "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189",
+        "options": {},
+        "methods": [
+          "personal_sign",
+          "eth_signTransaction",
+          "eth_signTypedData_v1",
+          "eth_signTypedData_v3",
+          "eth_signTypedData_v4"
+        ],
+        "type": "eip155:eoa",
+        "metadata": {
+          "name": "Account 1",
+          "keyring": { "type": "HD Key Tree" },
+          "lastSelected": 1715944041814
+        }
+      }
+    },
+    "selectedAccount": "51737ecb-beb4-4a2b-bcab-c99d0f587a33"
+  },
+  "ipfsGateway": "dweb.link",
+  "isAccountMenuOpen": false,
+  "isInitialized": true,
+  "isIpfsGatewayEnabled": true,
+  "isNetworkMenuOpen": false,
+  "isUnlocked": true,
+  "jobs": {},
+  "keyrings": [
+    {
+      "type": "HD Key Tree",
+      "accounts": ["0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"]
+    }
+  ],
+  "knownMethodData": {},
+  "lastFetchedBlockNumbers": {},
+  "lastUpdated": null,
+  "ledgerTransportType": "u2f",
+  "logs": {},
+  "lostIdentities": {},
+  "metaMetricsId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
+  "methodData": {},
+  "nameSources": {},
+  "names": {
+    "ethereumAddress": {
+      "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {
+        "*": {
+          "proposedNames": {},
+          "name": "Account 1",
+          "sourceId": null,
+          "origin": "account-identity"
+        }
+      }
+    }
+  },
+  "networkConfigurationsByChainId": {
+    "0xaa36a7": {
+      "chainId": "0xaa36a7",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "sepolia",
+          "url": "https://sepolia.infura.io/v3/{infuraProjectId}",
+          "type": "infura",
+          "name": "Sepolia"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Sepolia",
+      "nativeCurrency": "SepoliaETH"
+    }
+  },
+  "networksMetadata": { "sepolia": { "status": "unknown", "EIPS": {} } },
+  "nextNonce": null,
+  "nftsDetectionNoticeDismissed": false,
+  "nftsDropdownState": {},
+  "nonRPCGasFeeApisDisabled": false,
+  "notificationGasPollTokens": [],
+  "notifications": {},
+  "onboardingTabs": {},
+  "openSeaEnabled": false,
+  "orderedNetworkList": [],
+  "outdatedBrowserWarningLastShown": 1715943225448,
+  "participateInMetaMetrics": true,
+  "pendingApprovalCount": 0,
+  "pendingApprovals": {},
+  "pendingTokens": {},
+  "permissionActivityLog": [],
+  "permissionHistory": {},
+  "pinnedAccountList": [],
+  "popupGasPollTokens": [],
+  "preferences": {
+    "showExtensionInFullSizeView": false,
+    "showFiatInTestnets": false,
+    "showTestNetworks": false,
+    "smartTransactionsOptInStatus": null,
+    "useNativeCurrencyAsPrimaryCurrency": true,
+    "hideZeroBalanceTokens": false,
+    "petnamesEnabled": true,
+    "redesignedConfirmationsEnabled": true,
+    "featureNotificationsEnabled": false
+  },
+  "preventPollingOnNetworkRestart": false,
+  "previousAppVersion": "",
+  "previousMigrationVersion": 0,
+  "previousUserTraits": {
+    "address_book_entries": 1,
+    "install_date_ext": "",
+    "ledger_connection_type": "u2f",
+    "networks_added": [],
+    "networks_without_ticker": [],
+    "nft_autodetection_enabled": false,
+    "number_of_accounts": 1,
+    "number_of_nft_collections": 0,
+    "number_of_nfts": 0,
+    "number_of_tokens": 0,
+    "undefined": false,
+    "three_box_enabled": false,
+    "theme": "os",
+    "token_detection_enabled": true,
+    "desktop_enabled": false,
+    "security_providers": ["blockaid"],
+    "petname_addresses_count": 1
+  },
+  "providerConfig": {
+    "type": "sepolia",
+    "chainId": "0xaa36a7",
+    "ticker": "SepoliaETH"
+  },
+  "qrHardware": {},
+  "recoveryPhraseReminderHasBeenShown": false,
+  "recoveryPhraseReminderLastShown": 1715943225448,
+  "securityAlertsEnabled": true,
+  "seedPhraseBackedUp": true,
+  "segmentApiCalls": {
+    "6QHUuopP26ok11pDgrCt": {
+      "eventType": "identify",
+      "payload": {
+        "userId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
+        "traits": {
+          "address_book_entries": 1,
+          "number_of_accounts": 1,
+          "petname_addresses_count": 1
+        },
+        "messageId": "6QHUuopP26ok11pDgrCt",
+        "timestamp": "Fri May 17 2024 12:07:22 GMT+0100 (Western European Summer Time)"
+      }
+    }
+  },
+  "selectedAddress": "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189",
+  "selectedNetworkClientId": "sepolia",
+  "showAccountBanner": true,
+  "showBetaHeader": false,
+  "showNetworkBanner": true,
+  "showPermissionsTour": true,
+  "showTestnetMessageInDropdown": true,
+  "signatureSecurityAlertResponses": {},
+  "smartTransactionsState": {
+    "smartTransactions": { "0x1": [] },
+    "fees": {},
+    "liveness": true,
+    "livenessByChainId": { "0x1": true, "0xaa36a7": true },
+    "feesByChainId": { "0x1": {}, "0xaa36a7": {} }
+  },
+  "snapRegistryList": {},
+  "snapStates": {},
+  "snaps": {
+    "npm:@metamask/message-signing-snap": {
+      "blocked": false,
+      "enabled": true,
+      "removable": false,
+      "preinstalled": true,
+      "id": "npm:@metamask/message-signing-snap",
+      "initialPermissions": {
+        "snap_getEntropy": {},
+        "endowment:rpc": { "dapps": true, "snaps": false }
+      },
+      "manifest": {
+        "version": "0.3.3",
+        "description": "Automatic message signing of MetaMask tagged messages",
+        "proposedName": "MetaMask Message Signing Snap",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/MetaMask/message-signing-snap.git"
+        },
+        "source": {
+          "shasum": "ol44wik35znt/n3Z7GGyXjh+J0M00yDM7YZOYQegA7I=",
+          "location": {
+            "npm": {
+              "filePath": "dist/bundle.js",
+              "iconPath": "images/icon.svg",
+              "packageName": "@metamask/message-signing-snap",
+              "registry": "https://registry.npmjs.org/"
+            }
+          }
+        },
+        "initialPermissions": {
+          "snap_getEntropy": {},
+          "endowment:rpc": { "dapps": true, "snaps": false }
+        },
+        "manifestVersion": "0.1"
+      },
+      "status": "stopped",
+      "version": "0.3.3",
+      "versionHistory": [
+        { "version": "0.3.3", "date": 1715943225450, "origin": "metamask" }
+      ],
+      "localizationFiles": []
+    }
+  },
+  "snapsAddSnapAccountModalDismissed": false,
+  "storageMetadata": [],
+  "subjectMetadata": {
+    "npm:@metamask/message-signing-snap": {
+      "subjectType": "snap",
+      "name": "MetaMask Message Signing Snap",
+      "origin": "npm:@metamask/message-signing-snap",
+      "version": "0.3.3",
+      "svgIcon": "<svg width=\"500\" height=\"500\" viewBox=\"0 0 500 500\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect width=\"500\" height=\"500\" fill=\"black\"/>\n<g filter=\"url(#filter0_f_8_91)\">\n<path d=\"M249.444 373.519C249.444 373.519 364.118 343.192 364.118 257.188L378.333 248.251L364.118 239.314L378.333 230.378L364.118 221.441V203.568V185.695V149.948V114.202L301.639 132.596C267.566 142.628 231.323 142.628 197.25 132.596L134.771 114.202V149.948V167.821V185.695V203.568V221.441L120.556 230.378L134.771 239.314L120.556 248.251L134.771 257.188C134.771 343.192 249.444 373.519 249.444 373.519Z\" fill=\"#F1CA77\"/>\n</g>\n<path d=\"M249.445 406.215C249.445 406.215 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 406.215 249.445 406.215Z\" fill=\"#233447\"/>\n<path d=\"M249.445 399.107C249.445 399.107 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 399.107 249.445 399.107Z\" fill=\"#123AF0\"/>\n<path d=\"M249.445 392C249.445 392 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 392 249.445 392Z\" fill=\"#CD6116\"/>\n<path d=\"M249.445 382.049C249.445 382.049 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 382.049 249.445 382.049Z\" fill=\"#E4751F\"/>\n<path d=\"M249.445 370.676C249.445 370.676 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 370.676 249.445 370.676Z\" fill=\"#F6851B\"/>\n<path d=\"M249.445 352.196C249.445 352.196 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888C290.105 147.184 208.784 147.184 134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 352.196 249.445 352.196Z\" fill=\"url(#paint0_linear_8_91)\"/>\n<defs>\n<filter id=\"filter0_f_8_91\" x=\"94.9674\" y=\"88.6133\" width=\"308.954\" height=\"310.494\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"12.7941\" result=\"effect1_foregroundBlur_8_91\"/>\n</filter>\n<linearGradient id=\"paint0_linear_8_91\" x1=\"144.012\" y1=\"132.09\" x2=\"425.482\" y2=\"446.967\" gradientUnits=\"userSpaceOnUse\">\n<stop stop-color=\"#F1CA77\"/>\n<stop offset=\"1\" stop-color=\"#F6851B\"/>\n</linearGradient>\n</defs>\n</svg>\n",
+      "extensionId": null,
+      "iconUrl": null
+    },
+    "https://dco-assets.everestads.net": {
+      "iconUrl": null,
+      "name": "Ad",
+      "subjectType": "website",
+      "origin": "https://dco-assets.everestads.net",
+      "extensionId": null
+    },
+    "https://consensys.okta.com": {
+      "iconUrl": "https://consensys.okta.com/favicon.ico",
+      "name": "Consensys - Sign In",
+      "subjectType": "website",
+      "origin": "https://consensys.okta.com",
+      "extensionId": null
+    },
+    "https://5c4669a19fd4b55728637d0c236c6cea.safeframe.googlesyndication.com": {
+      "iconUrl": null,
+      "name": "SafeFrame Container",
+      "subjectType": "website",
+      "origin": "https://5c4669a19fd4b55728637d0c236c6cea.safeframe.googlesyndication.com",
+      "extensionId": null
+    },
+    "https://start.metamask.io": {
+      "iconUrl": null,
+      "name": "Start | MetaMask",
+      "subjectType": "website",
+      "origin": "https://start.metamask.io",
+      "extensionId": null
+    }
+  },
+  "subjects": {
+    "npm:@metamask/message-signing-snap": {
+      "origin": "npm:@metamask/message-signing-snap",
+      "permissions": {
+        "snap_getEntropy": {
+          "id": "ggXAHjzFuHpf3zsP6g5Jf",
+          "parentCapability": "snap_getEntropy",
+          "invoker": "npm:@metamask/message-signing-snap",
+          "caveats": null,
+          "date": 1715943225451
+        },
+        "endowment:rpc": {
+          "id": "fNwGYVVOtD-NgTat1-xmO",
+          "parentCapability": "endowment:rpc",
+          "invoker": "npm:@metamask/message-signing-snap",
+          "caveats": [
+            { "type": "rpcOrigin", "value": { "dapps": true, "snaps": false } }
+          ],
+          "date": 1715943225451
+        }
+      }
+    }
+  },
+  "surveyLinkLastClickedOrClosed": null,
+  "swapsState": {
+    "quotes": {},
+    "quotesPollingLimitEnabled": false,
+    "fetchParams": null,
+    "tokens": null,
+    "tradeTxId": null,
+    "approveTxId": null,
+    "quotesLastFetched": null,
+    "customMaxGas": "",
+    "customGasPrice": null,
+    "customMaxFeePerGas": null,
+    "customMaxPriorityFeePerGas": null,
+    "swapsUserFeeLevel": "",
+    "selectedAggId": null,
+    "customApproveTxData": "",
+    "errorKey": "",
+    "topAggId": null,
+    "routeState": "",
+    "swapsFeatureIsLive": true,
+    "saveFetchedQuotes": false,
+    "swapsQuoteRefreshTime": 60000,
+    "swapsQuotePrefetchingRefreshTime": 60000,
+    "swapsStxBatchStatusRefreshTime": 10000,
+    "swapsStxGetTransactionsRefreshTime": 10000,
+    "swapsStxMaxFeeMultiplier": 2
+  },
+  "switchedNetworkDetails": null,
+  "switchedNetworkNeverShowMessage": false,
+  "termsOfUseLastAgreed": 1715944006161,
+  "theme": "os",
+  "tokenList": {},
+  "tokens": [],
+  "tokensChainsCache": {},
+  "traits": {},
+  "transactions": [],
+  "trezorModel": null,
+  "unapprovedDecryptMsgCount": 0,
+  "unapprovedDecryptMsgs": {},
+  "unapprovedEncryptionPublicKeyMsgCount": 0,
+  "unapprovedEncryptionPublicKeyMsgs": {},
+  "unapprovedPersonalMsgCount": 0,
+  "unapprovedPersonalMsgs": {},
+  "unapprovedTypedMessages": {},
+  "unapprovedTypedMessagesCount": 0,
+  "unconnectedAccountAlertShownOrigins": {},
+  "unencryptedSnapStates": {},
+  "use4ByteResolution": true,
+  "useAddressBarEnsResolution": true,
+  "useBlockie": false,
+  "useCurrencyRateCheck": true,
+  "useExternalNameSources": true,
+  "useExternalServices": true,
+  "useMultiAccountBalanceChecker": true,
+  "useNftDetection": false,
+  "useNonceField": false,
+  "usePhishDetect": true,
+  "useRequestQueue": true,
+  "useSafeChainsListValidation": true,
+  "useTokenDetection": true,
+  "useTransactionSimulations": true,
+  "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
+  "userOperations": {},
+  "versionFileETag": "",
+  "versionInfo": [],
+  "web3ShimUsageOrigins": {},
+  "welcomeScreenSeen": false
+}

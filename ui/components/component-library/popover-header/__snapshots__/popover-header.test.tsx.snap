@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PopoverHeader should render PopoverHeader correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-header-base mm-popover-header mm-box--display-flex mm-box--justify-content-space-between"
+    data-testid="popover-header"
+  >
+    <div
+      class="mm-box"
+    >
+      <h4
+        class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-inherit"
+      >
+        PopoverHeader
+      </h4>
+    </div>
+  </div>
+</div>
+`;

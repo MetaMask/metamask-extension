@@ -1,0 +1,45 @@
+@import 'cancel-transaction/index';
+@import 'confirm-remove-account/index';
+@import 'edit-approval-permission/index';
+@import 'hide-token-confirmation-modal/index';
+@import 'new-account-modal/index';
+@import 'qr-scanner/index';
+@import 'transaction-confirmed/index';
+@import 'customize-nonce/index';
+@import 'convert-token-to-nft-modal/index';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+@import '../../institutional/confirm-remove-jwt-modal/index';
+@import '../../institutional/custody-confirm-link-modal/index';
+@import '../../institutional/transaction-failed-modal/index';
+///: END:ONLY_INCLUDE_IF
+
+.modal {
+  z-index: 1050;
+  position: fixed;
+  width: 500px;
+  transform: translate3d(-50%, -50%, 0);
+  top: 50%;
+  left: 50%;
+
+  &__content {
+    margin: 0;
+    background-color: var(--color-background-default);
+    animation-fill-mode: forwards;
+  }
+
+  &__backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    background-color: var(--color-overlay-alterantive);
+    animation-fill-mode: forwards;
+    animation-duration: 0.3s;
+  }
+
+  & > div:focus {
+    outline: none !important;
+  }
+}

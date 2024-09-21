@@ -1,0 +1,202 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
+<div>
+  <div
+    class="confirmation-page"
+  >
+    <div
+      class="mm-box confirmation-page__content mm-box--padding-0"
+      style="margin-top: 0px; overflow-y: auto;"
+    >
+      <div
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-center"
+      >
+        <div
+          class="mm-box mm-picker-network network-display mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-border-muted mm-box--border-width-0 box--border-style-solid box--border-width-1"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            T
+          </div>
+          <span
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            data-testid="network-display"
+          >
+            Test initial state
+          </span>
+          <span
+            class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </div>
+      </div>
+      <h3
+        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
+      >
+        Update Test initial state
+      </h3>
+      <h6
+        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+      >
+        This site is requesting to update your default network URL. You can edit defaults and network information any time.
+      </h6>
+      <h6
+        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+      >
+        <b>
+          MetaMask does not verify custom networks. 
+        </b>
+        <span>
+           
+          Learn about 
+          <a
+            href="https://support.metamask.io/networks-and-sidechains/managing-networks/user-guide-custom-networks-and-sidechains/"
+            target="__blank"
+          >
+            scams and network security risks
+          </a>
+          .
+           
+        </span>
+      </h6>
+      <div
+        class="box box--margin-6 box--padding-4 box--padding-bottom-3 box--flex-direction-row box--rounded-lg box--border-color-border-muted box--border-style-solid box--border-width-1"
+      >
+        <dl
+          class="definition-list"
+        >
+          <dt
+            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Network name
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The name associated with this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
+          >
+            Test chain
+          </dd>
+          <dt
+            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Network URL
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The URL used to access this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
+          >
+            https://rpcurl.test.chain
+          </dd>
+          <dt
+            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Chain ID
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-3"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The chain ID used to sign transactions for this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
+          >
+            39321
+          </dd>
+          <dt
+            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Currency symbol
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-4"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The ticker symbol displayed for this network’s currency."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
+          >
+            TST
+          </dd>
+        </dl>
+        <a
+          class="button btn-link truncated-definition-list__view-more"
+          role="button"
+          tabindex="0"
+        >
+          View all details
+        </a>
+      </div>
+    </div>
+    <div
+      class="confirmation-footer"
+    >
+      <div
+        class="confirmation-footer__actions"
+      >
+        <button
+          class="button btn--rounded btn-secondary"
+          data-testid="confirmation-cancel-button"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary"
+          data-testid="confirmation-submit-button"
+        >
+          Approve
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

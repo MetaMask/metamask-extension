@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AwaitingSwap renders the component with initial props 1`] = `
+<div
+  class="awaiting-swap__main-description"
+  data-testid="awaiting-swap-main-description"
+>
+  <span>
+     
+    Your 
+    <span
+      class="awaiting-swap__amount-and-symbol"
+      data-testid="awaiting-swap-amount-and-symbol"
+    >
+      USDC
+    </span>
+     will be added to your account once this transaction has processed.
+     
+  </span>
+</div>
+`;

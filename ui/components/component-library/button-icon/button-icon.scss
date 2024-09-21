@@ -1,0 +1,44 @@
+.mm-button-icon {
+  --button-icon-size: var(--size, 24px);
+
+  height: var(--button-icon-size);
+  width: var(--button-icon-size);
+  min-width: var(--button-icon-size); // fixes width for flexbox
+  padding: 0;
+  cursor: pointer;
+
+  // ButtonIcon default states
+
+  &:hover {
+    background-color: var(--color-background-hover);
+  }
+
+  &:active {
+    background-color: var(--color-background-pressed);
+  }
+
+  &--disabled,
+  &:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+
+    &:hover,
+    &:active {
+      background-color: transparent;
+    }
+  }
+
+  // ButtonIcon Sizes
+  &--size-sm {
+    --button-icon-size: 24px;
+  }
+
+  &--size-md {
+    --button-icon-size: 28px;
+  }
+
+  &--size-lg {
+    --button-icon-size: 32px;
+  }
+}
+

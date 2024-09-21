@@ -1,0 +1,141 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { ButtonLink } from './button-link';
+import { ButtonBase } from '../button-base';
+
+# ButtonLink
+
+The `ButtonLink` is an extension of `ButtonBase` to support link styles
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonlink--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={ButtonLink} />
+
+### Size
+
+Use the `size` prop and the `ButtonLinkSize` enum from `./ui/components/component-library` to change the size of `ButtonLink`. Defaults to `ButtonLinkSize.Auto`
+
+Possible sizes include:
+
+- `ButtonLinkSize.Auto` sets the height to auto but retains `ButtonLink` font-size
+- `ButtonLinkSize.Sm` 32px
+- `ButtonLinkSize.Md` 40px
+- `ButtonLinkSize.Lg` 48px
+- `ButtonLinkSize.Inherit` inherits the font-size of the parent element. Used for inline links in paragraphs.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonlink--size-story" />
+</Canvas>
+
+```jsx
+import { ButtonLink, ButtonLinkSize, Text, TextVariant } from '../../component-library';
+
+<ButtonLink size={ButtonLinkSize.Auto}>
+  Auto (default)
+</ButtonLink>
+<ButtonLink size={ButtonLinkSize.Sm}>
+  Small
+</ButtonLink>
+<ButtonLink size={ButtonLinkSize.Md}>
+  Medium
+</ButtonLink>
+<ButtonLink size={ButtonLinkSize.Lg}>
+  Large
+</ButtonLink>
+
+<Text variant={TextVariant.bodyLgMedium}>
+  Inherits the font-size of the parent element. <ButtonLink size={ButtonLinkSize.Inherit}>Learn more</ButtonLink>
+</Text>
+<Text variant={TextVariant.bodyMd}>
+  Inherits the font-size of the parent element. <ButtonLink size={ButtonLinkSize.Inherit}>Learn more</ButtonLink>
+</Text>
+<Text variant={TextVariant.bodySm}>
+  Inherits the font-size of the parent element. <ButtonLink size={ButtonLinkSize.Inherit}>Learn more</ButtonLink>
+</Text>
+
+<Text variant={TextVariant.bodyXs}>
+  Inherits the font-size of the parent element and example with override for a success color.
+   <ButtonLink size={ButtonLinkSize.Inherit}>Learn more</ButtonLink>
+</Text>
+```
+
+### Danger
+
+Use the `danger` boolean prop to change the `ButtonLink` to danger color.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonlink--danger" />
+</Canvas>
+
+```jsx
+import { ButtonLink } from '../../component-library';
+
+<ButtonLink>Normal</ButtonLink>
+<ButtonLink danger>Danger</ButtonLink>
+```
+
+### Href
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonlink--href" />
+</Canvas>
+
+```jsx
+import { ButtonLink } from '../../component-library';
+
+<ButtonLink href="/">Href example</ButtonLink>;
+```
+
+### External Link
+
+When an `externalLink` prop is passed it adds the `target="_blank"` and `rel="noopener noreferrer"` attributes.
+
+`rel="noreferrer noopener"` is used in links to prevent security vulnerabilities that can be exploited by malicious websites. It disables the window.opener property and prevents the new page from sending the referrer information, providing an additional layer of security.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonlink--external-link" />
+</Canvas>
+
+```jsx
+import { ButtonLink } from '../../component-library';
+
+<ButtonLink href="https://metamask.io" externalLink>
+  Anchor element with external link
+</ButtonLink>;
+```
+
+### Hit area
+
+The default hit area for `ButtonLink` is the width of the text and height based on the `size` prop which is set to `ButtonLinkSize.Auto` by default. There may be times when you want to increase the hit area of the `ButtonLink`. To do this you can use the `Box` props `paddingLeft` and `paddingRight`. Or alternatively you can use the `block` prop which sets the width to 100%.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonlink--hit-area" />
+</Canvas>
+
+```jsx
+import { ButtonLink, ButtonLinkSize } from '../../component-library';
+
+<ButtonLink paddingLeft={4} paddingRight={4}>
+  Auto (default)
+</ButtonLink>
+<ButtonLink size={ButtonLinkSize.Sm} paddingLeft={4} paddingRight={4}>
+  Small
+</ButtonLink>
+<ButtonLink size={ButtonLinkSize.Md} paddingLeft={4} paddingRight={4}>
+  Medium
+</ButtonLink>
+<ButtonLink size={ButtonLinkSize.Lg} paddingLeft={4} paddingRight={4}>
+  Large
+</ButtonLink>
+<ButtonLink size={ButtonLinkSize.Lg} block>
+  Large block
+</ButtonLink>
+```

@@ -1,0 +1,34 @@
+.secure-your-wallet {
+  &__video {
+    max-width: 100%;
+  }
+
+  &__list {
+    list-style: disc inside;
+  }
+}
+
+.skip-srp-backup-popover {
+  width: 365px;
+
+  &__icon {
+    display: block;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  &__checkbox {
+    margin: 8px 12px 0 0;
+  }
+
+  &__label {
+    display: flex;
+  }
+
+  &__footer {
+    button {
+      width: 140px;
+      margin: 0 10px;
+    }
+  }
+}

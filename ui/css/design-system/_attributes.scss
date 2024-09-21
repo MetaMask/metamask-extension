@@ -1,0 +1,64 @@
+$align-items: baseline, center, flex-end, flex-start, stretch;
+
+$justify-content: center, flex-end, flex-start, space-around, space-between,
+  space-evenly;
+
+$flex-direction: row, row-reverse, column, column-reverse;
+
+$flex-wrap: wrap, wrap-reverse, nowrap;
+
+$fractions: (
+  0: 0,
+  1\/2: 50%,
+  1\/3: 33.333333%,
+  2\/3: 66.666667%,
+  1\/4: 25%,
+  2\/4: 50%,
+  3\/4: 75%,
+  1\/5: 20%,
+  2\/5: 40%,
+  3\/5: 60%,
+  4\/5: 80%,
+  1\/6: 16.666667%,
+  2\/6: 33.333333%,
+  3\/6: 50%,
+  4\/6: 66.666667%,
+  5\/6: 83.333333%,
+  1\/12: 8.333333%,
+  2\/12: 16.666667%,
+  3\/12: 25%,
+  4\/12: 33.333333%,
+  5\/12: 41.666667%,
+  6\/12: 50%,
+  7\/12: 58.333333%,
+  8\/12: 66.666667%,
+  9\/12: 75%,
+  10\/12: 83.333333%,
+  11\/12: 91.666667%
+);
+
+$sizes-numeric: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
+
+$sizes-strings: xs, sm, md, lg, xl;
+
+$border-style: solid, double, none, dashed, dotted;
+$directions: top, right, bottom, left, inline, inline-start, inline-end;
+$display: block, flex, grid, inline-block, inline-grid, inline-flex, list-item, none;
+$text-align: left, right, center, justify, end;
+$overflow-wrap: normal, break-word, anywhere;
+$font-weight: bold, medium, normal, 100, 200, 300, 400, 500, 600, 700, 800, 900;
+$font-style: normal, italic, oblique;
+$font-size: 10px, 12px;
+$border-radius: (
+  xs: 2px,
+  sm: 4px,
+  md: 6px,
+  lg: 8px,
+  xl: 12px,
+  full: 50%,
+  pill: 9999px,
+  none: 0,
+);
+
+// textarea
+$resize: none, both, horizontal, vertical, initial, inherit;

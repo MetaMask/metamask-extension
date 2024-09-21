@@ -1,0 +1,15 @@
+.snap-install-warning {
+  .mm-checkbox__input:focus {
+    border-color: var(--color-border-default);
+    outline: none;
+  }
+
+  .mm-checkbox__input--checked:focus {
+    border-color: var(--color-primary-default);
+    outline: none;
+  }
+
+  .mm-checkbox__input {
+    cursor: pointer;
+  }
+}

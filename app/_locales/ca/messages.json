@@ -1,0 +1,776 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "Rebutja"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Escanejar Codi QR"
+  },
+  "about": {
+    "message": "Informació"
+  },
+  "accessingYourCamera": {
+    "message": "Accedint a la teva càmera..."
+  },
+  "account": {
+    "message": "Compte"
+  },
+  "accountDetails": {
+    "message": "Detalls del Compte"
+  },
+  "accountName": {
+    "message": "Nom del Compte"
+  },
+  "accountOptions": {
+    "message": "Opcions del compte"
+  },
+  "accountSelectionRequired": {
+    "message": "Has de seleccionar un compte!"
+  },
+  "activityLog": {
+    "message": "registre d'activitat"
+  },
+  "addAcquiredTokens": {
+    "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
+  },
+  "addAlias": {
+    "message": "Afegeix un àlies"
+  },
+  "addNetwork": {
+    "message": "Afegir Xarxa"
+  },
+  "addSuggestedTokens": {
+    "message": "Afegir Fitxes Suggerides"
+  },
+  "addToken": {
+    "message": "Afegir Fitxa"
+  },
+  "advanced": {
+    "message": "Configuració avançada"
+  },
+  "amount": {
+    "message": "Quantitat"
+  },
+  "appDescription": {
+    "message": "Un Moneder Ethereum al teu Navegador",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "Aprovar"
+  },
+  "approved": {
+    "message": "Aprovat"
+  },
+  "asset": {
+    "message": "Actius"
+  },
+  "attributions": {
+    "message": "Atribucions"
+  },
+  "autoLockTimeLimit": {
+    "message": "Temporitzador de tancament de sessió automàtic (minuts)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "Configura el temps de repòs com minuts abans que MetaMask tanqui la sessió automàticament"
+  },
+  "average": {
+    "message": "Mitjana"
+  },
+  "back": {
+    "message": "Enrere"
+  },
+  "backupApprovalInfo": {
+    "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
+  },
+  "backupApprovalNotice": {
+    "message": "Fes una còpia de seguretat del teu codi Secret de Recuperació per mantenir el teu moneder i els teus fons segurs."
+  },
+  "backupNow": {
+    "message": "Fer còpia de seguretat ara"
+  },
+  "balance": {
+    "message": "Balanç"
+  },
+  "balanceOutdated": {
+    "message": "El balanç pot ser obsolet"
+  },
+  "basic": {
+    "message": "Opcions bàsiques"
+  },
+  "blockExplorerUrl": {
+    "message": "Bloqueja l'explorador"
+  },
+  "blockExplorerView": {
+    "message": "Veure compte a $1 ",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "browserNotSupported": {
+    "message": "El teu navegador no és suportat..."
+  },
+  "cancel": {
+    "message": "Cancel·la"
+  },
+  "cancelled": {
+    "message": "Cancel·lat"
+  },
+  "chainId": {
+    "message": "Cadena ID"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Necessites fer servir MetaMask amb Google Chrome per a connectar-te al teu Moneder Hardware."
+  },
+  "close": {
+    "message": "Tanca"
+  },
+  "confirm": {
+    "message": "Confirma"
+  },
+  "confirmPassword": {
+    "message": "Confirma la contrasenya"
+  },
+  "confirmed": {
+    "message": "Confirmat"
+  },
+  "connect": {
+    "message": "Connecta"
+  },
+  "connectingTo": {
+    "message": "Connectant a $1 "
+  },
+  "connectingToGoerli": {
+    "message": "Connectant a Xarxa de Prova Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Connectant a Xarxa de Prova Linea Goerli"
+  },
+  "connectingToMainnet": {
+    "message": "Connectant a Xarxa Principal Ethereum"
+  },
+  "contractDeployment": {
+    "message": "Desplegament de Contracte"
+  },
+  "contractInteraction": {
+    "message": "Contractar Interacció"
+  },
+  "copiedExclamation": {
+    "message": "S'ha copiat!"
+  },
+  "copyAddress": {
+    "message": "Copiar adreça al porta-retalls"
+  },
+  "copyToClipboard": {
+    "message": "Copia al porta-retalls"
+  },
+  "copyTransactionId": {
+    "message": "Copia la ID de la transacció"
+  },
+  "create": {
+    "message": "Crea"
+  },
+  "createPassword": {
+    "message": "Crear Contrasenya"
+  },
+  "currencyConversion": {
+    "message": "Conversió de divisa"
+  },
+  "currentLanguage": {
+    "message": "Llengua Actual"
+  },
+  "custom": {
+    "message": "Configuració avançada"
+  },
+  "customToken": {
+    "message": "Fitxa a Mida"
+  },
+  "decimal": {
+    "message": "Decimals de precisió"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Els decimals han de ser al menys 0, i no més de 36."
+  },
+  "delete": {
+    "message": "Suprimeix"
+  },
+  "details": {
+    "message": "Detalls"
+  },
+  "done": {
+    "message": "Fet"
+  },
+  "downloadGoogleChrome": {
+    "message": "Descarrega Google Chrome"
+  },
+  "downloadStateLogs": {
+    "message": "Descarregar Registres d'Estat"
+  },
+  "dropped": {
+    "message": "Caigut"
+  },
+  "edit": {
+    "message": "Edita"
+  },
+  "editContact": {
+    "message": "Editar Contacte"
+  },
+  "enterPasswordContinue": {
+    "message": "Introdueix la contrasenya per continuar"
+  },
+  "ethereumPublicAddress": {
+    "message": "Adreça Pública d'Ethereum"
+  },
+  "etherscanView": {
+    "message": "Veure compte a Etherscan"
+  },
+  "expandView": {
+    "message": "Eixamplar Vista"
+  },
+  "failed": {
+    "message": "Fallit"
+  },
+  "fast": {
+    "message": "Ràpid"
+  },
+  "fileImportFail": {
+    "message": "La importació no funciona? Fes clic aquí!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Oblida aquest dispositiu"
+  },
+  "from": {
+    "message": "Des de"
+  },
+  "functionType": {
+    "message": "Tipus de Funció"
+  },
+  "gasLimit": {
+    "message": "Límit de gas"
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "El límit de gas és la màxima quantitat d'unitats de gas que estàs disposat a gastar."
+  },
+  "gasLimitTooLow": {
+    "message": "El límit de gas ha de ser al menys 21000"
+  },
+  "gasPrice": {
+    "message": "Preu del Gas (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Preu del Gas Extremadament Baix"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "El preu del gas especifica la quantitat d'Ether que estàs disposat a pagar per cada unitat de gas."
+  },
+  "gasUsed": {
+    "message": "Gas utilitzat"
+  },
+  "goerli": {
+    "message": "Xarxa de test Goerli"
+  },
+  "hardwareWalletConnected": {
+    "message": "Moneder hardware connectat"
+  },
+  "hardwareWallets": {
+    "message": "Connectar un moneder hardware"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Selecciona una cartera de hardware que t'agradaria utilizar amb MetaMask"
+  },
+  "here": {
+    "message": "aquí",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Dades Hex"
+  },
+  "hide": {
+    "message": "Amaga"
+  },
+  "hideTokenPrompt": {
+    "message": "Amagar fitxa?"
+  },
+  "history": {
+    "message": "Historial"
+  },
+  "import": {
+    "message": "Importa",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Importa compte"
+  },
+  "importAccountMsg": {
+    "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a MetaMask. Aprèn més sobre els comptes importats"
+  },
+  "imported": {
+    "message": "Importats",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "initialTransactionConfirmed": {
+    "message": "La teva transacció inicial ha sigut confirmada per la xarxa. Fes clic a OK per tornar enrere."
+  },
+  "insufficientBalance": {
+    "message": "Balanç insuficient."
+  },
+  "insufficientFunds": {
+    "message": "Fons insuficients."
+  },
+  "insufficientTokens": {
+    "message": "Tokens insuficients."
+  },
+  "invalidAddress": {
+    "message": "Adreça no vàlida"
+  },
+  "invalidAddressRecipient": {
+    "message": "L'adreça del recipient no és vàlida"
+  },
+  "invalidRPC": {
+    "message": "URL de RPC"
+  },
+  "invalidSeedPhrase": {
+    "message": "Frase de recuperació no vàlida"
+  },
+  "jsonFile": {
+    "message": "Arxiu JSON",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "Adreça de contracte coneguda"
+  },
+  "learnMore": {
+    "message": "Saber més"
+  },
+  "learnMoreUpperCase": {
+    "message": "Saber més"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Has de fer servir el teu últim compte abans de poder afegir-ne un altre."
+  },
+  "likeToImportTokens": {
+    "message": "T'agradaria afegir aquestes fitxes?"
+  },
+  "lineaGoerli": {
+    "message": "Xarxa de test Linea Goerli"
+  },
+  "links": {
+    "message": "Enllaços"
+  },
+  "loadMore": {
+    "message": "Carregar Més"
+  },
+  "loading": {
+    "message": "S'està carregant..."
+  },
+  "loadingTokens": {
+    "message": "Carregant els tokens..."
+  },
+  "localhost": {
+    "message": "Host local 8545"
+  },
+  "lock": {
+    "message": "Tanca la sessió"
+  },
+  "mainnet": {
+    "message": "Xarxa Ethereum principal"
+  },
+  "memo": {
+    "message": "notes"
+  },
+  "message": {
+    "message": "Missatge"
+  },
+  "metamaskVersion": {
+    "message": "Versió MetaMask"
+  },
+  "mustSelectOne": {
+    "message": "Has de seleccionar "
+  },
+  "needImportFile": {
+    "message": "Has de seleccionar un arxiu per a importar.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "No es poden enviar quantitats negatives de ETH."
+  },
+  "networkName": {
+    "message": "Nom de la xarxa"
+  },
+  "networks": {
+    "message": "Xarxes"
+  },
+  "nevermind": {
+    "message": "No importa"
+  },
+  "newAccount": {
+    "message": "Nou compte"
+  },
+  "newAccountNumberName": {
+    "message": "Compte $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Nou Contacte"
+  },
+  "newContract": {
+    "message": "Nou Contracte"
+  },
+  "newPassword": {
+    "message": "Nova contrasenya (mínim 8 caràcters)"
+  },
+  "next": {
+    "message": "Següent"
+  },
+  "noConversionRateAvailable": {
+    "message": "No hi ha cap tarifa de conversió disponible"
+  },
+  "noTransactions": {
+    "message": "No tens transaccions"
+  },
+  "noWebcamFound": {
+    "message": "No s'ha trovat la webcam del teu ordinador. Si us plau prova de nou."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Càmera web no trobada"
+  },
+  "notEnoughGas": {
+    "message": "Gas Insuficient"
+  },
+  "ofTextNofM": {
+    "message": "de"
+  },
+  "off": {
+    "message": "Desactivat"
+  },
+  "ok": {
+    "message": "D'acord"
+  },
+  "on": {
+    "message": "Activat"
+  },
+  "origin": {
+    "message": "Origen"
+  },
+  "parameters": {
+    "message": "Paràmetres"
+  },
+  "participateInMetaMetrics": {
+    "message": "Participar a MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Participa a MetaMetrics per ajudar-nos a fer MetaMask millor"
+  },
+  "password": {
+    "message": "Contrasenya"
+  },
+  "passwordNotLongEnough": {
+    "message": "La contrasenya no és prou llarga"
+  },
+  "passwordsDontMatch": {
+    "message": "Les contrasenyes no coincideixen"
+  },
+  "pastePrivateKey": {
+    "message": "Enganxa la teva cadena clau privada aquí:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "pendent"
+  },
+  "personalAddressDetected": {
+    "message": "Adreça personal detectada. Introduir l'adreça del contracte de fitxa."
+  },
+  "primaryCurrencySetting": {
+    "message": "Divisa principal"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Selecciona Natiu per a prioritzar la mostra de valors en la divisa nadiua de la cadena (p. ex. ETH). Selecciona Fiat per prioritzar la mostra de valors en la divisa fiduciària seleccionada."
+  },
+  "privacyMsg": {
+    "message": "Política de privadesa"
+  },
+  "privateKey": {
+    "message": "Clau privada",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Atenció: No divulguis mai aquesta clau. Qualsevol amb les teves claus privades pot robar qualsevol actiu que tinguis al teu compte."
+  },
+  "privateNetwork": {
+    "message": "Xarxa privada"
+  },
+  "readdToken": {
+    "message": "Pots tornar a afegir aquesta fitxa en el futur anant a \"Afegir fitxa\" al menu d'opcions dels teus comptes."
+  },
+  "reject": {
+    "message": "Rebutja"
+  },
+  "rejectAll": {
+    "message": "Rebutja-ho tot"
+  },
+  "rejectTxsDescription": {
+    "message": "Estàs a punt de refusar una tanda de $1 transaccions "
+  },
+  "rejectTxsN": {
+    "message": "Rebutja les transaccions de $1"
+  },
+  "rejected": {
+    "message": "Rebutjat"
+  },
+  "remove": {
+    "message": "Suprimeix"
+  },
+  "removeAccount": {
+    "message": "Suprimir el compte"
+  },
+  "removeAccountDescription": {
+    "message": "Aquest compte serà retirat del teu moneder. Si us plau, assegura't que tens la frase de recuperació original o la clau privada per a aquest compte importat abans de continuar. Pots importar o crear comptes novament des del desplegable de comptes."
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "peticions esperant ser reconegudes"
+  },
+  "required": {
+    "message": "Obligatori"
+  },
+  "reset": {
+    "message": "Restableix"
+  },
+  "restore": {
+    "message": "Restaura"
+  },
+  "revealSeedWords": {
+    "message": "Revelar Paraules de Recuperació"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "rpcUrl": {
+    "message": "Nova URL de RPC"
+  },
+  "save": {
+    "message": "Desa"
+  },
+  "scanInstructions": {
+    "message": "Col·loca el codi QR davant la teva càmera"
+  },
+  "scanQrCode": {
+    "message": "Escanejar Codi QR"
+  },
+  "search": {
+    "message": "Cerca"
+  },
+  "securityAndPrivacy": {
+    "message": "Seguretat i privacitat"
+  },
+  "seedPhraseReq": {
+    "message": "Les frases de recuperació tenen 12 paraules"
+  },
+  "selectAnAccount": {
+    "message": "Selecciona un Compte"
+  },
+  "selectHdPath": {
+    "message": "Selecciona Ruta HD"
+  },
+  "selectPathHelp": {
+    "message": "Si no veus els teus comptes Ledger a sota, prova canviant la ruta a \"Legacy (MEW / MyCrypto)\""
+  },
+  "selectType": {
+    "message": "Selecciona el tipus"
+  },
+  "send": {
+    "message": "Envia"
+  },
+  "settings": {
+    "message": "Configuració"
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Mostra Conversió a Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Selecciona aquest per mostrar conversió Fiat a Testnets"
+  },
+  "showHexData": {
+    "message": "Mostra les dades Hex"
+  },
+  "showHexDataDescription": {
+    "message": "Selecciona això per a mostrar el camp de dades Hex a la pantalla d'enviament"
+  },
+  "sigRequest": {
+    "message": "Sol·licitud de Signatura"
+  },
+  "sign": {
+    "message": "Signar"
+  },
+  "signatureRequest": {
+    "message": "Sol·licitud de Signatura"
+  },
+  "signed": {
+    "message": "Signat"
+  },
+  "somethingWentWrong": {
+    "message": "Ui! Alguna cosa ha fallat."
+  },
+  "speedUp": {
+    "message": "Accelerar"
+  },
+  "speedUpCancellation": {
+    "message": "Accelera aquesta cancel·lació"
+  },
+  "speedUpTransaction": {
+    "message": "Accelerar aquesta transacció"
+  },
+  "stateLogError": {
+    "message": "Error al recuperar els registres d'estat."
+  },
+  "stateLogs": {
+    "message": "Registres d'estat"
+  },
+  "stateLogsDescription": {
+    "message": "Els registres d'estat contenen les teves adreces de compte públiques i les transaccions enviades."
+  },
+  "submitted": {
+    "message": "Enviat"
+  },
+  "supportCenter": {
+    "message": "Visita el nostre Centre de Suport"
+  },
+  "switchNetworks": {
+    "message": "Intercanviar Xarxes"
+  },
+  "symbol": {
+    "message": "Símbol"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "El símbol ha de tenir com a mínim 11 caràcters."
+  },
+  "terms": {
+    "message": "Condicions d'ús"
+  },
+  "tips": {
+    "message": "Propines"
+  },
+  "to": {
+    "message": "A"
+  },
+  "tokenAlreadyAdded": {
+    "message": "El token ja s'ha afegit."
+  },
+  "tokenContractAddress": {
+    "message": "Adreça del contracte del token"
+  },
+  "tokenSymbol": {
+    "message": "Símbol de Fitxa"
+  },
+  "transaction": {
+    "message": "transacció"
+  },
+  "transactionCancelAttempted": {
+    "message": "Intent de cancel·lació de transacció amb tarifa del gas d'$1 a $2 "
+  },
+  "transactionCancelSuccess": {
+    "message": "Transacció cancel·lada amb èxit per $2"
+  },
+  "transactionConfirmed": {
+    "message": "Transacció confirmada per $2."
+  },
+  "transactionCreated": {
+    "message": "Transacció creada amb un valor de $1 a $2."
+  },
+  "transactionDropped": {
+    "message": "La transacció ha caigut a $2."
+  },
+  "transactionError": {
+    "message": "Error de Transacció. Excepció llançada en el codi de contracte."
+  },
+  "transactionErrorNoContract": {
+    "message": "Provant d'invocar una funció o una adreça no contractada"
+  },
+  "transactionErrored": {
+    "message": "La transacció ha tingut un error."
+  },
+  "transactionFee": {
+    "message": "Preu de la transacció"
+  },
+  "transactionResubmitted": {
+    "message": "Transacció reenviada amb tarifa del gas incrementada d'$1 a $2"
+  },
+  "transactionSubmitted": {
+    "message": "Transacció enviada amb un preu del gas de $1 a $2."
+  },
+  "transactionUpdated": {
+    "message": "Transacció actualitzada a $2."
+  },
+  "transfer": {
+    "message": "Transferència"
+  },
+  "transferFrom": {
+    "message": "Transferir Des de"
+  },
+  "tryAgain": {
+    "message": "Torna-ho a provar"
+  },
+  "unapproved": {
+    "message": "Pendent d'aprovació"
+  },
+  "units": {
+    "message": "unitats"
+  },
+  "unknown": {
+    "message": "Desconegut"
+  },
+  "unknownNetwork": {
+    "message": "Xarxa privada desconeguda"
+  },
+  "unknownQrCode": {
+    "message": "Error: No hem pogut identificar aquest codi QR"
+  },
+  "unlock": {
+    "message": "Desbloqueja"
+  },
+  "unlockMessage": {
+    "message": "La web descentralitzada està esperant"
+  },
+  "updatedWithDate": {
+    "message": "Actualitzat $1"
+  },
+  "urlErrorMsg": {
+    "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."
+  },
+  "usedByClients": {
+    "message": "Utilitzat per tot tipus de clients"
+  },
+  "userName": {
+    "message": "Nom d'usuari"
+  },
+  "viewContact": {
+    "message": "Veure Contacte"
+  },
+  "visitWebSite": {
+    "message": "Visita el nostre lloc web"
+  },
+  "welcomeBack": {
+    "message": "Benvingut de nou!"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Has de permetre l'accés a la càmera per fer servir aquesta característica."
+  },
+  "youSign": {
+    "message": "Estàs signant"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "La teva frase privada de seeds"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Gas a cost zero accelerant-se"
+  }
+}

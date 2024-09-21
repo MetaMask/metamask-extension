@@ -1,0 +1,36 @@
+@use "design-system";
+
+.selected-account {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+
+  &__tooltip-wrapper {
+    width: 100%;
+  }
+
+  &__clickable {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 4px 0;
+    padding: 6px 1px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    background-color: unset;
+
+    &:hover,
+    &:active {
+      background-color: var(--color-background-default-hover);
+    }
+  }
+
+  &__copy {
+    display: flex;
+    margin-inline-start: 3px;
+  }
+}

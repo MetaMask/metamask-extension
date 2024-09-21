@@ -1,0 +1,26 @@
+.cancel-speedup-popover {
+  &__wrapper {
+    padding: 0 16px 16px;
+
+    .info-tooltip {
+      margin-left: 4px;
+    }
+  }
+
+  &__edit-gas-button {
+    align-self: flex-end;
+  }
+
+  &__gas-details {
+    padding-top: 10px;
+  }
+
+  &__spinner {
+    margin-top: -30px;
+    height: calc(100% + 30px);
+  }
+
+  &__description {
+    border-bottom: 1px solid var(--color-border-default);
+  }
+}

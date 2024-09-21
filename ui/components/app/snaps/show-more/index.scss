@@ -1,0 +1,18 @@
+@use "design-system";
+
+.show-more {
+  max-height: 5.5rem;
+
+  &:first-child {
+    text-overflow: ellipsis;
+  }
+
+  @include design-system.screen-md-min {
+    max-height: 6rem;
+  }
+
+  &__button {
+    background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
+    vertical-align: baseline;
+  }
+}

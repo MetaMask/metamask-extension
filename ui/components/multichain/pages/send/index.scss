@@ -1,0 +1,76 @@
+@use "design-system";
+
+.multichain-send-page {
+  width: 408px;
+
+  @media (max-width: 371px) {
+    width: 100%;
+  }
+
+  &__account-picker {
+    height: 62px;
+
+    &__label {
+      @include design-system.H6;
+
+      font-weight: 500;
+
+      @extend %ellipsify;
+    }
+  }
+
+  &__nav-button {
+    flex-basis: 50%;
+  }
+
+  &__recipient {
+    width: 100%;
+
+    .tabs__list {
+      font-size: design-system.$font-size-h6;
+      border-bottom: 0;
+      background-color: transparent;
+      position: relative;
+
+      .tab {
+        width: 50%;
+      }
+    }
+
+    &__item {
+      &__title-tooltip > * {
+        display: inline;
+      }
+
+      &__title-tooltip {
+        white-space: nowrap;
+      }
+
+      &__title-tooltip-container {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &__title-confusable-wrapper {
+        display: inline-block;
+      }
+
+      &__avatar {
+        width: 20px;
+        height: 20px;
+        max-width: 20px;
+        border-radius: 10px;
+      }
+
+      &__badge {
+        transform: scale(1) translate(25%, 70%);
+        width: '20px';
+        height: '20px';
+      }
+    }
+  }
+
+  &__recipient:last-child {
+    padding-bottom: 0;
+  }
+}

@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionStatusLabel Component should render CONFIRMED properly 1`] = `
+<div>
+  <div
+    class="transaction-status-label transaction-status-label--confirmed"
+  >
+    June 1
+  </div>
+</div>
+`;
+
+exports[`TransactionStatusLabel Component should render PENDING properly 1`] = `
+<div>
+  <div
+    class="transaction-status-label transaction-status-label--pending transaction-status-label--pending"
+  >
+    Pending
+  </div>
+</div>
+`;
+
+exports[`TransactionStatusLabel Component should render QUEUED properly 1`] = `
+<div>
+  <div
+    class="transaction-status-label transaction-status-label--queued transaction-status-label--queued"
+  >
+    Queued
+  </div>
+</div>
+`;
+
+exports[`TransactionStatusLabel Component should render SIGNING if status is approved 1`] = `
+<div>
+  <div
+    class="transaction-status-label transaction-status-label--signing"
+  >
+    Signing
+  </div>
+</div>
+`;
+
+exports[`TransactionStatusLabel Component should render UNAPPROVED properly 1`] = `
+<div>
+  <div
+    class="transaction-status-label transaction-status-label--unapproved transaction-status-label--unapproved"
+  >
+    Unapproved
+  </div>
+</div>
+`;

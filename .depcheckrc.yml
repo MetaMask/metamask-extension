@@ -1,0 +1,90 @@
+# things that *are* used, that depcheck is wrong about
+ignores:
+  #
+  # webapp deps
+  #
+
+  - '@lavamoat/snow'
+  - '@lavamoat/allow-scripts'
+  - '@babel/runtime'
+  - '@fortawesome/fontawesome-free'
+  - 'punycode'
+
+  #
+  # dev deps
+  #
+
+  # all @types/* packages are imported implicitly by TypeScript
+  - '@types/*'
+  # safety fallback for npm lifecycle scripts, not used normally
+  - '@lavamoat/preinstall-always-fail'
+  # used in testing + ci
+  - '@metamask/auto-changelog' # invoked as `auto-changelog`
+  - '@metamask/forwarder'
+  - '@metamask/phishing-warning' # statically hosted as part of some e2e tests
+  - '@metamask/test-dapp'
+  - '@metamask/design-tokens' # Only imported in index.css
+  - '@tsconfig/node20' # required dynamically by TS, used in tsconfig.json
+  - '@sentry/cli' # invoked as `sentry-cli`
+  - 'chromedriver'
+  - 'depcheck' # ooo meta
+  - 'ethers' # ethers @5.7.0 expected by @account-abstraction/contracts, but conflicts with transitive ethers@6.x
+  - 'ganache-cli'
+  - 'geckodriver'
+  - 'jest'
+  - 'lavamoat-viz'
+  - 'mocha-junit-reporter'
+  - 'prettier-plugin-sort-json' # automatically imported by prettier
+  - 'source-map-explorer'
+  - 'playwright'
+  - 'wait-on'
+  - 'tsx' # used in .devcontainer
+  - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
+  # storybook
+  - '@storybook/cli'
+  - '@storybook/core'
+  - '@storybook/addon-designs'
+  - '@storybook/addon-essentials'
+  - '@storybook/addon-a11y'
+  - '@storybook/addon-mdx-gfm'
+  - '@storybook/builder-webpack5'
+  - '@storybook/manager-webpack5'
+  - '@storybook/react-webpack5'
+  - 'storybook-dark-mode'
+  - '@whitespace/storybook-addon-html'
+  - 'react-syntax-highlighter'
+  - 'style-loader'
+  - 'css-loader'
+  - 'sass-loader'
+  - 'resolve-url-loader'
+  # jest environments
+  - 'jest-environment-jsdom'
+  # webpack
+  - '@pmmmwh/react-refresh-webpack-plugin' # dev tool
+  - 'webpack-dev-server' # dev tool
+  - 'html-bundler-webpack-plugin' # build tool
+  - 'postcss-loader' # build tool
+  - '@swc/helpers' # build tool
+  - browserslist # build tool
+  - 'buffer' # polyfill
+  - 'crypto-browserify' # polyfill
+  - 'process' # polyfill
+  - 'stream-http' # polyfill
+  - 'rimraf' # misc: install helper
+  - 'json-schema-to-ts' # misc: typescript helper
+  - 'https-browserify' # polyfill
+  - 'path-browserify' # polyfill
+  - 'nyc' # coverage
+  - 'core-js-pure' # polyfills
+  # babel
+  - '@babel/plugin-transform-logical-assignment-operators'
+  # trezor
+  - 'ts-mixer'
+
+# files depcheck should not parse
+ignorePatterns:
+  # seems to incorrectly parse scss @include pragmas?
+  - '**/*.scss'
+  # self-contained bundle used for testing
+  - '**/send-eth-with-private-key-test/web3js.js'
+  - '**/send-eth-with-private-key-test/ethereumjs-tx.js'

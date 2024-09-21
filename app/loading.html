@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>MetaMask Loading</title>
+  <% if (it.shouldIncludeSnow) { %>
+  <script src="@lavamoat/snow/snow.prod.js"></script>
+  <script src="./scripts/use-snow.js"></script>
+  <% } %>
+  <style>
+    #div-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    #logo {
+      width: 256px;
+      animation: pulse 1s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(0.95, 0.95);
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="div-logo">
+    <img id="logo" src="./images/enslogo.svg" loading="lazy">
+    <h1 class="center">MetaMask is querying ENS ...</h1>
+  </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+@use "design-system";
+
+.invalid-custom-network-alert {
+  &__content {
+    border-radius: 0;
+    padding: 0 24px 16px 24px;
+
+    > p {
+      @include design-system.Paragraph;
+
+      font-size: 14px;
+      padding-bottom: 12px;
+    }
+
+    > p:last-of-type {
+      padding-bottom: 0;
+    }
+  }
+
+  &__content-link {
+    color: var(--color-primary-default);
+    cursor: pointer;
+  }
+
+  &__footer {
+    flex-direction: column;
+
+    > :only-child {
+      margin: 0;
+      width: 100%;
+    }
+  }
+
+  &__footer-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    & &-button {
+      height: 40px;
+      width: 50%;
+      margin-right: 24px;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &__error {
+    margin-bottom: 16px;
+    padding: 16px;
+    font-size: 14px;
+    border: 1px solid var(--color-error-default);
+    background: var(--color-error-muted);
+    border-radius: 3px;
+  }
+}

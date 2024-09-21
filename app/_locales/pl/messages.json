@@ -1,0 +1,789 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "Odrzuć"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skanuj kod QR"
+  },
+  "about": {
+    "message": "Informacje"
+  },
+  "accessingYourCamera": {
+    "message": "Uruchamianie kamery..."
+  },
+  "account": {
+    "message": "Konto"
+  },
+  "accountDetails": {
+    "message": "Szczegóły konta"
+  },
+  "accountName": {
+    "message": "Nazwa konta"
+  },
+  "accountOptions": {
+    "message": "Opcje konta"
+  },
+  "accountSelectionRequired": {
+    "message": "Należy wybrać konto!"
+  },
+  "activityLog": {
+    "message": "dziennik aktywności"
+  },
+  "addAcquiredTokens": {
+    "message": "Dodaj tokeny pozyskane przy pomocy MetaMask"
+  },
+  "addAlias": {
+    "message": "Dodaj alias"
+  },
+  "addNetwork": {
+    "message": "Dodaj sieć"
+  },
+  "addSuggestedTokens": {
+    "message": "Dodaj sugerowane tokeny."
+  },
+  "addToken": {
+    "message": "Dodaj token"
+  },
+  "advanced": {
+    "message": "Zaawansowane"
+  },
+  "amount": {
+    "message": "Ilość"
+  },
+  "appDescription": {
+    "message": "Wtyczka przeglądarki do Ethereum",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "Zatwierdź"
+  },
+  "approved": {
+    "message": "Zatwierdzone"
+  },
+  "asset": {
+    "message": "Składnik aktywów"
+  },
+  "attributions": {
+    "message": "Atrybuty"
+  },
+  "autoLockTimeLimit": {
+    "message": "Czas automatycznego wylogowania (w minutach)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "Ustaw czas bezczynności w minutach, po którym MetaMask wyloguje Cię automatycznie"
+  },
+  "average": {
+    "message": "Średnia"
+  },
+  "back": {
+    "message": "Wstecz"
+  },
+  "backupApprovalInfo": {
+    "message": "Ten tajny kod jest wymagany do odzyskania portfela w przypadku zgubienia urządzenia, zapomnienia hasła, ponownego zainstalowania MetaMask lub potrzeby uzyskania dostępu do portfela na innym urządzeniu."
+  },
+  "backupApprovalNotice": {
+    "message": "Utwórz kopię zapasową tajnego kodu odzyskiwania, aby zapewnić bezpieczeństwo swojego portfela i środków."
+  },
+  "backupNow": {
+    "message": "Utwórz kopię zapasową"
+  },
+  "balance": {
+    "message": "Ilość środków"
+  },
+  "balanceOutdated": {
+    "message": "Saldo może być nieaktualne"
+  },
+  "basic": {
+    "message": "Podstawy"
+  },
+  "blockExplorerUrl": {
+    "message": "Przeglądaj blok"
+  },
+  "blockExplorerView": {
+    "message": "Wyświetl konto w $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "browserNotSupported": {
+    "message": "Twoja przeglądarka nie jest obsługiwana..."
+  },
+  "bytes": {
+    "message": "Bajty"
+  },
+  "cancel": {
+    "message": "Anuluj"
+  },
+  "cancelled": {
+    "message": "Anulowano"
+  },
+  "chainId": {
+    "message": "Identyfikator łańcucha"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Żeby połączyć się z portfelem sprzętowym, należy uruchomić MetaMask z przeglądarką Google Chrome."
+  },
+  "close": {
+    "message": "Zamknij"
+  },
+  "confirm": {
+    "message": "Potwierdź"
+  },
+  "confirmPassword": {
+    "message": "Potwierdź hasło"
+  },
+  "confirmed": {
+    "message": "Potwierdzone"
+  },
+  "connect": {
+    "message": "Połącz"
+  },
+  "connectingTo": {
+    "message": "Łączenie z $1"
+  },
+  "connectingToGoerli": {
+    "message": "Łączenie z siecią testową Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Łączenie z siecią testową Linea Goerli"
+  },
+  "connectingToMainnet": {
+    "message": "Łączenie z główną siecią Ethereum"
+  },
+  "contractDeployment": {
+    "message": "Uruchomienie kontraktu"
+  },
+  "contractInteraction": {
+    "message": "Interakcja z kontraktem"
+  },
+  "copiedExclamation": {
+    "message": "Skopiowane!"
+  },
+  "copyAddress": {
+    "message": "Skopiuj adres do schowka"
+  },
+  "copyToClipboard": {
+    "message": "Skopiuj do schowka"
+  },
+  "copyTransactionId": {
+    "message": "Kopiuj identyfikator transakcji"
+  },
+  "create": {
+    "message": "Utwórz"
+  },
+  "createPassword": {
+    "message": "Utwórz hasło"
+  },
+  "currencyConversion": {
+    "message": "Przeliczanie walut"
+  },
+  "currentLanguage": {
+    "message": "Obecny język"
+  },
+  "custom": {
+    "message": "Zaawansowane"
+  },
+  "customToken": {
+    "message": "Własny token"
+  },
+  "decimal": {
+    "message": "Dokładność liczb po przecinku"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
+  },
+  "delete": {
+    "message": "Usuń"
+  },
+  "details": {
+    "message": "Szczegóły"
+  },
+  "done": {
+    "message": "Gotowe"
+  },
+  "downloadGoogleChrome": {
+    "message": "Ściągnij Google Chrome"
+  },
+  "downloadStateLogs": {
+    "message": "Załaduj logi stanów"
+  },
+  "dropped": {
+    "message": "Odrzucone"
+  },
+  "edit": {
+    "message": "Edytuj"
+  },
+  "editContact": {
+    "message": "Edytuj kontakt"
+  },
+  "enterPasswordContinue": {
+    "message": "Podaj hasło żeby kontynuować"
+  },
+  "ethereumPublicAddress": {
+    "message": "Adres publiczny Ethereum"
+  },
+  "etherscanView": {
+    "message": "Zobacz konto na Etherscan"
+  },
+  "expandView": {
+    "message": "Rozwiń widok"
+  },
+  "failed": {
+    "message": "Nie udało się"
+  },
+  "fast": {
+    "message": "Szybko"
+  },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "Importowanie pliku nie działa? Kliknij tutaj!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Usuń to urządzenie."
+  },
+  "from": {
+    "message": "Z"
+  },
+  "functionType": {
+    "message": "Typ funkcji"
+  },
+  "gasLimit": {
+    "message": "Limit gazu"
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
+  },
+  "gasLimitTooLow": {
+    "message": "Limit gazu musi wynosić co najmniej 21000"
+  },
+  "gasPrice": {
+    "message": "Cena gazu (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Bardzo niska cena gazu"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Cena gazu to ilość kryptowaluty Ether, którą jesteś gotów zapłacić za każdą jednostkę gazu."
+  },
+  "gasUsed": {
+    "message": "Użyty gaz"
+  },
+  "general": {
+    "message": "Ogólne"
+  },
+  "goerli": {
+    "message": "Sieć testowa Goerli"
+  },
+  "hardware": {
+    "message": "sprzęt"
+  },
+  "hardwareWalletConnected": {
+    "message": "Podłączono sprzętowy portfel"
+  },
+  "hardwareWallets": {
+    "message": "Podłącz sprzętowy portfel"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Wybierz portfel sprzętowy, którego chcesz użyć z MetaMaskiem"
+  },
+  "here": {
+    "message": "tutaj",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Dane Hex"
+  },
+  "hide": {
+    "message": "Schowaj"
+  },
+  "hideTokenPrompt": {
+    "message": "Schować token?"
+  },
+  "history": {
+    "message": "Historia"
+  },
+  "import": {
+    "message": "Importuj",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Importuj konto"
+  },
+  "importAccountMsg": {
+    "message": " Importowane konta nie będą powiązane z Twoją pierwotną frazą seed MetaMask. Dowiedz się więcej o importowaniu kont "
+  },
+  "imported": {
+    "message": "Zaimportowane",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Twoja transakcja została potwierdzona w sieci. Kliknij OK żeby wrócić."
+  },
+  "insufficientBalance": {
+    "message": "Niewystarczające saldo."
+  },
+  "insufficientFunds": {
+    "message": "Niewystarczające środki."
+  },
+  "insufficientTokens": {
+    "message": "Niewystarczająca liczba tokenów."
+  },
+  "invalidAddress": {
+    "message": "Nieprawidłowy adres"
+  },
+  "invalidAddressRecipient": {
+    "message": "Nieprawidłowy adres odbiorcy"
+  },
+  "invalidRPC": {
+    "message": "Nieprawidłowe RPC URI"
+  },
+  "invalidSeedPhrase": {
+    "message": "Nieprawidłowa fraza seed"
+  },
+  "jsonFile": {
+    "message": "Plik JSON",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "Znany adres kontraktu."
+  },
+  "learnMore": {
+    "message": "Dowiedz się więcej"
+  },
+  "learnMoreUpperCase": {
+    "message": "Dowiedz się więcej"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Musisz użyć swojego poprzedniego konta zanim dodasz kolejne."
+  },
+  "likeToImportTokens": {
+    "message": "Czy chcesz dodać te tokeny?"
+  },
+  "lineaGoerli": {
+    "message": "Sieć testowa Linea Goerli"
+  },
+  "links": {
+    "message": "Łącza"
+  },
+  "loadMore": {
+    "message": "Załaduj więcej"
+  },
+  "loading": {
+    "message": "Ładowanie..."
+  },
+  "loadingTokens": {
+    "message": "Ładowanie tokenów..."
+  },
+  "localhost": {
+    "message": "Serwer lokalny 8545"
+  },
+  "lock": {
+    "message": "Wyloguj się"
+  },
+  "mainnet": {
+    "message": "Główna sieć Ethereum"
+  },
+  "max": {
+    "message": "Maks."
+  },
+  "message": {
+    "message": "Wiadomość"
+  },
+  "metamaskVersion": {
+    "message": "Wersja MetaMask"
+  },
+  "mustSelectOne": {
+    "message": "Należy wybrać co najmniej 1 token."
+  },
+  "needImportFile": {
+    "message": "Musisz wybrać plik do zaimportowania.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Nie można wysłać ujemnych ilości ETH."
+  },
+  "networkName": {
+    "message": "Nazwa sieci"
+  },
+  "networks": {
+    "message": "Sieci"
+  },
+  "nevermind": {
+    "message": "Nie ważne"
+  },
+  "newAccount": {
+    "message": "Nowe konto"
+  },
+  "newAccountNumberName": {
+    "message": "Konto $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Nowy kontakt"
+  },
+  "newContract": {
+    "message": "Nowy kontrakt"
+  },
+  "newPassword": {
+    "message": "Nowe hasło (min. 8 znaków)"
+  },
+  "next": {
+    "message": "Dalej"
+  },
+  "noConversionRateAvailable": {
+    "message": "Brak kursu waluty"
+  },
+  "noTransactions": {
+    "message": "Nie ma transakcji"
+  },
+  "noWebcamFound": {
+    "message": "Twoja kamera nie została znaleziona. Spróbuj ponownie."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Nie znaleziono kamery"
+  },
+  "notEnoughGas": {
+    "message": "Za mało gazu"
+  },
+  "ofTextNofM": {
+    "message": "z"
+  },
+  "off": {
+    "message": "Wył."
+  },
+  "on": {
+    "message": "Włączone"
+  },
+  "origin": {
+    "message": "Pochodzenie"
+  },
+  "parameters": {
+    "message": "Parametry"
+  },
+  "participateInMetaMetrics": {
+    "message": "Weź udział w MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Weź udział w MetaMetrics, aby pomóc nam ulepszyć MetaMask"
+  },
+  "password": {
+    "message": "Hasło"
+  },
+  "passwordNotLongEnough": {
+    "message": "Hasło jest za krótkie"
+  },
+  "passwordsDontMatch": {
+    "message": "Hasła są niezgodne"
+  },
+  "pastePrivateKey": {
+    "message": "Tutaj wklej swój prywatny klucz:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "oczekiwanie"
+  },
+  "personalAddressDetected": {
+    "message": "Wykryto osobisty adres. Wprowadź adres kontraktu tokenów."
+  },
+  "prev": {
+    "message": "Poprzednie"
+  },
+  "primaryCurrencySetting": {
+    "message": "Waluta podstawowa"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Wybierz walutę natywną, aby preferować wyświetlanie wartości w walucie natywnej łańcucha (np. ETH). Wybierz walutę fiat, aby preferować wyświetlanie wartości w wybranej przez siebie walucie fiat."
+  },
+  "privacyMsg": {
+    "message": "Polityka prywatności"
+  },
+  "privateKey": {
+    "message": "Klucz prywatny",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Uwaga: Nie ujawniaj nikomu tego klucza. Ktokolwiek posiadający Twoje prywatne klucze może użyć środków znajdujących się na Twoim koncie."
+  },
+  "privateNetwork": {
+    "message": "Sieć prywatna"
+  },
+  "readdToken": {
+    "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
+  },
+  "reject": {
+    "message": "Odrzuć"
+  },
+  "rejectAll": {
+    "message": "Odrzuć wszystkie"
+  },
+  "rejectTxsDescription": {
+    "message": "Zamierzasz odrzucić wiele ($1) transakcji jednocześnie."
+  },
+  "rejectTxsN": {
+    "message": "Odrzuć transakcje ($1)"
+  },
+  "rejected": {
+    "message": "Odrzucone"
+  },
+  "remove": {
+    "message": "usuń"
+  },
+  "removeAccount": {
+    "message": "Usuń konto"
+  },
+  "removeAccountDescription": {
+    "message": "To konto będzie usunięte z Twojego portfela. Zanim przejdziesz dalej, upewnij się, że masz frazę seed i klucz prywatny do tego importowanego konta. Możesz później importować lub utworzyć nowe konta z rozwijanego menu kont. "
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "wnioski oczekujące na zatwierdzenie"
+  },
+  "required": {
+    "message": "Wymagane"
+  },
+  "reset": {
+    "message": "Resetuj"
+  },
+  "restore": {
+    "message": "Przywróć"
+  },
+  "revealSeedWords": {
+    "message": "Pokaż słowa seed"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Te słowa mogą być użyte żeby ukraść Twoje konta.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "rpcUrl": {
+    "message": "Nowy adres URL RPC"
+  },
+  "save": {
+    "message": "Zapisz"
+  },
+  "scanInstructions": {
+    "message": "Umieść kod QR na wprost kamery"
+  },
+  "scanQrCode": {
+    "message": "Skanuj kod QR"
+  },
+  "search": {
+    "message": "Szukaj"
+  },
+  "securityAndPrivacy": {
+    "message": "Bezpieczeństwo i prywatność"
+  },
+  "seedPhraseReq": {
+    "message": "Frazy seed mają 12 słów"
+  },
+  "selectAnAccount": {
+    "message": "Wybierz konto"
+  },
+  "selectHdPath": {
+    "message": "Wybierz ścieżkę HD"
+  },
+  "selectPathHelp": {
+    "message": "Jeśli nie widzisz poniżej swoich kont Ledger, spróbuj przełączyć się na \"Legacy (MEW / MyCrypto)\""
+  },
+  "selectType": {
+    "message": "Wybierz rodzaj"
+  },
+  "send": {
+    "message": "Wyślij"
+  },
+  "settings": {
+    "message": "Ustawienia"
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Pokaż przeliczanie w sieciach testowych"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Wybierz tę opcję, aby wyświetlać przeliczanie waluty fiat w sieciach testowych"
+  },
+  "showHexData": {
+    "message": "Pokaż dane hex"
+  },
+  "showHexDataDescription": {
+    "message": "Wybierz to żeby pokazać pole danych hex na ekranie wysyłania"
+  },
+  "sigRequest": {
+    "message": "Prośba o podpis"
+  },
+  "sign": {
+    "message": "Podpisz"
+  },
+  "signatureRequest": {
+    "message": "Prośba o podpis"
+  },
+  "signed": {
+    "message": "Podpisane"
+  },
+  "somethingWentWrong": {
+    "message": "Ups! Coś poszło nie tak."
+  },
+  "speedUp": {
+    "message": "Przyśpiesz"
+  },
+  "speedUpCancellation": {
+    "message": "Przyśpiesz anulowanie"
+  },
+  "speedUpTransaction": {
+    "message": "Przyśpiesz transakcję"
+  },
+  "stateLogError": {
+    "message": "Błąd podczas pobierania logów stanów."
+  },
+  "stateLogs": {
+    "message": "Logi stanów"
+  },
+  "stateLogsDescription": {
+    "message": "Logi stanów zawierają Twoje publiczne adresy kont i wykonanych transakcji."
+  },
+  "submitted": {
+    "message": "Wysłane"
+  },
+  "supportCenter": {
+    "message": "Odwiedź nasze Centrum Pomocy"
+  },
+  "switchNetworks": {
+    "message": "Zmień sieci"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbol musi mieć maksymalnie 11 znaków."
+  },
+  "terms": {
+    "message": "Regulamin"
+  },
+  "tips": {
+    "message": "Napiwki"
+  },
+  "to": {
+    "message": "Do"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token jest już dodany."
+  },
+  "tokenContractAddress": {
+    "message": "Adres kontraktu tokena"
+  },
+  "tokenSymbol": {
+    "message": "Symbol tokena"
+  },
+  "total": {
+    "message": "Suma"
+  },
+  "transaction": {
+    "message": "transakcja"
+  },
+  "transactionCancelAttempted": {
+    "message": "Podjęto próbę anulowania transakcji z opłatą za gaz w wysokości $1 – $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transakcja została anulowana pomyślnie – $2"
+  },
+  "transactionConfirmed": {
+    "message": "Transakcja została potwierdzona o $2."
+  },
+  "transactionCreated": {
+    "message": "Transakcja o wartości $1 została utworzona o $2."
+  },
+  "transactionDropped": {
+    "message": "Transakcja odrzucona – $2."
+  },
+  "transactionError": {
+    "message": "Błąd transakcji. Wyjątek w kodzie kontraktu."
+  },
+  "transactionErrorNoContract": {
+    "message": "Próba wywołania funkcji na adresie, który nie jest adresem kontraktu."
+  },
+  "transactionErrored": {
+    "message": "Wystąpił błąd podczas wykonywania transakcji."
+  },
+  "transactionFee": {
+    "message": "Opłata transakcyjna"
+  },
+  "transactionResubmitted": {
+    "message": "Transakcja wysłana ponownie z opłatą za gaz podwyższoną do $1 – $2"
+  },
+  "transactionSubmitted": {
+    "message": "Transakcja wykonana z opłatą za gaz w wysokości $1 – $2."
+  },
+  "transactionUpdated": {
+    "message": "Transakcja zaktualizowana – $2."
+  },
+  "transfer": {
+    "message": "Przelew"
+  },
+  "transferFrom": {
+    "message": "Przelew z"
+  },
+  "tryAgain": {
+    "message": "Spróbuj ponownie"
+  },
+  "unapproved": {
+    "message": "Niezatwierdzone"
+  },
+  "units": {
+    "message": "jednostki"
+  },
+  "unknown": {
+    "message": "Nieznane"
+  },
+  "unknownNetwork": {
+    "message": "Nieznana sieć prywatna"
+  },
+  "unknownQrCode": {
+    "message": "Błąd: nie mogliśmy odczytać tego kodu QR"
+  },
+  "unlock": {
+    "message": "Odblokuj"
+  },
+  "unlockMessage": {
+    "message": "Zdecentralizowana sieć oczekuje"
+  },
+  "updatedWithDate": {
+    "message": "Zaktualizowano $1"
+  },
+  "urlErrorMsg": {
+    "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."
+  },
+  "usedByClients": {
+    "message": "Używany przez różnych klientów"
+  },
+  "userName": {
+    "message": "Nazwa użytkownika"
+  },
+  "viewContact": {
+    "message": "Wyświetl kontakt"
+  },
+  "visitWebSite": {
+    "message": "Odwiedź naszą stronę"
+  },
+  "welcomeBack": {
+    "message": "Witaj z powrotem!"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Żeby użyć tej opcji należy podłączyć kamerę"
+  },
+  "youSign": {
+    "message": "Podpisujesz"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Twoja prywatna fraza seed"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Przyspieszenie z zerową ceną gazu"
+  }
+}

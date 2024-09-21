@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Input should render correctly 1`] = `
+<div>
+  <input
+    autocomplete="off"
+    class="mm-box mm-text mm-input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+    type="text"
+    value=""
+  />
+</div>
+`;

@@ -1,0 +1,81 @@
+@use "design-system";
+
+.home-notification-wrapper--show-all,
+.home-notification-wrapper--show-first {
+  display: flex;
+  flex-direction: column;
+  width: 472px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 8px;
+
+  @include design-system.screen-sm-max {
+    width: 340px;
+  }
+
+  .home-notification-wrapper__i-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    .fa-sm {
+      display: initial;
+      position: absolute;
+      bottom: 14px;
+      left: 16px;
+      color: var(--color-icon-muted);
+      cursor: pointer;
+      visibility: visible;
+
+      &:hover {
+        @include design-system.H4;
+      }
+    }
+  }
+}
+
+.home-notification-wrapper--show-all {
+  justify-content: flex-end;
+  margin-bottom: 0;
+
+  .home-notification-wrapper__i-container {
+    height: 0;
+  }
+
+  > div {
+    position: relative;
+    margin-top: 8px;
+  }
+
+  .fa-sm {
+    margin-bottom: 8px;
+  }
+}
+
+.home-notification-wrapper--show-first {
+  > div {
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    visibility: hidden;
+  }
+
+  /* accommodates for the home "Wallet" / "Connections" footer */
+  &.home-notification-wrapper--multichain > div {
+    bottom: 88px;
+  }
+
+  > div:first-of-type {
+    visibility: visible;
+  }
+
+  .fa-sm {
+    position: relative;
+    display: initial;
+  }
+}
+
+.flipped {
+  transform: rotate(180deg);
+}

@@ -1,0 +1,81 @@
+@use "design-system";
+
+.notifications {
+  display: block;
+  position: relative;
+
+  &__tabs {
+    border: none;
+    padding: 0 0;
+  }
+
+  &__tab {
+    @include design-system.H6;
+
+    flex-grow: 1;
+    color: var(--color-icon-default);
+    font-weight: 500;
+  }
+
+  &__tab--active {
+    color: var(--color-primary-default);
+  }
+
+  &__tab button {
+    padding: 8px;
+  }
+
+  &__list {
+    position: relative;
+  }
+
+  &__list__read__all__button {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+}
+
+.snap-notifications {
+  &__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-muted);
+    padding: 16px 32px 16px 16px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color-background-default-hover);
+    }
+
+    &__unread-dot {
+      content: ' ';
+      align-self: flex-start;
+      margin-top: 6px;
+      width: 8px;
+      height: 8px;
+      background-color: transparent;
+      border-radius: 50%;
+    }
+
+    .unread {
+      flex-shrink: 0;
+      background-color: var(--color-primary-default);
+    }
+
+    &__details {
+      display: flex;
+      flex-direction: column;
+      margin-left: 12px;
+
+      &__infos {
+        color: var(--color-text-muted);
+        font-size: 12px;
+        margin-top: 6px;
+      }
+    }
+  }
+}

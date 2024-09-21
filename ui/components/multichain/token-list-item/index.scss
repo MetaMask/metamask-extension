@@ -1,0 +1,18 @@
+.multichain-token-list-item {
+  &__container-cell {
+    &--clickable {
+      &:hover,
+      &:focus-within {
+        background-color: var(--color-background-default-hover);
+      }
+    }
+  }
+
+  &__badge {
+    align-self: center;
+
+    &__avatar-network {
+      box-sizing: content-box;
+    }
+  }
+}

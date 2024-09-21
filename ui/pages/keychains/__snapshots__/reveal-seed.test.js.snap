@@ -1,0 +1,123 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Reveal Seed Page should match snapshot 1`] = `
+<div>
+  <div
+    class="box page-container box--padding-top-8 box--padding-right-4 box--padding-bottom-8 box--padding-left-4 box--gap-4 box--flex-direction-row"
+  >
+    <h2
+      class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+    >
+      Secret Recovery Phrase
+    </h2>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+    >
+      <span>
+         
+        The 
+        <a
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          href="https://support.metamask.io/privacy-and-security/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Secret Recovery Phrase (SRP)
+        </a>
+         provides 
+        <strong
+          class="mm-box mm-text mm-text--body-md-bold mm-box--color-text-default"
+        >
+          full access to your wallet and funds.
+
+        </strong>
+        
+         
+      </span>
+    </p>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+    >
+      <span>
+         
+        MetaMask is a 
+        <a
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          href="https://support.metamask.io/getting-started/metamask-is-a-self-custodial-wallet/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          non-custodial wallet
+        </a>
+        . That means you're the owner of your SRP.
+         
+      </span>
+    </p>
+    <div
+      class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+        style="mask-image: url('./images/icons/danger.svg');"
+      />
+      <div
+        class="mm-box mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          <span>
+             
+            Make sure no one is looking at your screen. 
+            <strong
+              class="mm-box mm-text mm-text--body-md-bold mm-box--color-text-default"
+            >
+              MetaMask Support will never request this.
+            </strong>
+            
+             
+          </span>
+        </p>
+      </div>
+    </div>
+    <form>
+      <label
+        class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+        for="password-box"
+      >
+        Enter password to continue
+      </label>
+      <div
+        class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+      >
+        <input
+          autocomplete="off"
+          class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+          data-testid="input-password"
+          focused="true"
+          id="password-box"
+          placeholder="Make sure nobody is looking"
+          type="password"
+          value=""
+        />
+      </div>
+    </form>
+    <div
+      class="box box--margin-top-auto box--display-flex box--gap-4 box--flex-direction-row"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+      >
+        Cancel
+      </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        data-theme="light"
+        disabled=""
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>
+`;

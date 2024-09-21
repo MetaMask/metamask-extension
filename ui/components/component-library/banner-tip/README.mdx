@@ -1,0 +1,163 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { BannerTip } from './banner-tip';
+import { BannerBase } from '..';
+
+# BannerTip
+
+`BannerTip` is an inline notification that offers users educational tips, knowledge, and helpful links
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-bannertip--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={BannerTip} />
+
+### Logo Type
+
+Use the `logoType` prop with the `BannerTipLogoType` enum from `../../component-library` to change the context of `BannerTip`.
+
+Possible options:
+
+- `BannerTipLogoType.Greeting` Default
+- `BannerTipLogoType.Chat`
+
+<Canvas>
+  <Story id="components-componentlibrary-bannertip--logo-type" />
+</Canvas>
+
+```jsx
+import { BannerTip } from '../../component-library';
+
+<BannerTip logoType={BannerTipLogoType.Greeting}>
+  This is a demo of greeting.
+</BannerTip>
+<BannerTip logoType={BannerTipLogoType.Chat}>
+  This is a demo of chat.
+</BannerTip>
+```
+
+### Title
+
+Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-bannertip--title" />
+</Canvas>
+
+```jsx
+import { BannerTip } from '../../component-library';
+
+<BannerTip title="Title is sentence case no period">
+  Pass only a string through the title prop
+</BannerTip>;
+```
+
+### Description
+
+The `description` is the content area of the `BannerTip` that must be a string. Description shouldn't repeat title and only 1-3 lines.
+
+If content requires more than a string, see `children` prop below.
+
+<Canvas>
+  <Story id="components-componentlibrary-bannertip--description" />
+</Canvas>
+
+```jsx
+import { BannerTip } from '../../component-library';
+<BannerTip
+  title="Description vs children"
+  description="Pass only a string through the description prop or you can use children if the contents require more"
+/>;
+```
+
+### Children
+
+The `children` prop is an alternative to `description` for `BannerTip` when more than a string is needed. Children content shouldn't repeat title and only 1-3 lines.
+
+<Canvas>
+  <Story id="components-componentlibrary-bannertip--children" />
+</Canvas>
+
+```jsx
+import { BannerTip, ButtonLinkSize } from '../../component-library';
+
+<BannerTip>
+  Description shouldn't repeat title. 1-3 lines. Can contain a
+  <ButtonLink
+    size={ButtonLinkSize.Auto}
+    href="https://metamask.io/"
+    externalLink
+  >
+    hyperlink.
+  </ButtonLink>
+</BannerTip>;
+```
+
+### Action Button Label, onClick, & Props
+
+Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/components-componentlibrary-buttonlink--default-story) for the action
+
+<Canvas>
+  <Story id="components-componentlibrary-bannertip--action-button" />
+</Canvas>
+
+```jsx
+import { BannerTip, IconName } from '../../component-library';
+
+<BannerTip
+  title="Action prop demo"
+  actionButtonLabel="Action"
+  actionButtonProps={{
+    endIconName: IconName.Arrow2Right,
+  }}
+  actionButtonOnClick={() => console.log('ButtonLink actionButtonOnClick demo')}
+>
+  Use actionButtonLabel for action text, actionButtonOnClick for the onClick
+  handler, and actionButtonProps to pass any ButtonLink prop types such as
+  iconName
+</BannerTip>;
+```
+
+### On Close
+
+Use the `onClose` prop to pass a function to the close button. The close button will appear when this prop is used.
+
+Additional props can be passed to the close button with `closeButtonProps`
+
+<Canvas>
+  <Story id="components-componentlibrary-bannertip--on-close" />
+</Canvas>
+
+```jsx
+import { BannerTip } from '../../component-library';
+
+<BannerTip
+  title="onClose demo"
+  onClose={() => console.log('close button clicked')}
+>
+  Click the close button icon to hide this notifcation
+</BannerTip>;
+```
+
+### Start Accessory
+
+Use the `startAccessory` prop to pass a ReactNode to the start of the `BannerTip`. This is useful for overriding the defaults defined by `BannerTip`.
+
+<Canvas>
+  <Story id="components-componentlibrary-bannertip--start-accessory" />
+</Canvas>
+
+```jsx
+import { BannerTip } from '../../component-library';
+
+<BannerTip
+  startAccessory={<Icon name={IconName.Messages} />}
+  title="StartAccessory"
+>
+  This is a demo of startAccessory override.
+</BannerTip>;
+```

@@ -1,0 +1,317 @@
+{
+  "account": {
+    "message": "खाता"
+  },
+  "accountDetails": {
+    "message": "खाता विवरण"
+  },
+  "accountName": {
+    "message": "खाते का नाम"
+  },
+  "addToken": {
+    "message": "टोकन जोड़ें"
+  },
+  "amount": {
+    "message": "राशि"
+  },
+  "appDescription": {
+    "message": "इथीरियम ब्राउज़र एक्सटेंशन",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "मेटामास्क/MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "मंजूर"
+  },
+  "attributions": {
+    "message": "एट्रिब्यूशन"
+  },
+  "back": {
+    "message": "वापस"
+  },
+  "balance": {
+    "message": "उपलब्ध बैलेंस।"
+  },
+  "cancel": {
+    "message": "रद्द करें"
+  },
+  "confirm": {
+    "message": "पुष्टि करें"
+  },
+  "confirmPassword": {
+    "message": "पासवर्ड की पुष्टि करें"
+  },
+  "contractDeployment": {
+    "message": "अनुबंध परिनियोजन व तैनाती"
+  },
+  "copiedExclamation": {
+    "message": "कॉपी कर दिया गया!"
+  },
+  "copyToClipboard": {
+    "message": "क्लिपबोर्ड पर कॉपी करें"
+  },
+  "create": {
+    "message": "बनाएं"
+  },
+  "decimal": {
+    "message": "दशमलव परिशुद्धता"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "दशमलव कम से कम 0 होनी चाहिए, और 36 से अधिक नहीं होनी चाहिए।"
+  },
+  "details": {
+    "message": "संदेश विवरण"
+  },
+  "done": {
+    "message": "संपन्न"
+  },
+  "downloadStateLogs": {
+    "message": "राज्य लॉग डाउनलोड करें"
+  },
+  "edit": {
+    "message": "संपादित करें"
+  },
+  "etherscanView": {
+    "message": "ईथरस्कैन पर खाता देखें"
+  },
+  "failed": {
+    "message": "विफल"
+  },
+  "fiat": {
+    "message": "FIAT एक्सचेंज टाइप",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "फ़ाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "from": {
+    "message": "की तरफ से - संदेश"
+  },
+  "gasLimit": {
+    "message": "गैस सीमा"
+  },
+  "gasLimitTooLow": {
+    "message": "२१००० - गैस की सीमा कम से कम 21000 होनी चाहिए"
+  },
+  "gasPrice": {
+    "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
+  },
+  "here": {
+    "message": "यहां",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "छुपाएं"
+  },
+  "hideTokenPrompt": {
+    "message": "टोकन छिपाएंn?"
+  },
+  "import": {
+    "message": "आयात",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "खाता आयात"
+  },
+  "importAccountMsg": {
+    "message": "आयात किए गए खाते आपके मूल रूप से बनाए गए मेटामास्क अकाउंट सीडफ्रेज से संबद्ध नहीं होंगे। आयात किए गए खातों के बारे में और जानें"
+  },
+  "imported": {
+    "message": "आयातित",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "insufficientFunds": {
+    "message": "अपर्याप्त धन"
+  },
+  "insufficientTokens": {
+    "message": "अपर्याप्त टोकन।"
+  },
+  "invalidAddress": {
+    "message": "अमान्य पता"
+  },
+  "invalidAddressRecipient": {
+    "message": "प्राप्तकर्ता का पता अमान्य है"
+  },
+  "invalidRPC": {
+    "message": "अमान्य RPC कै URI"
+  },
+  "jsonFile": {
+    "message": "JSON फ़ाइल",
+    "description": "format for importing an account"
+  },
+  "likeToImportTokens": {
+    "message": "क्या आप इन टोकनों को जोड़ना चाहते हैं?"
+  },
+  "loading": {
+    "message": "लोड हो रहा है ....."
+  },
+  "loadingTokens": {
+    "message": "टोकन लोड हो रहा है ....."
+  },
+  "localhost": {
+    "message": "स्थानीयहोस्ट 8545"
+  },
+  "lock": {
+    "message": "लॉग आउट करें"
+  },
+  "mainnet": {
+    "message": "मुख्य इथीरियम नेटवर्क"
+  },
+  "message": {
+    "message": "संदेश"
+  },
+  "mustSelectOne": {
+    "message": "कम से कम 1 टोकन का चयन करना आवश्यक है।"
+  },
+  "needImportFile": {
+    "message": "आयात करने के लिए आपको एक फ़ाइल का चयन करना होगा।",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "ईटीएच की नकारात्मक मात्रा नहीं भेज सकते हैं।."
+  },
+  "networks": {
+    "message": "नेटवर्क"
+  },
+  "newAccount": {
+    "message": "नया खाता"
+  },
+  "newAccountNumberName": {
+    "message": "नया खाता $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "नया अनुबंध"
+  },
+  "newPassword": {
+    "message": "नया पासवर्ड (न्यूनतम 8 वर्ण)"
+  },
+  "next": {
+    "message": "अगला"
+  },
+  "noTransactions": {
+    "message": "कोई लेन-देन नहीं"
+  },
+  "pastePrivateKey": {
+    "message": "यहां अपनी निजी कुंजी स्ट्रिंग चिपकाएं:",
+    "description": "For importing an account from a private key"
+  },
+  "personalAddressDetected": {
+    "message": "व्यक्तिगत पता मिला। टोकन अनुबंध का पता इनपुट।"
+  },
+  "privacyMsg": {
+    "message": "गोपनीयता नीति"
+  },
+  "privateKey": {
+    "message": "निजी कुंजी",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "चेतावनी: कभी भी इस कुंजी का खुलासा न करें। आपकी निजी कुंजी वाले कोई भी आपके खाते में रखी किसी भी संपत्ति को चुरा सकता है।"
+  },
+  "privateNetwork": {
+    "message": "निजी नेटवर्क"
+  },
+  "readdToken": {
+    "message": "आप अपने खाता विकल्प मेनू में .टोकन जोड़ें. पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"
+  },
+  "reject": {
+    "message": "अस्वीकार"
+  },
+  "rejected": {
+    "message": "अस्वीकृत"
+  },
+  "required": {
+    "message": "आवश्यक"
+  },
+  "revealSeedWords": {
+    "message": "बीज शब्द प्रकट करें"
+  },
+  "revealSeedWordsWarning": {
+    "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "save": {
+    "message": "सहेजें"
+  },
+  "search": {
+    "message": "खोज करें"
+  },
+  "seedPhraseReq": {
+    "message": "बीज वाक्यांश 12 शब्द लंबा हैं"
+  },
+  "selectType": {
+    "message": "प्रकार चुनें"
+  },
+  "send": {
+    "message": "भेजें"
+  },
+  "settings": {
+    "message": "सेटिंग्स"
+  },
+  "sigRequest": {
+    "message": "हस्ताक्षर अनुरोध"
+  },
+  "sign": {
+    "message": "हस्ताक्षर"
+  },
+  "stateLogs": {
+    "message": "स्थिति संदेश"
+  },
+  "stateLogsDescription": {
+    "message": "स्थिति संदेश में आपका सार्वजनिक खाता, पतों और भेजे गए लेनदेन, होते हैं।"
+  },
+  "supportCenter": {
+    "message": "हमारे सहायता केंद्र पर जाएं"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
+  },
+  "terms": {
+    "message": "उपयोग की शर्तें"
+  },
+  "to": {
+    "message": "के लिए"
+  },
+  "tokenAlreadyAdded": {
+    "message": "टोकन पहले ही जोड़ा जा चुका है।"
+  },
+  "tokenSymbol": {
+    "message": "टोकन प्रतीक"
+  },
+  "total": {
+    "message": "कुल"
+  },
+  "unknown": {
+    "message": "अज्ञात नेटवर्क"
+  },
+  "unknownNetwork": {
+    "message": "अज्ञात निजी नेटवर्क"
+  },
+  "unlock": {
+    "message": "लॉग इन करें"
+  },
+  "urlErrorMsg": {
+    "message": "URI-यूआरआई को उपयुक्त HTTP / HTTPS उपसर्ग की आवश्यकता होती है।"
+  },
+  "usedByClients": {
+    "message": "विभिन्न क्लाइंट्स द्वारा उपयोग किया जाता है"
+  },
+  "visitWebSite": {
+    "message": "हमारी वेब साइट पर जाएं"
+  },
+  "youSign": {
+    "message": "आप हस्ताक्षर कर रहे हैं"
+  }
+}

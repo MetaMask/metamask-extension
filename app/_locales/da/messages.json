@@ -1,0 +1,770 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "Afvis"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR-kode"
+  },
+  "about": {
+    "message": "Om"
+  },
+  "accessingYourCamera": {
+    "message": "Tilgår din kamera..."
+  },
+  "account": {
+    "message": "Konto"
+  },
+  "accountDetails": {
+    "message": "Kontooplysninger"
+  },
+  "accountName": {
+    "message": "Kontonavn"
+  },
+  "accountOptions": {
+    "message": "Kontoindstillinger"
+  },
+  "accountSelectionRequired": {
+    "message": "Du skal vælge en konto!"
+  },
+  "activityLog": {
+    "message": "aktivitetslog"
+  },
+  "addAcquiredTokens": {
+    "message": "Tilføj de tokens du har erhvervet ved hjælp af MetaMask"
+  },
+  "addAlias": {
+    "message": "Tilføj alias"
+  },
+  "addNetwork": {
+    "message": "Tilføj netværk"
+  },
+  "addSuggestedTokens": {
+    "message": "Tilføj foreslåede tokens"
+  },
+  "addToken": {
+    "message": "Tilføj Polet"
+  },
+  "advanced": {
+    "message": "Avanceret"
+  },
+  "amount": {
+    "message": "Beløb"
+  },
+  "appDescription": {
+    "message": "En Ethereum-pung i din browser",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "Godkend"
+  },
+  "approved": {
+    "message": "Godkendt"
+  },
+  "asset": {
+    "message": "Aktiv"
+  },
+  "attributions": {
+    "message": "Tilskrivninger"
+  },
+  "autoLockTimeLimit": {
+    "message": "Timer for automatisk udlogning (minutter)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "Indstil den passive tid i minutter, før MetaMask automatisk logger dig ud"
+  },
+  "average": {
+    "message": "Gennemsnit"
+  },
+  "back": {
+    "message": "Tilbage"
+  },
+  "backupApprovalInfo": {
+    "message": "Den hemmelige kode er påkrævet for at gendanne din pung, hvis du mister din enhed, glemmer dit kodeord, er nødt til at geninstallere MetaMask eller ønsker adgang til din pung fra en anden enhed."
+  },
+  "backupApprovalNotice": {
+    "message": "Sikkerhedskopiér din Hemmelige Gendannelseskode for at holde din tegnebog og dine penge sikre."
+  },
+  "backupNow": {
+    "message": "Backup nu"
+  },
+  "balance": {
+    "message": "Saldo"
+  },
+  "balanceOutdated": {
+    "message": "Saldoen kan være forældet"
+  },
+  "basic": {
+    "message": "Grundlæggende oplysninger"
+  },
+  "blockExplorerUrl": {
+    "message": "Block-udforsker"
+  },
+  "blockExplorerView": {
+    "message": "Se konto på $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "browserNotSupported": {
+    "message": "Din browser er ikke understøttet..."
+  },
+  "bytes": {
+    "message": "Byte"
+  },
+  "cancel": {
+    "message": "Afbryd"
+  },
+  "cancelled": {
+    "message": "Annulleret"
+  },
+  "chainId": {
+    "message": "Kæde-ID"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Du skal bruge MetaMask i Google Chrome for at forbinde med din Hardware Wallet."
+  },
+  "close": {
+    "message": "Luk"
+  },
+  "confirm": {
+    "message": "Bekræft"
+  },
+  "confirmPassword": {
+    "message": "Bekræft adgangskode"
+  },
+  "confirmed": {
+    "message": "Bekræftet"
+  },
+  "connect": {
+    "message": "Få forbindelse"
+  },
+  "connectingTo": {
+    "message": "Forbinder til $1"
+  },
+  "connectingToGoerli": {
+    "message": "Opretter forbindelse til Goerli Testnetværk"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Opretter forbindelse til Linea Goerli Testnetværk"
+  },
+  "connectingToMainnet": {
+    "message": "Forbinder til dit Primære Ethereum Netværk"
+  },
+  "contractDeployment": {
+    "message": "Kontraktanvendelse"
+  },
+  "contractInteraction": {
+    "message": "Kontraktinteraktion"
+  },
+  "copiedExclamation": {
+    "message": "Kopieret!"
+  },
+  "copyAddress": {
+    "message": "Kopier adresse til udklipsholder"
+  },
+  "copyToClipboard": {
+    "message": "Kopiér til udklipsholderen"
+  },
+  "copyTransactionId": {
+    "message": "Kopier transaktions-id"
+  },
+  "create": {
+    "message": "Opret"
+  },
+  "createPassword": {
+    "message": "Opret adgangskode"
+  },
+  "currencyConversion": {
+    "message": "Valutakonvertering"
+  },
+  "currentLanguage": {
+    "message": "Nuværende sprog"
+  },
+  "custom": {
+    "message": "Avanceret"
+  },
+  "customToken": {
+    "message": "Brugerdefineret Token"
+  },
+  "decimal": {
+    "message": "Decimalpræcision"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimaler skal være mindst 0 og højst 36."
+  },
+  "delete": {
+    "message": "Slet"
+  },
+  "details": {
+    "message": "Detaljer"
+  },
+  "done": {
+    "message": "Færdig"
+  },
+  "downloadGoogleChrome": {
+    "message": "Hent Google Chrome"
+  },
+  "downloadStateLogs": {
+    "message": "Download tilstandslogs"
+  },
+  "dropped": {
+    "message": "Droppet"
+  },
+  "edit": {
+    "message": "Rediger"
+  },
+  "editContact": {
+    "message": "Redigér Kontakt"
+  },
+  "enterPasswordContinue": {
+    "message": "Indtast adgangskode for at fortsætte"
+  },
+  "ethereumPublicAddress": {
+    "message": "Offentlig Ethereum-adresse"
+  },
+  "etherscanView": {
+    "message": "Se konto på Etherscan"
+  },
+  "expandView": {
+    "message": "Udvis Visning"
+  },
+  "failed": {
+    "message": "Mislykkedes"
+  },
+  "fast": {
+    "message": "Hurtig"
+  },
+  "fileImportFail": {
+    "message": "Virker filimportering ikke? Klik her!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Glem denne enhed"
+  },
+  "from": {
+    "message": "Fra"
+  },
+  "functionType": {
+    "message": "Funktionstype"
+  },
+  "gasLimit": {
+    "message": "Gas-grænse"
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "Gasgrænse er den maksimale mængde gasenheder, du er villig til at bruge."
+  },
+  "gasLimitTooLow": {
+    "message": "Brændstofgrænsen skal være mindst 21000"
+  },
+  "gasPrice": {
+    "message": "Brændstofpris (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Ekstremt Lav Brændstofspris"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Brændstofpris specificerer den mængde Ether, du er villig til at betale for hver brændstofenhed."
+  },
+  "gasUsed": {
+    "message": "Gas brugt"
+  },
+  "general": {
+    "message": "Generelt"
+  },
+  "goerli": {
+    "message": "Goerli-testnetværk"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware-tegnebog tilsluttet"
+  },
+  "hardwareWallets": {
+    "message": "Tilslut en hardware-tegnebog"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Vælg en hardware-pung du vil bruge med MetaMask"
+  },
+  "here": {
+    "message": "her",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex-data"
+  },
+  "hide": {
+    "message": "Skjul"
+  },
+  "hideTokenPrompt": {
+    "message": "Skjul Token?"
+  },
+  "history": {
+    "message": "Historik"
+  },
+  "import": {
+    "message": "Importer",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Importer konto"
+  },
+  "importAccountMsg": {
+    "message": "Importerede konti vil ikke blive forbundet med din oprindeligt oprettede seed-sætning for din MetaMask-konto. Få mere at vide om importerede konti"
+  },
+  "imported": {
+    "message": "Importeret",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Din indledende transaktion blev bekræftet af netværket. Klik OK for at gå tilbage."
+  },
+  "insufficientBalance": {
+    "message": "Utilstrækkelig balance."
+  },
+  "insufficientFunds": {
+    "message": "Ikke tilstrækkelige midler."
+  },
+  "insufficientTokens": {
+    "message": "Utilstrækkelige tokens."
+  },
+  "invalidAddress": {
+    "message": "Ugyldig adresse"
+  },
+  "invalidAddressRecipient": {
+    "message": "Modtageradressen er ugyldig"
+  },
+  "invalidRPC": {
+    "message": "Ugyldig RPC-webadresse"
+  },
+  "invalidSeedPhrase": {
+    "message": "Ugyldig backupsætning"
+  },
+  "jsonFile": {
+    "message": "JSON-fil",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "Kendte kontaktadresser."
+  },
+  "learnMore": {
+    "message": "Lær mere"
+  },
+  "learnMoreUpperCase": {
+    "message": "Lær mere"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Du skal benytte din tidligere konto, før du kan tilføje en ny."
+  },
+  "likeToImportTokens": {
+    "message": "Ønsker du at tilføje disse tokens?"
+  },
+  "lineaGoerli": {
+    "message": "Linea-testnetværk"
+  },
+  "loadMore": {
+    "message": "Indlæs Mere"
+  },
+  "loading": {
+    "message": "Indlæser..."
+  },
+  "loadingTokens": {
+    "message": "Indlæser tokens..."
+  },
+  "lock": {
+    "message": "Log ud"
+  },
+  "mainnet": {
+    "message": "Hovednetværk for Ethereum"
+  },
+  "max": {
+    "message": "Maks"
+  },
+  "memo": {
+    "message": "notat"
+  },
+  "message": {
+    "message": "Besked"
+  },
+  "mustSelectOne": {
+    "message": "Skal vælge mindst 1 token."
+  },
+  "needImportFile": {
+    "message": "Du skal vælge en fil, der skal importeres.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Kan ikke sende en negativ mængde ETH."
+  },
+  "networkName": {
+    "message": "Netværksnavn"
+  },
+  "networks": {
+    "message": "Netværk"
+  },
+  "nevermind": {
+    "message": "Lige meget"
+  },
+  "newAccount": {
+    "message": "Ny konto"
+  },
+  "newAccountNumberName": {
+    "message": "Konto $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Ny kontakt"
+  },
+  "newContract": {
+    "message": "Ny Kontrakt"
+  },
+  "newPassword": {
+    "message": "Ny adgangskode (min. 8 tegn)"
+  },
+  "next": {
+    "message": "Næste"
+  },
+  "noConversionRateAvailable": {
+    "message": "Ingen tilgængelig omregningskurs"
+  },
+  "noTransactions": {
+    "message": "Du har ingen transaktioner"
+  },
+  "noWebcamFound": {
+    "message": "Din computers webkamera blev ikke fundet. Prøv venligst igen."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam ikke fundet"
+  },
+  "notEnoughGas": {
+    "message": "Ikke nok gas"
+  },
+  "ofTextNofM": {
+    "message": "af"
+  },
+  "off": {
+    "message": "Fra "
+  },
+  "ok": {
+    "message": "Okay"
+  },
+  "on": {
+    "message": "Til"
+  },
+  "parameters": {
+    "message": "Parametre"
+  },
+  "participateInMetaMetrics": {
+    "message": "Deltag i MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Deltag i MetaMetrics for at hjælpe os med at gøre MetaMask bedre"
+  },
+  "password": {
+    "message": "Adgangskode"
+  },
+  "passwordNotLongEnough": {
+    "message": "Adgangskode ikke lang nok"
+  },
+  "passwordsDontMatch": {
+    "message": "Adgangskoder stemmer ikke ovenens"
+  },
+  "pastePrivateKey": {
+    "message": "Indsæt din private nøglestreng her:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "afventer"
+  },
+  "personalAddressDetected": {
+    "message": "Personlig adresse opdaget. Indtast polet kontrakt adressen."
+  },
+  "prev": {
+    "message": "Forrige"
+  },
+  "primaryCurrencySetting": {
+    "message": "Primær Valuta"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Vælg lokal for fortrinsvis at vise værdier i kædens (f.eks. ETH) lokale valuta. Vælg Fiat for fortrinsvis at vise værdier i din valgte fiat valuta."
+  },
+  "privacyMsg": {
+    "message": "Privatlivspolitik"
+  },
+  "privateKey": {
+    "message": "Privat nøgle",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Advarsel: afslør aldrig denne nøgle. Enhver med dine private nøgler kan stjæle alle aktiver i din konto."
+  },
+  "privateNetwork": {
+    "message": "Privat netværk"
+  },
+  "readdToken": {
+    "message": "Du kan tilføje denne token i fremtiden, ved at gå til \"Tilføj token\" under dine valgmenuen for dine konti."
+  },
+  "reject": {
+    "message": "Afvis"
+  },
+  "rejectAll": {
+    "message": "Afvis Alle"
+  },
+  "rejectTxsDescription": {
+    "message": "Du er ved at batchafvise $1-transaktioner."
+  },
+  "rejectTxsN": {
+    "message": "Afvis $1 transaktioner"
+  },
+  "rejected": {
+    "message": "Afvist"
+  },
+  "remove": {
+    "message": "Fjern"
+  },
+  "removeAccount": {
+    "message": "Fjern konto"
+  },
+  "removeAccountDescription": {
+    "message": "Denne konto fjernes fra din pung. Sikr dig venligst, at du har den originale seedfrase eller private nøgle til denne importerede konto, inden du fortsætter. Du kan importere eller skabe konti igen via kontomenuen."
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "forespørgsler der afventer anerkendelse"
+  },
+  "required": {
+    "message": "Nødvendig"
+  },
+  "reset": {
+    "message": "Nulstil"
+  },
+  "restore": {
+    "message": "Gendan"
+  },
+  "revealSeedWords": {
+    "message": "Vis Seedord"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Disse ord kan bruges til at stjæle alle dine konti.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "rpcUrl": {
+    "message": "Ny RPC-URL"
+  },
+  "save": {
+    "message": "Gem"
+  },
+  "scanInstructions": {
+    "message": "Placer QR-koden foran dit kamera"
+  },
+  "scanQrCode": {
+    "message": "Scan QR-kode"
+  },
+  "search": {
+    "message": "Søg"
+  },
+  "securityAndPrivacy": {
+    "message": "Sikkerhed & Privatliv"
+  },
+  "seedPhraseReq": {
+    "message": "Backupsætninger er 12 ord lange"
+  },
+  "selectAnAccount": {
+    "message": "Vælg en Konto"
+  },
+  "selectHdPath": {
+    "message": "Vælg HD-Sti"
+  },
+  "selectPathHelp": {
+    "message": "Hvis du ikke ser dine eksisterende Ledger-konti nedenfor, kan du prøve at skifte til \"Legacy (MEW / MyCrypto)\""
+  },
+  "selectType": {
+    "message": "Vælg type"
+  },
+  "settings": {
+    "message": "Indstillinger "
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Vis konvertering på testnet"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Vælg dette for at vise fiat-konvertering på Testnets"
+  },
+  "showHexData": {
+    "message": "Vis hex-data"
+  },
+  "showHexDataDescription": {
+    "message": "Vælg dette for at vise hex-datafeltet på send-skærmen"
+  },
+  "sigRequest": {
+    "message": "Signaturforespørgsel"
+  },
+  "sign": {
+    "message": "Underskriv"
+  },
+  "signatureRequest": {
+    "message": "Signaturforespørgsel"
+  },
+  "signed": {
+    "message": "Underskrevet"
+  },
+  "somethingWentWrong": {
+    "message": "Ups! Noget gik galt."
+  },
+  "speedUp": {
+    "message": "Fremskynd"
+  },
+  "speedUpCancellation": {
+    "message": "Gør denne annullering hurtigere"
+  },
+  "speedUpTransaction": {
+    "message": "Gør denne transaktion hurtigere"
+  },
+  "stateLogError": {
+    "message": "Fejl ved hentning af tilstandslogfiler."
+  },
+  "stateLogs": {
+    "message": "Tilstandslogs"
+  },
+  "stateLogsDescription": {
+    "message": "Status-logføringer indeholder dine offentlige kontoadresser og afsendte transaktioner."
+  },
+  "submitted": {
+    "message": "Indsendt"
+  },
+  "supportCenter": {
+    "message": "Besøg vores supportcenter"
+  },
+  "switchNetworks": {
+    "message": "Skift Netværk"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbolet skal være mindst 11 tegn."
+  },
+  "terms": {
+    "message": "Brugsbetingelser"
+  },
+  "tips": {
+    "message": "Donationer"
+  },
+  "to": {
+    "message": "Til"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token er allerede blevet tilføjet."
+  },
+  "tokenContractAddress": {
+    "message": "Polet Kontrakt Adresse"
+  },
+  "tokenSymbol": {
+    "message": "Token-symbol"
+  },
+  "transaction": {
+    "message": "transaktion"
+  },
+  "transactionCancelAttempted": {
+    "message": "Forsøgt annullering af transaktion med brændstofgebyr $1 på $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaktionen blev annulleret ved $2"
+  },
+  "transactionConfirmed": {
+    "message": "Transaktion på $2 bekræftet."
+  },
+  "transactionCreated": {
+    "message": "Transaktion oprettet med en værdi på $1 til $2."
+  },
+  "transactionDropped": {
+    "message": "Transaktionen droppet til $2."
+  },
+  "transactionError": {
+    "message": "Transaktionsfejl. Undtagelse smidt i kontraktskode."
+  },
+  "transactionErrorNoContract": {
+    "message": "Forsøger at hidkalde en funktion på en ikke-kontrakt adresse."
+  },
+  "transactionErrored": {
+    "message": "Transaktionen stødte på en fejl."
+  },
+  "transactionFee": {
+    "message": "Transaktionsgebyr"
+  },
+  "transactionResubmitted": {
+    "message": "Transaktion genindsendt med brændstofgebyr forøget til $1 på $2"
+  },
+  "transactionSubmitted": {
+    "message": "Transaktion indsendt med brændstofgebyr på $1 til $2."
+  },
+  "transactionUpdated": {
+    "message": "Transaktion opdateret til $2."
+  },
+  "transfer": {
+    "message": "Overfør"
+  },
+  "transferFrom": {
+    "message": "Overfør fra"
+  },
+  "tryAgain": {
+    "message": "Prøv igen"
+  },
+  "unapproved": {
+    "message": "Ikke godkendt"
+  },
+  "units": {
+    "message": "enheder"
+  },
+  "unknown": {
+    "message": "ukendt"
+  },
+  "unknownNetwork": {
+    "message": "Ukendt privat netværk"
+  },
+  "unknownQrCode": {
+    "message": "Fejl: Vi kunne ikke identificere QR-koden"
+  },
+  "unlock": {
+    "message": "Lås op"
+  },
+  "unlockMessage": {
+    "message": "Det decentraliserede internet venter"
+  },
+  "updatedWithDate": {
+    "message": "Opdaterede $1"
+  },
+  "urlErrorMsg": {
+    "message": "Links kræver det rette HTTP/HTTPS-præfix."
+  },
+  "usedByClients": {
+    "message": "Brugt af forskellige kunder"
+  },
+  "userName": {
+    "message": "Brugernavn"
+  },
+  "viewContact": {
+    "message": "Vis kontakt"
+  },
+  "visitWebSite": {
+    "message": "Besøg vores webside"
+  },
+  "welcomeBack": {
+    "message": "Velkommen tilbage!"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Du skal tillade kameraadgang for at bruge denne funktion."
+  },
+  "youSign": {
+    "message": "Du skriver under"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Din private seed-sætning"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Nul brændstofpris på fremskynding"
+  }
+}

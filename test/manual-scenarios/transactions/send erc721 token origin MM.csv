@@ -1,0 +1,36 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to Connect with MetaMask.,,,
+6,Connect with the current account.,,,
+7,Proceed to Deploy the NFT contract.,,,
+8,Confirm the transaction and wait for it to complete.,,,
+9,Proceed to Mint an NFT.,,,
+10,Confirm the transaction and wait for it to complete.,,,
+11,Proceed to Watch NFT.,,,
+12,Confirm the suggested NFT notification.,,"The NFT is shown in the wallets NFTs list.
+The NFT image is shown.",
+13,Close the test dapp and switch back to the wallet.,,,
+14,Proceed to the Send flow.,,,
+15,Enter a public address.,e.g. 0x56F2e03c8D30649818c022a9759CF43B240D08B3.,,
+16,Change the asset to the newly added NFT.,e.g. TestDappNFTs.,"The TestDappNFTs NFT is shown in the asset field on the send flow.
+The specified NFT symbol is shown.
+The specified NFT image is shown.
+The specified NFT token id is shown.",
+17,Proceed to the confirmation screen.,,"The recipient's hexadecimal address is shown.
+The specified NFT symbol is shown.
+The specified NFT image is shown.
+The specified NFT token id is shown.
+The estimated gas details are shown.
+The total amount is shown.",
+18,Confirm the transaction.,,"The transaction appears in the activity list.
+The amount is shown in the activity list item.",
+19,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount, gas and total are shown in the item details.",
+20,Expand the Activity log.,,"The created, submitted and confirmed activity is shown in the activity log.",
+21,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab.,

@@ -1,0 +1,12 @@
+.signature-request-siwe-message {
+  flex: 1 100%;
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin: 16px;
+  border: 1px solid var(--color-border-muted);
+
+  &__sub-text {
+    white-space: pre-line;
+    overflow: hidden;
+  }
+}

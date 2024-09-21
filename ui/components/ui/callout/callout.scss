@@ -1,0 +1,67 @@
+@use "design-system";
+
+.callout {
+  $self: &;
+
+  @include design-system.H7;
+
+  padding: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, auto) 1fr minmax(0, auto);
+  grid-template-rows: 1fr;
+  transition: opacity 0.75s 0s;
+
+  a {
+    color: var(--color-primary-default);
+  }
+
+  &--dismissible {
+    &#{$self}--first {
+      box-shadow: 0 -5px 5px -5px var(--color-shadow-default);
+    }
+  }
+
+  &--multiple {
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    &#{$self}--first {
+      padding-top: 16px;
+    }
+
+    &#{$self}--last {
+      padding-bottom: 16px;
+    }
+  }
+
+  &--dismissed {
+    opacity: 0;
+  }
+
+  &--warning {
+    border-left: 2px solid var(--color-warning-default);
+  }
+
+  &--danger {
+    border-left: 2px solid var(--color-error-default);
+  }
+
+  &--info {
+    border-left: 2px solid var(--color-info-default);
+  }
+
+  &--success {
+    border-left: 2px solid var(--color-success-default);
+  }
+
+  & .info-icon {
+    margin: unset;
+    margin-right: 10px;
+  }
+
+  &__close-button {
+    margin-left: 8px;
+    background: unset;
+    cursor: pointer;
+  }
+}

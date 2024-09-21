@@ -1,0 +1,13 @@
+diff --git a/src/decoder.asm.js b/src/decoder.asm.js
+index d77a3c20aef26fcb778d07146399cb8d74ef24bf..dc70f6be20c92b12528047e27febf35363f97166 100644
+--- a/src/decoder.asm.js
++++ b/src/decoder.asm.js
+@@ -1,7 +1,7 @@
+ /* eslint-disable */
+ 
+ module.exports = function decodeAsm (stdlib, foreign, buffer) {
+-  'use asm'
++  // 'use asm' //causes v8 to not cache bytecode
+ 
+   // -- Imports
+ 

@@ -1,0 +1,176 @@
+@use "design-system";
+
+.edit-approval-permission {
+  width: 100%;
+
+  &__header,
+  &__account-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-bottom: 1px solid var(--color-border-muted);
+  }
+
+  &__header {
+    padding: 24px;
+
+    &__close {
+      position: absolute;
+      right: 24px;
+      cursor: pointer;
+      display: block;
+    }
+  }
+
+  &__title {
+    @include design-system.H4;
+
+    font-weight: bold;
+  }
+
+  &__account-info {
+    justify-content: space-between;
+    padding: 8px 24px;
+
+    &__account,
+    &__balance {
+      @include design-system.H6;
+
+      font-weight: normal;
+      color: var(--color-text-default);
+    }
+
+    &__account {
+      display: flex;
+      align-items: center;
+    }
+
+    &__name {
+      margin-right: 8px;
+      min-width: 64px;
+    }
+
+    &__balance {
+      color: var(--color-text-alternative);
+      margin-left: 8px;
+    }
+  }
+
+  &__edit-section {
+    padding: 24px;
+
+    &__title {
+      @include design-system.H6;
+
+      font-weight: bold;
+      color: var(--color-text-default);
+    }
+
+    &__description {
+      @include design-system.H7;
+
+      font-weight: normal;
+      color: var(--color-text-alternative);
+      margin-top: 8px;
+    }
+
+    &__option {
+      display: flex;
+      align-items: flex-start;
+      margin-top: 20px;
+    }
+
+    &__radio-button {
+      width: 18px;
+    }
+
+    &__option-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__option-label,
+    &__option-label--selected {
+      @include design-system.H6;
+
+      font-weight: normal;
+      color: var(--color-text-alternative);
+    }
+
+    &__option-label--selected {
+      color: var(--color-primary-default);
+    }
+
+    &__option-description {
+      @include design-system.H7;
+
+      color: var(--color-text-alternative);
+      margin-top: 8px;
+      margin-bottom: 6px;
+    }
+
+    &__option-value {
+      @include design-system.H4;
+
+      color: var(--color-text-default);
+    }
+
+    &__radio-button {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 4px;
+    }
+
+    &__radio-button-outline,
+    &__radio-button-outline--selected {
+      width: 18px;
+      height: 18px;
+      background: var(--color-border-default);
+      border-radius: 9px;
+      position: absolute;
+    }
+
+    &__radio-button-outline--selected {
+      background: var(--color-primary-default);
+    }
+
+    &__radio-button-fill {
+      width: 14px;
+      height: 14px;
+      background: var(--color-background-default);
+      border-radius: 7px;
+      position: absolute;
+    }
+
+    &__radio-button-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--color-primary-default);
+      border-radius: 4px;
+      position: absolute;
+    }
+  }
+
+  &__name-and-balance-container {
+    display: flex;
+    flex: 0 0 100%;
+    flex-flow: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: 8px;
+  }
+}
+
+.edit-approval-permission-modal-content {
+  padding: 0;
+}
+
+.edit-approval-permission-modal-container {
+  max-height: 550px;
+  width: 100%;
+}

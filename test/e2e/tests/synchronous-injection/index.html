@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple MetaMask dApp</title>
+</head>
+<body>
+    <h1>Chain Id</h1>
+    <div id="chainId"></div>
+
+    <script>
+    	async function setChainId () {
+    	    const chainId = await window.ethereum.request({method: 'eth_chainId',})
+    	    const chainIdDiv = document.getElementById('chainId');
+    	    chainIdDiv.innerText = `Chain Id: ${chainId}`;
+    	}
+    	setChainId();
+    </script>
+</body>
+</html>

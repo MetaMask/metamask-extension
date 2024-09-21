@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModalOverlay should match snapshot 1`] = `
+<div>
+  <div
+    aria-hidden="true"
+    class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+  />
+</div>
+`;

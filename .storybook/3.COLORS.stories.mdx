@@ -1,0 +1,197 @@
+import { Meta } from '@storybook/addon-docs';
+import designTokenDiagramImage from './images/design.token.graphic.svg';
+
+<Meta title="Foundations / Color" />
+
+# Color
+
+Color is used to express style and communicate meaning.
+
+## Design tokens
+
+We are importing design tokens as CSS variables from [@metamask/design-tokens](https://github.com/MetaMask/design-tokens) repo to help consolidate colors and enable theming across all MetaMask products.
+
+### Token tiers
+
+We follow a 3 tiered system for color design tokens and css variables.
+
+<div
+  style={{
+    textAlign: 'center',
+    backgroundColor: 'var(--brand-colors-white)',
+    padding: 32,
+  }}
+>
+  <img width="80%" src={designTokenDiagramImage} />
+</div>
+
+<br />
+<br />
+
+### **Brand colors** (tier 1)
+
+These colors **SHOULD NOT** be used in your styles directly. They are used as a reference for the [theme colors](#theme-colors-tier-2). Brand colors should just keep track of every color used in our app.
+
+#### Example of brand color css variables
+
+```css
+/** !!!DO NOT USE BRAND COLORS DIRECTLY IN YOUR CODE!!! */
+var(--brand-colors-white)
+var(--brand-colors-black)
+var(--brand-colors-grey-grey800)
+```
+
+### **Theme colors** (tier 2)
+
+Theme colors are color agnostic, semantically neutral and theme compatible design tokens that you can use in your code and styles. Please refer to the description of each token for it's intended purpose in [@metamask/design-tokens](https://github.com/MetaMask/design-tokens/blob/main/src/figma/tokens.json#L329-L554).
+
+#### Example of theme color css variables
+
+```css
+/** Backgrounds */
+var(--color-background-default)
+var(--color-background-default-hover)
+var(--color-background-default-pressed)
+var(--color-background-alternative)
+var(--color-background-alternative-hover)
+var(--color-background-alternative-pressed)
+var(--color-background-hover)
+var(--color-background-pressed)
+
+/** Text */
+var(--color-text-default)
+var(--color-text-alternative)
+var(--color-text-muted)
+
+/** Icons */
+var(--color-icon-default)
+var(--color-icon-alternative)
+var(--color-icon-muted)
+
+/** Borders */
+var(--color-border-default)
+var(--color-border-muted)
+
+/** Overlays */
+var(--color-overlay-default)
+var(--color-overlay-alternative)
+var(--color-overlay-inverse)
+
+/** User Actions */
+var(--color-primary-default)
+var(--color-primary-default-hover)
+var(--color-primary-default-pressed)
+var(--color-primary-alternative)
+var(--color-primary-muted)
+var(--color-primary-inverse)
+
+/** States */
+/** Error */
+var(--color-error-default)
+var(--color-error-default-hover)
+var(--color-error-default-pressed)
+var(--color-error-alternative)
+var(--color-error-default-hover)
+var(--color-error-default-pressed)
+var(--color-error-muted)
+var(--color-error-inverse)
+
+/** Warning */
+var(--color-warning-default)
+var(--color-warning-default-hover)
+var(--color-warning-default-pressed)
+var(--color-warning-muted)
+var(--color-warning-inverse)
+
+/** Success */
+var(--color-success-default)
+var(--color-success-default-hover)
+var(--color-success-default-pressed)
+var(--color-success-muted)
+var(--color-success-inverse)
+
+/** Info */
+var(--color-info-default)
+var(--color-info-muted)
+var(--color-info-inverse)
+```
+
+### **Component colors** (tier 3)
+
+Another level of abstraction is component tier colors that you can define at the top of your styles and use at the component specific level.
+
+```scss
+.button {
+  --color-background-primary: var(--color-primary-default);
+  --color-text-primary: var(--color-primary-inverse);
+  --color-border-primary: var(--color-primary-default);
+
+  --color-background-primary-hover: var(--color-primary-default-hover);
+  --color-border-primary-hover: var(--color-primary-default-hover);
+
+  .btn-primary {
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-primary);
+
+    &:hover {
+      background-color: var(--color-background-primary-hover);
+      border: 1px solid var(--color-border-primary-hover);
+    }
+
+    /** btn-primary css continued... */
+  }
+}
+```
+
+## Takeaways
+
+- Do not use static HEX values in your code. Use the [theme colors](#theme-colors-tier-2). If one does not exist for your use case ask the designer or [create an issue](https://github.com/MetaMask/metamask-extension/issues/new) and tag it with a `design-system` label.
+- Make sure the design token you are using is for it's intended purpose. Please refer to the description of each token in [@metamask/design-tokens](https://github.com/MetaMask/design-tokens/blob/main/src/figma/tokens.json#L329-L554).
+
+### ❌ Don't do this
+
+Don't use static hex values or brand color tokens in your code.
+
+```css
+/**
+* Don't do this
+* Static hex values create inconsistency and will break UI when using dark mode
+**/
+.card {
+  background-color: #ffffff;
+  color: #24272a;
+}
+
+/**
+* Don't do this
+* Not theme compatible and will break UI when using dark theme
+**/
+.card {
+  background-color: var(--brand-colors-white);
+  color: var(--brand-colors-grey-grey800);
+}
+```
+
+### ✅ Do this
+
+Do use component tiered and [theme colors](#theme-colors-tier-2) in your styles and code
+
+```css
+.card {
+  --color-background: var(--color-background-default);
+  --color-text: var(--color-text-default);
+
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+```
+
+<br />
+
+## References
+
+- [@metamask/design-tokens](https://github.com/MetaMask/design-tokens)
+- [Figma brand colors library](https://www.figma.com/file/cBAUPFMnbv6tHR1J8KvBI2/Brand-Colors?node-id=0%3A1) (internal use only)
+- [Figma theme colors library](https://www.figma.com/file/kdFzEC7xzSNw7cXteqgzDW/Light-Theme-Colors?node-id=0%3A1) (internal use only)
+- [Figma dark theme colors library](https://www.figma.com/file/rLKsoqpjyoKauYnFDcBIbO/Dark-Theme-Colors?node-id=0%3A1) (internal use only)

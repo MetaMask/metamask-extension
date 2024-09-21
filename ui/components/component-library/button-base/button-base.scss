@@ -1,0 +1,56 @@
+.mm-button-base {
+  position: relative;
+  height: 40px;
+  cursor: pointer;
+  vertical-align: middle;
+  user-select: none;
+
+  &--block {
+    width: 100%;
+  }
+
+  &--ellipsis {
+    max-width: 100%;
+  }
+
+  &--size-sm {
+    height: 32px;
+  }
+
+  &--size-md {
+    height: 40px;
+  }
+
+  &--size-lg {
+    height: 48px;
+  }
+
+  &--loading {
+    cursor: not-allowed;
+  }
+
+  &--disabled,
+  &:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+  }
+
+  &__icon-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spinner 1.2s linear infinite;
+  }
+}
+
+a.mm-button-base:hover {
+  color: var(--color-text-default);
+}
+
+
+
+@keyframes spinner {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+

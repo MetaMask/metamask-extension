@@ -1,0 +1,63 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import ButtonGroup from '.';
+
+# Button Group
+
+Button Group is a wrapper for buttons to align them horizontally
+
+<Canvas>
+  <Story id="components-ui-buttongroup--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={ButtonGroup} />
+
+### With Disabled Button
+
+By changing the `disabled` value to true, the buttons inside the button group component will be disabled
+
+```jsx
+<ButtonGroup disabled>
+  <button>cheap</button>
+  <button>average</button>
+  <button>fast</button>
+</ButtonGroup>
+```
+
+<Canvas>
+  <Story id="components-ui-buttongroup--with-disabled-button" />
+</Canvas>
+
+### With Radio Button
+
+Rendering radio type button instead
+
+```jsx
+<ButtonGroup variant="radiogroup">
+  <button>cheap</button>
+  <button>average</button>
+  <button>fast</button>
+</ButtonGroup>
+```
+
+<Canvas>
+  <Story id="components-ui-buttongroup--with-radio-button" />
+</Canvas>
+
+### No Active Button
+
+Rendering button group without active button
+
+```jsx
+<ButtonGroup noButtonActiveByDefault>
+  <button>cheap</button>
+  <button>average</button>
+  <button>fast</button>
+</ButtonGroup>
+```
+
+<Canvas>
+  <Story id="components-ui-buttongroup--no-active-button" />
+</Canvas>

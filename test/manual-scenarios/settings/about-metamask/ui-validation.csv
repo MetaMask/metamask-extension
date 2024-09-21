@@ -1,0 +1,16 @@
+Critical Test - Validate UI components of the About - MetaMask,,,,
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown,
+2,Proceed to Unlock the wallet.,password (8 characters min),,
+3,Click on the right corner setting(three dots).,,General settings page appears,
+4,Navigate to the About section,,About section is loaded,
+5,Validate the heading in the section,,'About' text needs to appear.,
+6,Validate the version in the section,,'MetaMask Version' label should appear with the appriorate version,
+7,Validate the tag line in the section,,'MetaMask is designed and built around the world.' tagline should appear,
+8,Click on the close button,,Validate the wallet overview page appears.,
+9,Click on the link for the 'Privacy policy',,Privacy policy 'https://consensys.io/privacy-policy' page is loaded,Critical because it's the only way to access privacy policy
+10,Click on the link for the 'Terms of use',,Terms of use page 'https://consensys.io/terms-of-use' is loaded,
+11,Click on the link for the 'Visit our support center',,Support page 'https://support.metamask.io' is loaded,
+12,Click on the link for the 'Attributions',,Attributions 'https://raw.githubusercontent.com/MetaMask/metamask-extension/{CURRENT_METAMASK_VERSION}/attribution.txt' page is loaded,
+13,Click on the link for the 'Visit our website',,Visit our website 'https://metamask.io/' page is loaded,
+14,Click on the link for the 'Contact us',,Contact us 'https://support.metamask.io' code page is loaded,

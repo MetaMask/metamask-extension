@@ -1,0 +1,575 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "Rejte"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Enspeksyon QR Kòd"
+  },
+  "accessingYourCamera": {
+    "message": "Aksè a Kamera"
+  },
+  "account": {
+    "message": "Kont"
+  },
+  "accountDetails": {
+    "message": "Detay Kont"
+  },
+  "accountName": {
+    "message": "Non Kont"
+  },
+  "accountOptions": {
+    "message": "Opsyon kont"
+  },
+  "accountSelectionRequired": {
+    "message": "Ou bezwen chwazi yon kont!"
+  },
+  "activityLog": {
+    "message": "aktivite ki fèt"
+  },
+  "addAcquiredTokens": {
+    "message": "Ajoute tokens yo ou te achte lè l sèvi avèk MetaMask"
+  },
+  "addSuggestedTokens": {
+    "message": "Ajoute Token Yo Sikjere W"
+  },
+  "addToken": {
+    "message": "Ajoute Token"
+  },
+  "amount": {
+    "message": "Kantite lajan"
+  },
+  "appDescription": {
+    "message": "Ekstansyon Navigatè Ethereum",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "Apwouve"
+  },
+  "approved": {
+    "message": "Apwouve"
+  },
+  "attributions": {
+    "message": "Atribisyon"
+  },
+  "back": {
+    "message": "Retounen"
+  },
+  "balance": {
+    "message": "Balans"
+  },
+  "browserNotSupported": {
+    "message": "Navigatè ou a pa sipòte..."
+  },
+  "cancel": {
+    "message": "Anile"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Ou bezwen sèvi ak MetaMask sou Google Chrome yo nan lòd yo konekte sou Hardware Wallet."
+  },
+  "close": {
+    "message": "Fèmen"
+  },
+  "confirm": {
+    "message": "Konfime"
+  },
+  "confirmPassword": {
+    "message": "Konfime Modpas"
+  },
+  "confirmed": {
+    "message": "Konfime"
+  },
+  "connect": {
+    "message": "Konekte"
+  },
+  "connectingToMainnet": {
+    "message": "Konekte ak Prensipal Ethereum Rezo a"
+  },
+  "contractDeployment": {
+    "message": "Kontra Deplwaman"
+  },
+  "copiedExclamation": {
+    "message": "Kopye!"
+  },
+  "copyAddress": {
+    "message": "Kopi adrès clipboard"
+  },
+  "copyToClipboard": {
+    "message": "Kopi clipboard"
+  },
+  "create": {
+    "message": "Kreye"
+  },
+  "currentLanguage": {
+    "message": "Lang Aktyèl"
+  },
+  "customToken": {
+    "message": "Koutim Token"
+  },
+  "decimal": {
+    "message": "Presizyon desimal la"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
+  },
+  "details": {
+    "message": "Detay yo"
+  },
+  "done": {
+    "message": "Fini"
+  },
+  "downloadGoogleChrome": {
+    "message": "Telechaje Google Chrome"
+  },
+  "downloadStateLogs": {
+    "message": "Telechaje State Logs"
+  },
+  "dropped": {
+    "message": "Tonbe"
+  },
+  "edit": {
+    "message": "Korije"
+  },
+  "enterPasswordContinue": {
+    "message": "Mete modpas pou kontinye"
+  },
+  "etherscanView": {
+    "message": "Gade kont sou Etherscan"
+  },
+  "expandView": {
+    "message": "Elaji Wè"
+  },
+  "failed": {
+    "message": "Tonbe"
+  },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "Enpòte dosye ki pa travay? Klike la a!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Bliye aparèy sa a"
+  },
+  "from": {
+    "message": "Soti nan"
+  },
+  "functionType": {
+    "message": "Kalite Fonksyon"
+  },
+  "gasLimit": {
+    "message": "Limit gaz"
+  },
+  "gasLimitTooLow": {
+    "message": "Limit gaz dwe omwen 21000"
+  },
+  "gasPrice": {
+    "message": "Pri gaz (GWEI)"
+  },
+  "gasUsed": {
+    "message": "Gaz yo Itilize"
+  },
+  "hardware": {
+    "message": "materyèl"
+  },
+  "hardwareWalletConnected": {
+    "message": "Materyèl Wallet konekte"
+  },
+  "hardwareWallets": {
+    "message": "Materyèl Wallet konekte"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Chwazi yon Materyèl Wallet ou ta renmen itilize ak MetaMask"
+  },
+  "here": {
+    "message": "isit la",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Kache"
+  },
+  "hideTokenPrompt": {
+    "message": "Kache Token?"
+  },
+  "history": {
+    "message": "Istwa"
+  },
+  "import": {
+    "message": "Pòte",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Pòte Kont"
+  },
+  "importAccountMsg": {
+    "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
+  },
+  "imported": {
+    "message": "Pòte",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Premye tranzaksyon ou konfime sou rezo a. Klike sou OK pou tounen."
+  },
+  "insufficientFunds": {
+    "message": "Lajan ensifizan."
+  },
+  "insufficientTokens": {
+    "message": "Tokens pa valab."
+  },
+  "invalidAddress": {
+    "message": "Adrès pa valab"
+  },
+  "invalidAddressRecipient": {
+    "message": "Moun ki resevwa adrès la pa valab"
+  },
+  "invalidRPC": {
+    "message": "RPC URI pa valab"
+  },
+  "invalidSeedPhrase": {
+    "message": "Seed fraz pa valab"
+  },
+  "jsonFile": {
+    "message": "JSON Dosye",
+    "description": "format for importing an account"
+  },
+  "learnMore": {
+    "message": "Aprann plis"
+  },
+  "learnMoreUpperCase": {
+    "message": "Aprann plis"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Ou bezwen sèvi ak dènye kont ou anvan ou ka ajoute yon nouvo."
+  },
+  "likeToImportTokens": {
+    "message": "Èske ou ta renmen ajoute sa nan tokens?"
+  },
+  "links": {
+    "message": "Lyen"
+  },
+  "loading": {
+    "message": "Telechaje..."
+  },
+  "loadingTokens": {
+    "message": "Telechaje Tokens..."
+  },
+  "lock": {
+    "message": "Dekonekte"
+  },
+  "mainnet": {
+    "message": "Prensipal Ethereum Rezo a"
+  },
+  "max": {
+    "message": "Maksimòm"
+  },
+  "message": {
+    "message": "Mesaje"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Vèsyon"
+  },
+  "mustSelectOne": {
+    "message": "Ou dwe chwazi omwen 1 token."
+  },
+  "needImportFile": {
+    "message": "Ou dwe chwazi yon dosye pou enpòte.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Pa ka voye kantite lajan negatif ETH."
+  },
+  "networks": {
+    "message": "Rezo"
+  },
+  "nevermind": {
+    "message": "Pa pwoblèm"
+  },
+  "newAccount": {
+    "message": "Nouvo Kont"
+  },
+  "newAccountNumberName": {
+    "message": "Kont $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "Nouvo Kontra"
+  },
+  "newPassword": {
+    "message": "Nouvo modpas (minit 8)"
+  },
+  "next": {
+    "message": "Aprè sa"
+  },
+  "noConversionRateAvailable": {
+    "message": "Pa gen okenn Konvèsyon Disponib"
+  },
+  "noTransactions": {
+    "message": "Pa gen tranzaksyon"
+  },
+  "noWebcamFound": {
+    "message": "Nou pakay jwenn webcam òdinatè ou. Tanpri eseye ankò."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Pa jwenn webcam"
+  },
+  "ok": {
+    "message": "Oke"
+  },
+  "origin": {
+    "message": "Orijin"
+  },
+  "parameters": {
+    "message": "Paramèt"
+  },
+  "password": {
+    "message": "Modpas"
+  },
+  "passwordNotLongEnough": {
+    "message": "Modpas pa lontan ase"
+  },
+  "passwordsDontMatch": {
+    "message": "Modpas pa matche"
+  },
+  "pastePrivateKey": {
+    "message": "Kole fraz prive ou a la:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "l ap mache"
+  },
+  "personalAddressDetected": {
+    "message": "Adrès pèsonèl detekte. Antre adrès kontra token la."
+  },
+  "prev": {
+    "message": "Avan"
+  },
+  "primaryCurrencySetting": {
+    "message": "Lajan ou itilize pi plis la"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Chwazi ETH pou bay priyorite montre valè nan ETH. Chwazi Fiat priyorite montre valè nan lajan ou chwazi a."
+  },
+  "privacyMsg": {
+    "message": "Règleman sou enfòmasyon prive"
+  },
+  "privateKey": {
+    "message": "Prive kle",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Atansyon: pa janm divilge kle sa. Nenpòt moun kapab avèk kle prive ou a vòlè sa ou gen ou sou kont ou a."
+  },
+  "privateNetwork": {
+    "message": "Rezo Prive"
+  },
+  "readdToken": {
+    "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan  \"Ajoute token\" nan opsyon meni kont ou an."
+  },
+  "reject": {
+    "message": "Rejte"
+  },
+  "rejectAll": {
+    "message": "Rejte Tout"
+  },
+  "rejectTxsDescription": {
+    "message": "Ou se sou rejte $ 1 yon anpil nan tranzaksyon yo."
+  },
+  "rejectTxsN": {
+    "message": "Rejete $ 1 tranzaksyon"
+  },
+  "rejected": {
+    "message": "Rejete"
+  },
+  "remove": {
+    "message": "retire"
+  },
+  "removeAccount": {
+    "message": "Retire kont"
+  },
+  "removeAccountDescription": {
+    "message": "Kont sa a pral retire nan Wallet ou. Tanpri, asire ou ke ou gen orijinal fraz seed la oubyen kle prive pou rantre kont lan avan ou kontinye. Oubyen ou ka rantre kont ou ankò apati kont \"drop-down\" ou an."
+  },
+  "required": {
+    "message": "Egzije"
+  },
+  "reset": {
+    "message": "Repwograme"
+  },
+  "restore": {
+    "message": "Retabli"
+  },
+  "revealSeedWords": {
+    "message": "Revele Seed Mo Yo"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Yo ka itilize mo sa pou vòlè kont ou.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "save": {
+    "message": "Sove"
+  },
+  "scanInstructions": {
+    "message": "Mete kòd QR la devan kamera ou"
+  },
+  "scanQrCode": {
+    "message": "Enspeksyon QR Kòd"
+  },
+  "search": {
+    "message": "Rechèch"
+  },
+  "seedPhraseReq": {
+    "message": "Seed fraz yo se 12 long mo"
+  },
+  "selectAnAccount": {
+    "message": "Chwazi yon kont"
+  },
+  "selectHdPath": {
+    "message": "Chwazi chemen HD"
+  },
+  "selectPathHelp": {
+    "message": "Si ou pa wè kont Ledger ou te genyen an anba a, eseye chanje chemen an \"Eritaj (MEW / MyCrypto)\""
+  },
+  "selectType": {
+    "message": "Chwazi Kalite"
+  },
+  "send": {
+    "message": "Voye"
+  },
+  "settings": {
+    "message": "Paramèt"
+  },
+  "showHexData": {
+    "message": "Montre Hex Data"
+  },
+  "showHexDataDescription": {
+    "message": "Pran sa pouw ka montre chan entèfas hex data a"
+  },
+  "sigRequest": {
+    "message": "Demann Siyati"
+  },
+  "sign": {
+    "message": "Siyen"
+  },
+  "signatureRequest": {
+    "message": "Siyati Mande"
+  },
+  "signed": {
+    "message": "Te Siyen"
+  },
+  "speedUp": {
+    "message": "pi vit"
+  },
+  "stateLogError": {
+    "message": "Erè nan retwouve State Logs yo."
+  },
+  "stateLogsDescription": {
+    "message": "State logs gen adrès kont piblik ou yo epi tranzaksyon ou te voye yo."
+  },
+  "submitted": {
+    "message": "Te Soumèt"
+  },
+  "supportCenter": {
+    "message": "Vizite Sant Sipò Nou"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Senbòl yo dwe 11 karaktè oswa mwens."
+  },
+  "terms": {
+    "message": "Tèm pou itilize"
+  },
+  "to": {
+    "message": "Pou"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Ou te deja ajoute token."
+  },
+  "tokenSymbol": {
+    "message": "Token Senbòl"
+  },
+  "transaction": {
+    "message": "tranzaksyon yo"
+  },
+  "transactionConfirmed": {
+    "message": "Tranzaksyon ou te konfime pou $2."
+  },
+  "transactionCreated": {
+    "message": "Tranzaksyon ou te kreye avèk on valè de $1 pou $2."
+  },
+  "transactionDropped": {
+    "message": "Tranzaksyon ou te tonbe a $2."
+  },
+  "transactionError": {
+    "message": "Erè tranzaksyon. Eksepsyon jete nan kòd kontra."
+  },
+  "transactionSubmitted": {
+    "message": "Tranzaksyon ou te soumèt a $2."
+  },
+  "transactionUpdated": {
+    "message": "Tranzaksyon ou te aktyalize a $2."
+  },
+  "transfer": {
+    "message": "Transfè"
+  },
+  "tryAgain": {
+    "message": "Eseye anko"
+  },
+  "unapproved": {
+    "message": "Pa apwouve"
+  },
+  "units": {
+    "message": "inite yo"
+  },
+  "unknown": {
+    "message": "Enkoni"
+  },
+  "unknownNetwork": {
+    "message": "Rezo Prive Enkoni"
+  },
+  "unknownQrCode": {
+    "message": "Erè: Nou pa t kapab idantifye QR kòd sa"
+  },
+  "unlock": {
+    "message": "Debloke"
+  },
+  "unlockMessage": {
+    "message": "Entènèt desantralize a ap tann"
+  },
+  "updatedWithDate": {
+    "message": "Mete ajou $1"
+  },
+  "urlErrorMsg": {
+    "message": "URIs mande pou apwopriye prefiks HTTP / HTTPS a."
+  },
+  "usedByClients": {
+    "message": "Itilize pa yon varyete de kliyan diferan"
+  },
+  "visitWebSite": {
+    "message": "Vizite sit entènèt nou an"
+  },
+  "welcomeBack": {
+    "message": "Bon Retou!"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
+  },
+  "youSign": {
+    "message": "Ou ap siyen kounya"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Seed fraz prive ou a"
+  }
+}

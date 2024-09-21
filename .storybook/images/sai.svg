@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="105px" height="105px" viewBox="0 0 105 105" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M68.1775968,52.2619297 L53.250349,37.3346818 L38.3184692,52.2665616 L15.9241234,52.2700356 L53.2538229,14.9403361 L90.5719426,52.2584557 L68.1775968,52.2619297 Z" id="path-1"></path>
+        <filter x="-5.4%" y="-5.4%" width="110.7%" height="121.4%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="1" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.05 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="DAI_small" transform="translate(-37.000000, -37.000000)">
+            <g id="ICON_DAI" transform="translate(10.800000, 10.800000)">
+                <g id="icon" transform="translate(25.730000, 26.730000)">
+                    <rect id="Rectangle" fill="#FFCC80" transform="translate(53.248033, 52.264246) rotate(-315.000000) translate(-53.248033, -52.264246) " x="16.3049794" y="15.3097285" width="73.8861073" height="73.9090343"></rect>
+                    <polygon id="Rectangle-Copy" fill="#FFB74D" transform="translate(53.248033, 52.264246) rotate(-315.000000) translate(-53.248033, -52.264246) " points="16.3049794 15.3097285 90.1910867 15.3097285 66.3093749 65.3296405 16.3049794 89.2187628"></polygon>
+                    <g id="Combined-Shape">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                        <use fill="#FCFCFC" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    </g>
+                    <polygon id="Rectangle-Copy-4" fill-opacity="0.0299999993" fill="#000000" transform="translate(53.248033, 52.264246) rotate(-315.000000) translate(-53.248033, -52.264246) " points="16.3049794 15.3097285 90.1910867 15.3097285 90.1910867 89.2187628"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

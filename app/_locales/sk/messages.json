@@ -1,0 +1,767 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "Odmítnout"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skenovať QR kód"
+  },
+  "about": {
+    "message": "Informácie"
+  },
+  "accessingYourCamera": {
+    "message": "Prístupuje k fotoaparátu..."
+  },
+  "account": {
+    "message": "Účet"
+  },
+  "accountDetails": {
+    "message": "Detaily účtu"
+  },
+  "accountName": {
+    "message": "Název účtu"
+  },
+  "accountOptions": {
+    "message": "Možnosti účtu"
+  },
+  "accountSelectionRequired": {
+    "message": "Musíte si vybrať účet!"
+  },
+  "activityLog": {
+    "message": "protokol aktivity"
+  },
+  "addAcquiredTokens": {
+    "message": "Pridajte tokeny, ktoré ste získali pomocou MetaMask"
+  },
+  "addAlias": {
+    "message": "Pridať alias"
+  },
+  "addNetwork": {
+    "message": "Pridať sieť"
+  },
+  "addSuggestedTokens": {
+    "message": "Pridať navrhované tokeny"
+  },
+  "addToken": {
+    "message": "Přidat token"
+  },
+  "advanced": {
+    "message": "Rozšírené"
+  },
+  "amount": {
+    "message": "Částka"
+  },
+  "appDescription": {
+    "message": "Ethereum rozšíření prohlížeče",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "Schválit"
+  },
+  "approved": {
+    "message": "Schváleno"
+  },
+  "attributions": {
+    "message": "Zásluhy"
+  },
+  "autoLockTimeLimit": {
+    "message": "Časovač automatického odhlásenia (minúty)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "Nastavte čas nečinnosti v minútach skôr, než sa MetaMask automaticky odhlási"
+  },
+  "average": {
+    "message": "Priemerný"
+  },
+  "back": {
+    "message": "Zpět"
+  },
+  "backupApprovalInfo": {
+    "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
+  },
+  "backupApprovalNotice": {
+    "message": "Zálohujte si svoj tajný kód na obnovenie, aby bola vaša peňaženka a prostriedky bezpečné."
+  },
+  "backupNow": {
+    "message": "Zálohovať teraz"
+  },
+  "balance": {
+    "message": "Zůstatek:"
+  },
+  "balanceOutdated": {
+    "message": "Zostatok môže byť neaktuálny"
+  },
+  "basic": {
+    "message": "Základné"
+  },
+  "blockExplorerView": {
+    "message": "Zobraziť účet na $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "browserNotSupported": {
+    "message": "Váš prehliadač nie je podporovaný..."
+  },
+  "bytes": {
+    "message": "Bajty"
+  },
+  "cancel": {
+    "message": "Zrušit"
+  },
+  "cancelled": {
+    "message": "Zrušený"
+  },
+  "chainId": {
+    "message": "ID reťazca"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Ak sa chcete pripojiť k svojej hardvérovej peňaženke, musíte v Google Chrome použiť MetaMask."
+  },
+  "close": {
+    "message": "Zavrieť"
+  },
+  "confirm": {
+    "message": "Potvrdit"
+  },
+  "confirmPassword": {
+    "message": "Potvrdit heslo"
+  },
+  "confirmed": {
+    "message": "Potvrzeno"
+  },
+  "connect": {
+    "message": "Pripojenie"
+  },
+  "connectingTo": {
+    "message": "Pripája sa k $1"
+  },
+  "connectingToGoerli": {
+    "message": "Pripája sa k testovacej sieti Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Pripája sa k testovacej sieti Linea Goerli"
+  },
+  "connectingToMainnet": {
+    "message": "Připojuji se k Ethereum Mainnet"
+  },
+  "contractDeployment": {
+    "message": "Nasazení kontraktu"
+  },
+  "contractInteraction": {
+    "message": "Zmluvná interakcia"
+  },
+  "copiedExclamation": {
+    "message": "Zkopírováno!"
+  },
+  "copyAddress": {
+    "message": "Kopírovať adresu do schránky"
+  },
+  "copyToClipboard": {
+    "message": "Kopírovat do schránky"
+  },
+  "copyTransactionId": {
+    "message": "Kopírovať ID transakcie"
+  },
+  "create": {
+    "message": "Vytvořit"
+  },
+  "createPassword": {
+    "message": "Vytvoriť heslo"
+  },
+  "currencyConversion": {
+    "message": "Prepočet meny"
+  },
+  "currentLanguage": {
+    "message": "Aktuálny jazyk"
+  },
+  "custom": {
+    "message": "Rozšírené"
+  },
+  "customToken": {
+    "message": "Vlastní token"
+  },
+  "decimal": {
+    "message": "Počet desetinných míst přesnosti"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Desetinných míst musí být od 0 do 36."
+  },
+  "delete": {
+    "message": "Odstrániť"
+  },
+  "details": {
+    "message": "Podrobnosti"
+  },
+  "done": {
+    "message": "Hotovo"
+  },
+  "downloadGoogleChrome": {
+    "message": "Stiahnuť Google Chrome"
+  },
+  "downloadStateLogs": {
+    "message": "Stáhnout stavové protokoly"
+  },
+  "dropped": {
+    "message": "Zrušeno"
+  },
+  "edit": {
+    "message": "Upravit"
+  },
+  "editContact": {
+    "message": "Upraviť kontakt"
+  },
+  "enterPasswordContinue": {
+    "message": "Pokračujte zadaním hesla"
+  },
+  "ethereumPublicAddress": {
+    "message": "Verejná adresa Ethereum"
+  },
+  "etherscanView": {
+    "message": "Prohlédněte si účet na Etherscan"
+  },
+  "expandView": {
+    "message": "Rozbaliť zobrazenie"
+  },
+  "failed": {
+    "message": "Neúspěšné"
+  },
+  "fast": {
+    "message": "Rýchle"
+  },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "Import souboru nefunguje? Klikněte sem!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Zabudnúť toto zariadenie"
+  },
+  "from": {
+    "message": "Od"
+  },
+  "functionType": {
+    "message": "Typ funkcie"
+  },
+  "gasLimit": {
+    "message": "Limit paliva"
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "Limit GAS je maximálne množstvo jednotiek GAS, ktoré ste ochotní minúť."
+  },
+  "gasLimitTooLow": {
+    "message": "Limit paliva musí být alespoň 21000"
+  },
+  "gasPrice": {
+    "message": "Cena paliva (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Cena za GAS je mimoriadne nízka"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Cena za GAS určuje množstvo Ether, ktoré ste ochotní zaplatiť za každú jednotku GAS."
+  },
+  "gasUsed": {
+    "message": "GAS použitý"
+  },
+  "general": {
+    "message": "Všeobecne"
+  },
+  "goerli": {
+    "message": "Testovacia sieť Goerli"
+  },
+  "hardware": {
+    "message": "hardvér"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardvérová peňaženka je pripojená"
+  },
+  "hardwareWallets": {
+    "message": "Pripojiť hardvérovú peňaženku"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s MetaMask"
+  },
+  "here": {
+    "message": "zde",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Skrýt"
+  },
+  "hideTokenPrompt": {
+    "message": "Skrýt token?"
+  },
+  "history": {
+    "message": "História"
+  },
+  "importAccount": {
+    "message": "Import účtu"
+  },
+  "importAccountMsg": {
+    "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
+  },
+  "imported": {
+    "message": "Importováno",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Sieť potvrdila vašu iniciálnu transakciu. Ak sa chcete vrátiť späť, kliknite na OK."
+  },
+  "insufficientBalance": {
+    "message": "Nedostatočný zostatok."
+  },
+  "insufficientFunds": {
+    "message": "Nedostatek finančních prostředků."
+  },
+  "insufficientTokens": {
+    "message": "Nedostatek tokenů."
+  },
+  "invalidAddress": {
+    "message": "Neplatná adresa"
+  },
+  "invalidAddressRecipient": {
+    "message": "Adresa příjemce je neplatná"
+  },
+  "invalidRPC": {
+    "message": "Neplatné RPC URI"
+  },
+  "invalidSeedPhrase": {
+    "message": "Neplatná seed fráza"
+  },
+  "jsonFile": {
+    "message": "JSON soubor",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "Známe kontaktné adresy."
+  },
+  "learnMore": {
+    "message": "Zjistěte více."
+  },
+  "learnMoreUpperCase": {
+    "message": "Zjistěte více."
+  },
+  "ledgerAccountRestriction": {
+    "message": "Skôr ako budete môcť pridať nový účet, musíte použiť svoj posledný účet."
+  },
+  "likeToImportTokens": {
+    "message": "Chcete přidat tyto tokeny?"
+  },
+  "lineaGoerli": {
+    "message": "Testovacia sieť Linea Goerli"
+  },
+  "links": {
+    "message": "Odkazy"
+  },
+  "loadMore": {
+    "message": "Načítať viac"
+  },
+  "loading": {
+    "message": "Načítám..."
+  },
+  "loadingTokens": {
+    "message": "Načítám tokeny..."
+  },
+  "lock": {
+    "message": "Odhlásit"
+  },
+  "message": {
+    "message": "Zpráva"
+  },
+  "metamaskVersion": {
+    "message": "Verzia MetaMask"
+  },
+  "mustSelectOne": {
+    "message": "Musíte zvolit aspoň 1 token."
+  },
+  "needImportFile": {
+    "message": "Musíte zvolit soubor k importu.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Nelze odeslat zápornou částku ETH."
+  },
+  "networkName": {
+    "message": "Názov siete"
+  },
+  "networks": {
+    "message": "Sítě"
+  },
+  "nevermind": {
+    "message": "Nevadí"
+  },
+  "newAccount": {
+    "message": "Nový účet"
+  },
+  "newAccountNumberName": {
+    "message": "Účet $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Nový kontakt"
+  },
+  "newContract": {
+    "message": "Nový kontrakt"
+  },
+  "newPassword": {
+    "message": "Nové heslo (min 8 znaků)"
+  },
+  "next": {
+    "message": "Další"
+  },
+  "noConversionRateAvailable": {
+    "message": "Nie je k dispozícii žiadna sadzba konverzie"
+  },
+  "noTransactions": {
+    "message": "Žádné transakce"
+  },
+  "noWebcamFound": {
+    "message": "Webová kamera vášho počítača sa nenašla. Skúste znova."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webová kamera sa nenašla"
+  },
+  "notEnoughGas": {
+    "message": "Nedostatok GAS"
+  },
+  "ofTextNofM": {
+    "message": "z"
+  },
+  "off": {
+    "message": "Vypnuté"
+  },
+  "on": {
+    "message": "Zapnuté"
+  },
+  "origin": {
+    "message": "Pôvod"
+  },
+  "parameters": {
+    "message": "Parametre"
+  },
+  "participateInMetaMetrics": {
+    "message": "Zúčastnite sa na MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Zúčastnite sa na MetaMetrics a pomôžte nám vylepšiť MetaMask"
+  },
+  "password": {
+    "message": "Heslo"
+  },
+  "passwordNotLongEnough": {
+    "message": "Heslo není dost dlouhé"
+  },
+  "passwordsDontMatch": {
+    "message": "Hesla nejsou stejná"
+  },
+  "pastePrivateKey": {
+    "message": "Vložte zde svůj privátní klíč:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "prebieha"
+  },
+  "personalAddressDetected": {
+    "message": "Detekována osobní adresa. Zadejte adresu kontraktu tokenu."
+  },
+  "prev": {
+    "message": "Predchádzajúce"
+  },
+  "primaryCurrencySetting": {
+    "message": "Primárna mena"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Vyberte natívne, ak chcete priorizovať zobrazovanie hodnôt v natívnej mene reťazca (napr. ETH). Ak chcete priorizovať zobrazovanie hodnôt vo svojej vybranej mene fiat, zvoľte možnosť Fiat."
+  },
+  "privacyMsg": {
+    "message": "Zásady ochrany osobních údajů"
+  },
+  "privateKey": {
+    "message": "Privátní klíč",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Upozornění: Nikdy nezveřejněte tento klíč. Kdokoli může s vaším privátním klíčem odcizit vaše aktiva z účtu."
+  },
+  "privateNetwork": {
+    "message": "Soukromá síť"
+  },
+  "readdToken": {
+    "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
+  },
+  "reject": {
+    "message": "Odmítnout"
+  },
+  "rejectAll": {
+    "message": "Odmietnuť všetko"
+  },
+  "rejectTxsDescription": {
+    "message": " Chystáte sa hromadne odmietnuť $1 transakcie."
+  },
+  "rejectTxsN": {
+    "message": "Odmietnuť $1 transakcie "
+  },
+  "rejected": {
+    "message": "Odmítnuto"
+  },
+  "remove": {
+    "message": "Odstrániť"
+  },
+  "removeAccount": {
+    "message": "Odstrániť účet"
+  },
+  "removeAccountDescription": {
+    "message": "Tento účet bude odstránený z vašej peňaženky. Skôr ako budete pokračovať, skontrolujte, či máte pre tento importovaný účet pôvodnú seed frázu alebo súkromný kľúč. Z rozbaľovacieho menu účtu môžete znova importovať alebo vytvoriť účty."
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "žiadosti čakajúce na potvrdenie"
+  },
+  "required": {
+    "message": "Povinné"
+  },
+  "reset": {
+    "message": "Resetovať"
+  },
+  "restore": {
+    "message": "Obnoviť"
+  },
+  "revealSeedWords": {
+    "message": "Zobrazit slova klíčové fráze"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "rpcUrl": {
+    "message": "Nová RPC URL"
+  },
+  "save": {
+    "message": "Uložit"
+  },
+  "scanInstructions": {
+    "message": "Umiestnite QR kód pred kameru"
+  },
+  "scanQrCode": {
+    "message": "Skenovať QR kód"
+  },
+  "search": {
+    "message": "Hledat"
+  },
+  "securityAndPrivacy": {
+    "message": "Bezpečnosť a súkromie"
+  },
+  "seedPhraseReq": {
+    "message": "klíčové fráze mají 12 slov"
+  },
+  "selectAnAccount": {
+    "message": "Vybrať účet"
+  },
+  "selectHdPath": {
+    "message": "Vyberte cestu HD"
+  },
+  "selectPathHelp": {
+    "message": "Ak nevidíte svoje existujúce účty v Hlavnej knihe dole, skúste prepnúť cesty na „Odkaz (MEW/MyCrypto)“"
+  },
+  "selectType": {
+    "message": "Vybrat typ"
+  },
+  "send": {
+    "message": "Odeslat"
+  },
+  "settings": {
+    "message": "Nastavení"
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Zobraziť konverziu na Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Vyberte túto voľbu, ak chcete zobraziť konverziu fiat na Testnets"
+  },
+  "showHexData": {
+    "message": "Zobraziť údaje Hex"
+  },
+  "showHexDataDescription": {
+    "message": "Vyberte toto, ak chcete, aby sa na obrazovke odosielania zobrazilo hex dátové pole"
+  },
+  "sigRequest": {
+    "message": "Požadavek podpisu"
+  },
+  "sign": {
+    "message": "Podepsat"
+  },
+  "signatureRequest": {
+    "message": "Požadavek podpisu"
+  },
+  "signed": {
+    "message": "Podepsáno"
+  },
+  "somethingWentWrong": {
+    "message": "Och! Niečo zlyhalo."
+  },
+  "speedUp": {
+    "message": "Zrýchliť"
+  },
+  "speedUpCancellation": {
+    "message": "Urýchlite toto zrušenie"
+  },
+  "speedUpTransaction": {
+    "message": "Urýchliť túto transakciu"
+  },
+  "stateLogError": {
+    "message": "Chyba během získávání stavových protokolů."
+  },
+  "stateLogs": {
+    "message": "Stavové protokoly"
+  },
+  "stateLogsDescription": {
+    "message": "Stavové protokoly obsahují vaše veřejné adresy účtů a odeslané transakce."
+  },
+  "submitted": {
+    "message": "Odesláno"
+  },
+  "supportCenter": {
+    "message": "Navštivte naše centrum podpory"
+  },
+  "switchNetworks": {
+    "message": "Prepnúť siete"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbol musí být mezi 0 a 12 znaky."
+  },
+  "terms": {
+    "message": "Podmínky použití"
+  },
+  "tips": {
+    "message": "Príspevky"
+  },
+  "to": {
+    "message": "Komu"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token byl už přidán."
+  },
+  "tokenContractAddress": {
+    "message": "Kontaktná adresa tokenu"
+  },
+  "tokenSymbol": {
+    "message": "Symbol tokenu"
+  },
+  "total": {
+    "message": "Celkem"
+  },
+  "transaction": {
+    "message": "transakcia"
+  },
+  "transactionCancelAttempted": {
+    "message": "Pokus o zrušenie transakcie s poplatkom GAS z $1 na $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transakcia bola úspešne zrušená na $2"
+  },
+  "transactionConfirmed": {
+    "message": "Transakcia potvrdená na $2."
+  },
+  "transactionCreated": {
+    "message": "Transakcia bola vytvorená s hodnotou $1 na $2."
+  },
+  "transactionDropped": {
+    "message": "Transakcia klesla na $2."
+  },
+  "transactionError": {
+    "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
+  },
+  "transactionErrorNoContract": {
+    "message": "Pokúša sa zavolať funkciu na nezmluvnú adresu."
+  },
+  "transactionErrored": {
+    "message": "Pri transakcii sa vyskytla chyba."
+  },
+  "transactionFee": {
+    "message": "Poplatok za transakciu"
+  },
+  "transactionResubmitted": {
+    "message": "Transakcia znovu odoslaná s poplatkom za GAS zvýšeným na $1 na $2"
+  },
+  "transactionSubmitted": {
+    "message": "Transakcia bola odoslaná s poplatkom za GAS z  $1 na $2."
+  },
+  "transactionUpdated": {
+    "message": "Transakcia bola aktualizovaná na $2."
+  },
+  "transfer": {
+    "message": "Prevod"
+  },
+  "transferFrom": {
+    "message": "Presun z"
+  },
+  "tryAgain": {
+    "message": "Skúsiť znova"
+  },
+  "unapproved": {
+    "message": "Neschváleno"
+  },
+  "units": {
+    "message": "jednotky"
+  },
+  "unknown": {
+    "message": "Neznámé"
+  },
+  "unknownNetwork": {
+    "message": "Neznámá soukromá síť"
+  },
+  "unknownQrCode": {
+    "message": "Chyba: Kód QR sa nepodarilo identifikovať"
+  },
+  "unlock": {
+    "message": "Odomknúť"
+  },
+  "unlockMessage": {
+    "message": "Decentralizovaný web čaká"
+  },
+  "updatedWithDate": {
+    "message": "Aktualizované $1"
+  },
+  "urlErrorMsg": {
+    "message": "URI vyžadují korektní HTTP/HTTPS prefix."
+  },
+  "usedByClients": {
+    "message": "Používána různými klienty"
+  },
+  "userName": {
+    "message": "Meno používateľa"
+  },
+  "viewContact": {
+    "message": "Zobraziť kontakt"
+  },
+  "visitWebSite": {
+    "message": "Navštivte naši stránku"
+  },
+  "welcomeBack": {
+    "message": "Vitajte späť!"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."
+  },
+  "youSign": {
+    "message": "Podepisujete"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Vaša súkromná seed fráza"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Nulová cena za GAS pri zrýchlení"
+  }
+}

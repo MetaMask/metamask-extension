@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm Detail Row Component should match snapshot 1`] = `
+<div>
+  <div
+    class="confirm-page-container-header"
+    data-testid="header-container"
+  >
+    <div
+      class="confirm-page-container-header__row"
+    >
+      <div
+        class="confirm-page-container-header__back-button-container"
+        style="visibility: hidden;"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
+        <span
+          class="confirm-page-container-header__back-button"
+          data-testid="confirm-page-back-edit-button"
+        >
+          Edit
+        </span>
+      </div>
+      <div
+        class="mm-box mm-picker-network network-display mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-border-muted mm-box--border-width-0 box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
+          G
+        </div>
+        <span
+          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          data-testid="network-display"
+        >
+          Goerli
+        </span>
+        <span
+          class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Confirm Detail Row Component should only render children when fullscreen and showEdit is false & snapshot match 1`] = `
+<div>
+  <div
+    class="nested-test-class"
+  />
+</div>
+`;

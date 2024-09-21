@@ -1,0 +1,74 @@
+@use "design-system";
+
+.transaction-list-item {
+  border-top: none;
+
+  &__primary-currency {
+    color: var(--color-text-default);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__secondary-currency {
+    @include design-system.H7;
+
+    margin-top: 4px;
+    color: var(--color-text-alternative);
+  }
+
+  & &--unconfirmed {
+    color: var(--color-text-alternative);
+  }
+
+  &--unconfirmed &__primary-currency {
+    color: var(--color-text-alternative);
+  }
+
+  &__pending-actions {
+    display: flex;
+
+    .button {
+      @include design-system.H6;
+
+      width: 90px;
+      white-space: nowrap;
+    }
+
+    & > .button:first-child {
+      margin-right: 6px;
+    }
+
+    &:empty {
+      padding-top: 0;
+    }
+  }
+
+  .list-item__subheading {
+    overflow: hidden;
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .list-item__subheading > h3 {
+    overflow: visible;
+    display: flex;
+    white-space: nowrap;
+    text-overflow: initial;
+  }
+
+  &__address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  &__icon-badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    transform: scale(0.8);
+  }
+  ///: END:ONLY_INCLUDE_IF
+}

@@ -1,0 +1,13 @@
+@use "design-system";
+
+.snackbar {
+  @include design-system.H7;
+
+  padding: 0.75rem 1rem;
+  color: var(--color-text-default);
+  min-width: 360px;
+  width: fit-content;
+  background: var(--color-info-muted);
+  border: 1px solid var(--color-info-default);
+  border-radius: 6px;
+}

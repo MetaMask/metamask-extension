@@ -1,0 +1,116 @@
+# Lines starting with '#' are comments.
+# Each line is a file pattern followed by one or more owners.
+# Owners bear a responsibility to the organization and the users of this
+# application. Repository administrators have the ability to merge pull
+# requests that have not yet received the requisite reviews as outlined
+# in this file. Do not force merge any PR without confidence that it
+# follows all policies or without full understanding of the impact of
+# those changes on build, release and publishing outcomes.
+
+*                                    @MetaMask/extension-devs
+development/                         @MetaMask/extension-devs @kumavis
+lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain
+
+# The offscreen.ts script file that is included in the offscreen document html
+# file is responsible, at present, for loading the snaps execution environment
+# for MV3. Any changes to this file should require at least one member of the
+# snaps development team to review and approve the changes.
+offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
+
+
+# The .circleci/ folder instructs Circle CI on the process by which it
+# should test, build and publish releases of our application. Due to the
+# impact that changes to the files contained within this folder may have
+# on our releases, only those with the knowledge and responsibility to
+# publish libraries under the MetaMask name may approve those changes.
+# Note to reviewers: We employ the use of CircleCI "Orbs", which are
+# remotely hosted sections of CircleCI configuration and scripts, to
+# empower our CI steps. ANY addition of orbs to our CircleCI config
+# should be brought to the attention of engineering leadership for
+# discussion
+.circleci/                           @MetaMask/library-admins @kumavis
+
+# The privacy-snapshot.json file includes a list of all hosts that the
+# extension communicates with during the E2E test suite runs. It is not a
+# complete list of all hosts that the extension communicates with until the E2E
+# test suite has full coverage. Anytime the privacy-snapshot file changes,
+# extra scrutiny should be applied to the pull request to confirm that it does
+# not broaden the number of hosts the extension communicates with without also
+# providing a path for users to avoid that communication. MetaMask strives to
+# make all such communication opt IN versus opt OUT.
+privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
+
+# The CODEOWNERS file constitutes an agreement amongst organization
+# admins and maintainers to restrict approval capabilities to a subset
+# of contributors. Modifications to this file result in a modification of
+# that agreement and can only be approved by those with the knowledge
+# and responsibility to publish libraries under the MetaMask name.
+.github/CODEOWNERS                   @MetaMask/library-admins @kumavis
+
+# For now, restricting approvals inside the .devcontainer folder to devs
+# who were involved with the Codespaces project.
+.devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral
+
+# Confirmations team to own code for confirmations on UI.
+ui/pages/confirmations               @MetaMask/confirmations
+
+# MMI team is responsible for code related with Institutioanl version of MetaMask
+ui/pages/institutional               @MetaMask/mmi
+ui/components/institutional          @MetaMask/mmi
+ui/ducks/institutional               @MetaMask/mmi
+ui/selectors/institutional           @MetaMask/mmi
+
+# Design System to own code for the component-library folder
+# Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
+ui/components/component-library      @MetaMask/design-system-engineers
+
+# The Notifications team is responsible for code related to notifications,
+# authentication, and profile syncing inside the Extension.
+
+# Controllers
+**/controllers/authentication/**                    @MetaMask/notifications
+**/controllers/metamask-notifications/**            @MetaMask/notifications
+**/controllers/push-platform-notifications/**       @MetaMask/notifications
+**/controllers/user-storage/**                      @MetaMask/notifications
+
+# UI
+**/metamask-notifications/**                        @MetaMask/notifications
+**/multichain/notification*/**                      @MetaMask/notifications
+**/pages/notification*/**                           @MetaMask/notifications
+**/utils/notification.util.ts                       @MetaMask/notifications
+
+# Accounts team is responsible for code related with snap management accounts
+# Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
+
+app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
+
+# Swaps team to own code for the swaps folder
+ui/pages/swaps                                        @MetaMask/swaps-engineers
+app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
+
+# Snaps
+**/snaps/**                          @MetaMask/snaps-devs
+shared/constants/permissions.ts      @MetaMask/snaps-devs
+ui/helpers/utils/permission.js       @MetaMask/snaps-devs
+ui/hooks/useTransactionInsights.js   @MetaMask/snaps-devs
+
+# Wallet UX
+ui/components/multichain              @MetaMask/wallet-ux
+ui/components/app/whats-new-popup     @MetaMask/wallet-ux
+ui/css                                @MetaMask/wallet-ux
+ui/pages/home                         @MetaMask/wallet-ux
+ui/pages/onboarding-flow              @MetaMask/wallet-ux
+
+# Assets
+ui/components/app/add-network                         @MetaMask/metamask-assets
+ui/components/app/auto-detect-nft                     @MetaMask/metamask-assets
+ui/components/app/auto-detect-token                   @MetaMask/metamask-assets
+ui/components/app/import-token                        @MetaMask/metamask-assets
+ui/components/app/nft-default-image                   @MetaMask/metamask-assets
+ui/components/app/nft-details                         @MetaMask/metamask-assets
+ui/components/app/nft-options                         @MetaMask/metamask-assets
+ui/components/app/nfts-detection-notice-import-nfts   @MetaMask/metamask-assets
+ui/components/app/nfts-items                          @MetaMask/metamask-assets
+ui/components/app/nfts-tab                            @MetaMask/metamask-assets
+ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
+ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets

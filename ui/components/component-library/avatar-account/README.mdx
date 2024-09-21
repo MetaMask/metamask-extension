@@ -1,0 +1,76 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { AvatarAccount } from './avatar-account';
+import { AvatarBase } from '../';
+
+# AvatarAccount
+
+The `AvatarAccount` is a type of avatar reserved for representing accounts.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-avataraccount--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={AvatarAccount} />
+
+### Size
+
+Use the `size` prop and the `AvatarAccountSize` enum from `../../component-library` to change the size of `AvatarAccount`
+
+Possible sizes include:
+
+- `AvatarAccountSize.Xs` 16px
+- `AvatarAccountSize.Sm` 24px
+- `AvatarAccountSize.Md` 32px
+- `AvatarAccountSize.Lg` 40px
+- `AvatarAccountSize.Xl` 48px
+
+Defaults to `AvatarAccountSize.MD`
+
+<Canvas>
+  <Story id="components-componentlibrary-avataraccount--size" />
+</Canvas>
+
+```jsx
+import { AvatarAccount, AvatarAccountSize } from '../../component-library';
+
+<AvatarAccount size={AvatarAccountSize.Xs} />
+<AvatarAccount size={AvatarAccountSize.Sm} />
+<AvatarAccount size={AvatarAccountSize.Md} />
+<AvatarAccount size={AvatarAccountSize.Lg} />
+<AvatarAccount size={AvatarAccountSize.Xl} />
+```
+
+### Variant
+
+Use the `variant` prop and the `AvatarAccountVariant` enum from `../../component-library` to change between jazzicon and blockies variants.
+
+<Canvas>
+  <Story id="components-componentlibrary-avataraccount--variant" />
+</Canvas>
+
+```jsx
+import { AvatarAccount, AvatarAccountVariant } from '../../component-library';
+
+<AvatarAccount variant={AvatarAccountVariant.Jazzicon} />
+<AvatarAccount variant={AvatarAccountVariant.Blockies} />
+```
+
+### Address
+
+Use the required `address` for generating images
+
+<Canvas>
+  <Story id="components-componentlibrary-avataraccount--address" />
+</Canvas>
+
+```jsx
+import { AvatarAccount, AvatarAccountVariant } from '../../component-library';
+
+<AvatarAccount variant={AvatarAccountVariant.Jazzicon} address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
+<AvatarAccount variant={AvatarAccountVariant.Blockies} address="0x0" />
+```

@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ViewQuote renders the component with EIP-1559 enabled 1`] = `
+<div
+  class="main-quote-summary__source-row"
+  data-testid="main-quote-summary__source-row"
+>
+  <span
+    class="main-quote-summary__source-row-value"
+    title="10"
+  >
+    10
+  </span>
+  <div
+    class=""
+  >
+    <img
+      alt="DAI"
+      class="url-icon main-quote-summary__icon"
+      src="https://foo.bar/logo.png"
+    />
+  </div>
+  <span
+    class="main-quote-summary__source-row-symbol"
+    title="DAI"
+  >
+    DAI
+  </span>
+</div>
+`;
+
+exports[`ViewQuote renders the component with EIP-1559 enabled 2`] = `
+<div
+  class="main-quote-summary__exchange-rate-container"
+  data-testid="main-quote-summary__exchange-rate-container"
+>
+  <div
+    class="exchange-rate-display main-quote-summary__exchange-rate-display"
+  >
+    <div
+      class="box exchange-rate-display__quote-rate--no-link box--display-flex box--gap-1 box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default"
+      data-testid="exchange-rate-display-quote-rate"
+    >
+      <span>
+        1
+      </span>
+      <span
+        class=""
+        data-testid="exchange-rate-display-base-symbol"
+      >
+        DAI
+      </span>
+      <span>
+        =
+      </span>
+      <span>
+        2.2
+      </span>
+      <span
+        class=""
+      >
+        USDC
+      </span>
+    </div>
+    <span
+      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+      data-testid="exchange-rate-display-switch"
+      style="mask-image: url('./images/icons/swap-horizontal.svg'); cursor: pointer;"
+      title="Switch"
+    />
+  </div>
+</div>
+`;
+
+exports[`ViewQuote renders the component with initial props 1`] = `
+<div
+  class="main-quote-summary__source-row"
+  data-testid="main-quote-summary__source-row"
+>
+  <span
+    class="main-quote-summary__source-row-value"
+    title="10"
+  >
+    10
+  </span>
+  <div
+    class=""
+  >
+    <img
+      alt="DAI"
+      class="url-icon main-quote-summary__icon"
+      src="https://foo.bar/logo.png"
+    />
+  </div>
+  <span
+    class="main-quote-summary__source-row-symbol"
+    title="DAI"
+  >
+    DAI
+  </span>
+</div>
+`;
+
+exports[`ViewQuote renders the component with initial props 2`] = `
+<div
+  class="main-quote-summary__exchange-rate-container"
+  data-testid="main-quote-summary__exchange-rate-container"
+>
+  <div
+    class="exchange-rate-display main-quote-summary__exchange-rate-display"
+  >
+    <div
+      class="box exchange-rate-display__quote-rate--no-link box--display-flex box--gap-1 box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default"
+      data-testid="exchange-rate-display-quote-rate"
+    >
+      <span>
+        1
+      </span>
+      <span
+        class=""
+        data-testid="exchange-rate-display-base-symbol"
+      >
+        DAI
+      </span>
+      <span>
+        =
+      </span>
+      <span>
+        2.2
+      </span>
+      <span
+        class=""
+      >
+        USDC
+      </span>
+    </div>
+    <span
+      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+      data-testid="exchange-rate-display-switch"
+      style="mask-image: url('./images/icons/swap-horizontal.svg'); cursor: pointer;"
+      title="Switch"
+    />
+  </div>
+</div>
+`;

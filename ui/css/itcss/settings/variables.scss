@@ -1,0 +1,23 @@
+// Flex
+%row-nowrap {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+%col-nowrap {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+// Background Image Sizing
+%bg-contain {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+%ellipsify {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

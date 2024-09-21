@@ -1,0 +1,7 @@
+.snap-list-item {
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-background-default-hover);
+  }
+}

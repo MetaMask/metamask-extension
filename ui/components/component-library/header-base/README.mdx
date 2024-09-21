@@ -1,0 +1,126 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { HeaderBase } from './header-base';
+
+### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
+
+# HeaderBase
+
+The `HeaderBase` component is a reusable UI component for displaying a header with optional startAccessory, children (title) and endAccessory content areas. It is designed to be flexible and customizable for various use cases to keep a visually balanced appearance.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-headerbase--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={HeaderBase} />
+
+### Children
+
+Wrapping content in the `HeaderBase` component will be rendered in the center of the header.
+
+Use the `childrenWrapperProps` prop to customize the wrapper element around the `children` content.
+
+<Canvas>
+  <Story id="components-componentlibrary-headerbase--children" />
+</Canvas>
+
+```jsx
+import { HeaderBase, Text } from '../../component-library';
+import {
+  TextAlign,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+
+<HeaderBase>
+  <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+    Title is sentence case no period
+  </Text>
+</HeaderBase>;
+```
+
+### startAccessory
+
+Using the `startAccessory` prop will render the content in the start (left) side of the header.
+
+Use the `startAccessoryWrapperProps` prop to customize the wrapper element around the `startAccessory` content.
+
+<Canvas>
+  <Story id="components-componentlibrary-headerbase--start-accessory" />
+</Canvas>
+
+```jsx
+import {
+  HeaderBase,
+  Text,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '../../component-library';
+import {
+  TextAlign,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+
+<HeaderBase
+  startAccessory={
+    <ButtonIcon
+      size={ButtonIconSize.Sm}
+      iconName={IconName.ArrowLeft}
+      ariaLabel="back"
+    />
+  }
+>
+  <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+    Title is sentence case no period
+  </Text>
+</HeaderBase>;
+```
+
+### endAccessory
+
+Using the `endAccessory` prop will render the content in the end (right) side of the header.
+
+Use the `endAccessoryWrapperProps` prop to customize the wrapper element around the `endAccessory` content.
+
+<Canvas>
+  <Story id="components-componentlibrary-headerbase--end-accessory" />
+</Canvas>
+
+```jsx
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  HeaderBase,
+  IconName,
+  Text,
+} from '../../component-library';
+import {
+  TextAlign,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+
+<HeaderBase
+  endAccessory={
+    <ButtonIcon
+      size={ButtonIconSize.Sm}
+      iconName={IconName.Close}
+      ariaLabel="close"
+    />
+  }
+>
+  <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+    Title is sentence case no period
+  </Text>
+</HeaderBase>;
+```
+
+### Use Case Demos
+
+Some examples of how the `HeaderBase` component can be used in various use cases with background colors set for visual aid.
+
+<Canvas>
+  <Story id="components-componentlibrary-headerbase--use-case-demos" />
+</Canvas>

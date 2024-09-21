@@ -1,0 +1,83 @@
+@use "design-system";
+
+.transaction-activity-log {
+  &__title {
+    border-bottom: 1px solid var(--color-border-muted);
+    padding-bottom: 4px;
+    text-transform: capitalize;
+  }
+
+  &__activities-container {
+    padding-top: 8px;
+  }
+
+  &__activity {
+    padding: 4px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 7px;
+      border-right: 1px solid var(--color-border-muted);
+    }
+
+    &:first-child::after {
+      height: 50%;
+      top: 50%;
+    }
+
+    &:last-child::after {
+      height: 50%;
+    }
+
+    &:first-child:last-child::after {
+      display: none;
+    }
+  }
+
+  &__activity-icon {
+    width: 15px;
+    height: 15px;
+    margin-right: 6px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+  }
+
+  &__activity-text {
+    @include design-system.H7;
+
+    color: var(--color-text-alternate);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--color-text-default);
+    }
+  }
+
+  &__value {
+    display: inline;
+    font-weight: 500;
+  }
+
+  &__entry-container {
+    min-width: 0;
+  }
+
+  &__action-link {
+    @include design-system.H7;
+
+    cursor: pointer;
+    color: var(--color-primary-default);
+  }
+}

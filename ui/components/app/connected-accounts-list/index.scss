@@ -1,0 +1,31 @@
+@use "design-system";
+
+.connected-accounts-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__row {
+    width: 100%;
+    word-break: break-word;
+  }
+
+  &__row-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.connected-accounts-options {
+  &__button {
+    font-size: design-system.$font-size-h4;
+    background: inherit;
+    color: var(--color-icon-default);
+  }
+}
+
+.tippy-tooltip.none-theme {
+  background: none;
+  padding: 0;
+}

@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MetaFoxLogo does match snapshot with custodyImgSrc 1`] = `
+<div>
+  <button
+    class="mm-box app-header__logo-container mm-box--background-color-transparent"
+    data-testid="app-header-logo"
+  >
+    <div />
+    <img
+      alt=""
+      class="app-header__metafox-logo--icon"
+      height="42"
+      src="./images/logo/metamask-fox.svg"
+      width="42"
+    />
+  </button>
+</div>
+`;
+
+exports[`MetaFoxLogo does not set icon height and width when unsetIconHeight is true 1`] = `
+<div>
+  <button
+    class="mm-box app-header__logo-container mm-box--background-color-transparent"
+    data-testid="app-header-logo"
+  >
+    <div />
+    <img
+      alt=""
+      class="app-header__metafox-logo--icon"
+      src="./images/logo/metamask-fox.svg"
+    />
+  </button>
+</div>
+`;
+
+exports[`MetaFoxLogo should match snapshot with img width and height default set to 42 1`] = `
+<div>
+  <button
+    class="mm-box app-header__logo-container mm-box--background-color-transparent"
+    data-testid="app-header-logo"
+  >
+    <div />
+    <img
+      alt=""
+      class="app-header__metafox-logo--icon"
+      height="42"
+      src="./images/logo/metamask-fox.svg"
+      width="42"
+    />
+  </button>
+</div>
+`;

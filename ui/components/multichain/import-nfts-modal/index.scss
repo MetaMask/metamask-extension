@@ -1,0 +1,9 @@
+.add-nft {
+  &__close {
+    color: var(--color-icon-default);
+    background: none;
+    flex: 0;
+    align-self: flex-start;
+    padding-right: 0;
+  }
+}

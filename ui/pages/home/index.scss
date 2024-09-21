@@ -1,0 +1,258 @@
+@use "design-system";
+
+.home {
+  &__onboarding_list {
+    list-style: initial;
+    margin-inline-start: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__container {
+    display: flex;
+    min-height: 100%;
+  }
+
+  &__main-view {
+    flex: 1 1 66.5%;
+    background: var(--color-background-default);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__connect-status-text {
+    display: flex;
+    flex-direction: column;
+
+    @include design-system.H6;
+
+    padding-left: 24px;
+    padding-right: 24px;
+    color: var(--color-text-default);
+
+    div {
+      margin-bottom: 20px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__connected-status-popover {
+    width: 329px;
+    margin-top: -15px;
+
+    .popover-header {
+      padding-bottom: 20px;
+
+      &__title {
+        padding-bottom: 0;
+      }
+    }
+
+    .popover-content {
+      overflow-y: auto;
+    }
+
+    .popover-arrow {
+      top: -6px;
+      left: 24px;
+    }
+
+    .popover-footer {
+      @include design-system.H6;
+
+      border-top: 0;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+
+      & :only-child {
+        margin: 0;
+      }
+
+      button {
+        height: 39px;
+        width: 133px;
+        border-radius: 39px;
+        padding: 0;
+      }
+
+      a,
+      a:hover {
+        color: var(--color-primary-alternative);
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__connected-status-popover-bg {
+    height: 55px;
+    width: 120px;
+    border-radius: 34px;
+    position: absolute;
+    top: 73px;
+    opacity: 1;
+    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+    background: none;
+  }
+
+  &__connected-status-popover-bg-container {
+    height: 100%;
+    width: 100%;
+  }
+
+  &__support {
+    padding: 10px 0 20px 0;
+    text-align: center;
+
+    a {
+      color: var(--color-primary-default);
+    }
+  }
+
+  &__new-network-notification {
+    margin-bottom: 50px;
+  }
+
+  &__new-network-notification {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &-icon {
+      margin-right: 8px;
+      padding-top: 8px;
+      color: var(--color-success-default);
+    }
+
+    &-close {
+      color: var(--color-icon-default);
+      background: none;
+      margin-left: 20px;
+    }
+  }
+
+  &__error-message {
+    left: 8px;
+  }
+
+  &__new-nft-notification {
+    margin-bottom: 24px;
+    margin-right: 8px;
+
+    &-icon {
+      margin-right: 10px;
+      padding-top: 6px;
+      color: var(--color-success-default);
+    }
+
+    &-close {
+      color: var(--color-icon-default);
+      background: none;
+      margin-left: 44px;
+    }
+  }
+
+  &__new-tokens-imported-notification {
+    padding: 8px;
+    bottom: 16px !important; //Adding important here else it will take bottom:8px in home-notification-wrapper--show-first> div
+
+    @include design-system.screen-sm-min {
+      margin-bottom: 50px;
+      margin-inline-end: 8px;
+      margin-right: 40%;
+    }
+
+    @include design-system.screen-sm-max {
+      left: 5%;
+      right: 5% !important; // Adding important else it will take right:8px defined in .home-notification-wrapper--show-first> div
+    }
+
+    &-title,
+    &-message {
+      text-align: start;
+    }
+
+    &-icon {
+      font-size: 24px;
+      margin-inline-end: 12px;
+      color: var(--color-success-default);
+    }
+
+    &-close {
+      color: var(--color-icon-default);
+      background: none;
+      margin-inline-start: 32px;
+    }
+  }
+
+  &__new-network-added {
+    border-radius: 10px;
+    text-align: center;
+
+    &__check-circle {
+      color: var(--color-success-default);
+      margin-top: 20px;
+    }
+
+    &__switch-to-button {
+      margin-bottom: 16px;
+    }
+  }
+
+  &__subheader-link {
+    display: flex;
+    padding: 12px 0;
+    justify-content: center;
+    color: var(--color-primary-default);
+    align-items: center;
+    cursor: pointer;
+
+    &--tooltip-content {
+      &-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+        &-text {
+          font-size: 18px;
+          line-height: 22.82px;
+          font-weight: 700;
+        }
+
+        &-button {
+          background-color: var(--color-primary-default);
+          color: var(--color-primary-inverse);
+          border: 0;
+        }
+      }
+
+      &-text-bold {
+        font-weight: 700;
+      }
+    }
+
+    &--tooltip-theme {
+      background-color: var(--color-primary-default) !important;
+
+      & .tippy-tooltip-content {
+        color: var(--color-primary-inverse) !important;
+      }
+
+      & .arrow-regular {
+        border-bottom-color: var(--color-primary-default) !important;
+      }
+    }
+
+    &--text {
+      margin-left: 8px;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 140.62%;
+    }
+  }
+}

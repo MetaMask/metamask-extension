@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm Remove Account should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-container"
+  >
+    <div
+      class="modal-container__header"
+    >
+      <div
+        class="modal-container__header-text"
+      >
+        Remove account?
+      </div>
+      <div
+        class="modal-container__header-close"
+        data-testid="modal-header-close"
+      />
+    </div>
+    <div
+      class="modal-container__content"
+    >
+      <div>
+        <div
+          class="confirm-remove-account__account"
+        >
+          <div
+            class="confirm-remove-account__account__identicon"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#18CDF2"
+                      height="32"
+                      transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#035E56"
+                      height="32"
+                      transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F26602"
+                      height="32"
+                      transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="confirm-remove-account__account__name"
+          >
+            <span
+              class="confirm-remove-account__account__label"
+            >
+              Name
+            </span>
+            <span
+              class="account_value"
+            >
+              Account 1
+            </span>
+          </div>
+          <div
+            class="confirm-remove-account__account__address"
+          >
+            <span
+              class="confirm-remove-account__account__label"
+            >
+              Public address
+            </span>
+            <span
+              class="account_value"
+            >
+              0x0D...E7bc
+            </span>
+          </div>
+          <div
+            class="confirm-remove-account__account__link"
+          >
+            <a
+              data-testid="explorer-link"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="View account on Etherscan"
+            >
+              <i
+                class="fa fa-share-square"
+                title="View account on Etherscan"
+              />
+            </a>
+          </div>
+        </div>
+        <div
+          class="confirm-remove-account__description"
+        >
+          This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. 
+          <a
+            class="confirm-remove-account__link"
+            href="https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            learn more
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-secondary modal-container__footer-button"
+      >
+        Nevermind
+      </button>
+      <button
+        class="button btn--rounded btn-primary modal-container__footer-button"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,233 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`View Price Quote Difference displays a fiat error when calculationError is present 1`] = `
+<div>
+  <div
+    class="view-quote__price-difference-warning-wrapper high"
+  >
+    <div
+      class="actionable-message"
+    >
+      
+      <div
+        class="actionable-message__message"
+      >
+        <div
+          class="view-quote__price-difference-warning-contents"
+        >
+          <div
+            class="view-quote__price-difference-warning-contents-text"
+          >
+            <div
+              class="box box--padding-bottom-2 box--display-flex box--flex-direction-row box--justify-content-space-between"
+            >
+              <div
+                class="view-quote__price-difference-warning-contents-title"
+              >
+                Check your rate before proceeding
+              </div>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-4"
+                  class=""
+                  data-original-title="Price impact is the difference between the current market price and the amount received during transaction execution. Price impact is a function of the size of your trade relative to the size of the liquidity pool."
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            Price impact could not be determined due to lack of market price data. Please confirm that you are comfortable with the amount of tokens you are about to receive before swapping.
+            <div
+              class="view-quote__price-difference-warning-contents-actions"
+            >
+              <button>
+                I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`View Price Quote Difference displays an error when in high bucket 1`] = `
+<div>
+  <div
+    class="view-quote__price-difference-warning-wrapper high"
+  >
+    <div
+      class="actionable-message"
+    >
+      
+      <div
+        class="actionable-message__message"
+      >
+        <div
+          class="view-quote__price-difference-warning-contents"
+        >
+          <div
+            class="view-quote__price-difference-warning-contents-text"
+          >
+            <div
+              class="box box--padding-bottom-2 box--display-flex box--flex-direction-row box--justify-content-space-between"
+            >
+              <div
+                class="view-quote__price-difference-warning-contents-title"
+              >
+                Price difference of ~%
+              </div>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-3"
+                  class=""
+                  data-original-title="Price impact is the difference between the current market price and the amount received during transaction execution. Price impact is a function of the size of your trade relative to the size of the liquidity pool."
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            You are about to swap 1 ETH (~) for 42.947749 LINK (~).
+            <div
+              class="view-quote__price-difference-warning-contents-actions"
+            >
+              <button>
+                I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`View Price Quote Difference displays an error when in medium bucket 1`] = `
+<div>
+  <div
+    class="view-quote__price-difference-warning-wrapper medium"
+  >
+    <div
+      class="actionable-message"
+    >
+      
+      <div
+        class="actionable-message__message"
+      >
+        <div
+          class="view-quote__price-difference-warning-contents"
+        >
+          <div
+            class="view-quote__price-difference-warning-contents-text"
+          >
+            <div
+              class="box box--padding-bottom-2 box--display-flex box--flex-direction-row box--justify-content-space-between"
+            >
+              <div
+                class="view-quote__price-difference-warning-contents-title"
+              >
+                Price difference of ~%
+              </div>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-2"
+                  class=""
+                  data-original-title="Price impact is the difference between the current market price and the amount received during transaction execution. Price impact is a function of the size of your trade relative to the size of the liquidity pool."
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            You are about to swap 1 ETH (~) for 42.947749 LINK (~).
+            <div
+              class="view-quote__price-difference-warning-contents-actions"
+            >
+              <button>
+                I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`View Price Quote Difference should match snapshot 1`] = `
+<div>
+  <div
+    class="view-quote__price-difference-warning-wrapper low"
+  >
+    <div
+      class="actionable-message"
+    >
+      
+      <div
+        class="actionable-message__message"
+      >
+        <div
+          class="view-quote__price-difference-warning-contents"
+        >
+          <div
+            class="view-quote__price-difference-warning-contents-text"
+          >
+            <div
+              class="box box--padding-bottom-2 box--display-flex box--flex-direction-row box--justify-content-space-between"
+            >
+              <div
+                class="view-quote__price-difference-warning-contents-title"
+              >
+                Price difference of ~%
+              </div>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-1"
+                  class=""
+                  data-original-title="Price impact is the difference between the current market price and the amount received during transaction execution. Price impact is a function of the size of your trade relative to the size of the liquidity pool."
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+            You are about to swap 1 ETH (~) for 42.947749 LINK (~).
+            <div
+              class="view-quote__price-difference-warning-contents-actions"
+            >
+              <button>
+                I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

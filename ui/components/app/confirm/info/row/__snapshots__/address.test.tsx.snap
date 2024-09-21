@@ -1,0 +1,335 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with a name from the ENS resolution  1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-avatar-account__jazzicon"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(249, 108, 1);"
+          >
+            <svg
+              height="16"
+              width="16"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#F2CA02"
+                height="16"
+                transform="translate(0.7156534007186065 -0.04744277980551301) rotate(529.4 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FAA200"
+                height="16"
+                transform="translate(5.487429163024294 -6.519944355269048) rotate(336.9 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#C8142C"
+                height="16"
+                transform="translate(-11.481875137860342 -10.111583467728419) rotate(276.6 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+        data-testid="confirm-info-row-display-name"
+      >
+        Test ENS Name
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with a name from the contract metadata 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-avatar-account__jazzicon"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 47);"
+          >
+            <svg
+              height="16"
+              width="16"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#2346E1"
+                height="16"
+                transform="translate(-5.054099824190616 -1.1961526949032948) rotate(220.4 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#F96801"
+                height="16"
+                transform="translate(8.4860698787506 -0.0890679807090961) rotate(482.1 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FA9E00"
+                height="16"
+                transform="translate(5.64879181058228 9.815863735670636) rotate(211.9 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+        data-testid="confirm-info-row-display-name"
+      >
+        Wrapped Bitcoin
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with a shortened address 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-avatar-account__jazzicon"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(249, 108, 1);"
+          >
+            <svg
+              height="16"
+              width="16"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#F2CA02"
+                height="16"
+                transform="translate(0.7156534007186065 -0.04744277980551301) rotate(529.4 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FAA200"
+                height="16"
+                transform="translate(5.487429163024294 -6.519944355269048) rotate(336.9 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#C8142C"
+                height="16"
+                transform="translate(-11.481875137860342 -10.111583467728419) rotate(276.6 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+        data-testid="confirm-info-row-display-name"
+      >
+        0x5CfE7...6a7e1
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with an address book contact 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-avatar-account__jazzicon"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(249, 108, 1);"
+          >
+            <svg
+              height="16"
+              width="16"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#F2CA02"
+                height="16"
+                transform="translate(0.7156534007186065 -0.04744277980551301) rotate(529.4 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FAA200"
+                height="16"
+                transform="translate(5.487429163024294 -6.519944355269048) rotate(336.9 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#C8142C"
+                height="16"
+                transform="translate(-11.481875137860342 -10.111583467728419) rotate(276.6 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+        data-testid="confirm-info-row-display-name"
+      >
+        Test address book name
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with an internal account name 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-avatar-account__jazzicon"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(249, 108, 1);"
+          >
+            <svg
+              height="16"
+              width="16"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#F2CA02"
+                height="16"
+                transform="translate(0.7156534007186065 -0.04744277980551301) rotate(529.4 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FAA200"
+                height="16"
+                transform="translate(5.487429163024294 -6.519944355269048) rotate(336.9 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#C8142C"
+                height="16"
+                transform="translate(-11.481875137860342 -10.111583467728419) rotate(276.6 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+        data-testid="confirm-info-row-display-name"
+      >
+        Account 1
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames enabled 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+  >
+    <div>
+      <div
+        class="name name__missing"
+      >
+        <span
+          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/question.svg');"
+        />
+        <p
+          class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+        >
+          0x5CfE7...6a7e1
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

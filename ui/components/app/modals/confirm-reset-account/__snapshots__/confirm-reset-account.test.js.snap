@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm Reset Account should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-container"
+  >
+    <div
+      class="modal-container__content"
+    >
+      <div
+        class="modal-content"
+      >
+        <div
+          class="modal-content__title"
+        >
+          [clearActivity]?
+        </div>
+        <div
+          class="modal-content__description"
+        >
+          [clearActivityDescription]
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-secondary modal-container__footer-button"
+      >
+        [nevermind]
+      </button>
+      <button
+        class="button btn--rounded btn-danger-primary modal-container__footer-button"
+      >
+        [clear]
+      </button>
+    </div>
+  </div>
+</div>
+`;

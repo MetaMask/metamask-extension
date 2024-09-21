@@ -1,0 +1,130 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SignatureRequestHeader renders correctly with fromAccount 1`] = `
+<div>
+  <div
+    class="signature-request-header"
+  >
+    <div
+      class="signature-request-header--account"
+    >
+      <div
+        class="account-list-item undefined"
+        data-testid="account-list-item"
+      >
+        <div
+          class="account-list-item__top-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon account-list-item__identicon"
+              style="height: 18px; width: 18px; border-radius: 9px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(24, 191, 242);"
+              >
+                <svg
+                  height="18"
+                  width="18"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#F59B00"
+                    height="18"
+                    transform="translate(1.1057728692647846 -1.1284144293741016) rotate(330.0 9 9)"
+                    width="18"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F27602"
+                    height="18"
+                    transform="translate(8.068916496038273 0.7410013085075559) rotate(170.6 9 9)"
+                    width="18"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#C8146B"
+                    height="18"
+                    transform="translate(-3.4359831020777025 11.706703966498809) rotate(121.2 9 9)"
+                    width="18"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="account-list-item__account-name"
+          >
+            mockName
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="signature-request-header--network"
+    >
+      <div
+        class="mm-box mm-picker-network network-display mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-border-muted mm-box--border-width-0 box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
+          G
+        </div>
+        <span
+          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          data-testid="network-display"
+        >
+          Goerli
+        </span>
+        <span
+          class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SignatureRequestHeader renders correctly without fromAccount 1`] = `
+<div>
+  <div
+    class="signature-request-header"
+  >
+    <div
+      class="signature-request-header--account"
+    />
+    <div
+      class="signature-request-header--network"
+    >
+      <div
+        class="mm-box mm-picker-network network-display mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-border-muted mm-box--border-width-0 box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
+          G
+        </div>
+        <span
+          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          data-testid="network-display"
+        >
+          Goerli
+        </span>
+        <span
+          class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

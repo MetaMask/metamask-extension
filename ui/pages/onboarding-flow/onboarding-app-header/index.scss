@@ -1,0 +1,69 @@
+@use "design-system";
+
+.onboarding-app-header {
+  align-items: center;
+  background: var(--color-background-default);
+  position: relative;
+  z-index: design-system.$header-z-index;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  flex: 0 0 auto;
+
+  @include design-system.screen-sm-max {
+    padding: 16px;
+    z-index: design-system.$mobile-header-z-index;
+  }
+
+  @include design-system.screen-sm-min {
+    height: 75px;
+    justify-content: center;
+  }
+
+  &__metafox-logo {
+    &--icon {
+      height: 32px;
+
+      @include design-system.screen-sm-min {
+        display: none;
+      }
+    }
+
+    &--horizontal {
+      @include design-system.screen-sm-max {
+        display: none;
+      }
+    }
+  }
+
+  &__contents {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+    justify-content: space-between;
+
+    @include design-system.screen-sm-max {
+      height: 100%;
+    }
+
+    @include design-system.screen-sm-min {
+      width: 85vw;
+    }
+
+    @include design-system.screen-md-min {
+      width: 90vw;
+    }
+
+    @include design-system.screen-lg-min {
+      width: 62vw;
+    }
+  }
+
+  &__logo-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 0 0 auto;
+    margin-right: 1rem;
+  }
+}

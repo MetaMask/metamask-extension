@@ -1,0 +1,15 @@
+@use "design-system";
+
+.detected-token-aggregators {
+  .typography {
+    display: inline;
+  }
+
+  & &__link {
+    @include design-system.H7;
+
+    padding: 0;
+    display: inline;
+    margin-left: 4px;
+  }
+}

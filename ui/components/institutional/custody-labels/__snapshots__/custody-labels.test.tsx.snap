@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustodyLabels Component should render correctly 1`] = `
+<div>
+  <label
+    class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
+    for="address-index"
+  >
+    <p
+      class="mm-box mm-text custody-label mm-text--body-xs mm-text--font-weight-normal mm-text--text-transform-capitalize mm-box--margin-top-1 mm-box--margin-right-1 mm-box--margin-bottom-2 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-sm"
+    >
+      value
+    </p>
+  </label>
+</div>
+`;

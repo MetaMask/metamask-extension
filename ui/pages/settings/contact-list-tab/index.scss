@@ -1,0 +1,256 @@
+@use "design-system";
+
+.address-book-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.address-book {
+  flex: 0.4 1 100%;
+
+  @include design-system.screen-sm-max {
+    flex: 1;
+    max-width: 100%;
+
+    &__container {
+      min-height: 100%;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+  }
+
+  &__header--edit {
+    display: flex;
+    justify-content: space-between;
+
+    .button {
+      @include design-system.H6;
+
+      justify-content: flex-end;
+      color: var(--color-error-default);
+    }
+  }
+
+  &__container {
+    margin: 0 auto;
+    min-height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__icon {
+    margin: 0 auto 16px auto;
+    display: block;
+  }
+
+  &__title {
+    @include design-system.H4;
+
+    font-weight: 600;
+    margin-bottom: 0.5em;
+  }
+
+  &__sub-title {
+    font-size: small;
+    margin-bottom: 0.5em;
+  }
+
+  &__link {
+    background-color: transparent;
+    color: var(--color-primary-default);
+  }
+
+  &__input {
+    @include design-system.H4;
+
+    border: 1px solid var(--color-border-muted);
+    border-radius: 6px;
+    color: var(--color-text-muted);
+    padding: 0.875rem 1rem;
+
+    &:focus-within {
+      border-color: var(--color-primary-default);
+    }
+
+    margin-top: 0.25rem;
+
+    &--address {
+      @include design-system.H6;
+    }
+  }
+
+  &__view-contact {
+    &__text-area-wrapper {
+      height: 96px !important;
+    }
+
+    &__text-area {
+      line-height: initial !important;
+    }
+
+    &__address {
+      height: 90px !important;
+
+      textarea {
+        padding-top: 10px !important;
+      }
+    }
+
+    &__group {
+      display: flex;
+      flex-flow: column nowrap;
+      padding: 1.5rem 1.5rem 0 1.5rem;
+
+      &__label,
+      &__label--capitalized {
+        @include design-system.H7;
+
+        color: var(--color-text-alternative);
+        margin-top: 0.75rem;
+      }
+
+      &__label--capitalized {
+        text-transform: capitalize;
+      }
+
+      &__value,
+      &__static-address {
+        @include design-system.H4;
+
+        display: flex;
+        flex-flow: row nowrap;
+        color: var(--color-text-muted);
+        word-break: break-word;
+
+        &--address {
+          @include design-system.H6;
+        }
+
+        &--copy-icon {
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          padding: 0;
+          background: none;
+          padding-left: 0;
+          margin-left: 10px;
+        }
+      }
+
+      &__static-address {
+        @include design-system.H6;
+
+        &--copy-icon {
+          cursor: pointer;
+
+          &:hover {
+            color: var(--color-text-default);
+          }
+        }
+      }
+
+      .unit-input__input {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      &__resolution-list,
+      &__single-resolution-list {
+        background: var(--color-background-default);
+        box-sizing: border-box;
+        box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+        border-radius: 6px;
+        position: absolute;
+        width: 309px;
+        z-index: 10;
+        top: 338px;
+        max-height: 96px;
+        overflow-y: auto;
+      }
+
+      &__resolution-list > *,
+      &__single-resolution-list > * {
+        padding: 8px;
+      }
+
+      &__resolution-list > * {
+        padding-bottom: 0;
+      }
+
+      &__resolution-list {
+        .multichain-send-page__recipient__item:last-child {
+          padding-bottom: 8px;
+        }
+      }
+    }
+  }
+
+  &__edit-contact {
+    display: flex;
+    flex-flow: column nowrap;
+    padding-bottom: 0 !important;
+    height: 100%;
+
+    &__content {
+      flex: 1 1 auto;
+
+      > div {
+        padding-top: 0;
+      }
+    }
+  }
+
+  &__add-contact {
+    display: flex;
+    flex-flow: column nowrap !important;
+    padding-bottom: 0 !important;
+    width: 100%;
+    height: 100%;
+    padding-top: 0;
+
+    &__content {
+      flex: 1 1 auto;
+      height: 100%;
+      padding-top: 0;
+
+      &__username {
+        padding-top: 0;
+      }
+    }
+
+    &__error {
+      @include design-system.H7;
+
+      left: 8px;
+      color: var(--color-error-default);
+    }
+  }
+}
+
+.address-book-add-button {
+  &__button {
+    @include design-system.screen-sm-max {
+      &--hidden {
+        display: none;
+      }
+    }
+  }
+}
+
+.address-book--hidden {
+  display: none;
+}
+
+.address-book-contact-content {
+  flex: 0.4 1 100%;
+
+  @include design-system.screen-sm-max {
+    flex: 1;
+  }
+}

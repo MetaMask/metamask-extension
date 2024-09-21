@@ -1,0 +1,64 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import Button from '.';
+import SelectQuotePopover from '.';
+
+# SelectQuotePopover
+
+`SelectQuotePopover` is a modal that displays information gathered from multiple liquidity sources.
+
+<Canvas>
+  <Story id="pages-swaps-selectquotepopover--default-story" />
+</Canvas>
+
+## Component API
+
+<ArgsTable of={SelectQuotePopover} />
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### onClose
+
+Action called when close button is clicked. It's also called on submit action.
+
+### onSubmit
+
+Action called when Select button is clicked
+
+### swapToSymbol
+
+Name of the receiving symbol
+
+### quoteDataRows
+
+data provided with the following properties:
+
+| type                       | Types     |
+| -------------------------- | --------- |
+| `aggId`                    | `string`  |
+| `amountReceiving`          | `string`  |
+| `destinationTokenDecimals` | `number`  |
+| `destinationTokenSymbol`   | `string`  |
+| `destinationTokenValue`    | `string`  |
+| `isBestQuote--primary`     | `boolean` |
+| `networkFees`              | `string`  |
+| `quoteSource`              | `string`  |
+| `rawNetworkFees`           | `string`  |
+| `slippage`                 | `string`  |
+| `sourceTokenDecimals`      | `number`  |
+| `sourceTokenSymbol`        | `string`  |
+| `sourceTokenValue`         | `string`  |
+
+### initialAggId
+
+When `initialAggId` is defined, the corresponding quote is pre-selected in sort-list
+
+### onQuoteDetailsIsOpened
+
+Detail opened when click on caret of a specific quote.
+
+### hideEstimatedGasFee
+
+When the `hideEstimatedGasFee` is set to `true` it hides the Estimated network fees column

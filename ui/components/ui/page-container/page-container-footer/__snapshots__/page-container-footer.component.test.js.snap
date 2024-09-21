@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page Footer should match snapshot 1`] = `
+<div>
+  <div
+    class="page-container__footer"
+  >
+    <footer>
+      <button
+        class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+        data-testid="page-container-footer-cancel"
+      >
+        Cancel
+      </button>
+      <button
+        class="button btn--rounded btn-default page-container__footer-button"
+        data-testid="page-container-footer-next"
+      >
+        Submit
+      </button>
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`Page Footer should render a secondary footer inside page-container__footer when given children 1`] = `
+<div>
+  <div
+    class="page-container__footer"
+  >
+    <footer>
+      <button
+        class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+        data-testid="page-container-footer-cancel"
+      >
+        [cancel]
+      </button>
+      <button
+        class="button btn--rounded btn-primary page-container__footer-button"
+        data-testid="page-container-footer-next"
+      >
+        [next]
+      </button>
+    </footer>
+    <div
+      class="page-container__footer-secondary"
+    >
+      <div>
+        Works
+      </div>
+    </div>
+  </div>
+</div>
+`;

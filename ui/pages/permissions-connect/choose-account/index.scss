@@ -1,0 +1,13 @@
+@use "design-system";
+
+.permissions-connect-choose-account {
+  &__content {
+    overflow-y: auto;
+  }
+
+  &__footer {
+    .page-container__footer {
+      border-top: 0;
+    }
+  }
+}

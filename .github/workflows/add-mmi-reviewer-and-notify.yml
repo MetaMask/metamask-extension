@@ -1,0 +1,48 @@
+name: Notify MMI team via Slack
+
+on:
+  pull_request_target:
+    branches:
+      - develop
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+
+jobs:
+  process-label:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - name: Notify MMI team via Slack
+        if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
+        with:
+          status: custom
+          fields: repo,message,commit,author,action
+          payload: |
+            {
+              "text": "A PR with label 'team-mmi' was added and requires review: ${{ github.event.pull_request.html_url }} in ${{ github.repository }}",
+              "attachments": [
+                {
+                  "color": "#2eb886",
+                  "fields": [
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
+                      "short": true
+                    },
+                    {
+                      "title": "PR",
+                      "value": "#${{ github.event.pull_request.number }}",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.MMI_LABEL_SLACK_WEBHOOK_URL }}

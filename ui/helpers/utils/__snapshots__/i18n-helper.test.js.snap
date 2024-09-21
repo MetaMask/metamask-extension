@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`I18N Helper getMessage renders substitutions inside span if substitutions include React components 1`] = `
+<div>
+  <span>
+     
+    <div
+      style="color: orange;"
+    >
+      a1
+    </div>
+    <div
+      style="color: pink;"
+    >
+      b2
+    </div>
+    c3
+     
+  </span>
+</div>
+`;

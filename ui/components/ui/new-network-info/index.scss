@@ -1,0 +1,59 @@
+.new-network-info {
+  &__wrapper {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.214);
+    border-radius: 8px;
+
+    .popover-footer {
+      border-top: none;
+      width: 100%;
+      gap: 16px;
+
+      .footer__button {
+        flex: 1;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      a:hover > span {
+        color: var(--inherit);
+      }
+    }
+
+    .popover-header {
+      padding-bottom: 1px;
+    }
+
+    .popover-header__button {
+      color: var(--color-icon-default);
+    }
+  }
+
+  &__token-box {
+    align-self: center;
+    margin-top: 8px;
+    max-width: 245px;
+  }
+
+  &__button {
+    display: contents;
+    padding: 0;
+  }
+
+  &__bullet-icon-container {
+    background-color: var(--color-info-muted);
+    border-radius: 50%;
+    padding: 6px;
+
+    .mm-icon {
+      display: flex;
+      color: var(--color-info-default);
+    }
+  }
+}
+
+.chip--with-left-icon {
+  padding-left: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}

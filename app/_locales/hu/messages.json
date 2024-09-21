@@ -1,0 +1,791 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "Elutasítás"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR-kód beolvasása"
+  },
+  "about": {
+    "message": "Névjegy"
+  },
+  "accessingYourCamera": {
+    "message": "Kamerához való hozzáférés..."
+  },
+  "account": {
+    "message": "Fiók"
+  },
+  "accountDetails": {
+    "message": "Fiókadatok"
+  },
+  "accountName": {
+    "message": "Fióknév"
+  },
+  "accountOptions": {
+    "message": "Fiókbeállítások"
+  },
+  "accountSelectionRequired": {
+    "message": "Ki kell választania egy fiókot!"
+  },
+  "activityLog": {
+    "message": "tevékenységi napló"
+  },
+  "addAcquiredTokens": {
+    "message": "Adja hozzá MetaMask-kal a kapott érméket"
+  },
+  "addAlias": {
+    "message": "Álnév hozzáadása"
+  },
+  "addNetwork": {
+    "message": "Hálózat hozzáadása"
+  },
+  "addSuggestedTokens": {
+    "message": "Javasolt tokenek hozzáadása"
+  },
+  "addToken": {
+    "message": "Token hozzáadása"
+  },
+  "advanced": {
+    "message": "Speciális"
+  },
+  "amount": {
+    "message": "Összeg"
+  },
+  "appDescription": {
+    "message": "Ethereum tárca a böngészőjében",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "Jóváhagyás"
+  },
+  "approved": {
+    "message": "Jóváhagyva"
+  },
+  "asset": {
+    "message": "Eszköz"
+  },
+  "attributions": {
+    "message": "Attribúciók"
+  },
+  "autoLockTimeLimit": {
+    "message": "Automatikus kijelentkezés időzítő (perc)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "Adja meg a MetaMask automatikus kijelentkezéséig tartó tétlen állapot idejét percekben "
+  },
+  "average": {
+    "message": "Átlag"
+  },
+  "back": {
+    "message": "Vissza"
+  },
+  "backupApprovalInfo": {
+    "message": "Ez a titkos kód a tárca helyreállításához szükséges, ha elveszíti eszközét, elfelejti jelszavát, újra kell telepítenie a MetaMask alkalmazást, vagy ha a tárcájához egy másik eszközről szeretne hozzáférni."
+  },
+  "backupApprovalNotice": {
+    "message": "Készíts biztonsági másolatot titkos helyreállítási kódodról, hogy pénztárcád és pénzalapod biztosítva legyen."
+  },
+  "backupNow": {
+    "message": "Készíts biztonsági mentést most"
+  },
+  "balance": {
+    "message": "Egyenleg"
+  },
+  "balanceOutdated": {
+    "message": "Az egyenleg elavult lehet"
+  },
+  "basic": {
+    "message": "Alapvető"
+  },
+  "blockExplorerUrl": {
+    "message": "Explorer blokkolása"
+  },
+  "blockExplorerView": {
+    "message": "Tekintse meg a fiókot a(z) $1-en",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "browserNotSupported": {
+    "message": "Az ön böngészője nem támogatott..."
+  },
+  "bytes": {
+    "message": "Bájtok"
+  },
+  "cancel": {
+    "message": "Mégse"
+  },
+  "cancelled": {
+    "message": "Megszakítva"
+  },
+  "chainId": {
+    "message": "Lánc azonosítója"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "A MetaMask-ot Google Chrome-mal kell használnia a Hardveres pénztárcához való csatlakozáshoz."
+  },
+  "close": {
+    "message": "Bezárás"
+  },
+  "confirm": {
+    "message": "Megerősítés"
+  },
+  "confirmPassword": {
+    "message": "Jelszó megerősítése"
+  },
+  "confirmed": {
+    "message": "Megerősítve"
+  },
+  "connect": {
+    "message": "Csatlakozás"
+  },
+  "connectingTo": {
+    "message": "Kapcsolódás: $1"
+  },
+  "connectingToGoerli": {
+    "message": "Csatlakozás a Goerli teszthálózathoz"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Csatlakozás a Linea Goerli teszthálózathoz"
+  },
+  "connectingToMainnet": {
+    "message": "Csatlakozás a fő Ethereum hálózathoz"
+  },
+  "contractDeployment": {
+    "message": "Szerződés alkalmazása"
+  },
+  "contractInteraction": {
+    "message": "Szerződéses interakció"
+  },
+  "copiedExclamation": {
+    "message": "Kimásolva!"
+  },
+  "copyAddress": {
+    "message": "Másolja a címet a vágólapra"
+  },
+  "copyToClipboard": {
+    "message": "Másolás a vágólapra"
+  },
+  "copyTransactionId": {
+    "message": "Tranzakció azonosítójának másolása"
+  },
+  "create": {
+    "message": "Létrehozás"
+  },
+  "createPassword": {
+    "message": "Jelszó létrehozása"
+  },
+  "currencyConversion": {
+    "message": "Valutaváltás"
+  },
+  "currentLanguage": {
+    "message": "Aktuális nyelv"
+  },
+  "custom": {
+    "message": "Speciális"
+  },
+  "customToken": {
+    "message": "Egyéni token"
+  },
+  "decimal": {
+    "message": "A pontosság tizedesjegyei"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "A tizedesjegyek száma 0 és 36 között legyen . "
+  },
+  "delete": {
+    "message": "Törlés"
+  },
+  "details": {
+    "message": "Részletek"
+  },
+  "done": {
+    "message": "Kész"
+  },
+  "downloadGoogleChrome": {
+    "message": "Google Chrome letöltése"
+  },
+  "downloadStateLogs": {
+    "message": "Állapotnapló letöltése"
+  },
+  "dropped": {
+    "message": "Ejtve"
+  },
+  "edit": {
+    "message": "Szerkesztés"
+  },
+  "editContact": {
+    "message": "Kapcsolatok szerkesztése"
+  },
+  "enterPasswordContinue": {
+    "message": "A folytatáshoz adja meg a jelszót"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum nyilvános címe"
+  },
+  "etherscanView": {
+    "message": "Fiók megtekintése Etherscanen"
+  },
+  "expandView": {
+    "message": "Nézet nagyítása"
+  },
+  "failed": {
+    "message": "Sikertelen"
+  },
+  "fast": {
+    "message": "Gyors"
+  },
+  "fileImportFail": {
+    "message": "Nem működik a fájl importálása? Kattintson ide!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Felejtse el ezt az eszközt"
+  },
+  "from": {
+    "message": "Feladó"
+  },
+  "functionType": {
+    "message": "Függvénytípus"
+  },
+  "gasLimit": {
+    "message": "Gáz határértéke"
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "A gázkorlátozás az elkölthető gázegységek maximális mennyisége."
+  },
+  "gasLimitTooLow": {
+    "message": "A gáz határértéke legyen legalább 21000"
+  },
+  "gasPrice": {
+    "message": "Gázár (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Üzemanyag ár Különösen alacsony"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "A gáz ára meghatározza, hogy ön mennyi Ethert hajlandó fizetni minden egyes gázegységért."
+  },
+  "gasUsed": {
+    "message": "Használt gáz"
+  },
+  "general": {
+    "message": "Általános"
+  },
+  "goerli": {
+    "message": "Goerli teszthálózat"
+  },
+  "hardware": {
+    "message": "hardver"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardverpénztárca csatlakoztatva"
+  },
+  "hardwareWallets": {
+    "message": "Hardveres tárca csatlakoztatása"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Válassza ki a MetaMask-kal használni kívánt hardveres pénztárcát"
+  },
+  "here": {
+    "message": "itt",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex adat"
+  },
+  "hide": {
+    "message": "Elrejtés"
+  },
+  "hideTokenPrompt": {
+    "message": "Elrejted a tokent?"
+  },
+  "history": {
+    "message": "Előzmények"
+  },
+  "import": {
+    "message": "Importálás",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Fiók importálása"
+  },
+  "importAccountMsg": {
+    "message": "Az importált fiókot nem társítjuk az eredetileg létrehozott MetaMask-fiók seed mondatához. További információ az importált fiókokról"
+  },
+  "imported": {
+    "message": "Importált",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Eredeti tranzakciódat jóváhagyta a hálózat. A visszatéréshez kattints az OK-ra."
+  },
+  "insufficientBalance": {
+    "message": "Fedezethiány."
+  },
+  "insufficientFunds": {
+    "message": "Nincs elegendő összeg."
+  },
+  "insufficientTokens": {
+    "message": "Nincs elegendő tokene."
+  },
+  "invalidAddress": {
+    "message": "Helytelen cím"
+  },
+  "invalidAddressRecipient": {
+    "message": "A címzett címe érvénytelen "
+  },
+  "invalidRPC": {
+    "message": "Helytelen RPC URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Érvénytelen seed mondat"
+  },
+  "jsonFile": {
+    "message": "JSON-fájl",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "Ismert szerződéses cím."
+  },
+  "learnMore": {
+    "message": "Tudjon meg többet"
+  },
+  "learnMoreUpperCase": {
+    "message": "Tudjon meg többet"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Használnia kell a korábbi fiókját, mielőtt újat adhat hozzá. "
+  },
+  "likeToImportTokens": {
+    "message": "Hozzá szeretné adni ezeket az érméket?"
+  },
+  "lineaGoerli": {
+    "message": "Linea Goerli teszthálózat"
+  },
+  "links": {
+    "message": "Linkek"
+  },
+  "loadMore": {
+    "message": "Továbbiak betöltése"
+  },
+  "loading": {
+    "message": "Betöltés..."
+  },
+  "loadingTokens": {
+    "message": "Tokenek betöltése..."
+  },
+  "lock": {
+    "message": "Kilépés"
+  },
+  "mainnet": {
+    "message": "Fő Ethereum hálózat"
+  },
+  "max": {
+    "message": "Maximum"
+  },
+  "memo": {
+    "message": "emlékeztető"
+  },
+  "message": {
+    "message": "Üzenet"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask verzió"
+  },
+  "mustSelectOne": {
+    "message": "Legalább 1 tokent ki kell választania."
+  },
+  "needImportFile": {
+    "message": "Ki kell választania az importálni kívánt fájlt.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Nem lehet negatív mennyiségű ETH-t küldeni."
+  },
+  "networkName": {
+    "message": "Hálózat neve"
+  },
+  "networks": {
+    "message": "Hálózatok"
+  },
+  "nevermind": {
+    "message": "Nem fontos"
+  },
+  "newAccount": {
+    "message": "Új fiók"
+  },
+  "newAccountNumberName": {
+    "message": "$1 fiók",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Új kapcsolat"
+  },
+  "newContract": {
+    "message": "Új szerződés"
+  },
+  "newPassword": {
+    "message": "Új jelszó (minimum 8 karakter)"
+  },
+  "next": {
+    "message": "Következő"
+  },
+  "noConversionRateAvailable": {
+    "message": "Nincs elérhető átváltási díj"
+  },
+  "noTransactions": {
+    "message": "Nincsenek tranzakciói"
+  },
+  "noWebcamFound": {
+    "message": "Nem található számítógéped webkamerája. Kérünk, próbáld újra."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Nem találtunk  webkamerát"
+  },
+  "notEnoughGas": {
+    "message": "Nincs elég gáz"
+  },
+  "ofTextNofM": {
+    "message": "ból"
+  },
+  "off": {
+    "message": "Kikapcsolva"
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "on": {
+    "message": "Be"
+  },
+  "origin": {
+    "message": "Eredet"
+  },
+  "parameters": {
+    "message": "Paraméterek"
+  },
+  "participateInMetaMetrics": {
+    "message": "Vegyen részt a MetaMetrics-ben"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Vegyél részt a MetaMetricsben, hogy segíts a MetaMask fejlesztésében."
+  },
+  "password": {
+    "message": "Jelszó"
+  },
+  "passwordNotLongEnough": {
+    "message": "A jelszó nem.elég hosszú"
+  },
+  "passwordsDontMatch": {
+    "message": "A jelszavak nem egyeznek"
+  },
+  "pastePrivateKey": {
+    "message": "Illessze be ide a privát kulcs karakterláncát:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "folyamatban"
+  },
+  "personalAddressDetected": {
+    "message": "Személyes címet észleltünk. Adja meg a token szerződés címét."
+  },
+  "prev": {
+    "message": "Előző"
+  },
+  "primaryCurrencySetting": {
+    "message": "Elsődleges pénznem"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Válaszd a helyit, hogy az értékek elsősorban a helyi pénznemben jelenjenek meg (pl. ETH). Válaszd a Fiatot, hogy az értékek elsősorban a választott fiat pénznemben jelenjenek meg."
+  },
+  "privacyMsg": {
+    "message": "Adatvédelmi szabályzat"
+  },
+  "privateKey": {
+    "message": "Privát kulcs",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Figyelem! Soha ne adja át másnak ezt a kulcsot. A privát kulcs birtokában ellophatják a számláján lévő pénzeszközöket."
+  },
+  "privateNetwork": {
+    "message": "Magánhálózat"
+  },
+  "readdToken": {
+    "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
+  },
+  "reject": {
+    "message": "Elutasítás"
+  },
+  "rejectAll": {
+    "message": "Mindet elutasít"
+  },
+  "rejectTxsDescription": {
+    "message": "Ezáltal kötegben utasítja el a(z) $1 tranzakciókat."
+  },
+  "rejectTxsN": {
+    "message": "$1 tranzakciók elutasítása"
+  },
+  "rejected": {
+    "message": "Elutasítva"
+  },
+  "remove": {
+    "message": "Eltávolítás"
+  },
+  "removeAccount": {
+    "message": "Fiók eltávolítása"
+  },
+  "removeAccountDescription": {
+    "message": "Ez a fiók el lesz távolítva pénztárcádból. A folytatás előtt győződj meg róla, hogy rendelkezésedre áll az eredeti kulcsszólánc vagy titkos kulcs. A fiók legördülő menüjéből újból importálhatsz vagy létrehozhatsz fiókokat. "
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "jóváhagyásra váró kérelmek"
+  },
+  "required": {
+    "message": "Kötelező"
+  },
+  "reset": {
+    "message": "Visszaállítás"
+  },
+  "restore": {
+    "message": "Visszaállítás"
+  },
+  "revealSeedWords": {
+    "message": "Seed szavak megjelenítése"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Ezekkel a szavakkal ellophatóak a fiókjai.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "rpcUrl": {
+    "message": "Új RPC URL"
+  },
+  "save": {
+    "message": "Mentés"
+  },
+  "scanInstructions": {
+    "message": "Helyezze a QR-kódot a fényképezőgép elé"
+  },
+  "scanQrCode": {
+    "message": "QR-kód beolvasása"
+  },
+  "search": {
+    "message": "Keresés"
+  },
+  "securityAndPrivacy": {
+    "message": "Biztonság és adatvédelem"
+  },
+  "seedPhraseReq": {
+    "message": "A seed mondat 12 szóból áll"
+  },
+  "selectAnAccount": {
+    "message": "Válasszon fiókot"
+  },
+  "selectHdPath": {
+    "message": "Válassz HD elérési útvonalat"
+  },
+  "selectPathHelp": {
+    "message": "Ha nem láthatók alább Ledger számláid, próbáld kicserélni az elérési útvonalat: „Legacy (MEW / MyCypto)”"
+  },
+  "selectType": {
+    "message": "Válasszon típust"
+  },
+  "send": {
+    "message": "Küldés"
+  },
+  "settings": {
+    "message": "Beállítások"
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Konverzió mutatása Testnetsen"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Válassza ezt, ha a Testnetsen szeretné megnézni a törvényes fizetőeszközre való átváltást"
+  },
+  "showHexData": {
+    "message": "Hex adatok mutatása"
+  },
+  "showHexDataDescription": {
+    "message": "Válassza ezt, ha a hex adatmezőt a küldő képernyőn szeretné megnézni"
+  },
+  "sigRequest": {
+    "message": "Aláírás kérése"
+  },
+  "sign": {
+    "message": "Aláír"
+  },
+  "signatureRequest": {
+    "message": "Aláírási kérelem"
+  },
+  "signed": {
+    "message": "Aláírva"
+  },
+  "somethingWentWrong": {
+    "message": "Hoppá! Valami hiba történt..."
+  },
+  "speedUp": {
+    "message": "Gyorsítás"
+  },
+  "speedUpCancellation": {
+    "message": "Törlés felgyorsítása"
+  },
+  "speedUpTransaction": {
+    "message": "Gyorsítsd fel ezt a tranzakciót"
+  },
+  "stateLogError": {
+    "message": "Hiba történt az állapotnaplók lekérésekor."
+  },
+  "stateLogs": {
+    "message": "Állapotnapló"
+  },
+  "stateLogsDescription": {
+    "message": "Az állapotnaplóban megtalálhatók nyilvános fiókcímeid és elküldött tranzakcióid."
+  },
+  "submitted": {
+    "message": "Elküldve"
+  },
+  "supportCenter": {
+    "message": "Vegye fel a kapcsolatot Támogató Központunkkal"
+  },
+  "switchNetworks": {
+    "message": "Hálózátváltás"
+  },
+  "symbol": {
+    "message": "Szimbólum"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "A szimbólum 0 és 12 karakter között kell legyen."
+  },
+  "terms": {
+    "message": "Használati feltételek"
+  },
+  "tips": {
+    "message": "Adományok"
+  },
+  "to": {
+    "message": "Erre:"
+  },
+  "tokenAlreadyAdded": {
+    "message": "A tokent már hozzáadtuk. "
+  },
+  "tokenContractAddress": {
+    "message": "Token szerződéscím"
+  },
+  "tokenSymbol": {
+    "message": "Tokenszimbólum"
+  },
+  "total": {
+    "message": "Összesen"
+  },
+  "transaction": {
+    "message": "tranzakció"
+  },
+  "transactionCancelAttempted": {
+    "message": "Tranzakció visszavonást próbáltak végrehajtani $1 üzemanyagköltséggel $2-kor"
+  },
+  "transactionCancelSuccess": {
+    "message": "Tranzakció sikeresen törölve $2-nál"
+  },
+  "transactionConfirmed": {
+    "message": "Tranzakció megerősítve $2-on."
+  },
+  "transactionCreated": {
+    "message": "Egy $1 értékű tranzakció létrehozva $2-kor."
+  },
+  "transactionDropped": {
+    "message": "Tranzakció elvetve: $2."
+  },
+  "transactionError": {
+    "message": "Tranzakciós hiba.  Kivétel van a szerződés kódjában."
+  },
+  "transactionErrorNoContract": {
+    "message": "Nem-szerződéses címen próbál egy funkciót meghívni."
+  },
+  "transactionErrored": {
+    "message": "Hiba történt a tranzakció során."
+  },
+  "transactionFee": {
+    "message": "Tranzakciós költség"
+  },
+  "transactionResubmitted": {
+    "message": "A tranzakció újra beküldve $1 / $2 emelt gázdíjjal."
+  },
+  "transactionSubmitted": {
+    "message": "Tranzakció jóváhagyva $1 üzemanyag költséggel $2-kor."
+  },
+  "transactionUpdated": {
+    "message": "Tranzakció frissítve $2-nál"
+  },
+  "transfer": {
+    "message": "Átutalás"
+  },
+  "transferFrom": {
+    "message": "Átvezetés innen: "
+  },
+  "tryAgain": {
+    "message": "Újra"
+  },
+  "unapproved": {
+    "message": "Jóvá nem hagyott"
+  },
+  "units": {
+    "message": "egységek"
+  },
+  "unknown": {
+    "message": "Ismeretlen"
+  },
+  "unknownNetwork": {
+    "message": "Ismeretlen magánhálózat"
+  },
+  "unknownQrCode": {
+    "message": "Hiba: nem tudtuk azonosítani a QR-kódot"
+  },
+  "unlock": {
+    "message": "Feloldás"
+  },
+  "unlockMessage": {
+    "message": "A decentralizált hálózat csak önre vár"
+  },
+  "updatedWithDate": {
+    "message": "$1 frissítve"
+  },
+  "urlErrorMsg": {
+    "message": "Az URI-hez szükség van a megfelelő HTTP/HTTPS előtagra."
+  },
+  "usedByClients": {
+    "message": "Számos különböző ügyfél használja"
+  },
+  "userName": {
+    "message": "Felhasználónév"
+  },
+  "viewContact": {
+    "message": "Névjegy megtekintése"
+  },
+  "visitWebSite": {
+    "message": "Látogass el weboldalunkra"
+  },
+  "welcomeBack": {
+    "message": "Üdvözöljük újra!"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."
+  },
+  "youSign": {
+    "message": "Aláírja"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Az ön privát seed mondata"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Nulla gázár a gyorsuláshoz"
+  }
+}

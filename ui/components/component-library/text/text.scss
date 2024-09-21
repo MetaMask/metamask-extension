@@ -1,0 +1,132 @@
+@use "design-system";
+@use "sass:map";
+
+$text-variants: (
+  display: ("md"),
+  heading: ( "sm", "md", "lg"),
+  body: ("xs", "xs-medium", "sm", "sm-medium", "sm-bold", "md", "md-medium", "md-bold", "lg-medium"),
+);
+
+// Brand evolution font families
+$brand-evolution-font-families: (
+  'display': 'MM Sans',
+  'heading': 'MM Sans',
+  'body': 'CentraNo1',
+);
+
+// Variable output mixin
+// screen size, type, size
+
+@mixin textVariables($type, $size) {
+  font-family: var(--typography-s-#{$type}-#{$size}-font-family);
+  font-weight: var(--typography-s-#{$type}-#{$size}-font-weight);
+  font-size: var(--typography-s-#{$type}-#{$size}-font-size);
+  line-height: var(--typography-s-#{$type}-#{$size}-line-height);
+  letter-spacing: var(--typography-s-#{$type}-#{$size}-letter-spacing);
+
+  @include design-system.screen-md-min {
+    font-family: var(--typography-l-#{$type}-#{$size}-font-family);
+    font-weight: var(--typography-l-#{$type}-#{$size}-font-weight);
+    font-size: var(--typography-l-#{$type}-#{$size}-font-size);
+    line-height: var(--typography-l-#{$type}-#{$size}-line-height);
+    letter-spacing: var(--typography-l-#{$type}-#{$size}-letter-spacing);
+  }
+}
+
+// Brand evolution font mixin
+@mixin brand-evolution-font($type) {
+  $font-family: map-get($brand-evolution-font-families, $type);
+
+  font-family: $font-family, var(--font-family-sans);
+
+  @if $type == 'display' or $type == 'heading' {
+    font-weight: var(--font-weight-normal);
+  }
+}
+
+.mm-text {
+  // Set default styles
+  font-family: var(--font-family-sans);
+
+  &:is(strong),
+  strong {
+    font-weight: var(--font-weight-bold);
+  }
+
+  @each $type, $size-options in $text-variants {
+    &--#{$type} {
+      // Sets a default
+      @include textVariables($type, "md");
+      // Generates all the size options
+      @each $size in $size-options {
+        &-#{$size} {
+          @include textVariables($type, $size);
+          // Apply brand evolution font if the brand evolution modifier class is present
+          &-brand-evo {
+            @include brand-evolution-font($type);
+          }
+        }
+      }
+    }
+  }
+
+  &--inherit {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+  }
+
+  @each $weight in design-system.$font-weight {
+    &--font-weight-#{$weight} {
+      @if $weight == "medium" {
+        font-weight: var(--font-weight-medium);
+      }
+
+      @else {
+        font-weight: $weight;
+      }
+    }
+  }
+
+  @each $style in design-system.$font-style {
+    &--font-style-#{$style} {
+      font-style: $style;
+    }
+  }
+
+  @each $alignment in design-system.$text-align {
+    &--text-align-#{$alignment} {
+      text-align: $alignment;
+    }
+  }
+
+  @each $overflow in design-system.$overflow-wrap {
+    &--overflow-wrap-#{$overflow} {
+      overflow-wrap: $overflow;
+    }
+  }
+
+
+
+  &--ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &--text-transform-uppercase {
+    text-transform: uppercase;
+  }
+
+  &--text-transform-lowercase {
+    text-transform: lowercase;
+  }
+
+  &--text-transform-capitalize {
+    text-transform: capitalize;
+  }
+}
+
+

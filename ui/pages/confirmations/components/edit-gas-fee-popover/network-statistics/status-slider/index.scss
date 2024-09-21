@@ -1,0 +1,47 @@
+.status-slider {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 56px;
+
+  &__line {
+    background-image: linear-gradient(to right, var(--color-primary-default), var(--color-error-default));
+    height: 4px;
+    width: 100%;
+    border-radius: 100px;
+    display: block;
+  }
+
+  &__label {
+    font-size: 10px;
+    font-weight: bold;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  &__arrow-container {
+    margin-left: -10px;
+    width: 100%;
+  }
+
+  &__arrow-border {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--color-background-default);
+    position: relative;
+    margin-bottom: -2px;
+  }
+
+  &__arrow {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid black;
+    position: absolute;
+    bottom: 3px;
+    left: -5px;
+  }
+}

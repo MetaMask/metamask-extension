@@ -1,0 +1,2072 @@
+{
+  "accounts": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "balance": "0x346ba7725f412cbfdb",
+      "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+    },
+    "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
+      "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+      "balance": "0x0"
+    },
+    "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+      "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+      "balance": "0x0"
+    },
+    "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
+      "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+      "balance": "0x0"
+    },
+    "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+      "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+      "balance": "0x0"
+    },
+    "0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
+      "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+      "balance": "0x0"
+    }
+  },
+  "accountsByChainId": {
+    "0xaa36a7": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+        "balance": "0x15f6f0b9d4f8d000"
+      }
+    }
+  },
+  "addSnapAccountEnabled": false,
+  "addressBook": {
+    "0xaa36a7": {
+      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "chainId": "0xaa36a7",
+        "isEns": false,
+        "memo": "",
+        "name": "Address Book Account 1"
+      }
+    }
+  },
+  "advancedGasFee": {
+    "0xaa36a7": {
+      "maxBaseFee": "75",
+      "priorityFee": "2"
+    }
+  },
+  "alertEnabledness": {
+    "unconnectedAccount": true
+  },
+  "allNftContracts": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "0x1": [
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "description": null,
+          "name": "Munk Generator",
+          "logo": null,
+          "symbol": "MUNK",
+          "assetContractType": "non-fungible",
+          "createdDate": null,
+          "schemaName": "ERC721",
+          "externalLink": null
+        }
+      ],
+      "0x89": [
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "description": null,
+          "name": "Munk Generator",
+          "logo": null,
+          "symbol": "MUNK",
+          "assetContractType": "non-fungible",
+          "createdDate": null,
+          "schemaName": "ERC721",
+          "externalLink": null
+        }
+      ],
+      "0xaa36a7": [
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "description": null,
+          "name": "Munk Generator",
+          "logo": null,
+          "symbol": "MUNK",
+          "assetContractType": "non-fungible",
+          "createdDate": null,
+          "schemaName": "ERC721",
+          "externalLink": null
+        },
+        {
+          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+          "description": null,
+          "name": "Punk Generator",
+          "logo": null,
+          "symbol": "PUNK",
+          "assetContractType": "non-fungible",
+          "createdDate": null,
+          "schemaName": "ERC1155",
+          "externalLink": null
+        }
+      ],
+      "0x5": [
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "description": null,
+          "name": "Munk Generator",
+          "logo": null,
+          "symbol": "MUNK",
+          "assetContractType": "non-fungible",
+          "createdDate": null,
+          "schemaName": "ERC721",
+          "externalLink": null
+        }
+      ],
+      "0x99": [
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "description": null,
+          "name": "Munk Generator",
+          "logo": null,
+          "symbol": "MUNK",
+          "assetContractType": "non-fungible",
+          "createdDate": null,
+          "schemaName": "ERC721",
+          "externalLink": null
+        }
+      ]
+    }
+  },
+  "allNfts": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "0x1": [
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "tokenId": "1",
+          "name": "MUNK #1",
+          "description": null,
+          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+          "standard": "ERC721"
+        }
+      ],
+      "0x89": [
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "tokenId": "1",
+          "name": "MUNK #1",
+          "description": null,
+          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+          "standard": "ERC721"
+        }
+      ],
+      "0x5": [
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "tokenId": "1",
+          "name": "MUNK #1",
+          "description": null,
+          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+          "standard": "ERC721"
+        }
+      ],
+      "0xaa36a7": [
+        {
+          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+          "tokenId": "58076532811975507823669075598676816378162417803895263482849101575514658701313",
+          "name": "Punk #4",
+          "creator": {
+            "user": {
+              "username": null
+            },
+            "profile_img_url": null,
+            "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+            "config": ""
+          },
+          "description": "Red Mohawk bam!",
+          "image": "https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE",
+          "standard": "ERC1155"
+        },
+        {
+          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+          "tokenId": "58076532811975507823669075598676816378162417803895263482849101574415147073537",
+          "name": "Punk #3",
+          "creator": {
+            "user": {
+              "username": null
+            },
+            "profile_img_url": null,
+            "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+            "config": ""
+          },
+          "description": "Clown PUNK!!!",
+          "image": "https://lh3.googleusercontent.com/H7VrxaalZv4PF1B8U7ADuc8AfuqTVyzmMEDQ5OXKlx0Tqu5XiwsKYj4j_pAF6wUJjLMQbSN_0n3fuj84lNyRhFW9hyrxqDfY1IiQEQ",
+          "standard": "ERC1155"
+        },
+        {
+          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+          "tokenId": "58076532811975507823669075598676816378162417803895263482849101573315635445761",
+          "name": "Punk #2",
+          "creator": {
+            "user": {
+              "username": null
+            },
+            "profile_img_url": null,
+            "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+            "config": ""
+          },
+          "description": "Got glasses and black hair!",
+          "image": "https://lh3.googleusercontent.com/CHNTSlKB_Gob-iwTq8jcag6XwBkTqBMLt_vEKeBv18Q4AoPFAEPceqK6mRzkad2s5djx6CT5zbGQwDy81WwtNzViK5dQbG60uAWv",
+          "standard": "ERC1155"
+        },
+        {
+          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+          "tokenId": "58076532811975507823669075598676816378162417803895263482849101572216123817985",
+          "name": "Punk #1",
+          "creator": {
+            "user": {
+              "username": null
+            },
+            "profile_img_url": null,
+            "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+            "config": ""
+          },
+          "image": "https://lh3.googleusercontent.com/4jfPi-nQNWCUXD5qVNVWX7LX2UufU_elEJcvICFlsTdcBXv70asnDEOlI8oKECZxlXq1wseeIXMwmP5tLyOUxMKk",
+          "standard": "ERC1155"
+        },
+        {
+          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+          "tokenId": "58076532811975507823669075598676816378162417803895263482849101571116612190209",
+          "name": "Punk #4651",
+          "creator": {
+            "user": {
+              "username": null
+            },
+            "profile_img_url": null,
+            "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
+            "config": ""
+          },
+          "image": "https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE",
+          "standard": "ERC1155"
+        },
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "tokenId": "1",
+          "name": "MUNK #1",
+          "description": null,
+          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+          "standard": "ERC721",
+          "lastSale": {
+            "total_price": "4900000000000000",
+            "event_timestamp": "2023-01-18T21:51:23",
+            "payment_token": {
+              "symbol": "ETH"
+            }
+          }
+        },
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "tokenId": "2",
+          "name": "MUNK #2",
+          "description": null,
+          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+          "standard": "ERC721"
+        },
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "tokenId": "3",
+          "name": "MUNK #3",
+          "description": null,
+          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+          "standard": "ERC721"
+        }
+      ],
+      "0x99": [
+        {
+          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+          "tokenId": "1",
+          "name": "MUNK #1",
+          "description": null,
+          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
+          "standard": "ERC721"
+        }
+      ]
+    }
+  },
+  "announcements": [],
+  "approvalFlows": [],
+  "browserEnvironment": {
+    "os": "mac",
+    "browser": "chrome"
+  },
+  "completedOnboarding": true,
+  "confirmationExchangeRates": {},
+  "connectedStatusPopoverHasBeenShown": true,
+  "contractExchangeRates": {
+    "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": 0.00039345803819379796,
+    "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049,
+    "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": 0.0017123,
+    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": 1.8e-9
+  },
+  "currencyRates": {
+    "ETH": {
+      "conversionRate": 556.12
+    }
+  },
+  "currentAppVersion": "11.14.5",
+  "currentBlockGasLimit": "0x1c9c380",
+  "currentBlockGasLimitByChainId": {
+    "0x1": "0x1c9c380"
+  },
+  "currentCurrency": "usd",
+  "currentLocale": "en",
+  "customNonceValue": "",
+  "database": {
+    "verifiedSnaps": {
+      "npm:@metamask/test-snap-bip44": {
+        "id": "npm:@metamask/test-snap-bip44",
+        "metadata": {
+          "name": "BIP-44",
+          "author": {
+            "name": "Consensys",
+            "website": "https://consensys.io/"
+          },
+          "website": "https://snaps.consensys.io/",
+          "summary": "An example Snap that signs messages using BLS.",
+          "description": "An example Snap that signs messages using BLS.",
+          "audits": [
+            {
+              "auditor": "Consensys Diligence",
+              "report": "https://consensys.io/diligence/audits/"
+            }
+          ],
+          "category": "interoperability",
+          "support": {
+            "contact": "https://github.com/MetaMask"
+          },
+          "sourceCode": "https://github.com/MetaMask/test-snaps"
+        },
+        "versions": {
+          "5.1.2": {
+            "checksum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "5.1.3": {
+            "checksum": "21k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "6.0.0": {
+            "checksum": "31k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          }
+        }
+      }
+    }
+  },
+  "defaultHomeActiveTabName": "activity",
+  "desktopEnabled": false,
+  "detectedTokens": [],
+  "dismissSeedBackUpReminder": false,
+  "ensEntries": {},
+  "ensResolutionsByAddress": {},
+  "featureFlags": {},
+  "firstTimeFlowType": "create",
+  "forgottenPassword": false,
+  "fragments": {},
+  "fullScreenGasPollTokens": [],
+  "gasEstimateType": "fee-market",
+  "gasFeeEstimates": {
+    "low": {
+      "minWaitTimeEstimate": 180000,
+      "maxWaitTimeEstimate": 300000,
+      "suggestedMaxPriorityFeePerGas": "3",
+      "suggestedMaxFeePerGas": "53"
+    },
+    "medium": {
+      "minWaitTimeEstimate": 15000,
+      "maxWaitTimeEstimate": 60000,
+      "suggestedMaxPriorityFeePerGas": "7",
+      "suggestedMaxFeePerGas": "70"
+    },
+    "high": {
+      "minWaitTimeEstimate": 0,
+      "maxWaitTimeEstimate": 15000,
+      "suggestedMaxPriorityFeePerGas": "10",
+      "suggestedMaxFeePerGas": "100"
+    },
+    "estimatedBaseFee": "50",
+    "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
+    "baseFeeTrend": "up",
+    "latestPriorityFeeRange": ["1", "40"],
+    "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
+    "priorityFeeTrend": "down",
+    "networkCongestion": 0.10625
+  },
+  "gasFeeEstimatesByChainId": {
+    "0xaa36a7": {
+      "estimatedGasFeeTimeBounds": {
+        "lowerTimeBound": 15000,
+        "upperTimeBound": 60000
+      },
+      "gasEstimateType": "fee-market",
+      "gasFeeEstimates": {
+        "low": {
+          "minWaitTimeEstimate": 180000,
+          "maxWaitTimeEstimate": 300000,
+          "suggestedMaxPriorityFeePerGas": "3",
+          "suggestedMaxFeePerGas": "53"
+        },
+        "medium": {
+          "minWaitTimeEstimate": 15000,
+          "maxWaitTimeEstimate": 60000,
+          "suggestedMaxPriorityFeePerGas": "7",
+          "suggestedMaxFeePerGas": "70"
+        },
+        "high": {
+          "minWaitTimeEstimate": 0,
+          "maxWaitTimeEstimate": 15000,
+          "suggestedMaxPriorityFeePerGas": "10",
+          "suggestedMaxFeePerGas": "100"
+        },
+        "estimatedBaseFee": "50",
+        "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
+        "baseFeeTrend": "up",
+        "latestPriorityFeeRange": ["1", "40"],
+        "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
+        "priorityFeeTrend": "down",
+        "networkCongestion": 0.10625
+      }
+    }
+  },
+  "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+  "hasDismissedOpenSeaToBlockaidBanner": false,
+  "hiddenAccountList": [],
+  "identities": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+      "name": "Test Account"
+    },
+    "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
+      "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+      "name": "Test Account 2"
+    },
+    "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+      "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+      "name": "Test Ledger 1"
+    },
+    "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
+      "name": "Test Account 3",
+      "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+    },
+    "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+      "name": "Custody test",
+      "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
+    }
+  },
+  "ignoredNfts": [],
+  "ignoredTokens": [],
+  "incomingTransactionsPreferences": {
+    "0x1": true,
+    "0xe708": false,
+    "0xfa": true,
+    "0x5": false,
+    "0xaa36a7": false,
+    "0xe704": true
+  },
+  "internalAccounts": {
+    "accounts": {
+      "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
+        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+        "id": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+        "metadata": {
+          "name": "Test Account",
+          "keyring": {
+            "type": "HD Key Tree"
+          }
+        },
+        "options": {},
+        "methods": [
+          "personal_sign",
+          "eth_signTransaction",
+          "eth_signTypedData_v1",
+          "eth_signTypedData_v3",
+          "eth_signTypedData_v4"
+        ],
+        "type": "eip155:eoa"
+      },
+      "07c2cfec-36c9-46c4-8115-3836d3ac9047": {
+        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+        "id": "07c2cfec-36c9-46c4-8115-3836d3ac9047",
+        "metadata": {
+          "name": "Test Account 2",
+          "keyring": {
+            "type": "HD Key Tree"
+          }
+        },
+        "options": {},
+        "methods": [
+          "personal_sign",
+          "eth_signTransaction",
+          "eth_signTypedData_v1",
+          "eth_signTypedData_v3",
+          "eth_signTypedData_v4"
+        ],
+        "type": "eip155:eoa"
+      },
+      "15e69915-2a1a-4019-93b3-916e11fd432f": {
+        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "id": "15e69915-2a1a-4019-93b3-916e11fd432f",
+        "metadata": {
+          "name": "Ledger Hardware 2",
+          "keyring": {
+            "type": "Ledger Hardware"
+          }
+        },
+        "options": {},
+        "methods": [
+          "personal_sign",
+          "eth_signTransaction",
+          "eth_signTypedData_v1",
+          "eth_signTypedData_v3",
+          "eth_signTypedData_v4"
+        ],
+        "type": "eip155:eoa"
+      },
+      "784225f4-d30b-4e77-a900-c8bbce735b88": {
+        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+        "id": "784225f4-d30b-4e77-a900-c8bbce735b88",
+        "metadata": {
+          "name": "Test Account 3",
+          "keyring": {
+            "type": "HD Key Tree"
+          }
+        },
+        "options": {},
+        "methods": [
+          "personal_sign",
+          "eth_signTransaction",
+          "eth_signTypedData_v1",
+          "eth_signTypedData_v3",
+          "eth_signTypedData_v4"
+        ],
+        "type": "eip155:eoa"
+      },
+      "694225f4-d30b-4e77-a900-c8bbce735b42": {
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+        "id": "694225f4-d30b-4e77-a900-c8bbce735b42",
+        "metadata": {
+          "name": "Test Account 4",
+          "keyring": {
+            "type": "Custody test"
+          }
+        },
+        "options": {},
+        "methods": [
+          "personal_sign",
+          "eth_signTransaction",
+          "eth_signTypedData_v1",
+          "eth_signTypedData_v3",
+          "eth_signTypedData_v4"
+        ],
+        "type": "eip155:eoa"
+      },
+      "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3": {
+        "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+        "id": "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3",
+        "metadata": {
+          "name": "Snap Account 1",
+          "keyring": {
+            "type": "Snap Keyring"
+          },
+          "snap": {
+            "id": "snap-id",
+            "name": "snap-name"
+          }
+        },
+        "options": {},
+        "methods": [
+          "personal_sign",
+          "eth_signTransaction",
+          "eth_signTypedData_v1",
+          "eth_signTypedData_v3",
+          "eth_signTypedData_v4"
+        ],
+        "type": "eip155:eoa"
+      }
+    },
+    "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
+  },
+  "ipfsGateway": "dweb.link",
+  "isAccountMenuOpen": false,
+  "isInitialized": true,
+  "isIpfsGatewayEnabled": true,
+  "isNetworkMenuOpen": false,
+  "isUnlocked": true,
+  "jobs": {},
+  "keyrings": [
+    {
+      "type": "HD Key Tree",
+      "accounts": [
+        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+        "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
+      ]
+    },
+    {
+      "type": "Ledger Hardware",
+      "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"]
+    },
+    {
+      "type": "Simple Key Pair",
+      "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
+    },
+    {
+      "type": "Snap Keyring",
+      "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
+    },
+    {
+      "type": "Custody test",
+      "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
+    }
+  ],
+  "nameSources": {
+    "ens": {
+      "label": "Ethereum Name Service (ENS)"
+    },
+    "etherscan": {
+      "label": "Etherscan (Verified Contract Name)"
+    },
+    "lens": {
+      "label": "Lens Protocol"
+    },
+    "token": {
+      "label": "Blockchain (Token Name)"
+    }
+  },
+  "names": {
+    "ethereumAddress": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "*": {
+          "name": "Test Account",
+          "origin": "account-identity",
+          "proposedNames": {},
+          "sourceId": null
+        }
+      },
+      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
+        "*": {
+          "name": "Test Account 2",
+          "origin": "account-identity",
+          "proposedNames": {},
+          "sourceId": null
+        }
+      }
+    }
+  },
+  "networkConfigurationsByChainId": {
+    "0x1": {
+      "chainId": "0x1",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "testNetworkConfigurationId",
+          "url": "https://testrpc.com",
+          "type": "custom",
+          "name": "Custom Mainnet RPC"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": [],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Custom Mainnet RPC",
+      "nativeCurrency": "ETH"
+    },
+    "0x5": {
+      "chainId": "0x5",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "goerli-network-id",
+          "url": "https://testrpc2.com",
+          "type": "custom",
+          "name": "Chain 5"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": [],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Chain 5",
+      "nativeCurrency": "ETH"
+    },
+    "0xaa36a7": {
+      "chainId": "0xaa36a7",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "sepolia",
+          "url": "https://sepolia.infura.io/v3/{infuraProjectId}",
+          "type": "infura",
+          "name": "Sepolia"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Sepolia",
+      "nativeCurrency": "SepoliaETH"
+    }
+  },
+  "networksMetadata": {
+    "goerli-network-id": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
+    },
+    "sepolia": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
+    },
+    "testNetworkConfigurationId": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
+    }
+  },
+  "nftsDropdownState": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "0xaa36a7": {
+        "0x495f947276749Ce646f68AC8c248420045cb7b5e": false
+      }
+    }
+  },
+  "notifications": {
+    "test": {
+      "id": "test",
+      "origin": "local:http://localhost:8086/",
+      "createdDate": 1652967897732,
+      "readDate": null,
+      "message": "Hello, http://localhost:8086!"
+    },
+    "test2": {
+      "id": "test2",
+      "origin": "local:http://localhost:8086/",
+      "createdDate": 1652967897732,
+      "readDate": 1652967897732,
+      "message": "Hello, http://localhost:8086!"
+    }
+  },
+  "openSeaEnabled": false,
+  "orderedNetworkList": [],
+  "participateInMetaMetrics": false,
+  "pendingApprovalCount": 1,
+  "pendingApprovals": {
+    "testApprovalId": {
+      "id": "testApprovalId",
+      "time": 1528133319641,
+      "origin": "metamask",
+      "type": "transaction",
+      "requestData": {
+        "txId": "testTransactionId"
+      },
+      "requestState": {
+        "test": "value"
+      }
+    }
+  },
+  "permissionHistory": {
+    "https://metamask.github.io": {
+      "eth_accounts": {
+        "accounts": {
+          "0dcd5d886577d5081b0c52e242ef29e70be3e7bc": 1709225290848
+        }
+      }
+    }
+  },
+  "pinnedAccountList": [],
+  "preferences": {
+    "hideZeroBalanceTokens": false,
+    "showExtensionInFullSizeView": false,
+    "showFiatInTestnets": false,
+    "showTestNetworks": true,
+    "smartTransactionsOptInStatus": false,
+    "useNativeCurrencyAsPrimaryCurrency": true,
+    "petnamesEnabled": false,
+    "showConfirmationAdvancedDetails": false
+  },
+  "preventPollingOnNetworkRestart": true,
+  "previousAppVersion": "11.14.4",
+  "previousMigrationVersion": 112,
+  "securityAlertsEnabled": true,
+  "seedPhraseBackedUp": true,
+  "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+  "selectedNetworkClientId": "sepolia",
+  "showAccountBanner": false,
+  "showBetaHeader": false,
+  "showNetworkBanner": true,
+  "showPermissionsTour": true,
+  "showProductTour": false,
+  "showTestnetMessageInDropdown": true,
+  "signatureSecurityAlertResponses": {},
+  "smartTransactionsState": {
+    "fees": {},
+    "liveness": true,
+    "smartTransactions": {
+      "0x1": [],
+      "0xaa36a7": []
+    },
+    "userOptInV2": true
+  },
+  "snapRegistryList": {
+    "a51ea3a8-f1b0-4613-9440-b80e2236713b": {
+      "id": "a51ea3a8-f1b0-4613-9440-b80e2236713b",
+      "snapId": "npm:@metamask/snap-simple-keyring",
+      "iconUrl": "",
+      "snapTitle": "Metamask Simple Keyring",
+      "snapSlug": "Secure your account with MetaMask Mobile",
+      "snapDescription": "A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.",
+      "tags": ["EOA"],
+      "developer": "Metamask",
+      "website": "https://www.consensys.io/",
+      "auditUrls": ["auditUrl1", "auditUrl2"],
+      "version": "1.0.0",
+      "lastUpdated": "April 20, 2023"
+    }
+  },
+  "snapStates": {},
+  "snaps": {
+    "npm:@metamask/test-snap-bip44": {
+      "id": "npm:@metamask/test-snap-bip44",
+      "origin": "npm:@metamask/test-snap-bip44",
+      "version": "5.1.2",
+      "iconUrl": null,
+      "initialPermissions": {
+        "endowment:ethereum-provider": {}
+      },
+      "manifest": {
+        "description": "An example Snap that signs messages using BLS.",
+        "proposedName": "BIP-44 Test Snap",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/MetaMask/test-snaps.git"
+        },
+        "source": {
+          "location": {
+            "npm": {
+              "filePath": "dist/bundle.js",
+              "packageName": "@metamask/test-snap-bip44",
+              "registry": "https://registry.npmjs.org"
+            }
+          },
+          "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+        },
+        "version": "5.1.2"
+      },
+      "versionHistory": [
+        {
+          "date": 1680686075921,
+          "origin": "https://metamask.github.io",
+          "version": "5.1.2"
+        }
+      ]
+    },
+    "npm:@metamask/test-snap-bip32": {
+      "id": "npm:@metamask/test-snap-bip32",
+      "origin": "npm:@metamask/test-snap-bip32",
+      "version": "5.1.2",
+      "iconUrl": null,
+      "initialPermissions": {
+        "endowment:ethereum-provider": {}
+      },
+      "manifest": {
+        "description": "An example Snap that signs messages using BLS.",
+        "proposedName": "BIP-32 Test Snap",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/MetaMask/test-snaps.git"
+        },
+        "source": {
+          "location": {
+            "npm": {
+              "filePath": "dist/bundle.js",
+              "packageName": "@metamask/test-snap-bip32",
+              "registry": "https://registry.npmjs.org"
+            }
+          },
+          "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+        },
+        "version": "5.1.2"
+      },
+      "versionHistory": [
+        {
+          "date": 1680686075921,
+          "origin": "https://metamask.github.io",
+          "version": "5.1.2"
+        }
+      ]
+    },
+    "npm:@metamask/test-snap-getEntropy": {
+      "id": "npm:@metamask/test-snap-getEntropy",
+      "origin": "npm:@metamask/test-snap-getEntropy",
+      "version": "5.1.2",
+      "iconUrl": null,
+      "initialPermissions": {
+        "endowment:ethereum-provider": {}
+      },
+      "manifest": {
+        "description": "An example Snap that can derive snap specific entropy.",
+        "proposedName": "Get Entropy Test Snap",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/MetaMask/test-snaps.git"
+        },
+        "source": {
+          "location": {
+            "npm": {
+              "filePath": "dist/bundle.js",
+              "packageName": "@metamask/test-snap-getEntropy",
+              "registry": "https://registry.npmjs.org"
+            }
+          },
+          "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+        },
+        "version": "5.1.2"
+      },
+      "versionHistory": [
+        {
+          "date": 1680686075921,
+          "origin": "https://metamask.github.io",
+          "version": "5.1.2"
+        }
+      ]
+    },
+    "npm:@metamask/test-snap-networkAccess": {
+      "id": "npm:@metamask/test-snap-networkAccess",
+      "origin": "npm:@metamask/test-snap-networkAccess",
+      "version": "5.1.2",
+      "iconUrl": null,
+      "initialPermissions": {
+        "endowment:ethereum-provider": {}
+      },
+      "manifest": {
+        "description": "An example Snap that has network access.",
+        "proposedName": "Network Access Test Snap",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/MetaMask/test-snaps.git"
+        },
+        "source": {
+          "location": {
+            "npm": {
+              "filePath": "dist/bundle.js",
+              "packageName": "@metamask/test-snap-networkAccess",
+              "registry": "https://registry.npmjs.org"
+            }
+          },
+          "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+        },
+        "version": "5.1.2"
+      },
+      "versionHistory": [
+        {
+          "date": 1680686075921,
+          "origin": "https://metamask.github.io",
+          "version": "5.1.2"
+        }
+      ]
+    },
+    "npm:@metamask/test-snap-wasm": {
+      "id": "npm:@metamask/test-snap-wasm",
+      "origin": "npm:@metamask/test-snap-wasm",
+      "version": "5.1.2",
+      "iconUrl": null,
+      "initialPermissions": {
+        "endowment:ethereum-provider": {}
+      },
+      "manifest": {
+        "description": "An example Snap that has WASM access.",
+        "proposedName": "WASM Test Snap",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/MetaMask/test-snaps.git"
+        },
+        "source": {
+          "location": {
+            "npm": {
+              "filePath": "dist/bundle.js",
+              "packageName": "@metamask/test-snap-wasm",
+              "registry": "https://registry.npmjs.org"
+            }
+          },
+          "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+        },
+        "version": "5.1.2"
+      },
+      "versionHistory": [
+        {
+          "date": 1680686075921,
+          "origin": "https://metamask.github.io",
+          "version": "5.1.2"
+        }
+      ]
+    },
+    "npm:@metamask/test-snap-notify": {
+      "id": "npm:@metamask/test-snap-notify",
+      "origin": "npm:@metamask/test-snap-notify",
+      "version": "5.1.2",
+      "iconUrl": null,
+      "initialPermissions": {
+        "endowment:ethereum-provider": {}
+      },
+      "manifest": {
+        "description": "An example Snap that can send notifications.",
+        "proposedName": "Notification Test Snap",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/MetaMask/test-snaps.git"
+        },
+        "source": {
+          "location": {
+            "npm": {
+              "filePath": "dist/bundle.js",
+              "packageName": "@metamask/test-snap-notify",
+              "registry": "https://registry.npmjs.org"
+            }
+          },
+          "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+        },
+        "version": "5.1.2"
+      },
+      "versionHistory": [
+        {
+          "date": 1680686075921,
+          "origin": "https://metamask.github.io",
+          "version": "5.1.2"
+        }
+      ]
+    },
+    "npm:@metamask/test-snap-dialog": {
+      "id": "npm:@metamask/test-snap-dialog",
+      "origin": "npm:@metamask/test-snap-dialog",
+      "version": "5.1.2",
+      "iconUrl": null,
+      "initialPermissions": {
+        "endowment:ethereum-provider": {}
+      },
+      "manifest": {
+        "description": "An example Snap that can send dialog prompts.",
+        "proposedName": "Dialog Test Snap",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/MetaMask/test-snaps.git"
+        },
+        "source": {
+          "location": {
+            "npm": {
+              "filePath": "dist/bundle.js",
+              "packageName": "@metamask/test-snap-dialog",
+              "registry": "https://registry.npmjs.org"
+            }
+          },
+          "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+        },
+        "version": "5.1.2"
+      },
+      "versionHistory": [
+        {
+          "date": 1680686075921,
+          "origin": "https://metamask.github.io",
+          "version": "5.1.2"
+        }
+      ]
+    }
+  },
+  "snapsAddSnapAccountModalDismissed": false,
+  "storageMetadata": [],
+  "subjectMetadata": {
+    "npm:@metamask/test-snap-bip44": {
+      "name": "@metamask/test-snap-bip44",
+      "version": "1.2.3",
+      "subjectType": "snap"
+    }
+  },
+  "swapsState": {
+    "quotes": {},
+    "quotesPollingLimitEnabled": false,
+    "fetchParams": null,
+    "tokens": null,
+    "tradeTxId": null,
+    "approveTxId": null,
+    "quotesLastFetched": null,
+    "customMaxGas": "",
+    "customGasPrice": null,
+    "customMaxFeePerGas": null,
+    "customMaxPriorityFeePerGas": null,
+    "swapsUserFeeLevel": "",
+    "selectedAggId": null,
+    "customApproveTxData": "",
+    "errorKey": "",
+    "topAggId": null,
+    "routeState": "",
+    "swapsFeatureIsLive": true,
+    "saveFetchedQuotes": false,
+    "swapsQuoteRefreshTime": 60000,
+    "swapsQuotePrefetchingRefreshTime": 60000,
+    "swapsStxBatchStatusRefreshTime": 10000,
+    "swapsStxGetTransactionsRefreshTime": 10000,
+    "swapsStxMaxFeeMultiplier": 2,
+    "swapsFeatureFlags": {
+      "arbitrum": {
+        "extensionActive": true,
+        "extension_active": true,
+        "fallbackToV1": false,
+        "fallback_to_v1": false,
+        "mobileActive": true,
+        "mobileActiveAndroid": true,
+        "mobileActiveIOS": true,
+        "mobile_active": true,
+        "smartTransactions": {}
+      },
+      "avalanche": {
+        "extensionActive": true,
+        "extension_active": true,
+        "fallbackToV1": false,
+        "fallback_to_v1": false,
+        "mobileActive": true,
+        "mobileActiveAndroid": true,
+        "mobileActiveIOS": true,
+        "mobile_active": true,
+        "smartTransactions": {}
+      },
+      "base": {
+        "extensionActive": false,
+        "extension_active": false,
+        "fallbackToV1": false,
+        "fallback_to_v1": false,
+        "mobileActive": false,
+        "mobileActiveAndroid": false,
+        "mobileActiveIOS": false,
+        "mobile_active": false,
+        "smartTransactions": {}
+      },
+      "bsc": {
+        "extensionActive": true,
+        "extension_active": true,
+        "fallbackToV1": false,
+        "fallback_to_v1": false,
+        "mobileActive": true,
+        "mobileActiveAndroid": true,
+        "mobileActiveIOS": true,
+        "mobile_active": true,
+        "smartTransactions": {}
+      },
+      "ethereum": {
+        "extensionActive": true,
+        "extension_active": true,
+        "fallbackToV1": false,
+        "fallback_to_v1": false,
+        "mobileActive": true,
+        "mobileActiveAndroid": true,
+        "mobileActiveIOS": true,
+        "mobile_active": true,
+        "smartTransactions": {
+          "expectedDeadline": 45,
+          "maxDeadline": 150,
+          "returnTxHashAsap": false
+        }
+      },
+      "linea": {
+        "extensionActive": true,
+        "extension_active": true,
+        "fallbackToV1": false,
+        "fallback_to_v1": false,
+        "mobileActive": true,
+        "mobileActiveAndroid": true,
+        "mobileActiveIOS": true,
+        "mobile_active": true,
+        "smartTransactions": {}
+      },
+      "optimism": {
+        "extensionActive": true,
+        "extension_active": true,
+        "fallbackToV1": false,
+        "fallback_to_v1": false,
+        "mobileActive": true,
+        "mobileActiveAndroid": true,
+        "mobileActiveIOS": true,
+        "mobile_active": true,
+        "smartTransactions": {}
+      },
+      "polygon": {
+        "extensionActive": true,
+        "extension_active": true,
+        "fallbackToV1": false,
+        "fallback_to_v1": false,
+        "mobileActive": true,
+        "mobileActiveAndroid": true,
+        "mobileActiveIOS": true,
+        "mobile_active": true,
+        "smartTransactions": {}
+      },
+      "smartTransactions": {
+        "extensionActive": true,
+        "mobileActive": true,
+        "mobileActiveAndroid": false,
+        "mobileActiveIOS": false
+      },
+      "smart_transactions": {
+        "extension_active": true,
+        "mobile_active": true
+      },
+      "swapRedesign": {
+        "extensionActive": true,
+        "mobileActive": false
+      },
+      "zksync": {
+        "extensionActive": true,
+        "extension_active": true,
+        "fallbackToV1": false,
+        "fallback_to_v1": false,
+        "mobileActive": true,
+        "mobileActiveAndroid": true,
+        "mobileActiveIOS": true,
+        "mobile_active": true,
+        "smartTransactions": {}
+      }
+    }
+  },
+  "switchedNetworkNeverShowMessage": false,
+  "termsOfUseLastAgreed": 1692109813199,
+  "theme": "os",
+  "tokenList": {
+    "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+      "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+      "symbol": "WBTC",
+      "decimals": 8,
+      "name": "Wrapped Bitcoin",
+      "iconUrl": "https://s3.amazonaws.com/airswap-token-images/WBTC.png",
+      "aggregators": [
+        "airswapLight",
+        "bancor",
+        "cmc",
+        "coinGecko",
+        "kleros",
+        "oneInch",
+        "paraswap",
+        "pmm",
+        "totle",
+        "zapper",
+        "zerion",
+        "zeroEx"
+      ],
+      "occurrences": 12
+    },
+    "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e": {
+      "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
+      "symbol": "YFI",
+      "decimals": 18,
+      "name": "yearn.finance",
+      "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png",
+      "aggregators": [
+        "airswapLight",
+        "bancor",
+        "cmc",
+        "coinGecko",
+        "kleros",
+        "oneInch",
+        "paraswap",
+        "pmm",
+        "totle",
+        "zapper",
+        "zerion",
+        "zeroEx"
+      ],
+      "occurrences": 12
+    }
+  },
+  "tokens": [
+    {
+      "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+      "symbol": "TEST",
+      "decimals": "0"
+    },
+    {
+      "address": "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5",
+      "decimals": "8",
+      "symbol": "TEST2"
+    },
+    {
+      "address": "0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4",
+      "symbol": "META",
+      "decimals": "18"
+    }
+  ],
+  "transactions": [
+    {
+      "id": 3387511061307736,
+      "time": 1528133130531,
+      "status": "confirmed",
+      "chainId": "0xaa36a7",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+        "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+        "value": "0x1bc16d674ec80000",
+        "gas": "0xcf08",
+        "gasPrice": "0x3b9aca00",
+        "nonce": "0xb5"
+      },
+      "history": [
+        {
+          "id": 3387511061307736,
+          "time": 1528133130531,
+          "status": "unapproved",
+          "chainId": "0xaa36a7",
+          "loadingDefaults": true,
+          "txParams": {
+            "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+            "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+            "value": "0x1bc16d674ec80000",
+            "gas": "0xcf08",
+            "gasPrice": "0x3b9aca00"
+          }
+        },
+        [
+          {
+            "op": "replace",
+            "path": "/loadingDefaults",
+            "value": false,
+            "timestamp": 1528133130666
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/origin",
+            "value": "MetaMask",
+            "note": "#newUnapprovedTransaction - adding the origin",
+            "timestamp": 1528133130667
+          }
+        ],
+        [],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "approved",
+            "note": "txStateManager: setting status to approved",
+            "timestamp": 1528133131716
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/txParams/nonce",
+            "value": "0xb5",
+            "note": "transactions#approveTransaction",
+            "timestamp": 1528133131806
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "signed",
+            "note": "transactions#publishTransaction",
+            "timestamp": 1528133131825
+          },
+          {
+            "op": "add",
+            "path": "/rawTx",
+            "value": "0xf86c81b5843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba03f879cd33a31180da38545d0f809822e00ddf35954d8b0ece83bacf22347ce54a06ad050487978e425ca6a014ed55ea8e9a190069863ed96a0eefa88d729ea1eda"
+          }
+        ],
+        [],
+        [
+          {
+            "op": "add",
+            "path": "/hash",
+            "value": "0x516b77569173a04c76fdb6545cf279ebd0c75f5d25d6e4ce019925205f0e3709",
+            "note": "transactions#setTxHash",
+            "timestamp": 1528133131951
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/submittedTime",
+            "value": 1528133131951,
+            "note": "txStateManager - add submitted time stamp",
+            "timestamp": 1528133131952
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "submitted",
+            "note": "txStateManager: setting status to submitted",
+            "timestamp": 1528133131955
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/firstRetryBlockNumber",
+            "value": "0x24af6b",
+            "note": "transactions/pending-tx-tracker#event: tx:block-update",
+            "timestamp": 1528133134414
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "confirmed",
+            "note": "txStateManager: setting status to confirmed",
+            "timestamp": 1528133158516
+          }
+        ]
+      ],
+      "origin": "MetaMask",
+      "rawTx": "0xf86c81b5843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba03f879cd33a31180da38545d0f809822e00ddf35954d8b0ece83bacf22347ce54a06ad050487978e425ca6a014ed55ea8e9a190069863ed96a0eefa88d729ea1eda",
+      "hash": "0x516b77569173a04c76fdb6545cf279ebd0c75f5d25d6e4ce019925205f0e3709",
+      "submittedTime": 1528133131951,
+      "firstRetryBlockNumber": "0x24af6b"
+    },
+    {
+      "id": 3387511061307737,
+      "time": 1528133149983,
+      "status": "confirmed",
+      "chainId": "0xaa36a7",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+        "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+        "value": "0x1bc16d674ec80000",
+        "gas": "0xcf08",
+        "gasPrice": "0x3b9aca00",
+        "nonce": "0xb6"
+      },
+      "history": [
+        {
+          "id": 3387511061307737,
+          "time": 1528133149983,
+          "status": "unapproved",
+          "chainId": "0xaa36a7",
+          "loadingDefaults": true,
+          "txParams": {
+            "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+            "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+            "value": "0x1bc16d674ec80000",
+            "gas": "0xcf08",
+            "gasPrice": "0x3b9aca00"
+          }
+        },
+        [
+          {
+            "op": "replace",
+            "path": "/loadingDefaults",
+            "value": false,
+            "timestamp": 1528133150011
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/origin",
+            "value": "MetaMask",
+            "note": "#newUnapprovedTransaction - adding the origin",
+            "timestamp": 1528133150013
+          }
+        ],
+        [],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "approved",
+            "note": "txStateManager: setting status to approved",
+            "timestamp": 1528133151102
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/txParams/nonce",
+            "value": "0xb6",
+            "note": "transactions#approveTransaction",
+            "timestamp": 1528133151189
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "signed",
+            "note": "transactions#publishTransaction",
+            "timestamp": 1528133151203
+          },
+          {
+            "op": "add",
+            "path": "/rawTx",
+            "value": "0xf86c81b6843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba0692deaabf0d79544d41e7c475ad43760679a4f25d0fee908b1da308db1a291a7a0384db85fc6c843ea25986a0760f3c50ab6504fc559fc71fc7f23f60950eb316d"
+          }
+        ],
+        [],
+        [
+          {
+            "op": "add",
+            "path": "/hash",
+            "value": "0x9271b266d05022cfa841362fae43763ebafcee540d84278b0157ef4a68d4e26f",
+            "note": "transactions#setTxHash",
+            "timestamp": 1528133151342
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/submittedTime",
+            "value": 1528133151347,
+            "note": "txStateManager - add submitted time stamp",
+            "timestamp": 1528133151347
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "submitted",
+            "note": "txStateManager: setting status to submitted",
+            "timestamp": 1528133151368
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/firstRetryBlockNumber",
+            "value": "0x24af6d",
+            "note": "transactions/pending-tx-tracker#event: tx:block-update",
+            "timestamp": 1528133158532
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "confirmed",
+            "note": "txStateManager: setting status to confirmed",
+            "timestamp": 1528133190636
+          }
+        ]
+      ],
+      "origin": "MetaMask",
+      "rawTx": "0xf86c81b6843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba0692deaabf0d79544d41e7c475ad43760679a4f25d0fee908b1da308db1a291a7a0384db85fc6c843ea25986a0760f3c50ab6504fc559fc71fc7f23f60950eb316d",
+      "hash": "0x9271b266d05022cfa841362fae43763ebafcee540d84278b0157ef4a68d4e26f",
+      "submittedTime": 1528133151347,
+      "firstRetryBlockNumber": "0x24af6d"
+    },
+    {
+      "id": 3387511061307738,
+      "time": 1528133180635,
+      "status": "confirmed",
+      "chainId": "0xaa36a7",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+        "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+        "value": "0x1bc16d674ec80000",
+        "gas": "0xcf08",
+        "gasPrice": "0x12a05f200",
+        "nonce": "0xb7"
+      },
+      "history": [
+        {
+          "id": 3387511061307738,
+          "time": 1528133180635,
+          "status": "unapproved",
+          "chainId": "0xaa36a7",
+          "loadingDefaults": true,
+          "txParams": {
+            "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+            "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+            "value": "0x1bc16d674ec80000",
+            "gas": "0xcf08",
+            "gasPrice": "0x12a05f200"
+          }
+        },
+        [
+          {
+            "op": "replace",
+            "path": "/loadingDefaults",
+            "value": false,
+            "timestamp": 1528133180720
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/origin",
+            "value": "MetaMask",
+            "note": "#newUnapprovedTransaction - adding the origin",
+            "timestamp": 1528133180722
+          }
+        ],
+        [],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "approved",
+            "note": "txStateManager: setting status to approved",
+            "timestamp": 1528133181623
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/txParams/nonce",
+            "value": "0xb7",
+            "note": "transactions#approveTransaction",
+            "timestamp": 1528133181726
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "signed",
+            "note": "transactions#publishTransaction",
+            "timestamp": 1528133181749
+          },
+          {
+            "op": "add",
+            "path": "/rawTx",
+            "value": "0xf86d81b785012a05f20082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba086f9846798be6988c39a5cf85f0dbe267e59ca0b96a6a7077e92cba33e10a258a064ffa52ac90c238ce21e6f085283216191b185a1eccd7daae6e2ab66ba26ada0"
+          }
+        ],
+        [],
+        [
+          {
+            "op": "add",
+            "path": "/hash",
+            "value": "0x4e061e977c099735bc9e5203e717f7d9dccb3fcb2f82031a12a3ed326f95d43b",
+            "note": "transactions#setTxHash",
+            "timestamp": 1528133181885
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/submittedTime",
+            "value": 1528133181885,
+            "note": "txStateManager - add submitted time stamp",
+            "timestamp": 1528133181885
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "submitted",
+            "note": "txStateManager: setting status to submitted",
+            "timestamp": 1528133181888
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/firstRetryBlockNumber",
+            "value": "0x24af6f",
+            "note": "transactions/pending-tx-tracker#event: tx:block-update",
+            "timestamp": 1528133190653
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "confirmed",
+            "note": "txStateManager: setting status to confirmed",
+            "timestamp": 1528133222745
+          }
+        ]
+      ],
+      "origin": "MetaMask",
+      "rawTx": "0xf86d81b785012a05f20082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba086f9846798be6988c39a5cf85f0dbe267e59ca0b96a6a7077e92cba33e10a258a064ffa52ac90c238ce21e6f085283216191b185a1eccd7daae6e2ab66ba26ada0",
+      "hash": "0x4e061e977c099735bc9e5203e717f7d9dccb3fcb2f82031a12a3ed326f95d43b",
+      "submittedTime": 1528133181885,
+      "firstRetryBlockNumber": "0x24af6f"
+    },
+    {
+      "id": 3387511061307739,
+      "time": 1528133223918,
+      "status": "confirmed",
+      "chainId": "0xaa36a7",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+        "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
+        "value": "0xaa87bee538000",
+        "data": "0xea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de33",
+        "gasPrice": "0x3b9aca00",
+        "gas": "0x6169e",
+        "nonce": "0xb8"
+      },
+      "history": [
+        {
+          "id": 3387511061307739,
+          "time": 1528133223918,
+          "status": "unapproved",
+          "chainId": "0xaa36a7",
+          "loadingDefaults": true,
+          "txParams": {
+            "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+            "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
+            "value": "0xaa87bee538000",
+            "data": "0xea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de33",
+            "gasPrice": "0x3b9aca00"
+          }
+        },
+        [
+          {
+            "op": "add",
+            "path": "/txParams/gas",
+            "value": "0x6169e",
+            "timestamp": 1528133225488
+          },
+          {
+            "op": "replace",
+            "path": "/loadingDefaults",
+            "value": false
+          }
+        ],
+        [
+          {
+            "note": "#newUnapprovedTransaction - adding the origin",
+            "op": "add",
+            "path": "/origin",
+            "value": "crypko.ai"
+          }
+        ],
+        [],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "approved",
+            "note": "txStateManager: setting status to approved",
+            "timestamp": 1528133227279
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/txParams/nonce",
+            "value": "0xb8",
+            "note": "transactions#approveTransaction",
+            "timestamp": 1528133227374
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "signed",
+            "note": "transactions#publishTransaction",
+            "timestamp": 1528133227405
+          },
+          {
+            "op": "add",
+            "path": "/rawTx",
+            "value": "0xf8b181b8843b9aca008306169e94fe2149773b3513703e79ad23d05a778a185016ee870aa87bee538000b844ea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de332ca07bb2efbb8529d67606f9f89e7934c594a31d50c7d24a3286c20a2944a3b8c2a9a07b55ebd8aa28728ce0e38dd3b3503b78fccedae80053626d8649c68346c7c49c"
+          }
+        ],
+        [],
+        [
+          {
+            "op": "add",
+            "path": "/hash",
+            "value": "0x466ae7d4b7c270121f0a8d68fbc6c9091ffc4aa976a553a5bfa56a79cf9f63dd",
+            "note": "transactions#setTxHash",
+            "timestamp": 1528133227534
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/submittedTime",
+            "value": 1528133227538,
+            "note": "txStateManager - add submitted time stamp",
+            "timestamp": 1528133227538
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "submitted",
+            "note": "txStateManager: setting status to submitted",
+            "timestamp": 1528133227543
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/firstRetryBlockNumber",
+            "value": "0x24af72",
+            "note": "transactions/pending-tx-tracker#event: tx:block-update",
+            "timestamp": 1528133238980
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "confirmed",
+            "note": "txStateManager: setting status to confirmed",
+            "timestamp": 1528133255035
+          }
+        ]
+      ],
+      "origin": "crypko.ai",
+      "rawTx": "0xf8b181b8843b9aca008306169e94fe2149773b3513703e79ad23d05a778a185016ee870aa87bee538000b844ea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de332ca07bb2efbb8529d67606f9f89e7934c594a31d50c7d24a3286c20a2944a3b8c2a9a07b55ebd8aa28728ce0e38dd3b3503b78fccedae80053626d8649c68346c7c49c",
+      "hash": "0x466ae7d4b7c270121f0a8d68fbc6c9091ffc4aa976a553a5bfa56a79cf9f63dd",
+      "submittedTime": 1528133227538,
+      "firstRetryBlockNumber": "0x24af72"
+    },
+    {
+      "id": 3387511061307740,
+      "time": 1528133291381,
+      "status": "confirmed",
+      "chainId": "0xaa36a7",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+        "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+        "value": "0x0",
+        "data": "0xa9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb330000000000000000000000000000000000000000000000000000000000000002",
+        "gas": "0xd508",
+        "gasPrice": "0x3b9aca00",
+        "nonce": "0xb9"
+      },
+      "history": [
+        {
+          "id": 3387511061307740,
+          "time": 1528133291381,
+          "status": "unapproved",
+          "chainId": "0xaa36a7",
+          "loadingDefaults": true,
+          "txParams": {
+            "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+            "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+            "value": "0x0",
+            "data": "0xa9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb330000000000000000000000000000000000000000000000000000000000000002",
+            "gas": "0xd508",
+            "gasPrice": "0x3b9aca00"
+          }
+        },
+        [
+          {
+            "op": "replace",
+            "path": "/loadingDefaults",
+            "value": false,
+            "timestamp": 1528133291486
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/origin",
+            "value": "MetaMask",
+            "note": "#newUnapprovedTransaction - adding the origin",
+            "timestamp": 1528133291486
+          }
+        ],
+        [],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "approved",
+            "note": "txStateManager: setting status to approved",
+            "timestamp": 1528133293588
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/txParams/nonce",
+            "value": "0xb9",
+            "note": "transactions#approveTransaction",
+            "timestamp": 1528133293706
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "signed",
+            "note": "transactions#publishTransaction",
+            "timestamp": 1528133293724
+          },
+          {
+            "op": "add",
+            "path": "/rawTx",
+            "value": "0xf8a981b9843b9aca0082d50894108cf70c7d384c552f42c07c41c0e1e46d77ea0d80b844a9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb3300000000000000000000000000000000000000000000000000000000000000022ca04f05310490d3e3a9a159ae25f52cec9afb0a69527d30be832aaae12e64ff056ea075f81a5220bed481e764bab8830c57169c59fe528ca9cf3442f47f7618a9b4a9"
+          }
+        ],
+        [],
+        [
+          {
+            "op": "add",
+            "path": "/hash",
+            "value": "0x3680dc9815cd05b620b6dd0017d949604ca7d92f051d5542fc8a5ecaa876af09",
+            "note": "transactions#setTxHash",
+            "timestamp": 1528133293853
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/submittedTime",
+            "value": 1528133293859,
+            "note": "txStateManager - add submitted time stamp",
+            "timestamp": 1528133293862
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "submitted",
+            "note": "txStateManager: setting status to submitted",
+            "timestamp": 1528133293867
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/firstRetryBlockNumber",
+            "value": "0x24af76",
+            "note": "transactions/pending-tx-tracker#event: tx:block-update",
+            "timestamp": 1528133295200
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "confirmed",
+            "note": "txStateManager: setting status to confirmed",
+            "timestamp": 1528133327522
+          }
+        ]
+      ],
+      "origin": "MetaMask",
+      "rawTx": "0xf8a981b9843b9aca0082d50894108cf70c7d384c552f42c07c41c0e1e46d77ea0d80b844a9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb3300000000000000000000000000000000000000000000000000000000000000022ca04f05310490d3e3a9a159ae25f52cec9afb0a69527d30be832aaae12e64ff056ea075f81a5220bed481e764bab8830c57169c59fe528ca9cf3442f47f7618a9b4a9",
+      "hash": "0x3680dc9815cd05b620b6dd0017d949604ca7d92f051d5542fc8a5ecaa876af09",
+      "submittedTime": 1528133293859,
+      "firstRetryBlockNumber": "0x24af76"
+    },
+    {
+      "id": 3387511061307741,
+      "time": 1528133318440,
+      "status": "rejected",
+      "chainId": "0xaa36a7",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+        "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+        "value": "0x0",
+        "gasPrice": "0x3b9aca00",
+        "gas": "0x5208"
+      },
+      "history": [
+        {
+          "id": 3387511061307741,
+          "time": 1528133318440,
+          "status": "unapproved",
+          "chainId": "0xaa36a7",
+          "loadingDefaults": true,
+          "txParams": {
+            "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+            "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62"
+          }
+        },
+        [
+          {
+            "op": "add",
+            "path": "/txParams/value",
+            "value": "0x0",
+            "timestamp": 1528133319641
+          },
+          {
+            "op": "add",
+            "path": "/txParams/gasPrice",
+            "value": "0x3b9aca00"
+          },
+          {
+            "op": "add",
+            "path": "/txParams/gas",
+            "value": "0x5208"
+          },
+          {
+            "op": "replace",
+            "path": "/loadingDefaults",
+            "value": false
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/origin",
+            "value": "tmashuang.github.io",
+            "note": "#newUnapprovedTransaction - adding the origin",
+            "timestamp": 1528133319642
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "rejected",
+            "note": "txStateManager: setting status to rejected",
+            "timestamp": 1528133320924
+          }
+        ]
+      ],
+      "origin": "tmashuang.github.io"
+    }
+  ],
+  "trezorModel": null,
+  "unapprovedDecryptMsgCount": 0,
+  "unapprovedDecryptMsgs": {},
+  "unapprovedEncryptionPublicKeyMsgCount": 0,
+  "unapprovedEncryptionPublicKeyMsgs": {},
+  "unapprovedPersonalMsgCount": 0,
+  "unapprovedPersonalMsgs": {},
+  "unapprovedTypedMessages": {},
+  "unapprovedTypedMessagesCount": 0,
+  "unconnectedAccountAlertShownOrigins": {},
+  "unencryptedSnapStates": {},
+  "use4ByteResolution": true,
+  "useAddressBarEnsResolution": true,
+  "useBlockie": false,
+  "useCurrencyRateCheck": true,
+  "useExternalNameSources": true,
+  "useMultiAccountBalanceChecker": false,
+  "useNftDetection": false,
+  "useNonceField": false,
+  "usePhishDetect": true,
+  "useRequestQueue": false,
+  "useSafeChainsListValidation": true,
+  "useTokenDetection": false,
+  "useTransactionSimulations": true,
+  "usedNetworks": {
+    "0xaa36a7": {
+      "rpcUrl": "https://sepolia.infura.io/v3/dummy_key",
+      "chainId": "0xaa36a7",
+      "nickname": "Sepolia Test Network",
+      "ticker": "ETH",
+      "blockExplorerUrl": "https://sepolia.etherscan.io"
+    }
+  },
+  "userOperations": {},
+  "versionFileETag": "W/\"598946a37f16c5b882a0bebbadf4509f\"",
+  "versionInfo": [],
+  "web3ShimUsageOrigins": {},
+  "welcomeScreenSeen": false
+}

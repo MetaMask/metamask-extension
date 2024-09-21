@@ -1,0 +1,29 @@
+name: Fitness Functions CI
+
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # This is needed to checkout all branches
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Run fitness functions
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          # The following command generates a diff of changes between the common
+          # ancestor of $BASE_REF and HEAD, and the current commit (HEAD), for
+          # files in the current directory and its subdirectories. The output is
+          # then saved to a file called "diff".
+          git diff "$(git merge-base "origin/$BASE_REF" HEAD)" HEAD -- . > ./diff
+          npm run fitness-functions -- "ci" "./diff"

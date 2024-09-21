@@ -1,0 +1,5 @@
+.network-display {
+  &:not([disabled]):active {
+    background-color: transparent;
+  }
+}

@@ -1,0 +1,16 @@
+*.scss
+.nyc_output/**/*
+node_modules/**/*
+/app/vendor/**
+/builds/**/*
+/coverage/**/*
+/development/charts/**
+/development/chromereload.js
+/development/ts-migration-dashboard/filesToConvert.json
+/development/ts-migration-dashboard/build/**
+/dist/**/*
+/lavamoat/**/policy.json
+/storybook-build/**/*
+/test-artifacts/**/*
+/test/test-results/**/*
+/test/e2e/send-eth-with-private-key-test/**/*

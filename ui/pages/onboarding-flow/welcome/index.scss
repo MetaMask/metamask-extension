@@ -1,0 +1,64 @@
+@use "design-system";
+// by using @use, and dropping the file extension, sass will inline the
+// stylesheet instead of creating generating an `import(carousel.css)`. This is
+// desirable because it reduces the number of render-blocking requests on app
+// startup.
+@use "react-responsive-carousel/lib/styles/carousel";
+
+.onboarding-welcome {
+  .control-dots .dot {
+    background: var(--color-icon-muted);
+    box-shadow: none;
+
+    &.selected {
+      background: var(--color-icon-default);
+    }
+  }
+
+  /* next and previous arrow colors */
+  .carousel.carousel-slider .control-arrow {
+    opacity: 1;
+    color: var(--color-icon-default);
+
+    @include design-system.screen-sm-min {
+      padding: 40px;
+    }
+  }
+
+  .carousel .control-next.control-arrow::before {
+    border-left-color: var(--color-icon-default);
+  }
+
+  .carousel .control-prev.control-arrow::before {
+    border-right-color: var(--color-icon-default);
+  }
+
+  .carousel.carousel-slider .control-arrow:hover {
+    background: none;
+  }
+
+  &__mascot {
+    width: 250px;
+    height: 250px;
+    margin: 20px auto;
+  }
+
+  &__image {
+    text-align: center;
+    margin: 20px auto;
+  }
+
+  &__buttons {
+    max-width: 300px;
+    margin: 40px auto 0 auto;
+
+    li {
+      margin-bottom: 24px;
+    }
+  }
+
+  &__terms-checkbox {
+    margin: 0;
+    align-self: flex-start;
+  }
+}

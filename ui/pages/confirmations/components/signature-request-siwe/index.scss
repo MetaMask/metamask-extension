@@ -1,0 +1,62 @@
+@use "design-system";
+
+@import 'signature-request-siwe-header/index';
+@import 'signature-request-siwe-message/index';
+@import 'signature-request-siwe-icon/index';
+
+.signature-request-siwe {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  background-color: var(--color-background-default);
+  margin-right: auto;
+  margin-left: auto;
+  overflow-y: auto;
+
+  @media screen and (min-width: design-system.$break-large) {
+    width: 408px;
+    max-height: 82vh;
+    min-height: 570px;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+  }
+}
+
+.signature-request-siwe__warning-popover {
+  .page-container__footer {
+    border-top: none;
+    padding: 0;
+    display: block;
+  }
+
+  .popover-footer {
+    padding: inherit;
+    display: block;
+  }
+
+  &__checkbox-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 8px 16px 24px;
+
+    &__label {
+      @include design-system.H7;
+
+      color: var(--color-text-default);
+      margin-inline-start: 8px;
+      margin-top: 1px;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+    }
+
+    .check-box {
+      color: var(--color-error-default);
+    }
+  }
+}

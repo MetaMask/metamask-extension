@@ -1,0 +1,431 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "நிராகரி"
+  },
+  "about": {
+    "message": "அறிமுகம்"
+  },
+  "account": {
+    "message": "கணக்கு"
+  },
+  "accountDetails": {
+    "message": "கணக்கு விவரங்கள்"
+  },
+  "accountName": {
+    "message": "கணக்கின் பெயர்"
+  },
+  "addToken": {
+    "message": "டோக்கனைச் சேர்"
+  },
+  "advanced": {
+    "message": "மேம்பட்டவை"
+  },
+  "amount": {
+    "message": "தொகை"
+  },
+  "appDescription": {
+    "message": "எதெரியும்  பிரௌசர்  நீட்டிப்பு",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "மேடமஸ்க் ",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "ஒப்புதல்"
+  },
+  "approved": {
+    "message": "அங்கீகரிக்கப்பட்ட"
+  },
+  "attributions": {
+    "message": "பண்புகளும்"
+  },
+  "back": {
+    "message": "முந்தைய பக்கம்"
+  },
+  "balance": {
+    "message": "இருப்பு:"
+  },
+  "basic": {
+    "message": "அடிப்படை"
+  },
+  "cancel": {
+    "message": "ரத்து செய்"
+  },
+  "close": {
+    "message": "மூடு"
+  },
+  "confirm": {
+    "message": "உறுதிப்படுத்து"
+  },
+  "confirmPassword": {
+    "message": "கடவுச்சொல்லை உறுதிப்படுத்துக"
+  },
+  "confirmed": {
+    "message": "உறுதி"
+  },
+  "connect": {
+    "message": "இணை"
+  },
+  "connectingToMainnet": {
+    "message": "முக்கிய எதெரியும் நெட்வொர்க் இணைக்கும்"
+  },
+  "contractDeployment": {
+    "message": "ஒப்பந்த வரிசைப்படுத்தல்"
+  },
+  "copiedExclamation": {
+    "message": "நகலெடுக்கப்பட்டன!"
+  },
+  "copyToClipboard": {
+    "message": "கிளிப்போர்டுக்கு நகலெடு"
+  },
+  "create": {
+    "message": "உருவாக்கு"
+  },
+  "custom": {
+    "message": "மேம்பட்டவை"
+  },
+  "customToken": {
+    "message": "தனிப்பயன் டோக்கன்"
+  },
+  "decimal": {
+    "message": "துல்லியத்தின் முடிவு"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "தசமங்கள் குறைந்தபட்சம் 0, மற்றும் 36 க்கு மேல் இருக்க வேண்டும்."
+  },
+  "delete": {
+    "message": "நீக்கு"
+  },
+  "details": {
+    "message": "விவரங்கள்"
+  },
+  "done": {
+    "message": "முடிந்தது"
+  },
+  "downloadStateLogs": {
+    "message": "மாநில பதிவுகள் பதிவிறக்க"
+  },
+  "dropped": {
+    "message": "நீக்கப்பட்டார்"
+  },
+  "edit": {
+    "message": "திருத்து"
+  },
+  "etherscanView": {
+    "message": "Etherscan கணக்கைப் பார்க்கவும்"
+  },
+  "failed": {
+    "message": "தோல்வி"
+  },
+  "fast": {
+    "message": "வேகமான"
+  },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "கோப்பு இறக்குமதி வேலை செய்யவில்லையா? இங்கே கிளிக் செய்யவும்!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "இந்தச் சாதனத்தை அகற்று"
+  },
+  "from": {
+    "message": "இருந்து"
+  },
+  "gasLimit": {
+    "message": "எரிவாயு வரம்பு"
+  },
+  "gasLimitTooLow": {
+    "message": "எரிவாயு வரம்பு குறைந்தது 21000 ஆக இருக்க வேண்டும்"
+  },
+  "gasPrice": {
+    "message": "எரிவாயு விலை (GWEI)"
+  },
+  "here": {
+    "message": "இங்கே",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "மறை"
+  },
+  "hideTokenPrompt": {
+    "message": "டோக்கனை மறை?"
+  },
+  "history": {
+    "message": "வரலாறு"
+  },
+  "import": {
+    "message": "இறக்குமதி செய்",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "கணக்கை இறக்குமதி செய்க"
+  },
+  "importAccountMsg": {
+    "message": " இறக்குமதி செய்யப்பட்ட கணக்கு உங்கள் முதலில் உருவாக்கப்பட்ட மெட்டாமாஸ்க் கணக்கு விதை மூலம் தொடர்புடையதாக இருக்காது. இறக்குமதி செய்யப்பட்ட கணக்குகள் பற்றி மேலும் அறிக "
+  },
+  "imported": {
+    "message": "இறக்குமதியானது",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "insufficientFunds": {
+    "message": "போதுமான பணம் இல்லை."
+  },
+  "insufficientTokens": {
+    "message": "போதுமான டோக்கன்கள்."
+  },
+  "invalidAddress": {
+    "message": "தவறான முகவரி"
+  },
+  "invalidAddressRecipient": {
+    "message": "பெறுநர் முகவரி தவறானது"
+  },
+  "invalidRPC": {
+    "message": "தவறான RPC URI"
+  },
+  "jsonFile": {
+    "message": "JSON கோப்பு",
+    "description": "format for importing an account"
+  },
+  "learnMore": {
+    "message": "மேலும் அறிக"
+  },
+  "learnMoreUpperCase": {
+    "message": "மேலும் அறிக"
+  },
+  "likeToImportTokens": {
+    "message": "இந்த டோக்கன்களைச் சேர்க்க விரும்புகிறீர்களா?"
+  },
+  "links": {
+    "message": "இணைப்புகள்"
+  },
+  "loading": {
+    "message": "ஏற்றுகிறது…"
+  },
+  "loadingTokens": {
+    "message": "டோக்கன்களை ஏற்றுகிறது ..."
+  },
+  "localhost": {
+    "message": "லோக்கல் ஹோஸ்ட் 8545"
+  },
+  "lock": {
+    "message": "வெளியேறு"
+  },
+  "mainnet": {
+    "message": "முதன்மை எதெரியும் நெட்வொர்க்"
+  },
+  "max": {
+    "message": "மேக்ஸ்"
+  },
+  "message": {
+    "message": "செய்தி"
+  },
+  "mustSelectOne": {
+    "message": "குறைந்தது 1 டோக்கனை தேர்ந்தெடுக்க வேண்டும்."
+  },
+  "needImportFile": {
+    "message": "இறக்குமதி செய்ய ஒரு கோப்பை நீங்கள் தேர்ந்தெடுக்க வேண்டும்.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "ETH எதிர்மறை அளவுகளை அனுப்ப முடியாது."
+  },
+  "networks": {
+    "message": "நெட்வொர்க்ஸ்"
+  },
+  "newAccount": {
+    "message": "புதிய கணக்கு"
+  },
+  "newAccountNumberName": {
+    "message": "கணக்கு $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "புதிய ஒப்பந்தம்"
+  },
+  "newPassword": {
+    "message": "புதிய கடவுச்சொல் (min 8 எழுத்துகள்)"
+  },
+  "next": {
+    "message": "அடுத்தது"
+  },
+  "noTransactions": {
+    "message": "பரிவர்த்தனைகள் இல்லை"
+  },
+  "off": {
+    "message": "ஆஃப்"
+  },
+  "ok": {
+    "message": "சரி"
+  },
+  "on": {
+    "message": "இயக்கு"
+  },
+  "origin": {
+    "message": "அசல்"
+  },
+  "password": {
+    "message": "கடவுச்சொல்"
+  },
+  "passwordNotLongEnough": {
+    "message": "கடவுச்சொல் போதாது"
+  },
+  "passwordsDontMatch": {
+    "message": "கடவுச்சொற்கள் பொருந்தாதே"
+  },
+  "pastePrivateKey": {
+    "message": "இங்கே உங்கள் தனிப்பட்ட விசை சரத்தை ஒட்டுக:",
+    "description": "For importing an account from a private key"
+  },
+  "personalAddressDetected": {
+    "message": "தனிப்பட்ட முகவரி கண்டறியப்பட்டது. டோக்கன் ஒப்பந்த முகவரியை உள்ளிடவும்."
+  },
+  "privacyMsg": {
+    "message": "தனியுரிமை கொள்கை"
+  },
+  "privateKey": {
+    "message": "தனிப்பட்ட விசை",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "எச்சரிக்கை: இந்த விசையை எப்போதும் வெளியிட வேண்டாம். உங்கள் தனிப்பட்ட விசைகளைக் கொண்ட எவரும் உங்கள் கணக்கில் உள்ள எந்த சொத்துக்களையும் திருடலாம்."
+  },
+  "privateNetwork": {
+    "message": "தனியார் நெட்வொர்க்"
+  },
+  "readdToken": {
+    "message": "உங்கள் கணக்கு விருப்பங்கள் மெனுவில் \"டோக்கனைச் சேர்\" என்பதன் மூலம் நீங்கள் எதிர்காலத்தில் இந்த டோக்கனை மீண்டும் சேர்க்கலாம்."
+  },
+  "reject": {
+    "message": "நிராகரி"
+  },
+  "rejected": {
+    "message": "நிராகரிக்கப்பட்டது"
+  },
+  "remove": {
+    "message": "அகற்று"
+  },
+  "removeAccount": {
+    "message": "கணக்கை அகற்றுக"
+  },
+  "required": {
+    "message": "தேவையான"
+  },
+  "reset": {
+    "message": "மீட்டமை"
+  },
+  "restore": {
+    "message": "மீட்டமை"
+  },
+  "revealSeedWords": {
+    "message": "விதை வார்த்தைகள் வெளிப்படுத்த"
+  },
+  "revealSeedWordsWarning": {
+    "message": "உங்கள் விதை வார்த்தைகள் ஒரு பொது இடத்தில் மீட்க வேண்டாம்! உங்கள் எல்லா கணக்குகளையும் திருட இந்த வார்த்தைகள் பயன்படுத்தப்படலாம்.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "save": {
+    "message": "சேமி"
+  },
+  "search": {
+    "message": "தேடல்"
+  },
+  "seedPhraseReq": {
+    "message": "விதை வாக்கியங்கள் 12 வார்த்தைகள் நீண்டவை"
+  },
+  "selectType": {
+    "message": "வகை தேர்ந்தெடு"
+  },
+  "send": {
+    "message": "அனுப்பு"
+  },
+  "settings": {
+    "message": "அமைப்புகள்"
+  },
+  "sigRequest": {
+    "message": "கையொப்பம் கோரிக்கை"
+  },
+  "sign": {
+    "message": "உள்நுழை"
+  },
+  "signed": {
+    "message": "கையொப்பமிடப்பட்ட"
+  },
+  "stateLogError": {
+    "message": "மாநில பதிவுகளை மீட்டெடுப்பதில் பிழை."
+  },
+  "stateLogs": {
+    "message": "மாநில பதிவுகள்"
+  },
+  "stateLogsDescription": {
+    "message": "மாநில பதிவுகள் உங்கள் பொது கணக்கு முகவரிகள் மற்றும் பரிமாற்றங்களை அனுப்பியுள்ளன."
+  },
+  "submitted": {
+    "message": "சமர்ப்பிக்கப்பட்டது"
+  },
+  "supportCenter": {
+    "message": "எங்கள் ஆதரவு மையத்தைப் பார்வையிடவும்"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "கசின்னம் 11 எழுத்துக்கள் அல்லது குறைவாக இருக்க வேண்டும்."
+  },
+  "terms": {
+    "message": "பயன்பாட்டு விதிமுறைகளை"
+  },
+  "to": {
+    "message": "பெறுநர்"
+  },
+  "tokenAlreadyAdded": {
+    "message": "டோக்கன் ஏற்கனவே சேர்க்கப்பட்டது."
+  },
+  "tokenSymbol": {
+    "message": "டோக்கன் சின்னம்"
+  },
+  "total": {
+    "message": "மொத்த"
+  },
+  "transactionError": {
+    "message": "பரிவர்த்தனை பிழை. விதிமுறை ஒப்பந்தத்தில் விதிவிலக்கு."
+  },
+  "tryAgain": {
+    "message": "மீண்டும் முயல்க"
+  },
+  "unapproved": {
+    "message": "அங்கீகரிக்கப்படாத"
+  },
+  "unknown": {
+    "message": "தெரியவில்லை"
+  },
+  "unknownNetwork": {
+    "message": "அறியப்படாத தனியார் நெட்வொர்க்"
+  },
+  "unlock": {
+    "message": "பூட்டைத் திற"
+  },
+  "urlErrorMsg": {
+    "message": "URI கள் சரியான HTTP / HTTPS முன்னொட்டு தேவை."
+  },
+  "usedByClients": {
+    "message": "பல்வேறு வாடிக்கையாளர்கள் பல்வேறு பயன்படுத்திய"
+  },
+  "userName": {
+    "message": "பயனர்பெயர்"
+  },
+  "visitWebSite": {
+    "message": "எங்கள் வலைத்தளத்தைப் பார்வையிடவும்"
+  },
+  "youSign": {
+    "message": "நீங்கள் கையெழுத்திடுகிறீர்கள்"
+  }
+}

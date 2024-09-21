@@ -1,0 +1,168 @@
+{
+  "resources": {
+    "@metamask/snaps-execution-environments": {
+      "packages": {
+        "@metamask/post-message-stream": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>node-fetch": {
+      "globals": {
+        "fetch": true
+      }
+    },
+    "@metamask/controllers>web3-provider-engine>cross-fetch>node-fetch": {
+      "globals": {
+        "fetch": true
+      }
+    },
+    "lodash": {
+      "globals": {
+        "setTimeout": true,
+        "clearTimeout": true
+      }
+    },
+    "react-responsive-carousel": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
+    "react-beautiful-dnd": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
+    "react-dnd-html5-backend": {
+      "globals": {
+        "clearTimeout": true,
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
+    "@ethersproject/providers>@ethersproject/random": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "eth-keyring-controller>@metamask/browser-passworder": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk": {
+      "packages": {
+        "eth-lattice-keyring>gridplus-sdk>uuid": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "ethereumjs-wallet>randombytes": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "web3": {
+      "globals": {
+        "XMLHttpRequest": true
+      }
+    },
+    "@metamask/controllers>web3": {
+      "globals": {
+        "XMLHttpRequest": true
+      }
+    },
+    "react-dom": {
+      "globals": {
+        "HTMLIFrameElement": true
+      }
+    },
+    "react-devtools": {
+      "packages": {
+        "react-devtools>react-devtools-core": true
+      }
+    },
+    "react-devtools>react-devtools-core": {
+      "globals": {
+        "setTimeout": true,
+        "WebSocket": true
+      }
+    },
+    "node-fetch": {
+      "globals": {
+        "fetch": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true
+      }
+    },
+    "nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/approval-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/permission-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/notification-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/rpc-methods>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/rpc-methods-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "depcheck>@vue/compiler-sfc>postcss>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "dependency-tree>precinct>detective-postcss>postcss>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/announcement-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    }
+  }
+}

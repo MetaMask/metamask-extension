@@ -1,0 +1,358 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "Odmítnout"
+  },
+  "account": {
+    "message": "Účet"
+  },
+  "accountDetails": {
+    "message": "Detaily účtu"
+  },
+  "accountName": {
+    "message": "Název účtu"
+  },
+  "addToken": {
+    "message": "Přidat token"
+  },
+  "amount": {
+    "message": "Částka"
+  },
+  "appDescription": {
+    "message": "Ethereum rozšíření prohlížeče",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "Schválit"
+  },
+  "approved": {
+    "message": "Schváleno"
+  },
+  "attributions": {
+    "message": "Zásluhy"
+  },
+  "back": {
+    "message": "Zpět"
+  },
+  "balance": {
+    "message": "Zůstatek:"
+  },
+  "cancel": {
+    "message": "Zrušit"
+  },
+  "confirm": {
+    "message": "Potvrdit"
+  },
+  "confirmPassword": {
+    "message": "Potvrdit heslo"
+  },
+  "confirmed": {
+    "message": "Potvrzeno"
+  },
+  "connectingToMainnet": {
+    "message": "Připojuji se k Ethereum Mainnet"
+  },
+  "contractDeployment": {
+    "message": "Nasazení kontraktu"
+  },
+  "copiedExclamation": {
+    "message": "Zkopírováno!"
+  },
+  "copyToClipboard": {
+    "message": "Kopírovat do schránky"
+  },
+  "create": {
+    "message": "Vytvořit"
+  },
+  "customToken": {
+    "message": "Vlastní token"
+  },
+  "decimal": {
+    "message": "Počet desetinných míst přesnosti"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Desetinných míst musí být od 0 do 36."
+  },
+  "details": {
+    "message": "Podrobnosti"
+  },
+  "done": {
+    "message": "Hotovo"
+  },
+  "downloadStateLogs": {
+    "message": "Stáhnout stavové protokoly"
+  },
+  "dropped": {
+    "message": "Zrušeno"
+  },
+  "edit": {
+    "message": "Upravit"
+  },
+  "etherscanView": {
+    "message": "Prohlédněte si účet na Etherscan"
+  },
+  "failed": {
+    "message": "Neúspěšné"
+  },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "Import souboru nefunguje? Klikněte sem!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "from": {
+    "message": "Od"
+  },
+  "gasLimit": {
+    "message": "Limit paliva"
+  },
+  "gasLimitTooLow": {
+    "message": "Limit paliva musí být alespoň 21000"
+  },
+  "gasPrice": {
+    "message": "Cena paliva (GWEI)"
+  },
+  "here": {
+    "message": "zde",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Skrýt"
+  },
+  "hideTokenPrompt": {
+    "message": "Skrýt token?"
+  },
+  "importAccount": {
+    "message": "Import účtu"
+  },
+  "importAccountMsg": {
+    "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
+  },
+  "imported": {
+    "message": "Importováno",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "insufficientFunds": {
+    "message": "Nedostatek finančních prostředků."
+  },
+  "insufficientTokens": {
+    "message": "Nedostatek tokenů."
+  },
+  "invalidAddress": {
+    "message": "Neplatná adresa"
+  },
+  "invalidAddressRecipient": {
+    "message": "Adresa příjemce je neplatná"
+  },
+  "invalidRPC": {
+    "message": "Neplatné RPC URI"
+  },
+  "jsonFile": {
+    "message": "JSON soubor",
+    "description": "format for importing an account"
+  },
+  "learnMore": {
+    "message": "Zjistěte více."
+  },
+  "learnMoreUpperCase": {
+    "message": "Zjistěte více."
+  },
+  "likeToImportTokens": {
+    "message": "Chcete přidat tyto tokeny?"
+  },
+  "links": {
+    "message": "Odkazy"
+  },
+  "loading": {
+    "message": "Načítám..."
+  },
+  "loadingTokens": {
+    "message": "Načítám tokeny..."
+  },
+  "lock": {
+    "message": "Odhlásit"
+  },
+  "message": {
+    "message": "Zpráva"
+  },
+  "mustSelectOne": {
+    "message": "Musíte zvolit aspoň 1 token."
+  },
+  "needImportFile": {
+    "message": "Musíte zvolit soubor k importu.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Nelze odeslat zápornou částku ETH."
+  },
+  "networks": {
+    "message": "Sítě"
+  },
+  "newAccount": {
+    "message": "Nový účet"
+  },
+  "newAccountNumberName": {
+    "message": "Účet $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "Nový kontrakt"
+  },
+  "newPassword": {
+    "message": "Nové heslo (min 8 znaků)"
+  },
+  "next": {
+    "message": "Další"
+  },
+  "noTransactions": {
+    "message": "Žádné transakce"
+  },
+  "passwordNotLongEnough": {
+    "message": "Heslo není dost dlouhé"
+  },
+  "passwordsDontMatch": {
+    "message": "Hesla nejsou stejná"
+  },
+  "pastePrivateKey": {
+    "message": "Vložte zde svůj privátní klíč:",
+    "description": "For importing an account from a private key"
+  },
+  "personalAddressDetected": {
+    "message": "Detekována osobní adresa. Zadejte adresu kontraktu tokenu."
+  },
+  "privacyMsg": {
+    "message": "Zásady ochrany osobních údajů"
+  },
+  "privateKey": {
+    "message": "Privátní klíč",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Upozornění: Nikdy nezveřejněte tento klíč. Kdokoli může s vaším privátním klíčem odcizit vaše aktiva z účtu."
+  },
+  "privateNetwork": {
+    "message": "Soukromá síť"
+  },
+  "readdToken": {
+    "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
+  },
+  "reject": {
+    "message": "Odmítnout"
+  },
+  "rejected": {
+    "message": "Odmítnuto"
+  },
+  "required": {
+    "message": "Povinné"
+  },
+  "revealSeedWords": {
+    "message": "Zobrazit slova klíčové fráze"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "save": {
+    "message": "Uložit"
+  },
+  "search": {
+    "message": "Hledat"
+  },
+  "seedPhraseReq": {
+    "message": "klíčové fráze mají 12 slov"
+  },
+  "selectType": {
+    "message": "Vybrat typ"
+  },
+  "send": {
+    "message": "Odeslat"
+  },
+  "settings": {
+    "message": "Nastavení"
+  },
+  "sigRequest": {
+    "message": "Požadavek podpisu"
+  },
+  "sign": {
+    "message": "Podepsat"
+  },
+  "signatureRequest": {
+    "message": "Požadavek podpisu"
+  },
+  "signed": {
+    "message": "Podepsáno"
+  },
+  "stateLogError": {
+    "message": "Chyba během získávání stavových protokolů."
+  },
+  "stateLogs": {
+    "message": "Stavové protokoly"
+  },
+  "stateLogsDescription": {
+    "message": "Stavové protokoly obsahují vaše veřejné adresy účtů a odeslané transakce."
+  },
+  "submitted": {
+    "message": "Odesláno"
+  },
+  "supportCenter": {
+    "message": "Navštivte naše centrum podpory"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbol musí mít 11 nebo méně znaků."
+  },
+  "terms": {
+    "message": "Podmínky použití"
+  },
+  "to": {
+    "message": "Komu"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token byl už přidán."
+  },
+  "tokenSymbol": {
+    "message": "Symbol tokenu"
+  },
+  "total": {
+    "message": "Celkem"
+  },
+  "transactionError": {
+    "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
+  },
+  "unapproved": {
+    "message": "Neschváleno"
+  },
+  "unknown": {
+    "message": "Neznámé"
+  },
+  "unknownNetwork": {
+    "message": "Neznámá soukromá síť"
+  },
+  "unlock": {
+    "message": "Přihlásit"
+  },
+  "urlErrorMsg": {
+    "message": "URI vyžadují korektní HTTP/HTTPS prefix."
+  },
+  "usedByClients": {
+    "message": "Používána různými klienty"
+  },
+  "visitWebSite": {
+    "message": "Navštivte naši stránku"
+  },
+  "youSign": {
+    "message": "Podepisujete"
+  }
+}

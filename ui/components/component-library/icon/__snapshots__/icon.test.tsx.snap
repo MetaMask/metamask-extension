@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Icon should render correctly 1`] = `
+<div>
+  <span
+    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+    data-testid="icon"
+    style="mask-image: url('./images/icons/add-square.svg');"
+  />
+</div>
+`;

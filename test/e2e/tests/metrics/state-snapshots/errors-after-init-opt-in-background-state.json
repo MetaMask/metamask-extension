@@ -1,0 +1,316 @@
+{
+  "AccountOrderController": {
+    "pinnedAccountList": {},
+    "hiddenAccountList": {}
+  },
+  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountsController": {
+    "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
+  },
+  "AddressBookController": { "addressBook": "object" },
+  "AlertController": {
+    "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
+    "unconnectedAccountAlertShownOrigins": "object",
+    "web3ShimUsageOrigins": "object"
+  },
+  "AnnouncementController": { "announcements": "object" },
+  "AppMetadataController": {
+    "currentAppVersion": "string",
+    "previousAppVersion": "",
+    "previousMigrationVersion": 0,
+    "currentMigrationVersion": "number"
+  },
+  "AppStateController": {
+    "connectedStatusPopoverHasBeenShown": true,
+    "defaultHomeActiveTabName": null,
+    "browserEnvironment": { "os": "string", "browser": "string" },
+    "popupGasPollTokens": "object",
+    "notificationGasPollTokens": "object",
+    "fullScreenGasPollTokens": "object",
+    "recoveryPhraseReminderHasBeenShown": true,
+    "recoveryPhraseReminderLastShown": "number",
+    "outdatedBrowserWarningLastShown": "object",
+    "nftsDetectionNoticeDismissed": false,
+    "showTestnetMessageInDropdown": true,
+    "showBetaHeader": false,
+    "showPermissionsTour": true,
+    "showNetworkBanner": true,
+    "showAccountBanner": true,
+    "trezorModel": null,
+    "onboardingDate": null,
+    "newPrivacyPolicyToastClickedOrClosed": "boolean",
+    "newPrivacyPolicyToastShownDate": "number",
+    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+    "nftsDropdownState": {},
+    "termsOfUseLastAgreed": "number",
+    "qrHardware": {},
+    "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
+    "snapsInstallPrivacyWarningShown": true,
+    "surveyLinkLastClickedOrClosed": "object",
+    "signatureSecurityAlertResponses": "object",
+    "switchedNetworkDetails": null,
+    "switchedNetworkNeverShowMessage": "boolean",
+    "currentExtensionPopupId": "number"
+  },
+  "ApprovalController": {
+    "pendingApprovals": "object",
+    "pendingApprovalCount": "number",
+    "approvalFlows": "object"
+  },
+  "AuthenticationController": { "isSignedIn": "boolean" },
+  "BridgeController": {
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean",
+        "srcNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        },
+        "destNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        }
+      }
+    }
+  },
+  "CronjobController": { "jobs": "object" },
+  "CurrencyController": {
+    "currencyRates": {
+      "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      }
+    },
+    "currentCurrency": "usd"
+  },
+  "DecryptMessageController": {
+    "unapprovedDecryptMsgs": "object",
+    "unapprovedDecryptMsgCount": 0
+  },
+  "EncryptionPublicKeyController": {
+    "unapprovedEncryptionPublicKeyMsgs": "object",
+    "unapprovedEncryptionPublicKeyMsgCount": 0
+  },
+  "EnsController": {
+    "ensEntries": "object",
+    "ensResolutionsByAddress": "object"
+  },
+  "GasFeeController": {
+    "gasFeeEstimatesByChainId": {},
+    "gasFeeEstimates": {},
+    "estimatedGasFeeTimeBounds": {},
+    "gasEstimateType": "none",
+    "nonRPCGasFeeApisDisabled": "boolean"
+  },
+  "KeyringController": {
+    "isUnlocked": true,
+    "keyrings": "object",
+    "vault": "string",
+    "encryptionKey": "string",
+    "encryptionSalt": "string"
+  },
+  "LoggingController": { "logs": "object" },
+  "MetaMetricsController": {
+    "participateInMetaMetrics": true,
+    "metaMetricsId": "fake-metrics-id",
+    "dataCollectionForMarketing": "boolean",
+    "marketingCampaignCookieId": null,
+    "eventsBeforeMetricsOptIn": "object",
+    "traits": "object",
+    "previousUserTraits": "object",
+    "fragments": "object",
+    "segmentApiCalls": "object"
+  },
+  "MetaMetricsDataDeletionController": {
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0
+  },
+  "MultichainBalancesController": { "balances": "object" },
+  "MultichainRatesController": {
+    "fiatCurrency": "usd",
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "cryptocurrencies": ["btc"]
+  },
+  "NameController": { "names": "object", "nameSources": "object" },
+  "NetworkController": {
+    "selectedNetworkClientId": "string",
+    "networksMetadata": {
+      "networkConfigurationId": {
+        "EIPS": { "1559": false },
+        "status": "available"
+      }
+    },
+    "networkConfigurationsByChainId": "object"
+  },
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "object", "1": "object" }
+  },
+  "NftController": {
+    "allNftContracts": "object",
+    "allNfts": "object",
+    "ignoredNfts": "object"
+  },
+  "NotificationController": { "notifications": "object" },
+  "NotificationServicesController": {
+    "subscriptionAccountsSeen": "object",
+    "isMetamaskNotificationsFeatureSeen": "boolean",
+    "isNotificationServicesEnabled": "boolean",
+    "isFeatureAnnouncementsEnabled": "boolean",
+    "metamaskNotificationsList": "object",
+    "metamaskNotificationsReadList": "object",
+    "isUpdatingMetamaskNotifications": "boolean",
+    "isFetchingMetamaskNotifications": "boolean",
+    "isUpdatingMetamaskNotificationsAccount": "object",
+    "isCheckingAccountsPresence": "boolean"
+  },
+  "NotificationServicesPushController": { "fcmToken": "string" },
+  "OnboardingController": {
+    "seedPhraseBackedUp": true,
+    "firstTimeFlowType": "import",
+    "completedOnboarding": true,
+    "onboardingTabs": "object"
+  },
+  "PPOMController": { "storageMetadata": {} },
+  "PermissionController": { "subjects": "object" },
+  "PermissionLogController": {
+    "permissionHistory": "object",
+    "permissionActivityLog": "object"
+  },
+  "PreferencesController": {
+    "useBlockie": false,
+    "useNonceField": false,
+    "usePhishDetect": true,
+    "dismissSeedBackUpReminder": true,
+    "useMultiAccountBalanceChecker": true,
+    "useSafeChainsListValidation": "boolean",
+    "useTokenDetection": true,
+    "useNftDetection": false,
+    "use4ByteResolution": true,
+    "useCurrencyRateCheck": true,
+    "useRequestQueue": true,
+    "openSeaEnabled": false,
+    "securityAlertsEnabled": "boolean",
+    "watchEthereumAccountEnabled": "boolean",
+    "bitcoinSupportEnabled": "boolean",
+    "bitcoinTestnetSupportEnabled": "boolean",
+    "addSnapAccountEnabled": "boolean",
+    "advancedGasFee": {},
+    "featureFlags": {},
+    "incomingTransactionsPreferences": {},
+    "knownMethodData": "object",
+    "currentLocale": "en",
+    "identities": "object",
+    "lostIdentities": "object",
+    "forgottenPassword": false,
+    "preferences": {
+      "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
+      "showFiatInTestnets": false,
+      "showTestNetworks": false,
+      "smartTransactionsOptInStatus": false,
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": true,
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean",
+      "showMultiRpcModal": "boolean"
+    },
+    "ipfsGateway": "string",
+    "isIpfsGatewayEnabled": "boolean",
+    "useAddressBarEnsResolution": true,
+    "ledgerTransportType": "webhid",
+    "snapRegistryList": "object",
+    "theme": "light",
+    "snapsAddSnapAccountModalDismissed": "boolean",
+    "useExternalNameSources": "boolean",
+    "useTransactionSimulations": true,
+    "enableMV3TimestampSave": true,
+    "useExternalServices": "boolean",
+    "selectedAddress": "string"
+  },
+  "QueuedRequestController": { "queuedRequestCount": 0 },
+  "SelectedNetworkController": { "domains": "object" },
+  "SignatureController": {
+    "unapprovedPersonalMsgs": "object",
+    "unapprovedTypedMessages": "object",
+    "unapprovedPersonalMsgCount": 0,
+    "unapprovedTypedMessagesCount": 0
+  },
+  "SmartTransactionsController": {
+    "smartTransactionsState": {
+      "fees": {},
+      "liveness": true,
+      "smartTransactions": "object"
+    }
+  },
+  "SnapController": {
+    "snaps": "object",
+    "snapStates": "object",
+    "unencryptedSnapStates": "object"
+  },
+  "SnapInsightsController": { "insights": "object" },
+  "SnapInterfaceController": { "interfaces": "object" },
+  "SnapsRegistry": {
+    "database": null,
+    "lastUpdated": null,
+    "databaseUnavailable": "boolean"
+  },
+  "SubjectMetadataController": { "subjectMetadata": "object" },
+  "SwapsController": {
+    "swapsState": {
+      "quotes": "object",
+      "quotesPollingLimitEnabled": false,
+      "fetchParams": null,
+      "tokens": null,
+      "tradeTxId": null,
+      "approveTxId": null,
+      "quotesLastFetched": null,
+      "customMaxGas": "",
+      "customGasPrice": null,
+      "customMaxFeePerGas": null,
+      "customMaxPriorityFeePerGas": null,
+      "swapsUserFeeLevel": "",
+      "selectedAggId": null,
+      "customApproveTxData": "string",
+      "errorKey": "",
+      "topAggId": null,
+      "routeState": "",
+      "swapsFeatureIsLive": true,
+      "saveFetchedQuotes": false,
+      "swapsQuoteRefreshTime": 60000,
+      "swapsQuotePrefetchingRefreshTime": 60000,
+      "swapsStxBatchStatusRefreshTime": 10000,
+      "swapsStxStatusDeadline": 180,
+      "swapsStxGetTransactionsRefreshTime": 10000,
+      "swapsStxMaxFeeMultiplier": 2,
+      "swapsFeatureFlags": {}
+    }
+  },
+  "TokenListController": {
+    "tokenList": "object",
+    "tokensChainsCache": {},
+    "preventPollingOnNetworkRestart": false
+  },
+  "TokenRatesController": { "marketData": "object" },
+  "TokensController": {
+    "tokens": "object",
+    "ignoredTokens": "object",
+    "detectedTokens": "object",
+    "allTokens": {},
+    "allIgnoredTokens": {},
+    "allDetectedTokens": {}
+  },
+  "TxController": {
+    "methodData": "object",
+    "transactions": "object",
+    "lastFetchedBlockNumbers": "object"
+  },
+  "UserOperationController": { "userOperations": "object" },
+  "UserStorageController": {
+    "isProfileSyncingEnabled": null,
+    "isProfileSyncingUpdateLoading": "boolean"
+  }
+}

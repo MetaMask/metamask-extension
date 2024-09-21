@@ -1,0 +1,428 @@
+@use "design-system";
+
+@import 'info-tab/index';
+@import 'alerts-tab/alerts-tab';
+@import 'developer-options-tab/index';
+@import 'networks-tab/index';
+@import 'settings-tab/index';
+@import 'contact-list-tab/index';
+
+.settings-page {
+  position: relative;
+  background: var(--color-background-default);
+  display: flex;
+  flex-flow: column nowrap;
+
+  &__content-padded {
+    padding: 16px;
+  }
+
+  &__error-text {
+    @include design-system.H7;
+
+    color: var(--color-error-default);
+  }
+
+  &__header {
+    &__title-container {
+      display: grid;
+      align-items: center;
+      grid-template-columns: 197px 1fr 1fr;
+
+      @include design-system.screen-sm-max {
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 0.5fr 2fr 0.5fr;
+        gap: 16px;
+        grid-template-areas:
+          'back title close'
+          'search search search';
+
+        &__back-button {
+          grid-area: back;
+        }
+
+        &__title {
+          grid-area: title;
+          text-align: center;
+        }
+
+        &__close-button {
+          grid-area: close;
+        }
+
+        &__search {
+          grid-area: search;
+        }
+      }
+
+      &__title {
+        @include design-system.screen-sm-min {
+          width: 197px;
+        }
+
+        @include design-system.screen-sm-max {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          max-width: 250px;
+        }
+      }
+    }
+
+    &__search {
+      width: 330px;
+
+      &__list {
+        background: var(--color-background-default);
+        box-sizing: border-box;
+        box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+        border-radius: 6px;
+        position: absolute;
+        width: 330px;
+        z-index: 10;
+
+        > div {
+          &:hover {
+            background: var(--color-background-default-hover);
+          }
+        }
+
+        &__item {
+          transition: 200ms ease-in-out;
+          display: grid;
+          align-items: center;
+          padding: 16px;
+          border-top: 1px solid var(--color-border-muted);
+          cursor: pointer;
+          grid-template-columns: 16px max-content 24px auto;
+          gap: 8px;
+
+          &__icon {
+            height: 15px;
+            width: 15px;
+            margin-right: 16px;
+          }
+
+          &__request,
+          &__tab,
+          &__section,
+          &__no-matching {
+            @include design-system.H6;
+
+            color: var(--color-icon-default);
+          }
+
+          &__highlight {
+            color: var(--color-warning-inverse);
+            background-color: var(--color-warning-default);
+          }
+
+          &__section-multiple-lines {
+            @include design-system.screen-sm-max {
+              margin-left: 10px;
+            }
+          }
+
+          &__caret {
+            [dir='rtl'] & {
+              transform: rotate(180deg);
+            }
+          }
+
+          &__link {
+            @include design-system.H6;
+
+            display: inline;
+            color: var(--color-primary-default);
+            margin-left: 3px;
+          }
+        }
+      }
+    }
+
+    .app-header__logo-container {
+      display: flex;
+    }
+
+    .app-header__metafox-logo--icon {
+      height: 24px;
+    }
+  }
+
+  &__subheader,
+  &__subheader--link {
+    @include design-system.screen-sm-max {
+      display: none;
+    }
+  }
+
+  &__subheader--link {
+    cursor: pointer;
+    margin-right: 4px;
+  }
+
+  &__subheader--link:hover {
+    cursor: pointer;
+    color: var(--color-primary-default);
+  }
+
+  &__subheader--break {
+    margin-inline-start: 4px;
+    white-space: nowrap;
+    width: 100%;
+    max-width: calc(100% - 125px - 85px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__sub-header {
+    height: 72px;
+    border-bottom: 1px solid var(--color-border-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+
+    @include design-system.screen-sm-max {
+      height: 69px;
+      position: relative;
+      text-align: center;
+    }
+  }
+
+  &__sub-header-text {
+    @include design-system.H4;
+
+    @include design-system.screen-sm-max {
+      @include design-system.H5;
+
+      width: 100%;
+    }
+  }
+
+  &__security-tab-sub-header {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--color-icon-alternative);
+
+    &__bold {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--color-text-default);
+    }
+  }
+
+  &__back-button {
+    margin-right: 8px;
+
+    [dir='rtl'] & {
+      margin: 0 0 0 8px;
+      transform: rotate(180deg);
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-flow: row nowrap;
+    height: 100%;
+    overflow: auto;
+
+    &__tabs {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+
+      @include design-system.screen-sm-min {
+        flex: 0 0 40%;
+        max-width: 197px;
+      }
+
+      .tab-bar__tab {
+        @include design-system.screen-sm-min {
+          max-height: 50px;
+        }
+
+        &__caret {
+          @include design-system.screen-sm-min {
+            display: none;
+          }
+        }
+      }
+    }
+
+    &__modules {
+      overflow-y: auto;
+      flex: 1 1 auto;
+      display: flex;
+      flex-flow: column;
+
+      @include design-system.screen-sm-max {
+        display: none;
+      }
+    }
+  }
+
+  &__body {
+    padding: 24px;
+  }
+
+  &__content-row {
+    padding: 10px 0 20px;
+
+    @include design-system.screen-sm-max {
+      flex-wrap: wrap;
+    }
+  }
+
+  &__content-item {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+
+    @include design-system.screen-sm-max {
+      height: initial;
+    }
+
+    &--without-height {
+      height: initial;
+    }
+
+    &--disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    & .dialog {
+      margin-top: 10px;
+    }
+
+    &__identicon {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+
+      &__item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background: unset;
+        border: 1px solid transparent;
+
+        &__icon {
+          &--active {
+            height: 40px;
+            width: 40px;
+            border-radius: 40px;
+            border: 2px solid var(--color-primary-default);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+    }
+
+    &__description {
+      @include design-system.H6;
+
+      margin-top: 8px;
+      margin-bottom: 12px;
+      color: var(--color-text-default);
+      font-size: 14px;
+      font-weight: 400;
+    }
+  }
+
+  &__content-row-experimental {
+    padding: 16px 0 16px 12px;
+  }
+
+  &__content-label {
+    text-transform: capitalize;
+  }
+
+  &__content-unordered-list {
+    padding-left: 2.5rem;
+    margin-top: 1rem;
+    list-style: disc;
+  }
+
+  &__content-description {
+    @include design-system.H6;
+
+    color: var(--color-text-alternative);
+
+    a {
+      color: var(--color-primary-default);
+    }
+  }
+
+  &__content-item-col {
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+
+    @include design-system.screen-sm-max {
+      max-width: 100%;
+    }
+  }
+
+  &__button {
+    cursor: pointer;
+  }
+
+  &__copy-icon {
+    padding-left: 4px;
+  }
+
+  &__button-group {
+    display: flex;
+    margin-left: auto;
+  }
+
+  &__address-book-button {
+    @include design-system.H5;
+
+    padding: 0;
+  }
+
+  &__address-book-button + &__address-book-button {
+    margin-left: 1.875rem;
+  }
+
+  &__inline-link {
+    @include design-system.H6;
+
+    display: initial;
+    padding: 0;
+  }
+
+  &--selected {
+    .settings-page {
+      &__content {
+        &__tabs {
+          @include design-system.screen-sm-max {
+            display: none;
+          }
+        }
+
+        &__modules {
+          @include design-system.screen-sm-max {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+
+  .toggle-button {
+    /*rtl:ignore*/
+    direction: ltr;
+
+    [dir='rtl'] & {
+      justify-content: flex-end;
+    }
+  }
+}

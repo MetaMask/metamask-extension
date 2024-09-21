@@ -1,0 +1,146 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { ButtonIcon } from './button-icon';
+
+# ButtonIcon
+
+The `ButtonIcon` is used for icons associated with a user action.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonicon--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={ButtonIcon} />
+
+### Icon Name<span style={{ color: 'red' }}>\*</span>
+
+Use the required `iconName` prop with `IconName` enum from `./ui/components/component-library` to select icon.
+
+Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonicon--icon-name-story" />
+</Canvas>
+
+```jsx
+import { ButtonIcon, IconName } from '../../component-library';
+
+<ButtonIcon iconName={IconName.Close} ariaLabel="Close" />;
+```
+
+### Size
+
+Use the `size` prop and the `ButtonIconSize` enum from `./ui/components/component-library/icon` to change the size of `ButtonIcon`. Defaults to `ButtonIconSize.Sm`
+
+Possible sizes include:
+
+- `ButtonIconSize.Sm` 24px
+- `ButtonIconSize.Lg` 32px
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonicon--size-story" />
+</Canvas>
+
+```jsx
+
+import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
+
+<ButtonIcon size={ButtonIconSize.Sm} iconName={IconName.Close} ariaLabel="Close"/>
+<ButtonIcon size={ButtonIconSize.Lg} iconName={IconName.Close} ariaLabel="Close"/>
+```
+
+### Aria Label
+
+Use the `ariaLabel` prop to set the name of the ButtonIcon for proper accessibility
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonicon--aria-label" />
+</Canvas>
+
+```jsx
+import { IconColor } from '../../../helpers/constants/design-system';
+import { ButtonIcon, IconName } from '../../component-library';
+
+
+<ButtonIcon as="button" iconName={IconName.Close} ariaLabel="Close"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={IconColor.primaryDefault} ariaLabel="Visit MetaMask.io"/>
+```
+
+### As
+
+Use the `as` box prop to change the element of `ButtonIcon`. Defaults to `button`.
+
+Button `as` options:
+
+- `button`
+- `a`
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonicon--as" />
+</Canvas>
+
+```jsx
+import { IconColor } from '../../../helpers/constants/design-system';
+import { ButtonIcon, IconName } from '../../component-library';
+
+
+<ButtonIcon as="button" iconName={IconName.Close} ariaLabel="Close"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={IconColor.primaryDefault} ariaLabel="Visit MetaMask.io"/>
+```
+
+### Href
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonicon--href" />
+</Canvas>
+
+```jsx
+import { IconColor } from '../../../helpers/constants/design-system';
+import { ButtonIcon, IconName } from '../../component-library';
+
+<ButtonIcon
+  href="https://metamask.io/"
+  target="_blank"
+  iconName={IconName.Export}
+  color={IconColor.primaryDefault}
+  ariaLabel="Visit MetaMask.io"
+/>;
+```
+
+### Color
+
+Use the `color` prop and the `Color` object to change the color of the `ButtonIcon`. Defaults to `Color.iconDefault`.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonicon--color-story" />
+</Canvas>
+
+```jsx
+import { IconColor } from '../../../helpers/constants/design-system';
+import { ButtonIcon, IconName } from '../../component-library';
+
+<ButtonIcon
+  iconName={IconName.Export}
+  color={IconColor.primaryDefault}
+  ariaLabel="Visit MetaMask.io"
+/>;
+```
+
+### Disabled
+
+Use the boolean `disabled` prop to disable button
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonicon--disabled" />
+</Canvas>
+
+```jsx
+import { ButtonIcon, IconName } from '../../component-library';
+
+<ButtonIcon iconName={IconName.Close} disabled ariaLabel="Close" />;
+```

@@ -1,0 +1,15 @@
+.loading-indicator {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  position: relative;
+  height: 16px;
+  width: 16px;
+
+  &__spinner {
+    position: absolute;
+    width: 27px;
+    height: 26px;
+    left: -5px;
+  }
+}

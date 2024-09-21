@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Text should render the Text with proper variant class name 1`] = `
+<div>
+  <h1
+    class="mm-box mm-text mm-text--display-md mm-box--color-text-default"
+  >
+    display-md
+  </h1>
+  <h2
+    class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+  >
+    heading-lg
+  </h2>
+  <h3
+    class="mm-box mm-text mm-text--heading-md mm-box--color-text-default"
+  >
+    heading-md
+  </h3>
+  <h4
+    class="mm-box mm-text mm-text--heading-sm mm-box--color-text-default"
+  >
+    heading-sm
+  </h4>
+  <p
+    class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
+  >
+    body-lg-medium
+  </p>
+  <p
+    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+  >
+    body-md
+  </p>
+  <p
+    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+  >
+    body-md-medium
+  </p>
+  <p
+    class="mm-box mm-text mm-text--body-md-bold mm-box--color-text-default"
+  >
+    body-md-bold
+  </p>
+  <p
+    class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+  >
+    body-sm
+  </p>
+  <p
+    class="mm-box mm-text mm-text--body-sm-medium mm-box--color-text-default"
+  >
+    body-sm-medium
+  </p>
+  <p
+    class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
+  >
+    body-sm-bold
+  </p>
+  <p
+    class="mm-box mm-text mm-text--body-xs mm-box--color-text-default"
+  >
+    body-xs
+  </p>
+  <p
+    class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-default"
+  >
+    body-xs-medium
+  </p>
+</div>
+`;

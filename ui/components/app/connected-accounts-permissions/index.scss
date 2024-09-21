@@ -1,0 +1,22 @@
+.connected-accounts-permissions {
+  &__list {
+    padding-block: 8px;
+    height: 100%;
+    overflow: auto;
+  }
+
+  &__list-item {
+    display: flex;
+  }
+
+  &__list-container {
+    max-height: 0;
+    height: auto;
+    transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &--expanded {
+      // arbitrarily set hard coded value for effect to work
+      max-height: 100px;
+    }
+  }
+}

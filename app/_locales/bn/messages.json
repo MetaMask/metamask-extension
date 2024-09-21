@@ -1,0 +1,795 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "প্রত্যাখ্যান"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR কোড স্ক্যান করুন"
+  },
+  "about": {
+    "message": "সম্পর্কে"
+  },
+  "accessingYourCamera": {
+    "message": "আপনার ক্যামেরা অ্যাক্সেস করছে..."
+  },
+  "account": {
+    "message": "অ্যাকাউন্ট"
+  },
+  "accountDetails": {
+    "message": "অ্যাকাউন্টের বিশদ"
+  },
+  "accountName": {
+    "message": "অ্যাকাউন্টের নাম"
+  },
+  "accountOptions": {
+    "message": "অ্যাকাউন্টের বিকল্পগুলি"
+  },
+  "accountSelectionRequired": {
+    "message": "আপনাকে একটি অ্যাকাউন্ট নির্বাচন করতে হবে!"
+  },
+  "activityLog": {
+    "message": "কার্যকলাপের লগ"
+  },
+  "addAcquiredTokens": {
+    "message": "MetaMask ব্যবহার করে আপনি যে টোকেনগুলি অর্জন করেছেন সেগুলি যোগ করুন"
+  },
+  "addAlias": {
+    "message": "উপনাম যোগ করুন"
+  },
+  "addNetwork": {
+    "message": "নেটওয়ার্ক যোগ করুন"
+  },
+  "addSuggestedTokens": {
+    "message": "প্রস্তাবিত টোকেনগুলি যোগ করুন"
+  },
+  "addToken": {
+    "message": "টোকেন যোগ করুন"
+  },
+  "advanced": {
+    "message": "উন্নত"
+  },
+  "amount": {
+    "message": "পরিমান"
+  },
+  "appDescription": {
+    "message": "আপনার ব্রাউজারে একটি Ethereum ওয়ালেট",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "অনুমোদন করুন"
+  },
+  "approved": {
+    "message": "অনুমোদিত"
+  },
+  "asset": {
+    "message": "সম্পদ"
+  },
+  "attributions": {
+    "message": "গুণাবলী"
+  },
+  "autoLockTimeLimit": {
+    "message": "স্বয়ংক্রিয়-লগ আউট টাইমার (মিনিট)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "MetaMask স্বয়ংক্রিয়ভাবে লগ আউট করার আগে নিষ্ক্রিয় থাকার সময় মিনিটে সেট করুন"
+  },
+  "average": {
+    "message": "গড়"
+  },
+  "back": {
+    "message": "ফিরুন"
+  },
+  "backupApprovalInfo": {
+    "message": "আপনি আপনার ডিভাইস হারিয়ে ফেললে, পাসওয়ার্ড ভুলে গেলে, MetaMask রিইনস্টল করতে হলে বা অন্য ডিভাইসে আপনার ওয়ালেট অ্যাক্সেস করার ক্ষেত্রে আপনার ওয়ালেট পুনরুদ্ধার করতে এই গোপন কোডটি প্রয়োজন।"
+  },
+  "backupApprovalNotice": {
+    "message": "আপনার ওয়ালেট এবং তহবিল সুরক্ষিত রাখতে আপনার গোপন পুনরুদ্ধারের কোড ব্যাক আপ করুন।"
+  },
+  "backupNow": {
+    "message": "এখনওই ব্যাকআপ নিন "
+  },
+  "balance": {
+    "message": "ব্যালেন্স"
+  },
+  "balanceOutdated": {
+    "message": "ব্যালেন্স অনেক পুরানো হতে পারে"
+  },
+  "basic": {
+    "message": "প্রাথমিক"
+  },
+  "blockExplorerUrl": {
+    "message": "এক্সপ্লোরার ব্লক করুন"
+  },
+  "blockExplorerView": {
+    "message": "$1 এ অ্যাকাউন্ট দেখুন",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "browserNotSupported": {
+    "message": "আপনার ব্রাউজার সমর্থিত নয়..."
+  },
+  "bytes": {
+    "message": "বাইটস"
+  },
+  "cancel": {
+    "message": "বাতিল করুন"
+  },
+  "cancelled": {
+    "message": "বাতিল করা হয়েছে"
+  },
+  "chainId": {
+    "message": "চেন আইডি"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "আপনার হার্ডওয়্যার ওয়ালেটের সাথে সংযোগ করতে আপনাকে Google Chrome এ MetaMask ব্যবহার করতে হবে।  "
+  },
+  "close": {
+    "message": "বন্ধ করুন"
+  },
+  "confirm": {
+    "message": "নিশ্চিত হন"
+  },
+  "confirmPassword": {
+    "message": "পাসওয়ার্ড নিশ্চিত করুন"
+  },
+  "confirmed": {
+    "message": "নিশ্চিত করা হয়েছে"
+  },
+  "connect": {
+    "message": "সংযুক্ত করুন"
+  },
+  "connectingTo": {
+    "message": " $1 এর সাথে সংযোগ করছে"
+  },
+  "connectingToGoerli": {
+    "message": "গোয়েরলি টেস্ট নেটওয়ার্কের সাথে সংযোগ করা হচ্ছে"
+  },
+  "connectingToMainnet": {
+    "message": "মুখ্য Ethereum নেটওয়ার্কের সাথে সংযোগ করছে"
+  },
+  "contractDeployment": {
+    "message": "কন্ট্র্যাক্ট নিয়োজন"
+  },
+  "contractInteraction": {
+    "message": "কন্ট্র্যাক্ট বাক্যালাপ"
+  },
+  "copiedExclamation": {
+    "message": "কপি করা হয়েছে!"
+  },
+  "copyAddress": {
+    "message": "ক্লিপবোর্ডে ঠিকানা কপি করুন"
+  },
+  "copyToClipboard": {
+    "message": "ক্লিপবোর্ডে কপি করুন"
+  },
+  "copyTransactionId": {
+    "message": "লেনদেনের আইডি কপি করুন"
+  },
+  "create": {
+    "message": "তৈরি করুন"
+  },
+  "createPassword": {
+    "message": "পাসওয়ার্ড তৈরি করুন"
+  },
+  "currencyConversion": {
+    "message": "মুদ্রা বিনিময়"
+  },
+  "currentLanguage": {
+    "message": "বর্তমান ভাষা"
+  },
+  "custom": {
+    "message": "উন্নত"
+  },
+  "customToken": {
+    "message": "কাস্টম টোকেন"
+  },
+  "decimal": {
+    "message": "নির্ভুলতার দশমিক"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "দশমিকগুলি অবশ্যই অন্তত 0 হতে হবে, এবং 36 এর উপর হবে না।"
+  },
+  "delete": {
+    "message": "মুছুন"
+  },
+  "details": {
+    "message": "বিশদ বিবরণ"
+  },
+  "done": {
+    "message": "সম্পন্ন "
+  },
+  "downloadGoogleChrome": {
+    "message": "Google Chrome ডাউনলোড করুন"
+  },
+  "downloadStateLogs": {
+    "message": "স্টেট লগগুলি ডাউনলোড করুন"
+  },
+  "dropped": {
+    "message": "নেমে গেছে"
+  },
+  "edit": {
+    "message": "সম্পাদনা"
+  },
+  "editContact": {
+    "message": "পরিচিতি সম্পাদনা করুন"
+  },
+  "enterPasswordContinue": {
+    "message": "অবিরত রাখতে পাসওয়ার্ড লিখুন"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum পাবলিক অ্যাড্রেস"
+  },
+  "etherscanView": {
+    "message": "Etherscan এ অ্যাকাউন্ট দেখুন"
+  },
+  "expandView": {
+    "message": "ভিউ সম্প্রসারিত করুন"
+  },
+  "failed": {
+    "message": "ব্যর্থ হয়েছে"
+  },
+  "fast": {
+    "message": "দ্রুত"
+  },
+  "fiat": {
+    "message": "ফিয়াট",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "ফাইল আমদানি কাজ করছে না? এখানে ক্লিক করুন!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "এই ডিভাইসটি সম্পর্কে ভুলে যান"
+  },
+  "from": {
+    "message": "থেকে"
+  },
+  "functionType": {
+    "message": "কার্যকারিতার ধরণ"
+  },
+  "gasLimit": {
+    "message": "গ্যাসের সীমা"
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "গ্যাসের সীমা হল আপনি যে পরিমাণ গ্যাস খরচ করতে চান তার সর্বোচ্চ ইউনিটের পরিমাণ।"
+  },
+  "gasLimitTooLow": {
+    "message": "গ্যাসের সীমা অবশ্যই অন্তত 21000 এ থাকতে হবে"
+  },
+  "gasPrice": {
+    "message": "গ্যাসের মূল্য (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "গ্যাসের মূল্য অত্যন্ত কম"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "গ্যাসের মূল্য আপনি প্রতি একক গ্যাসের জন্য যে পরিমাণ ইথার প্রদান করতে চান সেটি নির্দেশ করে।"
+  },
+  "gasUsed": {
+    "message": "গ্যাস ব্যবহার করা হয়েছে"
+  },
+  "general": {
+    "message": "সাধারণ"
+  },
+  "goerli": {
+    "message": "গোয়েরলি টেস্ট নেটওয়ার্ক"
+  },
+  "hardware": {
+    "message": "হার্ডওয়্যার"
+  },
+  "hardwareWalletConnected": {
+    "message": "হার্ডওয়্যার ওয়ালেট সংযুক্ত করা হয়েছে"
+  },
+  "hardwareWallets": {
+    "message": "একটি হার্ডওয়্যার ওয়ালেট সংযুক্ত করুন"
+  },
+  "hardwareWalletsMsg": {
+    "message": "আপনি MetaMask এর সাথে ব্যবহার করতে চান এমন একটি হার্ডওয়্যার ওয়ালেট নির্বাচন করুন"
+  },
+  "here": {
+    "message": "এখানে",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "হেক্স ডেটা"
+  },
+  "hide": {
+    "message": "লুকান"
+  },
+  "hideTokenPrompt": {
+    "message": "টোকেন লুকাবেন?"
+  },
+  "history": {
+    "message": "ইতিহাস"
+  },
+  "import": {
+    "message": "আমদানি",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "অ্যাকাউন্ট আমদানি করুন"
+  },
+  "importAccountMsg": {
+    "message": "আমদানি করা অ্যাকাউন্টগুলি আপনার গোড়ায় তৈরি করা MetaMask অ্যাকাউন্ট সীডফ্রেজের সাথে সংযুক্ত হবে না। আমদানি করা অ্যাকাউন্টগুলি সম্পর্কে আরও জানুন "
+  },
+  "imported": {
+    "message": "আমদানিকৃত",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "initialTransactionConfirmed": {
+    "message": "আপনার প্রারম্ভিক লেনদেনটি নেটওয়ার্ক নিশ্চিত করেছিল। ফিরে যেতে ঠিক আছে তে ক্লিক করুন।"
+  },
+  "insufficientBalance": {
+    "message": "অপর্যাপ্ত ব্যালেন্স৷"
+  },
+  "insufficientFunds": {
+    "message": "অপর্যাপ্ত তহবিল।"
+  },
+  "insufficientTokens": {
+    "message": "অপর্যাপ্ত টোকেন।"
+  },
+  "invalidAddress": {
+    "message": "অবৈধ ঠিকানা"
+  },
+  "invalidAddressRecipient": {
+    "message": "প্রাপকের ঠিকানা অবৈধ"
+  },
+  "invalidRPC": {
+    "message": "অবৈধ RPC URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "অবৈধ সীড ফ্রেজ"
+  },
+  "jsonFile": {
+    "message": "JSON ফাইল",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "জানা পরিচিতির ঠিকানা৷"
+  },
+  "learnMore": {
+    "message": "আরও জানুন"
+  },
+  "learnMoreUpperCase": {
+    "message": "আরও জানুন"
+  },
+  "ledgerAccountRestriction": {
+    "message": "একটি নতুন অ্যা কাউন্ট যোগ করার আগে আপনাকে আপনার শেষ অ্যাকাউন্ট ব্যবহার করে ফেলতে হবে।"
+  },
+  "likeToImportTokens": {
+    "message": "আপনি কি এই টোকেনগুলি যোগ করতে চান?"
+  },
+  "links": {
+    "message": "লিঙ্কসমূহ"
+  },
+  "loadMore": {
+    "message": "আরও লোড করুন"
+  },
+  "loading": {
+    "message": "লোড হচ্ছে..."
+  },
+  "loadingTokens": {
+    "message": "টোকেনগুলি লোড করছে..."
+  },
+  "localhost": {
+    "message": "লোকালহোস্ট 8545"
+  },
+  "lock": {
+    "message": "লগ আউট করুন"
+  },
+  "mainnet": {
+    "message": "মূল Ethereum নেটওয়ার্ক"
+  },
+  "max": {
+    "message": "সর্বাধিক"
+  },
+  "memo": {
+    "message": "মেমো"
+  },
+  "message": {
+    "message": "বার্তা"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask সংস্করণ"
+  },
+  "mustSelectOne": {
+    "message": "অবশ্যই অন্তত 1টি টোকেন নির্বাচন করতে হবে।"
+  },
+  "needImportFile": {
+    "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "ETH এর ঋণাত্মক অর্থরাশিগুলি পাঠাতে পারবে না। "
+  },
+  "networkName": {
+    "message": "নেটওয়ার্কের নাম"
+  },
+  "networks": {
+    "message": "নেটওয়ার্কসমূহ"
+  },
+  "nevermind": {
+    "message": "কিছু মনে করবেন না"
+  },
+  "newAccount": {
+    "message": "নতুন আ্যাকাউন্ট"
+  },
+  "newAccountNumberName": {
+    "message": "অ্যাকাউন্ট $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "নতুন পরিচিতি"
+  },
+  "newContract": {
+    "message": "নতুন কন্ট্র্যাক্ট"
+  },
+  "newPassword": {
+    "message": "নতুন পাসওয়ার্ড (অন্তত 8 অক্ষরের)"
+  },
+  "next": {
+    "message": "পরবর্তী"
+  },
+  "noConversionRateAvailable": {
+    "message": "কোনো বিনিময় হার উপলভ্য নয়"
+  },
+  "noTransactions": {
+    "message": "আপনার কোনো লেনদেন নেই"
+  },
+  "noWebcamFound": {
+    "message": "আপনার কম্পিউটারের ওয়েবক্যাম খুঁজে পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+  },
+  "noWebcamFoundTitle": {
+    "message": "ওয়েবক্যাম খুঁজে পাওয়া যায় নি"
+  },
+  "notEnoughGas": {
+    "message": "পর্যাপ্ত গ্যাস নেই"
+  },
+  "ofTextNofM": {
+    "message": "এর"
+  },
+  "off": {
+    "message": "বন্ধ"
+  },
+  "ok": {
+    "message": "ঠিক আছে"
+  },
+  "on": {
+    "message": "চালু"
+  },
+  "origin": {
+    "message": "উৎস"
+  },
+  "parameters": {
+    "message": "প্যারামিটারসমূহ"
+  },
+  "participateInMetaMetrics": {
+    "message": "MetaMetrics এ অংশগ্রহণ করুন"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "MetaMask কে আরও উন্নত করতে আমাদের সহায়তা করার জন্য MetaMetrics এ অংশগ্রহণ করুন"
+  },
+  "password": {
+    "message": "পাসওয়ার্ড"
+  },
+  "passwordNotLongEnough": {
+    "message": "পাসওয়ার্ড যথেষ্ট দীর্ঘ নয়"
+  },
+  "passwordsDontMatch": {
+    "message": "পাসওয়ার্ডগুলি মেলেনি"
+  },
+  "pastePrivateKey": {
+    "message": "আপনার গোপনীয় কী স্ট্রিং এখানে পেস্ট করুন:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "বাকি"
+  },
+  "personalAddressDetected": {
+    "message": "ব্যক্তিগত ঠিকানা সনাক্তিকৃত হয়েছে। টোকেন কন্ট্র্যাক্ট অ্যাড্রেসটি লিখুন।"
+  },
+  "prev": {
+    "message": "পূর্ববর্তী"
+  },
+  "primaryCurrencySetting": {
+    "message": "প্রাথমিক মুদ্রা"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "চেনটিতে (যেমন ETH) দেশীয় মুদ্রায় মানগুলি প্রদর্শনকে অগ্রাধিকার দিতে দেশীয় নির্বাচন করুন। আপনার নির্দেশিত মুদ্রায় মানগুলির প্রদর্শনকে অগ্রাধিকার দিতে নির্দেশিত নির্বাচন করুন।"
+  },
+  "privacyMsg": {
+    "message": "সম্মত হয়েছেন"
+  },
+  "privateKey": {
+    "message": "ব্যক্তিগত কী",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "সতর্কতা: কখনও এই কী টি প্রকাশ করবেন না। আপনার গোপন কী কারোর কাছে থাকলে তিনি যে কোনো সময় আপনার অ্যাকাউন্টে থাকা যে কোনো সম্পদ চুরি করে নিতে পারবেন।"
+  },
+  "privateNetwork": {
+    "message": "ব্যক্তিগত নেটওয়ার্ক"
+  },
+  "readdToken": {
+    "message": "আপনি আপনার অ্যাকাউন্টস বিকল্পের মেনুতে \"টোকেনগুলি যোগ করুন\" এ গিয়ে ভবিষ্যতে আবার এই টোকেনটি যোগ করতে পারবেন। "
+  },
+  "reject": {
+    "message": "প্রত্যাখ্যান"
+  },
+  "rejectAll": {
+    "message": "সব খারিজ করুন"
+  },
+  "rejectTxsDescription": {
+    "message": "আপনি $1টি লেনদেন ব্যাচ খারিজ করতে চলেছেন।"
+  },
+  "rejectTxsN": {
+    "message": "$1 লেনদেনগুলি খারিজ করুন"
+  },
+  "rejected": {
+    "message": "খারিজ করা হয়েছে"
+  },
+  "remove": {
+    "message": "সরান"
+  },
+  "removeAccount": {
+    "message": "অ্যাকাউন্ট সরান"
+  },
+  "removeAccountDescription": {
+    "message": "এই অ্যাকাউন্টটি আপনার ওয়ালেট থেকে অপসারণ করা হবে। অবিরত রাখার আগে অনুগ্রহ করে নিশ্চিত করুন যে এই আমদানি করা অ্যাকাউন্টটির জন্য আপনার মূল সীড ফ্রেজ বা গোপন কী আছে। আপনি অ্যাকাউন্ট ড্রপ-ডাউন থেকে অ্যাকাউন্টগুলি আবার আমদানি বা তৈরি করতে পারবেন।"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "অনুরোধগুলি স্বীকৃতির জন্য অপেক্ষা করছে"
+  },
+  "required": {
+    "message": "প্রয়োজন"
+  },
+  "reset": {
+    "message": "রিসেট করুন"
+  },
+  "restore": {
+    "message": "পুনরুদ্ধার করুন"
+  },
+  "revealSeedWords": {
+    "message": "সীড শব্দগুলি প্রকাশ করুন"
+  },
+  "revealSeedWordsWarning": {
+    "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "rpcUrl": {
+    "message": "নতুন RPC URL"
+  },
+  "save": {
+    "message": "সেভ করুন"
+  },
+  "scanInstructions": {
+    "message": "QR কোডটি আপনার ক্যামেরার সামনে ধরুন"
+  },
+  "scanQrCode": {
+    "message": "QR কোড স্ক্যান করুন"
+  },
+  "search": {
+    "message": "সার্চ করুন"
+  },
+  "securityAndPrivacy": {
+    "message": "নিরাপত্তা এবং গোপনীয়তা"
+  },
+  "seedPhraseReq": {
+    "message": "সীড ফ্রেজগুলি 12 শব্দের"
+  },
+  "selectAnAccount": {
+    "message": "একটি অ্যাকাউন্ট নির্বাচন করুন"
+  },
+  "selectHdPath": {
+    "message": "HD পাথ নির্বাচন করুন"
+  },
+  "selectPathHelp": {
+    "message": "আপনি নিচে আপনার বিদ্যমান লেজার ব্যালেন্স না দেখলে, \"Legacy (MEW / MyCrypto)\" পাথগুলিতে সুইচ করার চেষ্টা করুন "
+  },
+  "selectType": {
+    "message": "ধরণ নির্বাচন করুন"
+  },
+  "send": {
+    "message": "পাঠান"
+  },
+  "settings": {
+    "message": "সেটিংস"
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Testnets এ রূপান্তর দেখান"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Testnets এ ফিয়াট বাক্যালাপগুলি দেখাতে এটি নির্বাচন করুন"
+  },
+  "showHexData": {
+    "message": "হেক্স ডেটা দেখান"
+  },
+  "showHexDataDescription": {
+    "message": "পাঠাবার স্ক্রিনে হেক্স ডেটা ফিল্ডটি দেখাবার জন্য এটি নির্বাচন করুন"
+  },
+  "sigRequest": {
+    "message": "স্বাক্ষরের অনুরোধ"
+  },
+  "sign": {
+    "message": "স্বাক্ষর করুন"
+  },
+  "signatureRequest": {
+    "message": "স্বাক্ষরের অনুরোধ"
+  },
+  "signed": {
+    "message": "স্বাক্ষরিত"
+  },
+  "somethingWentWrong": {
+    "message": "ওহো! কিছু সমস্যা হয়েছে।"
+  },
+  "speedUp": {
+    "message": "গতি বাড়ান"
+  },
+  "speedUpCancellation": {
+    "message": "এই বাতিলকরণটির গতি বাড়ান"
+  },
+  "speedUpTransaction": {
+    "message": "এই লেনদেনটি দ্রুততর করুন "
+  },
+  "stateLogError": {
+    "message": "স্টেট লগগুলি পুনরুদ্ধার করার ত্রুটি।"
+  },
+  "stateLogs": {
+    "message": "স্টেট লগসমূহ"
+  },
+  "stateLogsDescription": {
+    "message": "স্টেট লগগুলিতে আপনার পাবলিক অ্যাকাউন্টের ঠিকানা এবং প্রেরণ করার লেনদেনগুলি আছে।"
+  },
+  "submitted": {
+    "message": "জমা করা হয়েছে"
+  },
+  "supportCenter": {
+    "message": "আমাদের সহায়তা কেন্দ্রে যান"
+  },
+  "switchNetworks": {
+    "message": "নেটওয়ার্কগুলি বদলান"
+  },
+  "symbol": {
+    "message": "প্রতীক"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "প্রতীকটি 11 টি অক্ষর বা তার চেয়ে কম হতে হবে।"
+  },
+  "terms": {
+    "message": "ব্যবহারের শর্তাবলী"
+  },
+  "tips": {
+    "message": "অর্থসাহায্য এবং পরামর্শ"
+  },
+  "to": {
+    "message": "প্রতি"
+  },
+  "token": {
+    "message": "টোকেন"
+  },
+  "tokenAlreadyAdded": {
+    "message": "টোকেন ইতিমিধ্যে যোগ করা হয়েছে।"
+  },
+  "tokenContractAddress": {
+    "message": "টোকেন কন্ট্র্যাক্ট অ্যাড্রেস"
+  },
+  "tokenSymbol": {
+    "message": "টোকেনের প্রতীক"
+  },
+  "total": {
+    "message": "মোট"
+  },
+  "transaction": {
+    "message": "লেনদেন"
+  },
+  "transactionCancelAttempted": {
+    "message": "$2 এ $1 এর গ্যাস ফী দিয়ে লেনদেন বাতিল করার প্রচেষ্টা করা হয়েছে"
+  },
+  "transactionCancelSuccess": {
+    "message": "$2 এ লেনদেন সফলভাবে বাতিল হয়েছে"
+  },
+  "transactionConfirmed": {
+    "message": " $2 এ লেনদেন নিশ্চিত হয়েছে।"
+  },
+  "transactionCreated": {
+    "message": "$2 এ $1 এর একটি মান দিয়ে লেনদেন তৈরি করা হয়েছে।"
+  },
+  "transactionDropped": {
+    "message": "লেনদেন $2 এ নেমে গেছে।"
+  },
+  "transactionError": {
+    "message": "লেনদেনের ত্রুটি। কন্ট্র্যাক্ট কোডে ব্যতিক্রম দেখাচ্ছে।"
+  },
+  "transactionErrorNoContract": {
+    "message": "একটি অ-পরিচিতির ঠিকানায় একটি কল করার চেষ্টা করছে।"
+  },
+  "transactionErrored": {
+    "message": "লেনদেনে একটি ত্রুটি হয়েছে।"
+  },
+  "transactionFee": {
+    "message": "লেনদেন ফী"
+  },
+  "transactionResubmitted": {
+    "message": "$2 এ গ্যাস ফী $1 তে বাড়িয়ে লেনদেন আবার জমা করা হয়েছে"
+  },
+  "transactionSubmitted": {
+    "message": "$2 এ $1 এর গ্যাস ফী সহ লেনদেন জমা করা হয়েছে।"
+  },
+  "transactionUpdated": {
+    "message": "লেনদেন $2 এ আপডেট করা হয়েছে।"
+  },
+  "transfer": {
+    "message": "ট্রান্সফার করুন"
+  },
+  "transferFrom": {
+    "message": "থেকে ট্রান্সফার করুন"
+  },
+  "tryAgain": {
+    "message": "আবার করুন"
+  },
+  "unapproved": {
+    "message": "অননুমোদিত"
+  },
+  "units": {
+    "message": "ইউনিটসমূহ"
+  },
+  "unknown": {
+    "message": "অজানা"
+  },
+  "unknownNetwork": {
+    "message": "অজানা ব্যক্তিগত নেটওয়ার্ক"
+  },
+  "unknownQrCode": {
+    "message": "ত্রুটি: আমরা ওই QR কোডটি সনাক্ত করতে পারিনি"
+  },
+  "unlock": {
+    "message": "আনলক"
+  },
+  "unlockMessage": {
+    "message": "ছড়িয়ে ছিটিয়ে থাকা ওয়েব অপেক্ষা করছে"
+  },
+  "updatedWithDate": {
+    "message": "আপডেট করা $1"
+  },
+  "urlErrorMsg": {
+    "message": "URI গুলির যথাযথ HTTP/HTTPS প্রেফিক্সের প্রয়োজন।"
+  },
+  "usedByClients": {
+    "message": "বিভিন্ন ধরণের গ্রাহকদের দ্বারা ব্যবহৃত হয়"
+  },
+  "userName": {
+    "message": "ইউজারনেম"
+  },
+  "viewContact": {
+    "message": "পরিচিতি দেখুন"
+  },
+  "visitWebSite": {
+    "message": "আমাদের ওয়েবসাইট দেখুন"
+  },
+  "welcomeBack": {
+    "message": "পুনরায় স্বাগত!"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "এই বৈশিষ্ট্যটি ব্যবহার করতে আপনাকে ক্যামেরা অ্যাক্সেস করার অনুমতি দিতে হবে।"
+  },
+  "youSign": {
+    "message": "আপনি স্বাক্ষর করছেন"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "স্পীড আপ এ শূণ্য গ্যাসের মূল্য"
+  }
+}

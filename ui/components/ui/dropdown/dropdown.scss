@@ -1,0 +1,39 @@
+@use "design-system";
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  height: 36px;
+
+  &__select {
+    appearance: none;
+    // TODO: remove these after getting autoprefixer working in Storybook
+    -moz-appearance: none;
+    -webkit-appearance: none;
+
+    @include design-system.H6;
+
+    color: var(--color-text-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: 4px;
+    background-color: var(--color-background-default);
+    padding: 8px 40px 8px 16px;
+    width: 100%;
+
+    [dir='rtl'] & {
+      padding: 8px 16px 8px 40px;
+    }
+  }
+
+  &__icon-caret-down {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+
+    [dir='rtl'] & {
+      left: 16px;
+    }
+  }
+}

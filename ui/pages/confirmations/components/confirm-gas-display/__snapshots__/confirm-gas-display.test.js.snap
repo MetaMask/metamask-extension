@@ -1,0 +1,131 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmGasDisplay should match snapshot 1`] = `
+<div>
+  <div
+    class="transaction-detail-item"
+    data-testid="confirm-gas-display"
+  >
+    <div
+      class="transaction-detail-item__row"
+    >
+      <h6
+        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-bottom-1 mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--color-text-default"
+      >
+        Estimated fee
+      </h6>
+      <div
+        class="transaction-detail-item__detail-values"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-md mm-box--width-full mm-box--color-text-alternative"
+        >
+          <div
+            class="gas-details-item__currency-container"
+            style="width: 100%;"
+          >
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-1 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-baseline mm-box--color-primary-default mm-box--background-color-transparent"
+              data-testid="edit-gas-fee-icon"
+              style="text-decoration: none;"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/edit.svg');"
+              />
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+              />
+            </button>
+          </div>
+        </h6>
+        <h6
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
+        >
+          <div
+            class="gas-details-item__currency-container"
+          >
+            <div
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              title="0.001197 ETH"
+            >
+              <span
+                class="mm-box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
+              >
+                0.001197
+              </span>
+              <span
+                class="mm-box mm-text currency-display-component__suffix mm-text--body-md mm-box--margin-inline-start-1 mm-box--color-text-alternative"
+              >
+                ETH
+              </span>
+            </div>
+          </div>
+        </h6>
+      </div>
+    </div>
+    <div
+      class="transaction-detail-item__row"
+    >
+      <div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+          >
+            🦊 Market
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            <span
+              data-testid="gas-timing-time"
+            >
+              ~
+              5 min
+            </span>
+          </p>
+        </div>
+      </div>
+      <h6
+        class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
+      >
+        <div
+          class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
+        >
+          <div
+            class="box box--flex-direction-row"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm-medium mm-box--color-text-alternative"
+            >
+              Max fee:
+            </p>
+          </div>
+          <div
+            class="gas-details-item__currency-container"
+            paddingstart="1"
+          >
+            <div
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              title="0.00147 ETH"
+            >
+              <span
+                class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+              >
+                0.00147
+              </span>
+              <span
+                class="mm-box mm-text currency-display-component__suffix mm-text--body-sm mm-box--margin-inline-start-1 mm-box--color-text-alternative"
+              >
+                ETH
+              </span>
+            </div>
+          </div>
+        </div>
+      </h6>
+    </div>
+  </div>
+</div>
+`;

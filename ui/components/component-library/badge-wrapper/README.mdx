@@ -1,0 +1,383 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { BadgeWrapper } from './badge-wrapper';
+
+# BadgeWrapper
+
+The `BadgeWrapper` positions a badge on top of another component
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-badgewrapper--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={BadgeWrapper} />
+
+### Children
+
+Use the `children` prop to define the element to be wrapped by the `BadgeWrapper`. This element will be what the badge is positioned on top of.
+
+<Canvas>
+  <Story id="components-componentlibrary-badgewrapper--children" />
+</Canvas>
+
+```jsx
+import { Color, Size } from '../../../helpers/constants/design-system';
+
+import {
+  AvatarAccount,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
+  BadgeWrapperPosition,
+} from '../../component-library';
+
+<BadgeWrapper
+  badge={
+    <AvatarNetwork
+      size={AvatarNetworkSize.Xs}
+      name="Avalanche"
+      src="./images/avax-token.svg"
+      borderColor={BorderColor.borderMuted}
+    />
+  }
+>
+  <AvatarAccount
+    address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+  />
+</BadgeWrapper>
+<BadgeWrapper
+  badge={
+    <AvatarNetwork
+      size={AvatarNetworkSize.Xs}
+      name="Avalanche"
+      src="./images/avax-token.svg"
+      borderColor={BorderColor.borderMuted}
+    />
+  }
+>
+  <AvatarToken
+    name="Eth"
+    src="./images/eth_logo.svg"
+    borderColor={BorderColor.borderMuted}
+  />
+</BadgeWrapper>
+<BadgeWrapper
+  badge={
+    <AvatarNetwork
+      size={AvatarNetworkSize.Sm}
+      name="Avalanche"
+      src="./images/avax-token.svg"
+      borderColor={BorderColor.borderMuted}
+    />
+  }
+  anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
+>
+  <Box
+    as="img"
+    src="./catnip-spicywright.png"
+    borderRadius={BorderRadius.SM}
+    borderColor={BorderColor.borderMuted}
+    style={{ width: 100, height: 100 }}
+  />
+</BadgeWrapper>
+```
+
+### Badge
+
+Use the `badge` prop to define the badge component to be rendered on top of the `children` component.
+
+To access the component containing the badge, use the `badgeContainerProps` prop. The wrapping component is a `Box` and accepts all box props.
+
+<Canvas>
+  <Story id="components-componentlibrary-badgewrapper--badge" />
+</Canvas>
+
+```jsx
+
+import {
+  BorderColor,
+  BorderRadius,
+  Color,
+  IconColor,
+  Size,
+} from '../../../helpers/constants/design-system';
+
+import {
+  AvatarAccount,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
+  Icon,
+  IconSize,
+  IconName,
+  Tag,
+} from '../../component-library';
+
+<BadgeWrapper
+  badge={
+    <AvatarNetwork
+      size={AvatarNetworkSize.Xs}
+      name="Avalanche"
+      src="./images/avax-token.svg"
+      borderColor={BorderColor.borderMuted}
+    />
+  }
+>
+  <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
+</BadgeWrapper>
+<BadgeWrapper
+  badge={
+    <Box
+      backgroundColor={Color.successDefault}
+      borderRadius={BorderRadius.full}
+      borderColor={BorderColor.borderMuted}
+      borderWidth={2}
+      style={{ width: 12, height: 12 }}
+    />
+  }
+>
+  <Icon
+    name={IconName.Global}
+    size={IconSize.Xl}
+    color={IconColor.iconAlternative}
+  />
+</BadgeWrapper>
+<Box
+  paddingTop={1}
+  paddingBottom={1}
+  paddingRight={1}
+  paddingLeft={1}
+  backgroundColor={Color.backgroundAlternative}
+  borderRadius={BorderRadius.SM}
+  style={{ alignSelf: 'flex-start' }}
+>
+  <BadgeWrapper
+    badge={
+      <Tag
+        label="9999"
+        backgroundColor={Color.errorDefault}
+        labelProps={{ color: Color.errorInverse }}
+        borderColor={BorderColor.errorDefault}
+      />
+    }
+    anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
+  >
+    <Box
+      paddingTop={1}
+      paddingBottom={1}
+      paddingRight={8}
+      paddingLeft={8}
+      borderRadius={BorderRadius.SM}
+      borderColor={BorderColor.borderDefault}
+      backgroundColor={Color.backgroundDefault}
+    >
+      NFTs
+    </Box>
+  </BadgeWrapper>
+</Box>
+```
+
+### Position
+
+Use the `position` prop and the `BadgeWrapperPosition` enum to set the position of the badge. Possible positions are:
+
+- top left `BadgeWrapperPosition.topLeft`
+- top right `BadgeWrapperPosition.topRight`
+- bottom left `BadgeWrapperPosition.bottomLeft`
+- bottom right `BadgeWrapperPosition.bottomRight`
+
+If you require a custom position, you can use the `positionObj` prop see [Position Obj](/docs/components-componentlibrary-badgewrapper--position-obj#position-obj) for more details.
+
+<Canvas>
+  <Story id="components-componentlibrary-badgewrapper--position" />
+</Canvas>
+
+```jsx
+import { BorderColor Size } from '../../../helpers/constants/design-system';
+
+import {
+  AvatarAccount,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
+  BadgeWrapperPosition
+} from '../../component-library';
+
+<BadgeWrapper
+  position={BadgeWrapperPosition.topLeft}
+  badge={
+    <AvatarNetwork
+      size={AvatarNetworkSize.Xs}
+      name="Avalanche"
+      src="./images/avax-token.svg"
+      borderColor={BorderColor.borderMuted}
+    />
+  }
+>
+  <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
+</BadgeWrapper>
+<BadgeWrapper
+  badge={
+    <AvatarNetwork
+      size={AvatarNetworkSize.Xs}
+      name="Avalanche"
+      src="./images/avax-token.svg"
+      borderColor={BorderColor.borderMuted}
+    />
+  }
+>
+  <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
+</BadgeWrapper>
+<BadgeWrapper
+  position={BadgeWrapperPosition.bottomLeft}
+  badge={
+    <AvatarNetwork
+      size={AvatarNetworkSize.Xs}
+      name="Avalanche"
+      src="./images/avax-token.svg"
+      borderColor={BorderColor.borderMuted}
+    />
+  }
+>
+  <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
+</BadgeWrapper>
+<BadgeWrapper
+  position={BadgeWrapperPosition.bottomRight}
+  badge={
+    <AvatarNetwork
+      size={AvatarNetworkSize.Xs}
+      name="Avalanche"
+      src="./images/avax-token.svg"
+      borderColor={BorderColor.borderMuted}
+    />
+  }
+>
+  <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
+</BadgeWrapper>
+```
+
+### Position Obj
+
+Use the `positionObj` prop to set a custom position for the badge. The `positionObj` prop takes an object with the following properties:
+
+- `top` - the top position of the badge
+- `right` - the right position of the badge
+- `bottom` - the bottom position of the badge
+- `left` - the left position of the badge
+
+<Canvas>
+  <Story id="components-componentlibrary-badgewrapper--position-obj" />
+</Canvas>
+
+```jsx
+import { BorderColor Size } from '../../../helpers/constants/design-system';
+
+import {
+  AvatarAccount,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
+} from '../../component-library';
+
+
+<BadgeWrapper
+  badge={
+    <AvatarNetwork
+      size={AvatarNetworkSize.Xs}
+      name="Avalanche"
+      src="./images/avax-token.svg"
+      borderColor={BorderColor.borderMuted}
+    />
+  }
+  positionObj={{ top: 4, right: -8 }}
+>
+  <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"/>
+</BadgeWrapper>
+```
+
+### Anchor Element Shape
+
+Use the `anchorElementShape` prop and the `BadgeWrapperAnchorElementShape` enum to set the badge position relative to the shape of the anchor element. Possible shapes are:
+
+- circular `BadgeWrapperAnchorElementShape.circular`
+- rectangular `BadgeWrapperAnchorElementShape.rectangular`
+
+<Canvas>
+  <Story id="components-componentlibrary-badgewrapper--anchor-element-shape" />
+</Canvas>
+
+```jsx
+import Box from '../../ui/box/box';
+
+import { BorderRadius, Color } from '../../../helpers/constants/design-system';
+
+import { BadgeWrapper, BadgeWrapperAnchorElementShape } from '../../component-library';
+
+<BadgeWrapper
+  badge={
+    <Box
+      backgroundColor={Color.errorDefault}
+      borderRadius={BorderRadius.full}
+      style={{ width: 16, height: 16 }}
+    />
+  }
+>
+  <Box
+    backgroundColor={Color.infoDefault}
+    borderRadius={BorderRadius.full}
+    style={{ width: 40, height: 40 }}
+  />
+</BadgeWrapper>
+<BadgeWrapper
+  badge={
+    <Box
+      backgroundColor={Color.errorDefault}
+      borderRadius={BorderRadius.full}
+      style={{ width: 8, height: 8 }}
+    />
+  }
+>
+  <Box
+    backgroundColor={Color.infoDefault}
+    borderRadius={BorderRadius.full}
+    style={{ width: 40, height: 40 }}
+  />
+</BadgeWrapper>
+<BadgeWrapper
+  anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
+  badge={
+    <Box
+      backgroundColor={Color.errorDefault}
+      borderRadius={BorderRadius.full}
+      style={{ width: 16, height: 16 }}
+    />
+  }
+>
+  <Box
+    backgroundColor={Color.infoDefault}
+    style={{ width: 40, height: 40 }}
+  />
+</BadgeWrapper>
+<BadgeWrapper
+  anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
+  badge={
+    <Box
+      backgroundColor={Color.errorDefault}
+      borderRadius={BorderRadius.full}
+      style={{ width: 8, height: 8 }}
+    />
+  }
+>
+  <Box
+    backgroundColor={Color.infoDefault}
+    style={{ width: 40, height: 40 }}
+  />
+</BadgeWrapper>
+```

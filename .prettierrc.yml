@@ -1,0 +1,5 @@
+# All of these are defaults except singleQuote and endOfLine, but we specify them
+# for explicitness
+endOfLine: auto
+singleQuote: true
+trailingComma: all

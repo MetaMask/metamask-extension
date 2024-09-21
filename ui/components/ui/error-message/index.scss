@@ -1,0 +1,19 @@
+@use "design-system";
+
+.error-message {
+  @include design-system.H7;
+
+  min-height: 32px;
+  border: 1px solid var(--color-error-default);
+  color: var(--color-text-default);
+  background-color: var(--color-error-muted);
+  border-radius: 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px 10px;
+
+  &__text {
+    overflow: auto;
+  }
+}

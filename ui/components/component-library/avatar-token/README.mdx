@@ -1,0 +1,126 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { AvatarToken } from './avatar-token';
+
+# AvatarToken
+
+The `AvatarToken` is a component responsible for display of the image of a given token
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-avatartoken--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={AvatarToken} />
+
+### Size
+
+Use the `size` prop and the `AvatarTokenSize` enum to change the size of `AvatarToken`. Defaults to `IconSize.Sm`
+
+Possible sizes include:
+
+- `AvatarTokenSize.Xs` 16px
+- `AvatarTokenSize.Sm` 24px
+- `AvatarTokenSize.Md` 32px
+- `AvatarTokenSize.Lg` 40px
+- `AvatarTokenSize.Xl` 48px
+
+Defaults to `AvatarTokenSize.Md`
+
+The fallback display of the `AvatarToken` is a circle with the initial letter of the network name. The size of the initial letter is calculated based on the size of the `AvatarToken` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-avatartoken--size-story" />
+</Canvas>
+
+```jsx
+import { AvatarToken, AvatarTokenSize } from '../../component-library';
+
+<AvatarToken size={AvatarTokenSize.Xs} />
+<AvatarToken size={AvatarTokenSize.Sm} />
+<AvatarToken size={AvatarTokenSize.Md} />
+<AvatarToken size={AvatarTokenSize.Lg} />
+<AvatarToken size={AvatarTokenSize.Xl} />
+```
+
+### Name
+
+Use the `name` prop to set the initial letter of the `AvatarToken`. This will be used as the fallback display if no image url is passed to the `src` prop.
+
+Use `Text` component props to change the `variant`, `font-weight`, `font-family`, etc.
+
+<Canvas>
+  <Story id="components-componentlibrary-avatartoken--name" />
+</Canvas>
+
+```jsx
+import { AvatarToken } from '../../component-library';
+<AvatarToken name="eth" />;
+```
+
+### Src
+
+Use the `src` prop to set the image to be rendered of the `AvatarToken`.
+
+<Canvas>
+  <Story id="components-componentlibrary-avatartoken--src" />
+</Canvas>
+
+```jsx
+import { AvatarToken } from '../../component-library';
+
+<AvatarToken src="./images/eth_logo.svg" />
+<AvatarToken src="./images/arbitrum.svg" />
+<AvatarToken src="./images/bnb.png" />
+<AvatarToken src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png" />
+<AvatarToken src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png" />
+<AvatarToken src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png" />
+<AvatarToken src="https://i.seadn.io/gae/lSm8ChaI-3RqC9MTpi0j3KBXdfdPd57PN5UeQLY49JA3twy9wSt2dpaa22sSc6oyiXi2OEUR6GeFX8jwkZHEMADu6_Bd4EwTJ-rg?w=500&auto=format" />
+```
+
+### Show Halo
+
+Use the `showHalo` prop to display the component with halo effect. Only works if an image url is supplied to `src`
+
+<Canvas>
+  <Story id="components-componentlibrary-avatartoken--show-halo" />
+</Canvas>
+
+```jsx
+import { AvatarToken } from '../../component-library';
+
+<AvatarToken src="./images/eth_logo.svg" showHalo />;
+```
+
+### Color, Background Color And Border Color
+
+Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarToken`.
+
+<Canvas>
+  <Story id="components-componentlibrary-avatartoken--color-background-color-and-border-color" />
+</Canvas>
+
+```jsx
+import { TextColor, BackgroundColor, BorderColor, } from '../../../helpers/constants/design-system';
+import { AvatarToken } from '../../component-library';
+
+<AvatarToken
+    backgroundColor={BackgroundColor.goerli}
+    borderColor={BorderColor.goerli}
+    name="G"
+    color={Color.primaryInverse}
+>
+  G
+</AvatarToken>
+<AvatarToken
+  backgroundColor={BackgroundColor.sepolia}
+  borderColor={BorderColor.sepolia}
+  name="S"
+  color={Color.primaryInverse}
+>
+  S
+</AvatarToken>
+```

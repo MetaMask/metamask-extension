@@ -1,0 +1,16 @@
+.snap-external-pill {
+  &:hover {
+    opacity: 1;
+    text-decoration: none !important;
+  }
+
+  &__wrapper {
+    &:hover {
+      background-color: var(--color-info-muted);
+
+      & * {
+        color: var(--color-info-default);
+      }
+    }
+  }
+}

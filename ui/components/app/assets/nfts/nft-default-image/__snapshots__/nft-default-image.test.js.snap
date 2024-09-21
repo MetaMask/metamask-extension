@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NFT Default Image should match snapshot with all provided props 1`] = `
+<div>
+  <div
+    class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
+    data-testid="nft-default-image"
+    tabindex="0"
+  />
+</div>
+`;
+
+exports[`NFT Default Image should match snapshot with missing clickable prop 1`] = `
+<div>
+  <div
+    class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
+    data-testid="nft-default-image"
+    tabindex="0"
+  />
+</div>
+`;
+
+exports[`NFT Default Image should render with no props 1`] = `
+<div>
+  <div
+    class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
+    data-testid="nft-default-image"
+    tabindex="0"
+  />
+</div>
+`;

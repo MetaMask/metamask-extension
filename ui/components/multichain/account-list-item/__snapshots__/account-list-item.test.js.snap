@@ -1,0 +1,599 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccountListItem renders AccountListItem component and shows account name, address, and balance for non-EVM account: non-EVM-account-list-item 1`] = `
+<div>
+  <div
+    class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--sm:display-none"
+      data-testid="account-list-item-badge"
+    >
+      <button
+        class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+        data-testid="multichain-badge-status"
+      >
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-2"
+            class=""
+            data-original-title="Not connected"
+            data-tooltipped=""
+            style="display: flex;"
+            tabindex="0"
+          >
+            <div
+              class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              >
+                <div
+                  class="mm-avatar-account__jazzicon"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#F29602"
+                        height="32"
+                        transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FA6C00"
+                        height="32"
+                        transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#236CE1"
+                        height="32"
+                        transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              >
+                <div
+                  class="mm-avatar-account__jazzicon"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#F29602"
+                        height="32"
+                        transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FA6C00"
+                        height="32"
+                        transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#236CE1"
+                        height="32"
+                        transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-badge-wrapper__badge-container"
+                style="bottom: -1px; right: 2px;"
+              >
+                <div
+                  class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </button>
+    </div>
+    <div
+      class="mm-box mm-box--display-none mm-box--sm:display-flex"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-avatar-account__jazzicon"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+          >
+            <svg
+              height="32"
+              width="32"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#F29602"
+                height="32"
+                transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FA6C00"
+                height="32"
+                transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#236CE1"
+                height="32"
+                transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-avatar-account__jazzicon"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+          >
+            <svg
+              height="32"
+              width="32"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#F29602"
+                height="32"
+                transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FA6C00"
+                height="32"
+                transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#236CE1"
+                height="32"
+                transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box multichain-account-list-item__content mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+        >
+          <div
+            class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+          >
+            <button
+              class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
+            >
+              Test Account
+            </button>
+          </div>
+          <div
+            class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-text-default"
+          >
+            <div
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              data-testid="first-currency-display"
+              title="$100,000.00 USD"
+            >
+              <span
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+              >
+                $100,000.00
+              </span>
+              <span
+                class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+              >
+                USD
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            data-testid="account-list-address"
+          >
+            bc1qn3s...5eker
+          </p>
+        </div>
+        <div
+          class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+          data-testid="avatar-group"
+        >
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <div
+              class="mm-box mm-box--rounded-full"
+              style="margin-left: 0px;"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+              >
+                <img
+                  alt="undefined logo"
+                  class="mm-avatar-token__token-image"
+                  src="./images/bitcoin-logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AccountListItem renders AccountListItem component and shows account name, address, and balance: evm-account-list-item 1`] = `
+<div>
+  <div
+    class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--sm:display-none"
+      data-testid="account-list-item-badge"
+    >
+      <button
+        class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+        data-testid="multichain-badge-status"
+      >
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="Not connected"
+            data-tooltipped=""
+            style="display: flex;"
+            tabindex="0"
+          >
+            <div
+              class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              >
+                <div
+                  class="mm-avatar-account__jazzicon"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="32"
+                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="32"
+                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="32"
+                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              >
+                <div
+                  class="mm-avatar-account__jazzicon"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="32"
+                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="32"
+                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="32"
+                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-badge-wrapper__badge-container"
+                style="bottom: -1px; right: 2px;"
+              >
+                <div
+                  class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </button>
+    </div>
+    <div
+      class="mm-box mm-box--display-none mm-box--sm:display-flex"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-avatar-account__jazzicon"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+          >
+            <svg
+              height="32"
+              width="32"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#18CDF2"
+                height="32"
+                transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#035E56"
+                height="32"
+                transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#F26602"
+                height="32"
+                transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <div
+          class="mm-avatar-account__jazzicon"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+          >
+            <svg
+              height="32"
+              width="32"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#18CDF2"
+                height="32"
+                transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#035E56"
+                height="32"
+                transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#F26602"
+                height="32"
+                transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box multichain-account-list-item__content mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+        >
+          <div
+            class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+          >
+            <button
+              class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
+            >
+              Test Account
+            </button>
+          </div>
+          <div
+            class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-text-default"
+          >
+            <div
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              data-testid="first-currency-display"
+              title="0.006 ETH"
+            >
+              <span
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+              >
+                0.006
+              </span>
+              <span
+                class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+              >
+                ETH
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            data-testid="account-list-address"
+          >
+            0x0DCD5...3E7bc
+          </p>
+        </div>
+        <div
+          class="mm-box multichain-account-list-item__avatar-currency mm-box--display-flex mm-box--gap-1 mm-box--justify-content-center mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+          >
+            E
+          </div>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
+          >
+            <div
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              data-testid="second-currency-display"
+              title="0.006 ETH"
+            >
+              <span
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+              >
+                0.006
+              </span>
+              <span
+                class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+              >
+                ETH
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

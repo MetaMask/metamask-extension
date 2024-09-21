@@ -1,0 +1,10 @@
+.recovery-phrase-reminder {
+  &__list {
+    list-style: disc;
+    padding-left: 20px;
+
+    li {
+      margin-bottom: 5px;
+    }
+  }
+}

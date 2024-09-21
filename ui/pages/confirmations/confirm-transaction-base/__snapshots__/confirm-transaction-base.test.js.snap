@@ -1,0 +1,524 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm Transaction Base should match snapshot 1`] = `
+<div>
+  <div
+    class="page-container"
+    data-testid="page-container"
+  >
+    <div
+      class="confirm-page-container-navigation"
+      style="display: none;"
+    >
+      <div
+        class="confirm-page-container-navigation__container"
+        data-testid="navigation-container"
+        style="visibility: hidden;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="first-page"
+        >
+          <i
+            class="fa fa-angle-double-left fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="previous-page"
+        >
+          <i
+            class="fa fa-angle-left fa-2x"
+          />
+        </button>
+      </div>
+      <div
+        class="confirm-page-container-navigation__textcontainer"
+      >
+        <div
+          class="confirm-page-container-navigation__navtext"
+        >
+          0
+           
+          of
+           
+          1
+        </div>
+        <div
+          class="confirm-page-container-navigation__longtext"
+        >
+          requests waiting to be acknowledged
+        </div>
+      </div>
+      <div
+        class="confirm-page-container-navigation__container"
+        style="visibility: initial;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="next-page"
+        >
+          <i
+            class="fa fa-angle-right fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="last-page"
+        >
+          <i
+            class="fa fa-angle-double-right fa-2x"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="sender-to-recipient sender-to-recipient--default"
+      data-testid="sender-to-recipient"
+    >
+      <div
+        class="sender-to-recipient__party sender-to-recipient__party--sender"
+      >
+        <div
+          class="sender-to-recipient__sender-icon"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 24px; width: 24px; border-radius: 12px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(245, 228, 0);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#F2BE02"
+                    height="24"
+                    transform="translate(4.11204385070503 -3.89652025148055) rotate(387.1 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#01778E"
+                    height="24"
+                    transform="translate(-1.9540919563657109 12.528454691642345) rotate(227.4 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#C81435"
+                    height="24"
+                    transform="translate(13.477268130678231 -9.444486788922836) rotate(422.3 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="sender-to-recipient__tooltip-wrapper"
+        >
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class="sender-to-recipient__tooltip-container"
+            data-original-title="null"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
+          >
+            <div
+              class="sender-to-recipient__name"
+            >
+              Account 1
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="sender-to-recipient__arrow-container"
+      >
+        <div
+          class="sender-to-recipient__arrow-circle"
+        >
+          <i
+            class="fa fa-arrow-right sender-to-recipient__arrow-circle__icon"
+          />
+        </div>
+      </div>
+      <div
+        class="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+      >
+        <div
+          class="sender-to-recipient__sender-icon"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 24px; width: 24px; border-radius: 12px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(249, 108, 1);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#2343E1"
+                    height="24"
+                    transform="translate(1.995636908144359 -2.9078959833795546) rotate(391.8 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F2CA02"
+                    height="24"
+                    transform="translate(-10.28190700465709 0.16715759851871784) rotate(278.6 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#C8142C"
+                    height="24"
+                    transform="translate(16.427173764273576 -13.297284285395893) rotate(345.3 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="sender-to-recipient__tooltip-wrapper"
+        >
+          <div
+            class="sender-to-recipient__tooltip-container"
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <div
+              class="sender-to-recipient__name"
+              data-testid="sender-to-recipient__name"
+            >
+              0x85c16...DD65e
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="confirm-page-container-content"
+    >
+      
+      <div
+        class="confirm-page-container-summary"
+      >
+        <div
+          class="confirm-page-container-summary__action-row"
+        >
+          <div
+            class="confirm-page-container-summary__action"
+          >
+            <span
+              class="confirm-page-container-summary__action__name"
+            >
+              Sending ETH
+            </span>
+          </div>
+          <div
+            class="confirm-page-container-summary__nonce"
+          >
+            #70
+          </div>
+        </div>
+        <div
+          class="confirm-page-container-summary__title"
+        >
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+          >
+            <div
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              title="0.0001"
+            >
+              <span
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+              >
+                0.0001
+              </span>
+            </div>
+          </h3>
+        </div>
+      </div>
+      <div
+        class="box tabs box--flex-direction-row"
+      >
+        <ul
+          class="box tabs__list box--display-flex box--gap-1 box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
+        >
+          <li
+            class="box tab confirm-page-container-content__tab tab--active box--flex-direction-row"
+          >
+            <button
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
+            >
+              Details
+            </button>
+          </li>
+          <li
+            class="box tab confirm-page-container-content__tab box--flex-direction-row"
+          >
+            <button
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
+            >
+              Hex
+            </button>
+          </li>
+        </ul>
+        <div
+          class="box tabs__content box--flex-direction-row"
+        >
+          <div
+            class="confirm-page-container-content__details"
+          >
+            <div
+              class="transaction-alerts"
+            />
+            <div
+              class="mm-box simulation-details-layout mm-box--margin-4 mm-box--padding-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-lg mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+              data-testid="simulation-details-layout"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                  >
+                    Estimated changes
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-2"
+                      class="info-tooltip__tooltip-container"
+                      data-original-title="null"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+              >
+                No changes predicted for your wallet
+              </p>
+            </div>
+            <div
+              class="transaction-detail"
+            >
+              <div
+                class="transaction-detail-edit"
+              >
+                <button>
+                  Edit
+                </button>
+              </div>
+              <div
+                class="transaction-detail-rows"
+              >
+                <div>
+                  <div
+                    class="transaction-detail-item"
+                    data-testid="confirm-gas-display"
+                  >
+                    <div
+                      class="transaction-detail-item__row"
+                    >
+                      <h6
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-bottom-1 mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--color-text-default"
+                      >
+                        Estimated gas fee
+                        <div
+                          class="info-tooltip"
+                          data-testid="info-tooltip"
+                        >
+                          <div>
+                            <div
+                              aria-describedby="tippy-tooltip-3"
+                              class="info-tooltip__tooltip-container"
+                              data-original-title="null"
+                              data-tooltipped=""
+                              style="display: inline;"
+                              tabindex="0"
+                            >
+                              <svg
+                                viewBox="0 0 10 10"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+                                  fill="var(--color-icon-alternative)"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </h6>
+                      <div
+                        class="transaction-detail-item__detail-values"
+                      >
+                        <h6
+                          class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
+                        >
+                          <div>
+                            <div
+                              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                              title="0.000021"
+                            >
+                              <span
+                                class="mm-box mm-text currency-display-component__text mm-text--body-md-bold mm-text--ellipsis mm-box--color-text-default"
+                              >
+                                0.000021
+                              </span>
+                            </div>
+                          </div>
+                        </h6>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-detail-item__row"
+                    >
+                      <h6
+                        class="mm-box mm-text mm-text--body-sm mm-box--color-text-muted"
+                        style="flex: 1 0 auto;"
+                      />
+                      <h6
+                        class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
+                      >
+                        <strong>
+                          Max fee:
+                        </strong>
+                        <div>
+                          <div
+                            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                            title="0.000021"
+                          >
+                            <span
+                              class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            >
+                              0.000021
+                            </span>
+                          </div>
+                        </div>
+                      </h6>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                class="confirm-detail-row"
+              >
+                <div
+                  class="confirm-detail-row__label"
+                >
+                  Custom nonce
+                </div>
+                <div
+                  class="custom-nonce-input"
+                >
+                  <div
+                    class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                    min="0"
+                  >
+                    <input
+                      autocomplete="off"
+                      class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                      focused="false"
+                      type="number"
+                      value="70"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--margin-right-4 mm-box--margin-bottom-4 mm-box--margin-left-4 mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+          style="mask-image: url('./images/icons/danger.svg');"
+        />
+        <div
+          class="mm-box mm-box--min-width-0"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            You do not have enough  in your account to pay for transaction fees on Goerli network. Deposit  from another account.
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          />
+        </div>
+      </div>
+      <div
+        class="page-container__footer"
+      >
+        <footer>
+          <button
+            class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+            data-testid="page-container-footer-cancel"
+          >
+            Reject
+          </button>
+          <button
+            class="button btn--rounded btn-primary page-container__footer-button"
+            data-testid="page-container-footer-next"
+            disabled=""
+          >
+            Confirm
+          </button>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+`;

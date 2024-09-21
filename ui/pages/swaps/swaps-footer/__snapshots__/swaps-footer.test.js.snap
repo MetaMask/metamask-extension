@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SwapsFooter renders the component with initial props 1`] = `
+<div>
+  <div
+    class="swaps-footer"
+  >
+    <div
+      class="swaps-footer__buttons"
+    >
+      <div
+        class="page-container__footer swaps-footer__custom-page-container-footer-class"
+      >
+        <footer>
+          <button
+            class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel swaps-footer__custom-page-container-footer-button-class"
+            data-testid="page-container-footer-cancel"
+          >
+            Back
+          </button>
+          <button
+            class="button btn--rounded btn-primary page-container__footer-button swaps-footer__custom-page-container-footer-button-class"
+            data-testid="page-container-footer-next"
+          >
+            submitText
+          </button>
+        </footer>
+      </div>
+    </div>
+    <div
+      class="swaps-footer__bottom-text"
+    >
+      Terms of service
+    </div>
+  </div>
+</div>
+`;

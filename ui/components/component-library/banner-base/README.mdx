@@ -1,0 +1,140 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { BannerBase } from './banner-base';
+
+### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
+
+# BannerBase
+
+`BannerBase` serves as a base for all banner variants. It contains standard props such as information and related actions.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-bannerbase--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={BannerBase} />
+
+### Title
+
+Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-bannerbase--title" />
+</Canvas>
+
+```jsx
+import { BannerBase } from '../../component-library';
+
+<BannerBase title="Title is sentence case no period">
+  Pass only a string through the title prop
+</BannerBase>;
+```
+
+### Description
+
+The `description` is the content area of the `BannerBase` that must be a string. Description shouldn't repeat title and only 1-3 lines.
+
+If content requires more than a string, see `children` prop below.
+
+<Canvas>
+  <Story id="components-componentlibrary-bannerbase--description" />
+</Canvas>
+
+```jsx
+import { BannerBase } from '../../component-library';
+
+<BannerBase
+  title="Description vs children"
+  description="Pass only a string through the description prop or you can use children if the contents require more"
+/>;
+```
+
+### Children
+
+The `children` prop is an alternative to `description` for `BannerBase` when more than a string is needed. Children content shouldn't repeat title and only 1-3 lines.
+
+<Canvas>
+  <Story id="components-componentlibrary-bannerbase--children" />
+</Canvas>
+
+```jsx
+import { Size } from '../../../helpers/constants/design-system';
+import { BannerBase } from '../../component-library';
+
+<BannerBase>
+  {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
+  <ButtonLink size={Size.inherit} href="https://metamask.io/" target="_blank">
+    hyperlink.
+  </ButtonLink>
+</BannerBase>;
+```
+
+### Action Button Label, onClick, & Props
+
+Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/components-componentlibrary-buttonlink--default-story) for the action
+
+<Canvas>
+  <Story id="components-componentlibrary-bannerbase--action-button" />
+</Canvas>
+
+```jsx
+import { BannerBase, IconName } from '../../component-library';
+
+<BannerBase
+  title="Action prop demo"
+  actionButtonLabel="Action"
+  actionButtonProps={{
+    endIconName: IconName.Arrow2Right,
+  }}
+  actionButtonOnClick={() => console.log('ButtonLink actionButtonOnClick demo')}
+>
+  Use actionButtonLabel for action text, actionButtonOnClick for the onClick
+  handler, and actionButtonProps to pass any ButtonLink prop types such as
+  iconName
+</BannerBase>;
+```
+
+### On Close
+
+Use the `onClose` prop to pass a function to the close button. The close button will appear when this prop is used.
+
+Additional props can be passed to the close button with `closeButtonProps`
+
+<Canvas>
+  <Story id="components-componentlibrary-bannerbase--on-close" />
+</Canvas>
+
+```jsx
+import { BannerBase } from '../../component-library';
+
+<BannerBase
+  title="onClose demo"
+  onClose={() => console.log('close button clicked')}
+>
+  Click the close button icon to hide this notifcation
+</BannerBase>;
+```
+
+### Start Accessory
+
+Use the `startAccessory` prop to add components such as icons or fox image to the start (default: left) of the `BannerBase` content
+
+<Canvas>
+  <Story id="components-componentlibrary-bannerbase--start-accessory" />
+</Canvas>
+
+```jsx
+import { Size } from '../../../helpers/constants/design-system';
+import { BannerBase } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
+
+<BannerBase
+  title="Start accessory demo"
+  startAccessory={<Icon name={IconName.Info} size={IconSize.Lg} />}
+>
+  The info icon on the left is passed through the startAccessory prop
+</BannerBase>;
+```

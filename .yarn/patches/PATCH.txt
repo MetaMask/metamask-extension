@@ -1,0 +1,6 @@
+@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch
+
+We remove lookupNetwork from initializeProvider in the network controller to prevent network requests before user onboarding is completed.
+The network lookup is done after onboarding is completed, and when the extension reloads if onboarding has been completed.
+This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
+You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1

@@ -1,0 +1,797 @@
+{
+  "QRHardwareSignRequestCancel": {
+    "message": "Noraidīt"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Ieskenēt QR kodu"
+  },
+  "about": {
+    "message": "Par"
+  },
+  "accessingYourCamera": {
+    "message": "Piekļūst kamerai..."
+  },
+  "account": {
+    "message": "Konts"
+  },
+  "accountDetails": {
+    "message": "Konta informācija"
+  },
+  "accountName": {
+    "message": "Konta nosaukums"
+  },
+  "accountOptions": {
+    "message": "Konta opcijas"
+  },
+  "accountSelectionRequired": {
+    "message": "Jums jāatlasa konts!"
+  },
+  "activityLog": {
+    "message": "darbību žurnāls"
+  },
+  "addAcquiredTokens": {
+    "message": "Pievienojiet marķierus, ko ieguvāt, izmantojot MetaMask"
+  },
+  "addAlias": {
+    "message": "Pievienot segvārdu"
+  },
+  "addNetwork": {
+    "message": "Pievienot tīklu"
+  },
+  "addSuggestedTokens": {
+    "message": "Pievienot ieteiktos marķierus"
+  },
+  "addToken": {
+    "message": "Pievienot žetonu"
+  },
+  "advanced": {
+    "message": "Papildu"
+  },
+  "amount": {
+    "message": "Apjoms"
+  },
+  "appDescription": {
+    "message": "Ethereum maks pārlūkā",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
+  "approve": {
+    "message": "Apstiprināt"
+  },
+  "approved": {
+    "message": "Apstiprināts"
+  },
+  "asset": {
+    "message": "Aktīvs"
+  },
+  "attributions": {
+    "message": "Atribūti"
+  },
+  "autoLockTimeLimit": {
+    "message": "Automātiskās izrakstīšanās taimeris (minūtes)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "Iestatiet bezdarbības laiku minūtēs, pēc kura MetaMask veiks automātisku izrakstīšanu"
+  },
+  "average": {
+    "message": "Vidēji"
+  },
+  "back": {
+    "message": "Atpakaļ"
+  },
+  "backupApprovalInfo": {
+    "message": "Šis slepenais kods ir nepieciešams, lai atjaunotu jūsu maku, ja pazaudējat ierīci, aizmirstat paroli, jāpārinstalē MetaMask vai vēlaties piekļūt makam no citas ierīces."
+  },
+  "backupApprovalNotice": {
+    "message": "Dublējiet savu slepeno atgūšanas kodu, lai maks un līdzekļi atrastos drošībā."
+  },
+  "backupNow": {
+    "message": "Dublēt tagad"
+  },
+  "balance": {
+    "message": "Bilance"
+  },
+  "balanceOutdated": {
+    "message": "Bilance var nebūt aktuāla"
+  },
+  "basic": {
+    "message": "Pamata"
+  },
+  "blockExplorerUrl": {
+    "message": "Bloķēt Explorer"
+  },
+  "blockExplorerView": {
+    "message": "Skatīt kontu $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "browserNotSupported": {
+    "message": "Jūsu pārlūkprogramma netiek atbalstīta..."
+  },
+  "bytes": {
+    "message": "Baiti"
+  },
+  "cancel": {
+    "message": "Atcelt"
+  },
+  "cancelled": {
+    "message": "Atcelts"
+  },
+  "chainId": {
+    "message": "Ķēdes ID"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "MetaMask ir jāpalaiž pārlūkprogrammā Google Chrome, lai varētu pievienot aparatūras maku."
+  },
+  "close": {
+    "message": "Aizvērt"
+  },
+  "confirm": {
+    "message": "Apstiprināt"
+  },
+  "confirmPassword": {
+    "message": "Apstipriniet paroli"
+  },
+  "confirmed": {
+    "message": "Apstiprināts"
+  },
+  "connect": {
+    "message": "Pievienošana"
+  },
+  "connectingTo": {
+    "message": "Pieslēdzas $1"
+  },
+  "connectingToGoerli": {
+    "message": "Pieslēdzas Goerli testa tīklam"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Pieslēdzas Linea Goerli testa tīklam"
+  },
+  "connectingToMainnet": {
+    "message": "Savienojas ar galveno Ethereum tīklu"
+  },
+  "contractDeployment": {
+    "message": "Līgumu pielietošana"
+  },
+  "contractInteraction": {
+    "message": "Līguma mijiedarbības"
+  },
+  "copiedExclamation": {
+    "message": "Nokopēts!"
+  },
+  "copyAddress": {
+    "message": "Iekopēt adresi starpliktuvē"
+  },
+  "copyToClipboard": {
+    "message": "Kopēt starpliktuvē"
+  },
+  "copyTransactionId": {
+    "message": "Kopēt darījuma ID"
+  },
+  "create": {
+    "message": "Izveidot"
+  },
+  "createPassword": {
+    "message": "Izveidot paroli"
+  },
+  "currencyConversion": {
+    "message": "Valūtas konvertācija"
+  },
+  "currentLanguage": {
+    "message": "Pašreizējā valodā"
+  },
+  "custom": {
+    "message": "Papildu"
+  },
+  "customToken": {
+    "message": "Pielāgots marķieris"
+  },
+  "decimal": {
+    "message": "Decimāldaļu precizitāte"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
+  },
+  "delete": {
+    "message": "Dzēst"
+  },
+  "details": {
+    "message": "Informācija"
+  },
+  "done": {
+    "message": "Pabeigts"
+  },
+  "downloadGoogleChrome": {
+    "message": "Lejupielādēt ar Google Chrome"
+  },
+  "downloadStateLogs": {
+    "message": "Lejupielādēt stāvokļa žurnālus"
+  },
+  "dropped": {
+    "message": "Atmests"
+  },
+  "edit": {
+    "message": "Labot"
+  },
+  "editContact": {
+    "message": "Rediģēt līgumu"
+  },
+  "enterPasswordContinue": {
+    "message": "Ievadiet paroli, lai turpinātu"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum publiskā adrese"
+  },
+  "etherscanView": {
+    "message": "Skatīt kontu ar Etherscan"
+  },
+  "expandView": {
+    "message": "Izvērst skatījumu"
+  },
+  "failed": {
+    "message": "Neizdevās"
+  },
+  "fast": {
+    "message": "Ātrs"
+  },
+  "fileImportFail": {
+    "message": "Vai faila importēšanas iespēja nedarbojas? Klikšķiniet šeit!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Aizmirst šo ierīci"
+  },
+  "from": {
+    "message": "No"
+  },
+  "functionType": {
+    "message": "Funkcijas veids"
+  },
+  "gasLimit": {
+    "message": "Gas robežvērtība"
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "Gas robežvērtība ir maksimālais Gas vienību skaits, ko vēlaties tērēt."
+  },
+  "gasLimitTooLow": {
+    "message": "Minimālajai Gas robežvērtībai jābūt vismaz 21000"
+  },
+  "gasPrice": {
+    "message": "Gas cena (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Ārkārtīgi zema Gas cena"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Gas cena norāda Ether summu, ko vēlaties maksāt par katru Gas vienību."
+  },
+  "gasUsed": {
+    "message": "Izlietotie Gas"
+  },
+  "general": {
+    "message": "Vispārīgi"
+  },
+  "goerli": {
+    "message": "Goerli testa tīkls"
+  },
+  "hardware": {
+    "message": "aparatūra"
+  },
+  "hardwareWalletConnected": {
+    "message": "Aparatūras maks pieslēgts"
+  },
+  "hardwareWallets": {
+    "message": "Pieslēdziet aparatūras maku"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Atlasiet aparatūras maku lietošanai ar MetaMask"
+  },
+  "here": {
+    "message": "šeit",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex dati"
+  },
+  "hide": {
+    "message": "Slēpt"
+  },
+  "hideTokenPrompt": {
+    "message": "Paslēpt žetonu?"
+  },
+  "history": {
+    "message": "Vēsture"
+  },
+  "import": {
+    "message": "Importēt",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Importēt kontu"
+  },
+  "importAccountMsg": {
+    "message": "Importētie konti netiks piesaistīti sākotnēji izveidotā MetaMask konta atkopšanas frāzei. Uzziniet vairāk par importētajiem kontiem"
+  },
+  "imported": {
+    "message": "Importēts",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Jūsu sākotnējais darījums apstiprināts tīklā. Spiediet OK, lai atgrieztos."
+  },
+  "insufficientBalance": {
+    "message": "Nepietiekama bilance."
+  },
+  "insufficientFunds": {
+    "message": "Nepietiek līdzekļu."
+  },
+  "insufficientTokens": {
+    "message": "Nepietiek marķieru."
+  },
+  "invalidAddress": {
+    "message": "Nederīga adrese"
+  },
+  "invalidAddressRecipient": {
+    "message": "Nederīga saņēmēja adrese"
+  },
+  "invalidRPC": {
+    "message": "Nederīgs RPC URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Nederīga atkopšanas frāze"
+  },
+  "jsonFile": {
+    "message": "JSON datne",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "Zināmā līguma adrese."
+  },
+  "learnMore": {
+    "message": "Uzzināt vairāk"
+  },
+  "learnMoreUpperCase": {
+    "message": "Uzzināt vairāk"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Jums jāizmanto pēdējais konts pirms varat pievienot jaunu."
+  },
+  "likeToImportTokens": {
+    "message": "Vai vēlaties pievienot šos marķierus?"
+  },
+  "lineaGoerli": {
+    "message": "Linea Goerli testa tīkls"
+  },
+  "links": {
+    "message": "Saites"
+  },
+  "loadMore": {
+    "message": "Ielādēt vairāk"
+  },
+  "loading": {
+    "message": "Notiek ielāde..."
+  },
+  "loadingTokens": {
+    "message": "Ielādē marķierus..."
+  },
+  "localhost": {
+    "message": "Resursdators 8545"
+  },
+  "lock": {
+    "message": "Izrakstīties"
+  },
+  "mainnet": {
+    "message": "Galvenais Ethereum tīkls"
+  },
+  "max": {
+    "message": "Maks."
+  },
+  "memo": {
+    "message": "atgādinājums"
+  },
+  "message": {
+    "message": "Ziņojums"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask versija"
+  },
+  "mustSelectOne": {
+    "message": "Jāatlasa vismaz 1 marķieris."
+  },
+  "needImportFile": {
+    "message": "Jums jāatlasa fails, ko importēt",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Nav iespējams nosūtīt negatīvu ETH summu."
+  },
+  "networkName": {
+    "message": "Tīkla nosaukums"
+  },
+  "networks": {
+    "message": "Tīkli"
+  },
+  "nevermind": {
+    "message": "Nav svarīgi"
+  },
+  "newAccount": {
+    "message": "Jauns konts"
+  },
+  "newAccountNumberName": {
+    "message": "Konts $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Jauna kontaktpersona"
+  },
+  "newContract": {
+    "message": "Jauns līgums"
+  },
+  "newPassword": {
+    "message": "Jauna parole (vism. 8 rakstzīmes)"
+  },
+  "next": {
+    "message": "Nākamais"
+  },
+  "noConversionRateAvailable": {
+    "message": "Konversijas kurss nav pieejams"
+  },
+  "noTransactions": {
+    "message": "Jums nav neviena darījuma."
+  },
+  "noWebcamFound": {
+    "message": "Jūsu datora tīmekļa kamera netika atrasta. Lūdzu, mēģiniet vēlreiz."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Tīmekļa kamera nav atrasta"
+  },
+  "notEnoughGas": {
+    "message": "Nepietiek Gas"
+  },
+  "ofTextNofM": {
+    "message": "no"
+  },
+  "off": {
+    "message": "Izsl."
+  },
+  "ok": {
+    "message": "Labi"
+  },
+  "on": {
+    "message": "Iesl."
+  },
+  "origin": {
+    "message": "Avots"
+  },
+  "parameters": {
+    "message": "Parametri"
+  },
+  "participateInMetaMetrics": {
+    "message": "Piedalieties MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Piedalieties MetaMetrics un palīdziet mums to uzlabot"
+  },
+  "password": {
+    "message": "Parole"
+  },
+  "passwordNotLongEnough": {
+    "message": "Parole nav pietiekami gara"
+  },
+  "passwordsDontMatch": {
+    "message": "Paroles nesakrīt"
+  },
+  "pastePrivateKey": {
+    "message": "Ielīmējiet privātās atslēgas rindu šeit:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "gaida"
+  },
+  "personalAddressDetected": {
+    "message": "Konstatēta personīgā adrese. Ievadiet marķiera līguma adresi."
+  },
+  "prev": {
+    "message": "Iepr."
+  },
+  "primaryCurrencySetting": {
+    "message": "Primārā valūta"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Atlasīt vietējo, lai piešķirtu attēlotajām vērtībām prioritātes ķēdes vietējā vērtībā (piemēram, ETH). Atlasiet Fiat, lai piešķirtu augstāku prioritāti vērtībām jūsu atlasītajā fiat valūtā."
+  },
+  "privacyMsg": {
+    "message": "Privātuma politika"
+  },
+  "privateKey": {
+    "message": "Privātā atslēga",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Brīdinājums! Nekad neizpaudiet šo atslēgu. Ikviens, kuram ir Jūsu privātās atslēgas, var nozagt jebkuru jūsu kontā esošo aktīvu."
+  },
+  "privateNetwork": {
+    "message": "Privātais tīkls"
+  },
+  "readdToken": {
+    "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
+  },
+  "reject": {
+    "message": "Noraidīt"
+  },
+  "rejectAll": {
+    "message": "Noraidīt visus"
+  },
+  "rejectTxsDescription": {
+    "message": "Jūs gatavojaties noraidīt $1 darījumus."
+  },
+  "rejectTxsN": {
+    "message": "Noraidīt $1 darījumus"
+  },
+  "rejected": {
+    "message": "Noraidīts"
+  },
+  "remove": {
+    "message": "Noņemt"
+  },
+  "removeAccount": {
+    "message": "Konta noņemšana"
+  },
+  "removeAccountDescription": {
+    "message": "Šis darījums tiks dzēsts no jūsu maka. Pirms turpiniet, lūdzu, pārliecinieties, ka jums ir šī importētā konta oriģinālā sēklas frāze vai privātā atslēga. Jūs varat importēt vai izveidot kontus vēlreiz, izmantojot konta nolaižamo izvēlni."
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "pieprasījumi, kas gaida apstiprinājumu"
+  },
+  "required": {
+    "message": "Nepieciešams"
+  },
+  "reset": {
+    "message": "Atiestatīt"
+  },
+  "restore": {
+    "message": "Atjaunot"
+  },
+  "revealSeedWords": {
+    "message": "Parādīt atkopšanas vārdus"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+  },
+  "rpcUrl": {
+    "message": "Jauns RPC URL"
+  },
+  "save": {
+    "message": "Saglabāt"
+  },
+  "scanInstructions": {
+    "message": "Novietojiet QR kodu kameras priekšā"
+  },
+  "scanQrCode": {
+    "message": "Ieskenēt QR kodu"
+  },
+  "search": {
+    "message": "Meklēt"
+  },
+  "securityAndPrivacy": {
+    "message": "Drošība un konfidencialitāte"
+  },
+  "seedPhraseReq": {
+    "message": "Atkopšanas frāzes ir 12 vārdus garas"
+  },
+  "selectAnAccount": {
+    "message": "Atlasiet kontu"
+  },
+  "selectHdPath": {
+    "message": "Atlasīt HD ceļu"
+  },
+  "selectPathHelp": {
+    "message": "Ja zemāk neredzat savus esošos žurnāla kontus, mēģiniet pārslēgt ceļus uz \"Legacy (MEW / MyCrypto)\""
+  },
+  "selectType": {
+    "message": "Atlasiet veidu"
+  },
+  "send": {
+    "message": "Sūtīt"
+  },
+  "settings": {
+    "message": "Iestatījumi"
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Rādīt konversiju testa tīklos"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Atlasiet šo, lai testa tīklos uzrādītu fiat konversiju"
+  },
+  "showHexData": {
+    "message": "Rādīt hex datus"
+  },
+  "showHexDataDescription": {
+    "message": "Atlasiet šo, lai atvērtu hex datus sūtīšanas ekrānā"
+  },
+  "sigRequest": {
+    "message": "Paraksta pieprasījums"
+  },
+  "sign": {
+    "message": "Parakstīt"
+  },
+  "signatureRequest": {
+    "message": "Paraksta pieprasījums"
+  },
+  "signed": {
+    "message": "Parakstīts"
+  },
+  "somethingWentWrong": {
+    "message": "Ak vai! Radās problēma."
+  },
+  "speedUp": {
+    "message": "Paātrināt"
+  },
+  "speedUpCancellation": {
+    "message": "Paātrināt šo atcelšanu"
+  },
+  "speedUpTransaction": {
+    "message": "Paātrināt šo darījumu"
+  },
+  "stateLogError": {
+    "message": "Iegūstot statusa žurnālus, radās kļūda."
+  },
+  "stateLogs": {
+    "message": "Statusu žurnāli"
+  },
+  "stateLogsDescription": {
+    "message": "Statusa žurnāli ietver publisko kontu adreses un nosūtītos darījumus."
+  },
+  "submitted": {
+    "message": "Iesniegts"
+  },
+  "supportCenter": {
+    "message": "Apmeklējiet mūsu Atbalsta centru"
+  },
+  "switchNetworks": {
+    "message": "Mainīt tīklus"
+  },
+  "symbol": {
+    "message": "Simbols"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Simbolā nedrīkst būt vairāk par 11 rakstzīmēm."
+  },
+  "terms": {
+    "message": "Lietošanas noteikumi"
+  },
+  "tips": {
+    "message": "Dzeramnauda"
+  },
+  "to": {
+    "message": "Adresāts"
+  },
+  "token": {
+    "message": "Marķieris"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Žetons jau pievienots."
+  },
+  "tokenContractAddress": {
+    "message": "Marķiera līguma adrese"
+  },
+  "tokenSymbol": {
+    "message": "Žetona simbols"
+  },
+  "total": {
+    "message": "Kopā"
+  },
+  "transaction": {
+    "message": "darījums"
+  },
+  "transactionCancelAttempted": {
+    "message": "Darījums tika mēģināts atcelt ar maksājumu par Gas $1 pie $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Darījums veiksmīgi atcelts $2"
+  },
+  "transactionConfirmed": {
+    "message": "Darījums apstiprināts $2."
+  },
+  "transactionCreated": {
+    "message": "Darījums $1 vērtībā izveidots $2."
+  },
+  "transactionDropped": {
+    "message": "Darījums atmests $2."
+  },
+  "transactionError": {
+    "message": "Darījuma kļūda. Līguma kodā uzrādās izņēmums."
+  },
+  "transactionErrorNoContract": {
+    "message": "Mēģināt izsaukt funkciju, izmantojot adresi, kas nav norādīta līgumā."
+  },
+  "transactionErrored": {
+    "message": "Darījumā radusies kļūda."
+  },
+  "transactionFee": {
+    "message": "Darījuma nodeva"
+  },
+  "transactionResubmitted": {
+    "message": "Darījums atkārtoti iesniegts ar maksu par Gas, palielinātu līdz $1 pie $2"
+  },
+  "transactionSubmitted": {
+    "message": "Darījums iesniegts ar maksu par Gas $1 pie $2."
+  },
+  "transactionUpdated": {
+    "message": "Darījums atjaunināts $2."
+  },
+  "transfer": {
+    "message": "Pārsūtīt"
+  },
+  "transferFrom": {
+    "message": "Nosūtīt no"
+  },
+  "tryAgain": {
+    "message": "Mēģināt vēlreiz"
+  },
+  "unapproved": {
+    "message": "Nav apstiprināts"
+  },
+  "units": {
+    "message": "vienības"
+  },
+  "unknown": {
+    "message": "Nezināma"
+  },
+  "unknownNetwork": {
+    "message": "Nezināms privātais tīkls"
+  },
+  "unknownQrCode": {
+    "message": "Kļūda: šo QR kodu neizdevās identificēt"
+  },
+  "unlock": {
+    "message": "Atbloķēt"
+  },
+  "unlockMessage": {
+    "message": "Decentralizētais tīkls jau gaida"
+  },
+  "updatedWithDate": {
+    "message": "Atjaunināts $1"
+  },
+  "urlErrorMsg": {
+    "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."
+  },
+  "usedByClients": {
+    "message": "Izmanto dažādi klienti"
+  },
+  "userName": {
+    "message": "Lietotājvārds"
+  },
+  "viewContact": {
+    "message": "Skatīt līgumu"
+  },
+  "visitWebSite": {
+    "message": "Apmeklējiet mūsu tīmekļa vietni"
+  },
+  "welcomeBack": {
+    "message": "Ar atgriešanos!"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Lai lietotu šo funkciju, jādod piekļuve kamerai."
+  },
+  "youSign": {
+    "message": "Jūs parakstāt"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Jūsu privātā atkopšanas frāze"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Gas nulles cena pie paātrinājuma"
+  }
+}

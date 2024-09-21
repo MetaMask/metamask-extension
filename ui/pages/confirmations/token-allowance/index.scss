@@ -1,0 +1,46 @@
+.token-allowance-container {
+  &__icon-display-content {
+    width: fit-content;
+    height: 40px;
+    box-sizing: border-box;
+    border-radius: 100px;
+    position: relative;
+
+    &__siteimage-identicon {
+      width: 24px;
+      height: 24px;
+      box-shadow: none;
+      background: none;
+    }
+  }
+
+  a.token-allowance-container__verify-link {
+    width: fit-content;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    padding: 0;
+  }
+
+  a.token-allowance-container__view-details {
+    width: fit-content;
+    margin-inline-start: 108px;
+    margin-inline-end: 108px;
+  }
+
+  &__card-wrapper {
+    width: 100%;
+  }
+
+  &__data {
+    width: 100%;
+  }
+
+  &__full-tx-content {
+    max-width: 100%;
+  }
+
+  &__custom-nonce-warning {
+    width: 100%;
+    height: 30px;
+  }
+}

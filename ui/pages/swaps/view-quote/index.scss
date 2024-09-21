@@ -1,0 +1,179 @@
+@use "design-system";
+
+.view-quote {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+
+  &::after { // Hide preloaded images.
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: -1;
+    content: url('/images/transaction-background-top.svg') url('/images/transaction-background-bottom.svg'); // Preload images for the STX status page.
+  }
+
+  &__content {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    &_modal > div:not(.view-quote__warning-wrapper) {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    @include design-system.screen-sm-max {
+      overflow-y: auto;
+      max-height: 420px;
+    }
+  }
+
+  @include design-system.screen-sm-min {
+    width: 348px;
+  }
+
+  &__price-difference-warning {
+    &-wrapper {
+      width: 100%;
+
+      &.low,
+      &.medium,
+      &.high {
+        .actionable-message {
+          &::before {
+            background: none;
+          }
+
+          .actionable-message__message {
+            color: inherit;
+          }
+
+          button {
+            font-size: design-system.$font-size-h8;
+            padding: 4px 12px;
+            border-radius: 42px;
+          }
+        }
+      }
+
+      &.low {
+        .actionable-message {
+          button {
+            background: var(--color-primary-default);
+            color: var(--color-primary-inverse);
+          }
+        }
+      }
+
+      &.medium {
+        .actionable-message {
+          border-color: var(--color-warning-default);
+          background: var(--color-warning-muted);
+
+          button {
+            background: var(--color-warning-default);
+          }
+        }
+      }
+
+      &.high {
+        .actionable-message {
+          border-color: var(--color-error-default);
+          background: var(--color-error-muted);
+
+          button {
+            background: var(--color-error-default);
+            color: var(--color-error-inverse);
+          }
+        }
+      }
+    }
+
+    &-contents {
+      display: flex;
+      text-align: left;
+
+      &-title {
+        font-weight: bold;
+      }
+
+      &-actions {
+        text-align: end;
+        padding-top: 10px;
+      }
+
+      i {
+        margin-inline-start: 10px;
+      }
+    }
+  }
+
+  &__warning-wrapper {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    max-width: 340px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    @include design-system.screen-sm-min {
+      &--thin {
+        min-height: 36px;
+      }
+
+      display: flex;
+    }
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+
+  &__countdown-timer-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  &__fee-card-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 311px;
+    margin-bottom: 8px;
+
+    @include design-system.screen-sm-min {
+      margin-bottom: 0;
+    }
+  }
+
+  &__metamask-rate {
+    display: flex;
+  }
+
+  &__metamask-rate-text {
+    @include design-system.H7;
+
+    color: var(--color-text-alternative);
+  }
+
+  &__metamask-rate-info-icon {
+    margin-left: 4px;
+  }
+
+  &__thin-swaps-footer {
+    max-height: 82px;
+
+    @include design-system.screen-sm-min {
+      height: 72px;
+    }
+  }
+}

@@ -1,0 +1,27 @@
+@use "design-system";
+
+.dialog {
+  @include design-system.H7;
+
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: 8px;
+
+  &--message {
+    color: var(--color-text-default);
+    background-color: var(--color-info-muted);
+    border: 1px solid var(--color-info-default);
+  }
+
+  &--error {
+    color: 1px solid var(--color-text-default);
+    background-color: var(--color-error-muted);
+    border: 1px solid var(--color-error-default);
+  }
+
+  &--warning {
+    color: 1px solid var(--color-text-default);
+    background-color: var(--color-warning-muted);
+    border: 1px solid var(--color-warning-default);
+  }
+}

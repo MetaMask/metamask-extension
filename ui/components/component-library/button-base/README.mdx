@@ -1,0 +1,216 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { ButtonBase } from './button-base';
+
+### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
+
+# ButtonBase
+
+The `ButtonBase` is the base component for buttons.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={ButtonBase} />
+
+### Size
+
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js`
+to change the size of `ButtonBase`. Defaults to `Size.MD`
+
+Optional: `BUTTON_BASE_SIZES` from `./button-base` object can be used instead of `Size`.
+
+Possible sizes include:
+
+- `Size.SM` 32px
+- `Size.MD` 40px
+- `Size.LG` 48px
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--size-story" />
+</Canvas>
+
+```jsx
+import { Size } from '../../../helpers/constants/design-system';
+import { ButtonBase } from '../../component-library';
+
+<ButtonBase size={Size.SM} />
+<ButtonBase size={Size.MD} />
+<ButtonBase size={Size.LG} />
+```
+
+### Block
+
+Use boolean `block` prop to quickly enable a full width block button
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--block" />
+</Canvas>
+
+```jsx
+import { DISPLAY } from '../../../helpers/constants/design-system';
+import { ButtonBase } from '../../component-library';
+
+<ButtonBase>Default Button</ButtonBase>
+<ButtonBase block>Block Button</ButtonBase>
+```
+
+### As
+
+Use the `as` box prop to change the element of `ButtonBase`. Defaults to `button`.
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+Button `as` options:
+
+- `button`
+- `a`
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--as" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+
+
+<ButtonBase as="button">Button Element</ButtonBase>
+<ButtonBase as="a" href="#">
+  Anchor Element
+</ButtonBase>
+```
+
+### Href
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--href" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+
+<ButtonBase href="/metamask">Anchor Element</ButtonBase>;
+```
+
+### External link
+
+When an `externalLink` prop is passed it will change the element to an anchor(`a`) tag and add the `target="_blank"` and `rel="noopener noreferrer"` attributes.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--external-link" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+
+<ButtonBase href="https://metamask.io" externalLink>
+  Anchor element with external link
+</ButtonBase>;
+```
+
+### Disabled
+
+Use the boolean `disabled` prop to disable button
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--disabled" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+
+<ButtonBase disabled>Disabled Button</ButtonBase>;
+```
+
+### Loading
+
+Use the boolean `loading` prop to set loading spinner
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--loading" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+
+<ButtonBase loading>Loading Button</ButtonBase>;
+```
+
+### Icon Name
+
+Use the `startIconName` and/or `endIconName` prop with the `IconName` enum from `./ui/components/component-library` to select icon.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--start-icon-name" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+import { IconName } from '../icon';
+
+<ButtonBase startIconName={IconName.AddSquare}>Button</ButtonBase>;
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--end-icon-name" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+import { IconName } from '../icon';
+
+<ButtonBase endIconName={IconName.Arrow2Right}>Button</ButtonBase>;
+```
+
+### RTL
+
+For RTL language support use the `textDirection` prop.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--rtl" />
+</Canvas>
+
+```jsx
+import { ButtonBase, IconName, TextDirection } from '../../component-library';
+
+<>
+  <ButtonBase
+    startIconName={IconName.AddSquare}
+    endIconName={IconName.Arrow2Right}
+  >
+    Button Demo
+  </ButtonBase>
+  <ButtonBase
+    startIconName={IconName.AddSquare}
+    endIconName={IconName.Arrow2Right}
+    textDirection={TextDirection.RightToLeft}
+  >
+    Button Demo
+  </ButtonBase>
+</>;
+```
+
+### Ellipsis
+
+Use the boolean `ellipsis` prop to change the if the `ButtonBase` component to have an ellipsis.
+
+Note: this should only be used for dynamic/user generated content or addresses. Generally, button text should be succinct and only contain one or two words.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--ellipsis" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+
+<Box style={{ width: 180 }}>
+  <ButtonBase>This is long text example without ellipsis</ButtonBase>
+  <ButtonBase ellipsis>This is long text example with ellipsis</ButtonBase>
+</Box>;
+```

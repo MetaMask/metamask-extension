@@ -1,0 +1,35 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to Connect with MetaMask.,,,
+6,Connect with the current account.,,,
+7,Deploy the ERC1155 contract.,,,
+8,Confirm the transaction and wait for it to complete.,,,
+9,Proceed to Batch Mint NFTs.,,,
+10,Confirm the transaction and wait for it to complete.,,,
+11,Close the test dapp and switch back to the wallet.,,,
+12,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount, gas and total are shown in the item details.",
+13,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab., Take a note of the Contract address.
+14,Close the block explorer and switch back to the wallet.,,,
+15,Switch to the NFTs tab.,,,
+16,Proceed to the Import tokens flow.,,,
+17,Enter the contract address.,Contract address.,,
+18,Enter the token id.,e.g. 1.,,
+19,Confirm the addition of the custom token.,,"The NFT is shown in the wallet's NFTs list.
+The NFT image is shown.",
+20,Proceed to open the NFT.,,"The NFT details page is shown.
+The NFT collection name is shown.
+The NFT token id is shown.
+The NFT description is shown.
+The NFT image source is shown.
+The NFT contract address is shown.",
+21,Open the asset menu.,,,
+22,Proceed to view the asset on Opensea.,,Opensea opens in a new tab.,
+23,Close Opensea and switch back to the wallet.,,,
+24,Navigate to the overview page using the asset breadcrumbs.,,The overview page is shown.,

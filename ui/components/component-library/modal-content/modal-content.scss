@@ -1,0 +1,56 @@
+@use "design-system";
+
+.mm-modal-content {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: design-system.$modal-z-index;
+  overflow: auto;
+  overscroll-behavior-y: none;
+
+  // Maximize dialog visibility on small screen heights
+  @media (max-height: 475px) {
+    padding: 8px;
+  }
+
+  // Scroll bar styles
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-icon-muted) transparent;
+
+  // Webkit: Chrome, Brave
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background: var(--color-icon-muted);
+  }
+
+  &__dialog {
+    --modal-content-size: var(--size, 360px);
+
+    max-height: 100%;
+    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+
+    &--size-sm {
+      --size: 360px;
+
+      max-width: var(--modal-content-size);
+    }
+
+    &--size-md {
+      --size: 480px;
+
+      max-width: var(--modal-content-size);
+    }
+
+    &--size-lg {
+      --size: 720px;
+
+      max-width: var(--modal-content-size);
+    }
+  }
+}

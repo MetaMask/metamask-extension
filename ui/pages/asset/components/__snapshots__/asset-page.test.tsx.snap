@@ -1,0 +1,1178 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssetPage should render a native asset 1`] = `
+<div>
+  <div
+    class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
+  >
+    <div
+      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+    >
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <button
+          aria-label="Back"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
+          />
+        </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="asset-name"
+        >
+          TEST
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--margin-top-4"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
+      >
+        <button
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-buy"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/plus-minus.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Buy & Sell
+          </p>
+        </button>
+        <button
+          class="icon-button coin-overview__button"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/stake.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Stake
+          </p>
+        </button>
+        <button
+          class="icon-button coin-overview__button"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/diagram.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Portfolio
+          </p>
+        </button>
+        <button
+          class="icon-button coin-overview__button icon-button--disabled"
+          data-testid="token-overview-button-swap"
+          disabled=""
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/swap-horizontal.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Swap
+          </p>
+        </button>
+        <button
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-bridge"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/bridge.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Bridge
+          </p>
+        </button>
+        <button
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-send"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Send
+          </p>
+        </button>
+        <button
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-receive"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/scan-barcode.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Receive
+          </p>
+        </button>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-top-5 mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <h3
+        class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--color-text-default"
+      >
+        Your balance
+      </h3>
+      <div
+        class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        data-testid="multichain-token-list-item"
+      >
+        <div
+          class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
+          data-testid="multichain-token-list-button"
+        >
+          <div
+            class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+            >
+              T
+            </div>
+            <div
+              class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            style="flex-grow: 1; overflow: hidden;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
+            >
+              <div
+                class="mm-box mm-box--display-inline-block mm-box--width-1/3"
+              >
+                <span
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  TEST
+                </span>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
+                  data-testid="multichain-token-list-item-token-name"
+                >
+                  TEST
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--width-2/3 mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-secondary-value"
+                />
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
+                  data-testid="multichain-token-list-item-value"
+                >
+                  0 TEST
+                   
+                  
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
+      >
+        <div
+          class="mm-box mm-box--margin-bottom-8"
+        >
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default"
+          >
+            Your activity
+          </h3>
+          <div
+            class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
+          >
+            <h4
+              class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+            >
+              Start your journey with ETH
+            </h4>
+            <p
+              class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
+            >
+              Get started with web3 by adding some ETH to your wallet.
+            </p>
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
+            >
+              Buy ETH
+            </button>
+          </div>
+          <div
+            class="mm-box transaction-list"
+          >
+            <div
+              class="mm-box transaction-list__transactions"
+            >
+              <div
+                class="mm-box transaction-list__completed-transactions"
+              >
+                <div
+                  class="mm-box transaction-list__empty"
+                >
+                  <div
+                    class="mm-box transaction-list__empty-text"
+                  >
+                    You have no transactions
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssetPage should render an ERC20 asset without prices 1`] = `
+<div>
+  <div
+    class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
+  >
+    <div
+      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+    >
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <button
+          aria-label="Back"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
+          />
+        </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="asset-name"
+        >
+          TEST
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--margin-top-4"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
+      >
+        <button
+          class="icon-button token-overview__button"
+          data-testid="token-overview-buy"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/plus-minus.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Buy & Sell
+          </p>
+        </button>
+        <button
+          class="icon-button eth-overview__button"
+          data-testid="token-overview-mmi-stake"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/stake.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Stake
+          </p>
+        </button>
+        <button
+          class="icon-button eth-overview__button"
+          data-testid="token-overview-mmi-portfolio"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/diagram.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Portfolio
+          </p>
+        </button>
+        <button
+          class="icon-button token-overview__button"
+          data-testid="eth-overview-send"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Send
+          </p>
+        </button>
+        <button
+          class="icon-button token-overview__button"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/swap-horizontal.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Swap
+          </p>
+        </button>
+        <button
+          class="icon-button token-overview__button"
+          data-testid="token-overview-bridge"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/bridge.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Bridge
+          </p>
+        </button>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-top-5 mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <h3
+        class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--color-text-default"
+      >
+        Your balance
+      </h3>
+      <div
+        class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        data-testid="multichain-token-list-item"
+      >
+        <div
+          class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
+          data-testid="multichain-token-list-button"
+        >
+          <div
+            class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+            >
+              T
+            </div>
+            <div
+              class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            style="flex-grow: 1; overflow: hidden;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
+            >
+              <div
+                class="mm-box mm-box--display-inline-block mm-box--width-1/3"
+              >
+                <span
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  TEST
+                </span>
+                <div
+                  class="mm-box mm-box--display-flex"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="token-increase-decrease-percentage-0x309375769E79382beFDEc5bdab51063AeBDC4936"
+                  />
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--width-2/3 mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-secondary-value"
+                />
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
+                  data-testid="multichain-token-list-item-value"
+                >
+                  0
+                   
+                  TEST
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
+      >
+        <div
+          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-4 mm-box--color-text-default"
+          >
+            Token details
+          </h3>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Contract address
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-9"
+                class=""
+                data-original-title="Copy to clipboard"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <button
+                  class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
+                  data-testid="address-copy-button-text"
+                >
+                  <span
+                    class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex"
+                    >
+                      0x30937...C4936
+                    </div>
+                  </span>
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/copy.svg');"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+              >
+                Token decimal
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                18
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-8"
+        >
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default"
+          >
+            Your activity
+          </h3>
+          <div
+            class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
+          >
+            <h4
+              class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+            >
+              Start your journey with ETH
+            </h4>
+            <p
+              class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
+            >
+              Get started with web3 by adding some ETH to your wallet.
+            </p>
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
+            >
+              Buy ETH
+            </button>
+          </div>
+          <div
+            class="mm-box transaction-list"
+          >
+            <div
+              class="mm-box transaction-list__transactions"
+            >
+              <div
+                class="mm-box transaction-list__completed-transactions"
+              >
+                <div
+                  class="mm-box transaction-list__empty"
+                >
+                  <div
+                    class="mm-box transaction-list__empty-text"
+                  >
+                    You have no transactions
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssetPage should render an ERC20 token with prices 1`] = `
+<div>
+  <div
+    class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
+  >
+    <div
+      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+    >
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <button
+          aria-label="Back"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
+          />
+        </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="asset-name"
+        >
+          TEST
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--rounded-lg"
+    >
+      <div
+        class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
+      >
+        <h2
+          class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="asset-hovered-price"
+          style="width: 100px;"
+        >
+          $15,129.00
+        </h2>
+        <div
+          class="mm-box"
+        >
+          <div
+            class="mm-box"
+            style="opacity: 1;"
+          >
+            <svg
+              class="chart-up"
+              fill="none"
+              height="12"
+              viewBox="0 0 12 12"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.75 3.8125L6.25 7.4875L4.91667 5.3875L2.25 8.1875"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8.08398 3.8125H9.75065V5.5625"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--margin-right-1 mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-success-default"
+            >
+              $15,128.00
+               
+              (
+              +
+              1512800.00
+              %)
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--display-inline-block mm-box--color-text-alternative"
+            >
+              Jun 9, 8:10 PM
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--margin-top-4 mm-box--background-color-transparent mm-box--rounded-lg"
+        data-testid="asset-price-chart"
+      >
+        <div
+          class="mm-box"
+          style="opacity: 1;"
+        >
+          <div
+            class="mm-box"
+            style="padding-right: 100%; direction: rtl;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-center mm-box--color-text-alternative"
+            >
+              $1.00
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-end"
+          />
+          <div
+            class="mm-box"
+            style="padding-right: 100%; direction: rtl;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-center mm-box--color-text-alternative"
+            >
+              $1.00
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-top-4 mm-box--margin-right-4 mm-box--margin-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          style=""
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+          >
+            1D
+          </button>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+          >
+            1W
+          </button>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+          >
+            1M
+          </button>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+          >
+            3M
+          </button>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+          >
+            1Y
+          </button>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+          >
+            All
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--margin-top-4"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
+      >
+        <button
+          class="icon-button token-overview__button"
+          data-testid="token-overview-buy"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/plus-minus.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Buy & Sell
+          </p>
+        </button>
+        <button
+          class="icon-button eth-overview__button"
+          data-testid="token-overview-mmi-stake"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/stake.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Stake
+          </p>
+        </button>
+        <button
+          class="icon-button eth-overview__button"
+          data-testid="token-overview-mmi-portfolio"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/diagram.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Portfolio
+          </p>
+        </button>
+        <button
+          class="icon-button token-overview__button"
+          data-testid="eth-overview-send"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Send
+          </p>
+        </button>
+        <button
+          class="icon-button token-overview__button"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/swap-horizontal.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Swap
+          </p>
+        </button>
+        <button
+          class="icon-button token-overview__button"
+          data-testid="token-overview-bridge"
+        >
+          <div
+            class="icon-button__circle"
+            data-theme="light"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/bridge.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Bridge
+          </p>
+        </button>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-top-5 mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <h3
+        class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--color-text-default"
+      >
+        Your balance
+      </h3>
+      <div
+        class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        data-testid="multichain-token-list-item"
+      >
+        <div
+          class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
+          data-testid="multichain-token-list-button"
+        >
+          <div
+            class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+            >
+              T
+            </div>
+            <div
+              class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            style="flex-grow: 1; overflow: hidden;"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
+            >
+              <div
+                class="mm-box mm-box--display-inline-block mm-box--width-1/3"
+              >
+                <span
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  TEST
+                </span>
+                <div
+                  class="mm-box mm-box--display-flex"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="token-increase-decrease-percentage-0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55"
+                  />
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--width-2/3 mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-secondary-value"
+                />
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
+                  data-testid="multichain-token-list-item-value"
+                >
+                  0
+                   
+                  TEST
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
+      >
+        <div
+          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-4 mm-box--color-text-default"
+          >
+            Token details
+          </h3>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Contract address
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-10"
+                class=""
+                data-original-title="Copy to clipboard"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <button
+                  class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
+                  data-testid="address-copy-button-text"
+                >
+                  <span
+                    class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex"
+                    >
+                      0xe4246...85f55
+                    </div>
+                  </span>
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/copy.svg');"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+              >
+                Token decimal
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                18
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4"
+        >
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-4 mm-box--color-text-default"
+          >
+            Market details
+          </h3>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+              >
+                Market cap
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                data-testid="asset-market-cap"
+              >
+                56088.00
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-8"
+        >
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default"
+          >
+            Your activity
+          </h3>
+          <div
+            class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
+          >
+            <h4
+              class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+            >
+              Start your journey with ETH
+            </h4>
+            <p
+              class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
+            >
+              Get started with web3 by adding some ETH to your wallet.
+            </p>
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
+            >
+              Buy ETH
+            </button>
+          </div>
+          <div
+            class="mm-box transaction-list"
+          >
+            <div
+              class="mm-box transaction-list__transactions"
+            >
+              <div
+                class="mm-box transaction-list__completed-transactions"
+              >
+                <div
+                  class="mm-box transaction-list__empty"
+                >
+                  <div
+                    class="mm-box transaction-list__empty-text"
+                  >
+                    You have no transactions
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

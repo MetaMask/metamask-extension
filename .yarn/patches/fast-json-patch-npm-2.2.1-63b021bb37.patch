@@ -1,0 +1,13 @@
+diff --git a/lib/helpers.js b/lib/helpers.js
+index 0ac28b4d6a715e913da246f1b4b2576c7e5537f4..d048c0a9b498d08fb70337558fa541c1ecc2ed32 100644
+--- a/lib/helpers.js
++++ b/lib/helpers.js
+@@ -21,7 +21,7 @@ var _hasOwnProperty = Object.prototype.hasOwnProperty;
+ function hasOwnProperty(obj, key) {
+     return _hasOwnProperty.call(obj, key);
+ }
+-exports.hasOwnProperty = hasOwnProperty;
++Object.defineProperty(exports, "hasOwnProperty", { value: hasOwnProperty });
+ function _objectKeys(obj) {
+     if (Array.isArray(obj)) {
+         var keys = new Array(obj.length);

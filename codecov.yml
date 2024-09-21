@@ -1,0 +1,17 @@
+codecov:
+  bot: 'codecov-io'
+  require_ci_to_pass: yes
+coverage:
+  round: nearest
+  status:
+    project: off
+    patch: off
+      # global:
+      #   target: auto
+      #   threshold: 0%
+      #   base: auto
+      # transforms:
+      #   target: 100%
+      #   threshold: 0%
+      #   paths:
+      #     - development/build/transforms/**/*.js

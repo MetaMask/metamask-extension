@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ButtonIcon should render button element correctly 1`] = `
+<div>
+  <button
+    aria-label="add"
+    class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+    data-testid="button-icon"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+      style="mask-image: url('./images/icons/add-square.svg');"
+    />
+  </button>
+</div>
+`;

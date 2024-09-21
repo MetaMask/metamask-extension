@@ -1,0 +1,122 @@
+@use "design-system";
+
+.list-item {
+  width: 100%;
+  min-height: 86px;
+  margin: 0;
+  background: var(--color-background-default);
+  padding: 24px 16px;
+
+  @include design-system.Paragraph;
+
+  border-bottom: 1px solid var(--color-border-muted);
+  color: var(--color-text-default);
+  display: grid;
+  grid-template-columns: 0fr repeat(11, 1fr);
+  grid-template-areas:
+    'icon head     head     head     head     head     head     head     right right right right'
+    'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
+    '.    actions  actions  actions  actions  actions  actions  actions  right right right right';
+  align-items: flex-start;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-within {
+    background-color: var(--color-background-default-hover);
+  }
+
+  &__icon {
+    grid-area: icon;
+    align-self: center;
+
+    > * {
+      margin: 0 16px 0 0;
+    }
+  }
+
+  &__actions {
+    grid-area: actions;
+  }
+
+  &__heading {
+    @include design-system.H5;
+
+    grid-area: head;
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    & button {
+      background: unset;
+      font-size: unset;
+      padding-inline-start: 0;
+    }
+
+    &-wrap {
+      display: inline-block;
+      margin-left: 8px;
+    }
+  }
+
+  &__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__subheading {
+    @include design-system.H7;
+
+    grid-area: sub;
+    color: var(--color-text-alternative);
+    margin-top: 4px;
+    // all direct descendants should be truncated with ellipses
+    // allows flexibility in consuming components to use h3/other tag
+    > * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  &__mid-content {
+    @include design-system.H7;
+
+    grid-area: mid;
+    color: var(--color-text-muted);
+  }
+
+  &__right-content {
+    grid-area: right;
+    text-align: right;
+    align-items: flex-end;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  @include design-system.screen-sm-max {
+    &__mid-content {
+      display: none;
+    }
+  }
+
+  @include design-system.screen-sm-min {
+    grid-template-areas:
+      'icon head     head     head     head     mid mid mid mid right right right'
+      'icon sub      sub      sub      sub      mid mid mid mid right right right'
+      '.    actions  actions  actions  actions  mid mid mid mid right right right';
+  }
+}
+
+.list-item--single-content-row {
+  grid-template-areas: 'icon head     head     head     head     head     head     head     right right right right';
+  align-items: center;
+
+  @include design-system.screen-sm-min {
+    grid-template-areas: 'icon head     head     head     head     mid mid mid mid right right right';
+  }
+}

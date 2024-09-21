@@ -1,0 +1,108 @@
+@use "design-system";
+
+.choose-account-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+
+  &__header--one-item,
+  &__header--multiple-items {
+    display: flex;
+    flex: 0;
+    width: 100%;
+    padding-inline-start: 16px;
+    padding-inline-end: 17px;
+  }
+
+  &__header--one-item {
+    justify-content: flex-end;
+  }
+
+  &__header--multiple-items {
+    justify-content: space-between;
+  }
+
+  &__select-all {
+    display: flex;
+    align-items: center;
+  }
+
+  &__header-check-box {
+    margin-right: 16px;
+  }
+
+  &__wrapper {
+    margin-top: 8px;
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  &__list {
+    flex: 2 1 0;
+    width: 100%;
+    max-height: max-content;
+    border: 1px solid var(--color-border-muted);
+    box-sizing: border-box;
+    border-radius: 8px;
+    margin-top: 8px;
+    overflow-y: auto;
+  }
+
+  &__account {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border-muted);
+    justify-content: space-between;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: var(--color-primary-muted);
+      cursor: pointer;
+    }
+
+    &__info {
+      display: flex;
+      flex-direction: column;
+      margin-inline-start: 16px;
+      min-width: 0;
+    }
+
+    &__last-connected {
+      @include design-system.H8;
+
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      color: var(--color-primary-default);
+    }
+  }
+
+  &__account-info-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-width: 0;
+  }
+
+  &__list-check-box {
+    margin-inline-end: 16px;
+
+    i {
+      font-size: 0.8rem;
+    }
+  }
+
+  .info-circle {
+    cursor: pointer;
+  }
+
+  .info-circle:hover {
+    color: var(--color-icon-default);
+  }
+}
