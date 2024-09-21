@@ -63,7 +63,7 @@ const AssetListControlBar = ({
   const nativeTokenWithBalance = useNativeTokenBalance();
 
   useEffect(() => {
-    // this swap is needed when toggling primary currency type for native token in order to sort by fiat amounts only
+    // this swap is needed when toggling primary currency type for native token in order to sort by tokenFiatAmount only
     if (useNativeCurrencyAsPrimaryCurrency) {
       [nativeTokenWithBalance.string, nativeTokenWithBalance.tokenFiatAmount] =
         [nativeTokenWithBalance.tokenFiatAmount, nativeTokenWithBalance.string];
