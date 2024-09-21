@@ -106,11 +106,12 @@ export const TokenListItem = ({
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
-  const [safeChainDetails] = safeChains
-    ? safeChains.filter((chain) => {
-        return chain.chainId === decimalChainId.toString();
-      })
-    : [];
+  const safeChainDetails =
+    safeChains &&
+    typeof decimalChainId === 'number' &&
+    safeChains.find((chain) => {
+      return chain.chainId === decimalChainId.toString();
+    });
 
   // Scam warning
   const showScamWarning =
