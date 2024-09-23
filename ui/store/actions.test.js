@@ -78,12 +78,10 @@ describe('Actions', () => {
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
     background.getStatePatches = sinon.stub().callsFake((cb) => cb(null, []));
-    jest.spyOn(background, 'removePermittedChain').mockImplementation();
-    jest
-      .spyOn(background, 'requestAccountsAndChainPermissionsWithId')
-      .mockImplementation();
-    jest.spyOn(background, 'grantPermissions').mockImplementation();
-    jest.spyOn(background, 'grantPermissionsIncremental').mockImplementation();
+    background.removePermittedChain = sinon.stub();
+    background.requestAccountsAndChainPermissionsWithId = sinon.stub();
+    background.grantPermissions = sinon.stub();
+    background.grantPermissionsIncremental = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -2539,107 +2537,119 @@ describe('Actions', () => {
   });
 
   describe('removePermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('calls removePermittedChain in the background', async () => {
       const store = mockStore();
 
-      const removePermittedChain =
-        background.removePermittedChain.mockImplementation((_, __, cb) => cb());
-
+      background.removePermittedChain.callsFake((_, __, cb) => cb());
       setBackgroundConnection(background);
 
       await store.dispatch(actions.removePermittedChain('test.com', '0x1'));
 
-      expect(removePermittedChain).toHaveBeenCalledWith(
-        'test.com',
-        '0x1',
-        expect.any(Function),
-      );
-
+      expect(
+        background.removePermittedChain.calledWith(
+          'test.com',
+          '0x1',
+          sinon.match.func,
+        ),
+      ).toBe(true);
       expect(store.getActions()).toStrictEqual([]);
     });
   });
 
   describe('requestAccountsAndChainPermissionsWithId', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('calls requestAccountsAndChainPermissionsWithId in the background', async () => {
       const store = mockStore();
 
-      const requestAccountsAndChainPermissionsWithId =
-        background.requestAccountsAndChainPermissionsWithId.mockImplementation(
-          (_, cb) => cb(),
-        );
-
+      background.requestAccountsAndChainPermissionsWithId.callsFake((_, cb) =>
+        cb(),
+      );
       setBackgroundConnection(background);
 
       await store.dispatch(
         actions.requestAccountsAndChainPermissionsWithId('test.com'),
       );
 
-      expect(requestAccountsAndChainPermissionsWithId).toHaveBeenCalledWith(
-        'test.com',
-        expect.any(Function),
-      );
-
+      expect(
+        background.requestAccountsAndChainPermissionsWithId.calledWith(
+          'test.com',
+          sinon.match.func,
+        ),
+      ).toBe(true);
       expect(store.getActions()).toStrictEqual([]);
     });
   });
 
   describe('grantPermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('calls grantPermissionsIncremental in the background', async () => {
       const store = mockStore();
 
-      const grantPermissionsIncremental =
-        background.grantPermissionsIncremental.mockImplementation((_, cb) =>
-          cb(),
-        );
-
+      background.grantPermissionsIncremental.callsFake((_, cb) => cb());
       setBackgroundConnection(background);
 
       await actions.grantPermittedChain('test.com', '0x1');
-      expect(grantPermissionsIncremental).toHaveBeenCalledWith(
-        {
-          subject: { origin: 'test.com' },
-          approvedPermissions: {
-            [PermissionNames.permittedChains]: {
-              caveats: [
-                CaveatFactories[CaveatTypes.restrictNetworkSwitching](['0x1']),
-              ],
+      expect(
+        background.grantPermissionsIncremental.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                    '0x1',
+                  ]),
+                ],
+              },
             },
           },
-        },
-        expect.any(Function),
-      );
-
+          sinon.match.func,
+        ),
+      ).toBe(true);
       expect(store.getActions()).toStrictEqual([]);
     });
   });
 
   describe('grantPermittedChains', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('calls grantPermissions in the background', async () => {
       const store = mockStore();
 
-      const grantPermissions = background.grantPermissions.mockImplementation(
-        (_, cb) => cb(),
-      );
-
+      background.grantPermissions.callsFake((_, cb) => cb());
       setBackgroundConnection(background);
 
       await actions.grantPermittedChains('test.com', ['0x1', '0x2']);
-      expect(grantPermissions).toHaveBeenCalledWith(
-        {
-          subject: { origin: 'test.com' },
-          approvedPermissions: {
-            [PermissionNames.permittedChains]: {
-              caveats: [
-                CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
-                  '0x1',
-                  '0x2',
-                ]),
-              ],
+      expect(
+        background.grantPermissions.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                    '0x1',
+                    '0x2',
+                  ]),
+                ],
+              },
             },
           },
-        },
-        expect.any(Function),
-      );
+          sinon.match.func,
+        ),
+      ).toBe(true);
 
       expect(store.getActions()).toStrictEqual([]);
     });
