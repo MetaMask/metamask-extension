@@ -3,7 +3,8 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import { WINDOW_TITLES, defaultGanacheOptions, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { installSnapSimpleKeyring, makeNewAccountAndSwitch } from './common';
+import { makeNewAccountAndSwitch } from './common';
+import { installSnapSimpleKeyringFlow } from '../page-objects/flows/installSnapSimpleKeyringFlow';
 
 describe('Remove Account Snap', function (this: Suite) {
   it('disable a snap and remove it', async function () {
@@ -14,7 +15,7 @@ describe('Remove Account Snap', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await installSnapSimpleKeyring(driver, false);
+        await installSnapSimpleKeyringFlow(driver, false);
 
         await makeNewAccountAndSwitch(driver);
 

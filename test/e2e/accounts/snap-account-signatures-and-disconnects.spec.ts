@@ -7,12 +7,12 @@ import {
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
-  installSnapSimpleKeyring,
   makeNewAccountAndSwitch,
   connectAccountToTestDapp,
   disconnectFromTestDapp,
   signData,
 } from './common';
+import { installSnapSimpleKeyringFlow } from '../page-objects/flows/installSnapSimpleKeyringFlow';
 
 describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
@@ -27,7 +27,7 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         const flowType = 'approve';
         const isAsyncFlow = true;
 
-        await installSnapSimpleKeyring(driver, isAsyncFlow);
+        await installSnapSimpleKeyringFlow(driver, isAsyncFlow);
 
         const newPublicKey = await makeNewAccountAndSwitch(driver);
 

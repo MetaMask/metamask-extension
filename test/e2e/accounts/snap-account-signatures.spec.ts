@@ -6,10 +6,10 @@ import {
 import { Driver } from '../webdriver/driver';
 import {
   accountSnapFixtures,
-  installSnapSimpleKeyring,
   makeNewAccountAndSwitch,
   signData,
 } from './common';
+import { installSnapSimpleKeyringFlow } from '../page-objects/flows/installSnapSimpleKeyringFlow';
 
 describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
@@ -26,7 +26,7 @@ describe('Snap Account Signatures', function (this: Suite) {
         async ({ driver }: { driver: Driver }) => {
           const isAsyncFlow = flowType !== 'sync';
 
-          await installSnapSimpleKeyring(driver, isAsyncFlow);
+          await installSnapSimpleKeyringFlow(driver, isAsyncFlow);
 
           const newPublicKey = await makeNewAccountAndSwitch(driver);
 
