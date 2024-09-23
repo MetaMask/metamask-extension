@@ -34,6 +34,8 @@ const NoteToTrader: React.FC = () => {
     getIsNoteToTraderSupported(state, fromChecksumHexAddress),
   );
 
+  const MAX_LENGTH = 280;
+
   useEffect(() => {
     const timer = setTimeout(() => {
       dispatch(setNoteToTraderMessage(noteText));
@@ -42,7 +44,11 @@ const NoteToTrader: React.FC = () => {
     return () => clearTimeout(timer);
   }, [noteText]);
 
-  return isNoteToTraderSupported && !isSignature ? (
+  if (!isNoteToTraderSupported || isSignature) {
+    return null;
+  }
+
+  return (
     <Box
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.MD}
@@ -61,7 +67,7 @@ const NoteToTrader: React.FC = () => {
         >
           <Label htmlFor="transaction-note">{t('transactionNote')}</Label>
           <Text className="note-header__counter">
-            {noteText.length}/{280}
+            {noteText.length}/{MAX_LENGTH}
           </Text>
         </Box>
         <Box
@@ -76,14 +82,14 @@ const NoteToTrader: React.FC = () => {
             value={noteText}
             height={BlockSize.Full}
             width={BlockSize.Full}
-            maxLength={280}
+            maxLength={MAX_LENGTH}
             placeholder={t('notePlaceholder')}
             padding={2}
           />
         </Box>
       </Box>
     </Box>
-  ) : null;
+  );
 };
 
 export default NoteToTrader;
