@@ -1,28 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Label, Box, Text } from '../../component-library';
+import { Textarea } from '../../component-library/textarea';
+import { setNoteToTraderMessage } from '../../../store/institutional/institution-background';
+import {
+  getIsNoteToTraderSupported,
+  State,
+} from '../../../selectors/institutional/selectors';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { useConfirmContext } from '../../../pages/confirmations/context/confirm';
+import { getConfirmationSender } from '../../../pages/confirmations/components/confirm/utils';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { isSignatureTransactionType } from '../../../pages/confirmations/utils';
 
-type NoteToTraderProps = {
-  placeholder: string;
-  maxLength: number;
-  onChange: (value: string) => void;
-  noteText: string;
-  labelText: string;
-};
+const NoteToTrader: React.FC = () => {
+  const dispatch = useDispatch();
+  const t = useI18nContext();
+  const [noteText, setNoteText] = useState('');
 
-const NoteToTrader: React.FC<NoteToTraderProps> = ({
-  placeholder,
-  maxLength,
-  onChange,
-  noteText,
-  labelText,
-}) => {
-  return (
-    <Box className="confirm-page-container-content__data">
+  const { currentConfirmation } = useConfirmContext();
+  const isSignature = isSignatureTransactionType(currentConfirmation);
+  const { from } = getConfirmationSender(currentConfirmation);
+  const fromChecksumHexAddress = toChecksumHexAddress(from || '');
+  const isNoteToTraderSupported = useSelector((state: State) =>
+    getIsNoteToTraderSupported(state, fromChecksumHexAddress),
+  );
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(setNoteToTraderMessage(noteText));
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, [noteText]);
+
+  return isNoteToTraderSupported && !isSignature ? (
+    <Box
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.MD}
+      padding={0}
+      marginBottom={4}
+    >
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -33,9 +59,9 @@ const NoteToTrader: React.FC<NoteToTraderProps> = ({
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
         >
-          <Label htmlFor="transaction-note">{labelText}</Label>
+          <Label htmlFor="transaction-note">{t('transactionNote')}</Label>
           <Text className="note-header__counter">
-            {noteText.length}/{maxLength}
+            {noteText.length}/{280}
           </Text>
         </Box>
         <Box
@@ -43,19 +69,21 @@ const NoteToTrader: React.FC<NoteToTraderProps> = ({
           flexDirection={FlexDirection.Column}
           className="note-field"
         >
-          <textarea
+          <Textarea
             id="transaction-note"
             data-testid="transaction-note"
-            onChange={({ target: { value } }) => onChange(value)}
-            autoFocus
-            maxLength={maxLength}
-            placeholder={placeholder}
+            onChange={({ target: { value } }) => setNoteText(value)}
             value={noteText}
+            height={BlockSize.Full}
+            width={BlockSize.Full}
+            maxLength={280}
+            placeholder={t('notePlaceholder')}
+            padding={2}
           />
         </Box>
       </Box>
     </Box>
-  );
+  ) : null;
 };
 
 export default NoteToTrader;

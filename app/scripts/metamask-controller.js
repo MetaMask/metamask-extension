@@ -3474,6 +3474,8 @@ export default class MetamaskController extends EventEmitter {
           nftController,
         ),
 
+      getNFTContractInfo: nftController.getNFTContractInfo.bind(nftController),
+
       isNftOwner: nftController.isNftOwner.bind(nftController),
 
       // AddressController
@@ -3712,6 +3714,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setCustodianDeepLink:
         appStateController.setCustodianDeepLink.bind(appStateController),
+      setNoteToTraderMessage:
+        appStateController.setNoteToTraderMessage.bind(appStateController),
       ///: END:ONLY_INCLUDE_IF
 
       // snaps
