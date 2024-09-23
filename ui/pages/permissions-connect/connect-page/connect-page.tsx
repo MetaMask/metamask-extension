@@ -32,7 +32,7 @@ import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 
-type Request = {
+export type Request = {
   id: string;
   origin: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
