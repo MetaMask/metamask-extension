@@ -51,7 +51,7 @@ describe('ReviewQuote', () => {
     const props = createProps();
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
     expect(getByText('New quotes in')).toBeInTheDocument();
-    expect(getByText('Quote rate')).toBeInTheDocument();
+    expect(getByText('Quote rate*')).toBeInTheDocument();
     expect(getByText('Includes a 1% MetaMask fee –')).toBeInTheDocument();
     expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
@@ -73,7 +73,7 @@ describe('ReviewQuote', () => {
     const props = createProps();
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
     expect(getByText('New quotes in')).toBeInTheDocument();
-    expect(getByText('Quote rate')).toBeInTheDocument();
+    expect(getByText('Quote rate*')).toBeInTheDocument();
     expect(getByText('Includes a 1% MetaMask fee –')).toBeInTheDocument();
     expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
@@ -96,7 +96,7 @@ describe('ReviewQuote', () => {
     const props = createProps();
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
     expect(getByText('New quotes in')).toBeInTheDocument();
-    expect(getByText('Quote rate')).toBeInTheDocument();
+    expect(getByText('Quote rate*')).toBeInTheDocument();
     expect(getByText('Includes a 1% MetaMask fee –')).toBeInTheDocument();
     expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
@@ -104,6 +104,23 @@ describe('ReviewQuote', () => {
     expect(getByText('Max fee:')).toBeInTheDocument();
     expect(getByText('enable DAI')).toBeInTheDocument();
     expect(getByText('Edit limit')).toBeInTheDocument();
+    expect(getByText('Swap')).toBeInTheDocument();
+  });
+
+  it('renders the component with gas included quotes', () => {
+    const state = createSwapsMockStore();
+    state.metamask.swapsState.quotes.TEST_AGG_2.isGasIncludedTrade = true;
+    const store = configureMockStore(middleware)(state);
+    const props = createProps();
+    const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
+    expect(getByText('New quotes in')).toBeInTheDocument();
+    expect(getByText('Quote rate*')).toBeInTheDocument();
+    expect(
+      getByText('*Includes gas and a 1% MetaMask fee'),
+    ).toBeInTheDocument();
+    expect(getByText('view all quotes')).toBeInTheDocument();
+    expect(getByText('Gas fee')).toBeInTheDocument();
+    expect(getByText('$3.41')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });
 });

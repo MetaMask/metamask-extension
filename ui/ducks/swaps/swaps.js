@@ -435,7 +435,16 @@ export const getPendingSmartTransactions = (state) => {
 };
 
 export const getSmartTransactionFees = (state) => {
-  return state.metamask.smartTransactionsState?.fees;
+  const selectedQuote = getSelectedQuote(state);
+  const topQuote = getTopQuote(state);
+  const usedQuote = selectedQuote || topQuote;
+  if (!usedQuote?.isGasIncludedTrade) {
+    return state.metamask.smartTransactionsState?.fees;
+  }
+  return {
+    approvalTxFees: usedQuote.approvalTxFees,
+    tradeTxFees: usedQuote.tradeTxFees,
+  };
 };
 
 export const getSmartTransactionEstimatedGas = (state) => {
@@ -780,6 +789,8 @@ export const fetchQuotesAndSetQuoteState = (
             fromAddress: selectedAccount.address,
             balanceError,
             sourceDecimals: fromTokenDecimals,
+            enableGasIncludedQuotes:
+              currentSmartTransactionsEnabled && smartTransactionsOptInStatus,
           },
           {
             sourceTokenInfo,
@@ -933,6 +944,7 @@ export const signAndSendSwapsSmartTransaction = ({
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
+      is_gas_included_trade: usedQuote.isGasIncludedTrade,
       ...additionalTrackingParams,
     };
     trackEvent({
@@ -964,13 +976,18 @@ export const signAndSendSwapsSmartTransaction = ({
           value: '0x0',
         };
       }
-      const fees = await dispatch(
-        fetchSwapsSmartTransactionFees({
-          unsignedTransaction,
-          approveTxParams: updatedApproveTxParams,
-          fallbackOnNotEnoughFunds: true,
-        }),
-      );
+      let fees;
+      if (usedQuote.isGasIncludedTrade) {
+        fees = getSmartTransactionFees(state);
+      } else {
+        fees = await dispatch(
+          fetchSwapsSmartTransactionFees({
+            unsignedTransaction,
+            approveTxParams: updatedApproveTxParams,
+            fallbackOnNotEnoughFunds: true,
+          }),
+        );
+      }
       if (!fees) {
         log.error('"fetchSwapsSmartTransactionFees" failed');
         dispatch(setSwapsSTXSubmitLoading(false));

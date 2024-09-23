@@ -210,10 +210,12 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      currentCurrency: 'ETH',
+      currentCurrency: 'usd',
       currencyRates: {
         ETH: {
-          conversionRate: 1,
+          conversionDate: 1708532473.416,
+          conversionRate: 2918.02,
+          usdConversionRate: 2918.02,
         },
       },
       marketData: {
@@ -469,6 +471,23 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
           TEST_AGG_2: {
             trade: {
@@ -503,6 +522,27 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                {
+                  maxFeePerGas: 2310003200,
+                  maxPriorityFeePerGas: 513154852,
+                  tokenFees: [{ balanceNeededToken: '0x426dc933c2e5a' }],
+                },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
         },
         fetchParams: {

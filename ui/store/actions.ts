@@ -3664,6 +3664,7 @@ export function fetchAndSetQuotes(
     fromAddress: string;
     balanceError: string;
     sourceDecimals: number;
+    enableGasIncludedQuotes: boolean;
   },
   fetchParamsMetaData: {
     sourceTokenInfo: Token;
@@ -4759,7 +4760,7 @@ export function signAndSendSmartTransaction({
     );
     const signedCanceledTransactions = await createSignedTransactions(
       unsignedTransaction,
-      smartTransactionFees.cancelFees,
+      [],
       true,
     );
     try {

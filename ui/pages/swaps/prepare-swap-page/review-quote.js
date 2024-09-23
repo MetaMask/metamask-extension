@@ -84,6 +84,7 @@ import {
   decimalToHex,
   decWEIToDecETH,
   sumHexes,
+  hexWEIToDecETH,
 } from '../../../../shared/modules/conversion.utils';
 import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
 import {
@@ -110,6 +111,7 @@ import {
   TextVariant,
   FRACTIONS,
   TEXT_ALIGN,
+  FONT_STYLE,
   Size,
   FlexDirection,
   Severity,
@@ -147,6 +149,35 @@ import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
 let intervalId;
+
+const ViewAllQuotes = ({
+  trackAllAvailableQuotesOpened,
+  setSelectQuotePopoverShown,
+  t,
+}) => {
+  return (
+    <ButtonLink
+      key="view-all-quotes"
+      data-testid="review-quote-view-all-quotes"
+      onClick={
+        /* istanbul ignore next */
+        () => {
+          trackAllAvailableQuotesOpened();
+          setSelectQuotePopoverShown(true);
+        }
+      }
+      size={Size.inherit}
+    >
+      {t('viewAllQuotes')}
+    </ButtonLink>
+  );
+};
+
+ViewAllQuotes.propTypes = {
+  trackAllAvailableQuotesOpened: PropTypes.func.isRequired,
+  setSelectQuotePopoverShown: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
+};
 
 export default function ReviewQuote({ setReceiveToAmount }) {
   const history = useHistory();
@@ -229,6 +260,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
+  const { isGasIncludedTrade } = usedQuote;
   const isSmartTransaction =
     currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
 
@@ -880,7 +912,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   ]);
 
   useEffect(() => {
-    if (isSmartTransaction && !insufficientTokens) {
+    if (isSmartTransaction && !insufficientTokens && !isGasIncludedTrade) {
       const unsignedTx = {
         from: unsignedTransaction.from,
         to: unsignedTransaction.to,
@@ -923,6 +955,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     chainId,
     swapsNetworkConfig.stxGetTransactionsRefreshTime,
     insufficientTokens,
+    isGasIncludedTrade,
   ]);
 
   useEffect(() => {
@@ -1045,6 +1078,17 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     }
   };
 
+  let tradeTxTokenFee;
+  if (isGasIncludedTrade) {
+    tradeTxTokenFee =
+      smartTransactionFees?.tradeTxFees?.fees?.[0]?.tokenFees?.[0] || null;
+  }
+  const feeTokenBalanceNeededInFiat = useEthFiatAmount(
+    Number(hexWEIToDecETH(tradeTxTokenFee?.balanceNeededToken)) || 0,
+    { showFiat: true },
+    true,
+  );
+
   return (
     <div className="review-quote">
       <div className="review-quote__content">
@@ -1122,9 +1166,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
             <Text
               variant={TextVariant.bodyMd}
               marginRight={1}
-              color={TextColor.textAlternative}
+              color={TextColor.textDefault}
             >
-              {t('quoteRate')}
+              {t('quoteRateWithAsterisk')}
             </Text>
             <ExchangeRateDisplay
               primaryTokenValue={calcTokenValue(
@@ -1141,78 +1185,157 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               showIconForSwappingTokens={false}
             />
           </Box>
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.stretch}
-          >
+          {isGasIncludedTrade && (
             <Box
               display={DISPLAY.FLEX}
-              alignItems={AlignItems.center}
-              width={FRACTIONS.SIX_TWELFTHS}
+              justifyContent={JustifyContent.spaceBetween}
+              alignItems={AlignItems.stretch}
             >
-              <Text
-                variant={TextVariant.bodyMd}
-                as="h6"
-                color={TextColor.textAlternative}
-                marginRight={1}
+              <Box
+                display={DISPLAY.FLEX}
+                alignItems={AlignItems.center}
+                width={FRACTIONS.SIX_TWELFTHS}
               >
-                {t('transactionDetailGasHeading')}
-              </Text>
-              <InfoTooltip
-                position="left"
-                contentText={
-                  <p className="fee-card__info-tooltip-paragraph">
-                    {t('swapGasFeesExplanation', [
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  marginRight={1}
+                >
+                  {t('gasFee')}
+                </Text>
+                <InfoTooltip
+                  position="left"
+                  contentText={
+                    <>
+                      <p className="fee-card__info-tooltip-paragraph">
+                        {t('swapGasIncludedTooltipExplanation')}
+                      </p>
                       <ButtonLink
-                        key="learn-more-gas-link"
+                        key="learn-more-about-gas-included-link"
                         size={ButtonLinkSize.Inherit}
-                        href={ZENDESK_URLS.GAS_FEES}
+                        href={ZENDESK_URLS.SWAPS_GAS_FEES}
                         target="_blank"
                         rel="noopener noreferrer"
                         externalLink
                         onClick={() => {
                           trackEvent({
-                            event: 'Clicked "Gas Fees: Learn More" Link',
+                            event:
+                              'Clicked "GasIncluded tooltip: Learn More" Link',
                             category: MetaMetricsEventCategory.Swaps,
                           });
                         }}
                       >
-                        {t('swapGasFeesExplanationLinkText')}
-                      </ButtonLink>,
-                    ])}
-                  </p>
-                }
-              />
+                        {t('swapGasIncludedTooltipExplanationLinkText')}
+                      </ButtonLink>
+                    </>
+                  }
+                />
+              </Box>
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.flexEnd}
+                alignItems={AlignItems.flexEnd}
+                width={FRACTIONS.SIX_TWELFTHS}
+              >
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  data-testid="review-quote-gas-fee-in-fiat"
+                  width={FRACTIONS.FOUR_TWELFTHS}
+                  textAlign={TEXT_ALIGN.RIGHT}
+                  style={{ textDecoration: 'line-through' }}
+                  marginRight={1}
+                >
+                  {feeTokenBalanceNeededInFiat}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  textAlign={TEXT_ALIGN.RIGHT}
+                  fontStyle={FONT_STYLE.ITALIC}
+                >
+                  {t('included')}
+                </Text>
+              </Box>
             </Box>
+          )}
+          {!isGasIncludedTrade && (
             <Box
               display={DISPLAY.FLEX}
-              alignItems={AlignItems.flexEnd}
-              width={FRACTIONS.SIX_TWELFTHS}
+              justifyContent={JustifyContent.spaceBetween}
+              alignItems={AlignItems.stretch}
             >
-              <Text
-                variant={TextVariant.bodyMd}
-                as="h6"
-                color={TextColor.textAlternative}
-                width={FRACTIONS.EIGHT_TWELFTHS}
-                textAlign={TEXT_ALIGN.RIGHT}
-                paddingRight={1}
+              <Box
+                display={DISPLAY.FLEX}
+                alignItems={AlignItems.center}
+                width={FRACTIONS.SIX_TWELFTHS}
               >
-                {feeInEth}
-              </Text>
-              <Text
-                variant={TextVariant.bodyMdBold}
-                as="h6"
-                color={TextColor.textAlternative}
-                data-testid="review-quote-gas-fee-in-fiat"
-                width={FRACTIONS.FOUR_TWELFTHS}
-                textAlign={TEXT_ALIGN.RIGHT}
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  marginRight={1}
+                >
+                  {t('transactionDetailGasHeading')}
+                </Text>
+                <InfoTooltip
+                  position="left"
+                  contentText={
+                    <p className="fee-card__info-tooltip-paragraph">
+                      {t('swapGasFeesExplanation', [
+                        <ButtonLink
+                          key="learn-more-gas-link"
+                          size={ButtonLinkSize.Inherit}
+                          href={ZENDESK_URLS.GAS_FEES}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          externalLink
+                          onClick={() => {
+                            trackEvent({
+                              event: 'Clicked "Gas Fees: Learn More" Link',
+                              category: MetaMetricsEventCategory.Swaps,
+                            });
+                          }}
+                        >
+                          {t('swapGasFeesExplanationLinkText')}
+                        </ButtonLink>,
+                      ])}
+                    </p>
+                  }
+                />
+              </Box>
+              <Box
+                display={DISPLAY.FLEX}
+                alignItems={AlignItems.flexEnd}
+                width={FRACTIONS.SIX_TWELFTHS}
               >
-                {` ${feeInFiat}`}
-              </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  width={FRACTIONS.EIGHT_TWELFTHS}
+                  textAlign={TEXT_ALIGN.RIGHT}
+                  paddingRight={1}
+                >
+                  {feeInEth}
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMdBold}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  data-testid="review-quote-gas-fee-in-fiat"
+                  width={FRACTIONS.FOUR_TWELFTHS}
+                  textAlign={TEXT_ALIGN.RIGHT}
+                >
+                  {` ${feeInFiat}`}
+                </Text>
+              </Box>
             </Box>
-          </Box>
-          {(maxFeeInFiat || maxFeeInEth) && (
+          )}
+          {!isGasIncludedTrade && (maxFeeInFiat || maxFeeInEth) && (
             <Box display={DISPLAY.FLEX}>
               <Box display={DISPLAY.FLEX} width={FRACTIONS.SIX_TWELFTHS}></Box>
               <Box
@@ -1222,7 +1345,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               >
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={TextColor.textDefault}
                   width={FRACTIONS.EIGHT_TWELFTHS}
                   paddingRight={1}
                   textAlign={TEXT_ALIGN.RIGHT}
@@ -1231,7 +1354,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 </Text>
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={TextColor.textDefault}
                   width={FRACTIONS.FOUR_TWELFTHS}
                   textAlign={TEXT_ALIGN.RIGHT}
                 >
@@ -1248,7 +1371,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               <Text
                 variant={TextVariant.bodyMd}
                 as="h6"
-                color={TextColor.textAlternative}
+                color={TextColor.textDefault}
                 marginRight={1}
               >
                 {t('swapEnableTokenForSwapping', [tokenApprovalTextComponent])}
@@ -1264,32 +1387,54 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               </Text>
             </Box>
           )}
-          <Box
-            display={DISPLAY.FLEX}
-            marginTop={3}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-          >
-            <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-              {t('swapIncludesMetaMaskFeeViewAllQuotes', [
-                metaMaskFee,
-                <ButtonLink
-                  key="view-all-quotes"
-                  data-testid="review-quote-view-all-quotes"
-                  onClick={
-                    /* istanbul ignore next */
-                    () => {
-                      trackAllAvailableQuotesOpened();
-                      setSelectQuotePopoverShown(true);
+          {isGasIncludedTrade && (
+            <Box
+              display={DISPLAY.FLEX}
+              marginTop={3}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              flexDirection={FlexDirection.Column}
+            >
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('swapIncludesGasAndMetaMaskFee', [metaMaskFee])}
+              </Text>
+              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
+                <ViewAllQuotes
+                  trackAllAvailableQuotesOpened={trackAllAvailableQuotesOpened}
+                  setSelectQuotePopoverShown={setSelectQuotePopoverShown}
+                  t={t}
+                />
+              </Text>
+            </Box>
+          )}
+          {!isGasIncludedTrade && (
+            <Box
+              display={DISPLAY.FLEX}
+              marginTop={3}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+            >
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('swapIncludesMetaMaskFeeViewAllQuotes', [
+                  metaMaskFee,
+                  <ViewAllQuotes
+                    key="view-all-quotes"
+                    trackAllAvailableQuotesOpened={
+                      trackAllAvailableQuotesOpened
                     }
-                  }
-                  size={Size.inherit}
-                >
-                  {t('viewAllQuotes')}
-                </ButtonLink>,
-              ])}
-            </Text>
-          </Box>
+                    setSelectQuotePopoverShown={setSelectQuotePopoverShown}
+                    t={t}
+                  />,
+                ])}
+              </Text>
+            </Box>
+          )}
         </Box>
       </div>
       <SwapsFooter
