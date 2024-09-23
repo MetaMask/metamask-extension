@@ -181,9 +181,6 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteNetwork": {
-    "message": "I-delete ang Network?"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -307,9 +304,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Hindi valid ang address ng recipient"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Hindi valid ang Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Hindi valid ang RPC URL"

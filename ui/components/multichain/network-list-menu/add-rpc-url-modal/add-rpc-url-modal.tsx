@@ -63,6 +63,7 @@ const AddRpcUrlModal = ({
             'data-testid': 'rpc-url-input-test',
           }}
           onChange={(e) => setUrl(e.target.value)}
+          autoFocus
         />
         {error && (
           <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>

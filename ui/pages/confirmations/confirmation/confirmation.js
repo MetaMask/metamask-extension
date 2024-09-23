@@ -31,6 +31,7 @@ import {
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
   getSnapsMetadata,
+  getNetworkConfigurationsByChainId,
   getHideSnapBranding,
 } from '../../../selectors';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
@@ -211,6 +212,9 @@ export default function ConfirmationPage({
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
@@ -299,6 +303,10 @@ export default function ConfirmationPage({
           {
             matchedChain,
             currencySymbolWarning,
+            existingNetworkConfiguration:
+              networkConfigurationsByChainId?.[
+                pendingConfirmation.requestData?.chainId
+              ],
           },
           // Passing `t` in the contexts object is a bit redundant but since it's a
           // context too, it makes sense (for completeness)
@@ -315,6 +323,7 @@ export default function ConfirmationPage({
     trackEvent,
     isSnapDialog,
     snapName,
+    networkConfigurationsByChainId,
   ]);
 
   useEffect(() => {
