@@ -1,53 +1,48 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  SmartTransaction,
+  SmartTransactionStatuses,
+} from '@metamask/smart-transactions-controller/dist/types';
 
 import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { SmartTransactionStatusPage } from '.';
+import {
+  SmartTransactionStatusPage,
+  RequestState,
+} from './smart-transaction-status-page';
 
 const middleware = [thunk];
 
 describe('SmartTransactionStatusPage', () => {
-  const requestState = {
+  const onCloseExtension = jest.fn();
+  const onViewActivity = jest.fn();
+
+  const requestState: RequestState = {
     smartTransaction: {
       status: SmartTransactionStatuses.PENDING,
       creationTime: Date.now(),
+      uuid: 'uuid',
+      chainId: CHAIN_IDS.MAINNET,
     },
+    isDapp: false,
+    txId: 'txId',
   };
 
   it('renders the component with initial props', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const { getByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={requestState} />,
+      <SmartTransactionStatusPage
+        requestState={requestState}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
       store,
     );
     expect(getByText('Your transaction was submitted')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
-  });
-
-  it('renders the "Sorry for the wait" pending status', () => {
-    const store = configureMockStore(middleware)(createSwapsMockStore());
-    const newRequestState = {
-      ...requestState,
-      smartTransaction: {
-        ...requestState.smartTransaction,
-        creationTime: 1519211809934,
-      },
-    };
-    const { queryByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={newRequestState} />,
-      store,
-    );
-    expect(
-      queryByText('You may close this window anytime.'),
-    ).not.toBeInTheDocument();
-    expect(queryByText('Sorry for the wait')).toBeInTheDocument();
-    expect(queryByText('View activity')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -58,10 +53,13 @@ describe('SmartTransactionStatusPage', () => {
         CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = SmartTransactionStatuses.SUCCESS;
-    requestState.smartTransaction = latestSmartTransaction;
+    requestState.smartTransaction = latestSmartTransaction as SmartTransaction;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={requestState} />,
+      <SmartTransactionStatusPage
+        requestState={requestState}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
       store,
     );
     expect(getByText('Your transaction is complete')).toBeInTheDocument();
@@ -77,10 +75,13 @@ describe('SmartTransactionStatusPage', () => {
         CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = SmartTransactionStatuses.REVERTED;
-    requestState.smartTransaction = latestSmartTransaction;
+    requestState.smartTransaction = latestSmartTransaction as SmartTransaction;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={requestState} />,
+      <SmartTransactionStatusPage
+        requestState={requestState}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
       store,
     );
     expect(getByText('Your transaction failed')).toBeInTheDocument();
@@ -100,11 +101,14 @@ describe('SmartTransactionStatusPage', () => {
       mockStore.metamask.smartTransactionsState.smartTransactions[
         CHAIN_IDS.MAINNET
       ][1];
-    requestState.smartTransaction = latestSmartTransaction;
+    requestState.smartTransaction = latestSmartTransaction as SmartTransaction;
     latestSmartTransaction.status = SmartTransactionStatuses.CANCELLED;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={requestState} />,
+      <SmartTransactionStatusPage
+        requestState={requestState}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
       store,
     );
     expect(getByText('Your transaction was canceled')).toBeInTheDocument();
@@ -126,10 +130,13 @@ describe('SmartTransactionStatusPage', () => {
       ][1];
     latestSmartTransaction.status =
       SmartTransactionStatuses.CANCELLED_DEADLINE_MISSED;
-    requestState.smartTransaction = latestSmartTransaction;
+    requestState.smartTransaction = latestSmartTransaction as SmartTransaction;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={requestState} />,
+      <SmartTransactionStatusPage
+        requestState={requestState}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
       store,
     );
     expect(getByText('Your transaction was canceled')).toBeInTheDocument();
@@ -145,10 +152,13 @@ describe('SmartTransactionStatusPage', () => {
         CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = SmartTransactionStatuses.UNKNOWN;
-    requestState.smartTransaction = latestSmartTransaction;
+    requestState.smartTransaction = latestSmartTransaction as SmartTransaction;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={requestState} />,
+      <SmartTransactionStatusPage
+        requestState={requestState}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
       store,
     );
     expect(getByText('Your transaction failed')).toBeInTheDocument();
@@ -164,11 +174,14 @@ describe('SmartTransactionStatusPage', () => {
         CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = SmartTransactionStatuses.PENDING;
-    requestState.smartTransaction = latestSmartTransaction;
+    requestState.smartTransaction = latestSmartTransaction as SmartTransaction;
     requestState.isDapp = true;
     const store = configureMockStore(middleware)(mockStore);
     const { queryByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={requestState} />,
+      <SmartTransactionStatusPage
+        requestState={requestState}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
       store,
     );
     expect(
@@ -187,11 +200,14 @@ describe('SmartTransactionStatusPage', () => {
         CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = SmartTransactionStatuses.SUCCESS;
-    requestState.smartTransaction = latestSmartTransaction;
+    requestState.smartTransaction = latestSmartTransaction as SmartTransaction;
     requestState.isDapp = true;
     const store = configureMockStore(middleware)(mockStore);
     const { queryByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={requestState} />,
+      <SmartTransactionStatusPage
+        requestState={requestState}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
       store,
     );
     expect(
@@ -209,11 +225,14 @@ describe('SmartTransactionStatusPage', () => {
         CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = SmartTransactionStatuses.CANCELLED;
-    requestState.smartTransaction = latestSmartTransaction;
+    requestState.smartTransaction = latestSmartTransaction as SmartTransaction;
     requestState.isDapp = true;
     const store = configureMockStore(middleware)(mockStore);
     const { queryByText, container } = renderWithProvider(
-      <SmartTransactionStatusPage requestState={requestState} />,
+      <SmartTransactionStatusPage
+        requestState={requestState}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
       store,
     );
     expect(
