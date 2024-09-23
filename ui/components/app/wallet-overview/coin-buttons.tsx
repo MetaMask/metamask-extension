@@ -17,6 +17,11 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import {
+  BtcAccountType,
+  BtcMethod,
+  KeyringClient,
+} from '@metamask/keyring-api';
 import { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -65,6 +70,8 @@ import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
+import { BitcoinWalletSnapSender } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
+import { v4 as uuidv4 } from 'uuid';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
 
@@ -97,7 +104,8 @@ const CoinButtons = ({
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const account = useSelector(getSelectedAccount);
+  const { address: selectedAddress } = account;
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
@@ -217,22 +225,44 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const handleSendOnClick = useCallback(async () => {
-    trackEvent(
-      {
-        event: MetaMetricsEventName.NavSendButtonClicked,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          token_symbol: 'ETH',
-          location: 'Home',
-          text: 'Send',
-          chain_id: chainId,
-        },
-      },
-      { excludeMetaMetricsId: false },
-    );
-    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    history.push(SEND_ROUTE);
-  }, [chainId]);
+    console.log('account.type', account.type);
+    switch (account.type) {
+      case BtcAccountType.P2wpkh: {
+        console.log('P2wpkh');
+        const client = new KeyringClient(new BitcoinWalletSnapSender());
+
+        // This will trigger the Snap account creation flow (+ account renaming)
+        await client.submitRequest({
+          id: uuidv4(),
+          scope: chainId as CaipChainId,
+          account: account.id,
+          request: {
+            method: BtcMethod.SendMany,
+            params: {},
+          },
+        });
+        console.log('finished');
+        break;
+      }
+      default: {
+        trackEvent(
+          {
+            event: MetaMetricsEventName.NavSendButtonClicked,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              token_symbol: 'ETH',
+              location: 'Home',
+              text: 'Send',
+              chain_id: chainId,
+            },
+          },
+          { excludeMetaMetricsId: false },
+        );
+        await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+        history.push(SEND_ROUTE);
+      }
+    }
+  }, [chainId, account]);
 
   const handleSwapOnClick = useCallback(async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
