@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { expect } = require('@playwright/test');
 const {
   withFixtures,
   defaultGanacheOptions,
@@ -8,7 +9,6 @@ const {
 } = require('../../helpers');
 
 const FixtureBuilder = require('../../fixture-builder');
-const { expect } = require('@playwright/test');
 
 async function mockSegment(mockServer) {
   return [
