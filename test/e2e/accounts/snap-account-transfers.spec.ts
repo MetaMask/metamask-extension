@@ -9,10 +9,10 @@ import { Driver } from '../webdriver/driver';
 import {
   accountSnapFixtures,
   PUBLIC_KEY,
+  installSnapSimpleKeyring,
   importKeyAndSwitch,
   approveOrRejectRequest,
 } from './common';
-import { installSnapSimpleKeyringFlow } from '../page-objects/flows/installSnapSimpleKeyringFlow';
 
 describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {

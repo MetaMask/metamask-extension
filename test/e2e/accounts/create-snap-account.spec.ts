@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import { defaultGanacheOptions, WINDOW_TITLES, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { installSnapSimpleKeyringFlow } from '../page-objects/flows/installSnapSimpleKeyringFlow';
+import { installSnapSimpleKeyring } from './common';
 
 /**
  * Starts the flow to create a Snap account, including unlocking the wallet,
@@ -15,7 +15,7 @@ import { installSnapSimpleKeyringFlow } from '../page-objects/flows/installSnapS
  * @returns A promise that resolves when the setup steps are complete.
  */
 async function startCreateSnapAccountFlow(driver: Driver): Promise<void> {
-  await installSnapSimpleKeyringFlow(driver, false);
+  await installSnapSimpleKeyring(driver, false);
 
   // move back to the Snap window to test the create account flow
   await driver.waitAndSwitchToWindowWithTitle(

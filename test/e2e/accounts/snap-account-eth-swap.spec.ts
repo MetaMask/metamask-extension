@@ -9,7 +9,7 @@ import {
 } from '../tests/swaps/shared';
 import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
-import { installSnapSimpleKeyringFlow } from '../page-objects/flows/installSnapSimpleKeyringFlow';
+import { installSnapSimpleKeyring } from './common';
 
 const DAI = 'DAI';
 const TEST_ETH = 'TESTETH';
@@ -35,7 +35,7 @@ describe('Snap Account - Swap', function () {
         testSpecificMock: mockSwapsTransactionQuote,
       },
       async ({ driver }: { driver: Driver }) => {
-        await installSnapSimpleKeyringFlow(driver, false);
+        await installSnapSimpleKeyring(driver, false);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

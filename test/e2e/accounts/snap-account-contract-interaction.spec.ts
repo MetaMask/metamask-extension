@@ -15,8 +15,7 @@ import {
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
-import { importKeyAndSwitch } from './common';
-import { installSnapSimpleKeyringFlow } from '../page-objects/flows/installSnapSimpleKeyringFlow';
+import { installSnapSimpleKeyring, importKeyAndSwitch } from './common';
 
 describe('Snap Account Contract interaction', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
@@ -44,7 +43,7 @@ describe('Snap Account Contract interaction', function () {
         ganacheServer,
       }: TestSuiteArguments) => {
         // Install Snap Simple Keyring and import key
-        await installSnapSimpleKeyringFlow(driver, false);
+        await installSnapSimpleKeyring(driver, false);
         await importKeyAndSwitch(driver);
 
         // Open DApp with contract
