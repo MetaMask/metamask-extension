@@ -93,7 +93,7 @@ describe('Trezor Hardware', function () {
     );
   });
 
-  it('unlocks multiple accounts at once', async function () {
+  it('unlocks multiple accounts at once and removes one', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -127,44 +127,11 @@ describe('Trezor Hardware', function () {
           );
           assert(
             await driver.isElementPresent({
-              text: shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[0].address),
+              text: shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[i].address),
             }),
             `Unlocked account ${i + 1} is wrong`,
           );
         }
-      },
-    );
-  });
-
-  it('unlocks and removes account', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await connectTrezor(driver);
-
-        // Select first account of first page and unlock
-        await driver.clickElement('.hw-account-list__item__checkbox');
-        await driver.clickElement({ text: 'Unlock' });
-
-        // Check that the correct account has been added
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        assert(
-          await driver.isElementPresent({
-            text: 'Trezor 1',
-          }),
-          'Trezor account not found',
-        );
-        assert(
-          await driver.isElementPresent({
-            text: shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[0].address),
-          }),
-          'Unlocked account is wrong',
-        );
 
         // Remove Trezor account
         const accountDetailsButton = await driver.findElements(
