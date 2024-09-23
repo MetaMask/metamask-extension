@@ -5,65 +5,56 @@ export default {
   title: 'Components/Multichain/EditNetworksModal',
   component: EditNetworksModal,
   argTypes: {
-    combinedNetworks: {
+    nonTestNetworks: {
+      control: 'array',
+    },
+    testNetworks: {
+      control: 'array',
+    },
+    activeTabOrigin: {
+      control: 'text',
+    },
+    defaultSelectedChainIds: {
       control: 'array',
     },
   },
   args: {
-    combinedNetworks: [
+    nonTestNetworks: [
       {
         chainId: '0x1',
-        nickname: 'Ethereum Mainnet',
-        rpcUrl: 'https://mainnet.infura.io/v3/',
-        rpcPrefs: {
-          imageUrl: './images/eth_logo.svg',
-        },
-        providerType: 'mainnet',
-        ticker: 'ETH',
-        id: 'mainnet',
-        removable: false,
-        blockExplorerUrl: 'https://etherscan.io',
-      },
-      {
-        chainId: '0xe708',
-        nickname: 'Linea Mainnet',
-        rpcUrl: 'https://linea-mainnet.infura.io/v3/',
-        rpcPrefs: {
-          imageUrl: './images/linea-logo-mainnet.svg',
-        },
-        providerType: 'linea-mainnet',
-        ticker: 'ETH',
-        id: 'linea-mainnet',
-        removable: false,
-        blockExplorerUrl: 'https://lineascan.build',
-      },
-      {
-        rpcUrl: 'https://mainnet.base.org',
-        chainId: '0x2105',
-        ticker: 'ETH',
-        nickname: 'Base',
-        rpcPrefs: {
-          blockExplorerUrl: 'https://basescan.org',
-          imageUrl: './images/base.svg',
-        },
-        id: '61bb70f8-6583-42aa-8547-ef6c044614ad',
-        blockExplorerUrl: 'https://basescan.org',
-        removable: true,
-      },
-      {
-        rpcUrl: 'https://arb1.arbitrum.io/rpc',
-        chainId: '0xa4b1',
-        ticker: 'ETH',
-        nickname: 'Arbitrum One',
-        rpcPrefs: {
-          blockExplorerUrl: 'https://arbiscan.io',
-          imageUrl: './images/arbitrum.svg',
-        },
-        id: 'f8f98123-f3ae-418c-b1e7-d08f057f395c',
-        blockExplorerUrl: 'https://arbiscan.io',
-        removable: true,
+        rpcEndpoints: [
+          {
+            networkClientId: 'mainnet',
+            url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+            type: 'infura',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
       },
     ],
+    testNetworks: [
+      {
+        chainId: '0xaa36a7',
+        rpcEndpoints: [
+          {
+            networkClientId: 'sepolia',
+            url: 'https://sepolia.infura.io/v3/{infuraProjectId}',
+            type: 'infura',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://sepolia.etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        name: 'Sepolia',
+        nativeCurrency: 'SepoliaETH',
+      },
+    ],
+    activeTabOrigin: 'https://app.uniswap.org',
+    defaultSelectedChainIds: ['0x1'],
   },
 };
 
