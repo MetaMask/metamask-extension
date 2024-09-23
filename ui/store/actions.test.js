@@ -13,6 +13,11 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  CaveatFactories,
+  PermissionNames,
+} from '../../app/scripts/controllers/permissions';
+import { CaveatTypes } from '../../shared/constants/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -73,6 +78,12 @@ describe('Actions', () => {
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
     background.getStatePatches = sinon.stub().callsFake((cb) => cb(null, []));
+    jest.spyOn(background, 'removePermittedChain').mockImplementation();
+    jest
+      .spyOn(background, 'requestAccountsAndChainPermissionsWithId')
+      .mockImplementation();
+    jest.spyOn(background, 'grantPermissions').mockImplementation();
+    jest.spyOn(background, 'grantPermissionsIncremental').mockImplementation();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -2524,6 +2535,115 @@ describe('Actions', () => {
       expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
         true,
       );
+    });
+  });
+
+  describe('removePermittedChain', () => {
+    it('calls removePermittedChain in the background', async () => {
+      const store = mockStore();
+
+      const removePermittedChain =
+        background.removePermittedChain.mockImplementation((_, __, cb) => cb());
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.removePermittedChain('test.com', '0x1'));
+
+      expect(removePermittedChain).toHaveBeenCalledWith(
+        'test.com',
+        '0x1',
+        expect.any(Function),
+      );
+
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('requestAccountsAndChainPermissionsWithId', () => {
+    it('calls requestAccountsAndChainPermissionsWithId in the background', async () => {
+      const store = mockStore();
+
+      const requestAccountsAndChainPermissionsWithId =
+        background.requestAccountsAndChainPermissionsWithId.mockImplementation(
+          (_, cb) => cb(),
+        );
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.requestAccountsAndChainPermissionsWithId('test.com'),
+      );
+
+      expect(requestAccountsAndChainPermissionsWithId).toHaveBeenCalledWith(
+        'test.com',
+        expect.any(Function),
+      );
+
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChain', () => {
+    it('calls grantPermissionsIncremental in the background', async () => {
+      const store = mockStore();
+
+      const grantPermissionsIncremental =
+        background.grantPermissionsIncremental.mockImplementation((_, cb) =>
+          cb(),
+        );
+
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChain('test.com', '0x1'),
+        expect(grantPermissionsIncremental).toHaveBeenCalledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                    '0x1',
+                  ]),
+                ],
+              },
+            },
+          },
+          expect.any(Function),
+        );
+
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChains', () => {
+    it('calls grantPermissions in the background', async () => {
+      const store = mockStore();
+
+      const grantPermissions = background.grantPermissions.mockImplementation(
+        (_, cb) => cb(),
+      );
+
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChains('test.com', ['0x1', '0x2']),
+        expect(grantPermissions).toHaveBeenCalledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                    '0x1',
+                    '0x2',
+                  ]),
+                ],
+              },
+            },
+          },
+          expect.any(Function),
+        );
+
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 });
