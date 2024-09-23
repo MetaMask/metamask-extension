@@ -24,7 +24,7 @@ class FirstTimeTurnOnNotificationsModal {
   }
 
   async clickTurnOnNotifications(): Promise<void> {
-    await this.driver.clickElement(this.turnOnButton);
+    await this.driver.clickElementAndWaitToDisappear(this.turnOnButton);
   }
 }
 
