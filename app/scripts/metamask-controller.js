@@ -1230,7 +1230,7 @@ export default class MetamaskController extends EventEmitter {
             const internalAccountCount = internalAccounts.length;
 
             const accountTrackerCount = Object.keys(
-              this.accountTracker.state.accounts || {},
+              this.accountTracker.store.getState().accounts || {},
             ).length;
 
             captureException(
@@ -1266,7 +1266,7 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: (listener) => {
         preferencesMessenger.subscribe(
           'PreferencesController:stateChange',
-          () => listener(),
+          listener,
         );
       },
       domainProxyMap: new WeakRefObjectMap(),
@@ -4322,7 +4322,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getBalance(address, ethQuery) {
     return new Promise((resolve, reject) => {
-      const cached = this.accountTracker.state.accounts[address];
+      const cached = this.accountTracker.store.getState().accounts[address];
 
       if (cached && cached.balance) {
         resolve(cached.balance);
@@ -6481,7 +6481,7 @@ export default class MetamaskController extends EventEmitter {
     const appStatePollingTokenType =
       POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
     const pollingTokensToDisconnect =
-      this.appStateController.state[appStatePollingTokenType];
+    this.appStateController.store.getState()[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.currencyRateController.stopPollingByPollingToken(pollingToken);

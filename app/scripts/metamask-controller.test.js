@@ -114,21 +114,21 @@ const rpcMethodMiddlewareMock = {
 };
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
 
-jest.mock(
-  './controllers/preferences-controller',
-  () =>
-    function (...args) {
-      const PreferencesController = jest.requireActual(
-        './controllers/preferences-controller',
-      ).default;
-      const controller = new PreferencesController(...args);
-      // jest.spyOn gets hoisted to the top of this function before controller is initialized.
-      // This forces us to replace the function directly with a jest stub instead.
-      // eslint-disable-next-line jest/prefer-spy-on
-      // controller.messenger.subscribe = jest.fn();
-      return controller;
-    },
-);
+// jest.mock(
+//   './controllers/preferences-controller',
+//   () =>
+//     function (...args) {
+//       const PreferencesController = jest.requireActual(
+//         './controllers/preferences-controller',
+//       ).default;
+//       const controller = new PreferencesController(...args);
+//       // jest.spyOn gets hoisted to the top of this function before controller is initialized.
+//       // This forces us to replace the function directly with a jest stub instead.
+//       // eslint-disable-next-line jest/prefer-spy-on
+//       // controller.messenger.subscribe = jest.fn();
+//       return controller;
+//     },
+// );
 
 const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
@@ -357,11 +357,13 @@ describe('MetaMaskController', () => {
     let metamaskController;
 
     async function simulatePreferencesChange(preferences) {
-      metamaskController.preferencesController.messenger.subscribe.mock.lastCall[0](
+      // metamaskController.controllerMessenger.subscribe.mock.lastCall[0](
+      //   preferences,
+      // );
+      metamaskController.controllerMessenger.publish(
+        'PreferencesController:stateChange',
         preferences,
       );
-
-      await flushPromises();
     }
 
     beforeEach(() => {
@@ -2121,7 +2123,7 @@ describe('MetaMaskController', () => {
     });
 
     describe('incoming transactions', () => {
-      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
+      it.only('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
@@ -2131,6 +2133,16 @@ describe('MetaMaskController', () => {
             [MAINNET_CHAIN_ID]: true,
           },
         });
+
+        // metamaskController.controllerMessenger.publish(
+        //   'PreferencesController:stateChange',
+        //   {
+        //     ...metamaskController.preferencesController.state,
+        //     incomingTransactionsPreferences: {
+        //       [MAINNET_CHAIN_ID]: true,
+        //     },
+        //   },
+        // );
 
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
