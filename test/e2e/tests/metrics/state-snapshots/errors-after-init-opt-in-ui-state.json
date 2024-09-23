@@ -96,6 +96,7 @@
       }
     },
     "keyrings": "object",
+    "selectedAddress": "string",
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
@@ -127,16 +128,15 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
-    "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
-    "metaMetricsDataDeletionId": null,
-    "metaMetricsDataDeletionTimestamp": 0,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0,
     "currentCurrency": "usd",
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "unconnectedAccountAlertShownOrigins": "object",
@@ -167,7 +167,9 @@
     "allDetectedTokens": {},
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     },
     "allNftContracts": "object",
@@ -248,16 +250,8 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionSupport": "boolean",
-        "srcNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        },
-        "destNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        }
+        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
+        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       }
     },
     "ensEntries": "object",

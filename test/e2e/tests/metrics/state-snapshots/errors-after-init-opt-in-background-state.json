@@ -62,16 +62,8 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionSupport": "boolean",
-        "srcNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        },
-        "destNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        }
+        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
+        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       }
     }
   },
@@ -180,6 +172,7 @@
     "permissionActivityLog": "object"
   },
   "PreferencesController": {
+    "selectedAddress": "string",
     "useBlockie": false,
     "useNonceField": false,
     "usePhishDetect": true,
@@ -228,8 +221,7 @@
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
-    "useExternalServices": "boolean",
-    "selectedAddress": "string"
+    "useExternalServices": "boolean"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
@@ -242,7 +234,9 @@
   "SmartTransactionsController": {
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     }
   },

@@ -268,35 +268,38 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            ethereum: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            bsc: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            polygon: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            avalanche: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            smartTransactions: {
-              mobileActive: false,
-              extensionActive: false,
-            },
-            updated_at: '2022-03-17T15:54:00.360Z',
+        json: {
+          ethereum: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
           },
-        ],
+          bsc: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          polygon: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          avalanche: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          localhost: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          smartTransactions: {
+            mobileActive: false,
+            extensionActive: true,
+          },
+          updated_at: '2022-03-17T15:54:00.360Z',
+        },
       };
     });
 
@@ -664,6 +667,11 @@ async function setupMocking(
   const portfolioRequestsMatcher = (request) =>
     request.headers.referer === 'https://portfolio.metamask.io/';
 
+  // Passthrough requests to ServerMochaToBackground's WebSocket server
+  // which is running on port 8111.
+  // TODO: forAnyWebSocket() is too broad, we should be able to more
+  // specifically target ServerMochaToBackground's WebSocket server
+  await server.forAnyWebSocket().thenPassThrough();
   /**
    * Listen for requests and add the hostname to the privacy report if it did
    * not previously exist. This is used to track which hosts are requested

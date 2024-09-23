@@ -600,6 +600,14 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerSmartTransactionsOptedIn() {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: true,
+      },
+    });
+  }
+
   withPreferencesControllerAndFeatureFlag(flags) {
     merge(this.fixture.data.PreferencesController, flags);
     return this;
