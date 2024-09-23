@@ -61,7 +61,10 @@ import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import {
+  SafeChain,
+  useSafeChains,
+} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 
 type TokenListItemProps = {
@@ -106,7 +109,7 @@ export const TokenListItem = ({
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
-  const safeChainDetails =
+  const safeChainDetails: SafeChain | false | undefined =
     safeChains &&
     typeof decimalChainId === 'number' &&
     safeChains.find((chain) => {
@@ -419,8 +422,9 @@ export const TokenListItem = ({
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
-                safeChainDetails?.nativeCurrency.symbol ||
-                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
+                safeChainDetails
+                  ? safeChainDetails.nativeCurrency.symbol
+                  : t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
             </ModalBody>
             <ModalFooter>
