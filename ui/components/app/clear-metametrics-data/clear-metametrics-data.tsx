@@ -55,6 +55,15 @@ export default function ClearMetaMetricsData() {
       );
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
+      trackEvent(
+        {
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.ErrorOccured,
+        },
+        {
+          excludeMetaMetricsId: true,
+        },
+      );
     } finally {
       dispatch(hideDeleteMetaMetricsDataModal());
     }
