@@ -1355,9 +1355,6 @@
     "message": "Kaibahan sa presyo na ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceImpactTooltip": {
-    "message": "Ang epekto sa presyo ay ang pagkakaiba sa kasalukuyang presyo sa merkado at sa halagang natanggap sa pag-execute ng transaksyon. Ang epekto sa presyo ay isang function ng laki ng iyong trade kumpara sa laki ng liquidity pool."
-  },
   "swapPriceUnavailableDescription": {
     "message": "Hindi natukoy ang epekto sa presyo dahil sa kakulangan ng data sa presyo sa merkado. Pakikumpirma na kumportable ka sa dami ng mga token na matatanggap mo bago makipag-swap."
   },

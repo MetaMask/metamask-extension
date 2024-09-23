@@ -12,12 +12,10 @@
 @import 'exchange-rate-display/index';
 @import 'fee-card/index';
 @import 'loading-swaps-quotes/index';
-@import 'main-quote-summary/index';
 @import 'searchable-item-list/index';
 @import 'select-quote-popover/index';
 @import 'slippage-buttons/index';
 @import 'swaps-footer/index';
-@import 'view-quote/index';
 @import 'create-new-swap/index';
 @import 'view-on-block-explorer/index';
 @import 'transaction-settings/index';
@@ -127,15 +125,6 @@
     padding-right: 24px;
     flex: 1;
     text-align: right;
-  }
-
-  &__header-edit {
-    @include design-system.H7;
-
-    color: var(--color-primary-default);
-    cursor: pointer;
-    padding-left: 24px;
-    flex: 1;
   }
 
   .actionable-message__message &__notification-close-button {

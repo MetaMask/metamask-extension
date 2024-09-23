@@ -5347,9 +5347,6 @@
     "message": "~$1%의 가격 차이",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceImpactTooltip": {
-    "message": "가격 영향은 현재 시장 가격과 트랜잭션 실행 도중 받은 금액 사이의 차이입니다. 가격 영향은 유동성 풀의 크기 대비 트랜잭션의 크기를 나타내는 함수입니다."
-  },
   "swapPriceUnavailableDescription": {
     "message": "시장 가격 데이터가 부족하여 가격 영향을 파악할 수 없습니다. 스왑하기 전에 받게 될 토큰 수가 만족스러운지 컨펌하시기 바랍니다."
   },

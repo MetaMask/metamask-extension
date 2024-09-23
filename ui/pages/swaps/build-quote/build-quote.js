@@ -20,7 +20,7 @@ import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
-  VIEW_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
   LOADING_QUOTES_ROUTE,
 } from '../../../helpers/constants/routes';
 
@@ -776,7 +776,7 @@ export default function BuildQuote({
               );
             } else if (areQuotesPresent) {
               // If there are prefetched quotes already, go directly to the View Quote page.
-              history.push(VIEW_QUOTE_ROUTE);
+              history.push(PREPARE_SWAP_ROUTE);
             } else {
               // If the "Review swap" button was clicked while quotes are being fetched, go to the Loading Quotes page.
               await dispatch(setBackgroundSwapRouteState('loading'));

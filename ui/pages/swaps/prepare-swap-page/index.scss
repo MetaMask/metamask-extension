@@ -306,12 +306,6 @@
     width: 100%;
   }
 
-  .main-quote-summary {
-    &__exchange-rate-display {
-      width: auto;
-    }
-  }
-
   &::after { // Hide preloaded images.
     position: absolute;
     width: 0;
@@ -364,6 +358,10 @@
 
   &__edit-limit {
     white-space: nowrap;
+  }
+
+  &__exchange-rate-display {
+    color: var(--color-text-alternative);
   }
 }
 

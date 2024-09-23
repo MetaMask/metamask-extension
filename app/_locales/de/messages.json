@@ -5347,9 +5347,6 @@
     "message": "Preisdifferenz von ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceImpactTooltip": {
-    "message": "Der Preiseinfluss ist die Differenz zwischen dem aktuellen Marktpreis und dem bei der Ausführung der Transaktion erhaltenen Betrag. Die Preisauswirkung ist eine Funktion der Größe Ihres Geschäfts im Verhältnis zur Größe des Liquiditätspools."
-  },
   "swapPriceUnavailableDescription": {
     "message": "Die Auswirkungen auf den Preis konnten aufgrund fehlender Marktpreisdaten nicht ermittelt werden. Bitte bestätigen Sie vor dem Tausch, dass Sie mit der Menge der Tokens, die Sie erhalten werden, einverstanden sind."
   },

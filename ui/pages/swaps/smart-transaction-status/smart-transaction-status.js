@@ -323,12 +323,12 @@ export default function SmartTransactionStatusPage() {
           {fetchParamsSourceTokenInfo.iconUrl ? (
             <UrlIcon
               url={fetchParamsSourceTokenInfo.iconUrl}
-              className="main-quote-summary__icon"
+              className="smart-transactions-status-summary__icon"
               name={
                 fetchParamsSourceTokenInfo.symbol ??
                 latestSmartTransaction?.destinationTokenSymbol
               }
-              fallbackClassName="main-quote-summary__icon-fallback"
+              fallbackClassName="smart-transactions-status-summary__icon-fallback"
             />
           ) : null}
           <Box display={DISPLAY.BLOCK} marginLeft={2} marginRight={2}>
@@ -337,12 +337,12 @@ export default function SmartTransactionStatusPage() {
           {fetchParamsDestinationTokenInfo.iconUrl ? (
             <UrlIcon
               url={fetchParamsDestinationTokenInfo.iconUrl}
-              className="main-quote-summary__icon"
+              className="smart-transactions-status-summary__icon"
               name={
                 fetchParamsDestinationTokenInfo.symbol ??
                 latestSmartTransaction?.destinationTokenSymbol
               }
-              fallbackClassName="main-quote-summary__icon-fallback"
+              fallbackClassName="smart-transactions-status-summary__icon-fallback"
             />
           ) : null}
           <Text

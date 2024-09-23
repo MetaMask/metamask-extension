@@ -63,7 +63,7 @@ import {
   CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
-  VIEW_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -329,7 +329,7 @@ export default class Home extends PureComponent {
     if (canRedirect && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && haveSwapsQuotes) {
-      history.push(VIEW_QUOTE_ROUTE);
+      history.push(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && swapsFetchParams) {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
