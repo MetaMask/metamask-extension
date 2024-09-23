@@ -205,9 +205,6 @@
   "delete": {
     "message": "Ištrinti"
   },
-  "deleteNetwork": {
-    "message": "Panaikinti tinklą?"
-  },
   "details": {
     "message": "Išsami informacija"
   },
@@ -350,9 +347,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Gavėjo adresas netinkamas"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Netinkamas Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Netinkamas RPC URL"

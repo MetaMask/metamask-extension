@@ -138,6 +138,7 @@ export const createSwapsMockStore = () => {
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
+        showMultiRpcModal: false,
       },
       transactions: [
         {
@@ -364,7 +365,9 @@ export const createSwapsMockStore = () => {
         ticker: CURRENCY_SYMBOLS.ETH,
         rpcUrl: 'https://mainnet.infura.io/v3/',
         blockExplorerUrl: 'https://etherscan.io',
+        id: 'mainnet',
       }),
+      selectedNetworkClientId: 'mainnet',
       tokens: [
         {
           erc20: true,
@@ -674,6 +677,10 @@ export const createBridgeMockStore = (
           ...featureFlagOverrides,
         },
       },
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+      ),
     },
   };
 };
