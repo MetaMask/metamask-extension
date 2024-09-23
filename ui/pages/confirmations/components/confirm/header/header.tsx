@@ -3,6 +3,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -18,6 +20,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
@@ -26,6 +29,10 @@ import HeaderInfo from './header-info';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
 const Header = () => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
