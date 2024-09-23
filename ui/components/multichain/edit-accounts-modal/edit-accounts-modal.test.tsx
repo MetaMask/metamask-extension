@@ -1,5 +1,4 @@
 import React from 'react';
-import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
@@ -8,11 +7,9 @@ import { EditAccountsModal } from '.';
 const render = (
   props: {
     onClose: () => void;
-    allowedAccountTypes: KeyringAccountType[];
     activeTabOrigin: string;
   } = {
     onClose: () => jest.fn(),
-    allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
     activeTabOrigin: 'https://test.dapp',
   },
   state = {},
@@ -38,14 +35,11 @@ const render = (
   });
   return renderWithProvider(
     <EditAccountsModal
-      onClick={function (): void {
+      onSubmit={function (): void {
         throw new Error('Function not implemented.');
       }}
-      onDisconnectClick={function (): void {
-        throw new Error('Function not implemented.');
-      }}
-      approvedAccounts={[]}
-      currentTabHasNoAccounts={false}
+      accounts={[]}
+      defaultSelectedAccountAddresses={[]}
       {...props}
     />,
     store,

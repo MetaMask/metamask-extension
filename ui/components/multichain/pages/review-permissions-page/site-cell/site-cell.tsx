@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Hex } from '@metamask/utils';
 import { BorderColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -22,7 +23,7 @@ type SiteCellProps = {
   testNetworks: Network[];
   accounts: MergedInternalAccount[];
   onSelectAccountAddresses: (addresses: string[]) => void;
-  onSelectChainIds: (chainIds: string[]) => void;
+  onSelectChainIds: (chainIds: Hex[]) => void;
   selectedAccountAddresses: string[];
   selectedChainIds: string[];
   activeTabOrigin: string;
