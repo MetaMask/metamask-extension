@@ -590,6 +590,7 @@ export default class MetamaskController extends EventEmitter {
       name: 'PreferencesController',
       allowedActions: [
         'AccountsController:setSelectedAccount',
+        'AccountsController:getSelectedAccount',
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
       ],
@@ -989,16 +990,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
-      () =>
-        previousValueComparator((prevState, currState) => {
-          const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
-          const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
-          if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-            this.tokenRatesController.start();
-          } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-            this.tokenRatesController.stop();
-          }
-        }, this.preferencesController.state),
+      previousValueComparator((prevState, currState) => {
+        const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
+        const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
+        if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
+          this.tokenRatesController.start();
+        } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
+          this.tokenRatesController.stop();
+        }
+      }, this.preferencesController.state),
     );
 
     this.ensController = new EnsController({
@@ -1266,7 +1266,9 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: (listener) => {
         preferencesMessenger.subscribe(
           'PreferencesController:stateChange',
-          listener,
+          (newState) => {
+            listener(newState);
+          },
         );
       },
       domainProxyMap: new WeakRefObjectMap(),
@@ -2824,7 +2826,7 @@ export default class MetamaskController extends EventEmitter {
   setupControllerEventSubscriptions() {
     let lastSelectedAddress;
     this.controllerMessenger.subscribe(
-      `${this.preferencesController.name}:stateChange`,
+      'PreferencesController:stateChange',
       previousValueComparator((prevState, currState) => {
         this.#onPreferencesControllerStateChange(currState, prevState);
       }, this.preferencesController.state),
@@ -5191,7 +5193,7 @@ export default class MetamaskController extends EventEmitter {
       metaMetricsId,
       dataCollectionForMarketing,
       participateInMetaMetrics,
-    } = this.metaMetricsController.state;
+    } = this.metaMetricsController.store.getState();
 
     if (
       metaMetricsId &&
@@ -6481,7 +6483,7 @@ export default class MetamaskController extends EventEmitter {
     const appStatePollingTokenType =
       POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
     const pollingTokensToDisconnect =
-    this.appStateController.store.getState()[appStatePollingTokenType];
+      this.appStateController.store.getState()[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.currencyRateController.stopPollingByPollingToken(pollingToken);

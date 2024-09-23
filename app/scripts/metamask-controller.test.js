@@ -357,13 +357,15 @@ describe('MetaMaskController', () => {
     let metamaskController;
 
     async function simulatePreferencesChange(preferences) {
-      // metamaskController.controllerMessenger.subscribe.mock.lastCall[0](
-      //   preferences,
-      // );
       metamaskController.controllerMessenger.publish(
         'PreferencesController:stateChange',
-        preferences,
+        {
+          ...metamaskController.preferencesController.state,
+          ...preferences,
+        },
       );
+
+      await flushPromises();
     }
 
     beforeEach(() => {
@@ -2123,7 +2125,7 @@ describe('MetaMaskController', () => {
     });
 
     describe('incoming transactions', () => {
-      it.only('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
+      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
@@ -2133,16 +2135,6 @@ describe('MetaMaskController', () => {
             [MAINNET_CHAIN_ID]: true,
           },
         });
-
-        // metamaskController.controllerMessenger.publish(
-        //   'PreferencesController:stateChange',
-        //   {
-        //     ...metamaskController.preferencesController.state,
-        //     incomingTransactionsPreferences: {
-        //       [MAINNET_CHAIN_ID]: true,
-        //     },
-        //   },
-        // );
 
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
