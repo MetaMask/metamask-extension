@@ -3,8 +3,8 @@ import { Driver } from '../../webdriver/driver';
 import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 const newAccountLabel = 'Custom name';
 const anotherAccountLabel = '2nd custom name';
