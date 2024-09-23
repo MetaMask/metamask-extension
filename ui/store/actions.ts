@@ -5349,7 +5349,7 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
 > {
   return async () => {
     try {
-      const response = submitRequestToBackground(
+      const response = await submitRequestToBackground(
         'syncInternalAccountsWithUserStorage',
       );
       return response;
