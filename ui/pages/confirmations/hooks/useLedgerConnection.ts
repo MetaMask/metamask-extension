@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   HardwareTransportStates,
   LEDGER_USB_VENDOR_ID,
@@ -20,17 +21,22 @@ import { attemptLedgerTransportCreation } from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
 
-const useLedgerConnection = () => {
+const useLedgerConnection = (): {
+  isLedgerWallet: boolean;
+} => {
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const { currentConfirmation } = useConfirmContext<
+    SignatureRequestType & TransactionMeta
+  >();
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
 
   let from: string | undefined;
-  // todo: extend to other confirmation types
-  if (currentConfirmation?.msgParams) {
-    from = currentConfirmation.msgParams.from;
+  const confirmationParams =
+    currentConfirmation?.msgParams || currentConfirmation?.txParams;
+  if (confirmationParams) {
+    from = confirmationParams.from;
   }
 
   const isLedgerWallet = useSelector(
@@ -112,7 +118,7 @@ const useLedgerConnection = () => {
     };
   }, [dispatch]);
 
-  return { isLedgerWallet };
+  return { isLedgerWallet: !!isLedgerWallet };
 };
 
 export default useLedgerConnection;
