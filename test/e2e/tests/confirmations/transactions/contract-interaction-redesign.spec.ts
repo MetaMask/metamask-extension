@@ -86,7 +86,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       );
     });
 
-    it(`Sends a contract interaction type 2 transaction (EIP1559) with a Trezor account`, async function () {
+    it(`Sends a contract interaction type 0 transaction (Legacy) with a Trezor account`, async function () {
       await withFixtures(
         {
           dapp: true,
@@ -102,15 +102,33 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
               },
             })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          ganacheOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          // Seed the Trezor account with balance
+          await ganacheServer?.setAccountBalance(
+            KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            '0x100000000000000000000',
+          );
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
+
+          // Assert transaction is completed
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await driver.clickElement(
+            '[data-testid="account-overview__activity-tab"]',
+          );
+          await driver.waitForSelector('.transaction-status-label--confirmed');
         },
       );
     });
