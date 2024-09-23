@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 import { IconName } from '../../../../component-library';
+import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
 describe('SiteCellConnectionListItem', () => {
   it('renders correctly with required props', () => {
@@ -14,7 +14,7 @@ describe('SiteCellConnectionListItem', () => {
         isConnectFlow
         onClick={() => null}
         content={<div>Content</div>}
-      />
+      />,
     );
     expect(container).toMatchSnapshot();
   });
