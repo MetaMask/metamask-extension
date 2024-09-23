@@ -36,7 +36,7 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
 
 /**
  * @param {number|string|BigNumber} value
- * @param {number} decimals
+ * @param {number=} decimals
  * @returns {BigNumber}
  */
 export function calcTokenAmount(value, decimals) {
