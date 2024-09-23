@@ -23,6 +23,9 @@ const {
   WINDOW_TITLES,
   withFixtures,
 } = require('../../../helpers');
+const {
+  KNOWN_PUBLIC_KEY_ADDRESSES,
+} = require('../../../../stub/keyring-bridge');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
@@ -63,6 +66,35 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          smartContract,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await openDAppWithContract(driver, contractRegistry, smartContract);
+
+          await createDepositTransaction(driver);
+          await confirmDepositTransaction(driver);
+        },
+      );
+    });
+
+    it(`Sends a contract interaction type 2 transaction (EIP1559) with a Trezor account`, async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withTrezorAccount()
+            .withPermissionControllerConnectedToTestDapp({
+              account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            })
             .withPreferencesController({
               preferences: {
                 redesignedConfirmationsEnabled: true,
