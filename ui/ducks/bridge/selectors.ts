@@ -8,6 +8,8 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   BridgeControllerState,
   BridgeFeatureFlagsKey,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { createDeepEqualSelector } from '../../selectors/util';

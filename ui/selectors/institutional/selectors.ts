@@ -2,6 +2,8 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { getAccountType, getSelectedInternalAccount } from '../selectors';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { AccountType } from '../../../shared/constants/custody';
 

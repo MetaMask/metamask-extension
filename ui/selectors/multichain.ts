@@ -16,6 +16,8 @@ import {
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import {
