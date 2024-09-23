@@ -1,39 +1,29 @@
 import { Driver } from '../webdriver/driver';
-import { Page } from './page';
 
-export class SmartSwapPage extends Page {
-  private readonly tokenOverviewSwapButtonSelector = '[data-testid="token-overview-swap-button"]';
-  private readonly transactionSettingsButtonSelector = '[data-testid="transaction-settings-button"]';
-  private readonly smartSwapsToggleSelector = '[data-testid="smart-swaps-toggle"]';
+export class SmartSwapPage {
+  private driver: Driver;
+
+  private tokenOverviewSwapButton: string;
+  private transactionSettingsButton: string;
+  private smartSwapsToggle: string;
 
   constructor(driver: Driver) {
-    super(driver);
-  }
-
-  private async getTokenOverviewSwapButton() {
-    return await this.driver.findElement(this.tokenOverviewSwapButtonSelector);
-  }
-
-  private async getTransactionSettingsButton() {
-    return await this.driver.findElement(this.transactionSettingsButtonSelector);
-  }
-
-  private async getSmartSwapsToggle() {
-    return await this.driver.findElements(this.smartSwapsToggleSelector);
+    this.driver = driver;
+    this.tokenOverviewSwapButton = '[data-testid="token-overview-swap-button"]';
+    this.transactionSettingsButton = '[data-testid="transaction-settings-button"]';
+    this.smartSwapsToggle = '[data-testid="smart-swaps-toggle"]';
   }
 
   async clickTokenOverviewSwapButton(): Promise<void> {
-    const button = await this.getTokenOverviewSwapButton();
-    await button.click();
+    await this.driver.clickElement(this.tokenOverviewSwapButton);
   }
 
   async clickTransactionSettingsButton(): Promise<void> {
-    const button = await this.getTransactionSettingsButton();
-    await button.click();
+    await this.driver.clickElement(this.transactionSettingsButton);
   }
 
   async checkSmartSwapsToggleNotPresent(): Promise<void> {
-    const smartSwapsToggle = await this.getSmartSwapsToggle();
+    const smartSwapsToggle = await this.driver.findElements(this.smartSwapsToggle);
     if (smartSwapsToggle.length > 0) {
       throw new Error('Smart Swaps toggle is present when it should not be');
     }
