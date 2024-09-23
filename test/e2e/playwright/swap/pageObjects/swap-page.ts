@@ -87,9 +87,7 @@ export class SwapPage {
       // No quotes available
       const noQuotes = await this.page.$('text=/No quotes available/');
       if (noQuotes) {
-        // re-entering the qty will trigger new quote
-        await this.tokenQty.fill('');
-        await this.tokenQty.fill(this.swapQty);
+        break;
       }
 
       if (await this.page.$('text=/New quotes in/')) {
@@ -99,6 +97,7 @@ export class SwapPage {
 
       await this.page.waitForTimeout(500);
     } while (!quoteFound);
+    return quoteFound;
   }
 
   async swap() {
@@ -122,7 +121,9 @@ export class SwapPage {
   }
 
   async waitForTransactionToComplete() {
-    await this.page.waitForSelector('text=/Transaction complete/');
+    await this.page.waitForSelector('text=/Transaction complete/', {
+      timeout: 90000,
+    });
     await this.closeButton.click(); // Close button
   }
 

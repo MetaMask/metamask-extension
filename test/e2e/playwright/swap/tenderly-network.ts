@@ -2,19 +2,22 @@ import axios from 'axios';
 
 export const Tenderly = {
   Mainnet: {
-    name: 'Tenderly - Mainnet',
+    name: 'Ethereum Mainnet',
+    rpcName: 'Tenderly - Mainnet',
     url: 'https://virtual.mainnet.rpc.tenderly.co/03bb8912-7505-4856-839f-52819a26d0cd',
     chainID: '1',
     symbol: 'ETH',
   },
   Optimism: {
-    name: 'Tenderly - Optimism',
+    name: 'OP Mainnet',
+    rpcName: '',
     url: 'https://virtual.optimism.rpc.tenderly.co/3170a58e-fa67-4ccc-9697-b13aff0f5c1a',
     chainID: '10',
     symbol: 'ETH',
   },
   Abritrum: {
-    name: 'Tenderly - Arbitrum',
+    name: 'Arbitrum One',
+    rpcName: '',
     url: 'https://virtual.arbitrum.rpc.tenderly.co/7d364996-41a7-4da6-a552-a19ab1ef9173',
     chainID: '42161',
     symbol: 'ETH',

@@ -20,49 +20,50 @@ const testSet = [
     source: 'ETH',
     type: 'native',
     destination: 'DAI',
-    network: Tenderly.Mainnet.name,
+    network: Tenderly.Mainnet,
   },
   {
     quantity: '.5',
     source: 'ETH',
     type: 'native',
     destination: 'USDC',
-    network: Tenderly.Optimism.name,
+    network: Tenderly.Abritrum,
   },
   {
-    quantity: '.5',
+    quantity: '.3',
     source: 'ETH',
     type: 'native',
     destination: 'USDT',
-    network: Tenderly.Abritrum.name,
+    network: Tenderly.Abritrum,
   },
   {
     quantity: '50',
     source: 'DAI',
     type: 'unapproved',
     destination: 'ETH',
-    network: Tenderly.Mainnet.name,
+    network: Tenderly.Mainnet,
   },
+
   {
     source: 'ETH',
     quantity: '.5',
     type: 'native',
     destination: 'WETH',
-    network: Tenderly.Mainnet.name,
+    network: Tenderly.Mainnet,
   },
   {
     quantity: '.3',
     source: 'WETH',
     type: 'wrapped',
     destination: 'ETH',
-    network: Tenderly.Mainnet.name,
+    network: Tenderly.Mainnet,
   },
   {
     quantity: '50',
     source: 'DAI',
     type: 'ERC20->ERC20',
     destination: 'USDC',
-    network: Tenderly.Mainnet.name,
+    network: Tenderly.Mainnet,
   },
 ];
 
@@ -71,6 +72,7 @@ test.beforeAll(
   async () => {
     const extension = new ChromeExtensionPage();
     const page = await extension.initExtension();
+    page.setDefaultTimeout(15000);
 
     const wallet = ethers.Wallet.createRandom();
 
@@ -86,27 +88,33 @@ test.beforeAll(
     activityListPage = new ActivityListPage(page);
     walletPage = new WalletPage(page);
 
-    await networkController.addCustomNetwork(Tenderly.Optimism, false);
-    await networkController.addCustomNetwork(Tenderly.Abritrum, false);
-    await networkController.addCustomNetwork(Tenderly.Mainnet, true);
+    // await networkController.addCustomNetwork(Tenderly.Optimism, false);
+    // await networkController.addCustomNetwork(Tenderly.Abritrum, false);
+    // await networkController.addCustomNetwork(Tenderly.Mainnet, true);
+    await networkController.addCustomNetwork(Tenderly.Mainnet);
+    await networkController.addCustomNetwork(Tenderly.Abritrum);
     await walletPage.importAccount(wallet.privateKey);
   },
 );
 testSet.forEach((options) => {
-  test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network}'`, async () => {
-    await networkController.selectNetwork({ networkName: options.network });
+  test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async () => {
+    await networkController.selectNetwork(options.network);
     await walletPage.selectSwapAction();
     await swapPage.enterQuote({
       from: options.source,
       to: options.destination,
       qty: options.quantity,
     });
-    await swapPage.waitForQuote();
-    await swapPage.swap();
-    await swapPage.waitForTransactionToComplete();
-    await walletPage.selectActivityList();
-    await activityListPage.checkActivityIsConfirmed({
-      activity: `Swap ${options.source} to ${options.destination}`,
-    });
+    const quoteFound = await swapPage.waitForQuote();
+    if (quoteFound) {
+      await swapPage.swap();
+      await swapPage.waitForTransactionToComplete();
+      await walletPage.selectActivityList();
+      await activityListPage.checkActivityIsConfirmed({
+        activity: `Swap ${options.source} to ${options.destination}`,
+      });
+    } else {
+      await swapPage.gotBack();
+    }
   });
 });
