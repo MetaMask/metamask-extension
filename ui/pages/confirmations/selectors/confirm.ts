@@ -1,6 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
 
-import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
 import { ConfirmMetamaskState } from '../types/confirm';
 import { createDeepEqualSelector } from '../../../selectors/util';
@@ -21,14 +20,14 @@ export function pendingConfirmationsSelector(state: ConfirmMetamaskState) {
 export function pendingConfirmationsSortedSelector(
   state: ConfirmMetamaskState,
 ) {
-  return getPendingApprovals(state)
+  return Object.values(state.metamask.pendingApprovals ?? {})
     .filter(({ type }) =>
       ConfirmationApprovalTypes.includes(type as ApprovalType),
     )
     .sort((a1, a2) => a1.time - a2.time);
 }
 
-export const oldestPendingConfirmationSelector = createSelector(
+export const oldestPendingConfirmationSelector = createDeepEqualSelector(
   pendingConfirmationsSortedSelector,
   (pendingConfirmations) => pendingConfirmations[0],
 );
