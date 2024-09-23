@@ -30,12 +30,8 @@ const useLedgerConnection = () => {
   const transportStatus = useSelector(getLedgerTransportStatus);
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
 
-  let from: string | undefined;
-  const confirmationParams =
-    currentConfirmation?.msgParams || currentConfirmation?.txParams;
-  if (confirmationParams) {
-    from = confirmationParams.from;
-  }
+  const from =
+    currentConfirmation?.msgParams?.from ?? currentConfirmation?.txParams?.from;
 
   const isLedgerWallet = useSelector(
     (state) => from && isAddressLedger(state, from),
