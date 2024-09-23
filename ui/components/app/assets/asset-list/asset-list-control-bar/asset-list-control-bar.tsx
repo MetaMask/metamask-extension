@@ -69,10 +69,12 @@ const AssetListControlBar = ({
         [nativeTokenWithBalance.tokenFiatAmount, nativeTokenWithBalance.string];
     }
 
-    const sortedTokenList = sortAssets(
-      [nativeTokenWithBalance, ...tokensWithBalances],
-      tokenSortConfig,
-    );
+    const sortedTokenList = tokenSortConfig
+      ? sortAssets(
+          [nativeTokenWithBalance, ...tokensWithBalances],
+          tokenSortConfig,
+        )
+      : [];
 
     setTokenList(sortedTokenList);
   }, [tokenSortConfig?.key, loading, tokensWithBalances.length]);

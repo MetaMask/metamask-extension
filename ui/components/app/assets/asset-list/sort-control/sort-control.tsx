@@ -80,7 +80,7 @@ const SortControl = ({
     const sortedAssets = sortAssets(dedupedTokenList, tokenSortConfig);
     setSorted(true);
     setTokenList(sortedAssets);
-  }, [tokenSortConfig.key]);
+  }, [tokenSortConfig?.key]);
 
   const handleSort = (
     key: string,
