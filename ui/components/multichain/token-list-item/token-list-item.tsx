@@ -109,12 +109,12 @@ export const TokenListItem = ({
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
-  const safeChainDetails: SafeChain | false | undefined =
-    safeChains &&
-    typeof decimalChainId === 'number' &&
-    safeChains.find((chain) => {
+  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
+    if (typeof decimalChainId === 'number') {
       return chain.chainId === decimalChainId.toString();
-    });
+    }
+    return undefined;
+  });
 
   // Scam warning
   const showScamWarning =
@@ -422,9 +422,8 @@ export const TokenListItem = ({
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
-                safeChainDetails
-                  ? safeChainDetails.nativeCurrency.symbol
-                  : t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
+                safeChainDetails?.nativeCurrency?.symbol ||
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
             </ModalBody>
             <ModalFooter>
