@@ -28,15 +28,9 @@ export function pendingConfirmationsSortedSelector(
     .sort((a1, a2) => a1.time - a2.time);
 }
 
-const internalLatestPendingConfirmationSelector = createSelector(
+export const oldestPendingConfirmationSelector = createSelector(
   pendingConfirmationsSortedSelector,
-  (pendingConfirmations) =>
-    pendingConfirmations.sort((a1, a2) => a2.time - a1.time)[0],
-);
-
-export const latestPendingConfirmationSelector = createDeepEqualSelector(
-  internalLatestPendingConfirmationSelector,
-  (latestPendingConfirmation) => latestPendingConfirmation,
+  (pendingConfirmations) => pendingConfirmations[0],
 );
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
