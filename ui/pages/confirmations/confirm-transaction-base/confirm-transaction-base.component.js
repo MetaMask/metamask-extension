@@ -31,7 +31,7 @@ import {
 } from '../../../helpers/utils/transactions.util';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import NoteToTrader from '../../../components/institutional/note-to-trader';
+import TabbedNoteToTrader from '../../../components/institutional/note-to-trader/note-to-trader-tabbed';
 ///: END:ONLY_INCLUDE_IF
 import {
   AccountType,
@@ -1173,7 +1173,7 @@ export default class ConfirmTransactionBase extends Component {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           noteComponent={
             isNoteToTraderSupported && (
-              <NoteToTrader
+              <TabbedNoteToTrader
                 maxLength={280}
                 placeholder={t('notePlaceholder')}
                 onChange={(value) => this.setState({ noteText: value })}

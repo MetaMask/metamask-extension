@@ -542,6 +542,12 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  setNoteToTraderMessage(message) {
+    this.store.updateState({
+      noteToTraderMessage: message,
+    });
+  }
+
   ///: END:ONLY_INCLUDE_IF
 
   getSignatureSecurityAlertResponse(securityAlertId) {

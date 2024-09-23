@@ -65,8 +65,8 @@ import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
-import { ReceiveModal } from '../../multichain/receive-modal';
 ///: END:ONLY_INCLUDE_IF
+import { ReceiveModal } from '../../multichain/receive-modal';
 
 const CoinButtons = ({
   chainId,

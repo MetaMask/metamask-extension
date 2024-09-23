@@ -396,7 +396,11 @@ class FixtureBuilder {
     return this;
   }
 
-  withPermissionControllerConnectedToTestDapp(restrictReturnedAccounts = true) {
+  withPermissionControllerConnectedToTestDapp({
+    restrictReturnedAccounts = true,
+    account = '',
+  } = {}) {
+    const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -410,7 +414,7 @@ class FixtureBuilder {
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
-                    DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+                    selectedAccount.toLowerCase(),
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
                     ERC_4337_ACCOUNT.toLowerCase(),
                   ],

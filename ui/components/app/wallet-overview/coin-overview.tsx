@@ -1,9 +1,16 @@
-import React, { useContext, useCallback, useState } from 'react';
+import React, {
+  useContext,
+  useState,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  useCallback,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
+
 import {
   Box,
   ButtonIcon,
@@ -23,27 +30,30 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+///: END:ONLY_INCLUDE_IF
+
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import {
-  getDataCollectionForMarketing,
-  getShouldShowAggregatedBalancePopover,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
   getPreferences,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getIsTestnet,
+  getShouldShowAggregatedBalancePopover,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getDataCollectionForMarketing,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -97,17 +107,21 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useContext(I18nContext);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const trackEvent = useContext(MetaMetricsContext);
+
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+
+  ///: END:ONLY_INCLUDE_IF
 
   const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
     t,
     t('general'),
     t('showNativeTokenAsMainBalance'),
   );
-
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const theme = useTheme();
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
@@ -150,6 +164,7 @@ export const CoinOverview = ({
     setReferenceElement(ref);
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handlePortfolioOnClick = useCallback(() => {
     const url = getPortfolioUrl(
       '',
@@ -168,6 +183,7 @@ export const CoinOverview = ({
       },
     });
   }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
+  ///: END:ONLY_INCLUDE_IF
 
   const renderPercentageAndAmountChange = () => {
     if (isEvm) {
@@ -177,7 +193,27 @@ export const CoinOverview = ({
             <PercentageAndAmountChange
               value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
             />
-
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+              <ButtonLink
+                endIconName={IconName.Export}
+                onClick={handlePortfolioOnClick}
+                as="a"
+                data-testid="portfolio-link"
+                textProps={{ variant: TextVariant.bodyMdMedium }}
+              >
+                {t('portfolio')}
+              </ButtonLink>
+              ///: END:ONLY_INCLUDE_IF
+            }
+          </Box>
+        );
+      }
+      return (
+        <Box className="wallet-overview__currency-wrapper">
+          <AggregatedPercentageOverview />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <ButtonLink
               endIconName={IconName.Export}
               onClick={handlePortfolioOnClick}
@@ -187,21 +223,8 @@ export const CoinOverview = ({
             >
               {t('portfolio')}
             </ButtonLink>
-          </Box>
-        );
-      }
-      return (
-        <Box className="wallet-overview__currency-wrapper">
-          <AggregatedPercentageOverview />
-          <ButtonLink
-            endIconName={IconName.Export}
-            onClick={handlePortfolioOnClick}
-            as="a"
-            data-testid="portfolio-link"
-            textProps={{ variant: TextVariant.bodyMdMedium }}
-          >
-            {t('portfolio')}
-          </ButtonLink>
+            ///: END:ONLY_INCLUDE_IF
+          }
         </Box>
       );
     }

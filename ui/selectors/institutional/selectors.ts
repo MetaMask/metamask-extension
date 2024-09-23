@@ -50,6 +50,7 @@ type MetaMaskState = {
   custodyAccountDetails?: CustodyAccountDetails;
   custodianSupportedChains?: CustodianSupportedChains;
   mmiConfiguration?: MmiConfiguration;
+  noteToTraderMessage?: string;
   interactiveReplacementToken?: {
     oldRefreshToken?: string;
     url?: string;
@@ -255,4 +256,8 @@ export function getIsCustodianPublishesTransactionSupported(
   );
 
   return foundCustodian ? foundCustodian.custodianPublishesTransaction : false;
+}
+
+export function getNoteToTraderMessage(state: State) {
+  return state.metamask.noteToTraderMessage || '';
 }

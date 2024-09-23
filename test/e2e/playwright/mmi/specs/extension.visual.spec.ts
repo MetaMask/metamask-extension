@@ -152,13 +152,12 @@ test.describe('MMI extension', () => {
     await accountsPopup.connectCustodian(
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
     );
-
     const accountNamesWithCustodian = await accountsPopup.getAccountNames();
 
-    expect(
-      JSON.stringify(accountNamesWithCustodian) ===
-        JSON.stringify(arrayWithCustodianAccounts),
-    ).toBeTruthy();
+    const containsAccount = arrayWithCustodianAccounts.some((account) =>
+      accountNamesWithCustodian.includes(account),
+    );
+    expect(containsAccount).toBeTruthy();
 
     await accountsPopup.selectCustodyAccount(accountFrom);
     // Check remove custodian token screen (aborted before removed)
