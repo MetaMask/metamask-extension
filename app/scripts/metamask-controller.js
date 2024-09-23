@@ -2245,22 +2245,22 @@ export default class MetamaskController extends EventEmitter {
 
       processTypedMessage: (...args) =>
         addTypedMessage({
-          SignatureController: this.signatureController,
+          signatureController: this.signatureController,
           signatureParams: args,
         }),
       processTypedMessageV3: (...args) =>
         addTypedMessage({
-          SignatureController: this.signatureController,
+          signatureController: this.signatureController,
           signatureParams: args,
         }),
       processTypedMessageV4: (...args) =>
         addTypedMessage({
-          SignatureController: this.signatureController,
+          signatureController: this.signatureController,
           signatureParams: args,
         }),
       processPersonalMessage: (...args) =>
         addPersonalMessage({
-          SignatureController: this.signatureController,
+          signatureController: this.signatureController,
           signatureParams: args,
         }),
       ///: END:ONLY_INCLUDE_IF
