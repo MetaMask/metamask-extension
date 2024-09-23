@@ -1,15 +1,11 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
-import {
-  AuthenticationController,
-  UserStorageController,
-} from '@metamask/profile-sync-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   NotificationServicesController,
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 
 const AuthMocks = AuthenticationController.Mocks;
-const StorageMocks = UserStorageController.Mocks;
 const NotificationMocks = NotificationServicesController.Mocks;
 const PushMocks = NotificationServicesPushController.Mocks;
 
@@ -31,8 +27,21 @@ export async function mockNotificationServices(server: Mockttp) {
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
-  mockAPICall(server, await StorageMocks.getMockUserStoragePutResponse());
+  const NOTIFICATIONS_USER_STORAGE_ENDPOINT =
+    'https://user-storage.api.cx.metamask.io/api/v1/userstorage/notifications';
+  const NOTIFICATION_USER_STORAGE_ID =
+    'df1d90e0a8c2c7c48a84cfc80c979b68c7e7d5624b89986a83a280ab92511bd4';
+  mockAPICall(server, {
+    url: `${NOTIFICATIONS_USER_STORAGE_ENDPOINT}/${NOTIFICATION_USER_STORAGE_ID}`,
+    requestMethod: 'GET',
+    response: NotificationMocks.createMockFullUserStorage(),
+  });
+
+  mockAPICall(server, {
+    url: `${NOTIFICATIONS_USER_STORAGE_ENDPOINT}/${NOTIFICATION_USER_STORAGE_ID}`,
+    requestMethod: 'PUT',
+    response: null,
+  });
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
@@ -43,11 +52,12 @@ export async function mockNotificationServices(server: Mockttp) {
     server,
     NotificationMocks.getMockMarkNotificationsAsReadResponse(),
   );
-
   // Push Notifications
   mockAPICall(server, PushMocks.getMockRetrievePushNotificationLinksResponse());
   mockAPICall(server, PushMocks.getMockUpdatePushNotificationLinksResponse());
   mockAPICall(server, PushMocks.getMockCreateFCMRegistrationTokenResponse());
+  mockAPICall(server, PushMocks.getMockDeleteFCMRegistrationTokenResponse());
+
   mockAPICall(server, PushMocks.getMockDeleteFCMRegistrationTokenResponse());
 }
 
