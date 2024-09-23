@@ -4544,6 +4544,9 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "review": {
+    "message": "Review"
+  },
   "reviewAlert": {
     "message": "Review alert"
   },
