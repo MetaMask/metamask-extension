@@ -3,7 +3,7 @@ import {
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import { getPermissionBackgroundApiMethods } from './background-api';
-import { CaveatFactories } from './specifications';
+import { CaveatFactories, PermissionNames } from './specifications';
 
 describe('permission background API methods', () => {
   const getApprovedPermissions = (accounts) => ({
@@ -185,6 +185,37 @@ describe('permission background API methods', () => {
       expect(permissionController.requestPermissions).toHaveBeenCalledWith(
         { origin: 'foo.com' },
         { eth_accounts: {} },
+        { id: expect.any(String) },
+      );
+
+      expect(id.length > 0).toBe(true);
+      expect(id).toStrictEqual(
+        permissionController.requestPermissions.mock.calls[0][2].id,
+      );
+    });
+  });
+
+  describe('requestAccountsAndChainPermissionsWithId', () => {
+    it('request eth_accounts and permittedChains permissions and returns the request id', async () => {
+      const permissionController = {
+        requestPermissions: jest
+          .fn()
+          .mockImplementationOnce(async (_, __, { id }) => {
+            return [null, { id }];
+          }),
+      };
+
+      const id = await getPermissionBackgroundApiMethods(
+        permissionController,
+      ).requestAccountsAndChainPermissionsWithId('foo.com');
+
+      expect(permissionController.requestPermissions).toHaveBeenCalledTimes(1);
+      expect(permissionController.requestPermissions).toHaveBeenCalledWith(
+        { origin: 'foo.com' },
+        {
+          [PermissionNames.eth_accounts]: {},
+          [PermissionNames.permittedChains]: {},
+        },
         { id: expect.any(String) },
       );
 
