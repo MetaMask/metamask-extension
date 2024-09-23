@@ -152,7 +152,6 @@ test.describe('MMI extension', () => {
     await accountsPopup.connectCustodian(
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
     );
-
     const accountNamesWithCustodian = await accountsPopup.getAccountNames();
 
     const containsAccount = arrayWithCustodianAccounts.some((account) =>
