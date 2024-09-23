@@ -5,6 +5,7 @@ import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import {
   permitSignatureMsg,
+  permitSignatureMsgWithNoDeadline,
   unapprovedTypedSignMsgV3,
   unapprovedTypedSignMsgV4,
 } from '../../../../../../../test/data/confirmations/typed_sign';
@@ -91,6 +92,22 @@ describe('TypedSignInfo', () => {
       ...mockState,
       confirm: {
         currentConfirmation: permitSignatureMsg,
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { container } = renderWithProvider(<TypedSignInfo />, mockStore);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('correctly renders permit sign type with no deadline', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useTransactionSimulations: true,
+      },
+      confirm: {
+        currentConfirmation: permitSignatureMsgWithNoDeadline,
       },
     };
     const mockStore = configureMockStore([])(state);

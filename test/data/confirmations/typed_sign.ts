@@ -1,3 +1,4 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 
 export const unapprovedTypedSignMsgV1 = {
@@ -169,6 +170,26 @@ export const permitSignatureMsg = {
     data: '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permit":[{"name":"owner","type":"address"},{"name":"spender","type":"address"},{"name":"value","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","domain":{"name":"MyToken","version":"1","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","chainId":1},"message":{"owner":"0x935e73edb9ff52e23bac7f7e043a1ecd06d05477","spender":"0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","value":3000,"nonce":0,"deadline":50000000000}}',
     from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
     version: 'V4',
+    requestId: 14,
+    signatureMethod: 'eth_signTypedData_v4',
+    origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
+export const permitSignatureMsgWithNoDeadline = {
+  id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
+  securityAlertResponse: {
+    reason: 'loading',
+    result_type: 'validation_in_progress',
+    securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
+  },
+  status: 'unapproved',
+  time: 1716826404122,
+  type: 'eth_signTypedData',
+  msgParams: {
+    data: '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permit":[{"name":"owner","type":"address"},{"name":"spender","type":"address"},{"name":"value","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","domain":{"name":"MyToken","version":"1","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","chainId":1},"message":{"owner":"0x935e73edb9ff52e23bac7f7e043a1ecd06d05477","spender":"0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","value":3000,"nonce":0,"deadline":-1}}',
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    version: 'V4',
     signatureMethod: 'eth_signTypedData_v4',
     origin: 'https://metamask.github.io',
   },
@@ -183,11 +204,12 @@ export const permitBatchSignatureMsg = {
   },
   status: 'unapproved',
   time: 1716826404122,
-  type: 'eth_signTypedData',
+  type: TransactionType.signTypedData,
   msgParams: {
     data: '{"types":{"PermitBatch":[{"name":"details","type":"PermitDetails[]"},{"name":"spender","type":"address"},{"name":"sigDeadline","type":"uint256"}],"PermitDetails":[{"name":"token","type":"address"},{"name":"amount","type":"uint160"},{"name":"expiration","type":"uint48"},{"name":"nonce","type":"uint48"}],"EIP712Domain":[{"name":"name","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}]},"domain":{"name":"Permit2","chainId":"1","verifyingContract":"0x000000000022d473030f116ddee9f6b43ac78ba3"},"primaryType":"PermitBatch","message":{"details":[{"token":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","amount":"1461501637330902918203684832716283019655932542975","expiration":"1722887542","nonce":"5"},{"token":"0xb0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","amount":"2461501637330902918203684832716283019655932542975","expiration":"1722887642","nonce":"6"}],"spender":"0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad","sigDeadline":"1720297342"}}',
     from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
     version: 'V4',
+    requestId: 15,
     signatureMethod: 'eth_signTypedData_v4',
     origin: 'https://metamask.github.io',
   },
@@ -202,11 +224,12 @@ export const permitSingleSignatureMsg = {
   },
   status: 'unapproved',
   time: 1716826404122,
-  type: 'eth_signTypedData',
+  type: TransactionType.signTypedData,
   msgParams: {
     data: '{"types":{"PermitSingle":[{"name":"details","type":"PermitDetails"},{"name":"spender","type":"address"},{"name":"sigDeadline","type":"uint256"}],"PermitDetails":[{"name":"token","type":"address"},{"name":"amount","type":"uint160"},{"name":"expiration","type":"uint48"},{"name":"nonce","type":"uint48"}],"EIP712Domain":[{"name":"name","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}]},"domain":{"name":"Permit2","chainId":"1","verifyingContract":"0x000000000022d473030f116ddee9f6b43ac78ba3"},"primaryType":"PermitSingle","message":{"details":{"token":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","amount":"1461501637330902918203684832716283019655932542975","expiration":"1722887542","nonce":"5"},"spender":"0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad","sigDeadline":"1720297342"}}',
     from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
     version: 'V4',
+    requestId: 16,
     signatureMethod: 'eth_signTypedData_v4',
     origin: 'https://metamask.github.io',
   },
