@@ -161,7 +161,6 @@ function AlertDetails({
       width={BlockSize.Full}
       backgroundColor={customDetails ? undefined : severityStyle.background}
       borderRadius={BorderRadius.SM}
-      // marginBottom={customDetails ? 0 : 4}
     >
       {customDetails ?? (
         <Box>

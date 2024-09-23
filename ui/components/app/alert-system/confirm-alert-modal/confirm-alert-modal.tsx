@@ -90,9 +90,6 @@ function ConfirmDetails({
           {t('confirmationAlertModalDetails')}
         </Text>
         <ButtonLink
-          // paddingTop={2}
-          // paddingBottom={2}
-          // marginBottom={2}
           marginTop={4}
           size={ButtonLinkSize.Inherit}
           textProps={{
