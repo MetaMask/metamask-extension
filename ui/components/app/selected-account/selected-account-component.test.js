@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import copyToClipboard from 'copy-to-clipboard';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
@@ -49,24 +49,35 @@ jest.mock('../../../selectors', () => {
   const mockGetSelectedAccount = jest.fn(() => mockSelectedAccount);
 
   return {
-    ...jest.requireActual('../../../selectors'),
     getAccountType: mockGetAccountType,
     getSelectedInternalAccount: mockGetSelectedAccount,
-    getCurrentChainId: jest.fn(() => '0x1'),
+    getCurrentChainId: jest.fn(() => '0x5'),
+    getSelectedNetworkClientId: jest.fn(() => 'goerli'),
+    getNetworkConfigurationsByChainId: jest.fn(() => ({
+      '0x5': {
+        chainId: '0x5',
+        rpcEndpoints: [{ networkClientId: 'goerli' }],
+      },
+    })),
   };
 });
 
 describe('SelectedAccount Component', () => {
   const mockStore = configureMockStore()(mockState);
 
-  it('should render correctly', () => {
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(<SelectedAccount />, mockStore);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render correctly', async () => {
     const { container, getByText, getByTestId } = renderWithProvider(
       <SelectedAccount />,
       mockStore,
     );
 
-    const tooltipTitle = container.querySelector(
-      '[data-original-title="Copy to clipboard"]',
+    const tooltipTitle = await waitFor(() =>
+      container.querySelector('[data-original-title="Copy to clipboard"]'),
     );
 
     expect(tooltipTitle).toBeInTheDocument();
@@ -90,7 +101,7 @@ describe('SelectedAccount Component', () => {
     );
   });
 
-  it('should render correctly if isCustodianSupportedChain to false', () => {
+  it('should render correctly if isCustodianSupportedChain to false', async () => {
     getIsCustodianSupportedChain.mockReturnValue(false);
 
     const { container, queryByTestId } = renderWithProvider(
@@ -98,8 +109,10 @@ describe('SelectedAccount Component', () => {
       mockStore,
     );
 
-    const tooltipTitle = container.querySelector(
-      '[data-original-title="This account is not set up for use with Chain 5"]',
+    const tooltipTitle = await waitFor(() =>
+      container.querySelector(
+        '[data-original-title="This account is not set up for use with goerli"]',
+      ),
     );
 
     const button = queryByTestId('selected-account-click');

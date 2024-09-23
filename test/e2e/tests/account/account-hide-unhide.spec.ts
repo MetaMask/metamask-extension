@@ -20,6 +20,7 @@ describe('Account list - hide/unhide functionality', function (this: Suite) {
 
         // hide account
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
         await accountListPage.openAccountOptionsMenu();
         await accountListPage.hideAccount();
         await accountListPage.check_hiddenAccountsListExists();

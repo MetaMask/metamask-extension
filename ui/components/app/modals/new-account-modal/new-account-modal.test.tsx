@@ -79,7 +79,7 @@ describe('NewAccountModal', () => {
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
         2,
-        'getState',
+        'getStatePatches',
         undefined,
       );
     });
