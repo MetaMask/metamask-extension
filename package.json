@@ -298,7 +298,7 @@
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/account-watcher": "^4.1.0",
     "@metamask/accounts-controller": "^18.2.1",
-    "@metamask/address-book-controller": "^5.0.0",
+    "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
     "@metamask/assets-controllers": "^37.0.0",
