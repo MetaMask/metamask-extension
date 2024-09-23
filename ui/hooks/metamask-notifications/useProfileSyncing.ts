@@ -141,14 +141,14 @@ export const useAccountSyncing = () => {
     [basicFunctionality, isProfileSyncingEnabled, isUnlocked, isSignedIn],
   );
 
-  const dispatchAccountSyncing = useCallback(async () => {
+  const dispatchAccountSyncing = useCallback(() => {
     setError(null);
 
     try {
       if (!shouldDispatchAccountSyncing) {
         return;
       }
-      await dispatch(syncInternalAccountsWithUserStorage());
+      dispatch(syncInternalAccountsWithUserStorage());
     } catch (e) {
       log.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
