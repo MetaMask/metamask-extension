@@ -1,84 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SmartTransactionStatusPage renders the "Sorry for the wait" pending status 1`] = `
-<div>
-  <div
-    class="mm-box smart-transaction-status-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
-  >
-    <div
-      class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
-      style="flex-grow: 1;"
-    >
-      <div
-        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
-      >
-        <div
-          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
-        />
-        <div
-          class="mm-box mm-box--display-flex"
-          style="font-size: 48px;"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-inherit mm-box--margin-bottom-4 mm-box--display-inline-block mm-box--color-primary-default"
-            style="mask-image: url('./images/icons/clock.svg');"
-          />
-        </div>
-        <h4
-          class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--color-text-default"
-        >
-          Sorry for the wait
-        </h4>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
-        >
-          <div
-            class="smart-transaction-status-page__loading-bar-container"
-          >
-            <div
-              class="smart-transaction-status-page__loading-bar"
-              style="width: 100%;"
-            />
-          </div>
-        </div>
-        <div
-          class="mm-box smart-transaction-status-page__description mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--color-text-alternative"
-          >
-            <span>
-               
-              If your transaction is not finalized within 
-              <p
-                class="mm-box mm-text smart-transaction-status-page__countdown mm-text--body-sm mm-text--text-align-center mm-box--display-inline-block mm-box--color-text-alternative"
-              >
-                0:00
-              </p>
-              , it will be canceled and you will not be charged for gas.
-               
-            </span>
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
-      />
-    </div>
-    <div
-      class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-    >
-      <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--margin-top-3 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
-        data-testid="smart-transaction-status-page-footer-close-button"
-      >
-        View activity
-      </button>
-    </div>
-  </div>
-</div>
-`;
-
 exports[`SmartTransactionStatusPage renders the "cancelled" STX status 1`] = `
 <div>
   <div
@@ -309,37 +230,6 @@ exports[`SmartTransactionStatusPage renders the "pending" STX status for a dapp 
         >
           Your transaction was submitted
         </h4>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
-        >
-          <div
-            class="smart-transaction-status-page__loading-bar-container"
-          >
-            <div
-              class="smart-transaction-status-page__loading-bar"
-              style="width: 0%;"
-            />
-          </div>
-        </div>
-        <div
-          class="mm-box smart-transaction-status-page__description mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--color-text-alternative"
-          >
-            <span>
-               
-              Estimated completion in &lt; 
-              <p
-                class="mm-box mm-text smart-transaction-status-page__countdown mm-text--body-sm mm-text--text-align-center mm-box--display-inline-block mm-box--color-text-alternative"
-              >
-                0:45
-              </p>
-              
-               
-            </span>
-          </p>
-        </div>
         <div
           class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--flex-direction-column"
         >
@@ -654,35 +544,14 @@ exports[`SmartTransactionStatusPage renders the component with initial props 1`]
           Your transaction was submitted
         </h4>
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+          class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--flex-direction-column"
         >
-          <div
-            class="smart-transaction-status-page__loading-bar-container"
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            type="link"
           >
-            <div
-              class="smart-transaction-status-page__loading-bar"
-              style="width: 0%;"
-            />
-          </div>
-        </div>
-        <div
-          class="mm-box smart-transaction-status-page__description mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--color-text-alternative"
-          >
-            <span>
-               
-              Estimated completion in &lt; 
-              <p
-                class="mm-box mm-text smart-transaction-status-page__countdown mm-text--body-sm mm-text--text-align-center mm-box--display-inline-block mm-box--color-text-alternative"
-              >
-                0:45
-              </p>
-              
-               
-            </span>
-          </p>
+            View transaction
+          </button>
         </div>
       </div>
       <div

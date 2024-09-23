@@ -41,7 +41,7 @@ import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
 import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
 
-type RequestState = {
+export type RequestState = {
   smartTransaction?: SmartTransaction;
   isDapp: boolean;
   txId?: string;
@@ -68,7 +68,6 @@ const getDisplayValues = ({
   t,
   countdown,
   isSmartTransactionPending,
-  isSmartTransactionTakingTooLong,
   isSmartTransactionSuccess,
   isSmartTransactionCancelled,
 }: {
@@ -79,17 +78,9 @@ const getDisplayValues = ({
   isSmartTransactionSuccess: boolean;
   isSmartTransactionCancelled: boolean;
 }) => {
-  if (isSmartTransactionPending && isSmartTransactionTakingTooLong) {
-    return {
-      title: t('smartTransactionTakingTooLong'),
-      description: t('smartTransactionTakingTooLongDescription', [countdown]),
-      iconName: IconName.Clock,
-      iconColor: IconColor.primaryDefault,
-    };
-  } else if (isSmartTransactionPending) {
+  if (isSmartTransactionPending) {
     return {
       title: t('smartTransactionPending'),
-      description: t('stxEstimatedCompletion', [countdown]),
       iconName: IconName.Clock,
       iconColor: IconColor.primaryDefault,
     };
@@ -173,39 +164,6 @@ const useRemainingTime = ({
     isSmartTransactionTakingTooLong,
     stxDeadline,
   };
-};
-
-const Deadline = ({
-  isSmartTransactionPending,
-  stxDeadline,
-  timeLeftForPendingStxInSec,
-}: {
-  isSmartTransactionPending: boolean;
-  stxDeadline: number;
-  timeLeftForPendingStxInSec: number;
-}) => {
-  if (!isSmartTransactionPending) {
-    return null;
-  }
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      width={BlockSize.Full}
-    >
-      <div className="smart-transaction-status-page__loading-bar-container">
-        <div
-          className="smart-transaction-status-page__loading-bar"
-          style={{
-            width: `${
-              (100 / stxDeadline) * (stxDeadline - timeLeftForPendingStxInSec)
-            }%`,
-          }}
-        />
-      </div>
-    </Box>
-  );
 };
 
 const Description = ({ description }: { description: string | undefined }) => {
@@ -435,16 +393,13 @@ export const SmartTransactionStatusPage = ({
   const stxMaxDeadline =
     featureFlags?.smartTransactions?.maxDeadline ||
     FALLBACK_SMART_TRANSACTIONS_MAX_DEADLINE;
-  const {
-    timeLeftForPendingStxInSec,
-    isSmartTransactionTakingTooLong,
-    stxDeadline,
-  } = useRemainingTime({
-    isSmartTransactionPending,
-    smartTransaction,
-    stxMaxDeadline,
-    stxEstimatedDeadline,
-  });
+  const { timeLeftForPendingStxInSec, isSmartTransactionTakingTooLong } =
+    useRemainingTime({
+      isSmartTransactionPending,
+      smartTransaction,
+      stxMaxDeadline,
+      stxEstimatedDeadline,
+    });
   const chainId: string = useSelector(getCurrentChainId);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore: This same selector is used in the awaiting-swap component.
@@ -524,11 +479,6 @@ export const SmartTransactionStatusPage = ({
             iconColor={iconColor}
           />
           <Title title={title} />
-          <Deadline
-            isSmartTransactionPending={isSmartTransactionPending}
-            stxDeadline={stxDeadline}
-            timeLeftForPendingStxInSec={timeLeftForPendingStxInSec}
-          />
           <Description description={description} />
           <PortfolioSmartTransactionStatusUrl
             portfolioSmartTransactionStatusUrl={
