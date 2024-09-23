@@ -85,6 +85,7 @@ import {
 } from '../../../ducks/metamask/metamask';
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import { usePrevious } from '../../../hooks/usePrevious';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -135,6 +136,20 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
     currentChainId,
   );
+
+  const RPC_TIMEOUT = 10000;
+  const [switchingNetwork, setSwitchingNetwork] = useState(false);
+  const previousChainId = usePrevious(currentChainId);
+  let switchNetworkTimeout: NodeJS.Timeout;
+
+  useEffect(() => {
+    if (switchingNetwork && currentChainId !== previousChainId) {
+      // Network switch is successful, clear the timeout
+      setSwitchingNetwork(false);
+      clearTimeout(switchNetworkTimeout);
+    }
+  }, [currentChainId, previousChainId, switchingNetwork]);
+
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
       Object.entries(networkConfigurations).reduce(
@@ -287,6 +302,24 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               dispatch(showPermittedNetworkToast());
             }
           }
+
+          // Set a timeout to handle unresponsive RPC URL
+          setSwitchingNetwork(true);
+          switchNetworkTimeout = setTimeout(() => {
+            console.log('unresponsive RPC URL');
+
+            // // Show UI to inform the user of the unresponsive RPC URL
+            // dispatch(
+            //   showModal({
+            //     name: 'UNRESPONSIVE_RPC_URL',
+            //     target: network.chainId,
+            //     onConfirm: () => undefined,
+            //   }),
+            // );
+
+            setSwitchingNetwork(false);
+          }, RPC_TIMEOUT);
+
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
           // network has changed due to user action
