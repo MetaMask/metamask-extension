@@ -8,6 +8,7 @@ const {
 } = require('../../helpers');
 
 const FixtureBuilder = require('../../fixture-builder');
+const { expect } = require('@playwright/test');
 
 async function mockSegment(mockServer) {
   return [
@@ -138,7 +139,7 @@ describe('Settings: Show native token as main balance', function () {
         await driver.clickElement('.show-native-token-as-main-balance');
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.deepStrictEqual(events[0].properties, {
+        expect(events[0].properties).toMatchObject({
           show_native_token_as_main_balance: false,
           category: 'Settings',
           locale: 'en',
@@ -178,7 +179,7 @@ describe('Settings: Show native token as main balance', function () {
         await driver.clickElement('.show-native-token-as-main-balance');
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.deepStrictEqual(events[0].properties, {
+        expect(events[0].properties).toMatchObject({
           show_native_token_as_main_balance: true,
           category: 'Settings',
           locale: 'en',
