@@ -4822,14 +4822,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/address-book-controller@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/address-book-controller@npm:5.0.0"
+"@metamask/address-book-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/address-book-controller@npm:6.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/controller-utils": "npm:^11.0.0"
-    "@metamask/utils": "npm:^8.3.0"
-  checksum: 10/f4f3ec2c569457243cc4771c2d146a91227114431ecf8bb0d74e42b2e93fcc4d10545c32f865c918c9f1586379016d3ea2d7f2bc056a6b10b6cfd985f2b3c432
+    "@metamask/base-controller": "npm:^7.0.0"
+    "@metamask/controller-utils": "npm:^11.2.0"
+    "@metamask/utils": "npm:^9.1.0"
+  checksum: 10/e699b97fc798a363390d673b766737dc10f82a1eefcf119823d8f4370846d6708b3b2eadd177c8b2cb826afa7e38b51cf978a0d55cd51e92e7a9ffe83f5f0803
   languageName: node
   linkType: hard
 
@@ -26080,7 +26080,7 @@ __metadata:
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.0"
     "@metamask/accounts-controller": "npm:^18.2.1"
-    "@metamask/address-book-controller": "npm:^5.0.0"
+    "@metamask/address-book-controller": "npm:^6.0.0"
     "@metamask/announcement-controller": "npm:^7.0.0"
     "@metamask/api-specs": "npm:^0.9.3"
     "@metamask/approval-controller": "npm:^7.0.0"
