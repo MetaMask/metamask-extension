@@ -174,9 +174,7 @@ async function main() {
       const testCoverageResults = await testCoverage({
         openrpcDocument: doc,
         transport,
-        reporters: [
-          'console-streaming',
-        ],
+        reporters: ['console-streaming'],
         skip: ['wallet_invokeMethod'],
         rules: [
           new MultichainAuthorizationConfirmation({
@@ -191,9 +189,7 @@ async function main() {
       const testCoverageResultsCaip27 = await testCoverage({
         openrpcDocument: MetaMaskOpenRPCDocument as OpenrpcDocument,
         transport: createCaip27DriverTransport(driver, reverseScopeMap),
-        reporters: [
-          'console-streaming',
-        ],
+        reporters: ['console-streaming'],
         skip: [
           'eth_coinbase',
           'wallet_revokePermissions',
