@@ -586,6 +586,38 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('Change Signature XXX anonymous event names', function () {
+    it.each([
+      ['Signature Requested', 'Signature Requested Anon'],
+      ['Signature Rejected', 'Signature Rejected Anon'],
+      ['Signature Approved', 'Signature Approved Anon'],
+    ])(
+      'should change "%s" anonymous event names to "%s"',
+      (eventType, anonEventType) => {
+        const metaMetricsController = getMetaMetricsController();
+        const spy = jest.spyOn(segment, 'track');
+        metaMetricsController.submitEvent({
+          event: eventType,
+          category: 'Unit Test',
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+          sensitiveProperties: { foo: 'bar' },
+        });
+
+        expect(spy).toHaveBeenCalledTimes(2);
+
+        expect(spy.mock.calls[0][0]).toMatchObject({
+          event: anonEventType,
+          properties: { foo: 'bar', ...DEFAULT_EVENT_PROPERTIES },
+        });
+
+        expect(spy.mock.calls[1][0]).toMatchObject({
+          event: eventType,
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+        });
+      },
+    );
+  });
+
   describe('Change Transaction XXX anonymous event namnes', function () {
     it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', function () {
       const metaMetricsController = getMetaMetricsController();

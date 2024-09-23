@@ -68,21 +68,5 @@
 
   &__footer {
     margin-top: auto;
-
-    &-centered {
-      margin-top: auto;
-
-      & button {
-        &:first-child {
-          margin-right: 0;
-        }
-      }
-    }
-
-    & button {
-      &:first-child {
-        margin-right: 16px;
-      }
-    }
   }
 }
