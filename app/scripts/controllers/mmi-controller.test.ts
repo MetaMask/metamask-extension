@@ -203,8 +203,8 @@ describe('MMIController', function () {
     });
 
     metaMetricsController = new MetaMetricsController({
-      preferencesStore: {
-        getState: jest.fn().mockReturnValue({ currentLocale: 'en' }),
+      preferencesController: {
+        state: { currentLocale: 'en' },
         subscribe: jest.fn(),
       },
       getCurrentChainId: jest.fn(),
@@ -245,13 +245,13 @@ describe('MMIController', function () {
         initState: {},
         onInactiveTimeout: jest.fn(),
         showUnlockRequest: jest.fn(),
-        preferencesStore: {
+        preferencesController: {
           subscribe: jest.fn(),
-          getState: jest.fn(() => ({
+          state: {
             preferences: {
               autoLockTimeLimit: 0,
             },
-          })),
+          },
         },
         messenger: mockMessenger,
       }),

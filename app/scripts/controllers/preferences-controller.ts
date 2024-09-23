@@ -410,7 +410,7 @@ export default class PreferencesController extends BaseController<
    * Constructs a Preferences controller.
    *
    * @param options - the controller options
-   * @param options.networkConfigurations - The network configurations
+   * @param options.networkConfigurationsByChainId - The network configurations
    * @param options.initLangCode - The language code
    * @param options.messenger - The controller messenger
    * @param options.state - The initial controller state

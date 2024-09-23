@@ -55,12 +55,12 @@ const metaMetricsController = new MetaMetricsController({
   segment: createSegmentMock(2, 10000),
   getCurrentChainId: () => '0x1338',
   onNetworkDidChange: jest.fn(),
-  preferencesStore: {
+  preferencesController: {
     subscribe: jest.fn(),
-    getState: jest.fn(() => ({
+    state: {
       currentLocale: 'en_US',
       preferences: {},
-    })),
+    },
   },
   version: '0.0.1',
   environment: 'test',

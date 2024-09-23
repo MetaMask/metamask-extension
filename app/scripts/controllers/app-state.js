@@ -27,7 +27,7 @@ export default class AppStateController extends EventEmitter {
       isUnlocked,
       initState,
       onInactiveTimeout,
-      preferences,
+      preferencesController,
       messenger,
       extension,
     } = opts;
@@ -90,7 +90,8 @@ export default class AppStateController extends EventEmitter {
         if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
           this._setInactiveTimeout(preferences.autoLockTimeLimit);
         }
-    });
+      },
+    );
 
     messenger.subscribe(
       'KeyringController:qrKeyringStateChange',
@@ -100,7 +101,9 @@ export default class AppStateController extends EventEmitter {
         }),
     );
 
-    this._setInactiveTimeout(preferences.autoLockTimeLimit);
+    this._setInactiveTimeout(
+      preferencesController.state.preferences.autoLockTimeLimit,
+    );
 
     this.messagingSystem = messenger;
     this._approvalRequestId = null;

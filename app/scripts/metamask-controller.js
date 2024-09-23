@@ -736,14 +736,14 @@ export default class MetamaskController extends EventEmitter {
     this.metaMetricsController = new MetaMetricsController({
       segment,
       preferencesController: {
-        onStateChange: preferencesMessenger.subscribe.bind(
+        subscribe: preferencesMessenger.subscribe.bind(
           preferencesMessenger,
-            'PreferencesController:stateChange',
+          'PreferencesController:stateChange',
         ),
         state: {
           currentLocale: this.preferencesController.state.currentLocale,
           selectedAddress: this.preferencesController.state.selectedAddress,
-        }
+        },
       },
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
@@ -831,14 +831,17 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
-      preferences: this.preferencesController.state.preferences,
+      preferencesController: this.preferencesController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AppStateController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
         ],
-        allowedEvents: [`KeyringController:qrKeyringStateChange`, 'PreferencesController:stateChange'],
+        allowedEvents: [
+          `KeyringController:qrKeyringStateChange`,
+          'PreferencesController:stateChange',
+        ],
       }),
       extension: this.extension,
     });
@@ -898,7 +901,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.state.securityAlertsEnabled,
       onPreferencesChange: preferencesMessenger.subscribe.bind(
         preferencesMessenger,
-          'PreferencesController:stateChange',
+        'PreferencesController:stateChange',
       ),
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
       blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
@@ -984,16 +987,18 @@ export default class MetamaskController extends EventEmitter {
       tokenPricesService: new CodefiTokenPricesServiceV2(),
     });
 
-    this.controllerMessenger.subscribe('PreferencesController:stateChange', () =>
-      previousValueComparator((prevState, currState) => {
-        const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
-        const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
-        if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.tokenRatesController.start();
-        } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.tokenRatesController.stop();
-        }
-      }, this.preferencesController.state),
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      () =>
+        previousValueComparator((prevState, currState) => {
+          const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
+          const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
+          if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
+            this.tokenRatesController.start();
+          } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
+            this.tokenRatesController.stop();
+          }
+        }, this.preferencesController.state),
     );
 
     this.ensController = new EnsController({
@@ -1259,10 +1264,10 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueuePreference:
         this.preferencesController.state.useRequestQueue,
       onPreferencesStateChange: (listener) => {
-          preferencesMessenger.subscribe(
-            'PreferencesController:stateChange',
-            () => listener(),
-          );
+        preferencesMessenger.subscribe(
+          'PreferencesController:stateChange',
+          () => listener(),
+        );
       },
       domainProxyMap: new WeakRefObjectMap(),
     });

@@ -58,7 +58,7 @@ const createMiddleware = (
     Object.defineProperty(preferenceController, 'state', {
       get() {
         throw error;
-      }
+      },
     });
   }
 

@@ -107,10 +107,7 @@ export default class MetaMetricsController {
    * @param {object} options
    * @param {object} options.segment - an instance of analytics for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {object} options.preferencesControllerState - The preferences controller state
-   *  to access and subscribe to preferences that will be attached to events
-   * @param {Function} options.onPreferencesControllerStateChange - Used to attach a listener to the
-   *  networkDidChange event emitted by the networkController
+   * @param {object} options.preferencesController - The preferences controller
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
@@ -171,13 +168,9 @@ export default class MetaMetricsController {
       },
     });
 
-    preferencesController.onStateChange(({ currentLocale }) => {
+    preferencesController.subscribe(({ currentLocale }) => {
       this.locale = currentLocale.replace('_', '-');
     });
-
-    // preferencesStore.subscribe(({ currentLocale }) => {
-    //   this.locale = currentLocale.replace('_', '-');
-    // });
 
     onNetworkDidChange(() => {
       this.chainId = getCurrentChainId();

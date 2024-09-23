@@ -30,7 +30,7 @@ function getMockPreferencesController() {
     state,
     getSelectedAddress,
     update: jest.fn(),
-  }
+  };
 }
 
 function getMockAddressBookController() {
