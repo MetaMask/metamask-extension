@@ -2,21 +2,21 @@ import React from 'react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { ConnectPage, Request } from './connect-page';
+import { ConnectPage, ConnectPageRequest } from './connect-page';
 
 const render = (
   props: {
-    request: Request
-    permissionsRequestId: string,
+    request: ConnectPageRequest;
+    permissionsRequestId: string;
     rejectPermissionsRequest: (id: string) => void;
-    approveConnection: (request: Request) => void;
+    approveConnection: (request: ConnectPageRequest) => void;
     activeTabOrigin: string;
   } = {
     request: {
-      id: "1",
-      origin: "https://test.dapp"
+      id: '1',
+      origin: 'https://test.dapp',
     },
-    permissionsRequestId: "1",
+    permissionsRequestId: '1',
     rejectPermissionsRequest: jest.fn(),
     approveConnection: jest.fn(),
     activeTabOrigin: 'https://test.dapp',
@@ -42,12 +42,7 @@ const render = (
       origin: 'https://test.dapp',
     },
   });
-  return renderWithProvider(
-    <ConnectPage
-      {...props}
-    />,
-    store,
-  );
+  return renderWithProvider(<ConnectPage {...props} />, store);
 };
 describe('ConnectPage', () => {
   it('should render correctly', () => {

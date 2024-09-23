@@ -4,9 +4,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import { ReviewPermissions } from '.';
 
-const render = (
-  state = {},
-) => {
+const render = (state = {}) => {
   const store = configureStore({
     ...mockState,
     metamask: {
@@ -26,11 +24,7 @@ const render = (
       origin: 'https://test.dapp',
     },
   });
-  return renderWithProvider(
-    <ReviewPermissions
-    />,
-    store,
-  );
+  return renderWithProvider(<ReviewPermissions />, store);
 };
 describe('ReviewPermissions', () => {
   it('should render correctly', () => {

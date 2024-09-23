@@ -32,7 +32,7 @@ import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 
-export type Request = {
+export type ConnectPageRequest = {
   id: string;
   origin: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,10 +40,10 @@ export type Request = {
 };
 
 type ConnectPageProps = {
-  request: Request;
+  request: ConnectPageRequest;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
-  approveConnection: (request: Request) => void;
+  approveConnection: (request: ConnectPageRequest) => void;
   activeTabOrigin: string;
 };
 
