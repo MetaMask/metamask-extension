@@ -21,9 +21,7 @@ import { attemptLedgerTransportCreation } from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
 
-const useLedgerConnection = (): {
-  isLedgerWallet: boolean;
-} => {
+const useLedgerConnection = () => {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<
     SignatureRequestType & TransactionMeta
@@ -118,7 +116,7 @@ const useLedgerConnection = (): {
     };
   }, [dispatch]);
 
-  return { isLedgerWallet: !!isLedgerWallet };
+  return { isLedgerWallet };
 };
 
 export default useLedgerConnection;
