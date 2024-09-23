@@ -1605,6 +1605,10 @@
   "disconnectAllAccountsText": {
     "message": "accounts"
   },
+  "disconnectAllDescription": {
+    "message": "If you disconnect from $1, you’ll need to reconnect your accounts and networks to use this site again.",
+    "description": "$1 represents the website hostname"
+  },
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
