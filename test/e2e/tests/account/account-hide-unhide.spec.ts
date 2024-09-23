@@ -3,8 +3,8 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Account list - hide/unhide functionality', function (this: Suite) {
   it('hide and unhide account by clicking hide and unhide button', async function () {
