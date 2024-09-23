@@ -36,12 +36,12 @@ export const DisconnectAllModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>
-          {process.env.CHAIN_PERMISSION
+          {process.env.CHAIN_PERMISSIONS
             ? t('disconnect')
             : t('disconnectAllTitle', [t(type)])}
         </ModalHeader>
         <ModalBody>
-          {process.env.CHAIN_PERMISSION ? (
+          {process.env.CHAIN_PERMISSIONS ? (
             <Text>{t('disconnectAllDescription', [hostname])}</Text>
           ) : (
             <Text>{t('disconnectAllText', [t(type), hostname])}</Text>
