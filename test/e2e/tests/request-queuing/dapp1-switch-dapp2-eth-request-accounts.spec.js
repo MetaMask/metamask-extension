@@ -45,9 +45,15 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
 
         // Dapp Send Button
         await driver.clickElement('#sendButton');
+        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.waitForSelector({
+          text: 'Reject',
+          tag: 'button',
+        });
 
         // Leave the confirmation pending
-
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         const accountsOnload = await (
