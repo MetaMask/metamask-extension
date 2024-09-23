@@ -1,6 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   AlignItems,
   Display,
@@ -10,11 +9,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getOriginOfCurrentTab,
-  getPermittedChainsForSelectedTab,
-  getNetworkConfigurationsByChainId,
-} from '../../../selectors';
 import {
   Modal,
   ModalOverlay,
@@ -32,80 +26,54 @@ import {
   IconSize,
 } from '../../component-library';
 import { NetworkListItem } from '..';
-import {
-  grantPermittedChains,
-  setSelectedNetworksForDappConnection,
-} from '../../../store/actions';
 import { getURLHost } from '../../../helpers/utils/util';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
-} from '../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 export const EditNetworksModal = ({
+  activeTabOrigin,
+  nonTestNetworks,
+  testNetworks,
+  defaultSelectedChainIds,
   onClose,
-  onClick,
-  currentTabHasNoAccounts,
-  combinedNetworks,
-  onDisconnectClick,
+  onSubmit,
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const [nonTestNetworks, testNetworks] = useMemo(
-    () =>
-      Object.entries(networkConfigurations).reduce(
-        ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
-          const isTest = TEST_CHAINS.includes(chainId);
-          (isTest ? testNetworksList : nonTestNetworksList).push(network);
-          return [nonTestNetworksList, testNetworksList];
-        },
-        [[], []],
-      ),
-    [networkConfigurations],
+
+  const allNetworks = [...nonTestNetworks, ...testNetworks];
+
+  const [selectedChainIds, setSelectedChainIds] = useState(
+    defaultSelectedChainIds,
   );
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const connectedNetworks = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, activeTabOrigin),
-  );
-  const combinedNetworksIds = combinedNetworks.map(
-    (network) => network.chainId,
-  );
-  const selectedPermittedChains =
-    connectedNetworks.length > 0 ? connectedNetworks : combinedNetworksIds;
-  const [selectedChains, setSelectedChains] = useState(selectedPermittedChains);
+
+  useEffect(() => {
+    setSelectedChainIds(defaultSelectedChainIds);
+  }, [defaultSelectedChainIds]);
 
   const selectAll = () => {
-    const newSelectedAccounts = combinedNetworks.map(
-      (network) => network.chainId,
-    );
-    setSelectedChains(newSelectedAccounts);
+    const allNetworksChainIds = allNetworks.map(({ chainId }) => chainId);
+    setSelectedChainIds(allNetworksChainIds);
   };
 
   const deselectAll = () => {
-    setSelectedChains([]);
+    setSelectedChainIds([]);
   };
 
-  const handleAccountClick = (chainId) => {
-    if (selectedChains.includes(chainId)) {
-      // Remove the chainId from the selectedChains
-      setSelectedChains(selectedChains.filter((id) => id !== chainId));
+  const handleNetworkClick = (chainId) => {
+    if (selectedChainIds.includes(chainId)) {
+      setSelectedChainIds(
+        selectedChainIds.filter((_chainId) => _chainId !== chainId),
+      );
     } else {
-      // Add the chainId to selectedChains
-      setSelectedChains([...selectedChains, chainId]);
+      setSelectedChainIds([...selectedChainIds, chainId]);
     }
   };
 
   const allAreSelected = () => {
-    return combinedNetworksIds.length === selectedChains.length;
+    return allNetworks.length === selectedChainIds.length;
   };
 
   const checked = allAreSelected();
-  const isIndeterminate = !checked && selectedChains.length > 0;
-
-  const managePermittedChains = (chains) => {
-    grantPermittedChains(activeTabOrigin, chains);
-  };
+  const isIndeterminate = !checked && selectedChainIds.length > 0;
 
   const hostName = getURLHost(activeTabOrigin);
 
@@ -142,11 +110,11 @@ export const EditNetworksModal = ({
               iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
               key={network.chainId}
               onClick={() => {
-                handleAccountClick(network.chainId);
+                handleNetworkClick(network.chainId);
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChains.includes(network.chainId)}
+                  isChecked={selectedChainIds.includes(network.chainId)}
                 />
               }
             />
@@ -160,18 +128,18 @@ export const EditNetworksModal = ({
               iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
               key={network.chainId}
               onClick={() => {
-                handleAccountClick(network.chainId);
+                handleNetworkClick(network.chainId);
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChains.includes(network.chainId)}
+                  isChecked={selectedChainIds.includes(network.chainId)}
                 />
               }
               showEndAccessory={false}
             />
           ))}
           <ModalFooter>
-            {selectedChains.length === 0 ? (
+            {selectedChainIds.length === 0 ? (
               <Box
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
@@ -197,7 +165,7 @@ export const EditNetworksModal = ({
                 <ButtonPrimary
                   data-testid="disconnect-chains-button"
                   onClick={() => {
-                    onDisconnectClick();
+                    onSubmit([]);
                     onClose();
                   }}
                   size={ButtonPrimarySize.Lg}
@@ -211,15 +179,8 @@ export const EditNetworksModal = ({
               <ButtonPrimary
                 data-testid="connect-more-chains-button"
                 onClick={() => {
-                  onClick();
+                  onSubmit(selectedChainIds);
                   onClose();
-                  if (currentTabHasNoAccounts) {
-                    dispatch(
-                      setSelectedNetworksForDappConnection(selectedChains),
-                    );
-                  } else {
-                    managePermittedChains(selectedChains);
-                  }
                 }}
                 size={ButtonPrimarySize.Lg}
                 block
@@ -236,35 +197,42 @@ export const EditNetworksModal = ({
 
 EditNetworksModal.propTypes = {
   /**
+   * Origin for the active tab.
+   */
+  activeTabOrigin: PropTypes.string,
+
+  /**
+   * Array of network objects representing available non-test networks to choose from.
+   */
+  nonTestNetworks: PropTypes.arrayOf(
+    PropTypes.shape({
+      chainId: PropTypes.string.isRequired, // The chain ID of the network
+      name: PropTypes.string.isRequired, // Display name of the network
+    }),
+  ).isRequired,
+
+  /**
+   * Array of network objects representing available test networks to choose from.
+   */
+  testNetworks: PropTypes.arrayOf(
+    PropTypes.shape({
+      chainId: PropTypes.string.isRequired, // The chain ID of the network
+      name: PropTypes.string.isRequired, // Display name of the network
+    }),
+  ).isRequired,
+
+  /**
+   * Array of chain IDs to have selected by default.
+   */
+  defaultSelectedChainIds: PropTypes.arrayOf(PropTypes.string),
+
+  /**
    * Function to execute when the modal is closed.
    */
   onClose: PropTypes.func.isRequired,
 
   /**
-   * Function to execute when an update action is triggered.
+   * Function to execute when an update or disconnect action is triggered.
    */
-  onClick: PropTypes.func.isRequired,
-
-  /**
-   * Boolean indicating if the current tab has no associated accounts.
-   */
-  currentTabHasNoAccounts: PropTypes.bool.isRequired,
-
-  /**
-   * Array of network objects representing available networks to choose from.
-   */
-  combinedNetworks: PropTypes.arrayOf(
-    PropTypes.shape({
-      chainId: PropTypes.string.isRequired, // The chain ID of the network
-      nickname: PropTypes.string.isRequired, // Display name of the network
-      rpcPrefs: PropTypes.shape({
-        imageUrl: PropTypes.string, // Optional image URL for the network icon
-      }),
-    }),
-  ).isRequired,
-
-  /**
-   * Function to execute when the disconnect button is clicked.
-   */
-  onDisconnectClick: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

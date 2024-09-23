@@ -365,7 +365,6 @@ export default class PermissionConnect extends Component {
               render={() =>
                 process.env.CHAIN_PERMISSIONS && !permissionsRequest?.diff ? (
                   <ConnectPage
-                    accounts={accounts}
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
                     }
@@ -373,10 +372,6 @@ export default class PermissionConnect extends Component {
                     request={permissionsRequest}
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
-                    selectAccounts={(addresses) =>
-                      this.selectAccounts(addresses)
-                    }
-                    selectedAccountAddresses={selectedAccountAddresses}
                   />
                 ) : (
                   <PermissionPageContainer

@@ -3169,22 +3169,6 @@ export function setAccountDetailsAddress(address: string[]) {
   };
 }
 
-export function setSelectedAccountsForDappConnection(
-  addresses: string[],
-): void {
-  return {
-    type: actionConstants.SET_SELECTED_ACCOUNTS_FOR_DAPP_CONNECTIONS,
-    payload: addresses,
-  };
-}
-
-export function setSelectedNetworksForDappConnection(addresses: []) {
-  return {
-    type: actionConstants.SET_SELECTED_NETWORKS_FOR_DAPP_CONNECTIONS,
-    payload: addresses,
-  };
-}
-
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<
@@ -5625,7 +5609,7 @@ export async function grantPermittedChain(
 
 export async function grantPermittedChains(
   selectedTabOrigin: string,
-  chainIds: [],
+  chainIds: string[],
 ): Promise<string> {
   return await submitRequestToBackground<void>('grantPermissions', [
     {

@@ -36,8 +36,6 @@ type AppState = {
   };
   showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
-  selectedAccountsForDappConnection: object;
-  selectedNetworksForDappConnection: object;
   keyringRemovalSnapModal: {
     snapName: string;
     result: 'success' | 'failure' | 'none';
@@ -132,8 +130,6 @@ const initialState: AppState = {
   importNftsModal: { open: false },
   showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
-  selectedAccountsForDappConnection: {},
-  selectedNetworksForDappConnection: {},
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
   keyringRemovalSnapModal: {
@@ -551,18 +547,6 @@ export default function reduceApp(
       return {
         ...appState,
         requestAccountTabs: action.value,
-      };
-
-    case actionConstants.SET_SELECTED_ACCOUNTS_FOR_DAPP_CONNECTIONS:
-      return {
-        ...appState,
-        selectedAccountsForDappConnection: action.payload,
-      };
-
-    case actionConstants.SET_SELECTED_NETWORKS_FOR_DAPP_CONNECTIONS:
-      return {
-        ...appState,
-        selectedNetworksForDappConnection: action.payload,
       };
 
     case actionConstants.SET_OPEN_METAMASK_TAB_IDS:

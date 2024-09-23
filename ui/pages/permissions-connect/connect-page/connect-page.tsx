@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getNonTestNetworks,
-  getOrderedConnectedAccountsForConnectedDapp,
-  getPermittedChainsForSelectedTab,
-  getSelectedAccountsForDappConnection,
+  getInternalAccounts,
+  getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
-  getSelectedNetworksForDappConnection,
-  getTestNetworks,
+  getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import {
   Box,
@@ -30,7 +28,9 @@ import {
   Display,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AccountType } from '../../../components/multichain/pages/review-permissions-page/review-permission.types';
+import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 
 type Request = {
   id: string;
@@ -44,9 +44,6 @@ type ConnectPageProps = {
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
   approveConnection: (request: Request) => void;
-  accounts: AccountType[];
-  selectAccounts: (addresses: string[]) => void;
-  selectedAccountAddresses: Set<string>;
   activeTabOrigin: string;
 };
 
@@ -55,73 +52,50 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
-  accounts,
-  selectAccounts,
-  selectedAccountAddresses,
   activeTabOrigin,
 }) => {
   const t = useI18nContext();
 
-  // Get networks and accounts from Redux
-  const networksList = useSelector(getNonTestNetworks);
-  const selectedNetworksList = useSelector(
-    getSelectedNetworksForDappConnection,
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const [nonTestNetworks, testNetworks] = useMemo(
+    () =>
+      Object.entries(networkConfigurations).reduce(
+        ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
+          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          return [nonTestNetworksList, testNetworksList];
+        },
+        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+      ),
+    [networkConfigurations],
   );
-  const testNetworks = useSelector(getTestNetworks);
-  const combinedNetworks = [...networksList, ...testNetworks];
+  const defaultSelectedChainIds = nonTestNetworks.map(({ chainId }) => chainId);
+  const [selectedChainIds, setSelectedChainIds] = useState(
+    defaultSelectedChainIds,
+  );
+
+  const accounts = useSelector(getUpdatedAndSortedAccounts);
+  const internalAccounts = useSelector(getInternalAccounts);
+  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
+    return mergeAccounts(accounts, internalAccounts).filter(
+      (account: InternalAccount) => isEvmAccountType(account.type),
+    );
+  }, [accounts, internalAccounts]);
 
   const currentAccount = useSelector(getSelectedInternalAccount);
-  const connectedAccounts = useSelector((state) =>
-    getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
-  ) as AccountType[];
-  const connectedAccountsAddresses = connectedAccounts?.map(
-    (account: InternalAccount) => account.address,
+  const defaultAccountsAddresses = [currentAccount?.address];
+  const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
+    defaultAccountsAddresses,
   );
-  const connectedNetworks = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
-  const selectedAccountsForDappConnection = useSelector(
-    getSelectedAccountsForDappConnection,
-  );
-  const grantedNetworks = combinedNetworks.filter(
-    (net: { chainId: string }) =>
-      connectedNetworks?.indexOf(net.chainId) !== -1,
-  );
-  const defaultAccountsAddresses =
-    connectedAccounts?.length > 0
-      ? connectedAccountsAddresses
-      : [currentAccount?.address];
 
-  const defaultNetworksList =
-    grantedNetworks?.length > 0 ? grantedNetworks : networksList;
-
-  // Filter networks based on chainId
-  const filteredNetworks = Array.isArray(selectedNetworksList)
-    ? combinedNetworks.filter((network) =>
-        selectedNetworksList.includes(network.chainId),
-      )
-    : defaultNetworksList;
-
-  // Select approved accounts and networks
-  const approvedAccounts =
-    selectedAccountsForDappConnection.length > 0
-      ? selectedAccountsForDappConnection
-      : defaultAccountsAddresses;
-
-  // Handle confirmation
   const onConfirm = () => {
     const _request = {
       ...request,
-      approvedAccounts,
-      approvedChainIds: filteredNetworks.map((network) => network.chainId),
+      approvedAccounts: selectedAccountAddresses,
+      approvedChainIds: selectedChainIds,
     };
     approveConnection(_request);
   };
-
-  // Filter accounts by address
-  const filterAccountsByAddress = accounts.filter((account) =>
-    approvedAccounts.includes(account.address),
-  );
 
   return (
     <Page
@@ -134,16 +108,15 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       </Header>
       <Content padding={0}>
         <SiteCell
-          networks={filteredNetworks}
-          accounts={filterAccountsByAddress}
-          onAccountsClick={() =>
-            selectAccounts(Array.from(selectedAccountAddresses))
-          }
-          onNetworksClick={() => null}
-          approvedAccounts={approvedAccounts}
+          nonTestNetworks={nonTestNetworks}
+          testNetworks={testNetworks}
+          accounts={mergedAccounts}
+          onSelectAccountAddresses={setSelectedAccountAddresses}
+          onSelectChainIds={setSelectedChainIds}
+          selectedAccountAddresses={selectedAccountAddresses}
+          selectedChainIds={selectedChainIds}
           activeTabOrigin={activeTabOrigin}
-          combinedNetworks={defaultNetworksList}
-          onDisconnectClick={() => null}
+          isConnectFlow
         />
       </Content>
       <Footer>
@@ -162,6 +135,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             data-testid="confirm-btn"
             size={ButtonSize.Lg}
             onClick={onConfirm}
+            disabled={
+              selectedAccountAddresses.length === 0 ||
+              selectedChainIds.length === 0
+            }
           >
             {t('confirm')}
           </Button>
