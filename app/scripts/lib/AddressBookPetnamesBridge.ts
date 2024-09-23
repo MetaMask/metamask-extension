@@ -56,7 +56,7 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge<
         continue;
       }
 
-      const chainEntries = state.addressBook[chainId as Hex];
+      const chainEntries = state.addressBook[chainId];
 
       for (const address of Object.keys(chainEntries)) {
         const entry = state.addressBook[chainId][address];
