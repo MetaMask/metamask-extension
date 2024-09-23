@@ -29,6 +29,7 @@ import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAutho
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
+import { IOptions } from '@open-rpc/test-coverage/build/coverage';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -229,7 +230,7 @@ async function main() {
         destination: `${process.cwd()}/html-report-multichain`,
       });
 
-      await htmlReporter.onEnd({} as any, joinedResults);
+      await htmlReporter.onEnd({} as IOptions, joinedResults);
 
       await driver.quit();
 
