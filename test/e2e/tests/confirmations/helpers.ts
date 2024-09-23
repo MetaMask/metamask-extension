@@ -43,62 +43,50 @@ export function withRedesignConfirmationFixtures(
   );
 }
 
-export async function mockSignatureApproved(mockServer: Mockttp) {
+async function createMockSegmentEvent(mockServer: Mockttp, eventName: string) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [{ type: 'track', event: eventName }],
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+    }));
+}
+
+export async function mockSignatureApproved(
+  mockServer: Mockttp,
+  withAnonEvents = false,
+) {
+  const anonEvents = withAnonEvents
+    ? [
+        await createMockSegmentEvent(mockServer, 'Signature Requested Anon'),
+        await createMockSegmentEvent(mockServer, 'Signature Approved Anon'),
+      ]
+    : [];
+
   return [
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Signature Requested' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Signature Approved' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Account Details Opened' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
+    await createMockSegmentEvent(mockServer, 'Signature Requested'),
+    await createMockSegmentEvent(mockServer, 'Account Details Opened'),
+    ...anonEvents,
+    await createMockSegmentEvent(mockServer, 'Signature Approved'),
   ];
 }
 
-export async function mockSignatureRejected(mockServer: Mockttp) {
+export async function mockSignatureRejected(
+  mockServer: Mockttp,
+  withAnonEvents = false,
+) {
+  const anonEvents = withAnonEvents
+    ? [
+        await createMockSegmentEvent(mockServer, 'Signature Requested Anon'),
+        await createMockSegmentEvent(mockServer, 'Signature Rejected Anon'),
+      ]
+    : [];
+
   return [
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Signature Requested' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Signature Rejected' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
+    await createMockSegmentEvent(mockServer, 'Signature Requested'),
+    await createMockSegmentEvent(mockServer, 'Signature Rejected'),
+    ...anonEvents,
   ];
 }
