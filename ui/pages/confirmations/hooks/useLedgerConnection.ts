@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   HardwareTransportStates,
   LEDGER_USB_VENDOR_ID,
@@ -24,16 +25,13 @@ const useLedgerConnection = () => {
   const dispatch = useDispatch();
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
-  ) as SignatureRequestType;
+  ) as SignatureRequestType & TransactionMeta;
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
 
-  let from: string | undefined;
-  // todo: extend to other confirmation types
-  if (currentConfirmation?.msgParams) {
-    from = currentConfirmation.msgParams.from;
-  }
+  const from =
+    currentConfirmation?.msgParams?.from ?? currentConfirmation?.txParams?.from;
 
   const isLedgerWallet = useSelector(
     (state) => from && isAddressLedger(state, from),
