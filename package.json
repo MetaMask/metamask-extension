@@ -78,6 +78,7 @@
     "lint:changed:fix": "./development/get-changed-file-names.sh | grep -E --regexp='[.](js|ts|tsx)$' | tr '\\n' '\\0' | xargs -0 eslint --fix --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
     "lint:changelog": "auto-changelog validate",
     "lint:changelog:rc": "auto-changelog validate --rc",
+    "lint:debug": "DEBUG=eslint:cli-engine yarn lint",
     "lint:eslint": "eslint . --ext js,ts,tsx,snap --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
     "lint:eslint:fix": "yarn lint:eslint --fix --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
     "lint:lockfile:dedupe": "yarn dedupe --check",
