@@ -60,11 +60,9 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const isCorrectTransactionType =
-    isRedesignedConfirmationsDeveloperSettingEnabled &&
-    REDESIGN_TRANSACTION_TYPES.includes(
-      transactionMetadata?.type as TransactionType,
-    );
+  const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
+    transactionMetadata?.type as TransactionType,
+  );
 
   const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
     pendingApproval?.type as ApprovalType,
