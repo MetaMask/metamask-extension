@@ -126,7 +126,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
       id: 1,
       success: true,
       payload: {
-        address: KNOWN_PUBLIC_KEY_ADDRESSES[0],
+        address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
         signature,
       },
     };
