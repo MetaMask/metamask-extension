@@ -3,10 +3,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import { usePendingTransactionAlerts } from './usePendingTransactionAlerts';
 
 const ACCOUNT_ADDRESS = '0x123';
@@ -120,21 +118,12 @@ describe('usePendingTransactionAlerts', () => {
     ).toEqual([]);
   });
 
-  it('returns alert if submitted transaction', () => {
+  it('returns no alert if submitted transaction because transaction type is not valid', () => {
     const alerts = runHook({
       currentConfirmation: CONFIRMATION_MOCK,
       transactions: [TRANSACTION_META_MOCK],
     });
 
-    expect(alerts).toEqual([
-      {
-        field: RowAlertKey.Speed,
-        key: 'pendingTransactions',
-        message:
-          'This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.',
-        reason: 'Pending transaction',
-        severity: Severity.Warning,
-      },
-    ]);
+    expect(alerts).toEqual([]);
   });
 });

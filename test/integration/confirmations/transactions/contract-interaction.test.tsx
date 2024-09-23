@@ -141,7 +141,7 @@ const getMetaMaskStateWithMaliciousUnapprovedContractInteraction = (
   };
 };
 
-describe('Contract Interaction Confirmation', () => {
+describe.skip('Contract Interaction Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();

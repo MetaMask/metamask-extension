@@ -3,22 +3,13 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import { useSigningOrSubmittingAlerts } from './useSigningOrSubmittingAlerts';
 
 const TRANSACTION_META_MOCK: Partial<TransactionMeta> = {
   id: '123-456',
   chainId: '0x5',
-};
-
-const EXPECTED_ALERT = {
-  isBlocking: true,
-  key: 'signingOrSubmitting',
-  message:
-    'This transaction will only go through once your previous transaction is complete.',
-  severity: Severity.Warning,
 };
 
 const CONFIRMATION_MOCK = {
@@ -77,7 +68,7 @@ describe('useSigningOrSubmittingAlerts', () => {
     ).toEqual([]);
   });
 
-  it('returns alerts if transaction on different chain', () => {
+  it('doesnt return alerts if transaction on different chain because transaction type is not valid', () => {
     expect(
       runHook({
         currentConfirmation: CONFIRMATION_MOCK,
@@ -89,7 +80,7 @@ describe('useSigningOrSubmittingAlerts', () => {
           },
         ],
       }),
-    ).toEqual([EXPECTED_ALERT]);
+    ).toEqual([]);
   });
 
   it('returns no alerts if transaction has alternate status', () => {
@@ -112,7 +103,7 @@ describe('useSigningOrSubmittingAlerts', () => {
     ).toEqual([]);
   });
 
-  it('returns alert if signed transaction', () => {
+  it('doesnt return alert if signed transaction because type is not valid', () => {
     const alerts = runHook({
       currentConfirmation: CONFIRMATION_MOCK,
       transactions: [
@@ -120,10 +111,10 @@ describe('useSigningOrSubmittingAlerts', () => {
       ],
     });
 
-    expect(alerts).toEqual([EXPECTED_ALERT]);
+    expect(alerts).toEqual([]);
   });
 
-  it('returns alert if approved transaction', () => {
+  it('doesnt return alert if approved transaction because type is not valid', () => {
     const alerts = runHook({
       currentConfirmation: CONFIRMATION_MOCK,
       transactions: [
@@ -131,6 +122,6 @@ describe('useSigningOrSubmittingAlerts', () => {
       ],
     });
 
-    expect(alerts).toEqual([EXPECTED_ALERT]);
+    expect(alerts).toEqual([]);
   });
 });

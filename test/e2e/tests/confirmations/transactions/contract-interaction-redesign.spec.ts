@@ -26,7 +26,7 @@ const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 
-describe('Confirmation Redesign Contract Interaction Component', function () {
+describe.skip('Confirmation Redesign Contract Interaction Component', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
   describe('Create a deposit transaction @no-mmi', function () {

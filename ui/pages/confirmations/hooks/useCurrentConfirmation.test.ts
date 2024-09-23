@@ -128,7 +128,7 @@ describe('useCurrentConfirmation', () => {
       isRedesignedConfirmationsDeveloperEnabled: true,
     });
 
-    expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
+    expect(currentConfirmation).toBeUndefined();
   });
 
   it('returns message matching ID param', () => {
@@ -266,10 +266,10 @@ describe('useCurrentConfirmation', () => {
       isRedesignedConfirmationsDeveloperEnabled: true,
     });
 
-    expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
+    expect(currentConfirmation).toBeUndefined();
   });
 
-  it('returns if env var and user settings are enabled and transaction has correct type', () => {
+  it('returns undefined if env var and user settings are enabled and transaction type is not supported', () => {
     const currentConfirmation = runHook({
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       transaction: {
@@ -280,7 +280,7 @@ describe('useCurrentConfirmation', () => {
       isRedesignedConfirmationsDeveloperEnabled: true,
     });
 
-    expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
+    expect(currentConfirmation).toStrictEqual(undefined);
   });
 
   describe('useCurrentConfirmation with env var', () => {

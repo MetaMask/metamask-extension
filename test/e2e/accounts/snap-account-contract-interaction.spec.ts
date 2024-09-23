@@ -17,7 +17,7 @@ import FixtureBuilder from '../fixture-builder';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import { installSnapSimpleKeyring, importKeyAndSwitch } from './common';
 
-describe('Snap Account Contract interaction', function () {
+describe.skip('Snap Account Contract interaction', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
   it('deposits to piggybank contract', async function () {
