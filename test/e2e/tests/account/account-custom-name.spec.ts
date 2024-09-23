@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
