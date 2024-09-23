@@ -69,12 +69,14 @@ const AssetListControlBar = ({
         [nativeTokenWithBalance.tokenFiatAmount, nativeTokenWithBalance.string];
     }
 
-    const sortedTokenList = tokenSortConfig
-      ? sortAssets(
-          [nativeTokenWithBalance, ...tokensWithBalances],
-          tokenSortConfig,
-        )
-      : [];
+    const sortedTokenList = sortAssets(
+      [nativeTokenWithBalance, ...tokensWithBalances],
+      tokenSortConfig || {
+        key: 'tokenFiatAmount',
+        order: 'dsc',
+        sortCriteria: 'stringNumeric',
+      },
+    );
 
     setTokenList(sortedTokenList);
   }, [tokenSortConfig?.key, loading, tokensWithBalances.length]);

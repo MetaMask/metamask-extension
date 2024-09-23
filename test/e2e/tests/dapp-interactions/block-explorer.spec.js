@@ -82,9 +82,10 @@ describe('Block Explorer', function () {
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
-        const [, tst] = await driver.findElements(
+        const [tst] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );
+
         await tst.click();
         await driver.clickElement('[data-testid="asset-options__button"]');
         await driver.clickElement({
