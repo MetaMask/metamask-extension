@@ -2594,22 +2594,20 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      await actions.grantPermittedChain('test.com', '0x1'),
-        expect(grantPermissionsIncremental).toHaveBeenCalledWith(
-          {
-            subject: { origin: 'test.com' },
-            approvedPermissions: {
-              [PermissionNames.permittedChains]: {
-                caveats: [
-                  CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
-                    '0x1',
-                  ]),
-                ],
-              },
+      await actions.grantPermittedChain('test.com', '0x1');
+      expect(grantPermissionsIncremental).toHaveBeenCalledWith(
+        {
+          subject: { origin: 'test.com' },
+          approvedPermissions: {
+            [PermissionNames.permittedChains]: {
+              caveats: [
+                CaveatFactories[CaveatTypes.restrictNetworkSwitching](['0x1']),
+              ],
             },
           },
-          expect.any(Function),
-        );
+        },
+        expect.any(Function),
+      );
 
       expect(store.getActions()).toStrictEqual([]);
     });
@@ -2625,23 +2623,23 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      await actions.grantPermittedChains('test.com', ['0x1', '0x2']),
-        expect(grantPermissions).toHaveBeenCalledWith(
-          {
-            subject: { origin: 'test.com' },
-            approvedPermissions: {
-              [PermissionNames.permittedChains]: {
-                caveats: [
-                  CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
-                    '0x1',
-                    '0x2',
-                  ]),
-                ],
-              },
+      await actions.grantPermittedChains('test.com', ['0x1', '0x2']);
+      expect(grantPermissions).toHaveBeenCalledWith(
+        {
+          subject: { origin: 'test.com' },
+          approvedPermissions: {
+            [PermissionNames.permittedChains]: {
+              caveats: [
+                CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                  '0x1',
+                  '0x2',
+                ]),
+              ],
             },
           },
-          expect.any(Function),
-        );
+        },
+        expect.any(Function),
+      );
 
       expect(store.getActions()).toStrictEqual([]);
     });
