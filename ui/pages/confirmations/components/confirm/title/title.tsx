@@ -12,7 +12,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import {
@@ -23,37 +22,27 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
-  const t = useI18nContext();
   const { generalAlerts } = useAlerts(ownerId);
 
   if (generalAlerts.length === 0) {
     return null;
   }
 
-  const hasMultipleAlerts = generalAlerts.length > 1;
-  const singleAlert = generalAlerts[0];
-  const highestSeverity = hasMultipleAlerts
-    ? getHighestSeverity(generalAlerts)
-    : singleAlert.severity;
   return (
-    <Box marginTop={4}>
-      <GeneralAlert
-        data-testid="confirm-banner-alert"
-        title={
-          hasMultipleAlerts
-            ? t('alertBannerMultipleAlertsTitle')
-            : singleAlert.reason
-        }
-        description={
-          hasMultipleAlerts
-            ? t('alertBannerMultipleAlertsDescription')
-            : singleAlert.message
-        }
-        severity={highestSeverity}
-        provider={hasMultipleAlerts ? undefined : singleAlert.provider}
-        details={hasMultipleAlerts ? undefined : singleAlert.alertDetails}
-        reportUrl={singleAlert.reportUrl}
-      />
+    <Box marginTop={3}>
+      {generalAlerts.map((alert) => (
+        <Box marginTop={1} key={alert.key}>
+          <GeneralAlert
+            data-testid="confirm-banner-alert"
+            title={alert.reason}
+            description={alert.message}
+            severity={alert.severity}
+            provider={alert.provider}
+            details={alert.alertDetails}
+            reportUrl={alert.reportUrl}
+          />
+        </Box>
+      ))}
     </Box>
   );
 }

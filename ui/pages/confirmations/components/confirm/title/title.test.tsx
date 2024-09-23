@@ -83,16 +83,23 @@ describe('ConfirmTitle', () => {
       reason: 'mock reason',
       key: 'mock key',
     };
+
+    const alertMock2 = {
+      ...alertMock,
+      key: 'mock key 2',
+      reason: 'mock reason 2',
+    };
     const mockAlertState = (state: Partial<ConfirmAlertsState> = {}) =>
       getMockPersonalSignConfirmStateForRequest(unapprovedPersonalSignMsg, {
         metamask: {},
         confirmAlerts: {
           alerts: {
-            [unapprovedPersonalSignMsg.id]: [alertMock, alertMock, alertMock],
+            [unapprovedPersonalSignMsg.id]: [alertMock, alertMock2],
           },
           confirmed: {
             [unapprovedPersonalSignMsg.id]: {
               [alertMock.key]: false,
+              [alertMock2.key]: false,
             },
           },
           ...state,
@@ -115,7 +122,7 @@ describe('ConfirmTitle', () => {
       expect(queryByText(alertMock.message)).toBeInTheDocument();
     });
 
-    it('renders alert banner when there are multiple alerts', () => {
+    it('renders multiple alert banner when there are multiple alerts', () => {
       const mockStore = configureMockStore([])(mockAlertState());
 
       const { getByText } = renderWithConfirmContextProvider(
@@ -123,7 +130,8 @@ describe('ConfirmTitle', () => {
         mockStore,
       );
 
-      expect(getByText('Multiple alerts!')).toBeInTheDocument();
+      expect(getByText(alertMock.reason)).toBeInTheDocument();
+      expect(getByText(alertMock2.reason)).toBeInTheDocument();
     });
   });
 });
