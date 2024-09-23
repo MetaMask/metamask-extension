@@ -6,22 +6,33 @@ export class SnapInstallationPage extends Page {
     super(driver);
   }
 
-  // Placeholder method for installing a snap
   async installSnap(snapId: string): Promise<void> {
-    // TODO: Implement the actual installation process
-    console.log(`Installing snap with ID: ${snapId}`);
+    await this.driver.clickElement(`[data-testid="install-snap-${snapId}"]`);
+    await this.driver.wait(async () => {
+      const installButton = await this.driver.findElement(`[data-testid="snap-install-button"]`);
+      return installButton !== null;
+    }, 5000);
+    await this.driver.clickElement(`[data-testid="snap-install-button"]`);
   }
 
-  // Placeholder method for confirming snap installation
   async confirmInstallation(): Promise<void> {
-    // TODO: Implement the actual confirmation process
-    console.log('Confirming snap installation');
+    await this.driver.wait(async () => {
+      const confirmButton = await this.driver.findElement(`[data-testid="snap-install-confirm"]`);
+      return confirmButton !== null;
+    }, 5000);
+    await this.driver.clickElement(`[data-testid="snap-install-confirm"]`);
   }
 
-  // Placeholder method for verifying successful installation
   async verifyInstallation(snapId: string): Promise<boolean> {
-    // TODO: Implement the actual verification process
-    console.log(`Verifying installation of snap with ID: ${snapId}`);
-    return true;
+    try {
+      await this.driver.wait(async () => {
+        const installedSnap = await this.driver.findElement(`[data-testid="installed-snap-${snapId}"]`);
+        return installedSnap !== null;
+      }, 5000);
+      return true;
+    } catch (error) {
+      console.error(`Failed to verify installation of snap with ID: ${snapId}`);
+      return false;
+    }
   }
 }
