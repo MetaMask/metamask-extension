@@ -2,8 +2,7 @@ import { title } from 'process';
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { accountSnapFixtures } from '../../fixtures/account-snap-fixtures';
-import { makeNewAccountAndSwitch } from '../../helpers/account-helpers';
+import { accountSnapFixtures, makeNewAccountAndSwitch } from '../../accounts/common';
 import { installSnapSimpleKeyringFlow } from '../../page-objects/flows/installSnapSimpleKeyringFlow';
 import { SmartSwapPage } from '../../page-objects/SmartSwapPage';
 
