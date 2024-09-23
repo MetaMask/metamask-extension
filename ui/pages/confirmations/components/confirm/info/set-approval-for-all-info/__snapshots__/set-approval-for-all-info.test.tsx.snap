@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<SetApprovalForAllInfo /> does not render component when no transaction is in state 1`] = `<div />`;
+
 exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
 <div>
   <div

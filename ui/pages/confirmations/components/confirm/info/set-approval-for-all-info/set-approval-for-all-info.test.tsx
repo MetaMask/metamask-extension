@@ -1,7 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { getMockSetApprovalForAllConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmState,
+  getMockSetApprovalForAllConfirmState,
+} from '../../../../../../../test/data/confirmations/helper';
+import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import SetApprovalForAllInfo from './set-approval-for-all-info';
 
@@ -27,6 +31,25 @@ describe('<SetApprovalForAllInfo />', () => {
 
   it('renders component for approve request', async () => {
     const state = getMockSetApprovalForAllConfirmState();
+
+    const mockStore = configureMockStore(middleware)(state);
+
+    const { container } = renderWithConfirmContextProvider(
+      <SetApprovalForAllInfo />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('does not render component when no transaction is in state', async () => {
+    const state = getMockConfirmState({
+      metamask: {
+        ...mockState.metamask,
+        pendingApprovals: {},
+        transactions: [],
+      },
+    });
 
     const mockStore = configureMockStore(middleware)(state);
 
