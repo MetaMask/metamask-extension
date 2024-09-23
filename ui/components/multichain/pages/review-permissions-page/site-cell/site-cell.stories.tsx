@@ -1,13 +1,13 @@
 import React from 'react';
-import { ARBITRUM_NOVA_IMAGE_URL } from '../../../../../../shared/constants/network';
 import { SiteCell } from './site-cell';
 
 export default {
   title: 'Components/Multichain/SiteCell',
-  components: SiteCell,
+  component: SiteCell,
   argTypes: {
     accounts: { control: 'array' },
-    networks: { control: 'array' },
+    nonTestNetworks: { control: 'array' },
+    testNetworks: { control: 'array' },
   },
   args: {
     accounts: [
@@ -35,19 +35,56 @@ export default {
         balance: '0x00',
       },
     ],
-    networks: [
+    selectedAccountAddresses: ['0x860092756917d3e069926ba130099375eeeb9440'],
+    selectedChainIds: ['0x1', '0xe708', '0x144', '0x89', '0x38'],
+    activeTabOrigin: 'https://app.uniswap.org',
+    nonTestNetworks: [
       {
-        rpcUrl: 'https://arb1.arbitrum.io/rpc',
-        chainId: '0xa4b1',
-        ticker: 'ETH',
-        nickname: 'Arbitrum One',
-        rpcPrefs: {
-          blockExplorerUrl: 'https://arbiscan.io',
-          imageUrl: ARBITRUM_NOVA_IMAGE_URL,
-        },
-        id: 'f8f98123-f3ae-418c-b1e7-d08f057f395c',
-        blockExplorerUrl: 'https://arbiscan.io',
-        removable: true,
+        chainId: '0x1',
+        rpcEndpoints: [
+          {
+            networkClientId: 'mainnet',
+            url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+            type: 'infura',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+      },
+    ],
+    testNetworks: [
+      {
+        chainId: '0xaa36a7',
+        rpcEndpoints: [
+          {
+            networkClientId: 'sepolia',
+            url: 'https://sepolia.infura.io/v3/{infuraProjectId}',
+            type: 'infura',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://sepolia.etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        name: 'Sepolia',
+        nativeCurrency: 'SepoliaETH',
+      },
+      {
+        chainId: '0xe705',
+        rpcEndpoints: [
+          {
+            networkClientId: 'linea-sepolia',
+            url: 'https://linea-sepolia.infura.io/v3/{infuraProjectId}',
+            type: 'infura',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://sepolia.lineascan.build'],
+        defaultBlockExplorerUrlIndex: 0,
+        name: 'Linea Sepolia',
+        nativeCurrency: 'LineaETH',
       },
     ],
   },
