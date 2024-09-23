@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "गैस के विकल्प को अपडेट करें"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "यदि आप इस रिक्वेस्ट को एप्रूव करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है।"
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "एकाधिक एलर्ट!"
-  },
   "alertDisableTooltip": {
     "message": "इसे \"सेटिंग > अलर्ट\" में बदला जा सकता है"
   },

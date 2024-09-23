@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "I-update ang mga opsyon sa gas"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Kung aaprubahan mo ang kahilingang ito, maaaring kunin ng third party na kilala sa mga panloloko ang lahat asset mo."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Iba't ibang alerto!"
-  },
   "alertDisableTooltip": {
     "message": "Puwede itong baguhin sa \"Mga Setting > Mga Alerto\""
   },

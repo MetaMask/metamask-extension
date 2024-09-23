@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "ガスオプションを更新"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "複数アラート！"
-  },
   "alertDisableTooltip": {
     "message": "これは「設定」>「アラート」で変更できます"
   },

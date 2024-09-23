@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Mettre à jour les options de gaz"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Plusieurs alertes !"
-  },
   "alertDisableTooltip": {
     "message": "Vous pouvez modifier ceci dans « Paramètres > Alertes »"
   },
