@@ -1,12 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import SortControl from './sort-control';
+import { screen, fireEvent } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import { setTokenSortConfig } from '../../../../../store/actions';
-import { TokenWithBalance } from '../asset-list';
-import { useDispatch, useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-// import { useDispatch, useSelector } from 'react-redux';
+import { TokenWithBalance } from '../asset-list';
+import SortControl from './sort-control';
 
 // Mock the sortAssets utility
 jest.mock('../../util/sort', () => ({
@@ -31,7 +30,6 @@ jest.mock('react-redux', () => {
 });
 
 const useSelectorMock = useSelector;
-const useDispatchMock = useDispatch;
 
 describe('SortControl', () => {
   const mockTrackEvent = jest.fn();
