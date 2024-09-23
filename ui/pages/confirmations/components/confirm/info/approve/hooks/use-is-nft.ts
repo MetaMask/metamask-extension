@@ -10,7 +10,7 @@ export const useIsNFT = (
     return await getTokenStandardAndDetails(
       transactionMeta?.txParams?.to as string,
     );
-  }, [transactionMeta.txParams.to]);
+  }, [transactionMeta?.txParams?.to]);
 
   const isNFT = value?.standard !== TokenStandard.ERC20;
 
