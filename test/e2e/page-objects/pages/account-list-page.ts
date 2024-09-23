@@ -103,19 +103,6 @@ class AccountListPage {
     await this.driver.clickElement(this.closeEditLabelButton);
   }
 
-  async check_pageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.accountListItem,
-        this.accountOptionsMenuButton,
-      ]);
-    } catch (e) {
-      console.log('Timeout while waiting for account list to be loaded', e);
-      throw e;
-    }
-    console.log('Account list is loaded');
-  }
-
   async hideAccount(): Promise<void> {
     console.log(`Hide account in account list`);
     await this.driver.clickElement(this.hideUnhideAccountButton);
