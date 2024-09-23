@@ -16,6 +16,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
@@ -40,6 +41,12 @@ export const overrideAnonymousEventNames = {
     AnonymousTransactionMetaMetricsEvent.rejected,
   [TransactionMetaMetricsEvent.submitted]:
     AnonymousTransactionMetaMetricsEvent.submitted,
+  [MetaMetricsEventName.SignatureRequested]:
+    MetaMetricsEventName.SignatureRequestedAnon,
+  [MetaMetricsEventName.SignatureApproved]:
+    MetaMetricsEventName.SignatureApprovedAnon,
+  [MetaMetricsEventName.SignatureRejected]:
+    MetaMetricsEventName.SignatureRejectedAnon,
 };
 
 const defaultCaptureException = (err) => {
@@ -815,12 +822,12 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.LedgerConnectionType]:
         metamaskState.ledgerTransportType,
       [MetaMetricsUserTrait.NetworksAdded]: Object.values(
-        metamaskState.networkConfigurations,
+        metamaskState.networkConfigurationsByChainId,
       ).map((networkConfiguration) => networkConfiguration.chainId),
       [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
-        metamaskState.networkConfigurations,
+        metamaskState.networkConfigurationsByChainId,
       )
-        .filter(({ ticker }) => !ticker)
+        .filter(({ nativeCurrency }) => !nativeCurrency)
         .map(({ chainId }) => chainId),
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,

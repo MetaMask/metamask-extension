@@ -3,6 +3,7 @@ import { ReactNodeLike } from 'prop-types';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
+import NoteToTrader from '../../../components/institutional/note-to-trader';
 ///: END:ONLY_INCLUDE_IF
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -63,6 +64,11 @@ const Confirm = () => (
               <Title />
               <Info />
               <PluggableSection />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                <NoteToTrader />
+                ///: END:ONLY_INCLUDE_IF
+              }
             </ScrollToBottom>
             <Footer />
             <NetworkChangeToast />
