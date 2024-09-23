@@ -4834,7 +4834,7 @@
     "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
   },
   "smartTransactionPending": {
-    "message": "Submitting your transaction"
+    "message": "Your transaction was submitted"
   },
   "smartTransactionSuccess": {
     "message": "Your transaction is complete"

@@ -307,7 +307,7 @@ exports[`SmartTransactionStatusPage renders the "pending" STX status for a dapp 
         <h4
           class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--color-text-default"
         >
-          Submitting your transaction
+          Your transaction was submitted
         </h4>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
@@ -651,7 +651,7 @@ exports[`SmartTransactionStatusPage renders the component with initial props 1`]
         <h4
           class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--color-text-default"
         >
-          Submitting your transaction
+          Your transaction was submitted
         </h4>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"

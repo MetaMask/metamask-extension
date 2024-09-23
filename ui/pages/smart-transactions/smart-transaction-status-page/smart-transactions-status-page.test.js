@@ -26,7 +26,7 @@ describe('SmartTransactionStatusPage', () => {
       <SmartTransactionStatusPage requestState={requestState} />,
       store,
     );
-    expect(getByText('Submitting your transaction')).toBeInTheDocument();
+    expect(getByText('Your transaction was submitted')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
