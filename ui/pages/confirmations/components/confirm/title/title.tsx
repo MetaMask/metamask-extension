@@ -107,11 +107,11 @@ const getDescription = (
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
         return t('confirmTitleDescSIWESignature');
       }
-      return t('confirmTitleDescSignature');
+      return t('confirmTitleDescSign');
     case TransactionType.signTypedData:
       return isPermitSignatureRequest(confirmation as SignatureRequestType)
         ? t('confirmTitleDescPermitSignature')
-        : t('confirmTitleDescSignature');
+        : t('confirmTitleDescSign');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleDescApproveTransaction');

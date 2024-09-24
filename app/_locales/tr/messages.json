@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "Bir site bu hesabın sahibi olduğunuzu kanıtlamak için giriş yapmanızı istiyor."
   },
-  "confirmTitleDescSignature": {
-    "message": "Bu mesajı sadece içeriği onaylıyorsanız ve talepte bulunan siteye güveniyorsanız onaylayın."
-  },
   "confirmTitlePermitTokens": {
     "message": "Harcama üst limiti talebi"
   },
