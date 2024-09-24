@@ -103,7 +103,7 @@ describe('Add existing token using search', function () {
         }),
     ];
   }
-  it.only('renders the balance for the chosen token', async function () {
+  it('renders the balance for the chosen token', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.BSC })
