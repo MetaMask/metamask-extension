@@ -9,6 +9,7 @@ import {
   getAddressBookEntry,
   getCurrentChainId,
   getNameLookupSnapsIds,
+  getNetworkConfigurationsByChainId,
   getPermissionSubjects,
   getSnapMetadata,
 } from '../selectors';
@@ -98,12 +99,42 @@ export function initializeDomainSlice() {
   };
 }
 
+/**
+ * This function checks if the user has a custom RPC endpoint configured for mainnet.
+ * This method is only useful until name-lookup snaps have a proper way of connecting
+ * to Ethereum mainnet such that user RPC URL preferences are respected.
+ *
+ * See https://github.com/MetaMask/ens-resolver-snap/issues/47
+ *
+ * @param chainId - current chain (CAIP-2 string)
+ * @param snapId - the snapId of the snap that is attempting to resolve the domain
+ * @param state - the metamask redux state
+ * @returns {boolean} true if the snap should be skipped, false otherwise
+ */
+export function shouldSkipEnsResolutionSnap(chainId, snapId, state) {
+  if (chainId === 'eip155:1' || snapId !== 'npm:@metamask/ens-resolver-snap') {
+    return false;
+  }
+  const configs = getNetworkConfigurationsByChainId(state);
+  const mainnetConfig = configs['0x1'];
+  if (mainnetConfig) {
+    const { defaultRpcEndpointIndex, rpcEndpoints } = mainnetConfig;
+    const preferredRPCForMainnet = rpcEndpoints[defaultRpcEndpointIndex];
+    return preferredRPCForMainnet?.type !== 'infura';
+  }
+  return true;
+}
+
 export async function fetchResolutions({ domain, chainId, state }) {
   const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
   const subjects = getPermissionSubjects(state);
   const nameLookupSnaps = getNameLookupSnapsIds(state);
 
   const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
+    if (shouldSkipEnsResolutionSnap(chainId, snapId, state)) {
+      return false;
+    }
+
     const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
     const chainIdCaveat = getChainIdsCaveat(permission);
     const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
