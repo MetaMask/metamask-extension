@@ -13,7 +13,7 @@ import { FormState, InterfaceState, State } from '@metamask/snaps-sdk';
 export const mergeValue = <Type extends State>(
   state: InterfaceState,
   name: string,
-  value: Type | null,
+  value: Type | undefined,
   form?: string,
 ): InterfaceState => {
   if (form) {
@@ -21,9 +21,9 @@ export const mergeValue = <Type extends State>(
       ...state,
       [form]: {
         ...(state[form] as FormState),
-        [name]: value,
+        [name]: value ?? null,
       },
     };
   }
-  return { ...state, [name]: value };
+  return { ...state, [name]: value ?? null };
 };

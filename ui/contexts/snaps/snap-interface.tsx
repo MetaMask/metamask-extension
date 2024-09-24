@@ -30,7 +30,7 @@ export type HandleEvent = <Type extends State>(args: {
 
 export type HandleInputChange = <Type extends State>(
   name: string,
-  value: Type | null,
+  value: Type | undefined,
   form?: string,
 ) => void;
 
@@ -113,7 +113,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     }).then(() => forceUpdateMetamaskState(dispatch));
   };
 
-  const updateState = (state) =>
+  const updateState = (state: InterfaceState) =>
     dispatch(updateInterfaceState(interfaceId, state));
 
   /**
@@ -130,7 +130,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     value = name ? internalState.current[name] : undefined,
   }) => handleSnapRequest(event, name, value);
 
-  const submitInputChange = (name, value) =>
+  const submitInputChange = (name: string, value: State | undefined) =>
     handleEvent({
       event: UserInputEventType.InputChangeEvent,
       name,
@@ -210,7 +210,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
       return;
     }
 
-    const state = mergeValue(internalState.current, name, null, form);
+    const state = mergeValue(internalState.current, name, undefined, form);
 
     internalState.current = state;
     updateState(state);
