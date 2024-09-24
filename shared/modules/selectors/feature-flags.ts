@@ -1,4 +1,7 @@
-import { getCurrentChainId } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+import {
+  NetworkState,
+  getCurrentChainId,
+} from '../../../ui/selectors/networks';
 import { getNetworkNameByChainId } from '../feature-flags';
 
 type FeatureFlagsMetaMaskState = {
@@ -19,7 +22,9 @@ type FeatureFlagsMetaMaskState = {
   };
 };
 
-export function getFeatureFlagsByChainId(state: FeatureFlagsMetaMaskState) {
+export function getFeatureFlagsByChainId(
+  state: NetworkState & FeatureFlagsMetaMaskState,
+) {
   const chainId = getCurrentChainId(state);
   const networkName = getNetworkNameByChainId(chainId);
   const featureFlags = state.metamask.swapsState?.swapsFeatureFlags;

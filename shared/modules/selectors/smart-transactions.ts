@@ -4,15 +4,17 @@ import {
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
 import {
-  getCurrentChainId,
   getCurrentNetwork,
   accountSupportsSmartTx,
   getSelectedAccount,
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+import {
+  getCurrentChainId,
+  NetworkState,
+} from '../../../ui/selectors/networks';
 import { isProduction } from '../environment';
 
 import { MultichainState } from '../../../ui/selectors/multichain';
-import { NetworkState } from '../../../ui/selectors/networks';
 
 type SmartTransactionsMetaMaskState = {
   metamask: {
@@ -68,7 +70,7 @@ export const getSmartTransactionsOptInStatus = (
 };
 
 export const getCurrentChainSupportsSmartTransactions = (
-  state: SmartTransactionsMetaMaskState,
+  state: NetworkState,
 ): boolean => {
   const chainId = getCurrentChainId(state);
   return getAllowedSmartTransactionsChainIds().includes(chainId);

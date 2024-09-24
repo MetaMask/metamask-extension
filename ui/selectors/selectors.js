@@ -105,7 +105,11 @@ import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
-import { getProviderConfig, getNetworkConfigurations } from './networks';
+import {
+  getCurrentChainId,
+  getProviderConfig,
+  getNetworkConfigurations,
+} from './networks';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -127,11 +131,6 @@ export function getNetworkIdentifier(state) {
   const { type, nickname, rpcUrl } = getProviderConfig(state);
 
   return nickname || rpcUrl || type;
-}
-
-export function getCurrentChainId(state) {
-  const { chainId } = getProviderConfig(state);
-  return chainId;
 }
 
 export function getMetaMetricsId(state) {

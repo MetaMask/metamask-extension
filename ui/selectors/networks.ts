@@ -99,3 +99,8 @@ export function getInfuraBlocked(state: NetworkState) {
       .status === NetworkStatus.Blocked
   );
 }
+
+export function getCurrentChainId(state: NetworkState) {
+  const { chainId } = getProviderConfig(state);
+  return chainId;
+}
