@@ -15,6 +15,8 @@ import Eth from '@metamask/ethjs';
 import EthQuery from '@metamask/eth-query';
 import StreamProvider from 'web3-stream-provider';
 import log from 'loglevel';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,

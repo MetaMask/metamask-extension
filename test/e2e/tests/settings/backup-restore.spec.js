@@ -72,7 +72,7 @@ describe('Backup and Restore', function () {
         assert.notEqual(info, null);
         // Verify Json
         assert.equal(
-          Object.values(info?.network?.networkConfigurations)?.[0].chainId,
+          info?.network?.networkConfigurationsByChainId?.['0x539']?.chainId,
           '0x539',
         );
       },

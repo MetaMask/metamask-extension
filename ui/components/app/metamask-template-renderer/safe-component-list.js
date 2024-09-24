@@ -42,8 +42,9 @@ import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
 import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUICard } from '../snaps/snap-ui-card';
+import { SnapUIAddress } from '../snaps/snap-ui-address';
 import { SnapUISelector } from '../snaps/snap-ui-selector';
-import { SnapFooterButton } from '../snaps/snap-footer-button';
+import { SnapUIFooterButton } from '../snaps/snap-ui-footer-button';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
@@ -104,7 +105,8 @@ export const safeComponentList = {
   SnapUITooltip,
   SnapUICard,
   SnapUISelector,
-  SnapFooterButton,
+  SnapUIAddress,
+  SnapUIFooterButton,
   FormTextField,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,

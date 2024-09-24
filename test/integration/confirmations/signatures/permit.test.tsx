@@ -105,7 +105,7 @@ describe('Permit Confirmation', () => {
       accountName,
     );
     expect(screen.getByTestId('header-network-display-name')).toHaveTextContent(
-      'Chain 5',
+      'Sepolia',
     );
 
     fireEvent.click(screen.getByTestId('header-info__account-details-button'));
@@ -120,7 +120,7 @@ describe('Permit Confirmation', () => {
     );
     expect(
       screen.getByTestId('confirmation-account-details-modal__account-balance'),
-    ).toHaveTextContent('1.58271596ETH');
+    ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
 

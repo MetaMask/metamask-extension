@@ -1,13 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { Hex } from '@metamask/utils';
 import { Box } from '../../../../../components/component-library';
 import { Toast } from '../../../../../components/multichain';
 import {
   getLastInteractedConfirmationInfo,
   setLastInteractedConfirmationInfo,
 } from '../../../../../store/actions';
-import { getCurrentChainId, getNetworkDetails } from '../../../../../selectors';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 const CHAIN_CHANGE_THRESHOLD_MILLISECONDS = 60 * 1000; // 1 Minute
@@ -22,9 +26,8 @@ const NetworkChangeToastLegacy = ({
   const newChainId = confirmation?.chainId ?? chainId;
   const [toastVisible, setToastVisible] = useState(false);
   const t = useI18nContext();
-  const networkInfo = useSelector((state) =>
-    getNetworkDetails(state, newChainId),
-  );
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const network = networkConfigurations[newChainId as Hex];
 
   const hideToast = useCallback(() => {
     setToastVisible(false);
@@ -78,7 +81,7 @@ const NetworkChangeToastLegacy = ({
     <Box className="toast_wrapper">
       <Toast
         onClose={hideToast}
-        text={t('networkSwitchMessage', [networkInfo?.nickname ?? ''])}
+        text={t('networkSwitchMessage', [network.name ?? ''])}
         startAdornment={null}
       />
     </Box>
