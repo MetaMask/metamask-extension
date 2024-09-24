@@ -186,6 +186,14 @@ class FixtureBuilder {
     });
   }
 
+  withShowFiatTestnetEnabled() {
+    return this.withPreferencesController({
+      preferences: {
+        showFiatInTestnets: true,
+      },
+    });
+  }
+
   withConversionRateEnabled() {
     return this.withPreferencesController({
       useCurrencyRateCheck: true,
