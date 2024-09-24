@@ -2172,6 +2172,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
         "@metamask/message-signing-snap>@noble/ciphers": true,
         "@metamask/profile-sync-controller>siwe": true,
         "@noble/hashes": true,
