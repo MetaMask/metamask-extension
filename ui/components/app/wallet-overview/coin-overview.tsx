@@ -141,10 +141,14 @@ export const CoinOverview = ({
   const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
 
   const isEvm = useSelector(getMultichainIsEvm);
-  const balanceToDisplay =
-    showNativeTokenAsMainBalance || isTestnet || !isEvm
-      ? balance
-      : totalFiatBalance;
+  const isNotAggregatedFiatBalance =
+    showNativeTokenAsMainBalance || isTestnet || !isEvm;
+  let balanceToDisplay;
+  if (isNotAggregatedFiatBalance) {
+    balanceToDisplay = balance;
+  } else if (!loading) {
+    balanceToDisplay = totalFiatBalance;
+  }
 
   const tokensMarketData = useSelector(getTokensMarketData);
   const [isOpen, setIsOpen] = useState(true);
@@ -243,7 +247,7 @@ export const CoinOverview = ({
         >
           <div className={`${classPrefix}-overview__balance`}>
             <div className={`${classPrefix}-overview__primary-container`}>
-              {balanceToDisplay && !loading ? (
+              {balanceToDisplay ? (
                 <>
                   <Box onMouseEnter={handleMouseEnter} ref={setBoxRef}>
                     <UserPreferencedCurrencyDisplay
