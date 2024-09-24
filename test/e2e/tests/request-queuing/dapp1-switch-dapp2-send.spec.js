@@ -131,6 +131,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindow(newDialogWindow);
 
+        // Check correct network on the send confirmation.
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Localhost 8546',
+        });
+
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'button',
