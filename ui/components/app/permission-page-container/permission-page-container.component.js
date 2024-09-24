@@ -12,6 +12,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
