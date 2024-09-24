@@ -12,26 +12,29 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Estimated changes
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-1"
-            class=""
-            data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Estimated changes
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-1"
+              class=""
+              data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -42,7 +45,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          You're giving someone else permission to withdraw NFTs from your account.
+          You're giving someone else permission to spend this amount from your account.
         </p>
       </div>
     </div>
@@ -52,13 +55,16 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Spending cap
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Spending cap
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
@@ -107,27 +113,30 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Spender
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-2"
-            class=""
-            data-original-title="This is the address that will be able to withdraw your NFTs."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="confirmation__approve-spender-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Spender
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-2"
+              class=""
+              data-original-title="This is the address that will be able to spend your tokens on your behalf."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="confirmation__approve-spender-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -199,27 +208,30 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Request from
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-3"
-            class=""
-            data-original-title="This is the site asking for your confirmation."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="transaction-details-origin-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-3"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -240,27 +252,30 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Interacting with
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-4"
-            class=""
-            data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="transaction-details-recipient-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-4"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-recipient-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -333,13 +348,16 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Account balance
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Account balance
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -362,27 +380,30 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Spending cap
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-5"
-            class=""
-            data-original-title="This is the amount of tokens the spender will be able to access on your behalf."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="confirmation__approve-spending-cap-group-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Spending cap
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-5"
+              class=""
+              data-original-title="This is the amount of tokens the spender will be able to access on your behalf."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="confirmation__approve-spending-cap-group-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -420,27 +441,30 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Network fee
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-6"
-            class=""
-            data-original-title="Amount paid to process the transaction on network."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="edit-gas-fees-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Network fee
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-6"
+              class=""
+              data-original-title="Amount paid to process the transaction on network."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="edit-gas-fees-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -451,13 +475,13 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
           data-testid="first-gas-field"
         >
-          0.004 ETH
+          0.0001 ETH
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
           data-testid="native-currency"
         >
-          $2.20
+          $0.04
         </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -481,13 +505,16 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Speed
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Speed
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -520,27 +547,30 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Max fee
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-7"
-            class=""
-            data-original-title="A maximum fee provided to pay for the transaction."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="gas-fee-details-max-fee-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Max fee
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-7"
+              class=""
+              data-original-title="A maximum fee provided to pay for the transaction."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="gas-fee-details-max-fee-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -550,12 +580,12 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
         >
-          0.1094 ETH
+          0.0011 ETH
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
-          $60.83
+          $0.60
         </p>
       </div>
     </div>
@@ -570,26 +600,29 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Nonce
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-8"
-            class=""
-            data-original-title="This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Nonce
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-8"
+              class=""
+              data-original-title="This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -620,13 +653,16 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
@@ -639,13 +675,16 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -666,27 +705,30 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-          style="align-items: center;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Param #1
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-9"
-              class=""
-              data-original-title="address"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                data-testid="advanced-details-data-param-0-tooltip"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Param #1
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-9"
+                class=""
+                data-original-title="address"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-0-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -755,27 +797,30 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-          style="align-items: center;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Param #2
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-10"
-              class=""
-              data-original-title="uint256"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                data-testid="advanced-details-data-param-1-tooltip"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Param #2
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-10"
+                class=""
+                data-original-title="uint256"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-1-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>

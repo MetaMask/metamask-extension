@@ -59,5 +59,6 @@
   "price.api.cx.metamask.io",
   "token.api.cx.metamask.io",
   "client-side-detection.api.cx.metamask.io",
-  "rpc.tenderly.co"
+  "rpc.tenderly.co",
+  "user-storage.api.cx.metamask.io"
 ]

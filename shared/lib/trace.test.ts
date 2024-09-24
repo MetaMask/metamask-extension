@@ -37,6 +37,12 @@ describe('Trace', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
+    globalThis.sentry = {
+      startSpan: startSpanMock,
+      startSpanManual: startSpanManualMock,
+      withIsolationScope: withIsolationScopeMock,
+    };
+
     startSpanMock.mockImplementation((_, fn) => fn({} as Span));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -41,6 +41,21 @@ class HeaderNavbar {
     });
     return switchNetworkName.length === 1;
   }
+  
+  /**
+   * Verifies that the displayed account label in header matches the expected label.
+   *
+   * @param expectedLabel - The expected label of the account.
+   */
+  async check_accountLabel(expectedLabel: string): Promise<void> {
+    console.log(
+      `Verify the displayed account label in header is: ${expectedLabel}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountMenuButton,
+      text: expectedLabel,
+    });
+  }
 }
 
 export default HeaderNavbar;

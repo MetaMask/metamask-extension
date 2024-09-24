@@ -80,6 +80,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getEnvironmentType,
   ///: END:ONLY_INCLUDE_IF
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
 
 import {

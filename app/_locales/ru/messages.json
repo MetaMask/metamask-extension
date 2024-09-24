@@ -183,9 +183,6 @@
   "addANetwork": {
     "message": "Добавить сеть"
   },
-  "addANetworkManually": {
-    "message": "Добавить сеть вручную"
-  },
   "addANickname": {
     "message": "Добавить ник"
   },
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "Добавьте друзей и адреса, которым доверяете"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "Добавьте из списка популярных сетей или добавьте сеть вручную. Взаимодействуйте только с теми организациями, которым доверяете."
-  },
   "addHardwareWallet": {
     "message": "Добавить аппаратный кошелек"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "Добавить примечание"
   },
-  "addMoreNetworks": {
-    "message": "добавить другие сети вручную"
-  },
   "addNetwork": {
     "message": "Добавить сеть"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "Это сетевое подключение зависит от третьих сторон. Оно может быть менее надежным или позволять третьим лицам отслеживать активность. $1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "Добавить новый счет Ethereum"
@@ -1000,9 +987,6 @@
   "confirmConnectionTitle": {
     "message": "Подтвердите подключение к $1"
   },
-  "confirmDeletion": {
-    "message": "Подтвердить удаление"
-  },
   "confirmFieldPaymaster": {
     "message": "Комиссия оплачена"
   },
@@ -1015,17 +999,11 @@
   "confirmRecoveryPhrase": {
     "message": "Подтвердите секретную фразу для восстановления"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "Уверены, что хотите удалить URL-адрес RPC? Ваша информация не будет сохранена для этой сети."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Этот сайт хочет получить разрешение на расходование ваших токенов."
   },
   "confirmTitleDescSIWESignature": {
     "message": "Сайт требует, чтобы вы вошли в систему и доказали, что вы являетесь владельцем этого счета."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Подтверждайте это сообщение только в том случае, если вы одобряете его содержание и доверяете запрашивающему сайту."
   },
   "confirmTitlePermitTokens": {
     "message": "Запрос лимита расходов"
@@ -1368,9 +1346,6 @@
   "custom": {
     "message": "Дополнительно"
   },
-  "customContentSearch": {
-    "message": "Поиск ранее добавленной сети"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Использовать $1, чтобы настроить цену на газ. Это может сбивать с толку, если вы не знакомы с этим. Взаимодействуйте на свой страх и риск.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1490,18 +1465,12 @@
   "deleteContact": {
     "message": "Удалить контакт"
   },
-  "deleteNetwork": {
-    "message": "Удалить сеть?"
-  },
   "deleteNetworkIntro": {
     "message": "Если вы удалите эту сеть, вам нужно будет добавить ее снова, чтобы просмотреть свои активы в этой сети"
   },
   "deleteNetworkTitle": {
     "message": "Удалить сеть $1?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "Удалить URL-адрес RPC"
   },
   "deposit": {
     "message": "Депозит"
@@ -1596,9 +1565,6 @@
   },
   "domain": {
     "message": "Домен"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "Сеть не поддерживает поиск домена"
   },
   "done": {
     "message": "Выполнено"
@@ -1773,12 +1739,6 @@
   "ensDomainsSettingTitle": {
     "message": "Показать домены ENS в адресной строке"
   },
-  "ensIllegalCharacter": {
-    "message": "Недопустимый символ для ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Ошибка при регистрации имени ENS"
-  },
   "ensUnknownError": {
     "message": "Ошибка поиска ENS."
   },
@@ -1876,9 +1836,6 @@
   "existingRequestsBannerAlertDesc": {
     "message": "Чтобы просмотреть и подтвердить свой последний запрос, вам необходимо сначала утвердить или отклонить существующие запросы."
   },
-  "existingRpcUrl": {
-    "message": "Этот URL-адрес связан с другим ID блокчейна."
-  },
   "expandView": {
     "message": "Развернуть представление"
   },
@@ -1910,9 +1867,6 @@
   "failedToFetchChainId": {
     "message": "Не удалось получить ID блокчейна. Ваш URL RPC правильный?"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "Данные проверки тикера в настоящее время недоступны. Убедитесь, что вы ввели правильный символ. Это повлияет на коэффициенты обмена, которые вы видите для этой сети."
-  },
   "failureMessage": {
     "message": "Что-то пошло не так, и мы не смогли завершить действие"
   },
@@ -1932,9 +1886,6 @@
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "Найдите подходящий в:"
   },
   "flaskWelcomeUninstall": {
     "message": "вам нужно должны удалить это расширение",
@@ -2422,14 +2373,8 @@
   "invalidAddressRecipient": {
     "message": "Неверный адрес получателя"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Не сеть ETH, задана в нижнем регистре"
-  },
   "invalidAssetType": {
     "message": "Этот актив является NFT, и его необходимо повторно добавить на странице «Импорт NFT», которая находится на вкладке NFT."
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Недействительный URL обозревателя блоков"
   },
   "invalidChainIdTooBig": {
     "message": "Недействительный ID блокчейна. Он слишком длинный."
@@ -2950,9 +2895,6 @@
   "network": {
     "message": "Сеть:"
   },
-  "networkAddedSuccessfully": {
-    "message": "Сеть успешно добавлена!"
-  },
   "networkDetails": {
     "message": "Сведения о сети"
   },
@@ -3012,9 +2954,6 @@
   },
   "networkProvider": {
     "message": "Поставщик услуг сети"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "ID блокчейна используется для подписания транзакций. Он должен соответствовать ID блокчейна, возвращаемому сетью. Вы можете ввести десятичное или шестнадцатеричное число с префиксом «0x», но мы будем отображать число в десятичном виде."
   },
   "networkStatus": {
     "message": "Статус сети"
@@ -3151,9 +3090,6 @@
   },
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
-  },
-  "noAddressForName": {
-    "message": "Для этого имени не задан адрес."
   },
   "noConnectedAccountDescription": {
     "message": "Для продолжения выберите счет, который вы хотите использовать на этом сайте."
@@ -3467,9 +3403,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "URL шлюза IPFS действителен"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "Добавить пользовательскую сеть"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Мы используем Infura в качестве нашего поставщика удаленного вызова процедур (RPC), чтобы предложить наиболее надежный и конфиденциальный доступ к данным Ethereum из возможных. Вы можете выбрать свой собственного RPC, но помните, что любой RPC получит ваш IP-адрес и номер кошелька Ethereum для совершения транзакций. См. наше $1, чтобы узнать больше о том, как Infura обрабатывает данные."
   },
@@ -3497,9 +3430,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Политикой конфиденциальности"
-  },
-  "onboardingMetametricsModalTitle": {
-    "message": "Добавить пользовательскую сеть"
   },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 клики и просмотры в приложении сохраняются, но другие данные (например, ваш публичный адрес) — нет.",
@@ -3593,9 +3523,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "Вредоносный сетевой провайдер может дезинформировать о состоянии блокчейна и записывать ваши действия в сети. Добавляйте только те пользовательские сети, которым доверяете."
-  },
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3619,9 +3546,6 @@
   },
   "optional": {
     "message": "Необязательно"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Необязательно)"
   },
   "options": {
     "message": "Опционы"
@@ -3974,9 +3898,6 @@
     "message": "+ еще $1",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "popularCustomNetworks": {
-    "message": "Популярные пользовательские сети"
-  },
   "popularNetworkAddToolTip": {
     "message": "Некоторые из этих сетей являются зависимыми от третьих сторон. Соединения могут быть менее надежными или позволять третьим сторонам отслеживать активность. $1",
     "description": "$1 is Learn more link"
@@ -4165,12 +4086,6 @@
   },
   "receive": {
     "message": "Получить"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Введите публичный адрес (0x) или имя ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Введите публичный адрес (0x) или имя домена"
   },
   "recommendedGasLabel": {
     "message": "Рекомендовано"
@@ -5319,9 +5234,6 @@
   "suggestedTokenName": {
     "message": "Предлагаемое имя:"
   },
-  "suggestedTokenSymbol": {
-    "message": "Рекомендуемый символ-тикер:"
-  },
   "support": {
     "message": "Поддержка"
   },
@@ -5810,9 +5722,6 @@
   "termsOfUseTitle": {
     "message": "Наши Условия использования обновлены"
   },
-  "testNetworks": {
-    "message": "Протестировать сети"
-  },
   "theme": {
     "message": "Тема"
   },
@@ -6124,9 +6033,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "Согласно нашим данным, этот URL-адрес не соответствует известному поставщику для этого ID блокчейна."
-  },
   "unapproved": {
     "message": "Не одобрен"
   },
@@ -6195,9 +6101,6 @@
   },
   "urlErrorMsg": {
     "message": "URL должен иметь соответствующий префикс HTTP/HTTPS."
-  },
-  "urlExistsErrorMsg": {
-    "message": "Это URL в настоящее время используется сетью $1."
   },
   "use4ByteResolution": {
     "message": "Расшифровать смарт-контракты"
@@ -6408,9 +6311,6 @@
   "whatsThis": {
     "message": "Что это?"
   },
-  "wrongChainId": {
-    "message": "Этот ID блокчейна не соответствует имени сети."
-  },
   "wrongNetworkName": {
     "message": "Согласно нашим записям, имя сети может не соответствовать этому ID блокчейна."
   },
@@ -6423,10 +6323,6 @@
   },
   "you": {
     "message": "Вы"
-  },
-  "youHaveAddedAll": {
-    "message": "Вы добавили все популярные сети. Вы можете открыть для себя больше сетей $1 или можете $2",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Для использования этой функции вам необходимо предоставить доступ к камере."

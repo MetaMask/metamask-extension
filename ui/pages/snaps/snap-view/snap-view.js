@@ -99,19 +99,21 @@ function SnapView() {
       }}
     >
       <Page backgroundColor={BackgroundColor.backgroundDefault}>
-        <SnapAuthorshipHeader
-          snapId={snapId}
-          showInfo={false}
-          startAccessory={renderBackButton()}
-          endAccessory={
-            <SnapHomeMenu
-              snapId={snapId}
-              onSettingsClick={handleSettingsClick}
-              onRemoveClick={handleSnapRemove}
-              isSettingsAvailable={!snap.preinstalled}
-            />
-          }
-        ></SnapAuthorshipHeader>
+        {!snap.hideSnapBranding && (
+          <SnapAuthorshipHeader
+            snapId={snapId}
+            showInfo={false}
+            startAccessory={renderBackButton()}
+            endAccessory={
+              <SnapHomeMenu
+                snapId={snapId}
+                onSettingsClick={handleSettingsClick}
+                onRemoveClick={handleSnapRemove}
+                isSettingsAvailable={!snap.preinstalled}
+              />
+            }
+          />
+        )}
         <Content
           backgroundColor={BackgroundColor.backgroundDefault}
           className="snap-view__content"
