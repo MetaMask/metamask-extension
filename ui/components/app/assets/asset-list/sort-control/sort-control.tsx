@@ -1,9 +1,8 @@
-import React, { ReactNode, useContext, useEffect } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Box } from '../../../../component-library';
-import { TokenWithBalance } from '../asset-list';
-import { SortOrder, SortingCallbacksT, sortAssets } from '../../util/sort';
+import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   BackgroundColor,
   BorderRadius,
@@ -15,6 +14,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
+import { getPreferences } from '../../../../../selectors';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -51,43 +51,17 @@ export const SelectableListItem = ({
   );
 };
 
-type SortControlProps = {
-  tokenList: TokenWithBalance[];
-  setTokenList: (arg: TokenWithBalance[]) => void;
-  setSorted: (arg: boolean) => void;
-  sorted: boolean;
-};
-
-const SortControl = ({
-  tokenList,
-  setTokenList,
-  setSorted,
-}: SortControlProps) => {
+const SortControl = () => {
   const trackEvent = useContext(MetaMetricsContext);
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tokenSortConfig = useSelector((state: any) => {
-    return state.metamask.tokenSortConfig;
-  });
+  const { tokenSortConfig } = useSelector(getPreferences);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const [nativeToken] = tokenList.filter((token) => token.isNative);
-    const nonNativeTokens = tokenList.filter((token) => !token.isNative);
-    const dedupedTokenList = [nativeToken, ...nonNativeTokens];
-
-    const sortedAssets = sortAssets(dedupedTokenList, tokenSortConfig);
-    setSorted(true);
-    setTokenList(sortedAssets);
-  }, [tokenSortConfig?.key]);
 
   const handleSort = (
     key: string,
     sortCallback: keyof SortingCallbacksT,
     order: SortOrder,
   ) => {
-    console.log('handle sort');
     dispatch(
       setTokenSortConfig({
         key,

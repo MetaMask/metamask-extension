@@ -50,15 +50,6 @@ const AssetListControlBar = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const tokenSortConfig = useSelector((state: any) => {
-  //   return state.metamask.tokenSortConfig;
-  // });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const preferencesState = useSelector((state: any) => {
-    return state.metamask;
-  });
-  console.log(tokenSortConfig, preferencesState);
 
   const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
     selectedAccount,
@@ -89,7 +80,7 @@ const AssetListControlBar = ({
     );
 
     setTokenList(sortedTokenList);
-  }, [tokenSortConfig?.key, loading, tokensWithBalances.length]);
+  }, [tokenSortConfig.key, loading, tokensWithBalances.length]);
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
@@ -135,12 +126,7 @@ const AssetListControlBar = ({
             padding: 0,
           }}
         >
-          <SortControl
-            tokenList={tokenList}
-            setTokenList={setTokenList}
-            setSorted={setSorted}
-            sorted={sorted}
-          />
+          <SortControl />
         </Popover>
       </Box>
     </>
