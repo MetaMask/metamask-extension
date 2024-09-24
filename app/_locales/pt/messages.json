@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "Um site quer que você faça login para comprovar que é titular desta conta."
   },
-  "confirmTitleDescSignature": {
-    "message": "Confirme esta mensagem somente se você aprova o conteúdo e confia no site solicitante."
-  },
   "confirmTitlePermitTokens": {
     "message": "Solicitação de limite de gastos"
   },
