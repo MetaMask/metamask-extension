@@ -107,7 +107,7 @@ describe('MultipleAlertModal', () => {
     expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
   });
 
-  it('render the next alert when the "Got it" button is clicked', () => {
+  it('renders the next alert when the "Got it" button is clicked', () => {
     const { getByTestId, getByText } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
       mockStoreAcknowledgeAlerts,
@@ -132,6 +132,29 @@ describe('MultipleAlertModal', () => {
     fireEvent.click(getByTestId('alert-modal-button'));
 
     expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('defaults to the first alert if the selected alert is not found', () => {
+    const { getByText } = renderWithProvider(
+      <MultipleAlertModal {...defaultProps} alertKey="nonexistent" />,
+      mockStore,
+    );
+
+    expect(getByText(alertsMock[0].message)).toBeInTheDocument();
+  });
+
+  it('resets to the first alert if there are unconfirmed alerts and the final alert is acknowledged', () => {
+    const { getByTestId, getByText } = renderWithProvider(
+      <MultipleAlertModal
+        {...defaultProps}
+        alertKey={CONTRACT_ALERT_KEY_MOCK}
+      />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('alert-modal-button'));
+
+    expect(getByText(alertsMock[0].message)).toBeInTheDocument();
   });
 
   describe('Navigation', () => {
