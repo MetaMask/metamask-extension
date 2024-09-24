@@ -129,11 +129,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           windowsBefore,
         });
 
-        // For Firefox/Webpack, there is an extra window appearing and disapearing
+        // For Firefox and Chrome Webpack, there is an extra window appearing and disapearing
         // so we leave this delay until the issue is fixed (#27360)
-        if (process.env.SELENIUM_BROWSER !== 'chrome') {
-          await driver.delay(veryLargeDelayMs);
-        }
+        await driver.delay(veryLargeDelayMs);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
