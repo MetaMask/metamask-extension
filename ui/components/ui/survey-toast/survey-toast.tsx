@@ -59,7 +59,7 @@ export function SurveyToast() {
         if (
           response.surveys.length === 0 ||
           !_survey ||
-          lastViewedUserSurvey <= _survey.surveyId
+          _survey.surveyId <= lastViewedUserSurvey
         ) {
           return;
         }
