@@ -1818,7 +1818,7 @@ export function removePermittedAccount(
 export function removePermittedChain(
   origin: string,
   chain: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod('removePermittedChain', [origin, chain], (error) => {
@@ -3836,7 +3836,7 @@ export function requestAccountsPermissionWithId(
 
 export function requestAccountsAndChainPermissionsWithId(
   origin: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const id = await submitRequestToBackground(
       'requestAccountsAndChainPermissionsWithId',
