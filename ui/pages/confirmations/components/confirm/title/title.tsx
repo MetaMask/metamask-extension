@@ -75,6 +75,8 @@ const getTitle = (
       return t('confirmTitlePermitTokens');
     case TransactionType.tokenMethodIncreaseAllowance:
       return t('confirmTitlePermitTokens');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      return t('setApprovalForAllRedesignedTitle');
     default:
       return '';
   }
@@ -106,6 +108,8 @@ const getDescription = (
       return t('confirmTitleDescERC20ApproveTransaction');
     case TransactionType.tokenMethodIncreaseAllowance:
       return t('confirmTitleDescPermitSignature');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      return t('confirmTitleDescApproveTransaction');
     default:
       return '';
   }

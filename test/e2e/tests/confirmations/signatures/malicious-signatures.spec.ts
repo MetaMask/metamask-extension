@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
@@ -19,6 +20,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   it('displays alert for domain binding and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
@@ -41,6 +43,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   it('initiates and rejects from confirmation screen', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -87,6 +90,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   it('initiates and rejects from alert friction modal', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
