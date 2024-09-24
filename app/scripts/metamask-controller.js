@@ -1261,10 +1261,12 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SelectedNetworkController,
       useRequestQueuePreference:
         this.preferencesController.state.useRequestQueue,
-      onPreferencesStateChange: preferencesMessenger.subscribe.bind(
-        preferencesMessenger,
-        'PreferencesController:stateChange',
-      ),
+      onPreferencesStateChange: (listener) => {
+        preferencesMessenger.subscribe(
+          'PreferencesController:stateChange',
+          listener,
+        );
+      },
       domainProxyMap: new WeakRefObjectMap(),
     });
 
@@ -1765,7 +1767,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.alertController = new AlertController({
       initState: initState.AlertController,
-      // preferencesStore: this.preferencesController.store,
       controllerMessenger: this.controllerMessenger.getRestricted({
         name: 'AlertController',
         allowedEvents: ['AccountsController:selectedAccountChange'],
