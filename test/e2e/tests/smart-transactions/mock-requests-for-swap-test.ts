@@ -291,6 +291,17 @@ export const mockSwapRequests = async (mockServer: MockttpServer) => {
   await mockEthDaiTrade(mockServer);
 
   await mockServer
+    .forJsonRpcRequest({
+      method: 'eth_getBalance',
+      params: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
+    })
+    .thenJson(200, {
+      id: 3806592044086814,
+      jsonrpc: '2.0',
+      result: '0x1bc16d674ec80000', // 2 ETH
+    });
+
+  await mockServer
     .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')
     .withJsonBodyIncluding(GET_FEES_REQUEST_INCLUDES)
     .thenJson(200, GET_FEES_RESPONSE);
@@ -317,24 +328,11 @@ export const mockSwapRequests = async (mockServer: MockttpServer) => {
 
   await mockServer
     .forJsonRpcRequest({
-      method: 'eth_getBalance',
-      params: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
-    })
-    // .once()
-    .thenJson(200, {
-      id: 3806592044086814,
-      jsonrpc: '2.0',
-      result: '0x1bc16d674ec80000', // 2 ETH
-    });
-
-  await mockServer
-    .forJsonRpcRequest({
       method: 'eth_getTransactionReceipt',
       params: [
         '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5',
       ],
     })
-    // .once()
     .thenJson(200, GET_TRANSACTION_RECEIPT_RESPONSE);
 
   await mockServer
@@ -344,6 +342,5 @@ export const mockSwapRequests = async (mockServer: MockttpServer) => {
         '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5',
       ],
     })
-    // .once()
     .thenJson(200, GET_TRANSACTION_BY_HASH_RESPONSE);
 };

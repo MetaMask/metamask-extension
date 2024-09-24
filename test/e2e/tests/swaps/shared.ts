@@ -95,10 +95,6 @@ export const reviewQuote = async (
     '[data-testid="exchange-rate-display-quote-rate"]',
   );
   const summaryText = await summary.getText();
-  console.log('============\nsummaryText\n============', {
-    summaryText,
-    options,
-  });
   assert.equal(summaryText.includes(options.swapFrom), true);
   assert.equal(summaryText.includes(options.swapTo), true);
   const quote = summaryText.split(`\n`);

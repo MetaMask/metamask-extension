@@ -289,11 +289,6 @@ async function setupMocking(
             mobileActive: true,
             extensionActive: true,
           },
-          localhost: {
-            fallbackToV1: false,
-            mobileActive: true,
-            extensionActive: true,
-          },
           smartTransactions: {
             mobileActive: false,
             extensionActive: true,
