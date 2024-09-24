@@ -216,6 +216,8 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
+    showRPCTimeoutToast: PropTypes.bool.isRequired,
+    setShowRPCTimeoutToast: PropTypes.func.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
@@ -646,6 +648,8 @@ export default class Routes extends Component {
       activeTabOrigin,
       addPermittedAccount,
       showSurveyToast,
+      showRPCTimeoutToast,
+      setShowRPCTimeoutToast,
       showConnectAccountToast,
       showPrivacyPolicyToast,
       newPrivacyPolicyToastShownDate,
@@ -714,6 +718,25 @@ export default class Routes extends Component {
             onClose={() => this.setState({ hideConnectAccountToast: true })}
           />
         ) : null}
+        {showRPCTimeoutToast && (
+          <Toast
+            key="rpc-timeout-toast"
+            startAdornment={
+              <Icon name={IconName.Warning} color={IconColor.warningDefault} />
+            }
+            text={t('rpcTimeoutToastMessage', ['<rpc-name>', '<network name>'])} // TODO: replace with actual values
+            actionText={t('rpcTimeoutToastAction')}
+            onActionClick={() => {
+              console.log('TODO: open network editor');
+              // global.platform.openTab({
+              //   url: 'https://metamask.io/rpc-timeout/',
+              // });
+            }}
+            onClose={() => {
+              setShowRPCTimeoutToast(false);
+            }}
+          />
+        )}
         {showSurveyToast && (
           <Toast
             key="survey-toast"

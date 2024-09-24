@@ -308,14 +308,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           switchNetworkTimeout = setTimeout(() => {
             console.log('unresponsive RPC URL');
 
-            // // Show UI to inform the user of the unresponsive RPC URL
-            // dispatch(
-            //   showModal({
-            //     name: 'UNRESPONSIVE_RPC_URL',
-            //     target: network.chainId,
-            //     onConfirm: () => undefined,
-            //   }),
-            // );
+            // Show toast to inform the user of the unresponsive RPC URL and option to edit network RPC URL
 
             setSwitchingNetwork(false);
           }, RPC_TIMEOUT);

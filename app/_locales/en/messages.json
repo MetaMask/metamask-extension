@@ -4593,6 +4593,12 @@
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
+  "rpcTimeoutToastMessage": {
+    "message": "$1 is taking too long to respond, so $2 can't be reached."
+  },
+  "rpcTimeoutToastAction": {
+    "message": "Change RPC URL"
+  },
   "rpcUrl": {
     "message": "RPC URL"
   },
