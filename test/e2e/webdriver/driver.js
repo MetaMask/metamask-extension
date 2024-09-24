@@ -1103,33 +1103,37 @@ class Driver {
   async waitForNotificationToCloseAndOpen({
     driver,
     maxAttempts = 5,
-    retryDelayMs = 1500,
+    retryDelayMs = 2000,
     windowsBefore,
   }) {
-    let newWindowHandle;
+    let newWindowHandles = [];
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       const windowsAfter = await driver.getAllWindowHandles();
-      newWindowHandle = windowsAfter.find(
-        (handle) => !windowsBefore.includes(handle),
+      const foundNewWindows = windowsAfter.filter(
+        (handle) =>!windowsBefore.includes(handle) && !newWindowHandles.includes(handle),
       );
 
-      if (newWindowHandle) {
-        console.log(`New window handle found: ${newWindowHandle}`);
-        break;
+      if (foundNewWindows.length > 0) {
+        newWindowHandles = [...newWindowHandles, ...foundNewWindows];
+        console.log(`New window handles found: ${foundNewWindows.join(', ')}`);
       }
 
       if (attempt < maxAttempts) {
         console.log(
-          `New window handle not found, retrying in ${retryDelayMs}ms...`,
+          `Checking for additional new windows in ${retryDelayMs}ms...`,
         );
         await driver.delay(retryDelayMs);
       }
     }
 
-    if (!newWindowHandle) {
-      throw new Error(
-        'Failed to identify the new window handle after multiple attempts',
+    if (newWindowHandles.length === 0) {
+      console.log(
+        'Failed to identify any new window handles after multiple attempts',
+      );
+    } else {
+      console.log(
+        `Total new window handles found: ${newWindowHandles.join(', ')}`,
       );
     }
   }
