@@ -1,5 +1,6 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { KeyringObject } from '@metamask/keyring-controller';
+import type { Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
@@ -44,9 +45,9 @@ const updateLedgerHardwareAccounts = (keyrings: KeyringObject[]) => {
   return keyrings;
 };
 
-const generateUnapprovedConfirmationOnLedgerState = () => {
+const generateUnapprovedConfirmationOnLedgerState = (address: Hex) => {
   const transactionMeta = genUnapprovedApproveConfirmation({
-    address: MOCK_LEDGER_ACCOUNT,
+    address,
     chainId: '0x5',
   }) as TransactionMeta;
 
@@ -85,7 +86,7 @@ describe('useLedgerConnection', () => {
       configurable: true,
     });
 
-    state = generateUnapprovedConfirmationOnLedgerState();
+    state = generateUnapprovedConfirmationOnLedgerState(MOCK_LEDGER_ACCOUNT);
   });
 
   afterAll(() => {
@@ -101,8 +102,6 @@ describe('useLedgerConnection', () => {
         appActions,
         'setLedgerWebHidConnectedStatus',
       );
-
-      const state = generateUnapprovedConfirmationOnLedgerState();
 
       state.appState.ledgerWebHidConnectedStatus =
         WebHIDConnectedStatuses.notConnected;
@@ -121,8 +120,6 @@ describe('useLedgerConnection', () => {
         appActions,
         'setLedgerWebHidConnectedStatus',
       );
-
-      const state = generateUnapprovedConfirmationOnLedgerState();
 
       state.appState.ledgerWebHidConnectedStatus =
         WebHIDConnectedStatuses.unknown;
@@ -272,24 +269,48 @@ describe('useLedgerConnection', () => {
     );
   });
 
-  it('does nothing when address is not a ledger address', async () => {
-    const spyOnSetLedgerWebHidConnectedStatus = jest.spyOn(
-      appActions,
-      'setLedgerWebHidConnectedStatus',
-    );
-    const spyOnSetLedgerTransportStatus = jest.spyOn(
-      appActions,
-      'setLedgerTransportStatus',
-    );
+  describe('does nothing', () => {
+    it('when address is not a ledger address', async () => {
+      const spyOnSetLedgerWebHidConnectedStatus = jest.spyOn(
+        appActions,
+        'setLedgerWebHidConnectedStatus',
+      );
+      const spyOnSetLedgerTransportStatus = jest.spyOn(
+        appActions,
+        'setLedgerTransportStatus',
+      );
 
-    // Set state to have empty keyrings, simulating a non-Ledger address
-    state.metamask.keyrings = [];
+      // Set state to have empty keyrings, simulating a non-Ledger address
+      state.metamask.keyrings = [];
 
-    renderHookWithConfirmContextProvider(useLedgerConnection, state);
+      renderHookWithConfirmContextProvider(useLedgerConnection, state);
 
-    await flushPromises();
+      await flushPromises();
 
-    expect(spyOnSetLedgerWebHidConnectedStatus).not.toHaveBeenCalled();
-    expect(spyOnSetLedgerTransportStatus).not.toHaveBeenCalled();
+      expect(spyOnSetLedgerWebHidConnectedStatus).not.toHaveBeenCalled();
+      expect(spyOnSetLedgerTransportStatus).not.toHaveBeenCalled();
+    });
+
+    it('when from address is not defined in currentConfirmation', async () => {
+      const tempState = generateUnapprovedConfirmationOnLedgerState(
+        undefined as unknown as Hex,
+      );
+
+      const spyOnSetLedgerWebHidConnectedStatus = jest.spyOn(
+        appActions,
+        'setLedgerWebHidConnectedStatus',
+      );
+      const spyOnSetLedgerTransportStatus = jest.spyOn(
+        appActions,
+        'setLedgerTransportStatus',
+      );
+
+      renderHookWithConfirmContextProvider(useLedgerConnection, tempState);
+
+      await flushPromises();
+
+      expect(spyOnSetLedgerWebHidConnectedStatus).not.toHaveBeenCalled();
+      expect(spyOnSetLedgerTransportStatus).not.toHaveBeenCalled();
+    });
   });
 });
