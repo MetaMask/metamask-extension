@@ -14,6 +14,7 @@ import {
   addToken,
   addTransactionAndWaitForPublish,
   forceUpdateMetamaskState,
+  upsertNetworkConfiguration,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { QuoteRequest } from '../../pages/bridge/types';
@@ -41,8 +42,14 @@ import {
   getCustomMaxFeePerGas,
   getCustomMaxPriorityFeePerGas,
 } from '../swaps/swaps';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { MetaMetricsNetworkEventSource } from '../../../shared/constants/metametrics';
+import { DEFAULT_TOKEN_ADDRESS } from '../../../shared/constants/swaps';
 import { bridgeSlice } from './bridge';
-import { DUMMY_QUOTES_APPROVAL } from './dummy-quotes';
+import {
+  DUMMY_QUOTES_APPROVAL,
+  DUMMY_QUOTES_NO_APPROVAL,
+} from './dummy-quotes';
 
 const {
   setToChainId,
@@ -131,13 +138,14 @@ export const signBridgeTransaction = (
     //   return;
     // }
 
-    const quoteMeta = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
-    // const quoteMeta = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
+    // const quoteMeta = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
+    const quoteMeta = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
 
     // Track event TODO
 
-    let maxFeePerGas;
-    let maxPriorityFeePerGas;
+    // Calc gas
+    let maxFeePerGas: undefined | string;
+    let maxPriorityFeePerGas: undefined | string;
     let baseAndPriorityFeePerGas;
     let decEstimatedBaseFee;
 
@@ -179,8 +187,8 @@ export const signBridgeTransaction = (
           ...quoteMeta.approval,
           chainId: hexChainId,
           gasLimit: quoteMeta.approval.gasLimit.toString(),
-          // maxFeePerGas,
-          // maxPriorityFeePerGas,
+          maxFeePerGas,
+          maxPriorityFeePerGas,
         },
         {
           requireApproval: false,
@@ -215,8 +223,8 @@ export const signBridgeTransaction = (
           ...quoteMeta.trade,
           chainId: hexChainId,
           gasLimit: quoteMeta.trade.gasLimit.toString(),
-          // maxFeePerGas,
-          // maxPriorityFeePerGas,
+          maxFeePerGas,
+          maxPriorityFeePerGas,
         },
         {
           requireApproval: false,
@@ -279,13 +287,14 @@ export const signBridgeTransaction = (
       const destNetworkConfig = networkConfigurationsArr.find(
         (networkConfig) => networkConfig.chainId === hexDestChainId,
       );
+      const {
+        address,
+        decimals,
+        symbol,
+        icon: image,
+      } = quoteMeta.quote.destAsset;
+
       if (destNetworkConfig) {
-        const {
-          address,
-          decimals,
-          symbol,
-          icon: image,
-        } = quoteMeta.quote.destAsset;
         dispatch(
           addToken({
             address,
@@ -296,7 +305,29 @@ export const signBridgeTransaction = (
           }),
         );
       } else {
-        // TODO import the dest chain, then add the dest token
+        const featuredRpc = FEATURED_RPCS.find(
+          (rpc) => rpc.chainId === hexDestChainId,
+        );
+        if (!featuredRpc) {
+          throw new Error('No featured RPC found');
+        }
+
+        const { rpcUrl, nickname, rpcPrefs, ticker } = featuredRpc;
+        dispatch(
+          upsertNetworkConfiguration(
+            {
+              rpcUrl,
+              chainId: hexDestChainId,
+              nickname,
+              rpcPrefs,
+              ticker,
+            },
+            {
+              setActive: false,
+              source: MetaMetricsNetworkEventSource.Bridge,
+            },
+          ),
+        );
       }
     };
 
@@ -307,9 +338,13 @@ export const signBridgeTransaction = (
     }
     await handleBridgeTx(approvalTxId);
 
-    // Add tokens
-    addSourceToken();
-    addDestToken();
+    // Add tokens if not the native gas token
+    if (quoteMeta.quote.srcAsset.address !== DEFAULT_TOKEN_ADDRESS) {
+      addSourceToken();
+    }
+    if (quoteMeta.quote.destAsset.address !== DEFAULT_TOKEN_ADDRESS) {
+      addDestToken();
+    }
 
     // Return user to home screen
     history.push(DEFAULT_ROUTE);
