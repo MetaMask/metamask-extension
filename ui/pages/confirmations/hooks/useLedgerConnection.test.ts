@@ -34,14 +34,17 @@ const updateLedgerHardwareAccounts = (keyrings: KeyringObject[]) => {
     (keyring) => keyring.type === KeyringType.ledger,
   );
 
-  if (ledgerHardwareIndex !== -1) {
-    keyrings[ledgerHardwareIndex].accounts = [MOCK_LEDGER_ACCOUNT];
-  } else {
+  if (ledgerHardwareIndex === -1) {
+    // If 'Ledger Hardware' does not exist, create a new entry
     keyrings.push({
       type: KeyringType.ledger,
       accounts: [MOCK_LEDGER_ACCOUNT],
     });
+  } else {
+    // If 'Ledger Hardware' exists, update its accounts
+    keyrings[ledgerHardwareIndex].accounts = [MOCK_LEDGER_ACCOUNT];
   }
+
   return keyrings;
 };
 
