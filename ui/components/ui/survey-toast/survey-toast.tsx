@@ -1,13 +1,18 @@
+import React, { useEffect, useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import React, { useEffect, useState } from 'react';
-import { Toast } from '../../multichain';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { DAY } from '../../../../shared/constants/time';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   getSelectedInternalAccount,
   getLastViewedUserSurvey,
 } from '../../../selectors';
 import { setLastViewedUserSurvey } from '../../../store/actions';
-import { DAY } from '../../../../shared/constants/time';
+import { Toast } from '../../multichain';
 
 type Survey = {
   url: string;
@@ -19,6 +24,7 @@ type Survey = {
 export function SurveyToast() {
   const [survey, setSurvey] = useState<Survey | null>(null);
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
   const lastViewedUserSurvey = useSelector(getLastViewedUserSurvey);
   const internalAccount = useSelector(getSelectedInternalAccount);
 
@@ -60,16 +66,21 @@ export function SurveyToast() {
     fetchSurvey();
   }, [internalAccount.address, lastViewedUserSurvey, dispatch]);
 
-  if (!survey) {
-    return null;
-  }
-
   function handleActionClick() {
     if (!survey) {
       return;
     }
     window.open(survey.url, '_blank');
     dispatch(setLastViewedUserSurvey(survey.surveyId));
+
+    trackEvent({
+      event: MetaMetricsEventName.SurveyToast,
+      category: MetaMetricsEventCategory.Feedback,
+      properties: {
+        response: 'accept',
+        survey: survey.surveyId,
+      },
+    });
   }
 
   function handleClose() {
@@ -77,6 +88,19 @@ export function SurveyToast() {
       return;
     }
     dispatch(setLastViewedUserSurvey(survey.surveyId));
+
+    trackEvent({
+      event: MetaMetricsEventName.SurveyToast,
+      category: MetaMetricsEventCategory.Feedback,
+      properties: {
+        response: 'deny',
+        survey: survey.surveyId,
+      },
+    });
+  }
+
+  if (!survey) {
+    return null;
   }
 
   return (
