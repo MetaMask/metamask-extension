@@ -57,8 +57,8 @@ export default class Backup {
       },
       addressBook: { ...this.addressBookController.state },
       network: {
-        networkConfigurations:
-          this.networkController.state.networkConfigurations,
+        networkConfigurationsByChainId:
+          this.networkController.state.networkConfigurationsByChainId,
       },
     };
 

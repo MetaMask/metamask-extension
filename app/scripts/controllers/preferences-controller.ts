@@ -84,7 +84,7 @@ export type PreferencesControllerMessenger = RestrictedControllerMessenger<
 >;
 
 type PreferencesControllerOptions = {
-  networkConfigurations?: Record<string, { chainId: Hex }>;
+  networkConfigurationsByChainId?: Record<Hex, { chainId: Hex }>;
   initState?: Partial<PreferencesControllerState>;
   initLangCode?: string;
   messenger: PreferencesControllerMessenger;
@@ -102,6 +102,7 @@ export type Preferences = {
   redesignedConfirmationsEnabled: boolean;
   redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
+  showMultiRpcModal: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
 };
@@ -170,7 +171,7 @@ export default class PreferencesController {
    */
   constructor(opts: PreferencesControllerOptions) {
     const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
-      opts.networkConfigurations ?? {},
+      opts.networkConfigurationsByChainId ?? {},
     ).reduce((acc: Record<Hex, boolean>, element) => {
       acc[element.chainId] = true;
       return acc;
@@ -228,6 +229,7 @@ export default class PreferencesController {
         redesignedConfirmationsEnabled: true,
         redesignedTransactionsEnabled: true,
         featureNotificationsEnabled: false,
+        showMultiRpcModal: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
       },
@@ -521,8 +523,11 @@ export default class PreferencesController {
    */
   addKnownMethodData(fourBytePrefix: string, methodData: string): void {
     const { knownMethodData } = this.store.getState();
-    knownMethodData[fourBytePrefix] = methodData;
-    this.store.updateState({ knownMethodData });
+
+    const updatedKnownMethodData = { ...knownMethodData };
+    updatedKnownMethodData[fourBytePrefix] = methodData;
+
+    this.store.updateState({ knownMethodData: updatedKnownMethodData });
   }
 
   /**
@@ -765,11 +770,16 @@ export default class PreferencesController {
     const addresses = Object.values(accounts).map((account) =>
       account.address.toLowerCase(),
     );
-    Object.keys(identities).forEach((identity) => {
-      if (addresses.includes(identity.toLowerCase())) {
-        lostIdentities[identity] = identities[identity];
-      }
-    });
+
+    const updatedLostIdentities = Object.keys(identities).reduce(
+      (acc, identity) => {
+        if (addresses.includes(identity.toLowerCase())) {
+          acc[identity] = identities[identity];
+        }
+        return acc;
+      },
+      { ...(lostIdentities ?? {}) },
+    );
 
     const updatedIdentities = Object.values(accounts).reduce(
       (identitiesMap: Record<string, AccountIdentityEntry>, account) => {
@@ -786,7 +796,7 @@ export default class PreferencesController {
 
     this.store.updateState({
       identities: updatedIdentities,
-      lostIdentities,
+      lostIdentities: updatedLostIdentities,
       selectedAddress: selectedAccount?.address || '', // it will be an empty string during onboarding
     });
   }

@@ -7,7 +7,6 @@ import {
   WINDOW_TITLES,
 } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
   TestSuiteArguments,
   openDAppWithContract,
@@ -48,8 +47,6 @@ describe('Alert for insufficient funds @no-mmi', function () {
 
         await verifyAlertForInsufficientBalance(driver);
 
-        await scrollAndConfirmAndAssertConfirm(driver);
-
         await verifyConfirmationIsDisabled(driver);
       },
     );
@@ -58,7 +55,7 @@ describe('Alert for insufficient funds @no-mmi', function () {
 
 async function verifyConfirmationIsDisabled(driver: Driver) {
   const confirmButton = await driver.findElement(
-    '[data-testid="confirm-alert-modal-submit-button"]',
+    '[data-testid="confirm-footer-button"]',
   );
   assert.equal(await confirmButton.isEnabled(), false);
 }

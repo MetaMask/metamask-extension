@@ -106,8 +106,7 @@ describe('MultiRpcEditModal', () => {
     });
 
     expect(screen.getByTestId('multi-rpc-edit-modal')).toBeInTheDocument();
-    // TODO: enable with network controller v21 upgrade after `getNetworkConfigurationsByChainId` is implemented
-    // expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
     expect(screen.getByText('supportMultiRpcInformation')).toBeInTheDocument();
   });
 });
