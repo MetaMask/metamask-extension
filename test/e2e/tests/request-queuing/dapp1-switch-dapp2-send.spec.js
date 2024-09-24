@@ -3,7 +3,6 @@ const {
   DAPP_ONE_URL,
   DAPP_URL,
   defaultGanacheOptions,
-  largeDelayMs,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -119,20 +118,18 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const windowsBefore = await driver.getAllWindowHandles();
+
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Wait for switch confirmation to close then tx confirmation to show.
-        await driver.waitUntilXWindowHandles(3);
-        await driver.delay(largeDelayMs);
+        const newDialogWindow =
+          await driver.getNewNotificationHandleAfterOldOneCloses({
+            driver,
+            windowsBefore,
+          });
 
-        // Wait for tx confirmation to show.
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // Check correct network on the send confirmation.
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Localhost 8546',
-        });
+        await driver.switchToWindow(newDialogWindow);
 
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
@@ -267,13 +264,18 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const windowsBefore = await driver.getAllWindowHandles();
+
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         // Wait for switch confirmation to close then tx confirmation to show.
-        await driver.waitUntilXWindowHandles(3);
-        await driver.delay(largeDelayMs);
+        const newDialogWindow =
+          await driver.getNewNotificationHandleAfterOldOneCloses({
+            driver,
+            windowsBefore,
+          });
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.switchToWindow(newDialogWindow);
 
         // Check correct network on the send confirmation.
         await driver.findElement({

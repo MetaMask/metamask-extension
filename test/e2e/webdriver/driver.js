@@ -1090,6 +1090,53 @@ class Driver {
     }
   }
 
+  /**
+   * Waits for a notification to close and a new one to open, handling race conditions.
+   *
+   * @param {object} params - The parameters for the function.
+   * @param {WebDriver} params.driver - The WebDriver instance used to interact with the browser.
+   * @param {Array<string>} params.windowsBefore - The list of window handles before the action to close the notification.
+   * @param {number} [params.maxAttempts] - The maximum number of attempts to find the new window handle.
+   * @param {number} [params.retryDelayMs] - The delay in milliseconds between retry attempts.
+   * @returns {Promise<string>} A promise that resolves to the new window handle.
+   * @throws {Error} If the new window handle is not found after the maximum number of attempts.
+   */
+  async getNewNotificationHandleAfterOldOneCloses({
+    driver,
+    maxAttempts = 5,
+    retryDelayMs = 1500,
+    windowsBefore,
+  }) {
+    let newWindowHandle;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const windowsAfter = await driver.getAllWindowHandles();
+      newWindowHandle = windowsAfter.find(
+        (handle) => !windowsBefore.includes(handle),
+      );
+
+      if (newWindowHandle) {
+        console.log(`New window handle found: ${newWindowHandle}`);
+        break;
+      }
+
+      if (attempt < maxAttempts) {
+        console.log(
+          `New window handle not found, retrying in ${retryDelayMs}ms...`,
+        );
+        await driver.delay(retryDelayMs);
+      }
+    }
+
+    if (!newWindowHandle) {
+      throw new Error(
+        'Failed to identify the new window handle after multiple attempts',
+      );
+    }
+
+    return newWindowHandle;
+  }
+
   // Error handling
 
   async verboseReportOnFailure(title, error) {
