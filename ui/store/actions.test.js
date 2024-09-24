@@ -10,10 +10,10 @@ import enLocale from '../../app/_locales/en/messages.json';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import MetaMaskController from '../../app/scripts/metamask-controller';
-// eslint-disable-next-line import/no-restricted-paths
 import {
   PermissionNames,
   CaveatFactories,
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../app/scripts/controllers/permissions';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
