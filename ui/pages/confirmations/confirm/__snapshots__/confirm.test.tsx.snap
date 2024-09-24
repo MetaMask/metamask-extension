@@ -99,7 +99,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only confirm this message if you approve the content and trust the requesting site.
+            Review request details before you confirm.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -2248,7 +2248,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only confirm this message if you approve the content and trust the requesting site.
+            Review request details before you confirm.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -3766,7 +3766,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only confirm this message if you approve the content and trust the requesting site.
+            Review request details before you confirm.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
