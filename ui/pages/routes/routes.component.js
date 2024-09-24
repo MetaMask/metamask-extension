@@ -37,6 +37,7 @@ import {
   ToastContainer,
   Toast,
 } from '../../components/multichain';
+import { SurveyToast } from '../../components/ui/survey-toast';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
@@ -651,6 +652,7 @@ export default class Routes extends Component {
 
     return (
       <ToastContainer>
+        <SurveyToast />
         {showConnectAccountToast &&
         !this.state.hideConnectAccountToast &&
         isEvmAccount ? (

@@ -3467,6 +3467,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setOnboardingDate:
         appStateController.setOnboardingDate.bind(appStateController),
+      setLastViewedUserSurvey:
+        appStateController.setLastViewedUserSurvey.bind(appStateController),
       setNewPrivacyPolicyToastClickedOrClosed:
         appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
           appStateController,
