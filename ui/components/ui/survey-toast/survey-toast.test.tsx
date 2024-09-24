@@ -25,7 +25,7 @@ const initialState = {
     basicFunctionality: true,
   },
   metamask: {
-    lastViewedUserSurvey: 0,
+    lastViewedUserSurvey: 2,
     useExternalServices: true,
     internalAccounts: {
       selectedAccount: '0x123',
@@ -67,7 +67,7 @@ describe('SurveyToast', () => {
     expect(screen.queryByTestId('survey-toast')).toBeNull();
   });
 
-  it('renders the survey toast if a survey is available', async () => {
+  it('renders nothing if the survey is stale', async () => {
     const survey = {
       url: 'https://example.com',
       description: 'Test Survey',
@@ -75,9 +75,19 @@ describe('SurveyToast', () => {
       surveyId: 1,
     };
     mockFetchWithCache.mockResolvedValue({ surveys: [survey] });
-
     renderComponent();
+    expect(screen.queryByTestId('survey-toast')).toBeNull();
+  });
 
+  it('renders the survey toast if a survey is available', async () => {
+    const survey = {
+      url: 'https://example.com',
+      description: 'Test Survey',
+      cta: 'Take Survey',
+      surveyId: 3,
+    };
+    mockFetchWithCache.mockResolvedValue({ surveys: [survey] });
+    renderComponent();
     await waitFor(() => {
       expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
       expect(screen.getByText('Test Survey')).toBeInTheDocument();
@@ -90,18 +100,14 @@ describe('SurveyToast', () => {
       url: 'https://example.com',
       description: 'Test Survey',
       cta: 'Take Survey',
-      surveyId: 1,
+      surveyId: 3,
     };
     mockFetchWithCache.mockResolvedValue({ surveys: [survey] });
-
     renderComponent();
-
     await waitFor(() => {
       expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
     });
-
     fireEvent.click(screen.getByText('Take Survey'));
-
     expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank');
   });
 });
