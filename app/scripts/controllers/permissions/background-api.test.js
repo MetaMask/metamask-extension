@@ -6,9 +6,15 @@ import { getPermissionBackgroundApiMethods } from './background-api';
 import { CaveatFactories, PermissionNames } from './specifications';
 
 describe('permission background API methods', () => {
-  const getApprovedPermissions = (accounts) => ({
+  const getEthAccountsPermissions = (accounts) => ({
     [RestrictedMethods.eth_accounts]: {
       caveats: [CaveatFactories.restrictReturnedAccounts(accounts)],
+    },
+  });
+
+  const getPermittedChainsPermissions = (chainIds) => ({
+    [PermissionNames.permittedChains]: {
+      caveats: [CaveatFactories.restrictNetworkSwitching(chainIds)],
     },
   });
 
@@ -29,7 +35,7 @@ describe('permission background API methods', () => {
         permissionController.grantPermissionsIncremental,
       ).toHaveBeenCalledWith({
         subject: { origin: 'foo.com' },
-        approvedPermissions: getApprovedPermissions(['0x1']),
+        approvedPermissions: getEthAccountsPermissions(['0x1']),
       });
     });
   });
@@ -51,7 +57,7 @@ describe('permission background API methods', () => {
         permissionController.grantPermissionsIncremental,
       ).toHaveBeenCalledWith({
         subject: { origin: 'foo.com' },
-        approvedPermissions: getApprovedPermissions(['0x1']),
+        approvedPermissions: getEthAccountsPermissions(['0x1']),
       });
     });
 
@@ -71,7 +77,7 @@ describe('permission background API methods', () => {
         permissionController.grantPermissionsIncremental,
       ).toHaveBeenCalledWith({
         subject: { origin: 'foo.com' },
-        approvedPermissions: getApprovedPermissions(['0x1', '0x2']),
+        approvedPermissions: getEthAccountsPermissions(['0x1', '0x2']),
       });
     });
   });
@@ -223,6 +229,71 @@ describe('permission background API methods', () => {
       expect(id).toStrictEqual(
         permissionController.requestPermissions.mock.calls[0][2].id,
       );
+    });
+  });
+
+  describe('addPermittedChain', () => {
+    it('calls grantPermissionsIncremental with expected parameters', () => {
+      const permissionController = {
+        grantPermissionsIncremental: jest.fn(),
+      };
+
+      getPermissionBackgroundApiMethods(permissionController).addPermittedChain(
+        'foo.com',
+        '0x1',
+      );
+
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledWith({
+        subject: { origin: 'foo.com' },
+        approvedPermissions: getPermittedChainsPermissions(['0x1']),
+      });
+    });
+  });
+
+  describe('addPermittedChains', () => {
+    it('calls grantPermissionsIncremental with expected parameters for single chain', () => {
+      const permissionController = {
+        grantPermissionsIncremental: jest.fn(),
+      };
+
+      getPermissionBackgroundApiMethods(
+        permissionController,
+      ).addPermittedChains('foo.com', ['0x1']);
+
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledWith({
+        subject: { origin: 'foo.com' },
+        approvedPermissions: getPermittedChainsPermissions(['0x1']),
+      });
+    });
+
+    it('calls grantPermissionsIncremental with expected parameters with multiple chains', () => {
+      const permissionController = {
+        grantPermissionsIncremental: jest.fn(),
+      };
+
+      getPermissionBackgroundApiMethods(
+        permissionController,
+      ).addPermittedChains('foo.com', ['0x1', '0x2']);
+
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledWith({
+        subject: { origin: 'foo.com' },
+        approvedPermissions: getPermittedChainsPermissions(['0x1', '0x2']),
+      });
     });
   });
 

@@ -21,8 +21,8 @@ import {
   getUpdatedAndSortedAccounts,
 } from '../../../../selectors';
 import {
-  addMorePermittedAccounts,
-  grantPermittedChains,
+  addPermittedAccounts,
+  addPermittedChains,
   removePermissionsFor,
   removePermittedAccount,
   removePermittedChain,
@@ -122,7 +122,7 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    await grantPermittedChains(activeTabOrigin, chainIds);
+    dispatch(addPermittedChains(activeTabOrigin, chainIds));
 
     connectedChainIds.forEach((chainId: string) => {
       if (!chainIds.includes(chainId)) {

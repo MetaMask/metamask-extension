@@ -17,11 +17,20 @@ export function getPermissionBackgroundApiMethods(permissionController) {
     });
   };
 
-  return {
-    addPermittedAccount: (origin, account) => addMoreAccounts(origin, account),
+  const addMoreChains = (origin, chainIds) => {
+    const caveat = CaveatFactories.restrictNetworkSwitching(chainIds);
+
+    permissionController.grantPermissionsIncremental({
+      subject: { origin },
+      approvedPermissions: {
+        [PermissionNames.permittedChains]: { caveats: [caveat] },
+      },
+    });
+  };
 
   return {
-    addPermittedAccount: (origin, account) => addMoreAccounts(origin, [account]),
+    addPermittedAccount: (origin, account) =>
+      addMoreAccounts(origin, [account]),
     addPermittedAccounts: (origin, accounts) =>
       addMoreAccounts(origin, accounts),
 
@@ -55,15 +64,18 @@ export function getPermissionBackgroundApiMethods(permissionController) {
       }
     },
 
-    removePermittedChain: (origin, chain) => {
+    addPermittedChain: (origin, chainId) => addMoreChains(origin, [chainId]),
+    addPermittedChains: (origin, chainIds) => addMoreChains(origin, chainIds),
+
+    removePermittedChain: (origin, chainId) => {
       const { value: existingChains } = permissionController.getCaveat(
         origin,
-        RestrictedMethods.permittedChains,
+        PermissionNames.permittedChains,
         CaveatTypes.restrictNetworkSwitching,
       );
 
       const remainingChains = existingChains.filter(
-        (existingChain) => existingChain !== chain,
+        (existingChain) => existingChain !== chainId,
       );
 
       if (remainingChains.length === existingChains.length) {
@@ -73,12 +85,12 @@ export function getPermissionBackgroundApiMethods(permissionController) {
       if (remainingChains.length === 0) {
         permissionController.revokePermission(
           origin,
-          RestrictedMethods.permittedChains,
+          PermissionNames.permittedChains,
         );
       } else {
         permissionController.updateCaveat(
           origin,
-          RestrictedMethods.permittedChains,
+          PermissionNames.permittedChains,
           CaveatTypes.restrictNetworkSwitching,
           remainingChains,
         );

@@ -106,9 +106,7 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
           <ButtonPrimary
             data-testid="connect-more-accounts-button"
             onClick={() => {
-              dispatch(
-                addPermittedAccounts(activeTabOrigin, selectedAccounts),
-              );
+              dispatch(addPermittedAccounts(activeTabOrigin, selectedAccounts));
               onClose();
               onAccountsUpdate();
             }}
