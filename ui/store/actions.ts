@@ -119,7 +119,10 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
-import { CaveatTypes } from '../../shared/constants/permissions';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+} from '../../shared/constants/permissions';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -5609,9 +5612,12 @@ export async function grantPermittedChain(
     {
       subject: { origin: selectedTabOrigin },
       approvedPermissions: {
-        [PermissionNames.permittedChains]: {
+        [EndowmentTypes.permittedChains]: {
           caveats: [
-            CaveatFactories[CaveatTypes.restrictNetworkSwitching]([chainId]),
+            {
+              type: CaveatTypes.restrictNetworkSwitching,
+              values: [chainId],
+            },
           ],
         },
       },
@@ -5627,9 +5633,12 @@ export async function grantPermittedChains(
     {
       subject: { origin: selectedTabOrigin },
       approvedPermissions: {
-        [PermissionNames.permittedChains]: {
+        [EndowmentTypes.permittedChains]: {
           caveats: [
-            CaveatFactories[CaveatTypes.restrictNetworkSwitching](chainIds),
+            {
+              type: CaveatTypes.restrictNetworkSwitching,
+              values: chainIds,
+            },
           ],
         },
       },
