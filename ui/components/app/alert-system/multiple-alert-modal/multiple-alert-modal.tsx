@@ -162,7 +162,11 @@ export function MultipleAlertModal({
     initialAlertIndex === -1 ? 0 : initialAlertIndex,
   );
 
-  const selectedAlert = alerts[selectedIndex];
+  // If the selected alert is not found, default to the first alert
+  const selectedAlert = alerts[selectedIndex]
+    ? alerts[selectedIndex]
+    : alerts[0];
+
   const hasUnconfirmedAlerts = alerts.some(
     (alert: Alert) =>
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
@@ -207,7 +211,7 @@ export function MultipleAlertModal({
     <AlertModal
       ownerId={ownerId}
       onAcknowledgeClick={handleAcknowledgeClick}
-      alertKey={selectedAlert.key}
+      alertKey={selectedAlert?.key}
       onClose={onClose}
       headerStartAccessory={
         <PageNavigation
