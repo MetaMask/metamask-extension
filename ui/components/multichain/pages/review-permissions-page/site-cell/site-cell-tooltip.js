@@ -49,7 +49,11 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
     <Tooltip
       position="bottom"
       html={
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          data-test-id="site-cell-tooltip"
+        >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             {accounts?.slice(0, TOOLTIP_LIMIT).map((acc) => {
               return (
