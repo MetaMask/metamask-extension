@@ -936,6 +936,7 @@ export default class SwapsController extends BaseController<
       stxBatchStatus: refreshRates.stxBatchStatus * 1000,
       stxStatusDeadline: refreshRates.stxStatusDeadline,
       stxMaxFeeMultiplier: parameters.stxMaxFeeMultiplier,
+      swapsStxStatusDeadline: parameters.stxStatusDeadline,
     };
   }
 
@@ -1062,6 +1063,7 @@ export default class SwapsController extends BaseController<
       stxBatchStatus: number;
       stxStatusDeadline: number;
       stxMaxFeeMultiplier: number;
+      swapsStxStatusDeadline: number;
     } | null = null;
 
     try {

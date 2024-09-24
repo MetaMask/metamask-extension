@@ -89,18 +89,15 @@ const scuttlingConfigBase = {
     extra: '',
     stateHooks: '',
     nw: '',
+    // Sentry Custom Tracing
+    document: '',
+    isNaN: '',
+    parseInt: '',
   },
 };
 
 const mv3ScuttlingConfig = { ...scuttlingConfigBase };
-
-const standardScuttlingConfig = {
-  ...scuttlingConfigBase,
-  'scripts/sentry-install.js': {
-    ...scuttlingConfigBase['scripts/sentry-install.js'],
-    document: '',
-  },
-};
+const standardScuttlingConfig = { ...scuttlingConfigBase };
 
 const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
   callback(),
@@ -1228,6 +1225,7 @@ function renderHtmlFile({
     .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
     .replace('../ui/css/index.scss', './index.css')
     .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js');
+
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

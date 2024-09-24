@@ -53,7 +53,6 @@ const PermitSimulation: React.FC<{
     if (!value) {
       return { tokenValue: null, tokenValueMaxPrecision: null };
     }
-
     const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
     return {

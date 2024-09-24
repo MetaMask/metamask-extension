@@ -98,6 +98,7 @@ export type TransactionMetricsRequest = {
     txhash: string | undefined,
   ) => SmartTransaction;
   getRedesignedTransactionsEnabled: () => boolean;
+  getRedesignedConfirmationsEnabled: () => boolean;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;

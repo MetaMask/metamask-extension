@@ -274,10 +274,10 @@ describe('Contract Interaction Confirmation', () => {
     expect(editGasFeesRow).toHaveTextContent('Estimated fee');
 
     const firstGasField = within(editGasFeesRow).getByTestId('first-gas-field');
-    expect(firstGasField).toHaveTextContent('0.0084 ETH');
+    expect(firstGasField).toHaveTextContent('0.0001 ETH');
     const editGasFeeNativeCurrency =
       within(editGasFeesRow).getByTestId('native-currency');
-    expect(editGasFeeNativeCurrency).toHaveTextContent('$28.50');
+    expect(editGasFeeNativeCurrency).toHaveTextContent('$0.47');
     expect(editGasFeesRow).toContainElement(getByTestId('edit-gas-fee-icon'));
 
     const gasFeeSpeed = within(gasFeesSection).getByTestId(
@@ -369,8 +369,8 @@ describe('Contract Interaction Confirmation', () => {
     const maxFee = getByTestId('gas-fee-details-max-fee');
     expect(gasFeesSection).toContainElement(maxFee);
     expect(maxFee).toHaveTextContent('Max fee');
-    expect(maxFee).toHaveTextContent('0.2313 ETH');
-    expect(maxFee).toHaveTextContent('$787.37');
+    expect(maxFee).toHaveTextContent('0.0023 ETH');
+    expect(maxFee).toHaveTextContent('$7.72');
 
     const nonceSection = getByTestId('advanced-details-nonce-section');
     expect(nonceSection).toBeInTheDocument();

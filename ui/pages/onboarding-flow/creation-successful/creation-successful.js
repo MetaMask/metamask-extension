@@ -36,6 +36,7 @@ export default function CreationSuccessful() {
   const { createSession } = useCreateSession();
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+
   const isSignedIn = useSelector(selectIsSignedIn);
 
   return (

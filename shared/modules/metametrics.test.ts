@@ -43,6 +43,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getMethodData: jest.fn(),
     getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
+    getRedesignedConfirmationsEnabled: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
 };
