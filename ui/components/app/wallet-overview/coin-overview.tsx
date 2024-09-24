@@ -65,6 +65,7 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { setAggregatedBalancePopover } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
@@ -106,7 +107,7 @@ export const CoinOverview = ({
   }
   ///: END:ONLY_INCLUDE_IF
 
-  const t = useContext(I18nContext);
+  const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const trackEvent = useContext(MetaMetricsContext);
@@ -305,25 +306,21 @@ export const CoinOverview = ({
                         </Box>
 
                         <Text variant={TextVariant.bodySm}>
-                          {
-                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                            // @ts-ignore: Expected 0-1 arguments, but got 2.
-                            t('aggregatedBalancePopover', [
-                              <ButtonLink
-                                size={ButtonLinkSize.Inherit}
-                                textProps={{
-                                  variant: TextVariant.bodyMd,
-                                  alignItems: AlignItems.flexStart,
-                                }}
-                                as="a"
-                                href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                                rel="noopener noreferrer"
-                                onClick={handleClick}
-                              >
-                                {t('settings')}
-                              </ButtonLink>,
-                            ])
-                          }
+                          {t('aggregatedBalancePopover', [
+                            <ButtonLink
+                              size={ButtonLinkSize.Inherit}
+                              textProps={{
+                                variant: TextVariant.bodyMd,
+                                alignItems: AlignItems.flexStart,
+                              }}
+                              as="a"
+                              href={`#${showNativeTokenAsMainBalanceRoute.route}`}
+                              rel="noopener noreferrer"
+                              onClick={handleClick}
+                            >
+                              {t('settings')}
+                            </ButtonLink>,
+                          ])}
                         </Text>
                       </Box>
                     </Popover>
