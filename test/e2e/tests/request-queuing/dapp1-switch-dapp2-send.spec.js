@@ -51,9 +51,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
-        await driver.delay(regularDelayMs);
-
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
           text: 'Next',
@@ -61,7 +59,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           css: '[data-testid="page-container-footer-next"]',
         });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
@@ -80,9 +78,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           css: 'p',
         });
 
-        // Wait for the first dapp's connect confirmation to disappear
-        await driver.waitUntilXWindowHandles(2);
-
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
@@ -91,9 +86,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
-        await driver.delay(regularDelayMs);
-
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
           text: 'Next',
@@ -101,7 +94,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           css: '[data-testid="page-container-footer-next"]',
         });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
@@ -125,19 +118,20 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.clickElement('#sendButton');
 
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findClickableElements({
           text: 'Switch network',
           tag: 'button',
         });
 
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        // Switch network and wait for confirmation to close
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Switch network',
+          tag: 'button',
+        });
 
-        // Wait for switch confirmation to close then tx confirmation to show.
-        await driver.waitUntilXWindowHandles(3);
-        await driver.delay(regularDelayMs);
-
-        await switchToNotificationWindow(driver, 4);
+        // Wait for tx confirmation to show.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
         await driver.findElement({
@@ -145,7 +139,10 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           text: 'Localhost 8546',
         });
 
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Confirm',
+          tag: 'button',
+        });
 
         // Switch back to the extension
         await driver.switchToWindowWithTitle(
