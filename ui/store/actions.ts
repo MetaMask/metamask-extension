@@ -1771,14 +1771,14 @@ export function addPermittedAccount(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-export function addMorePermittedAccounts(
+export function addPermittedAccounts(
   origin: string,
   address: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
-        'addMorePermittedAccounts',
+        'addPermittedAccounts',
         [origin, address],
         (error) => {
           if (error) {

@@ -34,7 +34,7 @@ describe('permission background API methods', () => {
     });
   });
 
-  describe('addMorePermittedAccounts', () => {
+  describe('addPermittedAccounts', () => {
     it('calls grantPermissionsIncremental with expected parameters for single account', () => {
       const permissionController = {
         grantPermissionsIncremental: jest.fn(),
@@ -42,7 +42,7 @@ describe('permission background API methods', () => {
 
       getPermissionBackgroundApiMethods(
         permissionController,
-      ).addMorePermittedAccounts('foo.com', ['0x1']);
+      ).addPermittedAccounts('foo.com', ['0x1']);
 
       expect(
         permissionController.grantPermissionsIncremental,
@@ -62,7 +62,7 @@ describe('permission background API methods', () => {
 
       getPermissionBackgroundApiMethods(
         permissionController,
-      ).addMorePermittedAccounts('foo.com', ['0x1', '0x2']);
+      ).addPermittedAccounts('foo.com', ['0x1', '0x2']);
 
       expect(
         permissionController.grantPermissionsIncremental,

@@ -151,7 +151,7 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    dispatch(addMorePermittedAccounts(activeTabOrigin, addresses));
+    dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
     connectedAccountAddresses.forEach((address: string) => {
       if (!addresses.includes(address)) {

@@ -6,10 +6,7 @@ import {
 import { CaveatFactories, PermissionNames } from './specifications';
 
 export function getPermissionBackgroundApiMethods(permissionController) {
-  const addMoreAccounts = (origin, accountOrAccounts) => {
-    const accounts = Array.isArray(accountOrAccounts)
-      ? accountOrAccounts
-      : [accountOrAccounts];
+  const addMoreAccounts = (origin, accounts) => {
     const caveat = CaveatFactories.restrictReturnedAccounts(accounts);
 
     permissionController.grantPermissionsIncremental({
@@ -23,9 +20,11 @@ export function getPermissionBackgroundApiMethods(permissionController) {
   return {
     addPermittedAccount: (origin, account) => addMoreAccounts(origin, account),
 
-    // To add more than one account when already connected to the dapp
-    addMorePermittedAccounts: (origin, accounts) =>
+  return {
+    addPermittedAccount: (origin, account) => addMoreAccounts(origin, [account]),
+    addPermittedAccounts: (origin, accounts) =>
       addMoreAccounts(origin, accounts),
+
     removePermittedAccount: (origin, account) => {
       const { value: existingAccounts } = permissionController.getCaveat(
         origin,
