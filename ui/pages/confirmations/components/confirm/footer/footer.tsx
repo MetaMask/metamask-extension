@@ -1,6 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { TransactionMeta } from '@metamask/transaction-controller';
-///: END:ONLY_INCLUDE_IF
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,6 +17,7 @@ import {
 } from '../../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
+import { getNoteToTraderMessage } from '../../../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
 import useAlerts from '../../../../../hooks/useAlerts';
 import {
@@ -123,6 +122,7 @@ const Footer = () => {
   const { from } = getConfirmationSender(currentConfirmation);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const noteToTraderMessage = useSelector(getNoteToTraderMessage);
   const { mmiOnTransactionCallback, mmiOnSignCallback, mmiSubmitDisabled } =
     useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
@@ -172,7 +172,6 @@ const Footer = () => {
       (type) => type === currentConfirmation?.type,
     );
     if (isTransactionConfirmation) {
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
         customNonceValue
           ? {
@@ -184,10 +183,9 @@ const Footer = () => {
       const updatedTx = mergeTxDataWithNonce(
         currentConfirmation as TransactionMeta,
       );
-      ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiOnTransactionCallback();
+      mmiOnTransactionCallback(updatedTx, noteToTraderMessage);
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -202,7 +200,13 @@ const Footer = () => {
     }
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
-  }, [currentConfirmation, customNonceValue]);
+  }, [
+    currentConfirmation,
+    customNonceValue,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    noteToTraderMessage,
+    ///: END:ONLY_INCLUDE_IF
+  ]);
 
   const onFooterCancel = useCallback(() => {
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
