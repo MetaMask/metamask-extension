@@ -133,7 +133,7 @@ export const CoinOverview = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
+  const { totalFiatBalance, loading } = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,
   );
@@ -243,7 +243,7 @@ export const CoinOverview = ({
         >
           <div className={`${classPrefix}-overview__balance`}>
             <div className={`${classPrefix}-overview__primary-container`}>
-              {balanceToDisplay ? (
+              {balanceToDisplay && !loading ? (
                 <>
                   <Box onMouseEnter={handleMouseEnter} ref={setBoxRef}>
                     <UserPreferencedCurrencyDisplay
