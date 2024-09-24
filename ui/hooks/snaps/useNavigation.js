@@ -1,4 +1,5 @@
 import { useHistory } from 'react-router-dom';
+import { parseMetaMaskUrl } from '@metamask/snaps-utils';
 import { getSnapRoute } from '../../helpers/utils/util';
 
 const useNavigation = () => {
