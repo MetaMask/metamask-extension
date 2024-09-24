@@ -37,7 +37,7 @@ exports[`ConnectPage should render correctly 1`] = `
       >
         <button
           class="mm-box multichain-connection-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
-          data-testid="connection-list-item"
+          data-testid="site-cell-connection-list-item"
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -117,7 +117,7 @@ exports[`ConnectPage should render correctly 1`] = `
         </button>
         <button
           class="mm-box multichain-connection-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
-          data-testid="connection-list-item"
+          data-testid="site-cell-connection-list-item"
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"

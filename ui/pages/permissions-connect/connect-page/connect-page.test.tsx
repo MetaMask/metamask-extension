@@ -49,4 +49,29 @@ describe('ConnectPage', () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
   });
+
+  it('should render title correctly', () => {
+    const { getByText } = render();
+    expect(getByText('Connect with MetaMask')).toBeDefined();
+  });
+
+  it('should render account connectionListItem', () => {
+    const { getByText } = render();
+    expect(
+      getByText('See your accounts and suggest transactions'),
+    ).toBeDefined();
+  });
+
+  it('should render network connectionListItem', () => {
+    const { getByText } = render();
+    expect(getByText('Use your enabled networks')).toBeDefined();
+  });
+
+  it('should render confirm and cancel button', () => {
+    const { getByText } = render();
+    const confirmButton = getByText('Confirm');
+    const cancelButton = getByText('Cancel');
+    expect(confirmButton).toBeDefined();
+    expect(cancelButton).toBeDefined();
+  });
 });
