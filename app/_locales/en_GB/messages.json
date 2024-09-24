@@ -1036,9 +1036,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
   },
-  "confirmTitleDescSignature": {
-    "message": "Only confirm this message if you approve the content and trust the requesting site."
-  },
   "confirmTitlePermitTokens": {
     "message": "Spending cap request"
   },
