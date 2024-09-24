@@ -1,6 +1,9 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+import {
+  NetworkState,
+  getCurrentChainId,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../ui/selectors/networks'; // TODO: Migrate shared selectors to this file.
 import { getNetworkNameByChainId } from '../feature-flags';
 
 type FeatureFlagsMetaMaskState = {
@@ -21,7 +24,9 @@ type FeatureFlagsMetaMaskState = {
   };
 };
 
-export function getFeatureFlagsByChainId(state: FeatureFlagsMetaMaskState) {
+export function getFeatureFlagsByChainId(
+  state: NetworkState & FeatureFlagsMetaMaskState,
+) {
   const chainId = getCurrentChainId(state);
   const networkName = getNetworkNameByChainId(chainId);
   const featureFlags = state.metamask.swapsState?.swapsFeatureFlags;

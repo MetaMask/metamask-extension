@@ -12,8 +12,7 @@ import {
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
-import { getProviderConfig } from './networks';
-import { getCurrentChainId } from './selectors';
+import { getProviderConfig, getCurrentChainId } from './networks';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import {
