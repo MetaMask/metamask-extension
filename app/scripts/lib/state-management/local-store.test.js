@@ -1,3 +1,4 @@
+import log from 'loglevel';
 import LocalStore from './local-store';
 
 const mockIDBRequest = (result, isError) => {
@@ -35,6 +36,9 @@ const createEmptySetup = () =>
     ),
   });
 
+const MOCK_STATE = { appState: { test: true } };
+const MOCK_VERSION_DATA = { version: 74 };
+
 describe('LocalStore', () => {
   let setup;
   beforeEach(() => {
@@ -45,9 +49,7 @@ describe('LocalStore', () => {
           mockIDBRequest({
             transaction: jest.fn(() => ({
               objectStore: jest.fn(() => ({
-                get: jest.fn(() =>
-                  mockIDBRequest({ appState: { test: true } }),
-                ),
+                get: jest.fn(() => mockIDBRequest(MOCK_STATE)),
                 put: jest.fn(() => mockIDBRequest({})),
               })),
             })),
@@ -75,9 +77,31 @@ describe('LocalStore', () => {
     });
   });
 
+  describe('_getObjectStore', () => {
+    it('should reinitialize IndexedDB and return the object store when INVALID_STATE_ERROR occurs', async () => {
+      const localStore = setup();
+
+      // Mock initial failure with INVALID_STATE_ERROR
+      const error = new Error('Mock InvalidStateError');
+      error.name = 'InvalidStateError';
+      localStore.dbReady = Promise.reject(error);
+
+      // Mock the _init function to resolve successfully after reinitialization
+      const mockDb = {
+        transaction: jest.fn(() => ({
+          objectStore: jest.fn(() => MOCK_STATE),
+        })),
+      };
+      jest.spyOn(localStore, '_init').mockResolvedValueOnce(mockDb);
+      const objectStore = await localStore._getObjectStore('readonly');
+      expect(localStore._init).toHaveBeenCalled();
+      expect(objectStore).toStrictEqual(MOCK_STATE);
+    });
+  });
+
   describe('setMetadata', () => {
     it('should set the metadata property on LocalStore', () => {
-      const metadata = { version: 74 };
+      const metadata = MOCK_VERSION_DATA;
       const localStore = setup();
       localStore.setMetadata(metadata);
 
@@ -95,26 +119,69 @@ describe('LocalStore', () => {
 
     it('should throw an error if passed a valid argument but metadata has not yet been set', async () => {
       const localStore = setup();
-      await expect(() =>
-        localStore.set({ appState: { test: true } }),
-      ).rejects.toThrow(
+      await expect(() => localStore.set(MOCK_STATE)).rejects.toThrow(
         'MetaMask - metadata must be set on instance of ExtensionStore before calling "set"',
       );
     });
 
     it('should not throw if passed a valid argument and metadata has been set', async () => {
       const localStore = setup();
-      localStore.setMetadata({ version: 74 });
+      localStore.setMetadata(MOCK_VERSION_DATA);
       await expect(async () => {
-        await localStore.set({ appState: { test: true } });
+        await localStore.set(MOCK_STATE);
       }).not.toThrow();
     });
 
     it('should set isExtensionInitialized if data is set with no error', async () => {
       const localStore = setup();
-      localStore.setMetadata({ version: 74 });
-      await localStore.set({ appState: { test: true } });
+      localStore.setMetadata(MOCK_VERSION_DATA);
+      await localStore.set(MOCK_STATE);
       expect(localStore.isExtensionInitialized).toBeTruthy();
+    });
+
+    it('should fallback to in-memory cache if IndexedDB is not available', async () => {
+      const localStore = setup();
+      localStore.setMetadata(MOCK_VERSION_DATA);
+      jest.spyOn(localStore, '_writeToDB').mockImplementationOnce(() => {
+        const error = new Error('Mock error');
+        error.name = 'InvalidStateError';
+        throw error;
+      });
+
+      await localStore.set({ appState: { test: true } });
+      expect(localStore.inMemoryCache).toStrictEqual({
+        id: 'metamaskState',
+        data: MOCK_STATE,
+        meta: MOCK_VERSION_DATA,
+      });
+    });
+
+    it('should handle IndexedDB error and log the error', async () => {
+      const localStore = setup();
+      localStore.setMetadata(MOCK_VERSION_DATA);
+      const logSpy = jest
+        .spyOn(log, 'error')
+        .mockImplementation(() => undefined);
+      jest
+        .spyOn(localStore, '_writeToDB')
+        .mockRejectedValueOnce(new Error('Mock error'));
+
+      await localStore.set(MOCK_STATE);
+      expect(logSpy).toHaveBeenCalledWith(
+        'Error setting state in IndexedDB:',
+        expect.any(Error),
+      );
+    });
+
+    it('should set dataPersistenceFailing to true when IndexedDB fails', async () => {
+      const localStore = setup();
+      localStore.setMetadata(MOCK_VERSION_DATA);
+      jest
+        .spyOn(localStore, '_writeToDB')
+        .mockRejectedValueOnce(new Error('InvalidStateError'));
+
+      await localStore.set(MOCK_STATE);
+      expect(localStore.dataPersistenceFailing).toBe(true);
     });
   });
 
@@ -135,9 +202,7 @@ describe('LocalStore', () => {
 
       await localStore.get();
 
-      expect(localStore.mostRecentRetrievedState).toStrictEqual({
-        appState: { test: true },
-      });
+      expect(localStore.mostRecentRetrievedState).toStrictEqual(MOCK_STATE);
     });
 
     it('should reset mostRecentRetrievedState to null if storage is empty', async () => {
@@ -153,10 +218,23 @@ describe('LocalStore', () => {
 
     it('should set mostRecentRetrievedState to current state if isExtensionInitialized is true', async () => {
       const localStore = setup();
-      localStore.setMetadata({ version: 74 });
-      await localStore.set({ appState: { test: true } });
+      localStore.setMetadata(MOCK_VERSION_DATA);
+      await localStore.set(MOCK_STATE);
       await localStore.get();
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+    });
+
+    it('should fallback to in-memory cache if IndexedDB is not available', async () => {
+      const localStore = setup();
+      jest.spyOn(localStore, '_readFromDB').mockResolvedValueOnce(null);
+      // Set the in-memory cache
+      localStore.inMemoryCache = {
+        id: 'metamaskState',
+        data: MOCK_STATE,
+        meta: MOCK_VERSION_DATA,
+      };
+      const result = await localStore.get();
+      expect(result).toStrictEqual(localStore.inMemoryCache);
     });
   });
 

@@ -48,6 +48,9 @@ enum TransactionMode {
   READ_WRITE = 'readwrite',
 }
 
+enum DatabaseError {
+  INVALID_STATE_ERROR = 'InvalidStateError', // happens when changing the database schema (e.g., delete an object store) and then try to access the deleted store in an existing connection,
+}
 /**
  * A wrapper around the extension's storage using IndexedDB API.
  */
@@ -64,6 +67,10 @@ export default class ExtensionStore {
 
   private isExtensionInitialized: boolean;
 
+  private dbReady: Promise<IDBDatabase>;
+
+  private inMemoryCache: Record<string, unknown> | null = null;
+
   /**
    * Creates an instance of the ExtensionStore.
    *
@@ -77,7 +84,7 @@ export default class ExtensionStore {
     this.mostRecentRetrievedState = null;
     this.isExtensionInitialized = false;
     this.metadata = null;
-    this._init();
+    this.dbReady = this._init();
   }
 
   /**
@@ -85,19 +92,27 @@ export default class ExtensionStore {
    *
    * @private
    */
-  private _init() {
-    const request = indexedDB.open(this.storeName, this.dbVersion);
+  private _init(): Promise<IDBDatabase> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.storeName, this.dbVersion);
 
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains(this.storeName)) {
-        db.createObjectStore(this.storeName, { keyPath: 'id' });
-      }
-    };
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          db.createObjectStore(this.storeName, { keyPath: 'id' });
+        }
+      };
 
-    request.onerror = () => {
-      log.error('IndexedDB not supported or initialization failed.');
-    };
+      request.onerror = () => {
+        log.error('IndexedDB initialization failed.');
+        reject(new Error('Failed to open IndexedDB.'));
+      };
+
+      request.onsuccess = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        resolve(db);
+      };
+    });
   }
 
   /**
@@ -107,23 +122,31 @@ export default class ExtensionStore {
    * @returns A promise that resolves to the object store.
    * @private
    */
-  private _getObjectStore(
+  private async _getObjectStore(
     mode: IDBTransactionMode = TransactionMode.READ_ONLY,
   ): Promise<IDBObjectStore> {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.storeName, this.dbVersion);
-
-      request.onerror = () => {
-        reject(new Error('Failed to open IndexedDB.'));
-      };
-
-      request.onsuccess = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+    try {
+      const db = await this.dbReady; // Wait for the DB to be ready
+      const transaction = db.transaction([this.storeName], mode);
+      return transaction.objectStore(this.storeName);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.name === DatabaseError.INVALID_STATE_ERROR
+      ) {
+        // Handle the case where the connection is closing
+        log.info(
+          'Database connection was closed. Attempting to reinitialize IndexedDB.',
+          error,
+        );
+        // Re-initialize the database connection
+        this.dbReady = this._init();
+        const db = await this.dbReady;
         const transaction = db.transaction([this.storeName], mode);
-        const objectStore = transaction.objectStore(this.storeName);
-        resolve(objectStore);
-      };
-    });
+        return transaction.objectStore(this.storeName);
+      }
+      throw error; // Re-throw any other errors
+    }
   }
 
   /**
@@ -156,10 +179,28 @@ export default class ExtensionStore {
     try {
       const dataToStore = { id: STATE_KEY, data: state, meta: this.metadata };
       await this._writeToDB(dataToStore);
+      // Cache in memory for fallback
+      this.inMemoryCache = dataToStore;
       if (this.dataPersistenceFailing) {
         this.dataPersistenceFailing = false;
       }
     } catch (err) {
+      // When indexDB is deleted manually and we want to recover the previous recently saved state
+      if (
+        err instanceof Error &&
+        err.name === DatabaseError.INVALID_STATE_ERROR
+      ) {
+        log.info(
+          'IndexedDB is not available. Falling back to in-memory cache.',
+        );
+        this.inMemoryCache = {
+          id: STATE_KEY,
+          data: state,
+          meta: this.metadata,
+        };
+        this.mostRecentRetrievedState = this.inMemoryCache;
+      }
+
       if (!this.dataPersistenceFailing) {
         this.dataPersistenceFailing = true;
         captureException(err);
@@ -177,15 +218,29 @@ export default class ExtensionStore {
    */
   async get(): Promise<Record<string, unknown> | undefined> {
     try {
+      // Attempt to get state from IndexedDB
       const result = await this._readFromDB(STATE_KEY);
-      if (!result || this.isEmpty(result)) {
-        this.mostRecentRetrievedState = null;
-        return undefined;
+
+      if (result && !this.isEmpty(result)) {
+        if (!this.isExtensionInitialized) {
+          this.mostRecentRetrievedState = result;
+        }
+        return result;
       }
-      if (!this.isExtensionInitialized) {
-        this.mostRecentRetrievedState = result;
+
+      // If IndexedDB is empty, clear mostRecentRetrievedState
+      this.mostRecentRetrievedState = null;
+
+      // Fallback to in-memory cache if IndexedDB is empty
+      if (this.inMemoryCache) {
+        log.info('Loaded state from in-memory cache fallback.');
+
+        // Set mostRecentRetrievedState to the in-memory cached state
+        this.mostRecentRetrievedState = this.inMemoryCache;
+        return this.inMemoryCache;
       }
-      return result;
+      // Return undefined if neither storage contains the state
+      return undefined;
     } catch (err) {
       log.error('Error getting state from IndexedDB:', err);
       return undefined;
