@@ -1752,8 +1752,8 @@ export function setSelectedAccount(
 
 export function addPermittedAccount(
   origin: string,
-  address: [],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  address: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -1774,7 +1774,7 @@ export function addPermittedAccount(
 export function addPermittedAccounts(
   origin: string,
   address: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -1796,7 +1796,7 @@ export function addPermittedAccounts(
 export function removePermittedAccount(
   origin: string,
   address: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -1818,7 +1818,7 @@ export function removePermittedAccount(
 export function addPermittedChain(
   origin: string,
   chainId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod('addPermittedChain', [origin, chainId], (error) => {
@@ -1835,7 +1835,7 @@ export function addPermittedChain(
 export function addPermittedChains(
   origin: string,
   chainIds: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -1856,17 +1856,21 @@ export function addPermittedChains(
 
 export function removePermittedChain(
   origin: string,
-  chain: string,
+  chainId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('removePermittedChain', [origin, chain], (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve();
-      });
+      callBackgroundMethod(
+        'removePermittedChain',
+        [origin, chainId],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
     });
     await forceUpdateMetamaskState(dispatch);
   };
