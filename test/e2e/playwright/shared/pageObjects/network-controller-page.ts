@@ -119,7 +119,7 @@ export class NetworkController {
   }
 
   async waitForNetworkToSwitch(networkName: string) {
-    await this.page.waitForTimeout(3000)
+    await this.page.waitForTimeout(3000);
     await this.page.waitForSelector(`button:has-text("${networkName}")`);
   }
 }

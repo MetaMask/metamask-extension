@@ -27,7 +27,7 @@ const testSet = [
     source: 'ETH',
     type: 'native',
     destination: 'USDC',
-    network: Tenderly.Abritrum,
+    network: Tenderly.Optimism,
   },
   {
     quantity: '.3',
@@ -88,11 +88,10 @@ test.beforeAll(
     activityListPage = new ActivityListPage(page);
     walletPage = new WalletPage(page);
 
-    // await networkController.addCustomNetwork(Tenderly.Optimism, false);
-    // await networkController.addCustomNetwork(Tenderly.Abritrum, false);
-    // await networkController.addCustomNetwork(Tenderly.Mainnet, true);
-    await networkController.addCustomNetwork(Tenderly.Mainnet);
+    await networkController.addCustomNetwork(Tenderly.Optimism);
     await networkController.addCustomNetwork(Tenderly.Abritrum);
+    await networkController.addCustomNetwork(Tenderly.Mainnet);
+
     await walletPage.importAccount(wallet.privateKey);
   },
 );
@@ -115,6 +114,11 @@ testSet.forEach((options) => {
       });
     } else {
       await swapPage.gotBack();
+      // eslint-disable-next-line no-console
+      console.error(
+        `\t\tERROR: No quotes found on ${options.network.name} network' Skipping the test`,
+      );
+      test.skip();
     }
   });
 });
