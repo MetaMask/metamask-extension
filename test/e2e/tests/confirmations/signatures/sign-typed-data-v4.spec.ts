@@ -45,26 +45,30 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
+
+        await assertInfoValues(driver);
+        await scrollAndConfirmAndAssertConfirm(driver);
+        await driver.delay(1000);
+
         await assertAccountDetailsMetrics(
           driver,
           mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
         );
 
-        await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
-
         await assertSignatureConfirmedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Mail',
+          withAnonEvents: true,
         });
 
         await assertVerifiedResults(driver, publicAddress);
       },
-      mockSignatureApproved,
+      async (mockServer) => {
+        return await mockSignatureApproved(mockServer, true);
+      },
     );
   });
 
@@ -102,7 +106,9 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         });
         assert.ok(rejectionResult);
       },
-      mockSignatureRejected,
+      async (mockServer) => {
+        return await mockSignatureRejected(mockServer, true);
+      },
     );
   });
 });
