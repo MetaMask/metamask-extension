@@ -86,7 +86,8 @@ export class NetworkController {
       await this.networkChainId.fill(options.chainID);
     }
     await this.networkTicker.fill(options.symbol);
-    await this.saveBtn.click();
+    await this.saveBtn.waitFor({ state: 'visible' });
+    await this.saveBtn.click({ timeout: 60000 });
   }
 
   async addPopularNetwork(options: { networkName: string }) {

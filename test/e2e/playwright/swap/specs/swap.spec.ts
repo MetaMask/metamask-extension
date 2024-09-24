@@ -23,13 +23,6 @@ const testSet = [
     network: Tenderly.Mainnet,
   },
   {
-    quantity: '.5',
-    source: 'ETH',
-    type: 'native',
-    destination: 'USDC',
-    network: Tenderly.Optimism,
-  },
-  {
     quantity: '.3',
     source: 'ETH',
     type: 'native',
@@ -77,7 +70,6 @@ test.beforeAll(
     const wallet = ethers.Wallet.createRandom();
 
     await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
-    await addFundsToAccount(Tenderly.Optimism.url, wallet.address);
     await addFundsToAccount(Tenderly.Abritrum.url, wallet.address);
 
     const signUp = new SignUpPage(page);
@@ -88,7 +80,6 @@ test.beforeAll(
     activityListPage = new ActivityListPage(page);
     walletPage = new WalletPage(page);
 
-    await networkController.addCustomNetwork(Tenderly.Optimism);
     await networkController.addCustomNetwork(Tenderly.Abritrum);
     await networkController.addCustomNetwork(Tenderly.Mainnet);
 
