@@ -3,9 +3,9 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { SurveyToast } from './survey-toast';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { SurveyToast } from './survey-toast';
 
 jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
   __esModule: true,
