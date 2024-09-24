@@ -951,6 +951,7 @@ export enum MetaMetricsNetworkEventSource {
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
   NewAddNetworkFlow = 'new_add_network_flow',
+  Bridge = 'bridge',
 }
 
 export enum MetaMetricsSwapsEventSource {
