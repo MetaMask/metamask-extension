@@ -2,14 +2,18 @@ const {
   WALLET_SNAP_PERMISSION_KEY,
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
-const { merge } = require('lodash');
+const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const { mockNetworkState } = require('../stub/networks');
+const { mockNetworkStateOld } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
-const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
+const {
+  DAPP_URL,
+  DAPP_ONE_URL,
+  DEFAULT_FIXTURE_ACCOUNT,
+  ERC_4337_ACCOUNT,
+} = require('./constants');
 const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
@@ -40,7 +44,7 @@ function onboardingFixture() {
         },
       },
       NetworkController: {
-        ...mockNetworkState({
+        ...mockNetworkStateOld({
           id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
@@ -51,7 +55,7 @@ function onboardingFixture() {
         providerConfig: { id: 'networkConfigurationId' },
       },
       PreferencesController: {
-        advancedGasFee: null,
+        advancedGasFee: {},
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
         featureFlags: {},
@@ -70,6 +74,7 @@ function onboardingFixture() {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
+          showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
         },
@@ -107,6 +112,7 @@ function onboardingFixture() {
         ignoredTokens: [],
         tokens: [],
       },
+      TransactionController: {},
       config: {},
       firstTimeInfo: {
         date: 1665507600000,
@@ -251,37 +257,29 @@ class FixtureBuilder {
   }
 
   withNetworkControllerDoubleGanache() {
-    const ganacheNetworks = mockNetworkState(
-      {
-        chainId: CHAIN_IDS.LOCALHOST,
-        nickname: 'Localhost 8545',
-        rpcUrl: 'http://localhost:8545',
-        ticker: 'ETH',
-      },
-      {
-        id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-        rpcUrl: 'http://localhost:8546',
-        chainId: '0x53a',
-        ticker: 'ETH',
-        nickname: 'Localhost 8546',
-      },
-    );
+    const ganacheNetworks = mockNetworkStateOld({
+      id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+      rpcUrl: 'http://localhost:8546',
+      chainId: '0x53a',
+      ticker: 'ETH',
+      nickname: 'Localhost 8546',
+    });
     delete ganacheNetworks.selectedNetworkClientId;
     return this.withNetworkController(ganacheNetworks);
   }
 
   withNetworkControllerTripleGanache() {
     this.withNetworkControllerDoubleGanache();
-    merge(
-      this.fixture.data.NetworkController,
-      mockNetworkState({
-        rpcUrl: 'http://localhost:7777',
-        chainId: '0x3e8',
-        ticker: 'ETH',
-        nickname: 'Localhost 7777',
-        blockExplorerUrl: undefined,
-      }),
-    );
+    const thirdGanache = mockNetworkStateOld({
+      rpcUrl: 'http://localhost:7777',
+      chainId: '0x3e8',
+      ticker: 'ETH',
+      nickname: 'Localhost 7777',
+      blockExplorerUrl: undefined,
+    });
+
+    delete thirdGanache.selectedNetworkClientId;
+    merge(this.fixture.data.NetworkController, thirdGanache);
     return this;
   }
 
@@ -361,6 +359,20 @@ class FixtureBuilder {
     });
   }
 
+  withNotificationServicesController(data) {
+    mergeWith(
+      this.fixture.data.NotificationServicesController,
+      data,
+      (objValue, srcValue) => {
+        if (Array.isArray(objValue)) {
+          objValue.concat(srcValue);
+        }
+        return undefined;
+      },
+    );
+    return this;
+  }
+
   withOnboardingController(data) {
     merge(this.fixture.data.OnboardingController, data);
     return this;
@@ -384,7 +396,11 @@ class FixtureBuilder {
     return this;
   }
 
-  withPermissionControllerConnectedToTestDapp(restrictReturnedAccounts = true) {
+  withPermissionControllerConnectedToTestDapp({
+    restrictReturnedAccounts = true,
+    account = '',
+  } = {}) {
+    const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     let subjects = {};
     if (restrictReturnedAccounts) {
       subjects = {
@@ -402,7 +418,7 @@ class FixtureBuilder {
                         methods: [],
                         notifications: [],
                         accounts: [
-                          `eip155:1:${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}`,
+                          `eip155:1:${selectedAccount.toLowerCase()}`,
                           'eip155:1:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                           `eip155:1:${ERC_4337_ACCOUNT.toLowerCase()}`,
                         ],

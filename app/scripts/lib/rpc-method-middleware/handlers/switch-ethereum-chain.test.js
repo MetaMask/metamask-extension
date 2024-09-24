@@ -18,22 +18,30 @@ const mockRequestUserApproval = ({ requestData }) => {
 };
 
 const createMockMainnetConfiguration = () => ({
-  id: 123,
   chainId: CHAIN_IDS.MAINNET,
-  type: NETWORK_TYPES.MAINNET,
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: NETWORK_TYPES.MAINNET,
+    },
+  ],
 });
 
 const createMockLineaMainnetConfiguration = () => ({
-  id: 1234,
   chainId: CHAIN_IDS.LINEA_MAINNET,
-  type: NETWORK_TYPES.LINEA_MAINNET,
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: NETWORK_TYPES.LINEA_MAINNET,
+    },
+  ],
 });
 
 const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const mocks = {
-    findNetworkConfigurationBy: jest
+    getNetworkConfigurationByChainId: jest
       .fn()
       .mockReturnValue(createMockMainnetConfiguration()),
     setActiveNetwork: jest.fn(),
@@ -80,7 +88,7 @@ describe('switchEthereumChainHandler', () => {
   it('throws an error if unable to find a network matching the chainId in the params', async () => {
     const { mocks, end, handler } = createMockedHandler();
     mocks.getCurrentChainIdForDomain.mockReturnValue('0x1');
-    mocks.findNetworkConfigurationBy.mockReturnValue({});
+    mocks.getNetworkConfigurationByChainId.mockReturnValue(undefined);
 
     await handler({
       origin: 'example.com',
@@ -102,7 +110,7 @@ describe('switchEthereumChainHandler', () => {
 
   it('tries to switch the network', async () => {
     const { mocks, end, handler } = createMockedHandler();
-    mocks.findNetworkConfigurationBy
+    mocks.getNetworkConfigurationByChainId
       .mockReturnValueOnce(createMockMainnetConfiguration())
       .mockReturnValueOnce(createMockLineaMainnetConfiguration());
     await handler({
@@ -123,7 +131,7 @@ describe('switchEthereumChainHandler', () => {
         fromNetworkConfiguration: createMockLineaMainnetConfiguration(),
         toNetworkConfiguration: createMockMainnetConfiguration(),
       },
-      createMockMainnetConfiguration().id,
+      'mainnet',
       null,
       {
         setActiveNetwork: mocks.setActiveNetwork,

@@ -1,7 +1,7 @@
 import { CaipAccountId, Hex } from '@metamask/utils';
 import {
-  NetworkClientId,
   NetworkController,
+  RpcEndpointType,
 } from '@metamask/network-controller';
 import { ScopesObject } from '../scope';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
@@ -19,17 +19,15 @@ export const assignAccountsToScopes = (
   });
 };
 
-export const validateAndUpsertEip3085 = async ({
+export const validateAndAddEip3085 = async ({
   eip3085Params,
-  origin,
-  upsertNetworkConfiguration,
+  addNetwork,
   findNetworkClientIdByChainId,
 }: {
   eip3085Params: unknown;
-  origin: string;
-  upsertNetworkConfiguration: NetworkController['upsertNetworkConfiguration'];
+  addNetwork: NetworkController['addNetwork'];
   findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
-}): Promise<undefined | NetworkClientId> => {
+}): Promise<undefined | Hex> => {
   const validParams = validateAddEthereumChainParams(eip3085Params);
 
   const {
@@ -47,14 +45,23 @@ export const validateAndUpsertEip3085 = async ({
     // noop
   }
 
-  return upsertNetworkConfiguration(
-    {
-      chainId: chainId as Hex,
-      rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-      nickname: chainName,
-      rpcUrl: firstValidRPCUrl,
-      ticker,
-    },
-    { source: 'dapp', referrer: origin },
-  );
+  const networkConfiguration = await addNetwork({
+    blockExplorerUrls: firstValidBlockExplorerUrl
+      ? [firstValidBlockExplorerUrl]
+      : [],
+    defaultBlockExplorerUrlIndex: firstValidBlockExplorerUrl ? 0 : undefined,
+    chainId: chainId as Hex,
+    defaultRpcEndpointIndex: 0,
+    name: chainName,
+    nativeCurrency: ticker,
+    rpcEndpoints: [
+      {
+        url: firstValidRPCUrl,
+        name: chainName,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+  });
+
+  return networkConfiguration.chainId;
 };

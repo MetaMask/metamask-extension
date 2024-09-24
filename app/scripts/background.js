@@ -53,6 +53,8 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -77,7 +79,7 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { generateSkipOnboardingState } from './skip-onboarding';
+import { generateWalletState } from './fixtures/generate-wallet-state';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
@@ -559,15 +561,15 @@ export async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({
     migrations,
-    defaultVersion: process.env.SKIP_ONBOARDING
+    defaultVersion: process.env.WITH_STATE
       ? FIXTURE_STATE_METADATA_VERSION
       : null,
   });
   migrator.on('error', console.warn);
 
-  if (process.env.SKIP_ONBOARDING) {
-    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
-    firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  if (process.env.WITH_STATE) {
+    const stateOverrides = await generateWalletState();
+    firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
   // read from disk

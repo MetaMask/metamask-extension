@@ -371,9 +371,6 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteNetwork": {
-    "message": "I-delete ang Network?"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -444,9 +441,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "Nagbalik ang endpoint ng ibang chain ID: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "ensRegistrationError": {
-    "message": "Nagka-error sa pag-register ng ENS name"
   },
   "enterMaxSpendLimit": {
     "message": "Ilagay ang Max na Limitasyon sa Paggastos"
@@ -670,12 +664,6 @@
   "invalidAddressRecipient": {
     "message": "Hindi valid ang address ng tatanggap"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Hindi ETH network, itakda sa maliliit na letra"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Invalid na URL ng Block Explorer"
-  },
   "invalidChainIdTooBig": {
     "message": "Invalid na chain ID. Masyadong malaki ang chain ID."
   },
@@ -838,9 +826,6 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "Ginagamit ang chain ID sa paglagda ng mga transaksyon. Dapat itong tumugma sa chain ID na ibinalik ng network. Puwede kang maglagay ng decimal o '0x'-prefixed hexadecimal number, pero ipapakita namin ang numero sa decimal."
-  },
   "networkURL": {
     "message": "URL ng Network"
   },
@@ -878,9 +863,6 @@
   },
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
-  },
-  "noAddressForName": {
-    "message": "Walang naitakdang address para sa pangalang ito."
   },
   "noConversionRateAvailable": {
     "message": "Hindi Available ang Rate ng Conversion"
@@ -923,9 +905,6 @@
   },
   "on": {
     "message": "Naka-on"
-  },
-  "onlyAddTrustedNetworks": {
-    "message": "Magagawa ng nakakapinsalang network provider na magsinungaling tungkol sa status ng blockchain at itala ang aktibidad ng iyong network. Magdagdag lang ng mga custom na network na pinagkakatiwalaan mo."
   },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo.",
@@ -1012,9 +991,6 @@
   },
   "receive": {
     "message": "Tumanggap"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Maghanap, pampublikong address (0x), o ENS"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Magsimula rito"
@@ -1684,9 +1660,6 @@
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URL ang naaangkop na HTTP/HTTPS prefix."
-  },
-  "urlExistsErrorMsg": {
-    "message": "Kasalukuyang ginagamit ng $1 network ang URL na ito."
   },
   "usePhishingDetection": {
     "message": "Gumamit ng Pag-detect ng Phishing"
