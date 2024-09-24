@@ -1458,6 +1458,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.phishingController.name}:testOrigin`,
           `${this.approvalController.name}:hasRequest`,
           `${this.approvalController.name}:acceptRequest`,
+          `${this.snapController.name}:get`,
         ],
       });
 
