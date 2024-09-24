@@ -7,9 +7,13 @@ import {
   getCurrentNetwork,
   accountSupportsSmartTx,
   getSelectedAccount,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
 
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { MultichainState } from '../../../ui/selectors/multichain';
 
 type SmartTransactionsMetaMaskState = {
