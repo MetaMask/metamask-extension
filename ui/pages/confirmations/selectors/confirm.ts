@@ -20,7 +20,7 @@ export function pendingConfirmationsSelector(state: ConfirmMetamaskState) {
 export function pendingConfirmationsSortedSelector(
   state: ConfirmMetamaskState,
 ) {
-  return Object.values(state.metamask.pendingApprovals ?? {})
+  return getPendingApprovals(state)
     .filter(({ type }) =>
       ConfirmationApprovalTypes.includes(type as ApprovalType),
     )
