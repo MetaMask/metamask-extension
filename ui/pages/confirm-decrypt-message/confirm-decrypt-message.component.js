@@ -19,7 +19,6 @@ import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
 import { COPY_OPTIONS } from '../../../shared/constants/copy';
 
-// As of this PR; This component is is only used in a test file
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
