@@ -27,6 +27,30 @@ import {
 import { confirmSelector } from '../../../selectors';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { Severity } from '../../../../../helpers/constants/design-system';
+
+export type OnCancelHandler = ({
+  location,
+}: {
+  location: MetaMetricsEventLocation;
+}) => void;
+
+function getButtonDisabledState(
+  hasUnconfirmedDangerAlerts: boolean,
+  hasBlockingAlerts: boolean,
+  disabled: boolean,
+) {
+  if (hasBlockingAlerts) {
+    return true;
+  }
+
+  if (hasUnconfirmedDangerAlerts) {
+    return false;
+  }
+
+  return disabled;
+}
 
 const ConfirmButton = ({
   alertOwnerId = '',
@@ -46,6 +70,10 @@ const ConfirmButton = ({
 
   const { dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
     useAlerts(alertOwnerId);
+
+  const hasDangerBlockingAlerts = dangerAlerts.some(
+    (alert) => alert.severity === Severity.Danger && alert.isBlocking,
+  );
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -70,12 +98,16 @@ const ConfirmButton = ({
           block
           danger
           data-testid="confirm-footer-button"
-          disabled={hasUnconfirmedDangerAlerts ? false : disabled}
+          disabled={getButtonDisabledState(
+            hasUnconfirmedDangerAlerts,
+            hasDangerBlockingAlerts,
+            disabled,
+          )}
           onClick={handleOpenConfirmModal}
           size={ButtonSize.Lg}
           startIconName={IconName.Danger}
         >
-          {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
+          {dangerAlerts?.length > 0 ? t('reviewAlerts') : t('confirm')}
         </Button>
       ) : (
         <Button
