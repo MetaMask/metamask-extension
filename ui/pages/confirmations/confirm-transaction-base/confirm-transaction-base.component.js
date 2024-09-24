@@ -710,10 +710,10 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     this._removeBeforeUnload();
-    updateCustomNonce('');
-    setNextNonce('');
     await cancelTransaction(txData);
     history.push(mostRecentOverviewPage);
+    updateCustomNonce('');
+    setNextNonce('');
   }
 
   handleSubmit() {
@@ -799,6 +799,9 @@ export default class ConfirmTransactionBase extends Component {
 
         sendTransaction(txData, false, loadingIndicatorMessage)
           .then(() => {
+            updateCustomNonce('');
+            setNextNonce('');
+
             if (!this._isMounted) {
               return;
             }
@@ -809,12 +812,12 @@ export default class ConfirmTransactionBase extends Component {
               },
               () => {
                 history.push(mostRecentOverviewPage);
-                updateCustomNonce('');
-                setNextNonce('');
               },
             );
           })
           .catch((error) => {
+            updateCustomNonce('');
+            setNextNonce('');
             if (!this._isMounted) {
               return;
             }
@@ -822,8 +825,6 @@ export default class ConfirmTransactionBase extends Component {
               submitting: false,
               submitError: error.message,
             });
-            updateCustomNonce('');
-            setNextNonce('');
           });
       },
     );
@@ -837,6 +838,7 @@ export default class ConfirmTransactionBase extends Component {
       history,
       mostRecentOverviewPage,
       updateCustomNonce,
+      setNextNonce,
       unapprovedTxCount,
       accountType,
       isNotification,
@@ -909,6 +911,8 @@ export default class ConfirmTransactionBase extends Component {
 
         sendTransaction(txData)
           .then(() => {
+            updateCustomNonce('');
+            setNextNonce('');
             if (txData.custodyStatus) {
               showCustodianDeepLink({
                 fromAddress,
@@ -927,7 +931,6 @@ export default class ConfirmTransactionBase extends Component {
                   }
                   this.setState({ submitting: false }, () => {
                     history.push(mostRecentOverviewPage);
-                    updateCustomNonce('');
                   });
                 },
               });
@@ -941,12 +944,14 @@ export default class ConfirmTransactionBase extends Component {
                 },
                 () => {
                   history.push(mostRecentOverviewPage);
-                  updateCustomNonce('');
                 },
               );
             }
           })
           .catch((error) => {
+            updateCustomNonce('');
+            setNextNonce('');
+
             if (!this._isMounted) {
               return;
             }
@@ -958,7 +963,6 @@ export default class ConfirmTransactionBase extends Component {
               submitError: error.message,
             });
             setWaitForConfirmDeepLinkDialog(true);
-            updateCustomNonce('');
           });
       },
     );
