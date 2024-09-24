@@ -27,6 +27,7 @@ import { sortAssets } from '../../util/sort';
 import { useNativeTokenBalance } from '../native-token/use-native-token-balance';
 import ImportControl from '../import-control';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type AssetListControlBarProps = {
   setTokenList: (arg: TokenWithBalance[]) => void;
@@ -37,6 +38,7 @@ const AssetListControlBar = ({
   setTokenList,
   showTokensLinks,
 }: AssetListControlBarProps) => {
+  const t = useI18nContext();
   const controlBarRef = useRef<HTMLDivElement>(null); // Create a ref
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -108,7 +110,7 @@ const AssetListControlBar = ({
           borderStyle={BorderStyle.solid}
           color={TextColor.textDefault}
         >
-          Sort By
+          {t('sortBy')}
         </ButtonBase>
         <ImportControl showTokensLinks={showTokensLinks} />
         <Popover

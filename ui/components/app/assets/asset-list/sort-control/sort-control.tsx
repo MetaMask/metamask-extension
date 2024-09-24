@@ -15,6 +15,7 @@ import {
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
 import { getPreferences } from '../../../../../selectors';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -52,6 +53,7 @@ export const SelectableListItem = ({
 };
 
 const SortControl = () => {
+  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const { tokenSortConfig } = useSelector(getPreferences);
 
@@ -83,13 +85,13 @@ const SortControl = () => {
         isSelected={tokenSortConfig?.key === 'symbol'}
         onClick={() => handleSort('symbol', 'alphaNumeric', 'asc')}
       >
-        Alphabetically (A-Z)
+        {t('sortByAlphabetically')}
       </SelectableListItem>
       <SelectableListItem
         isSelected={tokenSortConfig?.key === 'tokenFiatAmount'}
         onClick={() => handleSort('tokenFiatAmount', 'stringNumeric', 'dsc')}
       >
-        Declining balance ($ high-low)
+        {t('sortByDecliningBalance')}
       </SelectableListItem>
     </>
   );

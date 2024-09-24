@@ -5136,6 +5136,15 @@
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
+  "sortBy": {
+    "message": "Sort By"
+  },
+  "sortByAlphabetically": {
+    "message": "Alphabetically (A-Z)"
+  },
+  "sortByDecliningBalance": {
+    "message": "Declining balance ($ high-low)"
+  },
   "source": {
     "message": "Source"
   },
