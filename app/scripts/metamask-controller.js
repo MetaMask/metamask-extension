@@ -6220,6 +6220,9 @@ export default class MetamaskController extends EventEmitter {
         addNetwork: this.networkController.addNetwork.bind(
           this.networkController,
         ),
+        updateNetwork: this.networkController.updateNetwork.bind(
+          this.networkController
+        ),
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);
           // if the origin has the CAIP-25 permission
