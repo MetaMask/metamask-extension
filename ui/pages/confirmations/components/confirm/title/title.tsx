@@ -68,11 +68,6 @@ const getTitle = (
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
-    case TransactionType.tokenMethodApprove:
-      if (isNFT) {
-        return t('confirmTitleApproveTransaction');
-      }
-      return t('confirmTitlePermitSignature');
     case TransactionType.deployContract:
       return t('confirmTitleDeployContract');
     case TransactionType.personalSign:
@@ -82,8 +77,17 @@ const getTitle = (
       return t('confirmTitleSignature');
     case TransactionType.signTypedData:
       return isPermitSignatureRequest(confirmation as SignatureRequestType)
-        ? t('confirmTitlePermitSignature')
+        ? t('confirmTitlePermitTokens')
         : t('confirmTitleSignature');
+    case TransactionType.tokenMethodApprove:
+      if (isNFT) {
+        return t('confirmTitleApproveTransaction');
+      }
+      return t('confirmTitlePermitTokens');
+    case TransactionType.tokenMethodIncreaseAllowance:
+      return t('confirmTitlePermitTokens');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      return t('setApprovalForAllRedesignedTitle');
     default:
       return '';
   }
@@ -97,11 +101,6 @@ const getDescription = (
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return '';
-    case TransactionType.tokenMethodApprove:
-      if (isNFT) {
-        return t('confirmTitleDescApproveTransaction');
-      }
-      return t('confirmTitleDescERC20ApproveTransaction');
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
     case TransactionType.personalSign:
@@ -113,6 +112,15 @@ const getDescription = (
       return isPermitSignatureRequest(confirmation as SignatureRequestType)
         ? t('confirmTitleDescPermitSignature')
         : t('confirmTitleDescSignature');
+    case TransactionType.tokenMethodApprove:
+      if (isNFT) {
+        return t('confirmTitleDescApproveTransaction');
+      }
+      return t('confirmTitleDescERC20ApproveTransaction');
+    case TransactionType.tokenMethodIncreaseAllowance:
+      return t('confirmTitleDescPermitSignature');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      return t('confirmTitleDescApproveTransaction');
     default:
       return '';
   }

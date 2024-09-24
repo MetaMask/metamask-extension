@@ -23,6 +23,7 @@ import {
  */
 
 /** @type {SettingRouteConfig[]} */
+// When editing this array, double-check the order of the settingsRefs in the setting's respective component.
 const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('general'),
@@ -66,6 +67,7 @@ const SETTINGS_CONSTANTS = [
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
     iconName: IconName.Setting,
   },
+  // advanced settingsRefs[0]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('stateLogs'),
@@ -73,6 +75,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#state-logs`,
     icon: 'fas fa-sliders-h',
   },
+  // advanced settingsRefs[1]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('clearActivity'),
@@ -80,6 +83,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#clear-activity`,
     icon: 'fas fa-sliders-h',
   },
+  // advanced settingsRefs[2]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('smartTransactions'),
@@ -87,6 +91,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#smart-transactions`,
     icon: 'fas fa-upload',
   },
+  // advanced settingsRefs[3]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showHexData'),
@@ -94,6 +99,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#show-hexdata`,
     icon: 'fas fa-sliders-h',
   },
+  // advanced settingsRefs[4]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showFiatConversionInTestnets'),
@@ -101,6 +107,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#conversion-testnetworks`,
     icon: 'fas fa-sliders-h',
   },
+  // advanced settingsRefs[5]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showTestnetNetworks'),
@@ -108,6 +115,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#show-testnets`,
     icon: 'fas fa-sliders-h',
   },
+  // advanced settingsRefs[6]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('nonceField'),
@@ -115,6 +123,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#customize-nonce`,
     icon: 'fas fa-sliders-h',
   },
+  // advanced settingsRefs[7]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('autoLockTimeLimit'),
@@ -122,6 +131,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#autolock-timer`,
     icon: 'fas fa-sliders-h',
   },
+  // advanced settingsRefs[8]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showExtensionInFullSizeView'),
@@ -129,12 +139,21 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#extension-full-size-view`,
     icon: 'fas fa-sliders-h',
   },
+  // advanced settingsRefs[9]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('dismissReminderField'),
     descriptionMessage: (t) => t('dismissReminderDescriptionField'),
     route: `${ADVANCED_ROUTE}#dismiss-secretrecovery`,
     icon: 'fas fa-sliders-h',
+  },
+  // advanced settingsRefs[10]
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('exportYourData'),
+    descriptionMessage: (t) => t('exportYourDataDescription'),
+    route: `${ADVANCED_ROUTE}#export-data`,
+    icon: 'fas fa-download',
   },
   {
     tabMessage: (t) => t('contacts'),
@@ -297,6 +316,14 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#transaction-simulations`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[19]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('dataCollectionForMarketing'),
+    descriptionMessage: (t) => t('dataCollectionForMarketingDescription'),
+    route: `${SECURITY_ROUTE}#dataCollectionForMarketing`,
+    icon: 'fa fa-lock',
+  },
   {
     tabMessage: (t) => t('alerts'),
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
@@ -426,20 +453,6 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('betaTerms'),
     route: `${ABOUT_US_ROUTE}#beta-terms`,
     iconName: IconName.Info,
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('backupUserData'),
-    descriptionMessage: (t) => t('backupUserDataDescription'),
-    route: `${ADVANCED_ROUTE}#backup-userdata`,
-    icon: 'fas fa-download',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('restoreUserData'),
-    descriptionMessage: (t) => t('restoreUserDataDescription'),
-    route: `${ADVANCED_ROUTE}#restore-userdata`,
-    icon: 'fas fa-upload',
   },
   // experimental settingsRefs[0]
   {

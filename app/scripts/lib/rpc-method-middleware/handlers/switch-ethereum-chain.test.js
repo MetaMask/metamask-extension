@@ -11,15 +11,23 @@ const mockRequestUserApproval = ({ requestData }) => {
 };
 
 const createMockMainnetConfiguration = () => ({
-  id: 123,
   chainId: CHAIN_IDS.MAINNET,
-  type: NETWORK_TYPES.MAINNET,
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: NETWORK_TYPES.MAINNET,
+    },
+  ],
 });
 
 const createMockLineaMainnetConfiguration = () => ({
-  id: 1234,
   chainId: CHAIN_IDS.LINEA_MAINNET,
-  type: NETWORK_TYPES.LINEA_MAINNET,
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: NETWORK_TYPES.LINEA_MAINNET,
+    },
+  ],
 });
 
 describe('switchEthereumChainHandler', () => {
@@ -27,7 +35,7 @@ describe('switchEthereumChainHandler', () => {
     permissionedChainIds = [],
     permissionsFeatureFlagIsActive = false,
     overrides = {},
-    mockedFindNetworkConfigurationByReturnValue = createMockMainnetConfiguration(),
+    mockedGetNetworkConfigurationByChainIdReturnValue = createMockMainnetConfiguration(),
     mockedGetCurrentChainIdForDomainReturnValue = NON_INFURA_CHAIN_ID,
   } = {}) => {
     const mockGetCaveat = jest.fn();
@@ -39,15 +47,15 @@ describe('switchEthereumChainHandler', () => {
         .fn()
         .mockReturnValue(mockedGetCurrentChainIdForDomainReturnValue),
       setNetworkClientIdForDomain: jest.fn(),
-      findNetworkConfigurationBy: jest
-        .fn()
-        .mockReturnValue(mockedFindNetworkConfigurationByReturnValue),
       setActiveNetwork: jest.fn(),
       requestUserApproval: jest
         .fn()
         .mockImplementation(mockRequestUserApproval),
       requestPermittedChainsPermission: jest.fn(),
       getCaveat: mockGetCaveat,
+      getNetworkConfigurationByChainId: jest
+        .fn()
+        .mockReturnValue(mockedGetNetworkConfigurationByChainIdReturnValue),
       ...overrides,
     };
   };
@@ -63,7 +71,7 @@ describe('switchEthereumChainHandler', () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         overrides: {
-          findNetworkConfigurationBy: jest
+          getNetworkConfigurationByChainId: jest
             .fn()
             .mockReturnValue(createMockMainnetConfiguration()),
         },
@@ -81,7 +89,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().type,
+        createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
 
@@ -89,7 +97,7 @@ describe('switchEthereumChainHandler', () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         overrides: {
-          findNetworkConfigurationBy: jest
+          getNetworkConfigurationByChainId: jest
             .fn()
             .mockReturnValue(createMockLineaMainnetConfiguration()),
         },
@@ -107,7 +115,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockLineaMainnetConfiguration().type,
+        createMockLineaMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
 
@@ -115,7 +123,7 @@ describe('switchEthereumChainHandler', () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         overrides: {
-          findNetworkConfigurationBy: jest
+          getNetworkConfigurationByChainId: jest
             .fn()
             .mockReturnValue(createMockLineaMainnetConfiguration()),
         },
@@ -133,7 +141,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockLineaMainnetConfiguration().type,
+        createMockLineaMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
 
@@ -159,8 +167,44 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().id,
+        createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
+    });
+
+    it('should handle missing networkConfiguration', async () => {
+      // Mock a network configuration that has an undefined or missing rpcEndpoints
+      const mockNetworkConfiguration = undefined;
+
+      const mocks = makeMocks({
+        overrides: {
+          getNetworkConfigurationByChainId: jest
+            .fn()
+            .mockReturnValue(mockNetworkConfiguration),
+        },
+      });
+
+      const switchEthereumChainHandler = switchEthereumChain.implementation;
+
+      const mockEnd = jest.fn();
+      await switchEthereumChainHandler(
+        {
+          origin: 'example.com',
+          params: [{ chainId: CHAIN_IDS.MAINNET }],
+        },
+        {},
+        jest.fn(),
+        mockEnd,
+        mocks,
+      );
+
+      // Check that the function handled the missing rpcEndpoints and did not attempt to call setActiveNetwork
+      expect(mockEnd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: 4902,
+          message: expect.stringContaining('Unrecognized chain ID'),
+        }),
+      );
+      expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
     });
   });
 
@@ -196,7 +240,7 @@ describe('switchEthereumChainHandler', () => {
       ]);
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().type,
+        createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
 
@@ -220,7 +264,7 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().type,
+        createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
 

@@ -4,6 +4,8 @@ import React, { PureComponent } from 'react';
 import {
   addUrlProtocolPrefix,
   getEnvironmentType,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
@@ -71,7 +73,7 @@ export default class SecurityTab extends PureComponent {
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
     incomingTransactionsPreferences: PropTypes.object.isRequired,
-    allNetworks: PropTypes.array.isRequired,
+    networkConfigurations: PropTypes.object.isRequired,
     setIncomingTransactionsPreferences: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
@@ -259,14 +261,14 @@ export default class SecurityTab extends PureComponent {
   renderIncomingTransactionsOptIn() {
     const {
       incomingTransactionsPreferences,
-      allNetworks,
+      networkConfigurations,
       setIncomingTransactionsPreferences,
     } = this.props;
 
     return (
       <IncomingTransactionToggle
         wrapperRef={this.settingsRefs[2]}
-        allNetworks={allNetworks}
+        networkConfigurations={networkConfigurations}
         setIncomingTransactionsPreferences={setIncomingTransactionsPreferences}
         incomingTransactionsPreferences={incomingTransactionsPreferences}
       />
@@ -353,7 +355,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[19]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}

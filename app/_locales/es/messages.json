@@ -183,9 +183,6 @@
   "addANetwork": {
     "message": "Agregar una red"
   },
-  "addANetworkManually": {
-    "message": "Agregar una red manualmente"
-  },
   "addANickname": {
     "message": "Añadir un apodo"
   },
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "Agregue amigos y direcciones de confianza"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "Agregue desde una lista de redes populares o agregue una red manualmente. Interactúe solo con las entidades en las que confía."
-  },
   "addHardwareWallet": {
     "message": "Agregar monedero físico"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "Añadir memo"
   },
-  "addMoreNetworks": {
-    "message": "agregar más redes manualmente"
-  },
   "addNetwork": {
     "message": "Agregar red"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "Esta conexión de red depende de terceros. Y puede ser menos confiable o permite que terceros rastreen la actividad. $1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "Añadir una cuenta nueva de Ethereum"
@@ -331,9 +318,6 @@
   },
   "additionalNetworks": {
     "message": "Redes adicionales"
-  },
-  "additionalRpcUrl": {
-    "message": "URL RPC adicional"
   },
   "address": {
     "message": "Dirección"
@@ -666,9 +650,6 @@
   "back": {
     "message": "Volver"
   },
-  "backup": {
-    "message": "Respaldo"
-  },
   "backupApprovalInfo": {
     "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a su monedero en otro dispositivo."
   },
@@ -677,15 +658,6 @@
   },
   "backupKeyringSnapReminder": {
     "message": "Asegúrese de poder acceder a cualquier cuenta creada por este Snap por si mismo antes de eliminarlo"
-  },
-  "backupNow": {
-    "message": "Respaldar ahora"
-  },
-  "backupUserData": {
-    "message": "Respalde sus datos"
-  },
-  "backupUserDataDescription": {
-    "message": "Puede hacer una copia de seguridad de datos tal y como sus contactos y preferencias."
   },
   "balance": {
     "message": "Saldo"
@@ -1012,9 +984,6 @@
   "confirmConnectionTitle": {
     "message": "Confirmar conexión a $1"
   },
-  "confirmDeletion": {
-    "message": "Confirmar la eliminación"
-  },
   "confirmFieldPaymaster": {
     "message": "Tarifa pagada por"
   },
@@ -1027,9 +996,6 @@
   "confirmRecoveryPhrase": {
     "message": "Confirmar frase secreta de recuperación"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "¿Está seguro de que desea eliminar la URL RPC? Su información no se guardará para esta red."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Este sitio solicita permiso para gastar sus tokens."
   },
@@ -1039,7 +1005,7 @@
   "confirmTitleDescSignature": {
     "message": "Solo confirme este mensaje si aprueba el contenido y confía en el sitio solicitante."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Solicitud de límite de gasto"
   },
   "confirmTitleSIWESignature": {
@@ -1380,9 +1346,6 @@
   "custom": {
     "message": "Avanzado"
   },
-  "customContentSearch": {
-    "message": "Buscar una red agregada anteriormente"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 para personalizar el precio de gas. Esto puede ser confuso si no está familiarizado. Interactúe bajo su propio riesgo.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1502,18 +1465,12 @@
   "deleteContact": {
     "message": "Eliminar contacto"
   },
-  "deleteNetwork": {
-    "message": "¿Eliminar red?"
-  },
   "deleteNetworkIntro": {
     "message": "Si elimina esta red, deberá volver a agregarla para ver sus activos en esta red"
   },
   "deleteNetworkTitle": {
     "message": "¿Eliminar la red de $1?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "Eliminar URL RPC"
   },
   "deposit": {
     "message": "Depositar"
@@ -1608,9 +1565,6 @@
   },
   "domain": {
     "message": "Dominio"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "La red no admite la búsqueda de dominios"
   },
   "done": {
     "message": "Hecho"
@@ -1785,12 +1739,6 @@
   "ensDomainsSettingTitle": {
     "message": "Mostrar dominios ENS en la barra de direcciones"
   },
-  "ensIllegalCharacter": {
-    "message": "Caracter ilegal para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Error en el registro del nombre de ENS"
-  },
   "ensUnknownError": {
     "message": "Error al buscar ENS."
   },
@@ -1888,9 +1836,6 @@
   "existingRequestsBannerAlertDesc": {
     "message": "Para ver y confirmar su solicitud más reciente, primero deberá aprobar o rechazar las solicitudes existentes."
   },
-  "existingRpcUrl": {
-    "message": "Esta URL está asociada a otro ID de cadena."
-  },
   "expandView": {
     "message": "Expandir vista"
   },
@@ -1922,9 +1867,6 @@
   "failedToFetchChainId": {
     "message": "No se pudo capturar el id. de cadena. ¿La dirección URL de RPC es correcta?"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "Los datos de verificación del símbolo de teletipo no están disponibles actualmente, asegúrese de que el símbolo que ingresó sea correcto. Tendrá un impacto en las tasas de conversión que vea para esta red"
-  },
   "failureMessage": {
     "message": "Se produjo un error y no pudimos completar la acción"
   },
@@ -1944,9 +1886,6 @@
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? Haga clic aquí.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "Encuentre el correcto en:"
   },
   "flaskWelcomeUninstall": {
     "message": "le recomendamos que desinstale esta extensión",
@@ -2434,14 +2373,8 @@
   "invalidAddressRecipient": {
     "message": "La dirección del destinatario no es válida"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "No es una red ETH; configurar en minúsculas"
-  },
   "invalidAssetType": {
     "message": "Este activo es un NFT y debe volver a añadirse en la página de Importar NFTs que se encuentra en la pestaña de NFTs"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Dirección URL del explorador de bloques no válida"
   },
   "invalidChainIdTooBig": {
     "message": "Identificador de cadena no válido. El identificador de cadena es demasiado grande."
@@ -2962,9 +2895,6 @@
   "network": {
     "message": "Red:"
   },
-  "networkAddedSuccessfully": {
-    "message": "¡Red añadida exitosamente!"
-  },
   "networkDetails": {
     "message": "Detalles de la red"
   },
@@ -3024,9 +2954,6 @@
   },
   "networkProvider": {
     "message": "Proveedor de red"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "El id. de la cadena se usa para firmar transacciones. Debe coincidir con el id. de la cadena que devuelve la red. Puede escribir un número decimal o un número hexadecimal con el prefijo “0x”, pero el número se mostrará en decimal."
   },
   "networkStatus": {
     "message": "Estado de la red"
@@ -3163,9 +3090,6 @@
   },
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
-  },
-  "noAddressForName": {
-    "message": "No se estableció ninguna dirección para este nombre."
   },
   "noConnectedAccountDescription": {
     "message": "Seleccione una cuenta que desee utilizar en este sitio para continuar."
@@ -3479,9 +3403,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "La URL de la puerta de enlace de IPFS es válida"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "Agregar red personalizada"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Usamos Infura como nuestro proveedor de llamada a procedimiento remoto (RPC) para ofrecer el acceso más confiable y privado posible a los datos de Ethereum. Puede elegir su propio RPC, pero recuerde que cualquier RPC recibirá su dirección IP y su monedero de Ethereum para realizar transacciones. Lea nuestra $1 para obtener más información sobre cómo Infura maneja los datos."
   },
@@ -3509,9 +3430,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Política de privacidad"
-  },
-  "onboardingMetametricsModalTitle": {
-    "message": "Agregar red personalizada"
   },
   "onboardingMetametricsNeverCollect": {
     "message": "Se almacenan los clics y las visualizaciones de $1 en la aplicación, pero no otros detalles (como su dirección pública).",
@@ -3605,9 +3523,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "Un proveedor de red malintencionado puede mentir sobre el estado de la cadena de bloques y registrar su actividad de red. Agregue solo redes personalizadas de confianza."
-  },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3631,9 +3546,6 @@
   },
   "optional": {
     "message": "Opcional"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Opcional)"
   },
   "options": {
     "message": "Opciones"
@@ -3986,9 +3898,6 @@
     "message": "+ $1 más",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "popularCustomNetworks": {
-    "message": "Redes populares personalizadas"
-  },
   "popularNetworkAddToolTip": {
     "message": "Algunas de estas redes dependen de terceros. Las conexiones pueden ser menos confiables o permitir que terceros realicen un seguimiento de la actividad. $1",
     "description": "$1 is Learn more link"
@@ -4178,12 +4087,6 @@
   "receive": {
     "message": "Recibir"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Ingrese la dirección pública (0x) o el nombre de ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Ingrese la dirección pública (0x) o el nombre de dominio"
-  },
   "recommendedGasLabel": {
     "message": "Recomendado"
   },
@@ -4358,9 +4261,6 @@
   },
   "restoreUserData": {
     "message": "Restaure sus datos de usuario"
-  },
-  "restoreUserDataDescription": {
-    "message": "Puede restaurar datos tal y como contactos y preferencias desde un archivo de copia de seguridad."
   },
   "resultPageError": {
     "message": "Error"
@@ -5334,9 +5234,6 @@
   "suggestedTokenName": {
     "message": "Nombre sugerido:"
   },
-  "suggestedTokenSymbol": {
-    "message": "Símbolo de cotización sugerido:"
-  },
   "support": {
     "message": "Soporte técnico"
   },
@@ -5825,9 +5722,6 @@
   "termsOfUseTitle": {
     "message": "Nuestros Términos de uso han sido actualizados"
   },
-  "testNetworks": {
-    "message": "Redes de prueba"
-  },
   "theme": {
     "message": "Tema"
   },
@@ -6139,9 +6033,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "Según nuestros registros, esta URL no coincide con un proveedor conocido para este ID de cadena."
-  },
   "unapproved": {
     "message": "No aprobado"
   },
@@ -6210,9 +6101,6 @@
   },
   "urlErrorMsg": {
     "message": "Las direcciones URL requieren el prefijo HTTP/HTTPS adecuado."
-  },
-  "urlExistsErrorMsg": {
-    "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
   "use4ByteResolution": {
     "message": "Decodificar contratos inteligentes"
@@ -6423,9 +6311,6 @@
   "whatsThis": {
     "message": "¿Qué es esto?"
   },
-  "wrongChainId": {
-    "message": "Este ID de cadena no coincide con el nombre de la red."
-  },
   "wrongNetworkName": {
     "message": "Según nuestros registros, es posible que el nombre de la red no coincida correctamente con este ID de cadena."
   },
@@ -6438,10 +6323,6 @@
   },
   "you": {
     "message": "Usted"
-  },
-  "youHaveAddedAll": {
-    "message": "Ha agregado todas las redes populares. Puede descubrir más redes $1 o puede $2",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."

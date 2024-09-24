@@ -1,15 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
-
-import {
-  getMockApproveConfirmState,
-  getMockConfirmStateForTransaction,
-} from '../../../../../../../test/data/confirmations/helper';
+import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import ApproveInfo from './approve';
 
@@ -30,11 +22,50 @@ jest.mock(
   }),
 );
 
+jest.mock('../../../../hooks/useAssetDetails', () => ({
+  useAssetDetails: jest.fn(() => ({
+    decimals: 18,
+  })),
+}));
+
+jest.mock('../../../../selectors/preferences', () => ({
+  selectConfirmationAdvancedDetailsOpen: jest.fn(() => true),
+}));
+
+jest.mock('./hooks/use-is-nft', () => ({
+  useIsNFT: jest.fn(() => ({
+    isNFT: false,
+  })),
+}));
+
+jest.mock('../hooks/useDecodedTransactionData', () => ({
+  useDecodedTransactionData: jest.fn(() => ({
+    value: {
+      data: [
+        {
+          params: [
+            {
+              type: 'address',
+              value: '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B',
+            },
+            {
+              type: 'uint256',
+              value: 1,
+            },
+          ],
+        },
+      ],
+    },
+    pending: false,
+  })),
+}));
+
 describe('<ApproveInfo />', () => {
   const middleware = [thunk];
 
   it('renders component for approve request', async () => {
     const state = getMockApproveConfirmState();
+
     const mockStore = configureMockStore(middleware)(state);
 
     const { container } = renderWithConfirmContextProvider(
@@ -42,21 +73,6 @@ describe('<ApproveInfo />', () => {
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
-  });
-
-  it('does not render if required data is not present in the transaction', () => {
-    const state = getMockConfirmStateForTransaction({
-      id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
-      status: TransactionStatus.unapproved,
-      time: new Date().getTime(),
-      type: TransactionType.tokenMethodApprove,
-    });
-    const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithConfirmContextProvider(
-      <ApproveInfo />,
-      mockStore,
-    );
     expect(container).toMatchSnapshot();
   });
 });

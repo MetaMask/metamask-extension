@@ -183,9 +183,6 @@
   "addANetwork": {
     "message": "ネットワークを追加"
   },
-  "addANetworkManually": {
-    "message": "ネットワークを手動で追加"
-  },
   "addANickname": {
     "message": "ニックネームを追加"
   },
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "信頼できる友達とアドレスを追加する"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "人気のネットワークのリストから追加するか、ネットワークを手動で追加します。信頼できる相手と以外はやり取りしないようにしてください。"
-  },
   "addHardwareWallet": {
     "message": "ハードウェアウォレットを追加"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "メモを追加"
   },
-  "addMoreNetworks": {
-    "message": "他のネットワークを手動で追加"
-  },
   "addNetwork": {
     "message": "ネットワークを追加"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "このネットワーク接続はサードパーティに依存しているため、信頼性が低かったり、サードパーティによるアクティビティの追跡が可能になる可能性があります。$1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "新しいイーサリアムアカウントを追加"
@@ -331,9 +318,6 @@
   },
   "additionalNetworks": {
     "message": "他のネットワーク"
-  },
-  "additionalRpcUrl": {
-    "message": "他のRPC URL"
   },
   "address": {
     "message": "アドレス"
@@ -666,9 +650,6 @@
   "back": {
     "message": "戻る"
   },
-  "backup": {
-    "message": "バックアップ"
-  },
   "backupApprovalInfo": {
     "message": "このシークレット コードは、デバイスをなくしたとき、パスワードを忘れたとき、MetaMaskの再インストールが必要なとき、または別のデバイスでウォレットにアクセスするときに必要です。"
   },
@@ -680,12 +661,6 @@
   },
   "backupNow": {
     "message": "今すぐバックアップ"
-  },
-  "backupUserData": {
-    "message": "データをバックアップ"
-  },
-  "backupUserDataDescription": {
-    "message": "設定とアカウントアドレスを含むユーザー設定を、JSONファイルにバックアップできます。"
   },
   "balance": {
     "message": "残高"
@@ -1012,9 +987,6 @@
   "confirmConnectionTitle": {
     "message": "$1への接続の確定"
   },
-  "confirmDeletion": {
-    "message": "削除の確定"
-  },
   "confirmFieldPaymaster": {
     "message": "手数料の支払元"
   },
@@ -1027,9 +999,6 @@
   "confirmRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズの確認"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "RPC URLを削除してよろしいですか？このネットワークの情報は保存されません。"
-  },
   "confirmTitleDescPermitSignature": {
     "message": "このサイトがトークンの使用許可を求めています。"
   },
@@ -1039,7 +1008,7 @@
   "confirmTitleDescSignature": {
     "message": "このメッセージの内容を承認し、要求元のサイトを信頼する場合にのみ確定してください。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "使用上限リクエスト"
   },
   "confirmTitleSIWESignature": {
@@ -1380,9 +1349,6 @@
   "custom": {
     "message": "高度な設定"
   },
-  "customContentSearch": {
-    "message": "以前追加されたネットワークを検索"
-  },
   "customGasSettingToolTipMessage": {
     "message": "ガス価格をカスタマイズするには$1を使用します。慣れていない場合はわかりにくい可能性があります。自己責任で操作してください。",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1502,18 +1468,12 @@
   "deleteContact": {
     "message": "連絡先を削除"
   },
-  "deleteNetwork": {
-    "message": "ネットワークを削除しますか？"
-  },
   "deleteNetworkIntro": {
     "message": "このネットワークを削除した場合、このネットワーク内の資産を見るには、再度ネットワークの追加が必要になります。"
   },
   "deleteNetworkTitle": {
     "message": "$1ネットワークを削除しますか？",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "RPC URLを削除"
   },
   "deposit": {
     "message": "入金"
@@ -1608,9 +1568,6 @@
   },
   "domain": {
     "message": "ドメイン"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "ネットワークがドメイン検索をサポートしていません"
   },
   "done": {
     "message": "完了"
@@ -1785,12 +1742,6 @@
   "ensDomainsSettingTitle": {
     "message": "アドレスバーにENSドメインを表示する"
   },
-  "ensIllegalCharacter": {
-    "message": "ENSにサポートされていない文字が使用されています。"
-  },
-  "ensRegistrationError": {
-    "message": "ENS名の登録エラー"
-  },
   "ensUnknownError": {
     "message": "ENSの検索に失敗しました。"
   },
@@ -1888,9 +1839,6 @@
   "existingRequestsBannerAlertDesc": {
     "message": "一番最近の要求を表示して確定するには、はじめに既存の要求を承認または拒否する必要があります。"
   },
-  "existingRpcUrl": {
-    "message": "このURLは別のチェーンIDに関連付けられています。"
-  },
   "expandView": {
     "message": "ビューを展開"
   },
@@ -1922,9 +1870,6 @@
   "failedToFetchChainId": {
     "message": "チェーンIDを取り込むことができませんでした。お使いのRPC URLは正しいですか？"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "ティッカーシンボルの検証データが現在利用できません。入力されたシンボルが正しいことを確認してください。これはこのネットワークの換算レートに影響を与えます"
-  },
   "failureMessage": {
     "message": "問題が発生しました。アクションを完了させることができません"
   },
@@ -1944,9 +1889,6 @@
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "正しいIDを検索:"
   },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",
@@ -2434,14 +2376,8 @@
   "invalidAddressRecipient": {
     "message": "送金先アドレスが無効です"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETHネットワークではありません。小文字にしてください。"
-  },
   "invalidAssetType": {
     "message": "このアセットはNFTであるため、「NFT」タブの「NFTのインポート」ページで追加しなおす必要があります"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "ブロックエクスプローラーのURLが無効です"
   },
   "invalidChainIdTooBig": {
     "message": "無効なチェーンID。チェーンIDが大きすぎます。"
@@ -2962,9 +2898,6 @@
   "network": {
     "message": "ネットワーク:"
   },
-  "networkAddedSuccessfully": {
-    "message": "ネットワークが追加されました！"
-  },
   "networkDetails": {
     "message": "ネットワークの詳細"
   },
@@ -3024,9 +2957,6 @@
   },
   "networkProvider": {
     "message": "ネットワークプロバイダー"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "チェーンIDはトランザクションの署名に使用されます。チェーンIDはネットワークが返すチェーンIDと一致する必要があります。10進数または「0x」が先行する16進数を入力できますが、10進数で表示されます。"
   },
   "networkStatus": {
     "message": "ネットワークステータス"
@@ -3163,9 +3093,6 @@
   },
   "noAccountsFound": {
     "message": "指定された検索クエリでアカウントが見つかりませんでした"
-  },
-  "noAddressForName": {
-    "message": "この名前にアドレスが設定されていません。"
   },
   "noConnectedAccountDescription": {
     "message": "続行するには、このサイトで使用するアカウントを選択してください。"
@@ -3479,9 +3406,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "IPFSゲートウェイのURLが有効です"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "カスタムネットワークを追加"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "当社では、遠隔手続き呼び出し (RPC) プロバイダーにInfuraを使用して、イーサリアムデータにできるだけ信頼性の高いプライベートな形でアクセスできるようにしています。独自のRPCをお選びいただくこともできますが、どのRPCもトランザクションを実行するために、ユーザーのIPアドレスとイーサリアムウォレットを取得する点にご注意ください。Infuraによるデータの取扱いに関する詳細は、$1をご覧ください。"
   },
@@ -3509,9 +3433,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "プライバシー ポリシー"
-  },
-  "onboardingMetametricsModalTitle": {
-    "message": "カスタムネットワークを追加"
   },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 アプリのクリックやビューは保存されますが、その他の詳細 (ユーザーのパブリックアドレスなど) は保存されません。",
@@ -3605,9 +3526,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "悪意のあるネットワーク プロバイダーは、ブロックチェーンのステートを偽り、ユーザーのネットワークアクティビティを記録することがあります。信頼するカスタムネットワークのみを追加してください。"
-  },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3631,9 +3549,6 @@
   },
   "optional": {
     "message": "オプション"
-  },
-  "optionalWithParanthesis": {
-    "message": "(オプション)"
   },
   "options": {
     "message": "オプション"
@@ -3986,9 +3901,6 @@
     "message": "その他$1件",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "popularCustomNetworks": {
-    "message": "人気のカスタムネットワーク"
-  },
   "popularNetworkAddToolTip": {
     "message": "これらのネットワークの一部はサードパーティに依存しているため、接続の信頼性が低かったり、サードパーティによるアクティビティの追跡が可能になったりする可能性があります。$1",
     "description": "$1 is Learn more link"
@@ -4178,12 +4090,6 @@
   "receive": {
     "message": "受取"
   },
-  "recipientAddressPlaceholder": {
-    "message": "パブリックアドレス (0x) またはENS名を入力してください"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "パブリックアドレス (0x) またはドメイン名を入力してください"
-  },
   "recommendedGasLabel": {
     "message": "推奨"
   },
@@ -4358,9 +4264,6 @@
   },
   "restoreUserData": {
     "message": "ユーザーデータの復元"
-  },
-  "restoreUserDataDescription": {
-    "message": "以前バックアップされたJSONファイルから、設定とアカウントアドレスを含むユーザー設定を復元できます。"
   },
   "resultPageError": {
     "message": "エラー"
@@ -5334,9 +5237,6 @@
   "suggestedTokenName": {
     "message": "提案された名前:"
   },
-  "suggestedTokenSymbol": {
-    "message": "推奨ティッカーシンボル:"
-  },
   "support": {
     "message": "サポート"
   },
@@ -5825,9 +5725,6 @@
   "termsOfUseTitle": {
     "message": "利用規約が更新されました"
   },
-  "testNetworks": {
-    "message": "テストネットワーク"
-  },
   "theme": {
     "message": "テーマ"
   },
@@ -6139,9 +6036,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "当社の記録によると、このURLは、このチェーンIDの既知のプロバイダーと一致しません。"
-  },
   "unapproved": {
     "message": "未承認"
   },
@@ -6210,9 +6104,6 @@
   },
   "urlErrorMsg": {
     "message": "URLには適切なHTTP/HTTPSプレフィックスが必要です。"
-  },
-  "urlExistsErrorMsg": {
-    "message": "このURLは現在$1ネットワークで使用されています。"
   },
   "use4ByteResolution": {
     "message": "スマートコントラクトのデコード"
@@ -6423,9 +6314,6 @@
   "whatsThis": {
     "message": "これは何ですか？"
   },
-  "wrongChainId": {
-    "message": "このチェーンIDはネットワーク名と一致しません。"
-  },
   "wrongNetworkName": {
     "message": "弊社の記録によると、ネットワーク名がこのチェーンIDと正しく一致していない可能性があります。"
   },
@@ -6438,10 +6326,6 @@
   },
   "you": {
     "message": "ユーザー"
-  },
-  "youHaveAddedAll": {
-    "message": "すべての人気ネットワークを追加しました。$1で他のネットワークを発見するか、$2できます。",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "この機能を使用するには、カメラへのアクセスを許可する必要があります。"
