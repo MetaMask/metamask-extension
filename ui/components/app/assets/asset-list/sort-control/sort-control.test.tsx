@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { TokenWithBalance } from '../asset-list';
+import { getPreferences } from '../../../../../selectors';
 import SortControl from './sort-control';
 
 // Mock the sortAssets utility
@@ -29,47 +29,24 @@ jest.mock('react-redux', () => {
   };
 });
 
-const useSelectorMock = useSelector;
-
 describe('SortControl', () => {
   const mockTrackEvent = jest.fn();
-  const tokenList: TokenWithBalance[] = [
-    {
-      address: '0x1',
-      symbol: 'ETH',
-      image: 'eth-image-url',
-      tokenFiatAmount: '100',
-      isNative: true,
-    },
-    {
-      address: '0x2',
-      symbol: 'DAI',
-      image: 'dai-image-url',
-      tokenFiatAmount: '50',
-      isNative: false,
-    },
-  ];
 
-  const renderComponent = (sorted = false) => {
-    const setTokenList = jest.fn();
-    const setSorted = jest.fn();
-
-    (useSelectorMock as jest.Mock).mockImplementation(() => {
-      return {
-        key: 'tokenFiatAmount',
-        sortCallback: 'stringNumeric',
-        order: 'dsc',
-      };
+  const renderComponent = () => {
+    (useSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getPreferences) {
+        return {
+          key: 'tokenFiatAmount',
+          sortCallback: 'stringNumeric',
+          order: 'dsc',
+        };
+      }
+      return undefined;
     });
 
     return renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <SortControl
-          tokenList={tokenList}
-          setTokenList={setTokenList}
-          setSorted={setSorted}
-          sorted={sorted}
-        />
+        <SortControl />
       </MetaMetricsContext.Provider>,
     );
   };

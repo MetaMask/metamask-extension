@@ -80,13 +80,13 @@ const SortControl = () => {
   return (
     <>
       <SelectableListItem
-        isSelected={tokenSortConfig.key === 'symbol'}
+        isSelected={tokenSortConfig?.key === 'symbol'}
         onClick={() => handleSort('symbol', 'alphaNumeric', 'asc')}
       >
         Alphabetically (A-Z)
       </SelectableListItem>
       <SelectableListItem
-        isSelected={tokenSortConfig.key === 'tokenFiatAmount'}
+        isSelected={tokenSortConfig?.key === 'tokenFiatAmount'}
         onClick={() => handleSort('tokenFiatAmount', 'stringNumeric', 'dsc')}
       >
         Declining balance ($ high-low)
