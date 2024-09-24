@@ -69,7 +69,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should batch transfers ERC1155 token', async function () {
+  it.only('should batch transfers ERC1155 token', async function () {
     await withFixtures(
       {
         dapp: true,

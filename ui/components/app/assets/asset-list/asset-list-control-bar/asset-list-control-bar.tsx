@@ -77,7 +77,7 @@ const AssetListControlBar = ({
     );
 
     setTokenList(sortedTokenList);
-  }, [tokenSortConfig.key, loading, tokensWithBalances.length]);
+  }, [tokenSortConfig?.key, loading, tokensWithBalances.length]);
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
