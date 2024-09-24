@@ -50,6 +50,16 @@ const AssetListControlBar = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // const tokenSortConfig = useSelector((state: any) => {
+  //   return state.metamask.tokenSortConfig;
+  // });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const preferencesState = useSelector((state: any) => {
+    return state.metamask;
+  });
+  console.log(tokenSortConfig, preferencesState);
+
   const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,

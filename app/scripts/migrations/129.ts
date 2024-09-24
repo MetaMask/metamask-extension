@@ -37,7 +37,7 @@ function transformState(
     isObject(state.PreferencesController.preferences) &&
     !state.PreferencesController.preferences.tokenSortConfig
   ) {
-    state.PreferencesController.tokenSortConfig = {
+    state.PreferencesController.preferences.tokenSortConfig = {
       key: 'tokenFiatAmount',
       order: 'dsc',
       sortCallback: 'stringNumeric',

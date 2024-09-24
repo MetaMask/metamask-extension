@@ -67,7 +67,7 @@ const SortControl = ({
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tokenSortConfig = useSelector((state: any) => {
-    return state.metamask.preferences.tokenSortConfig;
+    return state.metamask.tokenSortConfig;
   });
 
   const dispatch = useDispatch();
@@ -87,6 +87,7 @@ const SortControl = ({
     sortCallback: keyof SortingCallbacksT,
     order: SortOrder,
   ) => {
+    console.log('handle sort');
     dispatch(
       setTokenSortConfig({
         key,
