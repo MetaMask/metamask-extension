@@ -113,6 +113,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.findElement({
+          text: 'Allow this site to switch the network?',
+          tag: 'h3',
+        });
+
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
         await driver.clickElement('#sendButton');
@@ -120,7 +126,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const windowsBefore = await driver.getAllWindowHandles();
-
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Wait for switch confirmation to close then tx confirmation to show.
@@ -129,9 +134,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           windowsBefore,
         });
 
-        // For Firefox and Chrome Webpack, there is an extra window appearing and disapearing
+        // In Firefox, there is an extra window appearing and disappearing
         // so we leave this delay until the issue is fixed (#27360)
-        await driver.delay(veryLargeDelayMs);
+        if (process.env.SELENIUM_BROWSER === 'firefox') {
+          await driver.delay(veryLargeDelayMs);
+        }
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -267,6 +274,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.findElement({
+          text: 'Allow this site to switch the network?',
+          tag: 'h3',
+        });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
