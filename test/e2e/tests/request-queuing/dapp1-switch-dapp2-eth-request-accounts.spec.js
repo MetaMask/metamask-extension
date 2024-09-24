@@ -53,6 +53,12 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
           tag: 'button',
         });
 
+        await driver.delay(regularDelayMs);
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
         // Leave the confirmation pending
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
