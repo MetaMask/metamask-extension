@@ -12,6 +12,8 @@ import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
+
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -184,7 +186,8 @@ describe('ConfirmFooter', () => {
     const OWNER_ID_MOCK = '123';
     const KEY_ALERT_KEY_MOCK = 'Key';
     const ALERT_MESSAGE_MOCK = 'Alert 1';
-    const alertsMock = [
+
+    const alertsMock: Alert[] = [
       {
         key: KEY_ALERT_KEY_MOCK,
         field: KEY_ALERT_KEY_MOCK,
@@ -213,18 +216,42 @@ describe('ConfirmFooter', () => {
     };
     it('renders the review alerts button when there are unconfirmed alerts', () => {
       const { getByText } = render(stateWithAlertsMock);
-      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText('Review alerts')).toBeInTheDocument();
     });
 
-    it('renders the confirm button when there are no unconfirmed alerts', () => {
-      const { getByText } = render();
-      expect(getByText('Confirm')).toBeInTheDocument();
+    it('renders the "review alerts" button disabled when there are blocking alerts', () => {
+      const stateWithMultipleDangerAlerts = {
+        ...stateWithAlertsMock,
+        confirmAlerts: {
+          alerts: {
+            [OWNER_ID_MOCK]: [
+              alertsMock[0],
+              {
+                ...alertsMock[0],
+                key: 'From',
+                isBlocking: true,
+              },
+            ],
+          },
+          confirmed: {
+            [OWNER_ID_MOCK]: { [KEY_ALERT_KEY_MOCK]: false },
+          },
+        },
+      };
+      const { getByText } = render(stateWithMultipleDangerAlerts);
+      expect(getByText('Review alerts')).toBeInTheDocument();
+      expect(getByText('Review alerts')).toBeDisabled();
     });
 
     it('sets the alert modal visible when the review alerts button is clicked', () => {
       const { getByTestId } = render(stateWithAlertsMock);
       fireEvent.click(getByTestId('confirm-footer-button'));
       expect(getByTestId('confirm-alert-modal-submit-button')).toBeDefined();
+    });
+
+    it('renders the "confirm" button when there are no alerts', () => {
+      const { getByText } = render();
+      expect(getByText('Confirm')).toBeInTheDocument();
     });
   });
 });
