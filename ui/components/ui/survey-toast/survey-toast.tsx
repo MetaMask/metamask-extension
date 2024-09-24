@@ -33,7 +33,7 @@ export function SurveyToast() {
   const internalAccount = useSelector(getSelectedInternalAccount);
 
   useEffect(() => {
-    if (!basicFunctionality) {
+    if (!basicFunctionality && !internalAccount?.address) {
       return;
     }
 
@@ -72,7 +72,7 @@ export function SurveyToast() {
 
     fetchSurvey();
   }, [
-    internalAccount.address,
+    internalAccount?.address,
     lastViewedUserSurvey,
     basicFunctionality,
     dispatch,
