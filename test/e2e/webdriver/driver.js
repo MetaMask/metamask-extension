@@ -1091,17 +1091,17 @@ class Driver {
   }
 
   /**
-   * Waits for a notification to close and a new one to open, handling race conditions.
+   * Waits for a notification to close and a new one to open, handling potential race conditions.
    *
    * @param {object} params - The parameters for the function.
    * @param {WebDriver} params.driver - The WebDriver instance used to interact with the browser.
-   * @param {Array<string>} params.windowsBefore - The list of window handles before the action to close the notification.
+   * @param {Array<string>} params.windowsBefore - The list of window handles before the action.
    * @param {number} [params.maxAttempts] - The maximum number of attempts to find the new window handle.
    * @param {number} [params.retryDelayMs] - The delay in milliseconds between retry attempts.
    * @returns {Promise<string>} A promise that resolves to the new window handle.
    * @throws {Error} If the new window handle is not found after the maximum number of attempts.
    */
-  async getNewNotificationHandleAfterOldOneCloses({
+  async waitForNotificationToCloseAndOpen({
     driver,
     maxAttempts = 5,
     retryDelayMs = 1500,

@@ -5,12 +5,13 @@ const {
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
+  veryLargeDelayMs,
   WINDOW_TITLES,
   withFixtures,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  it.only('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
+  it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -119,20 +120,22 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const windowsBefore = await driver.getAllWindowHandles();
-        console.log("WINDOW HANDLES WITH SWITCH NETWORK MM DIALOG", windowsBefore);
 
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Wait for switch confirmation to close then tx confirmation to show.
-        const newDialogWindow =
-          await driver.getNewNotificationHandleAfterOldOneCloses({
-            driver,
-            windowsBefore,
-          });
+        await driver.waitForNotificationToCloseAndOpen({
+          driver,
+          windowsBefore,
+        });
 
-        const windowAfter = await driver.getAllWindowHandles();
-        console.log("WINDOW HANDLES WITH SEND MM DIALOG", windowAfter);
-        await driver.switchToWindow(newDialogWindow);
+        // For Firefox/Webpack, there is an extra window appearing and disapearing
+        // so we leave this delay until the issue is fixed (#27360)
+        if (process.env.SELENIUM_BROWSER !== 'chrome') {
+          await driver.delay(veryLargeDelayMs);
+        }
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
         await driver.findElement({
@@ -278,13 +281,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         // Wait for switch confirmation to close then tx confirmation to show.
-        const newDialogWindow =
-          await driver.getNewNotificationHandleAfterOldOneCloses({
-            driver,
-            windowsBefore,
-          });
+        await driver.waitForNotificationToCloseAndOpen({
+          driver,
+          windowsBefore,
+        });
 
-        await driver.switchToWindow(newDialogWindow);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
         await driver.findElement({
