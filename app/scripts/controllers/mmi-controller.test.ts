@@ -203,10 +203,10 @@ describe('MMIController', function () {
     });
 
     metaMetricsController = new MetaMetricsController({
-      preferencesController: {
-        state: { currentLocale: 'en' },
-        subscribe: jest.fn(),
+      preferencesControllerState: {
+        currentLocale: 'en'
       },
+      onPreferencesStateChange: jest.fn(),
       getCurrentChainId: jest.fn(),
       onNetworkDidChange: jest.fn(),
     });
@@ -246,7 +246,6 @@ describe('MMIController', function () {
         onInactiveTimeout: jest.fn(),
         showUnlockRequest: jest.fn(),
         preferencesController: {
-          subscribe: jest.fn(),
           state: {
             preferences: {
               autoLockTimeLimit: 0,

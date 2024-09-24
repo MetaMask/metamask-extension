@@ -736,15 +736,13 @@ export default class MetamaskController extends EventEmitter {
 
     this.metaMetricsController = new MetaMetricsController({
       segment,
-      preferencesController: {
-        subscribe: preferencesMessenger.subscribe.bind(
-          preferencesMessenger,
-          'PreferencesController:stateChange',
-        ),
-        state: {
-          currentLocale: this.preferencesController.state.currentLocale,
-          selectedAddress: this.preferencesController.state.selectedAddress,
-        },
+      onPreferencesStateChange: preferencesMessenger.subscribe.bind(
+        preferencesMessenger,
+        'PreferencesController:stateChange',
+      ),
+      preferencesControllerState: {
+        currentLocale: this.preferencesController.state.currentLocale,
+        selectedAddress: this.preferencesController.state.selectedAddress,
       },
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
@@ -1263,14 +1261,10 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SelectedNetworkController,
       useRequestQueuePreference:
         this.preferencesController.state.useRequestQueue,
-      onPreferencesStateChange: (listener) => {
-        preferencesMessenger.subscribe(
-          'PreferencesController:stateChange',
-          (newState) => {
-            listener(newState);
-          },
-        );
-      },
+      onPreferencesStateChange: preferencesMessenger.subscribe.bind(
+        preferencesMessenger,
+        'PreferencesController:stateChange',
+      ),
       domainProxyMap: new WeakRefObjectMap(),
     });
 

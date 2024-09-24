@@ -114,7 +114,9 @@ export default class MetaMetricsController {
    * @param {object} options
    * @param {object} options.segment - an instance of analytics for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {object} options.preferencesController - The preferences controller
+   * @param {object} options.preferencesControllerState - The state of preferences controller
+   * @param {Function} options.onPreferencesStateChange - Used to attach a listener to the
+   *  stateChange event emitted by the PreferencesController
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
@@ -127,7 +129,8 @@ export default class MetaMetricsController {
    */
   constructor({
     segment,
-    preferencesController,
+    preferencesControllerState,
+    onPreferencesStateChange,
     onNetworkDidChange,
     getCurrentChainId,
     version,
@@ -144,14 +147,14 @@ export default class MetaMetricsController {
       }
     };
     this.chainId = getCurrentChainId();
-    this.locale = preferencesController.state.currentLocale.replace('_', '-');
+    this.locale = preferencesControllerState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
     this.extension = extension;
     this.environment = environment;
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.selectedAddress = preferencesController.state.selectedAddress;
+    this.selectedAddress = preferencesControllerState.selectedAddress;
     ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
@@ -175,7 +178,7 @@ export default class MetaMetricsController {
       },
     });
 
-    preferencesController.subscribe(({ currentLocale }) => {
+    onPreferencesStateChange(({ currentLocale }) => {
       this.locale = currentLocale.replace('_', '-');
     });
 

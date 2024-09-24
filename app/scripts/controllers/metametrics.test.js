@@ -74,23 +74,6 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
-function getMockPreferencesController({
-  currentLocale = LOCALE,
-  subscribe = jest.fn(),
-} = {}) {
-  const preferencesState = {
-    currentLocale,
-  };
-  const setCurrentLocale = (newLocale) => {
-    preferencesState.currentLocale = newLocale;
-  };
-  return {
-    state: preferencesState,
-    subscribe,
-    setCurrentLocale,
-  };
-}
-
 const SAMPLE_PERSISTED_EVENT = {
   id: 'testid',
   persist: true,
@@ -118,7 +101,10 @@ function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
   marketingCampaignCookieId = null,
-  preferencesController = getMockPreferencesController(),
+  preferencesControllerState = { currentLocale: LOCALE },
+  onPreferencesStateChange = () => {
+    // do nothing
+  },
   getCurrentChainId = () => FAKE_CHAIN_ID,
   onNetworkDidChange = () => {
     // do nothing
@@ -129,7 +115,8 @@ function getMetaMetricsController({
     segment: segmentInstance || segment,
     getCurrentChainId,
     onNetworkDidChange,
-    preferencesController,
+    preferencesControllerState,
+    onPreferencesStateChange,
     version: '0.0.1',
     environment: 'test',
     initState: {
@@ -211,14 +198,14 @@ describe('MetaMetricsController', function () {
 
     it('should update when preferences changes', function () {
       let subscribeListener;
-      const subscribe = (listener) => {
+      const onPreferencesStateChange = (listener) => {
         subscribeListener = listener;
       };
-      const preferencesController = getMockPreferencesController({ subscribe });
       const metaMetricsController = getMetaMetricsController({
-        preferencesController,
+        preferencesControllerState: { currentLocale: LOCALE },
+        onPreferencesStateChange,
       });
-      preferencesController.setCurrentLocale({ currentLocale: 'en_UK' });
+
       subscribeListener({ currentLocale: 'en_UK' });
       expect(metaMetricsController.locale).toStrictEqual('en-UK');
     });
@@ -738,9 +725,11 @@ describe('MetaMetricsController', function () {
 
     it('should track a page view if isOptInPath is true and user not yet opted in', function () {
       const metaMetricsController = getMetaMetricsController({
-        preferencesController: getMockPreferencesController({
+        preferencesControllerState: {
+          currentLocale: LOCALE,
           participateInMetaMetrics: null,
-        }),
+        },
+        onPreferencesStateChange: jest.fn(),
       });
       const spy = jest.spyOn(segment, 'page');
       metaMetricsController.trackPage(
@@ -752,6 +741,7 @@ describe('MetaMetricsController', function () {
         },
         { isOptInPath: true },
       );
+
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(
         {
@@ -771,9 +761,11 @@ describe('MetaMetricsController', function () {
 
     it('multiple trackPage call with same actionId should result in same messageId being sent to segment', function () {
       const metaMetricsController = getMetaMetricsController({
-        preferencesController: getMockPreferencesController({
+        preferencesControllerState: {
+          currentLocale: LOCALE,
           participateInMetaMetrics: null,
-        }),
+        },
+        onPreferencesStateChange: jest.fn(),
       });
       const spy = jest.spyOn(segment, 'page');
       metaMetricsController.trackPage(
@@ -796,6 +788,7 @@ describe('MetaMetricsController', function () {
         },
         { isOptInPath: true },
       );
+
       expect(spy).toHaveBeenCalledTimes(2);
       expect(spy).toHaveBeenCalledWith(
         {
