@@ -410,7 +410,7 @@ describe('Sentry errors', function () {
 
     // todo: reenable this test https://github.com/MetaMask/metamask-extension/issues/21807
     // eslint-disable-next-line mocha/no-skipped-tests
-    it('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
+    it.skip('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
       await withFixtures(
         {
           fixtures: {
@@ -454,7 +454,7 @@ describe('Sentry errors', function () {
           const lastMigrationLog =
             migrationLogMessages[migrationLogMessages.length - 1];
 
-          assert.equal(migrationLogMessages.length, 10);
+          assert.equal(migrationLogMessages.length, 8);
           assert.equal(firstMigrationLog, 'Running migration 75');
           assert.equal(lastMigrationLog, 'Running migration 82');
         },

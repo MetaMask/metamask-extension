@@ -36,7 +36,8 @@
       "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean",
+      "tokenSortConfig": "object"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -128,7 +129,6 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
-    "tokenSortConfig": "object",
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
