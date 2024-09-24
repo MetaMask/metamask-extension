@@ -317,7 +317,7 @@ describe('permission background API methods', () => {
       expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.getCaveat).toHaveBeenCalledWith(
         'foo.com',
-        RestrictedMethods.permittedChains,
+        PermissionNames.permittedChains,
         CaveatTypes.restrictNetworkSwitching,
       );
 
@@ -326,7 +326,7 @@ describe('permission background API methods', () => {
       expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.updateCaveat).toHaveBeenCalledWith(
         'foo.com',
-        RestrictedMethods.permittedChains,
+        PermissionNames.permittedChains,
         CaveatTypes.restrictNetworkSwitching,
         ['0x1'],
       );
@@ -351,14 +351,14 @@ describe('permission background API methods', () => {
       expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.getCaveat).toHaveBeenCalledWith(
         'foo.com',
-        RestrictedMethods.permittedChains,
+        PermissionNames.permittedChains,
         CaveatTypes.restrictNetworkSwitching,
       );
 
       expect(permissionController.revokePermission).toHaveBeenCalledTimes(1);
       expect(permissionController.revokePermission).toHaveBeenCalledWith(
         'foo.com',
-        RestrictedMethods.permittedChains,
+        PermissionNames.permittedChains,
       );
 
       expect(permissionController.updateCaveat).not.toHaveBeenCalled();
@@ -379,7 +379,7 @@ describe('permission background API methods', () => {
       expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.getCaveat).toHaveBeenCalledWith(
         'foo.com',
-        RestrictedMethods.permittedChains,
+        PermissionNames.permittedChains,
         CaveatTypes.restrictNetworkSwitching,
       );
 
