@@ -731,16 +731,8 @@
     },
     "@metamask/address-book-controller": {
       "packages": {
-        "@metamask/address-book-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true
-      }
-    },
-    "@metamask/address-book-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/announcement-controller": {
@@ -1631,33 +1623,55 @@
     },
     "@metamask/network-controller": {
       "globals": {
-        "URL": true,
         "btoa": true,
         "fetch": true,
         "setTimeout": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
-        "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/base-controller": true,
+        "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/network-controller>reselect": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
         "browserify>assert": true,
+        "browserify>util": true,
+        "uri-js": true,
         "uuid": true
       }
     },
-    "@metamask/network-controller>@metamask/base-controller": {
+    "@metamask/network-controller>@metamask/eth-block-tracker": {
       "globals": {
+        "clearTimeout": true,
+        "console.error": true,
         "setTimeout": true
       },
       "packages": {
-        "immer": true
+        "@metamask/eth-query>json-rpc-random-id": true,
+        "@metamask/network-controller>@metamask/eth-block-tracker>@metamask/utils": true,
+        "@metamask/safe-event-emitter": true,
+        "pify": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-block-tracker>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura": {
@@ -1710,17 +1724,11 @@
         "@metamask/eth-json-rpc-middleware>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/utils": true,
         "@metamask/rpc-errors": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "bn.js": true,
         "pify": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/utils": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/utils": {
@@ -1744,6 +1752,13 @@
         "@metamask/safe-event-emitter": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "uuid": true
+      }
+    },
+    "@metamask/network-controller>reselect": {
+      "globals": {
+        "WeakRef": true,
+        "console.warn": true,
+        "unstable_autotrackMemoize": true
       }
     },
     "@metamask/notification-controller": {
@@ -2305,16 +2320,8 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/selected-network-controller>@metamask/base-controller": true
-      }
-    },
-    "@metamask/selected-network-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
+        "@metamask/base-controller": true,
+        "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },
     "@metamask/signature-controller": {
@@ -5535,6 +5542,11 @@
     "terser>source-map-support>buffer-from": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "uri-js": {
+      "globals": {
+        "define": true
       }
     },
     "uuid": {

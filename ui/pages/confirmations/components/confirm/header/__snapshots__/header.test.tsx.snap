@@ -57,9 +57,9 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
-          C
+          G
         </div>
       </div>
       <div
@@ -75,7 +75,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           data-testid="header-network-display-name"
         >
-          Chain 5
+          Goerli
         </p>
       </div>
     </div>
@@ -170,9 +170,9 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
-          C
+          G
         </div>
       </div>
       <div
@@ -186,7 +186,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           data-testid="header-network-display-name"
         >
-          Chain 5
+          Goerli
         </p>
       </div>
     </div>

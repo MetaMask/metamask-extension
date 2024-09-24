@@ -199,9 +199,6 @@
   "delete": {
     "message": "Odstrániť"
   },
-  "deleteNetwork": {
-    "message": "Odstrániť sieť?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -337,9 +334,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Adresa příjemce je neplatná"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Neplatné Block Explorer URI"
   },
   "invalidRPC": {
     "message": "Neplatné RPC URI"
