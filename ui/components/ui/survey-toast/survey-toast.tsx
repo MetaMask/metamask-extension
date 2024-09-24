@@ -10,6 +10,8 @@ import {
 import {
   getSelectedInternalAccount,
   getLastViewedUserSurvey,
+  getUseExternalServices,
+  getParticipateInMetaMetrics,
 } from '../../../selectors';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';
@@ -26,9 +28,15 @@ export function SurveyToast() {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const lastViewedUserSurvey = useSelector(getLastViewedUserSurvey);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const basicFunctionality = useSelector(getUseExternalServices);
   const internalAccount = useSelector(getSelectedInternalAccount);
 
   useEffect(() => {
+    if (!basicFunctionality) {
+      return;
+    }
+
     const surveyId = 1;
     const surveyUrl = `https://accounts.dev-api.cx.metamask.io/v1/users/${internalAccount.address}/surveys?surveyId=${surveyId}`;
 
@@ -45,7 +53,6 @@ export function SurveyToast() {
           functionName: 'fetchSurveys',
           cacheOptions: { cacheRefreshTime: DAY * 7 },
         });
-        console.log('survey res:', { response });
 
         const _survey: Survey = response?.surveys?.[0];
 
@@ -64,7 +71,12 @@ export function SurveyToast() {
     };
 
     fetchSurvey();
-  }, [internalAccount.address, lastViewedUserSurvey, dispatch]);
+  }, [
+    internalAccount.address,
+    lastViewedUserSurvey,
+    basicFunctionality,
+    dispatch,
+  ]);
 
   function handleActionClick() {
     if (!survey) {
@@ -72,15 +84,7 @@ export function SurveyToast() {
     }
     window.open(survey.url, '_blank');
     dispatch(setLastViewedUserSurvey(survey.surveyId));
-
-    trackEvent({
-      event: MetaMetricsEventName.SurveyToast,
-      category: MetaMetricsEventCategory.Feedback,
-      properties: {
-        response: 'accept',
-        survey: survey.surveyId,
-      },
-    });
+    trackAction('accept');
   }
 
   function handleClose() {
@@ -88,12 +92,19 @@ export function SurveyToast() {
       return;
     }
     dispatch(setLastViewedUserSurvey(survey.surveyId));
+    trackAction('deny');
+  }
+
+  function trackAction(response: 'accept' | 'deny') {
+    if (!participateInMetaMetrics || !survey) {
+      return;
+    }
 
     trackEvent({
       event: MetaMetricsEventName.SurveyToast,
       category: MetaMetricsEventCategory.Feedback,
       properties: {
-        response: 'deny',
+        response,
         survey: survey.surveyId,
       },
     });
