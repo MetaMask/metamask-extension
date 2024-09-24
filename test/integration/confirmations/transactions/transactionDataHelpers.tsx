@@ -139,6 +139,29 @@ export const getUnapprovedIncreaseAllowanceTransaction = (
   };
 };
 
+export const getUnapprovedSetApprovalForAllTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  return {
+    ...getUnapprovedContractInteractionTransaction(
+      accountAddress,
+      pendingTransactionId,
+      pendingTransactionTime,
+    ),
+    txParams: {
+      ...getUnapprovedContractInteractionTransaction(
+        accountAddress,
+        pendingTransactionId,
+        pendingTransactionTime,
+      ).txParams,
+      data: '0xa22cb4650000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000000001',
+    },
+    type: TransactionType.tokenMethodSetApprovalForAll,
+  };
+};
+
 export const getMaliciousUnapprovedTransaction = (
   accountAddress: string,
   pendingTransactionId: string,

@@ -4,11 +4,12 @@ import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
-import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
+import { getUnapprovedSetApprovalForAllTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -24,7 +25,7 @@ const backgroundConnectionMocked = {
 export const pendingTransactionId = '48a75190-45ca-11ef-9001-f3886ec2397c';
 export const pendingTransactionTime = new Date().getTime();
 
-const getMetaMaskStateWithUnapprovedApproveTransaction = (opts?: {
+const getMetaMaskStateWithUnapprovedSetApprovalForAllTransaction = (opts?: {
   showAdvanceDetails: boolean;
 }) => {
   const account =
@@ -55,20 +56,20 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (opts?: {
     },
     pendingApprovalCount: 1,
     knownMethodData: {
-      '0x095ea7b3': {
-        name: 'Approve',
+      '0xa22cb465': {
+        name: 'setApprovalForAll',
         params: [
           {
             type: 'address',
           },
           {
-            type: 'uint256',
+            type: 'bool',
           },
         ],
       },
     },
     transactions: [
-      getUnapprovedApproveTransaction(
+      getUnapprovedSetApprovalForAllTransaction(
         account.address,
         pendingTransactionId,
         pendingTransactionTime,
@@ -86,15 +87,15 @@ const advancedDetailsMockedRequests = {
   decodeTransactionData: {
     data: [
       {
-        name: 'Approve',
+        name: 'setApprovalForAll',
         params: [
           {
             type: 'address',
             value: '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B',
           },
           {
-            type: 'uint256',
-            value: 1,
+            type: 'bool',
+            value: true,
           },
         ],
       },
@@ -118,7 +119,7 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
-describe('ERC721 Approve Confirmation', () => {
+describe('ERC721 setApprovalForAll Confirmation', () => {
   beforeAll(() => {
     const { provider } = createTestProviderTools({
       networkId: 'sepolia',
@@ -136,9 +137,13 @@ describe('ERC721 Approve Confirmation', () => {
         standard: TokenStandard.ERC721,
       },
     });
-    const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
-    const APPROVE_NFT_TEXT_SIG = 'approve(address,uint256)';
-    mock4byte(APPROVE_NFT_HEX_SIG, APPROVE_NFT_TEXT_SIG);
+    const INCREASE_SET_APPROVAL_FOR_ALL_HEX_SIG = '0xa22cb465';
+    const INCREASE_SET_APPROVAL_FOR_ALL_TEXT_SIG =
+      'setApprovalForAll(address,bool)';
+    mock4byte(
+      INCREASE_SET_APPROVAL_FOR_ALL_HEX_SIG,
+      INCREASE_SET_APPROVAL_FOR_ALL_TEXT_SIG,
+    );
   });
 
   afterEach(() => {
@@ -150,9 +155,9 @@ describe('ERC721 Approve Confirmation', () => {
     delete (global as any).ethereumProvider;
   });
 
-  it('displays spending cap request title', async () => {
+  it('displays set approval for all request title', async () => {
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction();
+      getMetaMaskStateWithUnapprovedSetApprovalForAllTransaction();
 
     await act(async () => {
       await integrationTestRender({
@@ -161,15 +166,17 @@ describe('ERC721 Approve Confirmation', () => {
       });
     });
 
-    expect(screen.getByText('Allowance request')).toBeInTheDocument();
     expect(
-      screen.getByText('This site wants permission to withdraw your NFTs'),
+      screen.getByText(tEn('setApprovalForAllRedesignedTitle') as string),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(tEn('confirmTitleDescApproveTransaction') as string),
     ).toBeInTheDocument();
   });
 
-  it('displays approve simulation section', async () => {
+  it('displays set approval for all simulation section', async () => {
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction();
+      getMetaMaskStateWithUnapprovedSetApprovalForAllTransaction();
 
     await act(async () => {
       await integrationTestRender({
@@ -184,12 +191,12 @@ describe('ERC721 Approve Confirmation', () => {
     expect(simulationSection).toBeInTheDocument();
 
     expect(simulationSection).toHaveTextContent(
-      "You're giving someone else permission to withdraw NFTs from your account",
+      tEn('simulationDetailsSetApprovalForAllDesc') as string,
     );
-    expect(simulationSection).toHaveTextContent('Withdraw');
+    expect(simulationSection).toHaveTextContent(tEn('withdrawing') as string);
     const spendingCapValue = screen.getByTestId('simulation-token-value');
     expect(simulationSection).toContainElement(spendingCapValue);
-    expect(spendingCapValue).toHaveTextContent('1');
+    expect(spendingCapValue).toHaveTextContent(tEn('all') as string);
     expect(simulationSection).toHaveTextContent('0x07614...3ad68');
   });
 
@@ -197,7 +204,7 @@ describe('ERC721 Approve Confirmation', () => {
     const testUser = userEvent.setup();
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction();
+      getMetaMaskStateWithUnapprovedSetApprovalForAllTransaction();
 
     await act(async () => {
       await integrationTestRender({
@@ -213,15 +220,18 @@ describe('ERC721 Approve Confirmation', () => {
     );
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
-    expect(approveDetailsSpender).toHaveTextContent('Spender');
+    expect(approveDetailsSpender).toHaveTextContent(
+      tEn('permissionFor') as string,
+    );
     expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
     const spenderTooltip = screen.getByTestId(
       'confirmation__approve-spender-tooltip',
     );
     expect(approveDetailsSpender).toContainElement(spenderTooltip);
     await testUser.hover(spenderTooltip);
+
     const spenderTooltipContent = await screen.findByText(
-      'This is the address that will be able to withdraw your NFTs.',
+      tEn('spenderTooltipDesc') as string,
     );
     expect(spenderTooltipContent).toBeInTheDocument();
 
@@ -229,7 +239,9 @@ describe('ERC721 Approve Confirmation', () => {
       'transaction-details-origin-row',
     );
     expect(approveDetails).toContainElement(approveDetailsRequestFrom);
-    expect(approveDetailsRequestFrom).toHaveTextContent('Request from');
+    expect(approveDetailsRequestFrom).toHaveTextContent(
+      tEn('requestFrom') as string,
+    );
     expect(approveDetailsRequestFrom).toHaveTextContent(
       'http://localhost:8086/',
     );
@@ -242,7 +254,7 @@ describe('ERC721 Approve Confirmation', () => {
     );
     await testUser.hover(approveDetailsRequestFromTooltip);
     const requestFromTooltipContent = await screen.findByText(
-      'This is the site asking for your confirmation.',
+      tEn('requestFromTransactionDescription') as string,
     );
     expect(requestFromTooltipContent).toBeInTheDocument();
   });
@@ -251,7 +263,7 @@ describe('ERC721 Approve Confirmation', () => {
     const testUser = userEvent.setup();
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction({
+      getMetaMaskStateWithUnapprovedSetApprovalForAllTransaction({
         showAdvanceDetails: true,
       });
 
@@ -269,7 +281,9 @@ describe('ERC721 Approve Confirmation', () => {
       'transaction-details-recipient-row',
     );
     expect(approveDetails).toContainElement(approveDetailsRecipient);
-    expect(approveDetailsRecipient).toHaveTextContent('Interacting with');
+    expect(approveDetailsRecipient).toHaveTextContent(
+      tEn('interactingWith') as string,
+    );
     expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
 
     const approveDetailsRecipientTooltip = screen.getByTestId(
@@ -280,7 +294,7 @@ describe('ERC721 Approve Confirmation', () => {
     );
     await testUser.hover(approveDetailsRecipientTooltip);
     const recipientTooltipContent = await screen.findByText(
-      "This is the contract you're interacting with. Protect yourself from scammers by verifying the details.",
+      tEn('interactingWithTransactionDescription') as string,
     );
     expect(recipientTooltipContent).toBeInTheDocument();
 
@@ -288,15 +302,15 @@ describe('ERC721 Approve Confirmation', () => {
       'transaction-details-method-data-row',
     );
     expect(approveDetails).toContainElement(approveMethodData);
-    expect(approveMethodData).toHaveTextContent('Method');
-    expect(approveMethodData).toHaveTextContent('Approve');
+    expect(approveMethodData).toHaveTextContent(tEn('methodData') as string);
+    expect(approveMethodData).toHaveTextContent('setApprovalForAll');
     const approveMethodDataTooltip = screen.getByTestId(
       'transaction-details-method-data-row-tooltip',
     );
     expect(approveMethodData).toContainElement(approveMethodDataTooltip);
     await testUser.hover(approveMethodDataTooltip);
     const approveMethodDataTooltipContent = await screen.findByText(
-      'Function executed based on decoded input data.',
+      tEn('methodDataTransactionDesc') as string,
     );
     expect(approveMethodDataTooltipContent).toBeInTheDocument();
 
@@ -312,8 +326,10 @@ describe('ERC721 Approve Confirmation', () => {
       'advanced-details-data-function',
     );
     expect(dataSection).toContainElement(dataSectionFunction);
-    expect(dataSectionFunction).toHaveTextContent('Function');
-    expect(dataSectionFunction).toHaveTextContent('Approve');
+    expect(dataSectionFunction).toHaveTextContent(
+      tEn('transactionDataFunction') as string,
+    );
+    expect(dataSectionFunction).toHaveTextContent('setApprovalForAll');
 
     const approveDataParams1 = screen.getByTestId(
       'advanced-details-data-param-0',
@@ -327,6 +343,6 @@ describe('ERC721 Approve Confirmation', () => {
     );
     expect(dataSection).toContainElement(approveDataParams2);
     expect(approveDataParams2).toHaveTextContent('Param #2');
-    expect(approveDataParams2).toHaveTextContent('1');
+    expect(approveDataParams2).toHaveTextContent('true');
   });
 });

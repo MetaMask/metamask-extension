@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
@@ -189,7 +190,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
 
     // TODO - fix this copy
     expect(simulationSection).toHaveTextContent(
-      "You're giving someone else permission to withdraw NFTs from your account",
+      tEn('simulationDetailsERC20ApproveDesc') as string,
     );
     expect(simulationSection).toHaveTextContent('Spending cap');
     const spendingCapValue = screen.getByTestId('simulation-token-value');
@@ -225,9 +226,9 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     expect(approveDetailsSpender).toContainElement(spenderTooltip);
     await testUser.hover(spenderTooltip);
-    // TODO - fix this copy
+
     const spenderTooltipContent = await screen.findByText(
-      'This is the address that will be able to withdraw your NFTs.',
+      tEn('spenderTooltipERC20ApproveDesc') as string,
     );
     expect(spenderTooltipContent).toBeInTheDocument();
 
