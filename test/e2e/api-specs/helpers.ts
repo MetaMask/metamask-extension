@@ -80,6 +80,7 @@ export const pollForResult = async (
 export const createCaip27DriverTransport = (
   driver: Driver,
   scopeMap: Record<string, string>,
+  extensionId: string,
 ) => {
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
@@ -103,14 +104,14 @@ export const createCaip27DriverTransport = (
         // will hang in selenium since it can only do one thing at a time.
         // the workaround is to put the response on window.asyncResult and poll for it.
         driver.executeScript(
-          ([m, p, g, s]: [
+          ([m, p, g, s, e]: [
             string,
             unknown[] | Record<string, unknown>,
             string,
             ScopeString,
+            string
           ]) => {
-            const EXTENSION_ID = 'famgliladofnadeldnodcgnjhafnbnhj';
-            const extensionPort = chrome.runtime.connect(EXTENSION_ID);
+            const extensionPort = chrome.runtime.connect(e);
 
             const listener = ({
               type,
@@ -154,6 +155,7 @@ export const createCaip27DriverTransport = (
           params,
           generatedKey,
           scopeMap[method],
+          extensionId,
         );
       },
     });
@@ -161,7 +163,7 @@ export const createCaip27DriverTransport = (
   };
 };
 
-export const createMultichainDriverTransport = (driver: Driver) => {
+export const createMultichainDriverTransport = (driver: Driver, extensionId: string) => {
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
   return async (
@@ -184,13 +186,13 @@ export const createMultichainDriverTransport = (driver: Driver) => {
         // will hang in selenium since it can only do one thing at a time.
         // the workaround is to put the response on window.asyncResult and poll for it.
         driver.executeScript(
-          ([m, p, g]: [
+          ([m, p, g, e]: [
             string,
             unknown[] | Record<string, unknown>,
             string,
+            string
           ]) => {
-            const EXTENSION_ID = 'famgliladofnadeldnodcgnjhafnbnhj';
-            const extensionPort = chrome.runtime.connect(EXTENSION_ID);
+            const extensionPort = chrome.runtime.connect(e);
 
             const listener = ({
               type,
@@ -227,6 +229,7 @@ export const createMultichainDriverTransport = (driver: Driver) => {
           method,
           params,
           generatedKey,
+          extensionId,
         );
       },
     });

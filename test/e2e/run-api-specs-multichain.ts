@@ -25,6 +25,7 @@ import {
   unlockWallet,
   DAPP_URL,
   ACCOUNT_1,
+  Fixtures,
 } from './helpers';
 import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
 import transformOpenRPCDocument from './api-specs/transform';
@@ -44,7 +45,7 @@ async function main() {
       disableGanache: true,
       title: 'api-specs coverage',
     },
-    async ({ driver }: { driver: Driver }) => {
+    async ({ driver, extensionId }: any) => {
       await unlockWallet(driver);
 
       // Navigate to extension home screen
@@ -81,7 +82,7 @@ async function main() {
         'net_version',
       ];
 
-      const transport = createMultichainDriverTransport(driver);
+      const transport = createMultichainDriverTransport(driver, extensionId);
       const [transformedDoc, filteredMethods, methodsWithConfirmations] =
         transformOpenRPCDocument(
           MetaMaskOpenRPCDocument as OpenrpcDocument,
@@ -189,7 +190,11 @@ async function main() {
 
       const testCoverageResultsCaip27 = await testCoverage({
         openrpcDocument: MetaMaskOpenRPCDocument as OpenrpcDocument,
-        transport: createCaip27DriverTransport(driver, reverseScopeMap),
+        transport: createCaip27DriverTransport(
+          driver,
+          reverseScopeMap,
+          extensionId,
+        ),
         reporters: ['console-streaming'],
         skip: [
           'eth_coinbase',
