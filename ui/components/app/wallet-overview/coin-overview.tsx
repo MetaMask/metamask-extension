@@ -157,11 +157,12 @@ export const CoinOverview = ({
     setAggregatedBalancePopover();
   };
 
-  const [referenceElement, setReferenceElement] = useState();
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const setBoxRef = (ref: any) => {
-    setReferenceElement(ref);
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLSpanElement | null>(null);
+  const setBoxRef = (ref: HTMLSpanElement | null) => {
+    if (ref) {
+      setReferenceElement(ref);
+    }
   };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
