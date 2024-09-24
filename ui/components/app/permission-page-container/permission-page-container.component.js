@@ -22,6 +22,7 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
+// eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { PermissionPageContainerContent } from '.';
 

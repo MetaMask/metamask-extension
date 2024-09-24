@@ -10,6 +10,11 @@ import enLocale from '../../app/_locales/en/messages.json';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import MetaMaskController from '../../app/scripts/metamask-controller';
+// eslint-disable-next-line import/no-restricted-paths
+import {
+  PermissionNames,
+  CaveatFactories,
+} from '../../app/scripts/controllers/permissions';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
@@ -18,10 +23,6 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { CaveatTypes } from '../../shared/constants/permissions';
-import {
-  CaveatFactories,
-  PermissionNames,
-} from '../../app/scripts/controllers/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';

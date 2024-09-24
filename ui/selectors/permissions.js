@@ -2,6 +2,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaveatTypes } from '../../shared/constants/permissions';
+// eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../app/scripts/controllers/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
