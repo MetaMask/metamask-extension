@@ -2161,14 +2161,17 @@
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
+        "clearInterval": true,
         "console.error": true,
         "dispatchEvent": true,
         "fetch": true,
         "removeEventListener": true,
+        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
         "@metamask/message-signing-snap>@noble/ciphers": true,
         "@metamask/profile-sync-controller>siwe": true,
         "@noble/hashes": true,
