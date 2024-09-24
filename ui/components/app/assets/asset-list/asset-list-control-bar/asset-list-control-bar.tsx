@@ -114,6 +114,7 @@ const AssetListControlBar = ({
         </ButtonBase>
         <ImportControl showTokensLinks={showTokensLinks} />
         <Popover
+          onClickOutside={() => setIsPopoverOpen(false)}
           isOpen={isPopoverOpen}
           position={PopoverPosition.BottomStart}
           referenceElement={controlBarRef.current}
