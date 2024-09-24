@@ -22,8 +22,8 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { PermissionPageContainerContent } from '.';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
