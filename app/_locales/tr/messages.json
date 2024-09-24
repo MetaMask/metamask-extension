@@ -2864,10 +2864,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Bu ağ, ilişkili zincir kimliği veya adı ile uyumlu değil. Pek çok popüler token $1 adını kullanarak bunu dolandırıcılar için hedef haline getirir. Dolandırıcılar, karşılığında kendilerine daha değerli para birimi göndermek üzere sizi kandırabilir. Devam etmeden önce her şeyi doğrulayın.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Bu potansiyel bir dolandırıcılıktır"
+    "message": "Bu potansiyel bir dolandırıcılıktır",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Yardıma mı ihtiyacınız var? $1 bölümüne ulaşın",

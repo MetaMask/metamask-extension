@@ -2864,10 +2864,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "이 네트워크는 연결된 체인 ID 또는 이름이 일치하지 않습니다. 여러 인기 토큰이 $1(이)라는 이름을 사용하기 때문에 사기의 표적이 되고 있습니다. 사기꾼은 더 가격이 높은 암호화폐를 주겠다고 속일 수 있습니다. 계속하기 전에 모든 사항을 확인하세요.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "사기일 수 있습니다"
+    "message": "사기일 수 있습니다",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "도움이 필요하신가요? $1에 문의하세요.",

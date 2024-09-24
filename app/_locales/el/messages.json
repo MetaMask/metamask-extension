@@ -2864,10 +2864,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Αυτό το δίκτυο δεν ταιριάζει με το αναγνωριστικό ή το όνομα της σχετικής αλυσίδας. Πολλά δημοφιλή tokens χρησιμοποιούν το όνομα $1, καθιστώντας το στόχο για απάτες. Οι απατεώνες μπορεί να σας ξεγελάσουν για να τους στείλετε πιο πολύτιμα νομίσματα σε αντάλλαγμα. Επαληθεύστε τα πάντα προτού συνεχίσετε.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Πρόκειται για πιθανή απάτη"
+    "message": "Πρόκειται για πιθανή απάτη",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Χρειάζεστε βοήθεια; Επικοινωνήστε με $1",
