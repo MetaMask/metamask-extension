@@ -10,7 +10,7 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
+  it.only('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -119,6 +119,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const windowsBefore = await driver.getAllWindowHandles();
+        console.log("WINDOW HANDLES WITH SWITCH NETWORK MM DIALOG", windowsBefore);
 
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
@@ -129,6 +130,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
             windowsBefore,
           });
 
+        const windowAfter = await driver.getAllWindowHandles();
+        console.log("WINDOW HANDLES WITH SEND MM DIALOG", windowAfter);
         await driver.switchToWindow(newDialogWindow);
 
         // Check correct network on the send confirmation.
