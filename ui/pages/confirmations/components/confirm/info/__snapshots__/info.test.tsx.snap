@@ -12,13 +12,16 @@ exports[`Info renders info section for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
@@ -79,13 +82,16 @@ exports[`Info renders info section for approve request 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-          style="align-items: center;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Data
-          </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              Data
+            </p>
+          </div>
         </div>
         <div
           class="mm-box"
@@ -139,27 +145,30 @@ exports[`Info renders info section for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Request from
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-8"
-            class=""
-            data-original-title="This is the site asking for your confirmation."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="transaction-details-origin-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-8"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -185,27 +194,30 @@ exports[`Info renders info section for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Network fee
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-9"
-            class=""
-            data-original-title="Amount paid to process the transaction on network."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="edit-gas-fees-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Network fee
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-9"
+              class=""
+              data-original-title="Amount paid to process the transaction on network."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="edit-gas-fees-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -246,13 +258,16 @@ exports[`Info renders info section for approve request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Speed
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Speed
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -375,27 +390,30 @@ exports[`Info renders info section for contract interaction request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Request from
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-4"
-            class=""
-            data-original-title="This is the site asking for your confirmation."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="transaction-details-origin-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-4"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -416,27 +434,30 @@ exports[`Info renders info section for contract interaction request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Interacting with
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-5"
-            class=""
-            data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="transaction-details-recipient-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-5"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-recipient-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -510,27 +531,30 @@ exports[`Info renders info section for contract interaction request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Network fee
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-6"
-            class=""
-            data-original-title="Amount paid to process the transaction on network."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="edit-gas-fees-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Network fee
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-6"
+              class=""
+              data-original-title="Amount paid to process the transaction on network."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="edit-gas-fees-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -571,13 +595,16 @@ exports[`Info renders info section for contract interaction request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Speed
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Speed
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -702,26 +729,29 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Estimated changes
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-10"
-            class=""
-            data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Estimated changes
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-10"
+              class=""
+              data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -742,13 +772,16 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Withdrawing
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Withdrawing
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
@@ -800,13 +833,16 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-          style="align-items: center;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Data
-          </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              Data
+            </p>
+          </div>
         </div>
         <div
           class="mm-box"
@@ -860,27 +896,30 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Request from
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-11"
-            class=""
-            data-original-title="This is the site asking for your confirmation."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="transaction-details-origin-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-11"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -906,27 +945,30 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Network fee
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-12"
-            class=""
-            data-original-title="Amount paid to process the transaction on network."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              data-testid="edit-gas-fees-row-tooltip"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Network fee
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-12"
+              class=""
+              data-original-title="Amount paid to process the transaction on network."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="edit-gas-fees-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -967,13 +1009,16 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Speed
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Speed
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--align-items-center"
