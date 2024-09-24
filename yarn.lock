@@ -4822,14 +4822,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/address-book-controller@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/address-book-controller@npm:5.0.0"
+"@metamask/address-book-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/address-book-controller@npm:6.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/controller-utils": "npm:^11.0.0"
-    "@metamask/utils": "npm:^8.3.0"
-  checksum: 10/f4f3ec2c569457243cc4771c2d146a91227114431ecf8bb0d74e42b2e93fcc4d10545c32f865c918c9f1586379016d3ea2d7f2bc056a6b10b6cfd985f2b3c432
+    "@metamask/base-controller": "npm:^7.0.0"
+    "@metamask/controller-utils": "npm:^11.2.0"
+    "@metamask/utils": "npm:^9.1.0"
+  checksum: 10/e699b97fc798a363390d673b766737dc10f82a1eefcf119823d8f4370846d6708b3b2eadd177c8b2cb826afa7e38b51cf978a0d55cd51e92e7a9ffe83f5f0803
   languageName: node
   linkType: hard
 
@@ -6041,6 +6041,15 @@ __metadata:
     eslint-plugin-n: "npm:^16.6.2"
     json-rpc-random-id: "npm:^1.0.1"
   checksum: 10/140b2070ddf4a9d7d13518ab1a10aa71961715434053096d0caa6f4ce104bbcaea5f5152edfa9b6c42f9bc929116afbb6a0542c1147e3101d04ef29bcf7a6c9f
+  languageName: node
+  linkType: hard
+
+"@metamask/preinstalled-example-snap@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/preinstalled-example-snap@npm:0.1.0"
+  dependencies:
+    "@metamask/snaps-sdk": "npm:^6.5.0"
+  checksum: 10/0540aa6c20b17171f3a3bcf9ea2a7be551d6abbf16de9bd55dce038c5602c62a3921c7e840b82a325b0db00f26b96f54568854bdcd091558bd3b8fa8c6188023
   languageName: node
   linkType: hard
 
@@ -26071,7 +26080,7 @@ __metadata:
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.0"
     "@metamask/accounts-controller": "npm:^18.2.1"
-    "@metamask/address-book-controller": "npm:^5.0.0"
+    "@metamask/address-book-controller": "npm:^6.0.0"
     "@metamask/announcement-controller": "npm:^7.0.0"
     "@metamask/api-specs": "npm:^0.9.3"
     "@metamask/approval-controller": "npm:^7.0.0"
@@ -26126,6 +26135,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
+    "@metamask/preinstalled-example-snap": "npm:^0.1.0"
     "@metamask/profile-sync-controller": "npm:^0.8.0"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"

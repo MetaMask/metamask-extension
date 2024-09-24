@@ -12,6 +12,7 @@ import {
 } from '../../../../../../../test/data/confirmations/helper';
 import {
   permitSignatureMsg,
+  permitSignatureMsgWithNoDeadline,
   unapprovedTypedSignMsgV3,
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
@@ -102,6 +103,23 @@ describe('TypedSignInfo', () => {
         useTransactionSimulations: true,
       },
     });
+    const mockStore = configureMockStore([])(state);
+    const { container } = renderWithConfirmContextProvider(
+      <TypedSignInfo />,
+      mockStore,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('correctly renders permit sign type with no deadline', () => {
+    const state = getMockTypedSignConfirmStateForRequest(
+      permitSignatureMsgWithNoDeadline,
+      {
+        metamask: {
+          useTransactionSimulations: true,
+        },
+      },
+    );
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(
       <TypedSignInfo />,
