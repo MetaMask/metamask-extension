@@ -3,7 +3,6 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { EditNetworksModal } from '.';
 
 const render = (
@@ -86,6 +85,8 @@ describe('EditNetworksModal', () => {
     const { getByLabelText, getByTestId } = render();
     fireEvent.click(getByLabelText('Select all'));
     fireEvent.click(getByLabelText('Select all'));
-    expect(getByTestId('disconnect-chains-button')).toHaveTextContent('Disconnect')
-  })
+    expect(getByTestId('disconnect-chains-button')).toHaveTextContent(
+      'Disconnect',
+    );
+  });
 });

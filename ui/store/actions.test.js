@@ -17,11 +17,11 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { CaveatTypes } from '../../shared/constants/permissions';
 import {
   CaveatFactories,
   PermissionNames,
 } from '../../app/scripts/controllers/permissions';
-import { CaveatTypes } from '../../shared/constants/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';

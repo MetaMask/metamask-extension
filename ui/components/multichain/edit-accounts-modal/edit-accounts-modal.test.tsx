@@ -87,6 +87,8 @@ describe('EditAccountsModal', () => {
     const { getByLabelText, getByTestId } = render();
     fireEvent.click(getByLabelText('Select all'));
     fireEvent.click(getByLabelText('Select all'));
-    expect(getByTestId('disconnect-accounts-button')).toHaveTextContent('Disconnect')
-  })
+    expect(getByTestId('disconnect-accounts-button')).toHaveTextContent(
+      'Disconnect',
+    );
+  });
 });

@@ -13,8 +13,6 @@ import {
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
-
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
@@ -25,6 +23,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
 import { PermissionPageContainerContent } from '.';
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
