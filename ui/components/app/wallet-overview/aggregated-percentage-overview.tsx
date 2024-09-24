@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { zeroAddress } from 'ethereumjs-util';
+import { zeroAddress, toChecksumAddress } from 'ethereumjs-util';
 import {
   getCurrentCurrency,
   getSelectedAccount,
@@ -10,7 +10,6 @@ import {
 } from '../../../selectors';
 
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
@@ -50,10 +49,8 @@ export const AggregatedPercentageOverview = () => {
         // This is a regular ERC20 token
         // find the relevant pricePercentChange1d in tokensMarketData
         // Find the corresponding market data for the token by filtering the values of the tokensMarketData object
-        const found = Object.values(tokensMarketData).find(
-          (data: MarketDataDetails) =>
-            isEqualCaseInsensitive(data.tokenAddress, item.address),
-        );
+        const found = tokensMarketData[toChecksumAddress(item.address)];
+
         const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
           item.fiatBalance,
           found?.pricePercentChange1d,
