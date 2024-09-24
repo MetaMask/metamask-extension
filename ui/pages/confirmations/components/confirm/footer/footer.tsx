@@ -137,11 +137,6 @@ const ConfirmButton = ({
             hasDangerBlockingAlerts,
             disabled,
           )}
-          disabled={getButtonDisabledState(
-            hasUnconfirmedDangerAlerts,
-            hasDangerBlockingAlerts,
-            disabled,
-          )}
           onClick={handleOpenConfirmModal}
           size={ButtonSize.Lg}
           startIconName={
