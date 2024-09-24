@@ -37,7 +37,7 @@ export const SiteCellConnectionListItem = ({
 
   return (
     <Box
-      data-testid="connection-list-item"
+      data-testid="site-cell-connection-list-item"
       as="button"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
