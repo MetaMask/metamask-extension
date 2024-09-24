@@ -47,19 +47,23 @@ async function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
 describe('useDecodedTransactionData', () => {
   const decodeTransactionDataMock = jest.mocked(decodeTransactionData);
 
-  it('returns undefined if no transaction data', async () => {
-    const result = await runHook({
-      currentConfirmation: {
-        chainId: CHAIN_ID_MOCK,
-        txParams: {
-          data: '',
-          to: CONTRACT_ADDRESS_MOCK,
-        } as TransactionParams,
-      },
-    });
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([undefined, null, '', '0x', '0X'])(
+    'returns undefined if transaction data is %s',
+    async () => {
+      const result = await runHook({
+        currentConfirmation: {
+          chainId: CHAIN_ID_MOCK,
+          txParams: {
+            data: '',
+            to: CONTRACT_ADDRESS_MOCK,
+          } as TransactionParams,
+        },
+      });
 
-    expect(result).toStrictEqual({ pending: false, value: undefined });
-  });
+      expect(result).toStrictEqual({ pending: false, value: undefined });
+    },
+  );
 
   it('returns the decoded data', async () => {
     decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_SOURCIFY);
