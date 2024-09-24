@@ -25,12 +25,12 @@ import { mergeValue } from './utils';
 export type HandleEvent = <Type extends State>(args: {
   event: UserInputEventType;
   name?: string;
-  value?: Type;
+  value?: Type | null;
 }) => void;
 
 export type HandleInputChange = <Type extends State>(
   name: string,
-  value: Type | undefined,
+  value: Type | null,
   form?: string,
 ) => void;
 
@@ -130,7 +130,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     value = name ? internalState.current[name] : undefined,
   }) => handleSnapRequest(event, name, value);
 
-  const submitInputChange = (name: string, value: State | undefined) =>
+  const submitInputChange = (name: string, value: State | null) =>
     handleEvent({
       event: UserInputEventType.InputChangeEvent,
       name,
@@ -210,7 +210,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
       return;
     }
 
-    const state = mergeValue(internalState.current, name, undefined, form);
+    const state = mergeValue(internalState.current, name, null, form);
 
     internalState.current = state;
     updateState(state);
