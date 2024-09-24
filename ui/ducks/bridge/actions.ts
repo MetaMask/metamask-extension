@@ -38,10 +38,6 @@ import {
   addHexes,
   decGWEIToHexWEI,
 } from '../../../shared/modules/conversion.utils';
-import {
-  getCustomMaxFeePerGas,
-  getCustomMaxPriorityFeePerGas,
-} from '../swaps/swaps';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { MetaMetricsNetworkEventSource } from '../../../shared/constants/metametrics';
 import { DEFAULT_TOKEN_ADDRESS } from '../../../shared/constants/swaps';
@@ -138,37 +134,32 @@ export const signBridgeTransaction = (
     //   return;
     // }
 
-    // const quoteMeta = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
-    const quoteMeta = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
+    const quoteMeta = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
+    // const quoteMeta = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
 
     // Track event TODO
 
     // Calc gas
     let maxFeePerGas: undefined | string;
     let maxPriorityFeePerGas: undefined | string;
-    let baseAndPriorityFeePerGas;
-    let decEstimatedBaseFee;
+    // let baseAndPriorityFeePerGas;
+    // let decEstimatedBaseFee;
 
     const networkAndAccountSupports1559 =
       checkNetworkAndAccountSupports1559(state);
-    const customMaxFeePerGas = getCustomMaxFeePerGas(state);
-    const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
 
     if (networkAndAccountSupports1559) {
       const {
         high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
-        estimatedBaseFee = '0',
+        // estimatedBaseFee = '0',
       } = getGasFeeEstimates(state);
-      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
-      maxFeePerGas =
-        customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
-      maxPriorityFeePerGas =
-        customMaxPriorityFeePerGas ||
-        decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
-      baseAndPriorityFeePerGas = addHexes(
-        decEstimatedBaseFee,
-        maxPriorityFeePerGas,
-      );
+      // decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
+      maxFeePerGas = decGWEIToHexWEI(suggestedMaxFeePerGas);
+      maxPriorityFeePerGas = decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+      // baseAndPriorityFeePerGas = addHexes(
+      //   decEstimatedBaseFee,
+      //   maxPriorityFeePerGas,
+      // );
     }
 
     const handleApprovalTx = async () => {
@@ -182,27 +173,27 @@ export const signBridgeTransaction = (
         throw new Error('Invalid chain ID');
       }
 
-      const txMeta = await addTransactionAndWaitForPublish(
-        {
-          ...quoteMeta.approval,
-          chainId: hexChainId,
-          gasLimit: quoteMeta.approval.gasLimit.toString(),
-          maxFeePerGas,
-          maxPriorityFeePerGas,
-        },
-        {
-          requireApproval: false,
-          // @ts-expect-error Need TransactionController v37+, TODO add this type
-          type: 'bridgeApproval', // TransactionType.bridgeApproval,
-          swaps: {
-            hasApproveTx: true,
-            meta: {
-              type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
-              sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
-            },
+      const gasLimit = quoteMeta.approval.gasLimit.toString();
+      const txParams = {
+        ...quoteMeta.approval,
+        chainId: hexChainId,
+        gasLimit,
+        gas: gasLimit, // must set this field
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      };
+      const txMeta = await addTransactionAndWaitForPublish(txParams, {
+        requireApproval: false,
+        // @ts-expect-error Need TransactionController v37+, TODO add this type
+        type: 'bridgeApproval', // TransactionType.bridgeApproval,
+        swaps: {
+          hasApproveTx: true,
+          meta: {
+            type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
+            sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
           },
         },
-      );
+      });
 
       console.log('Bridge', { approvalTxId: txMeta.id });
       return txMeta.id;
@@ -218,38 +209,38 @@ export const signBridgeTransaction = (
         throw new Error('Invalid chain ID');
       }
 
-      const txMeta = await addTransactionAndWaitForPublish(
-        {
-          ...quoteMeta.trade,
-          chainId: hexChainId,
-          gasLimit: quoteMeta.trade.gasLimit.toString(),
-          maxFeePerGas,
-          maxPriorityFeePerGas,
-        },
-        {
-          requireApproval: false,
-          // @ts-expect-error Need TransactionController v37+, TODO add this type
-          type: 'bridge', // TransactionType.bridge,
-          bridge: {
-            hasApproveTx: Boolean(quoteMeta?.approval),
-            meta: {
-              // estimatedBaseFee: decEstimatedBaseFee,
-              // swapMetaData,
-              type: 'bridge', // TransactionType.bridge, // TODO add this type
-              sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
-              destinationTokenSymbol: quoteMeta.quote.destAsset.symbol,
-              destinationTokenDecimals: quoteMeta.quote.destAsset.decimals,
-              destinationTokenAddress: quoteMeta.quote.destAsset.address,
-              approvalTxId,
-              // this is the decimal (non atomic) amount (not USD value) of source token to swap
-              swapTokenValue: new Numeric(
-                quoteMeta.quote.srcTokenAmount,
-                10,
-              ).shiftedBy(quoteMeta.quote.srcAsset.decimals),
-            },
+      const gasLimit = quoteMeta.trade.gasLimit.toString();
+      const txParams = {
+        ...quoteMeta.trade,
+        chainId: hexChainId,
+        gasLimit,
+        gas: gasLimit, // must set this field
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      };
+      const txMeta = await addTransactionAndWaitForPublish(txParams, {
+        requireApproval: false,
+        // @ts-expect-error Need TransactionController v37+, TODO add this type
+        type: 'bridge', // TransactionType.bridge,
+        bridge: {
+          hasApproveTx: Boolean(quoteMeta?.approval),
+          meta: {
+            // estimatedBaseFee: decEstimatedBaseFee,
+            // swapMetaData,
+            type: 'bridge', // TransactionType.bridge, // TODO add this type
+            sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
+            destinationTokenSymbol: quoteMeta.quote.destAsset.symbol,
+            destinationTokenDecimals: quoteMeta.quote.destAsset.decimals,
+            destinationTokenAddress: quoteMeta.quote.destAsset.address,
+            approvalTxId,
+            // this is the decimal (non atomic) amount (not USD value) of source token to swap
+            swapTokenValue: new Numeric(
+              quoteMeta.quote.srcTokenAmount,
+              10,
+            ).shiftedBy(quoteMeta.quote.srcAsset.decimals),
           },
         },
-      );
+      });
 
       console.log('Bridge', { bridgeTxId: txMeta.id });
       return txMeta.id;
