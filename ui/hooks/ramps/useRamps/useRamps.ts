@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { ChainId } from '../../../../shared/constants/network';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
@@ -32,7 +32,7 @@ const useRamps = (
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const getBuyURI = useCallback(
-    (_chainId: ChainId | CaipChainId) => {
+    (_chainId: Hex | CaipChainId) => {
       const params = new URLSearchParams();
       params.set('metamaskEntry', metamaskEntry);
       params.set('chainId', _chainId);
