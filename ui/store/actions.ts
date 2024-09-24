@@ -2942,7 +2942,6 @@ export function setPreference(
             reject(err);
             return;
           }
-          console.log('updatedPreferences', updatedPreferences);
           resolve(updatedPreferences as TemporaryPreferenceFlagDef);
         },
       );
