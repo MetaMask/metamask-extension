@@ -45,6 +45,12 @@
     }
   }
 
+  &:not(&--disabled) {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   &.mm-button-secondary {
     &:hover:not(&--disabled) {
       & > span {
