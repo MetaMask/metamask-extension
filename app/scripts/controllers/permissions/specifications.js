@@ -9,6 +9,7 @@ import {
 import { isValidHexAddress } from '@metamask/utils';
 import {
   CaveatTypes,
+  EndowmentTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 
@@ -24,7 +25,7 @@ import {
  */
 export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
-  permittedChains: 'endowment:permitted-chains',
+  ...EndowmentTypes,
 });
 
 /**
