@@ -29,17 +29,14 @@ import ImportControl from '../import-control';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
 
 type AssetListControlBarProps = {
-  tokenList: TokenWithBalance[];
   setTokenList: (arg: TokenWithBalance[]) => void;
   showTokensLinks?: boolean;
 };
 
 const AssetListControlBar = ({
-  tokenList,
   setTokenList,
   showTokensLinks,
 }: AssetListControlBarProps) => {
-  const [sorted, setSorted] = useState(false);
   const controlBarRef = useRef<HTMLDivElement>(null); // Create a ref
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 

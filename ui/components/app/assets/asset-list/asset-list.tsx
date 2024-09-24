@@ -130,7 +130,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ///: END:ONLY_INCLUDE_IF
       }
       <AssetListControlBar
-        tokenList={tokenList}
         setTokenList={setTokenList}
         showTokensLinks={showTokensLinks}
       />
