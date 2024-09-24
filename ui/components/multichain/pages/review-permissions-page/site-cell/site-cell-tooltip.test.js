@@ -166,7 +166,7 @@ describe('SiteCellTooltip', () => {
             name: 'Polygon Mainnet',
             networkClientId: 'cf19f0de-8a83-468c-ad97-49b855a2ca9e',
             type: 'custom',
-            url: 'https://polygon-mainnet.infura.io/v3/cb3fa73a8bdf4342b8ed8b07e0740be9',
+            url: 'https://polygon-mainnet.infura.io/v3/{infuraProjectId}',
           },
         ],
       },
