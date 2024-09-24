@@ -1651,6 +1651,18 @@ export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
   }, {});
 });
 
+export const getPreinstalledSnaps = createDeepEqualSelector(
+  getSnaps,
+  (snaps) => {
+    return Object.values(snaps).reduce((acc, snap) => {
+      if (snap.preinstalled) {
+        acc[snap.id] = snap;
+      }
+      return acc;
+    }, {});
+  },
+);
+
 export const getInsightSnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
