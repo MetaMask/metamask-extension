@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { isHexString } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import { isBoolean } from 'lodash';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
@@ -29,7 +30,10 @@ export const useApproveTokenSimulation = (
     }
 
     const paramIndex = value.data[0].params.findIndex(
-      (param) => param.value !== undefined && !isHexString(param.value),
+      (param) =>
+        param.value !== undefined &&
+        !isHexString(param.value) &&
+        !isBoolean(param.value),
     );
     if (paramIndex === -1) {
       return 0;
