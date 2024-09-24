@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -14,11 +14,10 @@ describe('Account Custom Name Persistence', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, '0');
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -46,7 +45,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
 
         // Lock and unlock wallet
         await headerNavbar.lockMetaMask();
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, '0');
 
         // Verify both account labels persist after unlock
         await headerNavbar.check_accountLabel(newAccountLabel);

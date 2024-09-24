@@ -1,12 +1,12 @@
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { E2E_SRP } from '../../default-fixture';
 import { Driver } from '../../webdriver/driver';
+import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import { E2E_SRP } from '../../default-fixture';
 import HomePage from '../../page-objects/pages/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 
 const newPassword = 'this is the best password ever';
 

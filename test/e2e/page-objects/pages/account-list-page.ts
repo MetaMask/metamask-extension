@@ -4,22 +4,39 @@ class AccountListPage {
   private driver: Driver;
 
   private accountListItem: string;
+
   private accountMenuButton: string;
+
   private accountNameInput: string;
+
   private accountOptionsMenuButton: string;
+
   private addAccountConfirmButton: string;
+
   private addEthereumAccountButton: string;
+
   private addSnapAccountButton: object;
+
   private closeAccountModalButton: string;
+
   private closeEditLabelButton: string;
+
   private createAccountButton: string;
+
   private editableLabelButton: string;
+
   private editableLabelInput: string;
+
   private hideUnhideAccountButton: string;
+
   private hiddenAccountOptionsMenuButton: string;
+
   private hiddenAccountsList: string;
+
   private pinUnpinAccountButton: string;
+
   private pinnedIcon: string;
+
   private saveAccountLabelButton: string;
 
   constructor(driver: Driver) {
@@ -27,20 +44,25 @@ class AccountListPage {
     this.accountListItem = '.multichain-account-menu-popover__list--menu-item';
     this.accountMenuButton = '[data-testid="account-list-menu-details"]';
     this.accountNameInput = '#account-name';
-    this.accountOptionsMenuButton = '[data-testid="account-list-item-menu-button"]';
-    this.addAccountConfirmButton = '[data-testid="submit-add-account-with-name"]';
-    this.addEthereumAccountButton = '[data-testid="multichain-account-menu-popover-add-account"]';
+    this.accountOptionsMenuButton =
+      '[data-testid="account-list-item-menu-button"]';
+    this.addAccountConfirmButton =
+      '[data-testid="submit-add-account-with-name"]';
+    this.addEthereumAccountButton =
+      '[data-testid="multichain-account-menu-popover-add-account"]';
     this.addSnapAccountButton = {
       text: 'Add account Snap',
       tag: 'button',
     };
     this.closeAccountModalButton = 'button[aria-label="Close"]';
     this.closeEditLabelButton = 'button[aria-label="Close"]';
-    this.createAccountButton = '[data-testid="multichain-account-menu-popover-action-button"]';
+    this.createAccountButton =
+      '[data-testid="multichain-account-menu-popover-action-button"]';
     this.editableLabelButton = '[data-testid="editable-label-button"]';
     this.editableLabelInput = '[data-testid="editable-input"] input';
     this.hideUnhideAccountButton = '[data-testid="account-list-menu-hide"]';
-    this.hiddenAccountOptionsMenuButton = '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
+    this.hiddenAccountOptionsMenuButton =
+      '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
     this.hiddenAccountsList = '[data-testid="hidden-accounts-list"]';
     this.pinUnpinAccountButton = '[data-testid="account-list-menu-pin"]';
     this.pinnedIcon = '[data-testid="account-pinned-icon"]';
@@ -70,7 +92,9 @@ class AccountListPage {
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addEthereumAccountButton);
     await this.driver.fill(this.accountNameInput, customLabel);
-    await this.driver.clickElementAndWaitToDisappear(this.addAccountConfirmButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.addAccountConfirmButton,
+    );
   }
 
   /**
@@ -89,7 +113,9 @@ class AccountListPage {
 
   async closeAccountModal(): Promise<void> {
     console.log(`Open add account modal in account list`);
-    await this.driver.clickElementAndWaitToDisappear(this.closeAccountModalButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.closeAccountModalButton,
+    );
   }
 
   async hideAccount(): Promise<void> {
@@ -125,7 +151,9 @@ class AccountListPage {
   }
 
   async switchToAccount(expectedLabel: string): Promise<void> {
-    console.log(`Switch to account with label ${expectedLabel} in account list`);
+    console.log(
+      `Switch to account with label ${expectedLabel} in account list`,
+    );
     await this.driver.clickElement({
       css: this.accountListItem,
       text: expectedLabel,
@@ -142,8 +170,12 @@ class AccountListPage {
     await this.driver.clickElement(this.pinUnpinAccountButton);
   }
 
-  async check_accountDisplayedInAccountList(expectedLabel: string = 'Account'): Promise<void> {
-    console.log(`Check that account label ${expectedLabel} is displayed in account list`);
+  async check_accountDisplayedInAccountList(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
+    console.log(
+      `Check that account label ${expectedLabel} is displayed in account list`,
+    );
     await this.driver.waitForSelector({
       css: this.accountListItem,
       text: expectedLabel,
