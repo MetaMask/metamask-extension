@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "Nais ng site na mag-sign in ka upang patunayan na pag-aari mo ang account na ito."
   },
-  "confirmTitleDescSignature": {
-    "message": "Kumpirmahin lamang ang mensaheng ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
-  },
   "confirmTitlePermitTokens": {
     "message": "Hiling sa limitasyon ng paggastos"
   },

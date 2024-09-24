@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "Eine Website möchte, dass Sie sich anmelden, um zu beweisen, dass Sie dieses Konto besitzen."
   },
-  "confirmTitleDescSignature": {
-    "message": "Bestätigen Sie diese Nachricht nur, wenn Sie dem Inhalt zustimmen und der anfragenden Website vertrauen."
-  },
   "confirmTitlePermitTokens": {
     "message": "Antrag auf Ausgabenobergrenze"
   },

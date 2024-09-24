@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "एक साइट चाहती है कि आप यह साबित करने के लिए साइन इन करें कि यह आपका अकाउंट है।"
   },
-  "confirmTitleDescSignature": {
-    "message": "इस संदेश को केवल तभी कन्फर्म करें जब आप कंटेंट को एप्रूव करते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं।"
-  },
   "confirmTitlePermitTokens": {
     "message": "खर्च करने की सीमा का अनुरोध"
   },

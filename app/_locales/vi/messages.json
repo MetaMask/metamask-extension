@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "Một trang web yêu cầu bạn đăng nhập để chứng minh quyền sở hữu tài khoản này."
   },
-  "confirmTitleDescSignature": {
-    "message": "Chỉ xác nhận thông báo này nếu bạn chấp thuận nội dung và tin tưởng trang web yêu cầu."
-  },
   "confirmTitlePermitTokens": {
     "message": "Yêu cầu hạn mức chi tiêu"
   },

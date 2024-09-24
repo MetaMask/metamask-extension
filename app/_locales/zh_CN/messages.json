@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "某个网站要求您登录以证明您拥有该账户。"
   },
-  "confirmTitleDescSignature": {
-    "message": "仅在您批准该内容并信任请求网站的情况下，才能确认此消息。"
-  },
   "confirmTitlePermitTokens": {
     "message": "支出上限请求"
   },

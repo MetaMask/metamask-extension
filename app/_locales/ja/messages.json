@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "サイトがこのアカウントを所有することを証明するためにサインインを求めています。"
   },
-  "confirmTitleDescSignature": {
-    "message": "このメッセージの内容を承認し、要求元のサイトを信頼する場合にのみ確定してください。"
-  },
   "confirmTitlePermitTokens": {
     "message": "使用上限リクエスト"
   },

@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "Un site vous demande de vous connecter pour prouver que vous êtes le titulaire de ce compte."
   },
-  "confirmTitleDescSignature": {
-    "message": "Ne confirmez ce message que si vous approuvez son contenu et faites confiance au site demandeur."
-  },
   "confirmTitlePermitTokens": {
     "message": "Demande de plafonnement des dépenses"
   },

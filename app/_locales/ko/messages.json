@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "회원님이 이 계정을 소유하고 있음을 확인하기 위해 로그인을 요청하는 사이트가 있습니다."
   },
-  "confirmTitleDescSignature": {
-    "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 메시지를 컨펌하세요."
-  },
   "confirmTitlePermitTokens": {
     "message": "지출 한도 요청"
   },
