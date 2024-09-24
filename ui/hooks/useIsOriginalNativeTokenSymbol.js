@@ -11,6 +11,8 @@ import {
   getMultichainIsEvm,
   getMultichainCurrentNetwork,
 } from '../selectors/multichain';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getValidUrl } from '../../app/scripts/lib/util';
 
 export function useIsOriginalNativeTokenSymbol(

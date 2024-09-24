@@ -21,7 +21,11 @@ import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
