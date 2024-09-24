@@ -125,7 +125,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         });
 
         // Switch network and wait for confirmation to close
-        await driver.clickElementAndWaitForWindowToClose({
+        await driver.clickElement({
+          text: 'Switch network',
+          tag: 'button',
+        });
+
+        await driver.assertElementNotPresent({
           text: 'Switch network',
           tag: 'button',
         });
