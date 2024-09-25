@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { Hex } from '@metamask/utils';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
@@ -316,34 +317,49 @@ describe('AssetPicker', () => {
           networkProps={{
             network: {
               chainId: '0x1',
-              ticker: 'ETH',
-              rpcUrl: 'https://rpcurl',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://explorerurl',
-                imageUrl: './images/eth_logo.svg',
-              },
-              nickname: 'network',
+              nativeCurrency: 'ETH',
+              defaultBlockExplorerUrlIndex: 0,
+              blockExplorerUrls: ['https://explorerurl'],
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: 'test1',
+                  url: 'https://rpcurl',
+                  type: RpcEndpointType.Custom,
+                },
+              ],
+              name: 'network',
             },
             networks: [
               {
                 chainId: '0x1',
-                ticker: 'ETH',
-                rpcUrl: 'https://rpcurl',
-                rpcPrefs: {
-                  blockExplorerUrl: 'https://explorerurl',
-                  imageUrl: 'https://image.com',
-                },
-                nickname: 'Network name 3',
+                nativeCurrency: 'ETH',
+                defaultBlockExplorerUrlIndex: 0,
+                blockExplorerUrls: ['https://explorerurl'],
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'test1',
+                    url: 'https://rpcurl',
+                    type: RpcEndpointType.Custom,
+                  },
+                ],
+                name: 'Network name 3',
               },
               {
                 chainId: '0xa',
-                ticker: 'ETH',
-                rpcUrl: 'https://rpcurl',
-                rpcPrefs: {
-                  blockExplorerUrl: 'https://explorerurl',
-                  imageUrl: 'https://image.com',
-                },
-                nickname: 'Network name 4',
+                nativeCurrency: 'ETH',
+                defaultBlockExplorerUrlIndex: 0,
+                blockExplorerUrls: ['https://explorerurl'],
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'test2',
+                    url: 'https://rpcurl',
+                    type: RpcEndpointType.Custom,
+                  },
+                ],
+                name: 'Network name 4',
               },
             ],
             onNetworkChange: jest.fn(),

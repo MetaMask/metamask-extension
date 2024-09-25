@@ -4,6 +4,7 @@ import configureStore from 'redux-mock-store';
 import { useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
@@ -302,14 +303,19 @@ describe('AssetPickerModal', () => {
         {...defaultProps}
         header="selectNetworkHeader"
         network={{
-          ticker: 'ETH',
+          nativeCurrency: 'ETH',
           chainId: '0x1',
-          rpcUrl: 'https://rpcurl',
-          rpcPrefs: {
-            blockExplorerUrl: 'https://explorerurl',
-            imageUrl: 'https://image.com',
-          },
-          nickname: 'Network name',
+          defaultBlockExplorerUrlIndex: 0,
+          blockExplorerUrls: ['https://explorerurl'],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'test1',
+              url: 'https://rpcurl',
+              type: RpcEndpointType.Custom,
+            },
+          ],
+          name: 'Network name',
         }}
       />,
       store,
@@ -330,14 +336,19 @@ describe('AssetPickerModal', () => {
         onNetworkPickerClick={undefined}
         header="selectNetworkHeader"
         network={{
-          ticker: 'ETH',
+          nativeCurrency: 'ETH',
           chainId: '0x1',
-          rpcUrl: 'https://rpcurl',
-          rpcPrefs: {
-            blockExplorerUrl: 'https://explorerurl',
-            imageUrl: 'https://image.com',
-          },
-          nickname: 'Network name',
+          defaultBlockExplorerUrlIndex: 0,
+          blockExplorerUrls: ['https://explorerurl'],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'test1',
+              url: 'https://rpcurl',
+              type: RpcEndpointType.Custom,
+            },
+          ],
+          name: 'Network name',
         }}
       />,
       store,

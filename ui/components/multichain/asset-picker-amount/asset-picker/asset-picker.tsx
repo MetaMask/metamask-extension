@@ -24,7 +24,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import { getCurrentNetwork } from '../../../../selectors';
+import {
+  getCurrentNetwork,
+  getNetworkConfigurationsByChainId,
+} from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -104,7 +107,10 @@ export function AssetPicker({
 
   // Badge details
   const currentNetwork = useSelector(getCurrentNetwork);
-  const selectedNetwork = networkProps?.network ?? currentNetwork;
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const selectedNetwork =
+    networkProps?.network ??
+    (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
 
   const handleAssetPickerTitle = (): string | undefined => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -195,20 +201,21 @@ export function AssetPicker({
                 badge={
                   <AvatarNetwork
                     size={AvatarNetworkSize.Xs}
-                    name={selectedNetwork?.nickname ?? ''}
+                    name={selectedNetwork?.name ?? ''}
                     src={
-                      selectedNetwork?.rpcPrefs?.imageUrl ??
-                      (selectedNetwork?.chainId &&
-                        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                          selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                        ])
+                      selectedNetwork?.chainId &&
+                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                        selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                      ]
                     }
                     backgroundColor={
                       Object.entries({
                         [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,
                         [SEPOLIA_DISPLAY_NAME]: BackgroundColor.sepolia,
                       }).find(([tickerSubstring]) =>
-                        selectedNetwork?.ticker?.includes(tickerSubstring),
+                        selectedNetwork?.nativeCurrency?.includes(
+                          tickerSubstring,
+                        ),
                       )?.[1]
                     }
                     borderColor={
