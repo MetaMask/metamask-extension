@@ -108,7 +108,7 @@ export type Preferences = {
   tokenSortConfig: {
     key: string;
     order: string;
-    sortCriteria: string;
+    sortCallback: string;
   };
 };
 
@@ -240,7 +240,7 @@ export default class PreferencesController {
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
-          sortCriteria: 'stringNumeric',
+          sortCallback: 'stringNumeric',
         },
       },
       // ENS decentralized website resolution

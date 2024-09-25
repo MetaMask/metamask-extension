@@ -51,7 +51,7 @@ const STATE_MOCK = getMockConfirmStateForTransaction(
       tokenSortConfig: {
         key: 'token-sort-key',
         order: 'dsc',
-        sortCriteria: 'stringNumeric',
+        sortCallback: 'stringNumeric',
       },
     },
     confirmAlerts: {

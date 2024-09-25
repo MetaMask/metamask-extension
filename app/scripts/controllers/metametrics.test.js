@@ -1125,7 +1125,7 @@ describe('MetaMetricsController', function () {
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
-          sortCriteria: 'stringNumeric',
+          sortCallback: 'stringNumeric',
         },
       });
 
@@ -1191,7 +1191,7 @@ describe('MetaMetricsController', function () {
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
-          sortCriteria: 'stringNumeric',
+          sortCallback: 'stringNumeric',
         },
       });
 
@@ -1223,7 +1223,7 @@ describe('MetaMetricsController', function () {
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
-          sortCriteria: 'stringNumeric',
+          sortCallback: 'stringNumeric',
         },
       });
 
@@ -1265,7 +1265,7 @@ describe('MetaMetricsController', function () {
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
-          sortCriteria: 'stringNumeric',
+          sortCallback: 'stringNumeric',
         },
       });
 
@@ -1292,7 +1292,7 @@ describe('MetaMetricsController', function () {
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
-          sortCriteria: 'stringNumeric',
+          sortCallback: 'stringNumeric',
         },
       });
       expect(updatedTraits).toStrictEqual(null);

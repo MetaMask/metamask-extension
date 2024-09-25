@@ -13,4 +13,33 @@ describe(`migration #${version}`, () => {
 
     expect(newStorage.meta).toStrictEqual({ version });
   });
+
+  describe(`migration #${version}`, () => {
+    it('updates the preferences with a default tokenSortConfig', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          PreferencesController: {
+            preferences: {},
+          },
+        },
+      };
+
+      const expectedData = {
+        PreferencesController: {
+          preferences: {
+            tokenSortConfig: {
+              key: 'tokenFiatAmount',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+          },
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual(expectedData);
+    });
+  });
 });

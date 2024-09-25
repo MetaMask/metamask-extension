@@ -74,7 +74,7 @@ const AssetListControlBar = ({
       tokenSortConfig || {
         key: 'tokenFiatAmount',
         order: 'dsc',
-        sortCriteria: 'stringNumeric',
+        sortCallback: 'stringNumeric',
       },
     );
 

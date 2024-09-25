@@ -80,7 +80,7 @@ function onboardingFixture() {
           tokenSortConfig: {
             key: 'tokenFiatAmount',
             order: 'dsc',
-            sortCriteria: 'stringNumeric',
+            sortCallback: 'stringNumeric',
           },
         },
         useExternalServices: true,
