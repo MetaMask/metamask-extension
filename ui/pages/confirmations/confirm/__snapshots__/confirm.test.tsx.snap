@@ -99,7 +99,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only confirm this message if you approve the content and trust the requesting site.
+            Review request details before you confirm.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -110,26 +110,29 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Request from
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-8"
-                    class=""
-                    data-original-title="This is the site asking for your signature."
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Request from
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-8"
+                      class=""
+                      data-original-title="This is the site asking for your signature."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -153,13 +156,16 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Message
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Message
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -289,7 +295,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-18"
+                aria-describedby="tippy-tooltip-19"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -339,26 +345,29 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Estimated changes
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-19"
-                    class=""
-                    data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Estimated changes
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-20"
+                      class=""
+                      data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -379,13 +388,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Spending cap
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Spending cap
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box"
@@ -407,7 +419,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-20"
+                            aria-describedby="tippy-tooltip-26"
                             class=""
                             data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                             data-tooltipped=""
@@ -457,7 +469,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-21"
+                            aria-describedby="tippy-tooltip-27"
                             class=""
                             data-original-title="24,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                             data-tooltipped=""
@@ -507,13 +519,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Spender
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Spender
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -582,26 +597,29 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Request from
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-22"
-                    class=""
-                    data-original-title="This is the site asking for your signature."
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Request from
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-23"
+                      class=""
+                      data-original-title="This is the site asking for your signature."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -621,13 +639,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Interacting with
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Interacting with
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -697,13 +718,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Message
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Message
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--width-full"
@@ -714,13 +738,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      Primary type:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Primary type:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -746,13 +773,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Details:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Details:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--width-full"
@@ -763,13 +793,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              0:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                0:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--width-full"
@@ -780,13 +813,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Token:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Token:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -852,13 +888,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Amount:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Amount:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -867,7 +906,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                                   style="min-width: 0;"
                                 >
                                   <div
-                                    aria-describedby="tippy-tooltip-23"
+                                    aria-describedby="tippy-tooltip-24"
                                     class=""
                                     data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                                     data-tooltipped=""
@@ -890,13 +929,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Expiration:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Expiration:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -915,13 +957,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Nonce:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Nonce:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -942,13 +987,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              1:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                1:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--width-full"
@@ -959,13 +1007,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Token:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Token:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1031,13 +1082,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Amount:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Amount:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -1046,7 +1100,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                                   style="min-width: 0;"
                                 >
                                   <div
-                                    aria-describedby="tippy-tooltip-24"
+                                    aria-describedby="tippy-tooltip-25"
                                     class=""
                                     data-original-title="24,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                                     data-tooltipped=""
@@ -1069,13 +1123,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Expiration:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Expiration:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -1094,13 +1151,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Nonce:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Nonce:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -1123,13 +1183,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Spender:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Spender:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1195,13 +1258,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          SigDeadline:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            SigDeadline:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -1385,26 +1451,29 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Estimated changes
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-14"
-                    class=""
-                    data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Estimated changes
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-14"
+                      class=""
+                      data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1425,13 +1494,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Spending cap
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Spending cap
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box"
@@ -1453,7 +1525,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-15"
+                            aria-describedby="tippy-tooltip-18"
                             class=""
                             data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                             data-tooltipped=""
@@ -1503,13 +1575,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Spender
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Spender
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1578,26 +1653,29 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Request from
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-16"
-                    class=""
-                    data-original-title="This is the site asking for your signature."
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Request from
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-16"
+                      class=""
+                      data-original-title="This is the site asking for your signature."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1617,13 +1695,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Interacting with
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Interacting with
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1693,13 +1774,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Message
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Message
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--width-full"
@@ -1710,13 +1794,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      Primary type:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Primary type:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -1742,13 +1829,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Details:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Details:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--width-full"
@@ -1759,13 +1849,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              Token:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                Token:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1831,13 +1924,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              Amount:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                Amount:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -1869,13 +1965,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              Expiration:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                Expiration:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -1894,13 +1993,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              Nonce:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                Nonce:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -1921,13 +2023,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Spender:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Spender:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1993,13 +2098,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          SigDeadline:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            SigDeadline:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -2140,7 +2248,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only confirm this message if you approve the content and trust the requesting site.
+            Review request details before you confirm.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -2151,26 +2259,29 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Request from
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-12"
-                    class=""
-                    data-original-title="This is the site asking for your signature."
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Request from
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-12"
+                      class=""
+                      data-original-title="This is the site asking for your signature."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2190,13 +2301,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Interacting with
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Interacting with
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -2230,13 +2344,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Message
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Message
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--width-full"
@@ -2247,13 +2364,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      Primary type:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Primary type:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -2279,13 +2399,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Contents:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Contents:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -2304,13 +2427,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          From:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            From:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--width-full"
@@ -2321,13 +2447,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              Name:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                Name:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -2346,13 +2475,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              Wallets:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                Wallets:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--width-full"
@@ -2363,13 +2495,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  0:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    0:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -2399,13 +2534,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  1:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    1:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -2435,13 +2573,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  2:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    2:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -2475,13 +2616,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          To:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            To:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--width-full"
@@ -2492,13 +2636,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              0:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                0:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--width-full"
@@ -2509,13 +2656,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Name:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Name:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -2534,13 +2684,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                style="align-items: center;"
                               >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
-                                  Wallets:
-                                </p>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Wallets:
+                                  </p>
+                                </div>
                               </div>
                               <div
                                 class="mm-box mm-box--width-full"
@@ -2551,13 +2704,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 >
                                   <div
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                    style="align-items: center;"
                                   >
-                                    <p
-                                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                    <div
+                                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                                     >
-                                      0:
-                                    </p>
+                                      <p
+                                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                      >
+                                        0:
+                                      </p>
+                                    </div>
                                   </div>
                                   <div
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -2587,13 +2743,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 >
                                   <div
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                    style="align-items: center;"
                                   >
-                                    <p
-                                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                    <div
+                                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                                     >
-                                      1:
-                                    </p>
+                                      <p
+                                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                      >
+                                        1:
+                                      </p>
+                                    </div>
                                   </div>
                                   <div
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -2623,13 +2782,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 >
                                   <div
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                                    style="align-items: center;"
                                   >
-                                    <p
-                                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                    <div
+                                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                                     >
-                                      2:
-                                    </p>
+                                      <p
+                                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                      >
+                                        2:
+                                      </p>
+                                    </div>
                                   </div>
                                   <div
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -2830,26 +2992,29 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Estimated changes
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-3"
-                    class=""
-                    data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Estimated changes
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-3"
+                      class=""
+                      data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2870,13 +3035,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Spending cap
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Spending cap
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box"
@@ -2944,13 +3112,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Spender
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Spender
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -3019,26 +3190,29 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Request from
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-5"
-                    class=""
-                    data-original-title="This is the site asking for your signature."
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Request from
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-5"
+                      class=""
+                      data-original-title="This is the site asking for your signature."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3058,13 +3232,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Interacting with
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Interacting with
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -3134,13 +3311,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Message
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Message
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--width-full"
@@ -3151,13 +3331,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      Primary type:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Primary type:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -3183,13 +3366,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Owner:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Owner:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -3255,13 +3441,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Spender:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Spender:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -3327,13 +3516,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Value:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Value:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -3365,13 +3557,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Nonce:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Nonce:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -3390,13 +3585,16 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Deadline:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Deadline:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -3568,7 +3766,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only confirm this message if you approve the content and trust the requesting site.
+            Review request details before you confirm.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -3579,26 +3777,29 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Request from
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-10"
-                    class=""
-                    data-original-title="This is the site asking for your signature."
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Request from
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-10"
+                      class=""
+                      data-original-title="This is the site asking for your signature."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3618,13 +3819,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Interacting with
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Interacting with
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -3694,13 +3898,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Message
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Message
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--width-full"
@@ -3711,13 +3918,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      Primary type:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Primary type:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -3743,13 +3953,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Direction:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Direction:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -3768,13 +3981,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Maker:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Maker:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -3840,13 +4056,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Taker:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Taker:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -3912,13 +4131,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Expiry:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Expiry:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -3937,13 +4159,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Nonce:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Nonce:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -3962,13 +4187,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Erc20Token:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Erc20Token:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -4034,13 +4262,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Erc20TokenAmount:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Erc20TokenAmount:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -4059,13 +4290,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Fees:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Fees:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--width-full"
@@ -4077,13 +4311,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Erc721Token:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Erc721Token:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -4149,13 +4386,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Erc721TokenId:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Erc721TokenId:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -4174,13 +4414,16 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Erc721TokenProperties:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Erc721TokenProperties:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--width-full"

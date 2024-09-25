@@ -1005,9 +1005,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "某个网站要求您登录以证明您拥有该账户。"
   },
-  "confirmTitleDescSignature": {
-    "message": "仅在您批准该内容并信任请求网站的情况下，才能确认此消息。"
-  },
   "confirmTitlePermitTokens": {
     "message": "支出上限请求"
   },
@@ -2867,10 +2864,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "此网络与其关联的链 ID 或名称不匹配。多种常用代币均使用名称 $1，使其成为欺诈目标。欺诈方可能会诱骗您向其发送更有价值的货币作为回报。在继续之前，请验证所有内容。",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "这可能是欺诈"
+    "message": "这可能是欺诈",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "需要帮助？请联系 $1",
