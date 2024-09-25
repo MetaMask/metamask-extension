@@ -4,16 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Box from '../../../../ui/box';
-import Typography from '../../../../ui/typography/typography';
 import {
   Color,
-  TypographyVariant,
   JustifyContent,
   FLEX_DIRECTION,
   AlignItems,
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 // TODO: Remove restricted import
@@ -242,13 +241,13 @@ export default function NftsItems({
                 collectionImage={collectionImage}
                 collectionName={collectionName}
               />
-              <Typography
+              <Text
                 color={Color.textDefault}
-                variant={TypographyVariant.H5}
+                variant={TextVariant.bodyMd}
                 margin={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${nfts.length})`}
-              </Typography>
+              </Text>
             </Box>
             <Box alignItems={AlignItems.flexEnd}>
               <Icon
