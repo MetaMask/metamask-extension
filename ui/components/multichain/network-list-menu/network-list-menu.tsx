@@ -47,6 +47,7 @@ import {
   getIsMultiRpcOnboarding,
   getAllDomains,
   getPermittedChainsForSelectedTab,
+  getPermittedAccountsForSelectedTab,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -125,6 +126,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, selectedTabOrigin),
+  );
+
+  const permittedAccountAddresses = useSelector((state) =>
+    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
   const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
@@ -273,7 +278,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           dispatch(setActiveNetwork(networkClientId));
           dispatch(toggleNetworkMenu());
 
-          if (process.env.CHAIN_PERMISSIONS) {
+          if (
+            process.env.CHAIN_PERMISSIONS &&
+            permittedAccountAddresses.length > 0
+          ) {
             grantPermittedChain(selectedTabOrigin, network.chainId);
             if (!permittedChainIds.includes(network.chainId)) {
               dispatch(showPermittedNetworkToast());
