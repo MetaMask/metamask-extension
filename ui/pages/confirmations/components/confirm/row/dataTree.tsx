@@ -12,6 +12,7 @@ import { getTokenStandardAndDetails } from '../../../../../store/actions';
 import { Box } from '../../../../../components/component-library';
 import { BlockSize } from '../../../../../helpers/constants/design-system';
 import { useAsyncResult } from '../../../../../hooks/useAsyncResult';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -34,6 +35,7 @@ enum Field {
   EndAmount = 'endAmount',
   EndTime = 'endTime',
   Expiration = 'expiration',
+  Expiry = 'expiry',
   SellAmount = 'sellAmount',
   SigDeadline = 'sigDeadline',
   StartAmount = 'startAmount',
@@ -55,10 +57,19 @@ const FIELD_DATE_PRIMARY_TYPES: Record<string, string[]> = {
   [Field.Deadline]: [...PRIMARY_TYPES_PERMIT],
   [Field.EndTime]: [...PRIMARY_TYPES_ORDER],
   [Field.Expiration]: [PrimaryType.PermitBatch, PrimaryType.PermitSingle],
+  [Field.Expiry]: [...PRIMARY_TYPES_PERMIT],
   [Field.SigDeadline]: [...PRIMARY_TYPES_PERMIT],
   [Field.StartTime]: [...PRIMARY_TYPES_ORDER],
   [Field.ValidTo]: [...PRIMARY_TYPES_ORDER],
 };
+
+/**
+ * Date values may include -1 to represent a null value
+ * e.g.
+ * {@see {@link https://eips.ethereum.org/EIPS/eip-2612}}
+ * "The deadline argument can be set to uint(-1) to create Permits that effectively never expire."
+ */
+const NONE_DATE_VALUE = -1;
 
 const getTokenDecimalsOfDataTree = async (
   dataTreeData: Record<string, TreeData> | TreeData[],
@@ -73,12 +84,10 @@ const getTokenDecimalsOfDataTree = async (
     return undefined;
   }
 
-  const decimals = parseInt(
-    (await getTokenStandardAndDetails(tokenContract))?.decimals ?? '0',
-    10,
-  );
+  const tokenDetails = await getTokenStandardAndDetails(tokenContract);
+  const tokenDecimals = tokenDetails?.decimals;
 
-  return decimals;
+  return parseInt(tokenDecimals ?? '0', 10);
 };
 
 export const DataTree = ({
@@ -148,6 +157,8 @@ const DataField = memo(
     value: ValueType;
     tokenDecimals: number;
   }) => {
+    const t = useI18nContext();
+
     if (typeof value === 'object' && value !== null) {
       return (
         <DataTree
@@ -158,8 +169,14 @@ const DataField = memo(
       );
     }
 
-    if (isDateField(label, primaryType) && value) {
-      return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
+    if (isDateField(label, primaryType) && Boolean(value)) {
+      const intValue = parseInt(value, 10);
+
+      return intValue === NONE_DATE_VALUE ? (
+        <ConfirmInfoRowText text={t('none')}></ConfirmInfoRowText>
+      ) : (
+        <ConfirmInfoRowDate unixTimestamp={parseInt(value, 10)} />
+      );
     }
 
     if (isTokenUnitsField(label, primaryType)) {
