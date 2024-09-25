@@ -1,3 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SurveyToast should match snapshot 1`] = `<div />`;
+exports[`SurveyToast should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-banner-base mm-box--padding-3 mm-box--display-flex mm-box--gap-2 mm-box--background-color-background-default"
+    data-theme="light"
+  >
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-4"
+        data-testid="survey-toast"
+      >
+        <div
+          class="mm-box"
+        >
+          <p
+            class="mm-box mm-text toast-text mm-text--body-md mm-box--color-text-default"
+          >
+            Test Survey
+          </p>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            Take Survey
+          </button>
+        </div>
+      </div>
+    </div>
+    <button
+      aria-label="Close"
+      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/close.svg');"
+      />
+    </button>
+  </div>
+</div>
+`;
