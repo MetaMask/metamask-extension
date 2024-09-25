@@ -49,6 +49,12 @@ const renderComponent = () =>
 describe('SurveyToast', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
+
+    global.platform = {
+      openTab: jest.fn(),
+      closeCurrentWindow: jest.fn(),
+    };
   });
 
   afterEach(() => {
@@ -108,6 +114,8 @@ describe('SurveyToast', () => {
       expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByText('Take Survey'));
-    expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank');
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://example.com',
+    });
   });
 });
