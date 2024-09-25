@@ -44,7 +44,7 @@ describe('Token List', function () {
     await driver.findElement({ text: 'Token imported', tag: 'h6' });
   };
 
-  it.only('should sort alphabetically and by decreasing balance', async function () {
+  it('should sort alphabetically and by decreasing balance', async function () {
     await withFixtures(
       {
         ...fixtures,
