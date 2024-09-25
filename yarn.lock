@@ -4347,10 +4347,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@lavamoat/snow@npm:2.0.1"
-  checksum: 10/f48aa87a4691748a48c0b90606119a07bba85f5315245ad3a076b4093eab0c74c0211d34a9b0b5029cb51b16b20704fdca18c1cbe182a82f0052374d61aa2c81
+"@lavamoat/snow@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@lavamoat/snow@npm:2.0.2"
+  checksum: 10/613d4b7f42a80fb0c447f124ef0b7497afc7e5a5f81edd961975e14f35e9cfcbde04f649155f5d2fdcc334d5a190246ae90e23d53ca4e126e672e229c26895ae
   languageName: node
   linkType: hard
 
@@ -26066,7 +26066,7 @@ __metadata:
     "@lavamoat/lavadome-core": "npm:0.0.10"
     "@lavamoat/lavadome-react": "npm:0.0.17"
     "@lavamoat/lavapack": "npm:^6.1.0"
-    "@lavamoat/snow": "npm:^2.0.1"
+    "@lavamoat/snow": "npm:^2.0.2"
     "@lgbot/madge": "npm:^6.2.0"
     "@lydell/node-pty": "npm:^1.0.1"
     "@material-ui/core": "npm:^4.11.0"
