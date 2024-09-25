@@ -5,6 +5,8 @@ import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getTokenList } from '../../../../selectors';
+import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import TokenCell from '.';
@@ -90,7 +92,16 @@ describe('Token Cell', () => {
     image: '',
     onClick: jest.fn(),
   };
-  (useSelector as jest.Mock).mockReturnValue(MOCK_GET_TOKEN_LIST);
+  const useSelectorMock = useSelector;
+  (useSelectorMock as jest.Mock).mockImplementation((selector) => {
+    if (selector === getTokenList) {
+      return MOCK_GET_TOKEN_LIST;
+    }
+    if (selector === getMultichainCurrentChainId) {
+      return '0x89';
+    }
+    return undefined;
+  });
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
 
   it('should match snapshot', () => {

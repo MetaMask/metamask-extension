@@ -993,9 +993,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "एक साइट चाहती है कि आप यह साबित करने के लिए साइन इन करें कि यह आपका अकाउंट है।"
   },
-  "confirmTitleDescSignature": {
-    "message": "इस संदेश को केवल तभी कन्फर्म करें जब आप कंटेंट को एप्रूव करते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं।"
-  },
   "confirmTitlePermitTokens": {
     "message": "खर्च करने की सीमा का अनुरोध"
   },
@@ -2855,10 +2852,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "यह नेटवर्क अपनी एसोसिएटेड चेन ID या नाम से मेल नहीं खाता है। कई लोकप्रिय टोकन $1 नाम का उपयोग करते हैं, जिससे इसमें स्कैम किया जा सकता है। स्कैम करने वाले आपको बदले में ज़्यादा कीमती करेंसी भेजने का झांसा दे सकते हैं। आगे बढ़ने से पहले सब कुछ वेरीफाई करें।",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "यह एक बड़ा स्कैम हो सकता है"
+    "message": "यह एक बड़ा स्कैम हो सकता है",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "मदद चाहिए? $1 से कॉन्टेक्ट करें",

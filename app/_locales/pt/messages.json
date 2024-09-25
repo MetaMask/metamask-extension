@@ -993,9 +993,6 @@
   "confirmTitleDescSIWESignature": {
     "message": "Um site quer que você faça login para comprovar que é titular desta conta."
   },
-  "confirmTitleDescSignature": {
-    "message": "Confirme esta mensagem somente se você aprova o conteúdo e confia no site solicitante."
-  },
   "confirmTitlePermitTokens": {
     "message": "Solicitação de limite de gastos"
   },
@@ -2855,10 +2852,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Esta rede não corresponde ao seu ID da cadeia ou nome associado. Como muitos tokens populares usam o nome $1, ele é visado para golpes. Golpistas podem enganar você para que envie a eles alguma moeda mais valiosa em troca. Confirme todas as informações antes de prosseguir.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Isto é um possível golpe"
+    "message": "Isto é um possível golpe",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Precisa de ajuda? Contate $1",
