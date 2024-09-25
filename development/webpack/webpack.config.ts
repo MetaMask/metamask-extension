@@ -106,7 +106,6 @@ const cache = args.cache
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 const plugins: WebpackPluginInstance[] = [
-  // TODO: we need to have a separate config for inpage because it (and its dependencies) are not supposed to be wrapped with LavaMoat
   new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
@@ -166,10 +165,11 @@ if (args.lavamoat) {
     new LavamoatPlugin({
       rootDir: projectRoot,
       diagnosticsVerbosity: 2,
-      generatePolicy: true,
+      generatePolicy: false,
       runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
       readableResourceIds: true,
       inlineLockdown: /^runtime|contentscript\.js/u,
+      unlockedChunksUnsafe: /inpage\.js/u,
       debugRuntime: true,
     }),
   );
