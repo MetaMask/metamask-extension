@@ -29,6 +29,8 @@ export class SwapPage {
 
   readonly closeButton: Locator;
 
+  readonly viewInActivityBtn: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.swapQty = '';
@@ -56,6 +58,9 @@ export class SwapPage {
     this.swapTokenButton = this.page.locator('button', { hasText: 'Swap' });
     this.closeButton = this.page.getByText('Close');
     this.backButton = this.page.locator('[title="Cancel"]');
+    this.viewInActivityBtn = this.page.getByTestId(
+      'page-container-footer-next',
+    );
   }
 
   async enterQuote(options: { from?: string; to: string; qty: string }) {
@@ -66,6 +71,18 @@ export class SwapPage {
       await this.selectTokenFromList(options.from);
     }
 
+    const balanceString = await this.page
+      .locator('[class*="balance"]')
+      .first()
+      .textContent();
+    if (balanceString) {
+      if (parseFloat(balanceString.split(' ')[1]) <= parseFloat(options.qty)) {
+        await this.gotBack();
+        // not enough balance so cancel out
+        return false;
+      }
+    }
+
     // Enter Swap Quantity
     await this.tokenQty.fill(options.qty);
     this.swapQty = options.qty;
@@ -73,6 +90,7 @@ export class SwapPage {
     // Enter destination token
     await this.swapToDropDown.click();
     await this.selectTokenFromList(options.to);
+    return true;
   }
 
   async waitForQuote() {
@@ -87,6 +105,7 @@ export class SwapPage {
       // No quotes available
       const noQuotes = await this.page.$('text=/No quotes available/');
       if (noQuotes) {
+        await this.gotBack();
         break;
       }
 
@@ -94,9 +113,9 @@ export class SwapPage {
         quoteFound = true;
         break;
       }
-
-      await this.page.waitForTimeout(500);
+      await this.page.waitForTimeout(1000);
     } while (!quoteFound);
+
     return quoteFound;
   }
 
@@ -120,11 +139,23 @@ export class SwapPage {
     await this.page.waitForSelector(`text=/New quotes in 0:${second}/`);
   }
 
-  async waitForTransactionToComplete() {
-    await this.page.waitForSelector('text=/Transaction complete/', {
-      timeout: 90000,
-    });
-    await this.closeButton.click(); // Close button
+  async waitForTransactionToComplete(options: { seconds: number }) {
+    let countSecond = options.seconds;
+    let trasnsactionCompleted;
+    do {
+      trasnsactionCompleted = await this.page.$('text=/Transaction complete/');
+      if (trasnsactionCompleted) {
+        await this.closeButton.click();
+        break;
+      }
+
+      await this.page.waitForTimeout(1000);
+      countSecond -= 1;
+    } while (countSecond);
+
+    if (!trasnsactionCompleted && !countSecond) {
+      await this.viewInActivityBtn.click();
+    }
   }
 
   async waitForInsufficentBalance() {

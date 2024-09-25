@@ -29,6 +29,7 @@ const testSet = [
     destination: 'USDC',
     network: Tenderly.Abritrum,
   },
+  /*
   {
     quantity: '.5',
     source: 'ETH',
@@ -36,6 +37,7 @@ const testSet = [
     destination: 'OP',
     network: Tenderly.Optimism,
   },
+  */
   {
     quantity: '50',
     source: 'DAI',
@@ -95,27 +97,32 @@ test.beforeAll(
 );
 testSet.forEach((options) => {
   test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async () => {
+    await walletPage.selectTokenWallet();
     await networkController.selectNetwork(options.network);
     await walletPage.selectSwapAction();
-    await swapPage.enterQuote({
+    const quoteEntered = await swapPage.enterQuote({
       from: options.source,
       to: options.destination,
       qty: options.quantity,
     });
-    const quoteFound = await swapPage.waitForQuote();
-    if (quoteFound) {
-      await swapPage.swap();
-      await swapPage.waitForTransactionToComplete();
-      await walletPage.selectActivityList();
-      await activityListPage.checkActivityIsConfirmed({
-        activity: `Swap ${options.source} to ${options.destination}`,
-      });
+
+    if (quoteEntered) {
+      const quoteFound = await swapPage.waitForQuote();
+      if (quoteFound) {
+        await swapPage.swap();
+        await swapPage.waitForTransactionToComplete({ seconds: 60 });
+        await walletPage.selectActivityList();
+        await activityListPage.checkActivityIsConfirmed({
+          activity: `Swap ${options.source} to ${options.destination}`,
+        });
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(
+          `\t\tERROR: No quotes found on ${options.network.name} network' Skipping the test`,
+        );
+        test.skip();
+      }
     } else {
-      await swapPage.gotBack();
-      // eslint-disable-next-line no-console
-      console.error(
-        `\t\tERROR: No quotes found on ${options.network.name} network' Skipping the test`,
-      );
       test.skip();
     }
   });

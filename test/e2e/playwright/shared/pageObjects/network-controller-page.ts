@@ -116,11 +116,18 @@ export class NetworkController {
         await this.page.getByTestId(options.name).click();
       }
       await this.waitForNetworkToSwitch(options.name);
+      await this.page.waitForTimeout(5000);
     }
   }
 
   async waitForNetworkToSwitch(networkName: string) {
-    await this.page.waitForTimeout(3000);
-    await this.page.waitForSelector(`button:has-text("${networkName}")`);
+    let currentNetwork;
+    do {
+      currentNetwork = await this.networkDisplay.textContent();
+      if (currentNetwork === networkName) {
+        break;
+      }
+      await this.page.waitForTimeout(1000);
+    } while (currentNetwork);
   }
 }
