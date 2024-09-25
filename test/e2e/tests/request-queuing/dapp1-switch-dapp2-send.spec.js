@@ -128,19 +128,20 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const windowsBefore = await driver.getAllWindowHandles();
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+
         // Wait for switch confirmation to close then tx confirmation to show.
-        await driver.waitForNotificationToCloseAndOpen({
+
+        // There is an extra window appearing and disappearing
+        // so we leave this delay until the issue is fixed (#27360)
+        await driver.delay(veryLargeDelayMs);
+
+        const newDialog = await driver.getNewOrLastWindowHandle({
           driver,
           windowsBefore,
         });
 
-        // In Firefox, there is an extra window appearing and disappearing
-        // so we leave this delay until the issue is fixed (#27360)
-        if (process.env.SELENIUM_BROWSER === 'firefox') {
-          await driver.delay(veryLargeDelayMs);
-        }
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.switchToWindow(newDialog);
 
         // Check correct network on the send confirmation.
         await driver.findElement({
@@ -290,14 +291,15 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const windowsBefore = await driver.getAllWindowHandles();
 
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
         // Wait for switch confirmation to close then tx confirmation to show.
-        await driver.waitForNotificationToCloseAndOpen({
+        const newDialog = await driver.getNewOrLastWindowHandle({
           driver,
           windowsBefore,
         });
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.switchToWindow(newDialog);
 
         // Check correct network on the send confirmation.
         await driver.findElement({

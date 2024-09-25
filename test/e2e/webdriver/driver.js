@@ -1091,32 +1091,34 @@ class Driver {
   }
 
   /**
-   * Waits for a notification to close and a new one to open, handling potential race conditions.
+   * Gets a new window handle if one is found, or returns the last window handle if no new one is found
+   * after several retrials.
+   * This function is specially suitable when there are multiple popups queued, and context is invalidated.
    *
    * @param {object} params - The parameters for the function.
    * @param {WebDriver} params.driver - The WebDriver instance used to interact with the browser.
    * @param {Array<string>} params.windowsBefore - The list of window handles before the action.
    * @param {number} [params.maxAttempts] - The maximum number of attempts to find the new window handle.
    * @param {number} [params.retryDelayMs] - The delay in milliseconds between retry attempts.
-   * @throws {Error} If the new window handle is not found after the maximum number of attempts.
+   * @returns {string} The new window handle if found, or the last window handle from the array if not found.
    */
-  async waitForNotificationToCloseAndOpen({
+  async getNewOrLastWindowHandle({
     driver,
     maxAttempts = 5,
     retryDelayMs = 2000,
     windowsBefore,
   }) {
-    let newWindowHandles = [];
-
+    let newWindowHandle;
+    let windowsAfter;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      const windowsAfter = await driver.getAllWindowHandles();
-      const foundNewWindows = windowsAfter.filter(
-        (handle) =>!windowsBefore.includes(handle) && !newWindowHandles.includes(handle),
+      windowsAfter = await driver.getAllWindowHandles();
+      const foundNewWindow = windowsAfter.find(
+        (handle) => !windowsBefore.includes(handle),
       );
 
-      if (foundNewWindows.length > 0) {
-        newWindowHandles = [...newWindowHandles, ...foundNewWindows];
-        console.log(`New window handles found: ${foundNewWindows.join(', ')}`);
+      if (foundNewWindow) {
+        newWindowHandle = foundNewWindow;
+        console.log(`New window handle found: ${foundNewWindow}`);
       }
 
       if (attempt < maxAttempts) {
@@ -1127,15 +1129,13 @@ class Driver {
       }
     }
 
-    if (newWindowHandles.length === 0) {
+    if (!newWindowHandle) {
       console.log(
-        'Failed to identify any new window handles after multiple attempts',
+        'Failed to identify a new window handle after multiple attempts',
       );
-    } else {
-      console.log(
-        `Total new window handles found: ${newWindowHandles.join(', ')}`,
-      );
+      newWindowHandle = windowsAfter.slice(-1)[0];
     }
+    return newWindowHandle;
   }
 
   // Error handling
