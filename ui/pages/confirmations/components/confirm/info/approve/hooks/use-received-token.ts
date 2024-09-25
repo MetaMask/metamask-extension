@@ -1,6 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../../../../app/scripts/lib/multichain/address';
 import { useAccountTotalFiatBalance } from '../../../../../../../hooks/useAccountTotalFiatBalance';
 import { getSelectedAccount } from '../../../../../../../selectors';

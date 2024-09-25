@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
@@ -26,6 +27,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -65,6 +67,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
