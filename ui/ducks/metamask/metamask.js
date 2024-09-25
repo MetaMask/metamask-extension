@@ -1,6 +1,7 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -17,6 +18,7 @@ import {
   getAddressBook,
   getSelectedNetworkClientId,
   getSelectedInternalAccount,
+  getNetworkConfigurationsByChainId,
 } from '../../selectors';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -49,6 +51,7 @@ const initialState = {
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
+    showMultiRpcModal: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -61,9 +64,6 @@ const initialState = {
     ETH: {
       conversionRate: null,
     },
-  },
-  providerConfig: {
-    ticker: 'ETH',
   },
 };
 
@@ -278,11 +278,37 @@ export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
  * Get the provider configuration for the current selected network.
  *
  * @param {object} state - Redux state object.
- * @returns {import('../../../app/scripts/controllers/network/network-controller').NetworkControllerState['providerConfig']} The provider configuration for the current selected network.
  */
-export function getProviderConfig(state) {
-  return state.metamask.providerConfig;
-}
+export const getProviderConfig = createSelector(
+  (state) => getNetworkConfigurationsByChainId(state),
+  (state) => getSelectedNetworkClientId(state),
+  (networkConfigurationsByChainId, selectedNetworkClientId) => {
+    for (const network of Object.values(networkConfigurationsByChainId)) {
+      for (const rpcEndpoint of network.rpcEndpoints) {
+        if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
+          const blockExplorerUrl =
+            network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex];
+
+          return {
+            chainId: network.chainId,
+            ticker: network.nativeCurrency,
+            rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
+            type:
+              rpcEndpoint.type === RpcEndpointType.Custom
+                ? 'rpc'
+                : rpcEndpoint.networkClientId,
+            ...(rpcEndpoint.type === RpcEndpointType.Custom && {
+              id: rpcEndpoint.networkClientId,
+              nickname: network.name,
+              rpcUrl: rpcEndpoint.url,
+            }),
+          };
+        }
+      }
+    }
+    return undefined; // should not be reachable
+  },
+);
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];

@@ -33,6 +33,8 @@ import {
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
@@ -148,6 +150,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
     if (shouldShowEnableModal) {
       trackEvent({
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
         event: MetaMetricsEventName.NotificationsActivated,
         properties: {
           action_type: 'started',

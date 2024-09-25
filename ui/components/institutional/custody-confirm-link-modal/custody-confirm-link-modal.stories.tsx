@@ -52,9 +52,6 @@ const customData = {
         custodianName: 'saturn-dev',
       },
     },
-    providerConfig: {
-      type: 'test',
-    },
   },
 };
 

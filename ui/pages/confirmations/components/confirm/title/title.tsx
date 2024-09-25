@@ -1,22 +1,28 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+
+import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
+import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../selectors';
 import useAlerts from '../../../../../hooks/useAlerts';
-import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
-import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../context/confirm';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import {
   isPermitSignatureRequest,
   isSIWESignatureRequest,
 } from '../../../utils';
+import { useIsNFT } from '../info/approve/hooks/use-is-nft';
+import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
+import { getIsRevokeSetApprovalForAll } from '../info/utils';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
@@ -34,7 +40,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   return (
     <Box marginTop={4}>
       <GeneralAlert
-        data-testid={'confirm-banner-alert'}
+        data-testid="confirm-banner-alert"
         title={
           hasMultipleAlerts
             ? t('alertBannerMultipleAlertsTitle')
@@ -56,10 +62,17 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
 
 type IntlFunction = (str: string) => string;
 
-const getTitle = (t: IntlFunction, confirmation?: Confirmation) => {
+const getTitle = (
+  t: IntlFunction,
+  confirmation?: Confirmation,
+  isNFT?: boolean,
+  isRevokeSetApprovalForAll?: boolean,
+) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
+    case TransactionType.deployContract:
+      return t('confirmTitleDeployContract');
     case TransactionType.personalSign:
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
         return t('confirmTitleSIWESignature');
@@ -67,26 +80,58 @@ const getTitle = (t: IntlFunction, confirmation?: Confirmation) => {
       return t('confirmTitleSignature');
     case TransactionType.signTypedData:
       return isPermitSignatureRequest(confirmation as SignatureRequestType)
-        ? t('confirmTitlePermitSignature')
+        ? t('confirmTitlePermitTokens')
         : t('confirmTitleSignature');
+    case TransactionType.tokenMethodApprove:
+      if (isNFT) {
+        return t('confirmTitleApproveTransaction');
+      }
+      return t('confirmTitlePermitTokens');
+    case TransactionType.tokenMethodIncreaseAllowance:
+      return t('confirmTitlePermitTokens');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      if (isRevokeSetApprovalForAll) {
+        return t('confirmTitleSetApprovalForAllRevokeTransaction');
+      }
+      return t('setApprovalForAllRedesignedTitle');
     default:
       return '';
   }
 };
 
-const getDescription = (t: IntlFunction, confirmation?: Confirmation) => {
+const getDescription = (
+  t: IntlFunction,
+  confirmation?: Confirmation,
+  isNFT?: boolean,
+  isRevokeSetApprovalForAll?: boolean,
+) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
-      return t('confirmTitleDescContractInteractionTransaction');
+      return '';
+    case TransactionType.deployContract:
+      return t('confirmTitleDescDeployContract');
     case TransactionType.personalSign:
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
         return t('confirmTitleDescSIWESignature');
       }
-      return t('confirmTitleDescSignature');
+      return t('confirmTitleDescSign');
     case TransactionType.signTypedData:
       return isPermitSignatureRequest(confirmation as SignatureRequestType)
         ? t('confirmTitleDescPermitSignature')
-        : t('confirmTitleDescSignature');
+        : t('confirmTitleDescSign');
+    case TransactionType.tokenMethodApprove:
+      if (isNFT) {
+        return t('confirmTitleDescApproveTransaction');
+      }
+      return t('confirmTitleDescERC20ApproveTransaction');
+    case TransactionType.tokenMethodIncreaseAllowance:
+      return t('confirmTitleDescPermitSignature');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      if (isRevokeSetApprovalForAll) {
+        return '';
+      }
+      return t('confirmTitleDescApproveTransaction');
+
     default:
       return '';
   }
@@ -94,16 +139,41 @@ const getDescription = (t: IntlFunction, confirmation?: Confirmation) => {
 
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
+
+  const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
+
+  let isRevokeSetApprovalForAll = false;
+  if (
+    currentConfirmation?.type === TransactionType.tokenMethodSetApprovalForAll
+  ) {
+    const decodedResponse = useDecodedTransactionData();
+
+    isRevokeSetApprovalForAll = getIsRevokeSetApprovalForAll(
+      decodedResponse.value,
+    );
+  }
 
   const title = useMemo(
-    () => getTitle(t as IntlFunction, currentConfirmation),
-    [currentConfirmation],
+    () =>
+      getTitle(
+        t as IntlFunction,
+        currentConfirmation,
+        isNFT,
+        isRevokeSetApprovalForAll,
+      ),
+    [currentConfirmation, isNFT, isRevokeSetApprovalForAll],
   );
 
   const description = useMemo(
-    () => getDescription(t as IntlFunction, currentConfirmation),
-    [currentConfirmation],
+    () =>
+      getDescription(
+        t as IntlFunction,
+        currentConfirmation,
+        isNFT,
+        isRevokeSetApprovalForAll,
+      ),
+    [currentConfirmation, isNFT, isRevokeSetApprovalForAll],
   );
 
   if (!currentConfirmation) {

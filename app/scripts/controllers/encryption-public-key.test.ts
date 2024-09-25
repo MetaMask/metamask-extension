@@ -1,8 +1,8 @@
-import { EncryptionPublicKeyManager } from '@metamask/message-manager';
 import {
+  EncryptionPublicKeyManager,
   AbstractMessage,
   OriginalRequest,
-} from '@metamask/message-manager/dist/AbstractMessageManager';
+} from '@metamask/message-manager';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import EncryptionPublicKeyController, {

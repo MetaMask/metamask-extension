@@ -175,14 +175,14 @@ export const GAS_API_BASE_URL = 'https://gas.api.cx.metamask.io';
 export const GAS_DEV_API_BASE_URL = 'https://gas.uat-api.cx.metamask.io';
 
 const BSC_DEFAULT_BLOCK_EXPLORER_URL = 'https://bscscan.com/';
-const MAINNET_DEFAULT_BLOCK_EXPLORER_URL = 'https://etherscan.io/';
+export const MAINNET_DEFAULT_BLOCK_EXPLORER_URL = 'https://etherscan.io/';
 const GOERLI_DEFAULT_BLOCK_EXPLORER_URL = 'https://goerli.etherscan.io/';
 const POLYGON_DEFAULT_BLOCK_EXPLORER_URL = 'https://polygonscan.com/';
 const AVALANCHE_DEFAULT_BLOCK_EXPLORER_URL = 'https://snowtrace.io/';
 const OPTIMISM_DEFAULT_BLOCK_EXPLORER_URL = 'https://optimistic.etherscan.io/';
 const ARBITRUM_DEFAULT_BLOCK_EXPLORER_URL = 'https://arbiscan.io/';
 const ZKSYNC_DEFAULT_BLOCK_EXPLORER_URL = 'https://explorer.zksync.io/';
-const LINEA_DEFAULT_BLOCK_EXPLORER_URL = 'https://lineascan.build/';
+export const LINEA_DEFAULT_BLOCK_EXPLORER_URL = 'https://lineascan.build/';
 const BASE_DEFAULT_BLOCK_EXPLORER_URL = 'https://basescan.org/';
 
 export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [

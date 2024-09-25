@@ -1,4 +1,3 @@
-import type { Hex } from '@metamask/utils';
 import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
@@ -8,8 +7,13 @@ import {
   getCurrentNetwork,
   accountSupportsSmartTx,
   getSelectedAccount,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
+
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { MultichainState } from '../../../ui/selectors/multichain';
 
 type SmartTransactionsMetaMaskState = {
@@ -28,9 +32,6 @@ type SmartTransactionsMetaMaskState = {
           };
         };
       };
-    };
-    providerConfig: {
-      chainId: Hex;
     };
     swapsState: {
       swapsFeatureFlags: {
@@ -51,12 +52,6 @@ type SmartTransactionsMetaMaskState = {
     };
     smartTransactionsState: {
       liveness: boolean;
-    };
-    networkConfigurations: {
-      [key: string]: {
-        chainId: Hex;
-        rpcUrl: string;
-      };
     };
   };
 };

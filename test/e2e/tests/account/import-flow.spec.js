@@ -61,7 +61,7 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
         );
-        await driver.clickElement('[data-testid="account-list-menu-details"');
+        await driver.clickElement('[data-testid="account-list-menu-details"]');
         await driver.findVisibleElement('.qr-code__wrapper');
 
         // shows a QR code for the account
@@ -132,7 +132,7 @@ describe('Import flow @no-mmi', function () {
         await locateAccountBalanceDOM(driver, ganacheServer);
         await openActionMenuAndStartSendFlow(driver);
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await driver.fill('input[placeholder="0"]', '1');
@@ -187,11 +187,21 @@ describe('Import flow @no-mmi', function () {
         );
         await driver.clickElement('[data-testid="account-list-menu-details"');
         await driver.findVisibleElement('.qr-code__wrapper');
-        // shows the correct account address
-        await driver.findElement({
-          css: '.qr-code [data-testid="address-copy-button-text"]',
-          text: testAddress,
-        });
+
+        // Extract address segments from the DOM
+        const outerSegment = await driver.findElement(
+          '.qr-code__address-segments',
+        );
+
+        // Get the text content of each segment
+        const displayedAddress = await outerSegment.getText();
+
+        // Assert that the displayed address matches the testAddress
+        assert.strictEqual(
+          displayedAddress.toLowerCase(),
+          testAddress.toLowerCase(),
+          'The displayed address does not match the test address',
+        );
       },
     );
   });

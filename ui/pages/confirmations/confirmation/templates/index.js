@@ -1,12 +1,11 @@
 import { omit, pick } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import {
   deleteInterface,
   rejectPendingApproval,
   resolvePendingApproval,
   setNewNetworkAdded,
-  upsertNetworkConfiguration,
+  addNetwork,
 } from '../../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -48,7 +47,7 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
-  [DIALOG_APPROVAL_TYPES.default]: snapDefault,
+  [ApprovalType.SnapDialogDefault]: snapDefault,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
     createSnapAccount,
@@ -153,8 +152,7 @@ function getAttenuatedDispatch(dispatch) {
       dispatch(rejectPendingApproval(...args)),
     resolvePendingApproval: (...args) =>
       dispatch(resolvePendingApproval(...args)),
-    upsertNetworkConfiguration: (...args) =>
-      dispatch(upsertNetworkConfiguration(...args)),
+    addNetwork: (...args) => dispatch(addNetwork(...args)),
     setNewNetworkAdded: (...args) => dispatch(setNewNetworkAdded(...args)),
     deleteInterface: (...args) => dispatch(deleteInterface(...args)),
   };

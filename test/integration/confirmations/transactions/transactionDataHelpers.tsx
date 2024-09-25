@@ -7,12 +7,12 @@ export const getUnapprovedTransaction = (
 ) => {
   return {
     actionId: 4256525906,
-    chainId: '0x5',
+    chainId: '0xaa36a7',
     dappSuggestedGasFees: {
       gas: '0x16a92',
     },
     id: pendingTransactionId,
-    origin: 'origin',
+    origin: 'local:http://localhost:8086/',
     securityAlertResponse: {},
     status: 'unapproved',
     time: pendingTransactionTime,
@@ -67,6 +67,30 @@ export const getUnapprovedTransaction = (
       },
     },
     gasFeeEstimatesLoaded: true,
+  };
+};
+
+export const getUnapprovedApproveTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  return {
+    ...getUnapprovedTransaction(
+      accountAddress,
+      pendingTransactionId,
+      pendingTransactionTime,
+    ),
+    txParams: {
+      from: accountAddress,
+      data: '0x095ea7b30000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000001',
+      gas: '0x16a92',
+      to: '0x076146c765189d51be3160a2140cf80bfc73ad68',
+      value: '0x0',
+      maxFeePerGas: '0x5b06b0c0d',
+      maxPriorityFeePerGas: '0x59682f00',
+    },
+    type: TransactionType.tokenMethodApprove,
   };
 };
 

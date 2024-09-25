@@ -18,14 +18,14 @@ import {
   isAddressLedger,
 } from '../../../ducks/metamask/metamask';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
-import { currentConfirmationSelector } from '../selectors';
 import { SignatureRequestType } from '../types/confirm';
+import { useConfirmContext } from '../context/confirm';
 
 const useLedgerConnection = () => {
   const dispatch = useDispatch();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType & TransactionMeta;
+  const { currentConfirmation } = useConfirmContext<
+    SignatureRequestType & TransactionMeta
+  >();
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);

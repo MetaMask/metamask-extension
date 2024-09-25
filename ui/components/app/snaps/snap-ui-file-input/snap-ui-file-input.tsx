@@ -187,8 +187,8 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
         style={{
           cursor: 'pointer',
           backgroundColor: active
-            ? 'var(--color-background-alternative-hover)'
-            : undefined,
+            ? 'var(--color-background-default-hover)'
+            : 'var(--color-background-default)',
         }}
         onClick={handleClick}
         onDragOver={handleDragOver}

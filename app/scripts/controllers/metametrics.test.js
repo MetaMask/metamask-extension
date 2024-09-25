@@ -7,8 +7,9 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
+import { mockNetworkState } from '../../../test/stub/networks';
 import MetaMetricsController from './metametrics';
 
 const segment = createSegmentMock(2, 10000);
@@ -579,6 +580,38 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('Change Signature XXX anonymous event names', function () {
+    it.each([
+      ['Signature Requested', 'Signature Requested Anon'],
+      ['Signature Rejected', 'Signature Rejected Anon'],
+      ['Signature Approved', 'Signature Approved Anon'],
+    ])(
+      'should change "%s" anonymous event names to "%s"',
+      (eventType, anonEventType) => {
+        const metaMetricsController = getMetaMetricsController();
+        const spy = jest.spyOn(segment, 'track');
+        metaMetricsController.submitEvent({
+          event: eventType,
+          category: 'Unit Test',
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+          sensitiveProperties: { foo: 'bar' },
+        });
+
+        expect(spy).toHaveBeenCalledTimes(2);
+
+        expect(spy.mock.calls[0][0]).toMatchObject({
+          event: anonEventType,
+          properties: { foo: 'bar', ...DEFAULT_EVENT_PROPERTIES },
+        });
+
+        expect(spy.mock.calls[1][0]).toMatchObject({
+          event: eventType,
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+        });
+      },
+    );
+  });
+
   describe('Change Transaction XXX anonymous event namnes', function () {
     it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', function () {
       const metaMetricsController = getMetaMetricsController();
@@ -1037,17 +1070,11 @@ describe('MetaMetricsController', function () {
           },
         },
         allTokens: MOCK_ALL_TOKENS,
-        networkConfigurations: {
-          'network-configuration-id-1': {
-            chainId: CHAIN_IDS.MAINNET,
-            ticker: CURRENCY_SYMBOLS.ETH,
-          },
-          'network-configuration-id-2': {
-            chainId: CHAIN_IDS.GOERLI,
-            ticker: CURRENCY_SYMBOLS.TEST_ETH,
-          },
-          'network-configuration-id-3': { chainId: '0xaf' },
-        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.MAINNET },
+          { chainId: CHAIN_IDS.GOERLI },
+          { chainId: '0xaf' },
+        ),
         internalAccounts: {
           accounts: {
             mock1: {},
@@ -1131,16 +1158,17 @@ describe('MetaMetricsController', function () {
 
     it('should return only changed traits object on subsequent calls', function () {
       const metaMetricsController = getMetaMetricsController();
+      const networkState = mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.GOERLI },
+      );
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
-        },
+        ...networkState,
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         internalAccounts: {
@@ -1166,10 +1194,7 @@ describe('MetaMetricsController', function () {
             '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }],
           },
         },
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
-        },
+        ...networkState,
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
         internalAccounts: {
@@ -1197,16 +1222,17 @@ describe('MetaMetricsController', function () {
 
     it('should return null if no traits changed', function () {
       const metaMetricsController = getMetaMetricsController();
+      const networkState = mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.GOERLI },
+      );
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
-        },
+        ...networkState,
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         internalAccounts: {
@@ -1228,10 +1254,7 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
-        },
+        ...networkState,
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         internalAccounts: {

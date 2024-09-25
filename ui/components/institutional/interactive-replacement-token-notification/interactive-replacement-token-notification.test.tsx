@@ -52,9 +52,6 @@ describe('Interactive Replacement Token Notification', () => {
 
   const mockStore = {
     metamask: {
-      providerConfig: {
-        type: 'test',
-      },
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

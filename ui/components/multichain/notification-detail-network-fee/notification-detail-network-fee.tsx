@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import type { FC } from 'react';
-import type { OnChainRawNotificationsWithNetworkFields } from '../../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -37,6 +37,9 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
+
+type OnChainRawNotificationsWithNetworkFields =
+  NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields;
 
 type NetworkFees = {
   transactionFee: {

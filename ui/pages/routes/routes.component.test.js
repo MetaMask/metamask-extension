@@ -8,12 +8,13 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
 import Routes from '.';
 
 const middlewares = [thunk];
@@ -76,11 +77,6 @@ jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
 
-jest.mock('../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => false,
-}));
-
 const render = async (route, state) => {
   const store = configureMockStore(middlewares)({
     ...mockSendState,
@@ -117,11 +113,7 @@ describe('Routes Component', () => {
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-            ticker: 'ETH',
-            type: NETWORK_TYPES.MAINNET,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
         },
         send: {

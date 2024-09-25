@@ -99,6 +99,8 @@ export const SENTRY_BACKGROUND_STATE = {
     bridgeState: {
       bridgeFeatureFlags: {
         extensionSupport: false,
+        destNetworkAllowlist: [],
+        srcNetworkAllowlist: [],
       },
     },
   },
@@ -135,10 +137,10 @@ export const SENTRY_BACKGROUND_STATE = {
   LoggingController: {
     logs: false,
   },
-  MetamaskNotificationsController: {
+  NotificationServicesController: {
     subscriptionAccountsSeen: false,
     isMetamaskNotificationsFeatureSeen: false,
-    isMetamaskNotificationsEnabled: false,
+    isNotificationServicesEnabled: false,
     isFeatureAnnouncementsEnabled: false,
     metamaskNotificationsList: false,
     metamaskNotificationsReadList: false,
@@ -157,6 +159,11 @@ export const SENTRY_BACKGROUND_STATE = {
     traits: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,
+    latestNonAnonymousEventTimestamp: true,
+  },
+  MetaMetricsDataDeletionController: {
+    metaMetricsDataDeletionId: true,
+    metaMetricsDataDeletionTimestamp: true,
   },
   NameController: {
     names: false,
@@ -166,15 +173,6 @@ export const SENTRY_BACKGROUND_STATE = {
   NetworkController: {
     networkConfigurations: false,
     networksMetadata: true,
-    providerConfig: {
-      chainId: true,
-      id: true,
-      nickname: true,
-      rpcPrefs: false,
-      rpcUrl: false,
-      ticker: true,
-      type: true,
-    },
     selectedNetworkClientId: false,
   },
   NftController: {
@@ -250,7 +248,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
   },
-  PushPlatformNotificationsController: {
+  NotificationServicesPushController: {
     fcmToken: false,
   },
   MultichainRatesController: {
@@ -281,12 +279,13 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
-    unencryptedSnapStates: false,
-    snapStates: false,
     snaps: false,
   },
-  SnapInterface: {
+  SnapInterfaceController: {
     interfaces: false,
+  },
+  SnapInsightsController: {
+    insights: false,
   },
   SnapsRegistry: {
     database: false,
@@ -401,6 +400,7 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+    watchEthereumAccountEnabled: false,
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

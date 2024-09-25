@@ -1,14 +1,14 @@
-import * as Sentry from '@sentry/browser';
 import { createModuleLogger, createProjectLogger } from '@metamask/utils';
+import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-import { filterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-
-let installType = 'unknown';
+import { getManifestFlags } from './manifestFlags';
+import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
+let installType = 'unknown';
 
 export const log = createModuleLogger(
   projectLogger,
@@ -28,6 +28,9 @@ const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
 
+// This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
+const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
+
 export const ERROR_URL_ALLOWLIST = {
   CRYPTOCOMPARE: 'cryptocompare.com',
   COINGECKO: 'coingecko.com',
@@ -35,6 +38,39 @@ export const ERROR_URL_ALLOWLIST = {
   CODEFI: 'codefi.network',
   SEGMENT: 'segment.io',
 };
+
+export default function setupSentry() {
+  if (!RELEASE) {
+    throw new Error('Missing release');
+  }
+
+  if (!getSentryTarget()) {
+    log('Skipped initialization');
+    return undefined;
+  }
+
+  log('Initializing');
+
+  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
+  // If it's not, we still get the extensionId, but the installType will default to "unknown"
+  browser.management
+    .getSelf()
+    .then((extensionInfo) => {
+      if (extensionInfo.installType) {
+        installType = extensionInfo.installType;
+      }
+    })
+    .catch((error) => {
+      log('Error getting extension installType', error);
+    });
+  integrateLogging();
+  setSentryClient();
+
+  return {
+    ...Sentry,
+    getMetaMetricsEnabled,
+  };
+}
 
 function getClientOptions() {
   const environment = getSentryEnvironment();
@@ -44,8 +80,8 @@ function getClientOptions() {
     beforeBreadcrumb: beforeBreadcrumb(),
     beforeSend: (report) => rewriteReport(report),
     debug: METAMASK_DEBUG,
-    dsn: sentryTarget,
     dist: isManifestV3 ? 'mv3' : 'mv2',
+    dsn: sentryTarget,
     environment,
     integrations: [
       Sentry.dedupeIntegration(),
@@ -61,31 +97,52 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate: METAMASK_DEBUG ? 1.0 : 0.01,
+    tracesSampleRate: getTracesSampleRate(sentryTarget),
     transport: makeTransport,
   };
 }
 
-export default function setupSentry() {
-  if (!RELEASE) {
-    throw new Error('Missing release');
+/**
+ * Compute the tracesSampleRate depending on testing condition.
+ *
+ * @param {string} sentryTarget
+ * @returns tracesSampleRate to setup Sentry
+ */
+function getTracesSampleRate(sentryTarget) {
+  if (sentryTarget === SENTRY_DSN_FAKE) {
+    return 1.0;
   }
 
-  if (!getSentryTarget()) {
-    log('Skipped initialization');
-    return undefined;
+  const flags = getManifestFlags();
+
+  if (flags.circleci) {
+    return 0.003;
   }
 
-  log('Initializing');
+  if (METAMASK_DEBUG) {
+    return 1.0;
+  }
 
-  integrateLogging();
-  setSentryClient();
-
-  return {
-    ...Sentry,
-    getMetaMetricsEnabled,
-  };
+  return 0.01;
 }
+
+/**
+ * Get CircleCI tags passed from the test environment, through manifest.json,
+ * and give them to the Sentry client.
+ */
+function setCircleCiTags() {
+  const { circleci } = getManifestFlags();
+
+  if (circleci?.enabled) {
+    Sentry.setTag('circleci.enabled', circleci.enabled);
+    Sentry.setTag('circleci.branch', circleci.branch);
+    Sentry.setTag('circleci.buildNum', circleci.buildNum);
+    Sentry.setTag('circleci.job', circleci.job);
+    Sentry.setTag('circleci.nodeIndex', circleci.nodeIndex);
+    Sentry.setTag('circleci.prNumber', circleci.prNumber);
+  }
+}
+
 /**
  * Returns whether MetaMetrics is enabled, given the application state.
  *
@@ -169,6 +226,13 @@ function getSentryEnvironment() {
 }
 
 function getSentryTarget() {
+  if (
+    getManifestFlags().doNotForceSentryForThisTest ||
+    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+  ) {
+    return SENTRY_DSN_FAKE;
+  }
+
   if (METAMASK_ENVIRONMENT !== 'production') {
     return SENTRY_DSN_DEV;
   }
@@ -193,7 +257,12 @@ function getSentryTarget() {
  * @returns `true` if MetaMetrics is enabled, `false` otherwise.
  */
 async function getMetaMetricsEnabled() {
-  if (METAMASK_BUILD_TYPE === 'mmi') {
+  const flags = getManifestFlags();
+
+  if (
+    METAMASK_BUILD_TYPE === 'mmi' ||
+    (flags.circleci && !flags.doNotForceSentryForThisTest)
+  ) {
     return true;
   }
 
@@ -224,18 +293,6 @@ function setSentryClient() {
   const clientOptions = getClientOptions();
   const { dsn, environment, release } = clientOptions;
 
-  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
-  // If it's not, we still get the extensionId, but the installType will default to "unknown"
-  browser.management
-    .getSelf()
-    .then((extensionInfo) => {
-      if (extensionInfo.installType) {
-        installType = extensionInfo.installType;
-      }
-    })
-    .catch((error) => {
-      console.log('Error getting extension installType', error);
-    });
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
    * potentially clashing with a website also using Sentry, but this could only happen in the content script.
@@ -243,6 +300,12 @@ function setSentryClient() {
    * https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
    */
   globalThis.nw = {};
+
+  /**
+   * Sentry checks session tracking support by looking for global history object and functions inside it.
+   * Scuttling sets this property to undefined which breaks Sentry logic and crashes background.
+   */
+  globalThis.history ??= {};
 
   log('Updating client', {
     environment,
@@ -252,6 +315,8 @@ function setSentryClient() {
 
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
+
+  setCircleCiTags();
 
   addDebugListeners();
 
@@ -349,7 +414,6 @@ export function rewriteReport(report) {
     }
 
     report.extra.appState = appState;
-
     if (browser.runtime && browser.runtime.id) {
       report.extra.extensionId = browser.runtime.id;
     }

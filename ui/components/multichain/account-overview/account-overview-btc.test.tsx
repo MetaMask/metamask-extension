@@ -40,7 +40,6 @@ describe('AccountOverviewBtc', () => {
     const { queryByTestId } = render();
 
     expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
-    expect(queryByTestId('receive-token-button')).not.toBeInTheDocument();
     expect(queryByTestId('import-token-button')).not.toBeInTheDocument();
     // TODO: This one might be required, but we do not really handle tokens for BTC yet...
     expect(queryByTestId('refresh-list-button')).not.toBeInTheDocument();

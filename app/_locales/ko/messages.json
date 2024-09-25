@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "QR 하드웨어 지갑을 연결하세요"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "로그인 요청 주소가 현재 로그인 계정의 주소와 일치하지 않습니다."
   },
@@ -186,14 +183,14 @@
   "addANetwork": {
     "message": "네트워크 추가"
   },
-  "addANetworkManually": {
-    "message": "네트워크 직접 추가"
-  },
   "addANickname": {
     "message": "닉네임 추가"
   },
   "addAccount": {
     "message": "계정 추가"
+  },
+  "addAccountToMetaMask": {
+    "message": "MetaMask에 계정 추가"
   },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "신뢰하는 친구 및 주소 추가"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "주요 네트워크 목록에서 추가하거나 네트워크를 직접 추가합니다. 신뢰할 수 있는 엔터티만 이용하세요."
-  },
   "addHardwareWallet": {
     "message": "하드웨어 지갑 추가"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "메모 추가"
   },
-  "addMoreNetworks": {
-    "message": "네트워크 직접 추가"
-  },
   "addNetwork": {
     "message": "네트워크 추가"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "이 네트워크 연결은 타사 서비스를 이용합니다. 연결의 보안이 취약하거나 타사에 연결 내용이 노출될 수 있습니다. $1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "새 이더리움 계정 추가"
@@ -320,6 +307,9 @@
   "addUrl": {
     "message": "URL 추가"
   },
+  "addingAccount": {
+    "message": "계정 추가"
+  },
   "addingCustomNetwork": {
     "message": "네트워크 추가"
   },
@@ -328,9 +318,6 @@
   },
   "additionalNetworks": {
     "message": "추가 네트워크"
-  },
-  "additionalRpcUrl": {
-    "message": "추가 RPC URL"
   },
   "address": {
     "message": "주소"
@@ -663,9 +650,6 @@
   "back": {
     "message": "뒤로"
   },
-  "backup": {
-    "message": "백업"
-  },
   "backupApprovalInfo": {
     "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
@@ -677,12 +661,6 @@
   },
   "backupNow": {
     "message": "지금 백업"
-  },
-  "backupUserData": {
-    "message": "데이터를 백업하세요"
-  },
-  "backupUserDataDescription": {
-    "message": "기본 설정과 계약이 포함된 사용자 설정을 JSON 파일로 백업할 수 있습니다."
   },
   "balance": {
     "message": "잔액"
@@ -1009,9 +987,6 @@
   "confirmConnectionTitle": {
     "message": "$1에 연결 확인"
   },
-  "confirmDeletion": {
-    "message": "컨펌 삭제"
-  },
   "confirmFieldPaymaster": {
     "message": "수수료 지불:"
   },
@@ -1024,22 +999,13 @@
   "confirmRecoveryPhrase": {
     "message": "비밀복구구문 컨펌"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "정말로 RPC URL을 삭제하시겠습니까? 고객님의 정보는 이 네트워크에 저장되지 않습니다."
-  },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 트랜젝션을 컨펌하세요."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "해당 사이트에서 토큰 사용 승인을 요청합니다."
   },
   "confirmTitleDescSIWESignature": {
     "message": "회원님이 이 계정을 소유하고 있음을 확인하기 위해 로그인을 요청하는 사이트가 있습니다."
   },
-  "confirmTitleDescSignature": {
-    "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 메시지를 컨펌하세요."
-  },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "지출 한도 요청"
   },
   "confirmTitleSIWESignature": {
@@ -1380,9 +1346,6 @@
   "custom": {
     "message": "고급"
   },
-  "customContentSearch": {
-    "message": "이전에 추가된 네트워크 검색"
-  },
   "customGasSettingToolTipMessage": {
     "message": "$1 사용으로 가스 가격을 맞춤 설정하세요. 익숙하지 않은 경우 혼동될 수 있습니다. 자신의 책임하에 인터렉션하세요.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1502,18 +1465,12 @@
   "deleteContact": {
     "message": "연락처 삭제"
   },
-  "deleteNetwork": {
-    "message": "네트워크를 삭제하시겠습니까?"
-  },
   "deleteNetworkIntro": {
     "message": "이 네트워크를 삭제하면 나중에 이 네트워크에 있는 자산을 보고 싶을 때 네트워크를 다시 추가해야 합니다"
   },
   "deleteNetworkTitle": {
     "message": "$1 네트워크를 삭제하시겠습니까?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "RPC URL 삭제"
   },
   "deposit": {
     "message": "예치"
@@ -1539,6 +1496,9 @@
   },
   "details": {
     "message": "세부 정보"
+  },
+  "developerOptions": {
+    "message": "개발자 옵션"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” 유형은 오리지널 가스비를 최소 10% 인상해야 하는 기준에 미치지 못하므로 비활성화되었습니다.",
@@ -1605,9 +1565,6 @@
   },
   "domain": {
     "message": "도메인"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "네트워크에서 도메인 조회를 지원하지 않음"
   },
   "done": {
     "message": "완료"
@@ -1782,12 +1739,6 @@
   "ensDomainsSettingTitle": {
     "message": "주소창에 ENS 도메인 표시하기"
   },
-  "ensIllegalCharacter": {
-    "message": "ENS에 맞지 않는 문자입니다."
-  },
-  "ensRegistrationError": {
-    "message": "ENS 이름 등록 중 오류 발생"
-  },
   "ensUnknownError": {
     "message": "ENS를 조회하지 못했습니다."
   },
@@ -1882,8 +1833,8 @@
   "existingChainId": {
     "message": "입력한 정보는 기존 체인 ID와 연결되어 있습니다."
   },
-  "existingRpcUrl": {
-    "message": "이 URL은 다른 체인 ID랑 연결되어 있습니다."
+  "existingRequestsBannerAlertDesc": {
+    "message": "가장 최근 요청을 보고 확인하려면, 먼저 기존 요청을 승인하거나 거부해야 합니다."
   },
   "expandView": {
     "message": "보기 확장"
@@ -1916,9 +1867,6 @@
   "failedToFetchChainId": {
     "message": "체인 ID를 가져올 수 없습니다. RPC URL이 올바른가요?"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "현재 티커 기호 확인 데이터를 사용할 수 없습니다. 입력한 기호가 올바른지 확인하세요. 이는 네트워크에 표시되는 전환율에 영향을 미칩니다."
-  },
   "failureMessage": {
     "message": "문제가 발생했습니다. 작업을 완료할 수 없습니다."
   },
@@ -1938,9 +1886,6 @@
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "다음에서 적합한 것을 찾아보세요"
   },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
@@ -2428,14 +2373,8 @@
   "invalidAddressRecipient": {
     "message": "수신 주소가 올바르지 않음"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH 네트워크가 아닙니다. 소문자로 설정하세요."
-  },
   "invalidAssetType": {
     "message": "이 자산은 NFT이므로 NFT 탭에 있는 NFT 가져오기 페이지에서 다시 추가해야 합니다"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "잘못된 블록 탐색기 URL"
   },
   "invalidChainIdTooBig": {
     "message": "잘못된 체인 ID. 체인 ID가 너무 큽니다."
@@ -2908,6 +2847,10 @@
     "message": "닉네임을 선택하세요...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1에서 다음 승인을 요청합니다:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "이 사이트가 다음을 수행하기 원하십니까?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -2921,10 +2864,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "이 네트워크는 연결된 체인 ID 또는 이름이 일치하지 않습니다. 여러 인기 토큰이 $1(이)라는 이름을 사용하기 때문에 사기의 표적이 되고 있습니다. 사기꾼은 더 가격이 높은 암호화폐를 주겠다고 속일 수 있습니다. 계속하기 전에 모든 사항을 확인하세요.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "사기일 수 있습니다"
+    "message": "사기일 수 있습니다",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "도움이 필요하신가요? $1에 문의하세요.",
@@ -2951,9 +2895,6 @@
   },
   "network": {
     "message": "네트워크:"
-  },
-  "networkAddedSuccessfully": {
-    "message": "성공적으로 네트워크를 추가했습니다!"
   },
   "networkDetails": {
     "message": "네트워크 세부 정보"
@@ -3014,9 +2955,6 @@
   },
   "networkProvider": {
     "message": "네트워크 공급업체"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "체인 ID는 트랜잭션 서명에 사용됩니다. 이는 네트워크에서 반환하는 체인 ID와 일치해야 합니다. 십진수나 '0x'로 시작하는 16진수를 입력할 수 있지만, 표시되는 형식은 십진수입니다."
   },
   "networkStatus": {
     "message": "네트워크 상태"
@@ -3153,9 +3091,6 @@
   },
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
-  },
-  "noAddressForName": {
-    "message": "이 이름에 설정된 주소가 없습니다."
   },
   "noConnectedAccountDescription": {
     "message": "이 사이트에서 계속 사용하고자 하는 계정을 선택하세요."
@@ -3469,9 +3404,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "PFS 게이트웨이 URL이 유효합니다"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "사용자 정의 네트워크 추가"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "가능한 가장 안정적인 비공개 이더리움 액세스를 위해 Infura를 원격 프로시저 호출(RPC) 공급업체로 선정하였습니다. 사용자는 개인적으로 원하는 RPC를 선택할 수 있습니다. 하지만, 모든 RPC는 거래를 위해 사용자의 IP 주소와 이더리움 지갑을 수령한다는 점을 잊지 말아야 합니다. Infura의 데이터 처리 방법은 $1에서 상세히 확인할 수 있습니다."
   },
@@ -3500,9 +3432,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "개인정보 처리방침"
   },
-  "onboardingMetametricsModalTitle": {
-    "message": "맞춤 네트워크 추가"
-  },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 앱의 클릭 수와 조회수는 저장되지만, 공개 주소와 같은 기타 세부 정보는 저장되지 않습니다.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
@@ -3523,6 +3452,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "선택 사항:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "프로필의 사용 데이터를 수집하는 동안 개인정보를 보호하는 방법을 알아보세요."
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask 개선에 도움을 주세요"
@@ -3592,9 +3524,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "악성 네트워크 공급업체는 블록체인 상태를 거짓으로 보고하고 네트워크 활동을 기록할 수 있습니다. 신뢰하는 맞춤 네트워크만 추가하세요."
-  },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3618,9 +3547,6 @@
   },
   "optional": {
     "message": "옵션"
-  },
-  "optionalWithParanthesis": {
-    "message": "(옵션)"
   },
   "options": {
     "message": "옵션"
@@ -3973,9 +3899,6 @@
     "message": "+ 그 외 $1개",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "popularCustomNetworks": {
-    "message": "인기 사용자 정의 네트워크"
-  },
   "popularNetworkAddToolTip": {
     "message": "이러한 네트워크 중 일부는 제삼자에 의존합니다. 이러한 연결은 안정성이 떨어지거나 제삼자가 활동을 추적할 수 있습니다. $1",
     "description": "$1 is Learn more link"
@@ -4165,15 +4088,6 @@
   "receive": {
     "message": "받기"
   },
-  "receiveTokensCamelCase": {
-    "message": "토큰 받기"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "공개 주소(0x) 또는 ENS 제목 입력"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "공개 주소(0x) 또는 도메인 이름 입력"
-  },
   "recommendedGasLabel": {
     "message": "권장됨"
   },
@@ -4206,6 +4120,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "이 기능을 켜면 개선된 형식의 서명 요청을 확인할 수 있습니다."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "개선된 트랜잭션 요청"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "이 기능을 켜면 개선된 형식의 트랜잭션 요청을 확인할 수 있습니다."
   },
   "refreshList": {
     "message": "새로 고침 목록"
@@ -4343,9 +4263,6 @@
   "restoreUserData": {
     "message": "사용자 데이터 복구"
   },
-  "restoreUserDataDescription": {
-    "message": "이전에 백업한 JSON 파일에서 기본 설정과 계정 주소가 포함된 사용자 설정을 복구할 수 있습니다."
-  },
   "resultPageError": {
     "message": "오류"
   },
@@ -4406,6 +4323,9 @@
   },
   "reviewAlerts": {
     "message": "경고 검토하기"
+  },
+  "reviewPermissions": {
+    "message": "권한 검토"
   },
   "revokeAllTokensTitle": {
     "message": "모든 $1에 액세스할 수 있는 권한을 철회하시겠습니까?",
@@ -5315,9 +5235,6 @@
   "suggestedTokenName": {
     "message": "추천 이름:"
   },
-  "suggestedTokenSymbol": {
-    "message": "추천 티커 심볼:"
-  },
   "support": {
     "message": "지원"
   },
@@ -5806,9 +5723,6 @@
   "termsOfUseTitle": {
     "message": "이용약관이 개정되었습니다"
   },
-  "testNetworks": {
-    "message": "테스트 네트워크"
-  },
   "theme": {
     "message": "테마"
   },
@@ -6120,9 +6034,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "기록에 따르면 이 URL은 이 체인 ID의 알려진 제공업체와 일치하지 않습니다."
-  },
   "unapproved": {
     "message": "승인되지 않음"
   },
@@ -6191,9 +6102,6 @@
   },
   "urlErrorMsg": {
     "message": "URI에는 적절한 HTTP/HTTPS 접두사가 필요합니다."
-  },
-  "urlExistsErrorMsg": {
-    "message": "이 URL은 현재 $1 네트워크에서 사용됩니다."
   },
   "use4ByteResolution": {
     "message": "스마트 계약 디코딩"
@@ -6404,9 +6312,6 @@
   "whatsThis": {
     "message": "이것은 무엇인가요?"
   },
-  "wrongChainId": {
-    "message": "이 체인 ID는 네트워크 이름과 일치하지 않습니다."
-  },
   "wrongNetworkName": {
     "message": "기록에 따르면 네트워크 이름이 이 체인 ID와 일치하지 않습니다."
   },
@@ -6419,10 +6324,6 @@
   },
   "you": {
     "message": "회원님"
-  },
-  "youHaveAddedAll": {
-    "message": "모든 인기 네트워크를 추가했습니다. $1에서 더 많은 네트워크를 확인하거나 $2을(를) 할 수 있습니다.",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "이 기능을 사용하려면 카메라 액세스를 허용해야 합니다."

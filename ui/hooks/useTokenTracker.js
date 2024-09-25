@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
 import { shallowEqual, useSelector } from 'react-redux';
-import { getCurrentChainId, getSelectedInternalAccount } from '../selectors';
+import { getSelectedInternalAccount } from '../selectors';
 import { SECOND } from '../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function useTokenTracker({
@@ -12,7 +13,7 @@ export function useTokenTracker({
   includeFailedTokens = false,
   hideZeroBalanceTokens = false,
 }) {
-  const chainId = useSelector(getCurrentChainId);
+  const { chainId, rpcUrl } = useSelector(getProviderConfig);
   const { address: selectedAddress } = useSelector(
     getSelectedInternalAccount,
     shallowEqual,
@@ -97,8 +98,9 @@ export function useTokenTracker({
   useEffect(() => {
     // This effect will only run initially and when:
     // 1. chainId is updated,
-    // 2. userAddress is changed,
-    // 3. token list is updated and not equal to previous list
+    // 2. rpc url is changd,
+    // 3. userAddress is changed,
+    // 4. token list is updated and not equal to previous list
     // in any of these scenarios, we should indicate to the user that their token
     // values are in the process of updating by setting loading state.
     setLoading(true);
@@ -121,6 +123,7 @@ export function useTokenTracker({
     userAddress,
     teardownTracker,
     chainId,
+    rpcUrl,
     memoizedTokens,
     updateBalances,
     buildTracker,

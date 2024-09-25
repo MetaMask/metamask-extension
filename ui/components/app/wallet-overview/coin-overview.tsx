@@ -1,10 +1,25 @@
-import React, { useContext } from 'react';
+import React, {
+  useContext,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  useCallback,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
-
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { Icon, IconName, IconSize } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IF
+
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
@@ -13,6 +28,9 @@ import {
   getPreferences,
   getTokensMarketData,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getDataCollectionForMarketing,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -66,6 +84,15 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useContext(I18nContext);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  ///: END:ONLY_INCLUDE_IF
+
   const isEvm = useSelector(getMultichainIsEvm);
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
@@ -77,6 +104,27 @@ export const CoinOverview = ({
     rpcUrl,
   );
   const tokensMarketData = useSelector(getTokensMarketData);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const handlePortfolioOnClick = useCallback(() => {
+    const url = getPortfolioUrl(
+      '',
+      'ext_portfolio_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
+    global.platform.openTab({ url });
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PortfolioLinkClicked,
+      properties: {
+        location: 'Home',
+        text: 'Portfolio',
+      },
+    });
+  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <WalletOverview
@@ -120,19 +168,38 @@ export const CoinOverview = ({
                 </span>
               )}
             </div>
-            {showFiat && isOriginalNativeSymbol && balance && (
-              <UserPreferencedCurrencyDisplay
-                className={classnames({
-                  [`${classPrefix}__cached-secondary-balance`]: balanceIsCached,
-                  [`${classPrefix}__secondary-balance`]: !balanceIsCached,
-                })}
-                data-testid={`${classPrefix}-overview__secondary-currency`}
-                value={balance}
-                type={SECONDARY}
-                ethNumberOfDecimals={4}
-                hideTitle
-              />
-            )}
+            <div className="wallet-overview__currency-wrapper">
+              {showFiat && isOriginalNativeSymbol && balance && (
+                <UserPreferencedCurrencyDisplay
+                  className={classnames({
+                    [`${classPrefix}__cached-secondary-balance`]:
+                      balanceIsCached,
+                    [`${classPrefix}__secondary-balance`]: !balanceIsCached,
+                  })}
+                  data-testid={`${classPrefix}-overview__secondary-currency`}
+                  value={balance}
+                  type={SECONDARY}
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                />
+              )}
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                <div
+                  onClick={handlePortfolioOnClick}
+                  className="wallet-overview__portfolio_button"
+                  data-testid="portfolio-link"
+                >
+                  {t('portfolio')}
+                  <Icon
+                    size={IconSize.Sm}
+                    name={IconName.Export}
+                    color={IconColor.primaryDefault}
+                  />
+                </div>
+                ///: END:ONLY_INCLUDE_IF
+              }
+            </div>
             {isEvm && (
               <PercentageAndAmountChange
                 value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
@@ -144,6 +211,7 @@ export const CoinOverview = ({
       buttons={
         <CoinButtons
           {...{
+            trackingLocation: 'home',
             chainId,
             isSwapsChain,
             isSigningEnabled,

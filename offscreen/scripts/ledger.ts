@@ -16,15 +16,11 @@ const LEDGER_KEYRING_IFRAME_CONNECTED_EVENT = 'ledger-connection-event';
 
 const callbackProcessor = new CallbackProcessor();
 
-export default function init() {
-  const iframe = document.createElement('iframe');
-  iframe.src = 'https://metamask.github.io/eth-ledger-bridge-keyring';
-  iframe.allow = 'hid';
-  document.body.appendChild(iframe);
+function setupMessageListeners(iframe: HTMLIFrameElement) {
   // This listener receives action responses from the live ledger iframe
   // Then forwards the response to the offscreen bridge
   window.addEventListener('message', ({ origin, data, source }) => {
-    if (origin !== KnownOrigins.ledger || source !== iframe?.contentWindow) {
+    if (origin !== KnownOrigins.ledger || source !== iframe.contentWindow) {
       return;
     }
 
@@ -64,7 +60,7 @@ export default function init() {
         return;
       }
 
-      if (!iframe?.contentWindow) {
+      if (!iframe.contentWindow) {
         const error = new Error('Ledger iframe not present');
         sendResponse({
           success: false,
@@ -87,10 +83,7 @@ export default function init() {
         messageId,
       };
 
-      // It has already been checked that they are not null above, so the
-      // optional chaining here is for compiler typechecking only. This avoids
-      // overriding our non-null assertion rule.
-      iframe?.contentWindow?.postMessage(iframeMsg, KnownOrigins.ledger);
+      iframe.contentWindow.postMessage(iframeMsg, KnownOrigins.ledger);
 
       // This keeps sendResponse function valid after return
       // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
@@ -98,4 +91,17 @@ export default function init() {
       return true;
     },
   );
+}
+
+export default async function init() {
+  return new Promise<void>((resolve) => {
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://metamask.github.io/eth-ledger-bridge-keyring';
+    iframe.allow = 'hid';
+    iframe.onload = () => {
+      setupMessageListeners(iframe);
+      resolve();
+    };
+    document.body.appendChild(iframe);
+  });
 }
