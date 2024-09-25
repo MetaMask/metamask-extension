@@ -777,7 +777,7 @@ class Driver {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
-      this.waitForControllersLoaded();
+      await this.waitForControllersLoaded();
     }
     return response;
   }
