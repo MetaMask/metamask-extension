@@ -61,7 +61,7 @@ async function main() {
               name: 'requiredScopes',
               value: {
                 eip155: {
-                  scopes: ['eip155:1'],
+                  references: ['1'],
                   methods: ['eth_sendTransaction', 'eth_getBalance'],
                   notifications: [],
                 },

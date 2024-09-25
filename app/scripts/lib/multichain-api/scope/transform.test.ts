@@ -20,17 +20,17 @@ describe('Scope Transform', () => {
     });
 
     describe('scopeString is namespace scoped', () => {
-      it('returns the scope as is when `scopes` is not defined', () => {
+      it('returns the scope as is when `references` is not defined', () => {
         expect(flattenScope('eip155', validScopeObject)).toStrictEqual({
           eip155: validScopeObject,
         });
       });
 
-      it('returns one scope per `scopes` element with `scopes` excluded from the scopeObject', () => {
+      it('returns one scope per `references` element with `references` excluded from the scopeObject', () => {
         expect(
           flattenScope('eip155', {
             ...validScopeObject,
-            scopes: ['eip155:1', 'eip155:5', 'eip155:64'],
+            references: ['1', '5', '64'],
           }),
         ).toStrictEqual({
           'eip155:1': validScopeObject,
@@ -247,7 +247,7 @@ describe('Scope Transform', () => {
           eip155: {
             ...validScopeObject,
             methods: ['a', 'b'],
-            scopes: ['eip155:1', 'eip155:5'],
+            references: ['1', '5'],
           },
           'eip155:1': {
             ...validScopeObject,

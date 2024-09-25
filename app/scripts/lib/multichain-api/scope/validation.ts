@@ -1,4 +1,4 @@
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { isCaipReference, KnownCaipNamespace } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 import {
@@ -19,7 +19,7 @@ export const isValidScope = (
   }
 
   const {
-    scopes,
+    references,
     methods,
     notifications,
     accounts,
@@ -33,20 +33,15 @@ export const isValidScope = (
   }
 
   // These assume that the namespace has a notion of chainIds
-  if (reference && scopes && scopes.length > 0) {
+  if (reference && references && references.length > 0) {
     return false;
   }
-  if (namespace && scopes) {
-    const areScopesValid = scopes.every((scope) => {
-      try {
-        return parseCaipChainId(scope).namespace === namespace;
-      } catch (e) {
-        console.log(e);
-        return false;
-      }
+  if (namespace && references) {
+    const areReferencesValid = references.every((nestedReference) => {
+      return isCaipReference(nestedReference);
     });
 
-    if (!areScopesValid) {
+    if (!areReferencesValid) {
       return false;
     }
   }

@@ -6221,7 +6221,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
         updateNetwork: this.networkController.updateNetwork.bind(
-          this.networkController
+          this.networkController,
         ),
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);
