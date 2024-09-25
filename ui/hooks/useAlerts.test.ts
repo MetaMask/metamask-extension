@@ -89,6 +89,77 @@ describe('useAlerts', () => {
     });
   });
 
+  describe('unconfirmedFieldDangerAlerts', () => {
+    it('returns all unconfirmed field danger alerts', () => {
+      const { result: result1 } = renderHookUseAlert(undefined, {
+        confirmAlerts: {
+          alerts: {
+            [ownerIdMock]: alertsMock,
+            [ownerId2Mock]: [alertsMock[0]],
+          },
+          confirmed: {
+            [ownerIdMock]: {
+              [fromAlertKeyMock]: false,
+              [dataAlertKeyMock]: false,
+              [toAlertKeyMock]: false,
+            },
+            [ownerId2Mock]: { [fromAlertKeyMock]: false },
+          },
+        },
+      });
+      const expectedFieldDangerAlert = alertsMock.find(
+        (alert) =>
+          alert.field === fromAlertKeyMock &&
+          alert.severity === Severity.Danger,
+      );
+      expect(result1.current.unconfirmedFieldDangerAlerts).toEqual([
+        expectedFieldDangerAlert,
+      ]);
+    });
+  });
+
+  describe('hasUnconfirmedFieldDangerAlerts', () => {
+    it('returns true if there are unconfirmed field danger alerts', () => {
+      const { result: result1 } = renderHookUseAlert(undefined, {
+        confirmAlerts: {
+          alerts: {
+            [ownerIdMock]: alertsMock,
+            [ownerId2Mock]: [alertsMock[0]],
+          },
+          confirmed: {
+            [ownerIdMock]: {
+              [fromAlertKeyMock]: false,
+              [dataAlertKeyMock]: false,
+              [toAlertKeyMock]: false,
+            },
+            [ownerId2Mock]: { [fromAlertKeyMock]: false },
+          },
+        },
+      });
+      expect(result1.current.hasUnconfirmedFieldDangerAlerts).toEqual(true);
+    });
+
+    it('returns false if there are no unconfirmed field danger alerts', () => {
+      const { result: result1 } = renderHookUseAlert(undefined, {
+        confirmAlerts: {
+          alerts: {
+            [ownerIdMock]: alertsMock,
+            [ownerId2Mock]: [alertsMock[0]],
+          },
+          confirmed: {
+            [ownerIdMock]: {
+              [fromAlertKeyMock]: true,
+              [dataAlertKeyMock]: false,
+              [toAlertKeyMock]: false,
+            },
+            [ownerId2Mock]: { [fromAlertKeyMock]: false },
+          },
+        },
+      });
+      expect(result1.current.hasUnconfirmedFieldDangerAlerts).toEqual(false);
+    });
+  });
+
   describe('generalAlerts', () => {
     it('returns general alerts', () => {
       const expectedGeneralAlerts = alertsMock.find(

@@ -61,11 +61,19 @@ const useAlerts = (ownerId: string) => {
     (alert) =>
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
+
   const hasAlerts = alerts.length > 0;
+
   const dangerAlerts = alerts.filter(
     (alert) => alert.severity === Severity.Danger,
   );
+
   const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
+
+  const unconfirmedFieldDangerAlerts = fieldAlerts.filter(
+    (alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+  );
 
   return {
     alerts,
@@ -79,6 +87,8 @@ const useAlerts = (ownerId: string) => {
     isAlertConfirmed,
     setAlertConfirmed,
     unconfirmedDangerAlerts,
+    unconfirmedFieldDangerAlerts,
+    hasUnconfirmedFieldDangerAlerts: unconfirmedFieldDangerAlerts.length > 0,
   };
 };
 

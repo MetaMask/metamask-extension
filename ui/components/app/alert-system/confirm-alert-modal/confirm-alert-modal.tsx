@@ -122,23 +122,18 @@ export function ConfirmAlertModal({
   ownerId,
 }: ConfirmAlertModalProps) {
   const t = useI18nContext();
-  const { fieldAlerts, alerts, isAlertConfirmed } = useAlerts(ownerId);
+  const { fieldAlerts, alerts, hasUnconfirmedFieldDangerAlerts } =
+    useAlerts(ownerId);
 
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
-
-  const unconfirmedDangerAlerts = fieldAlerts.filter(
-    (alert) =>
-      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
-  );
 
   const hasDangerBlockingAlerts = fieldAlerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
-  const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
 
   // if there are unconfirmed danger alerts, show the multiple alert modal
   const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
-    useState<boolean>(hasUnconfirmedDangerAlerts);
+    useState<boolean>(hasUnconfirmedFieldDangerAlerts);
 
   const handleCloseMultipleAlertModal = useCallback(
     (request?: { recursive?: boolean }) => {
@@ -146,13 +141,13 @@ export function ConfirmAlertModal({
 
       if (
         request?.recursive ||
-        hasUnconfirmedDangerAlerts ||
+        hasUnconfirmedFieldDangerAlerts ||
         hasDangerBlockingAlerts
       ) {
         onClose();
       }
     },
-    [onClose, hasUnconfirmedDangerAlerts, hasDangerBlockingAlerts],
+    [onClose, hasUnconfirmedFieldDangerAlerts, hasDangerBlockingAlerts],
   );
 
   const handleOpenMultipleAlertModal = useCallback(() => {

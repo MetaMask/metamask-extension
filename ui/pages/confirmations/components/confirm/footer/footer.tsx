@@ -97,13 +97,9 @@ const ConfirmButton = ({
     hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
     fieldAlerts,
-    isAlertConfirmed,
+    hasUnconfirmedFieldDangerAlerts,
+    unconfirmedFieldDangerAlerts,
   } = useAlerts(alertOwnerId);
-
-  const unconfirmedDangerAlerts = fieldAlerts.filter(
-    (alert) =>
-      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
-  );
 
   const hasDangerBlockingAlerts = fieldAlerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
@@ -140,12 +136,12 @@ const ConfirmButton = ({
           onClick={handleOpenConfirmModal}
           size={ButtonSize.Lg}
           startIconName={
-            unconfirmedDangerAlerts.length > 0
+            hasUnconfirmedFieldDangerAlerts
               ? IconName.SecuritySearch
               : IconName.Danger
           }
         >
-          {reviewAlertButtonText(unconfirmedDangerAlerts, t)}
+          {reviewAlertButtonText(unconfirmedFieldDangerAlerts, t)}
         </Button>
       ) : (
         <Button
