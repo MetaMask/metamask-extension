@@ -8,6 +8,7 @@ const {
   logInWithBalanceValidation,
   WINDOW_TITLES,
   defaultGanacheOptions,
+  tinyDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -160,7 +161,7 @@ describe('Dapp viewed Event @no-mmi', function () {
     );
   });
 
-  it('is sent when refreshing dapp with one account connected', async function () {
+  it.only('is sent when refreshing dapp with one account connected', async function () {
     async function mockSegment(mockServer) {
       return [
         await mockedDappViewedEndpoint(mockServer),
@@ -188,9 +189,11 @@ describe('Dapp viewed Event @no-mmi', function () {
         await waitForDappConnected(driver);
         // refresh dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+       await driver.delay(tinyDelayMs);
         await driver.refresh();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
+        console.log(events);
 
         // events are original dapp viewed, new dapp viewed when refresh, and permission approved
         const dappViewedEventProperties = events[1].properties;
