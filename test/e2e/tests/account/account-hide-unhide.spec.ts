@@ -14,7 +14,7 @@ describe('Account list - hide/unhide functionality', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver, '0');
+        await loginWithBalanceValidation(driver);
         new HeaderNavbar(driver).openAccountMenu();
 
         // hide account

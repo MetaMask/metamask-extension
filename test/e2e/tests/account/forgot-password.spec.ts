@@ -1,8 +1,8 @@
 import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 import { E2E_SRP } from '../../default-fixture';
+import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
@@ -18,8 +18,14 @@ describe('Forgot password', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // Lock Wallet
         const homePage = new HomePage(driver);
@@ -36,11 +42,7 @@ describe('Forgot password', function () {
         await homePage.headerNavbar.lockMetaMask();
 
         // Check user can log in with new password
-        await loginWithBalanceValidation(
-          driver,
-          DEFAULT_GANACHE_ETH_BALANCE_DEC,
-          newPassword,
-        );
+        await loginWithBalanceValidation(driver, ganacheServer, newPassword);
       },
     );
   });

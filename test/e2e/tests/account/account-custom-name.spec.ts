@@ -17,7 +17,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver, '0');
+        await loginWithBalanceValidation(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -45,7 +45,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
 
         // Lock and unlock wallet
         await headerNavbar.lockMetaMask();
-        await loginWithBalanceValidation(driver, '0');
+        await loginWithBalanceValidation(driver);
 
         // Verify both account labels persist after unlock
         await headerNavbar.check_accountLabel(newAccountLabel);

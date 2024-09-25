@@ -16,7 +16,7 @@ describe('Add snap account experimental settings @no-mmi', function (this: Suite
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver, '0');
+        await loginWithBalanceValidation(driver);
 
         // Make sure the "Add snap account" button is not visible.
         const headerNavbar = new HeaderNavbar(driver);

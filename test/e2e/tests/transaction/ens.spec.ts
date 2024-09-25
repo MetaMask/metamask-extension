@@ -3,7 +3,7 @@ import { MockttpServer } from 'mockttp';
 import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
@@ -108,10 +108,12 @@ describe('ENS', function (this: Suite) {
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver, '<0.000001');
+        await loginWithoutBalanceValidation(driver);
 
         // click send button on homepage to start send flow
-        await new HomePage(driver).startSendFlow();
+        const homepage = new HomePage(driver);
+        await homepage.check_expectedBalanceIsDisplayed('<0.000001');
+        await homepage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
         const sendToPage = new SendTokenPage(driver);
