@@ -1,7 +1,7 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Json } from '@metamask/utils';
+import { isValidHexAddress, Json } from '@metamask/utils';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -78,8 +78,9 @@ export const isOrderSignatureRequest = (request: SignatureRequestType) => {
 
 /**
  * Returns true if the request appears to be a Permit Typed Sign signature request
- * based on the primaryType. This *does not* do an in-depth check to verify the message matches
- * the EIP-2612 standard.
+ * based on EIP-2612 spec and the primaryType. This may exclude EIP-2612 types if
+ * the primaryType does not match our list. Ideally, we will remove the strict
+ * primaryType specification.
  *
  * @param request - The confirmation request to check
  */
@@ -93,9 +94,24 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
   ) {
     return false;
   }
-  const { primaryType } = parseTypedDataMessage(
+  const parsedData = parseTypedDataMessage(
     (request as SignatureRequestType).msgParams?.data as string,
   );
+
+  const {
+    message: { owner, spender, value },
+    primaryType,
+  } = parsedData;
+
+  const hasPermitFields =
+    isValidHexAddress(owner) &&
+    isValidHexAddress(spender) &&
+    value !== undefined &&
+    value !== null;
+
+  if (!hasPermitFields) {
+    return false;
+  }
 
   return PRIMARY_TYPES_PERMIT.includes(primaryType);
 };
