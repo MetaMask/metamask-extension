@@ -6109,9 +6109,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@file:../core/packages/queued-request-controller::locator=metamask-crx%40workspace%3A.":
-  version: 5.0.0
-  resolution: "@metamask/queued-request-controller@file:../core/packages/queued-request-controller#../core/packages/queued-request-controller::hash=8215c3&locator=metamask-crx%40workspace%3A."
+"@metamask/queued-request-controller@npm:@metamask-previews/queued-request-controller@5.0.0-preview-09a2ffd5":
+  version: 5.0.0-preview-09a2ffd5
+  resolution: "@metamask-previews/queued-request-controller@npm:5.0.0-preview-09a2ffd5"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.0"
     "@metamask/controller-utils": "npm:^11.2.0"
@@ -6122,7 +6122,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^21.0.0
     "@metamask/selected-network-controller": ^18.0.0
-  checksum: 10/35dad90cb2aefe2fa03687cbd5509e50945ea482cd80e21751f2269a9cc824413f894666ea59b7343c83691c17ee457b64544f5bb8d23031866e5d1e8aaa676f
+  checksum: 10/124b6c27b1481f514c728b82cd1fa1347a992161229cd0f841b67156db1ed0c049a08a045914ccf4b5413425c8018db9ee794e1cd2598ce0abf867343cff30d7
   languageName: node
   linkType: hard
 
@@ -26084,7 +26084,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.34.0"
     "@metamask/profile-sync-controller": "npm:^0.5.0"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:^2.0.0"
+    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@5.0.0-preview-09a2ffd5"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
