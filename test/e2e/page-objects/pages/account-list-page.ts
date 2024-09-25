@@ -19,8 +19,6 @@ class AccountListPage {
 
   private closeAccountModalButton: string;
 
-  private closeEditLabelButton: string;
-
   private createAccountButton: string;
 
   private editableLabelButton: string;
@@ -55,7 +53,6 @@ class AccountListPage {
       tag: 'button',
     };
     this.closeAccountModalButton = 'button[aria-label="Close"]';
-    this.closeEditLabelButton = 'button[aria-label="Close"]';
     this.createAccountButton =
       '[data-testid="multichain-account-menu-popover-action-button"]';
     this.editableLabelButton = '[data-testid="editable-label-button"]';
@@ -108,11 +105,11 @@ class AccountListPage {
     await this.driver.clickElement(this.editableLabelButton);
     await this.driver.fill(this.editableLabelInput, newLabel);
     await this.driver.clickElement(this.saveAccountLabelButton);
-    await this.driver.clickElement(this.closeEditLabelButton);
+    await this.driver.clickElement(this.closeAccountModalButton);
   }
 
   async closeAccountModal(): Promise<void> {
-    console.log(`Open add account modal in account list`);
+    console.log(`Close account modal in account list`);
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
     );
