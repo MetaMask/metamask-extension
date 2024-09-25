@@ -168,7 +168,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Alerts" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('alerts'))).toStrictEqual(2);
+      expect(getNumberOfSettingRoutesInTab(t, t('alerts'))).toStrictEqual(1);
     });
 
     it('returns "Network" section count', () => {
