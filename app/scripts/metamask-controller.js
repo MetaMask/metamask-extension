@@ -587,6 +587,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AccountsController,
     });
 
+    // the preferences messenger
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [

@@ -177,6 +177,7 @@ export default class PreferencesController {
       return acc;
     }, {});
 
+    // the default preferences controller state
     const initState: PreferencesControllerState = {
       selectedAddress: '',
       useBlockie: false,
