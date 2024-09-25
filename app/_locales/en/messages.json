@@ -840,6 +840,9 @@
   "bridgeFrom": {
     "message": "Bridge from"
   },
+  "bridgeOverallCost": {
+    "message": "Overall cost"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
