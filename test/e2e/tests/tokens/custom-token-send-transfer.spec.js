@@ -150,7 +150,7 @@ describe('Transfer custom tokens @no-mmi', function () {
     );
   });
 
-  it.only('transfer custom tokens from dapp without specifying gas', async function () {
+  it('transfer custom tokens from dapp without specifying gas', async function () {
     await withFixtures(
       {
         dapp: true,
