@@ -363,6 +363,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - chore(deps): bump assets controller to v34.0.0 ([#25540](https://github.com/MetaMask/metamask-extension/pull/25540))
 - chore: add bridge controller, store and api utils ([#25044](https://github.com/MetaMask/metamask-extension/pull/25044))
 - fix: add eth_signTypedData and eth_signTypedData_v3 to `methodsRequiringNetworkSwitch` ([#25562](https://github.com/MetaMask/metamask-extension/pull/25562))
+## [12.2.4]
+### Fixed
+- Fixes token approvals for users who have the "Decode smart contracts" setting toggled off ([#27203](https://github.com/MetaMask/metamask-extension/pull/27203))
+
+## [12.2.3]
+### Fixed
+- Fixes dapps integrating with the cosmos chain that rely on setting the `verifyingContract` field of a signature to `"cosmos"`
 
 ## [12.2.2]
 ### Fixed
@@ -5404,6 +5411,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...HEAD
 [12.3.0]: https://github.com/MetaMask/metamask-extension/compare/v12.2.2...v12.3.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.2.4...HEAD
+[12.2.4]: https://github.com/MetaMask/metamask-extension/compare/v12.2.3...v12.2.4
+[12.2.3]: https://github.com/MetaMask/metamask-extension/compare/v12.2.2...v12.2.3
 [12.2.2]: https://github.com/MetaMask/metamask-extension/compare/v12.2.1...v12.2.2
 [12.2.1]: https://github.com/MetaMask/metamask-extension/compare/v12.2.0...v12.2.1
 [12.2.0]: https://github.com/MetaMask/metamask-extension/compare/v12.1.3...v12.2.0
