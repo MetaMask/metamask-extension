@@ -3,9 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
 import {
+  AlignItems,
+  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
+  IconColor,
+  JustifyContent,
+  TextAlign,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
@@ -26,11 +32,16 @@ import {
   AvatarFaviconSize,
   Box,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonPrimary,
   ButtonPrimarySize,
   ButtonSize,
   ButtonVariant,
+  Icon,
   IconName,
+  IconSize,
+  Text,
 } from '../../../component-library';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import {
@@ -39,17 +50,16 @@ import {
   Toast,
   ToastContainer,
 } from '../..';
-import { Content, Footer, Page } from '../page';
+import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
 import {
-  requestAccountsAndChainPermissionsWithId,
+  requestAccountsPermissionWithId,
   removePermissionsFor,
 } from '../../../../store/actions';
 import {
   DisconnectAllModal,
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
-import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import {
   AccountType,
   ConnectedSites,
@@ -121,9 +131,9 @@ export const Connections = () => {
       origin: activeTabOrigin,
     };
   }
-  const requestAccountsAndChainPermissions = async () => {
+  const requestAccountsPermission = async () => {
     const requestId = await dispatch(
-      requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
+      requestAccountsPermissionWithId(tabToConnect.origin),
     );
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
@@ -142,11 +152,15 @@ export const Connections = () => {
           parentCapability,
       ) as string[];
       if (permissionMethodNames.length > 0) {
-        const permissionsRecord = {
-          [activeTabOrigin]: permissionMethodNames as NonEmptyArray<string>,
+        const permissionsRecord: Record<string, string[]> = {
+          [activeTabOrigin]: permissionMethodNames,
         };
 
-        dispatch(removePermissionsFor(permissionsRecord));
+        dispatch(
+          removePermissionsFor(
+            permissionsRecord as Record<string, NonEmptyArray<string>>,
+          ),
+        );
       }
 
       setShowDisconnectAllModal(false);
@@ -192,10 +206,50 @@ export const Connections = () => {
       data-testid="connections-page"
       className="main-container connections-page"
     >
-      <PermissionsHeader
-        securedOrigin={securedOrigin}
-        connectedSubjectsMetadata={connectedSubjectsMetadata}
-      />
+      <Header
+        backgroundColor={BackgroundColor.backgroundDefault}
+        startAccessory={
+          <ButtonIcon
+            ariaLabel={t('back')}
+            iconName={IconName.ArrowLeft}
+            className="connections-header__start-accessory"
+            color={IconColor.iconDefault}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onClick={() => (history as any).goBack()}
+            size={ButtonIconSize.Sm}
+          />
+        }
+      >
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          gap={2}
+          justifyContent={JustifyContent.center}
+          className="connections-header__title"
+        >
+          {connectedSubjectsMetadata?.iconUrl ? (
+            <AvatarFavicon
+              name={connectedSubjectsMetadata.name}
+              size={AvatarFaviconSize.Sm}
+              src={connectedSubjectsMetadata.iconUrl}
+            />
+          ) : (
+            <Icon
+              name={IconName.Global}
+              size={IconSize.Sm}
+              color={IconColor.iconDefault}
+            />
+          )}
+          <Text
+            as="span"
+            variant={TextVariant.headingMd}
+            textAlign={TextAlign.Center}
+            ellipsis
+          >
+            {getURLHost(securedOrigin)}
+          </Text>
+        </Box>
+      </Header>
       <Content padding={0}>
         {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
           <Box>
@@ -342,7 +396,7 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
-              onClick={requestAccountsAndChainPermissions}
+              onClick={() => dispatch(requestAccountsPermission())}
             >
               {t('connectAccounts')}
             </ButtonPrimary>
