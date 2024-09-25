@@ -53,6 +53,8 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -77,10 +79,12 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { generateSkipOnboardingState } from './skip-onboarding';
+import { generateWalletState } from './fixtures/generate-wallet-state';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
+
+import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -124,6 +128,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+
 // normalized (adds a trailing slash to the end of the domain if it's missing)
 // the URL once and reuse it:
 const phishingPageHref = phishingPageUrl.toString();
@@ -225,8 +230,8 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      const onboardState = theController.onboardingController.store.getState();
-      if (!onboardState.completedOnboarding) {
+      const { completedOnboarding } = theController.onboardingController.state;
+      if (!completedOnboarding) {
         return {};
       }
 
@@ -556,15 +561,15 @@ export async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({
     migrations,
-    defaultVersion: process.env.SKIP_ONBOARDING
+    defaultVersion: process.env.WITH_STATE
       ? FIXTURE_STATE_METADATA_VERSION
       : null,
   });
   migrator.on('error', console.warn);
 
-  if (process.env.SKIP_ONBOARDING) {
-    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
-    firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  if (process.env.WITH_STATE) {
+    const stateOverrides = await generateWalletState();
+    firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
   // read from disk
@@ -883,10 +888,10 @@ export function setupController(
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStream =
+      const portStreamForPhishingPage =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       controller.setupPhishingCommunication({
-        connectionStream: portStream,
+        connectionStream: portStreamForPhishingPage,
       });
     } else {
       // this is triggered when a new tab is opened, or origin(url) is changed
@@ -904,6 +909,18 @@ export function setupController(
           ) {
             requestAccountTabIds[origin] = tabId;
           }
+        });
+      }
+      if (
+        senderUrl &&
+        COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
+          (origin) => origin === senderUrl.origin,
+        )
+      ) {
+        const portStreamForCookieHandlerPage =
+          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        controller.setUpCookieHandlerCommunication({
+          connectionStream: portStreamForCookieHandlerPage,
         });
       }
       connectExternalExtension(remotePort);
@@ -989,8 +1006,6 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
     updateBadge,
   );
-
-  controller.txController.initApprovals();
 
   /**
    * Formats a count for display as a badge label.

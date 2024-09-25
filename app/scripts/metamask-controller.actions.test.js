@@ -70,7 +70,7 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   beforeAll(async function () {
-    await ganacheServer.start();
+    await ganacheServer.start({ port: 32545 });
   });
 
   beforeEach(function () {

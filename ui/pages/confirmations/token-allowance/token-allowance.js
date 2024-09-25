@@ -212,7 +212,9 @@ export default function TokenAllowance({
   }
 
   const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
-  const methodData = useSelector((state) => getKnownMethodData(state, data));
+  const methodData = useSelector(
+    (state) => getKnownMethodData(state, data) ?? {},
+  );
 
   const { balanceError } = useGasFeeContext();
 

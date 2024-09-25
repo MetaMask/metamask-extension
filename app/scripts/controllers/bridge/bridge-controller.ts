@@ -1,4 +1,6 @@
 import { BaseController, StateMetadata } from '@metamask/base-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { fetchBridgeFeatureFlags } from '../../../../ui/pages/bridge/bridge.util';
 import {
   BRIDGE_CONTROLLER_NAME,
