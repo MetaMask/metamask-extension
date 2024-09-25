@@ -1,3 +1,4 @@
+import currencyFormatter from 'currency-formatter';
 import { useSelector } from 'react-redux';
 import {
   showPrimaryCurrency,
@@ -9,7 +10,7 @@ import {
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
 } from '../../../../../selectors/multichain';
-import { getPreferences } from '../../../../../selectors';
+import { getCurrentCurrency, getPreferences } from '../../../../../selectors';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
@@ -30,7 +31,7 @@ export const useNativeTokenBalance = () => {
     rpcUrl,
   );
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
-
+  const currentCurrency = useSelector(getCurrentCurrency);
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
@@ -72,12 +73,26 @@ export const useNativeTokenBalance = () => {
     ? primaryCurrencyProperties.suffix
     : secondaryCurrencyProperties.suffix;
 
+  const unformattedTokenFiatAmount = useNativeCurrencyAsPrimaryCurrency
+    ? secondaryCurrencyDisplay.toString()
+    : primaryCurrencyDisplay.toString();
+
+  // useCurrencyDisplay passes along the symbol and formatting into the value here
+  // for sorting we need the raw value, without the currency and it should be decimal
+  // this is the easiest way to do this without extensive refactoring of useCurrencyDisplay
+  const tokenFiatAmount = currencyFormatter
+    .unformat(unformattedTokenFiatAmount, {
+      code: currentCurrency.toUpperCase(),
+    })
+    .toString();
+
   const nativeTokenWithBalance: TokenWithBalance = {
     address: '',
     symbol: tokenSymbol || '',
     string: primaryBalance,
     image: primaryTokenImage,
-    tokenFiatAmount: secondaryBalance,
+    secondary: secondaryBalance,
+    tokenFiatAmount,
     isNative: true,
   };
 

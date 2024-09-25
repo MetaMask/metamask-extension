@@ -46,6 +46,7 @@ export type TokenWithBalance = {
   symbol: string;
   string?: string;
   image: string;
+  secondary?: string;
   tokenFiatAmount?: string;
   isNative?: boolean;
 };
