@@ -51,7 +51,7 @@ export const getQuoteDisplayData = (quoteResponse?: QuoteResponse) => {
   return {
     etaInMinutes,
     totalFees: {
-      amount: '0.01 ETH', // TODO implement
+      amount: '0.01 ETH', // TODO implement gas + relayer fee
       fiat: '$0.01',
     },
     quoteRate,
