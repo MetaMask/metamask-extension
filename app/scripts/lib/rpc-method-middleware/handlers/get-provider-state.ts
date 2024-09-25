@@ -70,9 +70,8 @@ async function getProviderStateHandler<
   end: JsonRpcEngineEndCallback,
   { getProviderState: _getProviderState }: Record<string, GetProviderState>,
 ): Promise<void> {
-  const { origin } = req;
   res.result = {
-    ...(await _getProviderState(origin)),
+    ...(await _getProviderState(req.origin)),
   };
   return end();
 }
