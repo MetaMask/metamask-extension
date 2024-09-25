@@ -86,6 +86,8 @@ const getTitle = (
       return t('confirmTitlePermitTokens');
     case TransactionType.tokenMethodIncreaseAllowance:
       return t('confirmTitlePermitTokens');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      return t('setApprovalForAllRedesignedTitle');
     default:
       return '';
   }
@@ -105,11 +107,11 @@ const getDescription = (
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
         return t('confirmTitleDescSIWESignature');
       }
-      return t('confirmTitleDescSignature');
+      return t('confirmTitleDescSign');
     case TransactionType.signTypedData:
       return isPermitSignatureRequest(confirmation as SignatureRequestType)
         ? t('confirmTitleDescPermitSignature')
-        : t('confirmTitleDescSignature');
+        : t('confirmTitleDescSign');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleDescApproveTransaction');
@@ -117,6 +119,8 @@ const getDescription = (
       return t('confirmTitleDescERC20ApproveTransaction');
     case TransactionType.tokenMethodIncreaseAllowance:
       return t('confirmTitleDescPermitSignature');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      return t('confirmTitleDescApproveTransaction');
     default:
       return '';
   }
