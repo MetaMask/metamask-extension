@@ -90,7 +90,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 export async function mocked4BytesApprove(mockServer: MockttpServer) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
-    // .always()
+    .always()
     .withQuery({ hex_signature: '0x095ea7b3' })
     .thenCallback(() => ({
       statusCode: 200,
