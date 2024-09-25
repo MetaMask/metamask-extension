@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useSelector } from 'react-redux';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   Display,
   FlexDirection,
@@ -13,15 +14,12 @@ import {
   Modal,
   Box,
 } from '../../../component-library';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  RPCDefinition,
-} from '../../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { NetworkListItem } from '../../network-list-item';
-import { getNetworkConfigurations } from '../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../selectors';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
 /**
@@ -45,9 +43,9 @@ export const AssetPickerModalNetwork = ({
   onNetworkChange,
 }: {
   isOpen: boolean;
-  network?: RPCDefinition;
-  networks?: RPCDefinition[];
-  onNetworkChange: (network: RPCDefinition) => void;
+  network?: NetworkConfiguration;
+  networks?: NetworkConfiguration[];
+  onNetworkChange: (network: NetworkConfiguration) => void;
   onClose: () => void;
   onBack: () => void;
 }) => {
@@ -56,10 +54,13 @@ export const AssetPickerModalNetwork = ({
   ///: END:ONLY_INCLUDE_IF
 
   const currentNetwork = useSelector(getProviderConfig);
-  const allNetworks: RPCDefinition[] = useSelector(getNetworkConfigurations);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-  const selectedNetwork: RPCDefinition = network ?? currentNetwork;
-  const networksList = networks ?? allNetworks ?? [];
+  const selectedNetwork =
+    network ?? (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
+
+  const networksList: NetworkConfiguration[] =
+    networks ?? Object.values(allNetworks) ?? [];
 
   return (
     <Modal
@@ -83,18 +84,17 @@ export const AssetPickerModalNetwork = ({
             height={BlockSize.Full}
           >
             {networksList.map((networkConfig) => {
-              const { nickname } = networkConfig;
+              const { name } = networkConfig;
               return (
                 <NetworkListItem
                   key={networkConfig.chainId}
-                  name={nickname ?? networkConfig.chainId}
+                  name={name ?? networkConfig.chainId}
                   selected={selectedNetwork?.chainId === networkConfig.chainId}
                   onClick={() => {
                     onNetworkChange(networkConfig);
                     onBack();
                   }}
                   iconSrc={
-                    networkConfig?.rpcPrefs?.imageUrl ??
                     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                       networkConfig.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                     ]
