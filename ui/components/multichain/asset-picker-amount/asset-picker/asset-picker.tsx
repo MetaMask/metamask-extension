@@ -150,10 +150,14 @@ export function AssetPicker({
         }}
         sendingAsset={sendingAsset}
         network={networkProps?.network ? networkProps.network : undefined}
-        onNetworkPickerClick={() => {
-          setShowAssetPickerModal(false);
-          setIsSelectingNetwork(true);
-        }}
+        onNetworkPickerClick={
+          networkProps
+            ? () => {
+                setShowAssetPickerModal(false);
+                setIsSelectingNetwork(true);
+              }
+            : undefined
+        }
         defaultActiveTabKey={
           asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
