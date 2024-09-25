@@ -426,7 +426,7 @@ describe('Import flow @no-mmi', function () {
 
         const allWindows = await driver.waitUntilXWindowHandles(2);
 
-        assert.equal(allWindows.length, isManifestV3 ? 3 : 2);
+        assert.equal(allWindows.length, 3);
       },
     );
   });
