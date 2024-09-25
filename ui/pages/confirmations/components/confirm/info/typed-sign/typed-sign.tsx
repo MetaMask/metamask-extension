@@ -60,7 +60,7 @@ const TypedSignInfo: React.FC = () => {
     <>
       {isPermit && useTransactionSimulations && <PermitSimulation />}
       <ConfirmInfoSection>
-        {isPermit && (
+        {isPermit && spender && (
           <>
             <ConfirmInfoRow label={t('spender')}>
               <ConfirmInfoRowAddress address={spender} />
