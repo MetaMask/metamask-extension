@@ -11,6 +11,7 @@ import {
   getSelectedInternalAccount,
   getLastViewedUserSurvey,
   getUseExternalServices,
+  getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 import { setLastViewedUserSurvey } from '../../../store/actions';
@@ -31,16 +32,17 @@ export function SurveyToast() {
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const basicFunctionality = useSelector(getUseExternalServices);
   const internalAccount = useSelector(getSelectedInternalAccount);
+  const metaMetricsId = useSelector(getMetaMetricsId);
 
   const surveyId = 1;
   const surveyUrl = useMemo(
     () =>
-      `https://accounts.dev-api.cx.metamask.io/v1/users/0xe440f3bfca06198470e46cc32b7d108f607055f70a6f03ef8ee0fd423860cb47/surveys?surveyId=${surveyId}`,
-    [internalAccount?.address],
+      `https://accounts.dev-api.cx.metamask.io/v1/users/${metaMetricsId}/surveys?surveyId=${surveyId}`,
+    [metaMetricsId],
   );
 
   useEffect(() => {
-    if (!basicFunctionality || !internalAccount?.address) {
+    if (!basicFunctionality || !metaMetricsId) {
       return undefined;
     }
 
@@ -84,6 +86,7 @@ export function SurveyToast() {
     internalAccount?.address,
     lastViewedUserSurvey,
     basicFunctionality,
+    metaMetricsId,
     dispatch,
   ]);
 
