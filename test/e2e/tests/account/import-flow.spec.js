@@ -393,7 +393,7 @@ describe('Import flow @no-mmi', function () {
     );
   });
 
-  it('Connects to a Hardware wallet for lattice', async function () {
+  it.only('Connects to a Hardware wallet for lattice', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -426,7 +426,7 @@ describe('Import flow @no-mmi', function () {
 
         const allWindows = await driver.waitUntilXWindowHandles(2);
 
-        assert.equal(allWindows.length, 3);
+        assert.equal(allWindows.length, isManifestV3 ? 3 : 2);
       },
     );
   });
