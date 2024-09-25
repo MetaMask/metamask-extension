@@ -2611,7 +2611,7 @@ describe('Actions', () => {
                 caveats: [
                   {
                     type: CaveatTypes.restrictNetworkSwitching,
-                    values: ['0x1'],
+                    value: ['0x1'],
                   },
                 ],
               },
@@ -2645,7 +2645,7 @@ describe('Actions', () => {
                 caveats: [
                   {
                     type: CaveatTypes.restrictNetworkSwitching,
-                    values: ['0x1', '0x2'],
+                    value: ['0x1', '0x2'],
                   },
                 ],
               },
