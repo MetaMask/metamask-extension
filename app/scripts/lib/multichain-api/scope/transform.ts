@@ -1,4 +1,5 @@
 import { CaipChainId, isCaipChainId } from '@metamask/utils';
+import { cloneDeep } from 'lodash';
 import {
   ExternalScopeObject,
   ExternalScopesObject,
@@ -35,7 +36,7 @@ export const flattenScope = (
 
   const scopeMap: ScopesObject = {};
   scopes.forEach((nestedScopeString: CaipChainId) => {
-    scopeMap[nestedScopeString] = restScopeObject;
+    scopeMap[nestedScopeString] = cloneDeep(restScopeObject);
   });
   return scopeMap;
 };
