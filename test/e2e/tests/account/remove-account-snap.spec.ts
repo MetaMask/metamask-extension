@@ -27,6 +27,7 @@ describe('Remove Account Snap', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
         await accountListPage.check_accountDisplayedInAccountList('Snap Account');
+        const accountMenuItemsWithSnapAdded = await driver.findElements('.multichain-account-list-item');
 
         await driver.clickElement('.mm-box button[aria-label="Close"]');
 
