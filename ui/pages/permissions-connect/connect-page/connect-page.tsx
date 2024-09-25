@@ -35,8 +35,6 @@ import { TEST_CHAINS } from '../../../../shared/constants/network';
 export type ConnectPageRequest = {
   id: string;
   origin: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any; // Adjust this if you have a more specific shape for the request
 };
 
 type ConnectPageProps = {
