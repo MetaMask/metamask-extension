@@ -17,8 +17,6 @@ jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
   default: jest.fn(),
 }));
 
-window.open = jest.fn();
-
 const mockFetchWithCache = fetchWithCache as jest.Mock;
 const mockTrackEvent = jest.fn();
 const mockStore = configureStore([thunk]);
