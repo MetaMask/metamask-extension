@@ -15,7 +15,6 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 
 export const SetApprovalForAllStaticSimulation = () => {
   const t = useI18nContext();
