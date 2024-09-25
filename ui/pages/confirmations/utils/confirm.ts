@@ -77,7 +77,9 @@ export const isOrderSignatureRequest = (request: SignatureRequestType) => {
 };
 
 /**
- * Returns true if the request is a Permit Typed Sign signature request
+ * Returns true if the request appears to be a Permit Typed Sign signature request
+ * based on the primaryType. This *does not* do an in-depth check to verify the message matches
+ * the EIP-2612 standard.
  *
  * @param request - The confirmation request to check
  */

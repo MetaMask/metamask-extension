@@ -60,6 +60,10 @@ const TypedSignInfo: React.FC = () => {
     <>
       {isPermit && useTransactionSimulations && <PermitSimulation />}
       <ConfirmInfoSection>
+        {/*
+          It's possible the primaryType matches our Permit primaryType list,
+          but it may not be, so check spender exists before displaying.
+        */}
         {isPermit && spender && (
           <>
             <ConfirmInfoRow label={t('spender')}>
