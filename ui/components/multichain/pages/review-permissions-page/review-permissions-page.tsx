@@ -23,6 +23,7 @@ import {
 import {
   addPermittedAccounts,
   addPermittedChains,
+  hidePermittedNetworkToast,
   removePermissionsFor,
   removePermittedAccount,
   removePermittedChain,
@@ -95,8 +96,7 @@ export const ReviewPermissions = () => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-
-    setShowDisconnectAllModal(true);
+    dispatch(hidePermittedNetworkToast());
   };
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
