@@ -95,14 +95,13 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
   ) {
     return false;
   }
-  const parsedData = parseTypedDataMessage(
-    (request as SignatureRequestType).msgParams?.data as string,
-  );
 
   const {
     message: { spender },
     primaryType,
-  } = parsedData;
+  } = parseTypedDataMessage(
+    (request as SignatureRequestType).msgParams?.data as string,
+  );
 
   if (!isHexString(spender)) {
     return false;
