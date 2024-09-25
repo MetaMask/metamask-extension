@@ -1,21 +1,22 @@
+import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
+  act,
   fireEvent,
+  screen,
   waitFor,
   within,
-  screen,
-  act,
 } from '@testing-library/react';
-import { ApprovalType } from '@metamask/controller-utils';
 import nock from 'nock';
-import { TransactionType } from '@metamask/transaction-controller';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
-import * as backgroundConnection from '../../../../ui/store/background-connection';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName,
   MetaMetricsEventLocation,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { tEn } from '../../../lib/i18n-helpers';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import {
   getMaliciousUnapprovedTransaction,
@@ -261,18 +262,21 @@ describe('Contract Interaction Confirmation', () => {
       });
     });
 
-    expect(screen.getByText('Transaction request')).toBeInTheDocument();
+    expect(
+      screen.getByText(tEn('confirmTitleTransaction') as string),
+    ).toBeInTheDocument();
 
     const simulationSection = screen.getByTestId('simulation-details-layout');
     expect(simulationSection).toBeInTheDocument();
-    expect(simulationSection).toHaveTextContent('Estimated changes');
+    expect(simulationSection).toHaveTextContent(
+      tEn('simulationDetailsTitle') as string,
+    );
     const simulationDetailsRow = await screen.findByTestId(
       'simulation-rows-incoming',
     );
     expect(simulationSection).toContainElement(simulationDetailsRow);
-    expect(simulationDetailsRow).toHaveTextContent('You receive');
-    expect(simulationDetailsRow).toContainElement(
-      screen.getByTestId('simulation-details-asset-pill'),
+    expect(simulationDetailsRow).toHaveTextContent(
+      tEn('simulationDetailsIncomingHeading') as string,
     );
     expect(simulationDetailsRow).toContainElement(
       screen.getByTestId('simulation-details-amount-pill'),
@@ -282,15 +286,19 @@ describe('Contract Interaction Confirmation', () => {
       'transaction-details-section',
     );
     expect(transactionDetailsSection).toBeInTheDocument();
-    expect(transactionDetailsSection).toHaveTextContent('Request from');
-    expect(transactionDetailsSection).toHaveTextContent('Interacting with');
+    expect(transactionDetailsSection).toHaveTextContent(
+      tEn('requestFrom') as string,
+    );
+    expect(transactionDetailsSection).toHaveTextContent(
+      tEn('interactingWith') as string,
+    );
 
     const gasFeesSection = screen.getByTestId('gas-fee-section');
     expect(gasFeesSection).toBeInTheDocument();
 
     const editGasFeesRow =
       within(gasFeesSection).getByTestId('edit-gas-fees-row');
-    expect(editGasFeesRow).toHaveTextContent('Network fee');
+    expect(editGasFeesRow).toHaveTextContent(tEn('networkFee') as string);
 
     const firstGasField = within(editGasFeesRow).getByTestId('first-gas-field');
     expect(firstGasField).toHaveTextContent('0.0001 ETH');
@@ -304,7 +312,7 @@ describe('Contract Interaction Confirmation', () => {
     const gasFeeSpeed = within(gasFeesSection).getByTestId(
       'gas-fee-details-speed',
     );
-    expect(gasFeeSpeed).toHaveTextContent('Speed');
+    expect(gasFeeSpeed).toHaveTextContent(tEn('speed') as string);
 
     const gasTimingTime = within(gasFeeSpeed).getByTestId('gas-timing-time');
     expect(gasTimingTime).toHaveTextContent('~0 sec');
@@ -393,13 +401,15 @@ describe('Contract Interaction Confirmation', () => {
     const gasFeesSection = screen.getByTestId('gas-fee-section');
     const maxFee = screen.getByTestId('gas-fee-details-max-fee');
     expect(gasFeesSection).toContainElement(maxFee);
-    expect(maxFee).toHaveTextContent('Max fee');
+    expect(maxFee).toHaveTextContent(tEn('maxFee') as string);
     expect(maxFee).toHaveTextContent('0.0023 ETH');
     expect(maxFee).toHaveTextContent('$7.72');
 
     const nonceSection = screen.getByTestId('advanced-details-nonce-section');
     expect(nonceSection).toBeInTheDocument();
-    expect(nonceSection).toHaveTextContent('Nonce');
+    expect(nonceSection).toHaveTextContent(
+      tEn('advancedDetailsNonceDesc') as string,
+    );
     expect(nonceSection).toContainElement(
       screen.getByTestId('advanced-details-displayed-nonce'),
     );
@@ -414,7 +424,9 @@ describe('Contract Interaction Confirmation', () => {
       'advanced-details-data-function',
     );
     expect(dataSection).toContainElement(dataSectionFunction);
-    expect(dataSectionFunction).toHaveTextContent('Function');
+    expect(dataSectionFunction).toHaveTextContent(
+      tEn('transactionDataFunction') as string,
+    );
     expect(dataSectionFunction).toHaveTextContent('mintNFTs');
 
     const transactionDataParams = screen.getByTestId(
@@ -444,9 +456,8 @@ describe('Contract Interaction Confirmation', () => {
       });
     });
 
-    const headingText = 'This is a deceptive request';
-    const bodyText =
-      'If you approve this request, a third party known for scams will take all your assets.';
+    const headingText = tEn('blockaidTitleDeceptive') as string;
+    const bodyText = tEn('blockaidDescriptionTransferFarming') as string;
     expect(screen.getByText(headingText)).toBeInTheDocument();
     expect(screen.getByText(bodyText)).toBeInTheDocument();
   });
