@@ -179,7 +179,7 @@ export default class MetaMetricsController {
     });
 
     onPreferencesStateChange(({ currentLocale }) => {
-      this.locale = currentLocale.replace('_', '-');
+      this.locale = currentLocale?.replace('_', '-');
     });
 
     onNetworkDidChange(() => {
