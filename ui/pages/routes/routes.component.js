@@ -776,7 +776,7 @@ export default class Routes extends Component {
 
         {process.env.CHAIN_PERMISSIONS && isPermittedNetworkToastOpen ? (
           <Toast
-            key="switched-network-toast"
+            key="switched-permitted-network-toast"
             startAdornment={
               <AvatarNetwork
                 size={AvatarAccountSize.Md}
@@ -790,11 +790,12 @@ export default class Routes extends Component {
               currentNetwork?.nickname,
             ])}
             actionText={this.context.t('editPermissions')}
-            onActionClick={() =>
+            onActionClick={() => {
+              this.props.hidePermittedNetworkToast();
               this.props.history.push(
                 `${REVIEW_PERMISSIONS}/${safeEncodedHost}`,
-              )
-            }
+              );
+            }}
             onClose={() => this.props.hidePermittedNetworkToast()}
           />
         ) : null}

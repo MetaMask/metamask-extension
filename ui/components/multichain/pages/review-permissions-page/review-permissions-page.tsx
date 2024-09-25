@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
@@ -18,6 +18,7 @@ import {
   getPermissionSubjects,
   getPermittedAccountsForSelectedTab,
   getPermittedChainsForSelectedTab,
+  getShowPermittedNetworkToastOpen,
   getUpdatedAndSortedAccounts,
 } from '../../../../selectors';
 import {
@@ -65,6 +66,17 @@ export const ReviewPermissions = () => {
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
   const activeTabOrigin: string = securedOrigin;
+
+  const showPermittedNetworkToastOpen = useSelector(
+    getShowPermittedNetworkToastOpen,
+  );
+
+  useEffect(() => {
+    if (showPermittedNetworkToastOpen) {
+      setShowNetworkToast(showPermittedNetworkToastOpen);
+      dispatch(hidePermittedNetworkToast());
+    }
+  }, [showPermittedNetworkToastOpen]);
 
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
