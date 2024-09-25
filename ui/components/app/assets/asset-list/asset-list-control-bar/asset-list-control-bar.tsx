@@ -28,6 +28,11 @@ import { useNativeTokenBalance } from '../native-token/use-native-token-balance'
 import ImportControl from '../import-control';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../../../shared/constants/app';
 
 type AssetListControlBarProps = {
   setTokenList: (arg: TokenWithBalance[]) => void;
@@ -62,6 +67,11 @@ const AssetListControlBar = ({
 
   const nativeTokenWithBalance = useNativeTokenBalance();
 
+  const windowType = getEnvironmentType();
+  const isFullScreen =
+    windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+    windowType !== ENVIRONMENT_TYPE_POPUP;
+
   useEffect(() => {
     // this swap is needed when toggling primary currency type for native token in order to sort by tokenFiatAmount only
     if (useNativeCurrencyAsPrimaryCurrency) {
@@ -83,6 +93,10 @@ const AssetListControlBar = ({
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
+  };
+
+  const closePopover = () => {
+    setIsPopoverOpen(false);
   };
 
   return (
@@ -115,19 +129,20 @@ const AssetListControlBar = ({
         </ButtonBase>
         <ImportControl showTokensLinks={showTokensLinks} />
         <Popover
-          onClickOutside={() => setIsPopoverOpen(false)}
+          onClickOutside={closePopover}
           isOpen={isPopoverOpen}
           position={PopoverPosition.BottomStart}
           referenceElement={controlBarRef.current}
-          matchWidth={true}
+          matchWidth={!isFullScreen}
           style={{
             zIndex: 10,
             display: 'flex',
             flexDirection: 'column',
             padding: 0,
+            minWidth: isFullScreen ? '325px' : '',
           }}
         >
-          <SortControl />
+          <SortControl handleClose={closePopover} />
         </Popover>
       </Box>
     </>

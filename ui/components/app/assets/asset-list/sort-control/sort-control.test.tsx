@@ -29,6 +29,8 @@ jest.mock('react-redux', () => {
   };
 });
 
+const mockHandleClose = jest.fn();
+
 describe('SortControl', () => {
   const mockTrackEvent = jest.fn();
 
@@ -46,7 +48,7 @@ describe('SortControl', () => {
 
     return renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <SortControl />
+        <SortControl handleClose={mockHandleClose} />
       </MetaMetricsContext.Provider>,
     );
   };
@@ -60,7 +62,6 @@ describe('SortControl', () => {
   it('renders correctly', () => {
     renderComponent();
 
-    screen.debug();
     expect(screen.getByTestId('sortByAlphabetically')).toBeInTheDocument();
     expect(screen.getByTestId('sortByDecliningBalance')).toBeInTheDocument();
   });
