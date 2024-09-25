@@ -41,7 +41,6 @@ class HeaderNavbar {
     });
     return switchNetworkName.length === 1;
   }
-  
   /**
    * Verifies that the displayed account label in header matches the expected label.
    *

@@ -3,7 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 class NewNetworkAdded {
   private driver: Driver;
 
-  private SwitchButton: object;
+  private SwitchButton: object | undefined;
 
   private DismissButton: object;
 

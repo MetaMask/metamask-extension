@@ -3,35 +3,34 @@ import { Driver } from '../../../webdriver/driver';
 class SelectNetwork {
   private driver: Driver;
 
-  private ethereumMainnet: string;
-
-  private sepoliaNetwork: string;
+  private networkName: string | undefined;
 
   private addNetworkButton: object;
 
+  private closeButton: string;
+
   constructor(driver: Driver) {
     this.driver = driver;
-    this.ethereumMainnet = '[data-testid="Ethereum Mainnet"]';
-    this.sepoliaNetwork = '[data-testid="Sepolia"]';
     this.addNetworkButton = {
       tag: 'button',
-      text: 'Add network',
+      text: 'Add a custom network',
     };
+    this.closeButton = 'button[aria-label="Close"]';
   }
 
-  async clickEthereumMainnet(): Promise<void> {
-    console.log(`Click Ethereum Mainnet`);
-    await this.driver.clickElement(this.ethereumMainnet);
+  async clickNetworkName(networkName: string): Promise<void> {
+    console.log('Click ${networkName}');
+    this.networkName = '[data-testid="${networkName}"]';
+    await this.driver.clickElement(this.networkName);
   }
-
-  async clickSepoliaNetwork(): Promise<void> {
-    console.log(`Click Sepolia network`);
-    await this.driver.clickElement(this.sepoliaNetwork);
-  }
-
   async addNewNetwork(): Promise<void> {
-    console.log(`Click Add network`);
+    console.log('Click Add network');
     await this.driver.clickElement(this.addNetworkButton);
+  }
+
+  async clickCloseButton(): Promise<void> {
+    console.log('Click Close Button');
+    await this.driver.clickElement(this.closeButton);
   }
 }
 
