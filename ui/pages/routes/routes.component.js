@@ -99,6 +99,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmations/confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
@@ -208,7 +210,6 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
-    networkMenuRedesign: PropTypes.bool.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
@@ -831,7 +832,6 @@ export default class Routes extends Component {
       hideDeprecatedNetworkModal,
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
-      networkMenuRedesign,
       clearEditedNetwork,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
@@ -922,7 +922,7 @@ export default class Routes extends Component {
             }}
           />
         ) : null}
-        {networkMenuRedesign ? <NetworkConfirmationPopover /> : null}
+        <NetworkConfirmationPopover />
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}

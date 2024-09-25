@@ -1,50 +1,16 @@
-import {
-  hasProperty,
-  Hex,
-  isObject,
-  NonEmptyArray,
-  Json,
-} from '@metamask/utils';
+import { hasProperty, isObject, RuntimeObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-
-type CaveatConstraint = {
-  type: string;
-  value: Json;
-};
-
-type PermissionConstraint = {
-  parentCapability: string;
-  caveats: null | NonEmptyArray<CaveatConstraint>;
-};
-
-const PermissionNames = {
-  eth_accounts: 'eth_accounts',
-  permittedChains: 'endowment:permitted-chains',
-};
-
-const BUILT_IN_NETWORKS = {
-  goerli: {
-    chainId: '0x5',
-  },
-  sepolia: {
-    chainId: '0xaa36a7',
-  },
-  mainnet: {
-    chainId: '0x1',
-  },
-  'linea-goerli': {
-    chainId: '0xe704',
-  },
-  'linea-sepolia': {
-    chainId: '0xe705',
-  },
-  'linea-mainnet': {
-    chainId: '0xe708',
-  },
-};
-
-const Caip25CaveatType = 'authorizedScopes';
-const Caip25EndowmentPermissionName = 'endowment:caip25';
+// Note: This is the library the network controller uses for URL
+// validity / equality. Using here to ensure we match its validations.
+import * as URI from 'uri-js';
+import {
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  LINEA_MAINNET_DISPLAY_NAME,
+  LINEA_SEPOLIA_DISPLAY_NAME,
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TO_NAME_MAP,
+  SEPOLIA_DISPLAY_NAME,
+} from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
@@ -54,15 +20,24 @@ type VersionedData = {
 export const version = 127;
 
 /**
- * This migration transforms `eth_accounts` and `permittedChains` permissions into
- * an equivalent CAIP-25 permission.
+ * This migration converts the network controller's
+ * `networkConfigurations` to a new field `networkConfigurationsByChainId`.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to dist.
+ * Built-in Infura network configurations are now represented in this state,
+ * where they weren't before. These Infura configurations are merged with the user's
+ * custom configurations.  Then all configurations are grouped by chain id,
+ * and merged to produce one network configuration per chain id.
+ *
+ * The `SelectedNetworkController` is also migrated, so that dapp domains
+ * point to the new default RPC endpoint for the chain they were on.
+ *
+ * The `NetworkOrderController` is also migrated, which manages
+ * the user's drag + drop preference order for the network menu.
+ *
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
  * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by
- * controller.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
  * @returns Updated versioned MetaMask extension state.
  */
 export async function migrate(
@@ -74,196 +49,405 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
-  if (
-    !hasProperty(state, 'PermissionController') ||
-    !isObject(state.PermissionController)
-  ) {
+function transformState(
+  state: Record<string, unknown>,
+): Record<string, unknown> {
+  if (!hasProperty(state, 'NetworkController')) {
+    global.sentry?.captureException?.(
+      new Error(`state.NetworkController is not defined`),
+    );
+    return state;
+  } else if (!isObject(state.NetworkController)) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.PermissionController is ${typeof state.PermissionController}`,
+        `typeof state.NetworkController is ${typeof state.NetworkController}`,
       ),
     );
     return state;
-  }
-
-  if (
-    !hasProperty(state, 'NetworkController') ||
-    !isObject(state.NetworkController)
-  ) {
+  } else if (!hasProperty(state, 'TransactionController')) {
+    global.sentry?.captureException?.(
+      new Error(`state.TransactionController is not defined`),
+    );
+    return state;
+  } else if (!isObject(state.TransactionController)) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.NetworkController is ${typeof state.NetworkController}`,
+        `typeof state.TransactionController is ${typeof state.TransactionController}`,
       ),
     );
     return state;
   }
 
-  if (
-    !hasProperty(state, 'SelectedNetworkController') ||
-    !isObject(state.SelectedNetworkController)
-  ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: typeof state.SelectedNetworkController is ${typeof state.SelectedNetworkController}`,
-      ),
-    );
-    return state;
-  }
+  const networkState = state.NetworkController;
 
-  const {
-    PermissionController: { subjects },
-    NetworkController: { selectedNetworkClientId, networkConfigurations },
-    SelectedNetworkController: { domains },
-  } = state;
+  // Get the existing custom network configurations
+  let networkConfigurations = isObject(networkState.networkConfigurations)
+    ? Object.values(networkState.networkConfigurations)
+    : [];
 
-  if (!isObject(subjects)) {
-    global.sentry?.captureException(
-      new Error(
-        `Migration ${version}: typeof state.PermissionController.subjects is ${typeof subjects}`,
-      ),
-    );
-    return state;
-  }
-  if (!selectedNetworkClientId || typeof selectedNetworkClientId !== 'string') {
-    global.sentry?.captureException(
-      new Error(
-        `Migration ${version}: typeof state.NetworkController.selectedNetworkClientId is ${typeof selectedNetworkClientId}`,
-      ),
-    );
-    return state;
-  }
-  if (!isObject(networkConfigurations)) {
-    global.sentry?.captureException(
-      new Error(
-        `Migration ${version}: typeof state.NetworkController.networkConfigurations is ${typeof networkConfigurations}`,
-      ),
-    );
-    return state;
-  }
-  if (!isObject(domains)) {
-    global.sentry?.captureException(
-      new Error(
-        `Migration ${version}: typeof state.SelectedNetworkController.domains is ${typeof domains}`,
-      ),
-    );
-    return state;
-  }
+  // Prepend the built-in Infura network configurations,
+  // since they are now included in the network controller state
+  networkConfigurations = [
+    {
+      type: 'infura',
+      id: 'mainnet',
+      chainId: '0x1',
+      ticker: 'ETH',
+      nickname: MAINNET_DISPLAY_NAME,
+      rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+      rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+    },
+    {
+      type: 'infura',
+      id: 'sepolia',
+      chainId: '0xaa36a7',
+      ticker: 'SepoliaETH',
+      nickname: SEPOLIA_DISPLAY_NAME,
+      rpcUrl: 'https://sepolia.infura.io/v3/{infuraProjectId}',
+      rpcPrefs: { blockExplorerUrl: 'https://sepolia.etherscan.io' },
+    },
+    {
+      type: 'infura',
+      id: 'linea-sepolia',
+      chainId: '0xe705',
+      ticker: 'LineaETH',
+      nickname: LINEA_SEPOLIA_DISPLAY_NAME,
+      rpcUrl: 'https://linea-sepolia.infura.io/v3/{infuraProjectId}',
+      rpcPrefs: { blockExplorerUrl: 'https://sepolia.lineascan.build' },
+    },
+    {
+      type: 'infura',
+      id: 'linea-mainnet',
+      chainId: '0xe708',
+      ticker: 'ETH',
+      nickname: LINEA_MAINNET_DISPLAY_NAME,
+      rpcUrl: 'https://linea-mainnet.infura.io/v3/{infuraProjectId}',
+      rpcPrefs: { blockExplorerUrl: 'https://lineascan.build' },
+    },
+    ...networkConfigurations,
+  ];
 
-  const getChainIdForNetworkClientId = (networkClientId: string) => {
-    const networkConfiguration =
-      (networkConfigurations[networkClientId] as { chainId: Hex }) ??
-      BUILT_IN_NETWORKS[
-        networkClientId as unknown as keyof typeof BUILT_IN_NETWORKS
-      ];
-    return networkConfiguration?.chainId;
+  // Group the network configurations by by chain id, producing
+  // a mapping from chain id to an array of network configurations
+  const networkConfigurationArraysByChainId = networkConfigurations.reduce(
+    (acc: Record<string, RuntimeObject[]>, networkConfiguration) => {
+      if (
+        isObject(networkConfiguration) &&
+        typeof networkConfiguration.chainId === 'string'
+      ) {
+        (acc[networkConfiguration.chainId] ??= []).push(networkConfiguration);
+      }
+      return acc;
+    },
+    {},
+  );
+
+  // Get transaction history in reverse chronological order to help with tie breaks
+  const transactions: RuntimeObject[] = Array.isArray(
+    state.TransactionController.transactions,
+  )
+    ? state.TransactionController.transactions
+        .filter(
+          (tx) =>
+            isObject(tx) &&
+            typeof tx.time === 'number' &&
+            typeof tx.networkClientId === 'string',
+        )
+        .sort((a, b) => b.time - a.time)
+    : [];
+
+  // For each chain id, merge the array of network configurations
+  const networkConfigurationsByChainId = Object.entries(
+    networkConfigurationArraysByChainId,
+  ).reduce((acc: Record<string, unknown>, [chainId, networks]) => {
+    //
+    // Calculate the tie breaker network, whose values will be preferred
+    let tieBreaker: RuntimeObject | undefined;
+
+    // If one of the networks is the globally selected network, use that
+    tieBreaker = networks.find(
+      (network) => network.id === networkState.selectedNetworkClientId,
+    );
+
+    // Otherwise use the network that was most recently transacted on
+    if (!tieBreaker) {
+      transactions
+        .filter((tx) => tx.chainId === chainId)
+        .some(
+          (tx) =>
+            (tieBreaker = networks.find(
+              (network) => network.id === tx.networkClientId,
+            )),
+        );
+    }
+
+    // If no transactions were found for the chain id, fall back
+    // to an arbitrary custom network that is not built in infura
+    if (!tieBreaker) {
+      tieBreaker = networks.find((network) => network.type !== 'infura');
+    }
+
+    // Calculate the unique set of valid rpc endpoints for this chain id
+    const rpcEndpoints = networks.reduce(
+      (endpoints: RuntimeObject[], network) => {
+        if (
+          network.id &&
+          network.rpcUrl &&
+          typeof network.rpcUrl === 'string' &&
+          isValidUrl(network.rpcUrl)
+        ) {
+          // Check if there's a different duplicate that's also the selected
+          // network. If so, it will be the preferred one we'll take.
+          const duplicateAndSelected = networkConfigurations.some(
+            (otherNetwork) =>
+              isObject(otherNetwork) &&
+              typeof otherNetwork.rpcUrl === 'string' &&
+              typeof network.rpcUrl === 'string' &&
+              otherNetwork.id !== network.id && // A different endpoint
+              URI.equal(otherNetwork.rpcUrl, network.rpcUrl) && // With the same URL
+              otherNetwork.id === networkState.selectedNetworkClientId, // That's currently selected
+          );
+
+          // Check if there's a duplicate that we've already processed. If none of
+          // the duplicates are the selected network, we'll take the first one seen.
+          const duplicateAlreadyAdded = [
+            // Chains we've already proccessed
+            ...Object.values(acc).flatMap((n) =>
+              isObject(n) ? n.rpcEndpoints : [],
+            ),
+            // Or the current chain we're processing
+            ...endpoints,
+          ].some(
+            (existingEndpoint) =>
+              isObject(existingEndpoint) &&
+              typeof existingEndpoint.url === 'string' &&
+              typeof network.rpcUrl === 'string' &&
+              URI.equal(existingEndpoint.url, network.rpcUrl),
+          );
+
+          if (!duplicateAndSelected && !duplicateAlreadyAdded) {
+            // The endpoint is unique and valid, so add it to the list
+            endpoints.push({
+              networkClientId: network.id,
+              url: network.rpcUrl,
+              type: network.type === 'infura' ? 'infura' : 'custom',
+              ...(network.type !== 'infura' &&
+                typeof network.nickname === 'string' &&
+                // The old network name becomes the endpoint name
+                network.nickname && { name: network.nickname }),
+            });
+          }
+        }
+        return endpoints;
+      },
+      [],
+    );
+
+    // If there were no valid unique endpoints, then omit the network
+    // configuration for this chain id. The network controller requires
+    // configurations to have at least 1 endpoint.
+    if (rpcEndpoints.length === 0) {
+      return acc;
+    }
+
+    // Use the tie breaker network as the default rpc endpoint
+    const defaultRpcEndpointIndex = Math.max(
+      rpcEndpoints.findIndex(
+        (endpoint) => endpoint.networkClientId === tieBreaker?.id,
+      ),
+      // Or arbitrarily default to the first endpoint if we don't have a tie breaker
+      0,
+    );
+
+    // Calculate the unique array of non-empty block explorer urls
+    const blockExplorerUrls = [
+      ...networks.reduce((urls, network) => {
+        if (
+          isObject(network.rpcPrefs) &&
+          typeof network.rpcPrefs.blockExplorerUrl === 'string' &&
+          network.rpcPrefs.blockExplorerUrl
+        ) {
+          urls.add(network.rpcPrefs.blockExplorerUrl);
+        }
+        return urls;
+      }, new Set()),
+    ];
+
+    // Use the tie breaker network as the default block explorer, if it has one
+    const defaultBlockExplorerUrlIndex =
+      blockExplorerUrls.length === 0
+        ? undefined
+        : Math.max(
+            blockExplorerUrls.findIndex(
+              (url) =>
+                isObject(tieBreaker?.rpcPrefs) &&
+                url === tieBreaker.rpcPrefs.blockExplorerUrl,
+            ),
+            // Or arbitrarily default to the first url
+            0,
+          );
+
+    // Use the cononical network name and currency, if we have constants for them.
+    // Otherwise prefer the tie breaker's name + currency, if it defines them.
+    // Otherwise fall back to the name + currency from arbitrary networks that define them.
+    const name =
+      NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
+      tieBreaker?.nickname ??
+      networks.find((n) => n.nickname)?.nickname;
+
+    const nativeCurrency =
+      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+        chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+      ] ??
+      tieBreaker?.ticker ??
+      networks.find((n) => n.ticker)?.ticker;
+
+    acc[chainId] = {
+      chainId,
+      rpcEndpoints,
+      defaultRpcEndpointIndex,
+      blockExplorerUrls,
+      ...(defaultBlockExplorerUrlIndex !== undefined && {
+        defaultBlockExplorerUrlIndex,
+      }),
+      name,
+      nativeCurrency,
+    };
+    return acc;
+  }, {});
+
+  // Given a network client id, returns the chain id it used to point to
+  const networkClientIdToChainId = (networkClientId: unknown) => {
+    const networkConfiguration = networkConfigurations.find(
+      (n) => isObject(n) && n.id === networkClientId,
+    );
+
+    return isObject(networkConfiguration) &&
+      typeof networkConfiguration?.chainId === 'string'
+      ? networkConfiguration?.chainId
+      : undefined;
   };
 
-  const currentChainId = getChainIdForNetworkClientId(selectedNetworkClientId);
-  if (!currentChainId || typeof currentChainId !== 'string') {
-    global.sentry?.captureException(
-      new Error(
-        `Migration ${version}: Invalid chainId for selectedNetworkClientId "${selectedNetworkClientId}" of type ${typeof currentChainId}`,
-      ),
+  // Ensure that selectedNetworkClientId points to
+  // some endpoint of some network configuration.
+  let selectedNetworkClientId = Object.values(networkConfigurationsByChainId)
+    .flatMap((n) =>
+      isObject(n) && Array.isArray(n.rpcEndpoints) ? n.rpcEndpoints : [],
+    )
+    .find(
+      (e) => e.networkClientId === networkState.selectedNetworkClientId,
+    )?.networkClientId;
+
+  // It may not, if it's endpoint was not well formed.
+  if (!selectedNetworkClientId) {
+    //
+    // In that case, try to fallback to the default endpoint for the same chain
+    const chainId = networkClientIdToChainId(
+      networkState.selectedNetworkClientId,
     );
-    return state;
+
+    // Or mainnet, if the entire chain had to be omitted due to invalid URLs
+    const networkConfiguration =
+      networkConfigurationsByChainId[chainId ?? '0x1'];
+
+    selectedNetworkClientId =
+      isObject(networkConfiguration) &&
+      Array.isArray(networkConfiguration.rpcEndpoints) &&
+      typeof networkConfiguration.defaultRpcEndpointIndex === 'number'
+        ? networkConfiguration.rpcEndpoints[
+            networkConfiguration.defaultRpcEndpointIndex
+          ].networkClientId
+        : 'mainnet';
   }
 
-  for (const [origin, subject] of Object.entries(subjects)) {
-    if (!isObject(subject)) {
-      global.sentry?.captureException(
-        new Error(
-          `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
-        ),
-      );
-      return state;
-    }
+  // Redirect domains in the selected network controller to
+  // point to the default RPC endpoint for the corresponding chain
+  if (
+    hasProperty(state, 'SelectedNetworkController') &&
+    isObject(state.SelectedNetworkController) &&
+    hasProperty(state.SelectedNetworkController, 'domains') &&
+    isObject(state.SelectedNetworkController.domains)
+  ) {
+    for (const [domain, networkClientId] of Object.entries(
+      state.SelectedNetworkController.domains,
+    )) {
+      let newNetworkClientId;
 
-    const { permissions } = subject as {
-      permissions: Record<string, PermissionConstraint>;
-    };
-    if (!isObject(permissions)) {
-      global.sentry?.captureException(
-        new Error(
-          `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof permissions}`,
-        ),
-      );
-      return state;
-    }
+      // Fetch the chain id associated with the domain's network client
+      const chainId = networkClientIdToChainId(networkClientId);
 
-    let basePermission;
-
-    let ethAccounts: string[] = [];
-    if (
-      isObject(permissions[PermissionNames.eth_accounts]) &&
-      Array.isArray(permissions[PermissionNames.eth_accounts].caveats)
-    ) {
-      ethAccounts =
-        (permissions[PermissionNames.eth_accounts].caveats?.[0]
-          ?.value as string[]) ?? [];
-      basePermission = permissions[PermissionNames.eth_accounts];
-    }
-    delete permissions[PermissionNames.eth_accounts];
-
-    let chainIds: string[] = [];
-    if (
-      isObject(permissions[PermissionNames.permittedChains]) &&
-      Array.isArray(permissions[PermissionNames.permittedChains].caveats)
-    ) {
-      chainIds =
-        (permissions[PermissionNames.permittedChains].caveats?.[0]
-          ?.value as string[]) ?? [];
-      basePermission ??= permissions[PermissionNames.permittedChains];
-    }
-    delete permissions[PermissionNames.permittedChains];
-
-    if (ethAccounts.length === 0) {
-      continue;
-    }
-
-    if (chainIds.length === 0) {
-      chainIds = [currentChainId];
-
-      const networkClientIdForOrigin = domains[origin];
-      if (networkClientIdForOrigin) {
-        const chainIdForOrigin = getChainIdForNetworkClientId(
-          networkClientIdForOrigin as string,
-        );
-        if (chainIdForOrigin && typeof chainIdForOrigin === 'string') {
-          chainIds = [chainIdForOrigin];
+      if (chainId) {
+        // Fetch the default rpc endpoint associated with that chain id
+        const networkConfiguration = networkConfigurationsByChainId[chainId];
+        if (
+          isObject(networkConfiguration) &&
+          Array.isArray(networkConfiguration.rpcEndpoints) &&
+          typeof networkConfiguration.defaultRpcEndpointIndex === 'number'
+        ) {
+          newNetworkClientId =
+            networkConfiguration.rpcEndpoints[
+              networkConfiguration.defaultRpcEndpointIndex
+            ].networkClientId;
         }
       }
+
+      // Point the domain to the chain's default rpc endpoint, or remove the
+      // entry if the whole chain had to be deleted due to duplicates/invalidity.
+      if (newNetworkClientId) {
+        state.SelectedNetworkController.domains[domain] = newNetworkClientId;
+      } else {
+        delete state.SelectedNetworkController.domains[domain];
+      }
     }
+  }
 
-    const scopes: Record<string, Json> = {};
+  state.NetworkController = {
+    selectedNetworkClientId,
+    networkConfigurationsByChainId,
+    networksMetadata: networkState.networksMetadata ?? {},
+  };
 
-    chainIds.forEach((chainId) => {
-      const scopeString = `eip155:${parseInt(chainId, 16)}`;
-      const caipAccounts = ethAccounts.map(
-        (account) => `${scopeString}:${account}`,
-      );
-      scopes[scopeString] = {
-        methods: [],
-        notifications: [],
-        accounts: caipAccounts,
-      };
-    });
+  // Set `showMultiRpcModal` based on whether there are any networks with multiple rpc endpoints
+  if (
+    hasProperty(state, 'PreferencesController') &&
+    isObject(state.PreferencesController) &&
+    hasProperty(state.PreferencesController, 'preferences') &&
+    isObject(state.PreferencesController.preferences)
+  ) {
+    state.PreferencesController.preferences.showMultiRpcModal = Object.values(
+      networkConfigurationsByChainId,
+    ).some(
+      (networkConfiguration) =>
+        isObject(networkConfiguration) &&
+        Array.isArray(networkConfiguration.rpcEndpoints) &&
+        networkConfiguration.rpcEndpoints.length > 1,
+    );
+  }
 
-    permissions[Caip25EndowmentPermissionName] = {
-      ...basePermission,
-      parentCapability: Caip25EndowmentPermissionName,
-      caveats: [
-        {
-          type: Caip25CaveatType,
-          value: {
-            requiredScopes: {},
-            optionalScopes: scopes,
-            isMultichainOrigin: false,
-          },
-        },
-      ],
-    };
+  // Migrate the user's drag + drop preference order for the network menu
+  if (
+    hasProperty(state, 'NetworkOrderController') &&
+    isObject(state.NetworkOrderController) &&
+    Array.isArray(state.NetworkOrderController.orderedNetworkList)
+  ) {
+    // Dedupe the list by chain id, and remove `networkRpcUrl`
+    // since it's no longer needed to distinguish networks
+    state.NetworkOrderController.orderedNetworkList = [
+      ...new Set(
+        state.NetworkOrderController.orderedNetworkList.map(
+          (network) => network.networkId,
+        ),
+      ),
+    ].map((networkId) => ({ networkId }));
   }
 
   return state;
+}
+
+// Matches network controller validation
+function isValidUrl(url: string) {
+  const uri = URI.parse(url);
+  return (
+    uri.error === undefined && (uri.scheme === 'http' || uri.scheme === 'https')
+  );
 }

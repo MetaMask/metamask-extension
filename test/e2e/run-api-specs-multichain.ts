@@ -237,6 +237,7 @@ async function main() {
 
       await htmlReporter.onEnd({} as IOptions, joinedResults);
 
+
       await driver.quit();
 
       // if any of the tests failed, exit with a non-zero code

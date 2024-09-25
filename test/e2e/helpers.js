@@ -234,10 +234,6 @@ async function withFixtures(options, testSuite) {
       throw new Error(errorsAndExceptions);
     }
 
-    // At this point the suite has executed successfully, so we can log out a success message
-    // (Note: a Chrome browser error will unfortunately pop up after this success message)
-    console.log(`\nSuccess on testcase: '${title}'\n`);
-
     // Evaluate whether any new hosts received network requests during E2E test
     // suite execution. If so, fail the test unless the
     // --update-privacy-snapshot was specified. In that case, update the
@@ -276,6 +272,10 @@ async function withFixtures(options, testSuite) {
         );
       }
     }
+
+    // At this point the suite has executed successfully, so we can log out a success message
+    // (Note: a Chrome browser error will unfortunately pop up after this success message)
+    console.log(`\nSuccess on testcase: '${title}'\n`);
   } catch (error) {
     failed = true;
     if (webDriver) {

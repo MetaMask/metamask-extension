@@ -12,7 +12,7 @@ import {
 } from '../caip25permissions';
 import { shouldEmitDappViewedEvent } from '../../util';
 import { walletCreateSessionHandler } from './handler';
-import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
+import { assignAccountsToScopes, validateAndAddEip3085 } from './helpers';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -30,7 +30,7 @@ jest.mock('../scope', () => ({
 jest.mock('./helpers', () => ({
   ...jest.requireActual('./helpers'),
   assignAccountsToScopes: jest.fn(),
-  validateAndUpsertEip3085: jest.fn(),
+  validateAndAddEip3085: jest.fn(),
 }));
 
 const baseRequest = {
@@ -38,7 +38,7 @@ const baseRequest = {
   params: {
     requiredScopes: {
       eip155: {
-        scopes: ['eip155:1', 'eip155:137'],
+        references: ['1', '137'],
         methods: [
           'eth_sendTransaction',
           'eth_signTransaction',
@@ -64,8 +64,8 @@ const createMockedHandler = () => {
   });
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
-  const upsertNetworkConfiguration = jest.fn().mockResolvedValue();
-  const removeNetworkConfiguration = jest.fn();
+  const addNetwork = jest.fn().mockResolvedValue();
+  const removeNetwork = jest.fn();
   const multichainMiddlewareManager = {
     addMiddleware: jest.fn(),
     removeMiddleware: jest.fn(),
@@ -95,8 +95,8 @@ const createMockedHandler = () => {
       findNetworkClientIdByChainId,
       requestPermissionApprovalForOrigin,
       grantPermissions,
-      upsertNetworkConfiguration,
-      removeNetworkConfiguration,
+      addNetwork,
+      removeNetwork,
       multichainMiddlewareManager,
       multichainSubscriptionManager,
       metamaskState,
@@ -110,8 +110,8 @@ const createMockedHandler = () => {
     findNetworkClientIdByChainId,
     requestPermissionApprovalForOrigin,
     grantPermissions,
-    upsertNetworkConfiguration,
-    removeNetworkConfiguration,
+    addNetwork,
+    removeNetwork,
     multichainMiddlewareManager,
     multichainSubscriptionManager,
     metamaskState,
@@ -494,11 +494,8 @@ describe('wallet_createSession', () => {
   });
 
   it('validates and upserts EIP 3085 scoped properties when matching sessionScope is defined', async () => {
-    const {
-      handler,
-      findNetworkClientIdByChainId,
-      upsertNetworkConfiguration,
-    } = createMockedHandler();
+    const { handler, findNetworkClientIdByChainId, addNetwork } =
+      createMockedHandler();
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
@@ -530,10 +527,9 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(validateAndUpsertEip3085).toHaveBeenCalledWith({
+    expect(validateAndAddEip3085).toHaveBeenCalledWith({
       eip3085Params: { foo: 'bar' },
-      origin: 'http://test.com',
-      upsertNetworkConfiguration,
+      addNetwork,
       findNetworkClientIdByChainId,
     });
   });
@@ -571,7 +567,7 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(validateAndUpsertEip3085).not.toHaveBeenCalled();
+    expect(validateAndAddEip3085).not.toHaveBeenCalled();
   });
 
   it('grants the CAIP-25 permission for the supported and supportable scopes', async () => {
@@ -747,8 +743,7 @@ describe('wallet_createSession', () => {
   });
 
   it('reverts any upserted network clients if the request fails', async () => {
-    const { handler, removeNetworkConfiguration, grantPermissions } =
-      createMockedHandler();
+    const { handler, removeNetwork, grantPermissions } = createMockedHandler();
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
@@ -772,7 +767,7 @@ describe('wallet_createSession', () => {
         },
       },
     });
-    validateAndUpsertEip3085.mockReturnValue('networkClientId1');
+    validateAndAddEip3085.mockReturnValue('0xdeadbeef');
     grantPermissions.mockImplementation(() => {
       throw new Error('failed to grant permission');
     });
@@ -791,6 +786,6 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(removeNetworkConfiguration).toHaveBeenCalledWith('networkClientId1');
+    expect(removeNetwork).toHaveBeenCalledWith('0xdeadbeef');
   });
 });
