@@ -36,7 +36,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         await driver.delay(500);
         await driver.clickElement('[data-testid="eth-overview-send"]');
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           recipientAddress,
         );
         await driver.waitForSelector({

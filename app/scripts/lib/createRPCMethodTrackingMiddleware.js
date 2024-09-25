@@ -21,7 +21,11 @@ import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -131,20 +135,22 @@ let globalRateLimitCount = 0;
  *
  * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
- * @param {object} properties
+ * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
  */
-function createSignatureFragment(metaMetricsController, req, properties) {
+function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
   metaMetricsController.createEventFragment({
     category: MetaMetricsEventCategory.InpageProvider,
+
     initialEvent: MetaMetricsEventName.SignatureRequested,
     successEvent: MetaMetricsEventName.SignatureApproved,
     failureEvent: MetaMetricsEventName.SignatureRejected,
+
     uniqueIdentifier: generateSignatureUniqueId(req.id),
     persist: true,
     referrer: {
       url: req.origin,
     },
-    properties,
+    ...fragmentPayload,
   });
 }
 
@@ -153,23 +159,23 @@ function createSignatureFragment(metaMetricsController, req, properties) {
  *
  * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
- * @param {object}  options
- * @param {boolean} options.abandoned
- * @param {object}  options.properties
+ * @param {MetaMetricsFinalizeEventFragmentOptions}  finalizeEventOptions
+ * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
  */
 function finalizeSignatureFragment(
   metaMetricsController,
   req,
-  { abandoned, properties },
+  finalizeEventOptions,
+  fragmentPayload,
 ) {
   const signatureUniqueId = generateSignatureUniqueId(req.id);
 
-  metaMetricsController.updateEventFragment(signatureUniqueId, {
-    properties,
-  });
-  metaMetricsController.finalizeEventFragment(signatureUniqueId, {
-    abandoned,
-  });
+  metaMetricsController.updateEventFragment(signatureUniqueId, fragmentPayload);
+
+  metaMetricsController.finalizeEventFragment(
+    signatureUniqueId,
+    finalizeEventOptions,
+  );
 }
 
 /**
@@ -217,8 +223,7 @@ export default function createRPCMethodTrackingMiddleware({
   ) {
     const { origin, method, params } = req;
 
-    const rateLimitType =
-      RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RANDOM_SAMPLE;
+    const rateLimitType = RATE_LIMIT_MAP[method];
 
     let isRateLimited;
     switch (rateLimitType) {
@@ -253,6 +258,7 @@ export default function createRPCMethodTrackingMiddleware({
     const eventType = EVENT_NAME_MAP[method];
 
     const eventProperties = {};
+    let sensitiveEventProperties;
 
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
@@ -264,8 +270,6 @@ export default function createRPCMethodTrackingMiddleware({
       !isGlobalRateLimited &&
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
-
-    let signatureUniqueId;
 
     if (shouldTrackEvent) {
       // We track an initial "requested" event as soon as the dapp calls the
@@ -341,14 +345,25 @@ export default function createRPCMethodTrackingMiddleware({
               ];
             }
           } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
-            const { primaryType } = parseTypedDataMessage(data);
-            eventProperties.eip712_primary_type = primaryType;
-            if (PRIMARY_TYPES_PERMIT.includes(primaryType)) {
+            const parsedMessageData = parseTypedDataMessage(data);
+            sensitiveEventProperties = {};
+
+            eventProperties.eip712_primary_type = parsedMessageData.primaryType;
+            sensitiveEventProperties.eip712_verifyingContract =
+              parsedMessageData.domain.verifyingContract;
+            sensitiveEventProperties.eip712_domain_version =
+              parsedMessageData.domain.version;
+            sensitiveEventProperties.eip712_domain_name =
+              parsedMessageData.domain.name;
+
+            if (PRIMARY_TYPES_PERMIT.includes(parsedMessageData.primaryType)) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Permit,
               ];
-            } else if (PRIMARY_TYPES_ORDER.includes(primaryType)) {
+            } else if (
+              PRIMARY_TYPES_ORDER.includes(parsedMessageData.primaryType)
+            ) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Order,
@@ -368,7 +383,12 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       if (event === MetaMetricsEventName.SignatureRequested) {
-        createSignatureFragment(metaMetricsController, req, eventProperties);
+        const fragmentPayload = {
+          properties: eventProperties,
+          sensitiveProperties: sensitiveEventProperties,
+        };
+
+        createSignatureFragment(metaMetricsController, req, fragmentPayload);
       } else {
         metaMetricsController.trackEvent({
           event,
@@ -429,11 +449,24 @@ export default function createRPCMethodTrackingMiddleware({
         location,
       };
 
-      if (signatureUniqueId) {
-        finalizeSignatureFragment(metaMetricsController, req, {
+      if (
+        event === MetaMetricsEventName.SignatureRejected ||
+        event === MetaMetricsEventName.SignatureApproved
+      ) {
+        const finalizeOptions = {
           abandoned: event === eventType.REJECTED,
+        };
+        const fragmentPayload = {
           properties,
-        });
+          sensitiveProperties: sensitiveEventProperties,
+        };
+
+        finalizeSignatureFragment(
+          metaMetricsController,
+          req,
+          finalizeOptions,
+          fragmentPayload,
+        );
       } else {
         metaMetricsController.trackEvent({
           event,
@@ -444,7 +477,6 @@ export default function createRPCMethodTrackingMiddleware({
           properties,
         });
       }
-
       return callback();
     });
   };

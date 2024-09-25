@@ -5,7 +5,7 @@ import {
   rejectPendingApproval,
   resolvePendingApproval,
   setNewNetworkAdded,
-  upsertNetworkConfiguration,
+  addNetwork,
 } from '../../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -152,8 +152,7 @@ function getAttenuatedDispatch(dispatch) {
       dispatch(rejectPendingApproval(...args)),
     resolvePendingApproval: (...args) =>
       dispatch(resolvePendingApproval(...args)),
-    upsertNetworkConfiguration: (...args) =>
-      dispatch(upsertNetworkConfiguration(...args)),
+    addNetwork: (...args) => dispatch(addNetwork(...args)),
     setNewNetworkAdded: (...args) => dispatch(setNewNetworkAdded(...args)),
     deleteInterface: (...args) => dispatch(deleteInterface(...args)),
   };
