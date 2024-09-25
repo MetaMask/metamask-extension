@@ -41,5 +41,26 @@ describe(`migration #${version}`, () => {
 
       expect(newStorage.data).toStrictEqual(expectedData);
     });
+
+    it('does nothing if the preferences already has a tokenSortConfig', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          PreferencesController: {
+            preferences: {
+              tokenSortConfig: {
+                key: 'fooKey',
+                order: 'foo',
+                sortCallback: 'fooCallback',
+              },
+            },
+          },
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
+    });
   });
 });
