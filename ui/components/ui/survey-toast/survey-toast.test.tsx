@@ -6,6 +6,10 @@ import { act } from 'react-dom/test-utils';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { SurveyToast } from './survey-toast';
 
 jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
@@ -16,34 +20,44 @@ jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
 window.open = jest.fn();
 
 const mockFetchWithCache = fetchWithCache as jest.Mock;
+const mockTrackEvent = jest.fn();
 const mockStore = configureStore([thunk]);
 
-const initialState = {
-  metametrics: {
-    participateInMetaMetrics: true,
+const surveyData = {
+  valid: {
+    url: 'https://example.com',
+    description: 'Test Survey',
+    cta: 'Take Survey',
+    surveyId: 3,
   },
-  user: {
-    basicFunctionality: true,
-  },
-  metamask: {
-    lastViewedUserSurvey: 2,
-    useExternalServices: true,
-    internalAccounts: {
-      selectedAccount: '0x123',
-      accounts: { '0x123': { address: '0x123' } },
-    },
+  stale: {
+    url: 'https://example.com',
+    description: 'Test Survey',
+    cta: 'Take Survey',
+    surveyId: 1,
   },
 };
 
-const store = mockStore(initialState);
-const mockTrackEvent = jest.fn();
+const createStore = (options = { metametricsEnabled: true }) =>
+  mockStore({
+    user: { basicFunctionality: true },
+    metamask: {
+      lastViewedUserSurvey: 2,
+      useExternalServices: true,
+      participateInMetaMetrics: options.metametricsEnabled,
+      internalAccounts: {
+        selectedAccount: '0x123',
+        accounts: { '0x123': { address: '0x123' } },
+      },
+    },
+  });
 
-const renderComponent = () =>
+const renderComponent = (options = { metametricsEnabled: true }) =>
   renderWithProvider(
     <MetaMetricsContext.Provider value={mockTrackEvent}>
       <SurveyToast />
     </MetaMetricsContext.Provider>,
-    store,
+    createStore(options),
   );
 
 describe('SurveyToast', () => {
@@ -63,18 +77,14 @@ describe('SurveyToast', () => {
   });
 
   it('should match snapshot', async () => {
-    const survey = {
-      url: 'https://example.com',
-      description: 'Test Survey',
-      cta: 'Take Survey',
-      surveyId: 3,
-    };
-    mockFetchWithCache.mockResolvedValue({ surveys: [survey] });
+    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.valid] });
+
     let container;
     await act(async () => {
       const result = renderComponent();
       container = result.container;
     });
+
     expect(container).toMatchSnapshot();
   });
 
@@ -84,51 +94,66 @@ describe('SurveyToast', () => {
     expect(screen.queryByTestId('survey-toast')).toBeNull();
   });
 
-  it('renders nothing if the survey is stale', async () => {
-    const survey = {
-      url: 'https://example.com',
-      description: 'Test Survey',
-      cta: 'Take Survey',
-      surveyId: 1,
-    };
-    mockFetchWithCache.mockResolvedValue({ surveys: [survey] });
+  it('renders nothing if the survey is stale', () => {
+    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.stale] });
     renderComponent();
     expect(screen.queryByTestId('survey-toast')).toBeNull();
   });
 
-  it('renders the survey toast if a survey is available', async () => {
-    const survey = {
-      url: 'https://example.com',
-      description: 'Test Survey',
-      cta: 'Take Survey',
-      surveyId: 3,
-    };
-    mockFetchWithCache.mockResolvedValue({ surveys: [survey] });
+  it('renders the survey toast when a valid survey is available', async () => {
+    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.valid] });
+
     await act(async () => {
       renderComponent();
     });
+
     await waitFor(() => {
       expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
-      expect(screen.getByText('Test Survey')).toBeInTheDocument();
-      expect(screen.getByText('Take Survey')).toBeInTheDocument();
+      expect(
+        screen.getByText(surveyData.valid.description),
+      ).toBeInTheDocument();
+      expect(screen.getByText(surveyData.valid.cta)).toBeInTheDocument();
     });
   });
 
-  it('handles action click correctly', async () => {
-    const survey = {
-      url: 'https://example.com',
-      description: 'Test Survey',
-      cta: 'Take Survey',
-      surveyId: 3,
-    };
-    mockFetchWithCache.mockResolvedValue({ surveys: [survey] });
-    renderComponent();
+  it('handles action click correctly when metametrics is enabled', async () => {
+    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.valid] });
+
+    renderComponent({ metametricsEnabled: true });
+
     await waitFor(() => {
       expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByText('Take Survey'));
+
+    fireEvent.click(screen.getByText(surveyData.valid.cta));
+
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://example.com',
+      url: surveyData.valid.url,
     });
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.SurveyToast,
+      category: MetaMetricsEventCategory.Feedback,
+      properties: {
+        response: 'accept',
+        survey: surveyData.valid.surveyId,
+      },
+    });
+  });
+
+  it('handles action click correctly when metametrics is disabled', async () => {
+    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.valid] });
+
+    renderComponent({ metametricsEnabled: false });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText(surveyData.valid.cta));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: surveyData.valid.url,
+    });
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 });
