@@ -241,8 +241,6 @@ describe('Add token using wallet_watchAsset', function () {
 
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
 
-        await driver.delay(1000);
-
         const assetListItems = await driver.findElements(
           '.multichain-token-list-item',
         );
