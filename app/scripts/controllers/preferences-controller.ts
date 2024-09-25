@@ -37,7 +37,7 @@ const testNetworks = {
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
-const controllerName = 'PreferencesController';
+const controllerName = 'ExtensionPreferencesController';
 
 /**
  * Returns the state of the {@link PreferencesController}.

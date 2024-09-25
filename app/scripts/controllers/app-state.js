@@ -84,7 +84,7 @@ export default class AppStateController extends EventEmitter {
     addUnlockListener(this.handleUnlock.bind(this));
 
     messenger.subscribe(
-      'PreferencesController:stateChange',
+      'ExtensionPreferencesController:stateChange',
       ({ preferences }) => {
         const currentState = this.store.getState();
         if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {

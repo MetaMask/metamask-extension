@@ -287,7 +287,9 @@ import { NetworkOrderController } from './controllers/network-order';
 import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
-import PreferencesController from './controllers/preferences-controller';
+import PreferencesController, {
+  getDefaultPreferencesControllerState,
+} from './controllers/preferences-controller';
 import AppStateController from './controllers/app-state';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
@@ -587,7 +589,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     const preferencesMessenger = this.controllerMessenger.getRestricted({
-      name: 'PreferencesController',
+      name: 'ExtensionPreferencesController',
       allowedActions: [
         'AccountsController:setSelectedAccount',
         'AccountsController:getSelectedAccount',
@@ -738,7 +740,7 @@ export default class MetamaskController extends EventEmitter {
       segment,
       onPreferencesStateChange: preferencesMessenger.subscribe.bind(
         preferencesMessenger,
-        'PreferencesController:stateChange',
+        `${this.preferencesController.name}:stateChange`,
       ),
       preferencesControllerState: {
         currentLocale: this.preferencesController.state.currentLocale,
@@ -839,7 +841,7 @@ export default class MetamaskController extends EventEmitter {
         ],
         allowedEvents: [
           `KeyringController:qrKeyringStateChange`,
-          'PreferencesController:stateChange',
+          `${this.preferencesController.name}:stateChange`,
         ],
       }),
       extension: this.extension,
@@ -900,7 +902,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.state.securityAlertsEnabled,
       onPreferencesChange: preferencesMessenger.subscribe.bind(
         preferencesMessenger,
-        'PreferencesController:stateChange',
+        `${this.preferencesController.name}:stateChange`,
       ),
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
       blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
@@ -987,7 +989,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.controllerMessenger.subscribe(
-      'PreferencesController:stateChange',
+      `${this.preferencesController.name}:stateChange`,
       previousValueComparator((prevState, currState) => {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
@@ -1263,7 +1265,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.state.useRequestQueue,
       onPreferencesStateChange: (listener) => {
         preferencesMessenger.subscribe(
-          'PreferencesController:stateChange',
+          `${this.preferencesController.name}:stateChange`,
           listener,
         );
       },
@@ -1749,6 +1751,10 @@ export default class MetamaskController extends EventEmitter {
         ],
       });
 
+    this.controllerMessenger.registerActionHandler(
+      'PreferencesController:getState',
+      () => getDefaultPreferencesControllerState(),
+    );
     this.tokenDetectionController = new TokenDetectionController({
       messenger: tokenDetectionControllerMessenger,
       getBalancesInSingleCall:
@@ -2821,7 +2827,7 @@ export default class MetamaskController extends EventEmitter {
   setupControllerEventSubscriptions() {
     let lastSelectedAddress;
     this.controllerMessenger.subscribe(
-      'PreferencesController:stateChange',
+      `${this.preferencesController.name}:stateChange`,
       previousValueComparator((prevState, currState) => {
         this.#onPreferencesControllerStateChange(currState, prevState);
       }, this.preferencesController.state),
@@ -6982,11 +6988,11 @@ export default class MetamaskController extends EventEmitter {
     this.#checkTokenListPolling(currentState, previousState);
 
     // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
-    // this.controllerMessenger.publish(
-    //   'PreferencesController:stateChange',
-    //   currentState,
-    //   [],
-    // );
+    this.controllerMessenger.publish(
+      'PreferencesController:stateChange',
+      currentState,
+      [],
+    );
   }
 
   #checkTokenListPolling(currentState, previousState) {

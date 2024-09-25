@@ -358,7 +358,7 @@ describe('MetaMaskController', () => {
 
     async function simulatePreferencesChange(preferences) {
       metamaskController.controllerMessenger.publish(
-        'PreferencesController:stateChange',
+        'ExtensionPreferencesController:stateChange',
         {
           ...metamaskController.preferencesController.state,
           ...preferences,

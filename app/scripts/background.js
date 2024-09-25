@@ -646,7 +646,7 @@ function emitDappViewedMetricEvent(origin) {
   }
 
   const preferencesState = controller.controllerMessenger.call(
-    'PreferencesController:getState',
+    'ExtensionPreferencesController:getState',
   );
   const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
 

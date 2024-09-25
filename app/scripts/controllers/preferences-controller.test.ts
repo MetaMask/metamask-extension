@@ -50,7 +50,7 @@ const setupController = ({
 
   const preferencesControllerMessenger: PreferencesControllerMessenger =
     controllerMessenger.getRestricted({
-      name: 'PreferencesController',
+      name: 'ExtensionPreferencesController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
