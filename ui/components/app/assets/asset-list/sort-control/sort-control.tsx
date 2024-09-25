@@ -44,7 +44,7 @@ export const SelectableListItem = ({
         })}
         onClick={onClick}
       >
-        <Text variant={TextVariant.bodyMdMedium} color={TextColor.default}>
+        <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
           {children}
         </Text>
       </Box>
