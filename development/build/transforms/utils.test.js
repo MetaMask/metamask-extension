@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 const { getESLintInstance } = require('./utils');
 
 let mockESLint;

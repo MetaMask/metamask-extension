@@ -19,6 +19,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -41,10 +42,15 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
+import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
+import {
+  FakeLedgerBridge,
+  FakeTrezorBridge,
+} from '../../test/stub/keyring-bridge';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -74,6 +80,7 @@ import { createOffscreen } from './offscreen';
 /* eslint-enable import/first */
 
 import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
+import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -117,6 +124,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+
 // normalized (adds a trailing slash to the end of the domain if it's missing)
 // the URL once and reuse it:
 const phishingPageHref = phishingPageUrl.toString();
@@ -356,16 +364,14 @@ function saveTimestamp() {
  * @property {object} accountsByChainId - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values keyed by chain id.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
  * @property {object} currentBlockGasLimitByChainId - The most recently seen block gas limit, in a lower case hex prefixed string keyed by chain id.
- * @property {object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
- * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
  * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
  * @property {object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
  * @property {object} unapprovedDecryptMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
- * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
- * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
+ * @property {object} unapprovedTypedMessages - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {number} unapprovedTypedMessagesCount - The number of messages in unapprovedTypedMessages.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
@@ -396,6 +402,14 @@ async function initialize() {
 
     let isFirstMetaMaskControllerSetup;
 
+    // We only want to start this if we are running a test build, not for the release build.
+    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+    if (process.env.IN_TEST && window.navigator?.webdriver) {
+      getSocketBackgroundToMocha();
+    }
+
     if (isManifestV3) {
       // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
       // miliseconds. This keeps the service worker alive.
@@ -415,10 +429,19 @@ async function initialize() {
       await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
     }
 
+    const overrides = inTest
+      ? {
+          keyrings: {
+            trezorBridge: FakeTrezorBridge,
+            ledgerBridge: FakeLedgerBridge,
+          },
+        }
+      : {};
+
     setupController(
       initState,
       initLangCode,
-      {},
+      overrides,
       isFirstMetaMaskControllerSetup,
       initData.meta,
       offscreenPromise,
@@ -844,10 +867,10 @@ export function setupController(
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStream =
+      const portStreamForPhishingPage =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       controller.setupPhishingCommunication({
-        connectionStream: portStream,
+        connectionStream: portStreamForPhishingPage,
       });
     } else {
       // this is triggered when a new tab is opened, or origin(url) is changed
@@ -865,6 +888,18 @@ export function setupController(
           ) {
             requestAccountTabIds[origin] = tabId;
           }
+        });
+      }
+      if (
+        senderUrl &&
+        COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
+          (origin) => origin === senderUrl.origin,
+        )
+      ) {
+        const portStreamForCookieHandlerPage =
+          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        controller.setUpCookieHandlerCommunication({
+          connectionStream: portStreamForCookieHandlerPage,
         });
       }
       connectExternalExtension(remotePort);
@@ -950,8 +985,6 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
     updateBadge,
   );
-
-  controller.txController.initApprovals();
 
   /**
    * Formats a count for display as a badge label.
@@ -1082,6 +1115,7 @@ export function setupController(
         switch (type) {
           case ApprovalType.SnapDialogAlert:
           case ApprovalType.SnapDialogPrompt:
+          case DIALOG_APPROVAL_TYPES.default:
             controller.approvalController.accept(id, null);
             break;
           case ApprovalType.SnapDialogConfirmation:
@@ -1229,6 +1263,7 @@ async function initBackground() {
         window.document?.documentElement?.classList.add('controller-loaded');
       }
     }
+    localStore.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
   }

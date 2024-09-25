@@ -39,3 +39,7 @@ BLOCKAID_PUBLIC_KEY=
 ; The endpoint used to submit errors and tracing data to Sentry.
 ; The below is the `test-metamask` project.
 ; SENTRY_DSN_DEV=https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496
+
+; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
+; This should NEVER be enabled in production since it slows down react
+; ENABLE_WHY_DID_YOU_RENDER=false

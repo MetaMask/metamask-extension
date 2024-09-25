@@ -25,6 +25,7 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../../shared/lib/metamask-controller-utils';
+import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -78,6 +79,8 @@ const TransactionAlerts = ({
           securityProviderResponse={txData.securityProviderResponse}
         />
       )}
+
+      <QueuedRequestsBannerAlert />
 
       {hasSimulationError && (
         <SimulationErrorMessage

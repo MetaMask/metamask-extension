@@ -36,8 +36,6 @@ import SnapAvatar from '../snap-avatar';
 import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { SnapDelineator } from '../snap-delineator';
-import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
@@ -222,15 +220,18 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
             </Text>
             <Text ellipsis>{subjectMetadata?.version}</Text>
           </Box>
-          <SnapDelineator
-            type={DelineatorType.Description}
-            snapName={snapName}
-            boxProps={{ marginTop: 4 }}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            marginTop={4}
           >
+            <Text variant={TextVariant.bodyMdMedium} marginRight={4}>
+              {t('descriptionFromSnap', [snapName])}
+            </Text>
             <ShowMore>
               <Text>{description}</Text>
             </ShowMore>
-          </SnapDelineator>
+          </Box>
         </Box>
       </ModalContent>
     </Modal>

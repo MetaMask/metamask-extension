@@ -1,8 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ContractInteractionInfo /> does not render if required data is not present in the transaction (no advanced details) 1`] = `<div />`;
-
-exports[`<ContractInteractionInfo /> does not render if required data is not present in the transaction (with advanced details) 1`] = `<div />`;
+exports[`<ContractInteractionInfo /> does not render if required data is not present in the transaction 1`] = `<div />`;
 
 exports[`<ContractInteractionInfo /> renders component for contract interaction request 1`] = `
 <div>
@@ -98,10 +96,12 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="transaction-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="transaction-details-origin-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -139,7 +139,8 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="transaction-details-recipient-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -226,13 +227,15 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="gas-fee-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="edit-gas-fees-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -262,12 +265,13 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
           data-testid="first-gas-field"
         >
-          0.004 ETH
+          0.0001 ETH
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
         >
-          $2.20
+          $0.04
         </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -286,7 +290,8 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="gas-fee-details-speed"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -457,10 +462,12 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="transaction-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="transaction-details-origin-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -498,7 +505,8 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="transaction-details-recipient-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -585,13 +593,15 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="gas-fee-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="edit-gas-fees-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -621,12 +631,13 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
           data-testid="first-gas-field"
         >
-          0.004 ETH
+          0.0001 ETH
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
         >
-          $2.20
+          $0.04
         </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -645,7 +656,8 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="gas-fee-details-speed"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -813,10 +825,12 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="transaction-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="transaction-details-origin-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -854,7 +868,8 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="transaction-details-recipient-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -941,13 +956,15 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="gas-fee-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="edit-gas-fees-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -977,12 +994,13 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
           data-testid="first-gas-field"
         >
-          0.004 ETH
+          0.0001 ETH
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
         >
-          $2.20
+          $0.04
         </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -1001,7 +1019,8 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="gas-fee-details-speed"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"

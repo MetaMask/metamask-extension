@@ -41,4 +41,4 @@ async function filterE2eChangedFiles() {
   return e2eChangedFiles;
 }
 
-module.exports = { filterE2eChangedFiles };
+module.exports = { filterE2eChangedFiles, readChangedFiles };

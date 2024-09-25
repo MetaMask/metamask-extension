@@ -42,7 +42,7 @@
     "message": "Connect your QR hardware wallet"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (coming soon)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "The address in the sign-in request does not match the address of the account you are using to sign in."
@@ -195,6 +195,9 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountToMetaMask": {
+    "message": "Add account to MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -319,6 +322,9 @@
   },
   "addUrl": {
     "message": "Add URL"
+  },
+  "addingAccount": {
+    "message": "Adding account"
   },
   "addingCustomNetwork": {
     "message": "Adding Network"
@@ -544,9 +550,6 @@
     "message": "$1 and $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Announcements"
-  },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
@@ -631,6 +634,9 @@
   },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
+  },
+  "attributes": {
+    "message": "Attributes"
   },
   "attributions": {
     "message": "Attributions"
@@ -839,6 +845,9 @@
   "blockies": {
     "message": "Blockies"
   },
+  "boughtFor": {
+    "message": "Bought for"
+  },
   "bridge": {
     "message": "Bridge"
   },
@@ -959,6 +968,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "Collection name"
   },
   "comboNoOptions": {
     "message": "No options found",
@@ -1265,6 +1277,9 @@
   "createSnapAccountTitle": {
     "message": "Create account"
   },
+  "creatorAddress": {
+    "message": "Creator address"
+  },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
   },
@@ -1449,6 +1464,12 @@
   "dataHex": {
     "message": "Hex"
   },
+  "dataUnavailable": {
+    "message": "data unavailable"
+  },
+  "dateCreated": {
+    "message": "Date created"
+  },
   "dcent": {
     "message": "D'Cent"
   },
@@ -1528,24 +1549,6 @@
   "developerOptions": {
     "message": "Developer Options"
   },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Enables or disables the confirmations redesign feature currently in development"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Confirmations Redesign"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Toggles the new design of the Networks menu"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Network Menu Redesign"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
-  },
   "developerOptionsSentryButtonGenerateBackgroundError": {
     "message": "Generate Background Error"
   },
@@ -1563,9 +1566,6 @@
   },
   "developerOptionsSentryDescriptionGenerateUIError": {
     "message": "Generate an unhandled $1 in this window."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Results in a timestamp being continuously saved to session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -1743,6 +1743,9 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
+  "editNetworkLink": {
+    "message": "edit the original network"
+  },
   "editNonceField": {
     "message": "Edit nonce"
   },
@@ -1903,6 +1906,15 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
+  "existingChainId": {
+    "message": "The information you have entered is associated with an existing chain ID."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "To view and confirm your most recent request, you'll need to approve or reject existing requests first."
+  },
+  "existingRpcUrl": {
+    "message": "This URL is associated with another chain ID."
+  },
   "expandView": {
     "message": "Expand view"
   },
@@ -1956,6 +1968,9 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "findTheRightChainId": {
+    "message": "Find the right one on:"
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
@@ -2206,6 +2221,12 @@
   },
   "highLowercase": {
     "message": "high"
+  },
+  "highestCurrentBid": {
+    "message": "Highest current bid"
+  },
+  "highestFloorPrice": {
+    "message": "Highest floor price"
   },
   "history": {
     "message": "History"
@@ -2560,9 +2581,6 @@
   },
   "lastConnected": {
     "message": "Last connected"
-  },
-  "lastPriceSold": {
-    "message": "Last price sold"
   },
   "lastSold": {
     "message": "Last sold"
@@ -2920,6 +2938,10 @@
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 is asking for your approval to:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Do you want this site to do the following?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3048,11 +3070,19 @@
     "message": "We can't connect to $1",
     "description": "$1 represents the network name"
   },
+  "networkSwitchMessage": {
+    "message": "Network switched to $1",
+    "description": "$1 represents the network name"
+  },
   "networkURL": {
     "message": "Network URL"
   },
   "networkURLDefinition": {
     "message": "The URL used to access this network."
+  },
+  "networkUrlErrorWarning": {
+    "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: $1",
+    "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
     "message": "Networks"
@@ -3217,11 +3247,14 @@
   "nonceField": {
     "message": "Customize transaction nonce"
   },
-  "nonceFieldDescription": {
-    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  "nonceFieldDesc": {
+    "message": "Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously."
   },
   "nonceFieldHeading": {
     "message": "Custom nonce"
+  },
+  "none": {
+    "message": "None"
   },
   "notBusy": {
     "message": "Not busy"
@@ -3420,6 +3453,9 @@
   "numberOfNewTokensDetectedSingular": {
     "message": "1 new token found in this account"
   },
+  "numberOfTokens": {
+    "message": "Number of tokens"
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -3466,9 +3502,6 @@
   "onboardedMetametricsTitle": {
     "message": "Help us enhance your experience"
   },
-  "onboarding": {
-    "message": "Onboarding"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
   },
@@ -3504,9 +3537,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "No thanks"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",
@@ -3804,6 +3834,14 @@
     "message": "Let $1 access your preferred language from your MetaMask settings. This can be used to localize and display $1's content using your language.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
+  "permission_getPreferences": {
+    "message": "See information like your preferred language and fiat currency.",
+    "description": "The description for the `snap_getPreferences` permission"
+  },
+  "permission_getPreferencesDescription": {
+    "message": "Let $1 access information like your preferred language and fiat currency in your MetaMask settings. This helps $1 display content tailored to your preferences. ",
+    "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
+  },
   "permission_homePage": {
     "message": "Display a custom screen",
     "description": "The description for the `endowment:page-home` permission"
@@ -3933,7 +3971,7 @@
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
   },
   "permission_walletSwitchEthereumChain": {
-    "message": "Switch to and use the following network",
+    "message": "Use your enabled networks",
     "description": "The label for the `wallet_switchEthereumChain` permission"
   },
   "permission_webAssembly": {
@@ -4009,6 +4047,12 @@
   },
   "prev": {
     "message": "Prev"
+  },
+  "price": {
+    "message": "Price"
+  },
+  "priceUnavailable": {
+    "message": "price unavailable"
   },
   "primaryCurrencySetting": {
     "message": "Primary currency"
@@ -4162,6 +4206,9 @@
   "quoteRate": {
     "message": "Quote rate"
   },
+  "rank": {
+    "message": "Rank"
+  },
   "reAddAccounts": {
     "message": "re-add any other accounts"
   },
@@ -4215,6 +4262,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "Turn this on to see signature requests in an enhanced format."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Improved transaction requests"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Turn this on to see transactions requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"
@@ -4331,9 +4384,6 @@
   "reset": {
     "message": "Reset"
   },
-  "resetStates": {
-    "message": "Reset States"
-  },
   "resetWallet": {
     "message": "Reset wallet"
   },
@@ -4419,6 +4469,9 @@
   "reviewAlerts": {
     "message": "Review alerts"
   },
+  "reviewPermissions": {
+    "message": "Review permissions"
+  },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -4501,6 +4554,10 @@
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
+  "seeAllPermissions": {
+    "message": "See all permissions",
+    "description": "Used for revealing more content (e.g. permission list, etc.)"
+  },
   "seeDetails": {
     "message": "See details"
   },
@@ -4516,13 +4573,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Secure my wallet (recommended)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Write down and store in multiple secret places"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Save in a password manager"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Store in a safe deposit box"
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -4606,9 +4660,6 @@
   "send": {
     "message": "Send"
   },
-  "sendAToken": {
-    "message": "Send a token"
-  },
   "sendBugReport": {
     "message": "Send us a bug report."
   },
@@ -4658,9 +4709,6 @@
   },
   "sepolia": {
     "message": "Sepolia test network"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker Keep Alive"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
@@ -4718,6 +4766,9 @@
   "showIncomingTransactionsExplainer": {
     "message": "This relies on different third-party APIs for each network, which expose your Ethereum address and your IP address."
   },
+  "showLess": {
+    "message": "Show less"
+  },
   "showMore": {
     "message": "Show more"
   },
@@ -4747,9 +4798,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site."
-  },
-  "signatureRequestWarning": {
-    "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
   },
   "signed": {
     "message": "Signed"
@@ -4939,6 +4987,9 @@
   },
   "snapDetailWebsite": {
     "message": "Website"
+  },
+  "snapHomeMenu": {
+    "message": "Snap Home Menu"
   },
   "snapInstallRequest": {
     "message": "Installing $1 gives it the following permissions.",
@@ -5221,9 +5272,6 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
-  },
-  "states": {
-    "message": "States"
   },
   "status": {
     "message": "Status"
@@ -5863,45 +5911,6 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "You’re at risk for phishing attacks. Protect yourself by turning off eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "If you enable this setting, you might get signature requests that aren’t readable. By signing a message you don't understand, you could be agreeing to give away your funds and NFTs."
-  },
-  "toggleEthSignField": {
-    "message": "Eth_sign requests"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " you might be getting scammed"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "If you've been asked to turn this setting on,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Allowing eth_sign requests can make you vulnerable to phishing attacks. Always review the URL and be careful when signing  messages that contain code."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "The text is incorrect"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Enter “I only sign what I understand” to continue"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "I only sign what I understand"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Use at your own risk"
-  },
-  "toggleEthSignOff": {
-    "message": "OFF (Recommended)"
-  },
-  "toggleEthSignOn": {
-    "message": "ON (Not recommended)"
-  },
   "toggleRequestQueueDescription": {
     "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
   },
@@ -5956,6 +5965,9 @@
   "tokenShowUp": {
     "message": "Your tokens may not automatically show up in your wallet. "
   },
+  "tokenStandard": {
+    "message": "Token standard"
+  },
   "tokenSymbol": {
     "message": "Token symbol"
   },
@@ -5965,6 +5977,9 @@
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "Tokens in collection"
   },
   "tooltipApproveButton": {
     "message": "I understand"
@@ -6174,6 +6189,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "According to our records, this URL does not match a known provider for this chain ID."
+  },
   "unapproved": {
     "message": "Unapproved"
   },
@@ -6224,6 +6242,9 @@
   },
   "update": {
     "message": "Update"
+  },
+  "updateOrEditNetworkInformations": {
+    "message": "Update your information or"
   },
   "updateRequest": {
     "message": "Update request"
@@ -6452,6 +6473,9 @@
   "whatsThis": {
     "message": "What's this?"
   },
+  "wrongChainId": {
+    "message": "This chain ID doesn’t match the network name."
+  },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
   },
@@ -6483,9 +6507,6 @@
   },
   "yourBalance": {
     "message": "Your balance"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Your funds may be at risk"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"

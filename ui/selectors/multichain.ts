@@ -21,14 +21,12 @@ import {
 } from '../ducks/metamask/metamask';
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
-
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
   NETWORK_TYPES,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
-
 import { AccountsState } from './accounts';
 import {
   getCurrentChainId,
@@ -65,7 +63,8 @@ export type MultichainNetwork = {
   nickname: string;
   isEvmNetwork: boolean;
   chainId: CaipChainId;
-  network: ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
+  network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
+  ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
 };
 
 export const MultichainNetworkPropType = PropTypes.shape({

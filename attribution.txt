@@ -53,34 +53,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 aes-js
-3.0.0 <https://github.com/ricmoo/aes-js>
-The MIT License (MIT)
-
-Copyright (c) 2015 Richard Moore
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-
-
-******************************
-
-aes-js
 3.1.2 <https://github.com/ricmoo/aes-js>
 The MIT License (MIT)
 
@@ -1587,7 +1559,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/runtime
-7.24.6 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -2398,7 +2370,7 @@ SOFTWARE.
 ******************************
 
 @blockaid/ppom_release
-1.5.1 <>
+1.4.6 <>
 Blockaid BSL License, Version 1.0 (EPL-1.0)
 
 Licensor:  Blockaid, Inc.
@@ -10210,33 +10182,6 @@ SOFTWARE.
 
 ******************************
 
-@ethersproject/json-wallets
-5.7.0 <https://github.com/ethers-io/ethers.js>
-MIT License
-
-Copyright (c) 2019 Richard Moore
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-******************************
-
 @ethersproject/keccak256
 5.7.0 <https://github.com/ethers-io/ethers.js>
 MIT License
@@ -10515,33 +10460,6 @@ SOFTWARE.
 ******************************
 
 @ethersproject/transactions
-5.7.0 <https://github.com/ethers-io/ethers.js>
-MIT License
-
-Copyright (c) 2019 Richard Moore
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-******************************
-
-@ethersproject/wallet
 5.7.0 <https://github.com/ethers-io/ethers.js>
 MIT License
 
@@ -11419,7 +11337,7 @@ SOFTWARE.
 ******************************
 
 fast-xml-parser
-4.4.1 <https://github.com/NaturalIntelligence/fast-xml-parser>
+4.3.4 <https://github.com/NaturalIntelligence/fast-xml-parser>
 MIT License
 
 Copyright (c) 2017 Amit Kumar Gupta
@@ -12703,7 +12621,7 @@ SOFTWARE.
 ******************************
 
 @grpc/grpc-js
-1.9.15 <https://github.com/grpc/grpc-node/tree/master/packages/grpc-js>
+1.9.14 <https://github.com/grpc/grpc-node/tree/master/packages/grpc-js>
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -17943,7 +17861,7 @@ authors: Maarten Zuidhoorn <maarten@zuidhoorn.com>
 ******************************
 
 @metamask/accounts-controller
-15.0.0 <https://github.com/MetaMask/core>
+14.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -18073,7 +17991,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/assets-controllers
-30.0.0 <https://github.com/MetaMask/core>
+29.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -18240,32 +18158,6 @@ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
 WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
-******************************
-
-@metamask/controller-utils
-10.0.0 <https://github.com/MetaMask/core>
-MIT License
-
-Copyright (c) 2018 MetaMask
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 
 
 ******************************
@@ -19030,7 +18922,7 @@ SOFTWARE.
 ******************************
 
 @metamask-institutional/custody-controller
-0.2.30 <https://github.com/consensys-vertical-apps/metamask-institutional>
+0.2.27 <https://github.com/consensys-vertical-apps/metamask-institutional>
 MIT License
 
 Copyright (c) 2023 ConsenSys Vertical Apps
@@ -19057,7 +18949,7 @@ SOFTWARE.
 ******************************
 
 @metamask-institutional/custody-keyring
-2.0.3 <https://github.com/consensys-vertical-apps/metamask-institutional>
+2.0.0 <https://github.com/consensys-vertical-apps/metamask-institutional>
 MIT License
 
 Copyright (c) 2023 ConsenSys Vertical Apps
@@ -19084,7 +18976,7 @@ SOFTWARE.
 ******************************
 
 @metamask-institutional/extension
-0.3.27 <https://github.com/consensys-vertical-apps/metamask-institutional>
+0.3.24 <https://github.com/consensys-vertical-apps/metamask-institutional>
 MIT License
 
 Copyright (c) 2023 ConsenSys Vertical Apps
@@ -19111,7 +19003,7 @@ SOFTWARE.
 ******************************
 
 @metamask-institutional/institutional-features
-1.3.5 <https://github.com/consensys-vertical-apps/metamask-institutional>
+1.3.2 <https://github.com/consensys-vertical-apps/metamask-institutional>
 MIT License
 
 Copyright (c) 2023 ConsenSys Vertical Apps
@@ -19192,7 +19084,7 @@ SOFTWARE.
 ******************************
 
 @metamask-institutional/sdk
-0.1.30 <https://github.com/consensys-vertical-apps/metamask-institutional>
+0.1.27 <https://github.com/consensys-vertical-apps/metamask-institutional>
 MIT License
 
 Copyright (c) 2023 ConsenSys Vertical Apps
@@ -19246,7 +19138,7 @@ SOFTWARE.
 ******************************
 
 @metamask-institutional/transaction-update
-0.2.5 <https://github.com/consensys-vertical-apps/metamask-institutional>
+0.2.2 <https://github.com/consensys-vertical-apps/metamask-institutional>
 MIT License
 
 Copyright (c) 2023 ConsenSys Vertical Apps
@@ -19300,7 +19192,7 @@ SOFTWARE.
 ******************************
 
 @metamask-institutional/websocket-client
-0.2.5 <https://github.com/consensys-vertical-apps/metamask-institutional>
+0.2.2 <https://github.com/consensys-vertical-apps/metamask-institutional>
 MIT License
 
 Copyright (c) 2023 ConsenSys Vertical Apps
@@ -19389,50 +19281,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ******************************
 
-@metamask/json-rpc-engine
-9.0.0 <https://github.com/MetaMask/core>
-ISC License
-
-Copyright (c) 2022 MetaMask
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
-******************************
-
 @metamask/json-rpc-middleware-stream
 7.0.1 <https://github.com/MetaMask/core>
-ISC License
-
-Copyright (c) 2020 MetaMask
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
-******************************
-
-@metamask/json-rpc-middleware-stream
-8.0.0 <https://github.com/MetaMask/core>
 ISC License
 
 Copyright (c) 2020 MetaMask
@@ -19460,7 +19310,7 @@ authors: undefined
 ******************************
 
 @metamask/keyring-api
-6.4.0 <https://github.com/MetaMask/keyring-api>
+6.3.1 <https://github.com/MetaMask/keyring-api>
 license: Custom: https://docs.metamask.io/snaps/
 authors: undefined
 
@@ -19627,7 +19477,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/name-controller
-8.0.0 <https://github.com/MetaMask/core>
+6.0.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2023 MetaMask
@@ -19822,7 +19672,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/obs-store
-9.0.0 <https://github.com/MetaMask/obs-store>
+8.1.0 <https://github.com/MetaMask/obs-store>
 ISC License
 
 Copyright (c) 2020 MetaMask
@@ -19842,28 +19692,23 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ******************************
 
-@metamask/permission-controller
-10.0.0 <https://github.com/MetaMask/core>
-MIT License
+@metamask/obs-store
+9.0.0 <https://github.com/MetaMask/obs-store>
+ISC License
 
-Copyright (c) 2018 MetaMask
+Copyright (c) 2020 MetaMask
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
 ******************************
@@ -19919,33 +19764,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/phishing-controller
-10.0.0 <https://github.com/MetaMask/core>
-MIT License
-
-Copyright (c) 2018 MetaMask
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-
-
-******************************
-
-@metamask/phishing-controller
-9.0.4 <https://github.com/MetaMask/core>
+9.0.2 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -20104,7 +19923,7 @@ SOFTWARE.
 ******************************
 
 @metamask/providers
-17.0.0 <https://github.com/MetaMask/providers>
+16.1.0 <https://github.com/MetaMask/providers>
 MIT License
 
 Copyright (c) 2020 MetaMask
@@ -20131,7 +19950,7 @@ SOFTWARE.
 ******************************
 
 @metamask/queued-request-controller
-2.0.0 <https://github.com/MetaMask/core>
+0.10.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2023 MetaMask
@@ -20338,7 +20157,7 @@ authors: Dan Finlay <dan@danfinlay.com>
 ******************************
 
 @metamask/smart-transactions-controller
-10.1.2 <https://github.com/MetaMask/smart-transactions-controller>
+10.0.1 <https://github.com/MetaMask/smart-transactions-controller>
 Copyright ConsenSys Software Inc. 2020. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20362,31 +20181,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-controllers
-8.4.0 <https://github.com/MetaMask/snaps>
-Copyright ConsenSys Software Inc. 2021. All rights reserved.
- 
-You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
- 
-Subject to the limited license below, you may not (and you may not permit anyone else to) distribute, publish, copy, modify, merge, combine with another program, create derivative works of, reverse engineer, decompile or otherwise attempt to extract the source code of, the Program or any part thereof, except that you may contribute to this repository.
- 
-You are granted a non-exclusive, non-transferable, non-sublicensable license to distribute, publish, copy, modify, merge, combine with another program or create derivative works of the Program (such resulting program, collectively, the “Resulting Program”) solely for Non-Commercial Use as long as you:
- 1. give prominent notice (“Notice”) with each copy of the Resulting Program that the Program is used in the Resulting Program and that the Program is the copyright of ConsenSys; and
- 2. subject the Resulting Program and any distribution, publication, copy, modification, merger therewith, combination with another program or derivative works thereof to the same Notice requirement and Non-Commercial Use restriction set forth herein.
- 
-“Non-Commercial Use” means each use as described in clauses (1)-(3) below, as reasonably determined by ConsenSys in its sole discretion: 
- 1. personal use for research, personal study, private entertainment, hobby projects or amateur pursuits, in each case without any anticipated commercial application;
- 2. use by any charitable organization, educational institution, public research organization, public safety or health organization, environmental protection organization or government institution; or
- 3. the number of monthly active users of the Resulting Program across all versions thereof and platforms globally do not exceed 10,000 at any time.
- 
-You will not use any trade mark, service mark, trade name, logo of ConsenSys or any other company or organization in a way that is likely or intended to cause confusion about the owner or authorized user of such marks, names or logos.
- 
-If you have any questions, comments or interest in pursuing any other use cases, please reach out to us at metamask.license@consensys.net.
-
-
-******************************
-
-@metamask/snaps-controllers
-9.0.0 <https://github.com/MetaMask/snaps>
+8.2.0 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2021. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20410,7 +20205,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-execution-environments
-6.4.0 <https://github.com/MetaMask/snaps>
+6.2.0 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2022. All rights reserved.
 
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20643,7 +20438,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-rpc-methods
-9.1.3 <https://github.com/MetaMask/snaps>
+9.1.0 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2021. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20667,7 +20462,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-sdk
-5.0.0 <https://github.com/MetaMask/snaps>
+4.3.0 <https://github.com/MetaMask/snaps>
 ISC License
 
 Copyright (c) 2023 MetaMask
@@ -20688,7 +20483,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/snaps-utils
-7.6.0 <https://github.com/MetaMask/snaps>
+7.4.0 <https://github.com/MetaMask/snaps>
 ISC License
 
 Copyright (c) 2022 MetaMask
@@ -23276,7 +23071,7 @@ authors: Kazuhiko Arase
 ******************************
 
 qrcode.react
-3.1.0 <https://github.com/zpao/qrcode.react>
+1.0.1 <https://github.com/zpao/qrcode.react>
 ISC License
 
 Copyright (c) 2015, Paul O’Shannessy
@@ -23293,8 +23088,18 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
-This product bundles QR Code Generator, which is available under a
-"MIT" license. For details, see src/third-party/qrcodegen.
+
+******************************
+
+qr.js
+0.0.0 <https://github.com/shtylman/qr.js>
+Copyright (c) 2013 Roman Shtylman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ******************************
@@ -23748,7 +23553,7 @@ SOFTWARE.
 ******************************
 
 react-redux
-7.2.9 <https://github.com/reduxjs/react-redux>
+7.2.0 <https://github.com/reduxjs/react-redux>
 The MIT License (MIT)
 
 Copyright (c) 2015-present Dan Abramov
@@ -25597,7 +25402,7 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
 ******************************
 
 rpc-websockets
-8.0.1 <https://github.com/elpheria/rpc-websockets>
+7.11.1 <https://github.com/elpheria/rpc-websockets>
 Copyright (c) Elpheria j.d.o.o.
 
 rpc-websockets is an Open Source project licensed under the terms of
@@ -28846,33 +28651,6 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 
 ******************************
 
-@types/hoist-non-react-statics
-3.3.1 <https://github.com/DefinitelyTyped/DefinitelyTyped>
-    MIT License
-
-    Copyright (c) Microsoft Corporation. All rights reserved.
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE
-
-
-******************************
-
 @types/jsonwebtoken
 9.0.2 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
@@ -29118,33 +28896,6 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 
 @types/react
 16.9.53 <https://github.com/DefinitelyTyped/DefinitelyTyped>
-    MIT License
-
-    Copyright (c) Microsoft Corporation.
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE
-
-
-******************************
-
-@types/react-redux
-7.1.33 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -31335,7 +31086,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 ******************************
 
 ws
-7.5.10 <https://github.com/websockets/ws>
+7.4.6 <https://github.com/websockets/ws>
 The MIT License (MIT)
 
 Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
@@ -31362,7 +31113,34 @@ SOFTWARE.
 ******************************
 
 ws
-8.17.1 <https://github.com/websockets/ws>
+7.5.9 <https://github.com/websockets/ws>
+The MIT License (MIT)
+
+Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+******************************
+
+ws
+8.16.0 <https://github.com/websockets/ws>
 Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 Copyright (c) 2013 Arnout Kazemier and contributors
 Copyright (c) 2016 Luigi Pinca and contributors

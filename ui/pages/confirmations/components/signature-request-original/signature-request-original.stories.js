@@ -97,21 +97,6 @@ DefaultStory.args = {
   },
 };
 
-export const ETHSignStory = Template.bind({});
-
-ETHSignStory.storyName = 'eth_sign Type';
-
-ETHSignStory.args = {
-  txData: {
-    msgParams: {
-      from: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      data: MOCK_SIGN_DATA,
-      origin: 'https://happydapp.website/governance?futarchy=true',
-    },
-    type: MESSAGE_TYPE.ETH_SIGN,
-  },
-};
-
 export const ETHSignTypedStory = Template.bind({});
 
 ETHSignTypedStory.storyName = 'eth_signTypedData Type';

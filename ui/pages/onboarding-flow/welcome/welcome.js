@@ -112,7 +112,7 @@ export default function OnboardingWelcome() {
   ]);
 
   const onImportClick = async () => {
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletImportStarted,

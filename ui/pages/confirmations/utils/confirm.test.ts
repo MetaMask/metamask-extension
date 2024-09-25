@@ -3,11 +3,13 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import {
+  orderSignatureMsg,
   permitSignatureMsg,
   unapprovedTypedSignMsgV4,
 } from '../../../../test/data/confirmations/typed_sign';
 import { SignatureRequestType } from '../types/confirm';
 import {
+  isOrderSignatureRequest,
   isPermitSignatureRequest,
   isSignatureApprovalRequest,
   isSignatureTransactionType,
@@ -74,6 +76,22 @@ describe('confirm util', () => {
     });
     it('returns false for request not of type permit signature', () => {
       const result = isPermitSignatureRequest(
+        unapprovedTypedSignMsgV4 as SignatureRequestType,
+      );
+      expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('isOrderSignatureRequest', () => {
+    it('returns true for permit signature requests', () => {
+      const result = isOrderSignatureRequest(
+        orderSignatureMsg as SignatureRequestType,
+      );
+      expect(result).toStrictEqual(true);
+    });
+
+    it('returns false for request not of type permit signature', () => {
+      const result = isOrderSignatureRequest(
         unapprovedTypedSignMsgV4 as SignatureRequestType,
       );
       expect(result).toStrictEqual(false);

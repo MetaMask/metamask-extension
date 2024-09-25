@@ -106,37 +106,38 @@ describe('TransactionBreakdown', () => {
   });
 
   describe('with swap+send transaction', () => {
+    const props = {
+      nonce: '0x72', // 114
+      transaction: {
+        baseFeePerGas: '0x18205f063',
+        destinationTokenAddress: '0x0000000000000000000000000000000000000000',
+        destinationTokenAmount: '2223344229978020',
+        destinationTokenDecimals: 18,
+        destinationTokenSymbol: 'ETH',
+        sourceTokenAddress: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+        sourceTokenAmount: '33425656732428330864',
+        sourceTokenDecimals: 18,
+        sourceTokenSymbol: 'BAT',
+        status: 'confirmed',
+        swapAndSendRecipient: '0xc6f6ca03d790168758285264bcbf7fb30d27322b',
+        txParams: {
+          gas: '0x3c3d6',
+          maxFeePerGas: '0x1da1d1cff',
+          maxPriorityFeePerGas: '0x53417a0',
+        },
+        txReceipt: {
+          cumulativeGasUsed: '0xa1d718',
+          effectiveGasPrice: '0x1873a0803',
+          gasUsed: '0x2fa69',
+        },
+        type: 'swapAndSend',
+      },
+      primaryCurrency: '-0.01 ETH',
+    };
+
     it('renders properly', () => {
       const { getAllByTestId } = renderWithProvider(
-        <TransactionBreakdown
-          nonce="0x72" // 114
-          transaction={{
-            baseFeePerGas: '0x18205f063',
-            destinationTokenAddress:
-              '0x0000000000000000000000000000000000000000',
-            destinationTokenAmount: '2223344229978020',
-            destinationTokenDecimals: 18,
-            destinationTokenSymbol: 'ETH',
-            sourceTokenAddress: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-            sourceTokenAmount: '33425656732428330864',
-            sourceTokenDecimals: 18,
-            sourceTokenSymbol: 'BAT',
-            status: 'confirmed',
-            swapAndSendRecipient: '0xc6f6ca03d790168758285264bcbf7fb30d27322b',
-            txParams: {
-              gas: '0x3c3d6',
-              maxFeePerGas: '0x1da1d1cff',
-              maxPriorityFeePerGas: '0x53417a0',
-            },
-            txReceipt: {
-              cumulativeGasUsed: '0xa1d718',
-              effectiveGasPrice: '0x1873a0803',
-              gasUsed: '0x2fa69',
-            },
-            type: 'swapAndSend',
-          }}
-          primaryCurrency="-0.01 ETH"
-        />,
+        <TransactionBreakdown {...props} />,
         store,
       );
 
@@ -146,6 +147,38 @@ describe('TransactionBreakdown', () => {
         ['Nonce', '114'],
         ['Amount Sent', '33.425656732428330864 BAT'],
         ['Amount Received', '0.00222334422997802 ETH'],
+        ['Gas limit (units)', '246742'],
+        ['Gas used (units)', '195177'],
+        ['Base fee (GWEI)', '6.476394595'],
+        ['Priority fee (GWEI)', '0.0873'],
+        ['Total gas fee', '0.001281ETH'],
+        ['Max fee per gas', '0.000000008ETH'],
+        ['Total', '0.00128108ETH'],
+      ]);
+    });
+
+    it('renders properly with small token amounts', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          {...{
+            ...props,
+            transaction: {
+              ...props.transaction,
+              sourceTokenAmount: '100',
+              destinationTokenAmount: '100',
+            },
+          }}
+        />,
+        store,
+      );
+
+      expect(
+        getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
+      ).toStrictEqual([
+        ['Nonce', '114'],
+        // Verify small amounts not in scientific notation
+        ['Amount Sent', '0.0000000000000001 BAT'],
+        ['Amount Received', '0.0000000000000001 ETH'],
         ['Gas limit (units)', '246742'],
         ['Gas used (units)', '195177'],
         ['Base fee (GWEI)', '6.476394595'],

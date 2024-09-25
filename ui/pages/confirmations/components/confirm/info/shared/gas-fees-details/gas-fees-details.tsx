@@ -12,6 +12,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import GasTiming from '../../../../gas-timing/gas-timing.component';
 import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useFeeCalculations } from '../../hooks/useFeeCalculations';
@@ -21,10 +22,8 @@ import { GasFeesRow } from '../gas-fees-row/gas-fees-row';
 
 export const GasFeesDetails = ({
   setShowCustomizeGasPopover,
-  showAdvancedDetails,
 }: {
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
-  showAdvancedDetails: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -39,15 +38,19 @@ export const GasFeesDetails = ({
   const hasLayer1GasFee = Boolean(transactionMeta?.layer1GasFee);
 
   const {
-    estimatedFiatFee,
-    estimatedNativeFee,
-    l1FiatFee,
-    l1NativeFee,
-    l2FiatFee,
-    l2NativeFee,
-    maxFiatFee,
-    maxNativeFee,
+    estimatedFeeFiat,
+    estimatedFeeNative,
+    l1FeeFiat,
+    l1FeeNative,
+    l2FeeFiat,
+    l2FeeNative,
+    maxFeeFiat,
+    maxFeeNative,
   } = useFeeCalculations(transactionMeta);
+
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
 
   if (!transactionMeta?.txParams) {
     return null;
@@ -56,29 +59,32 @@ export const GasFeesDetails = ({
   return (
     <>
       <EditGasFeesRow
-        fiatFee={estimatedFiatFee}
-        nativeFee={estimatedNativeFee}
+        fiatFee={estimatedFeeFiat}
+        nativeFee={estimatedFeeNative}
         supportsEIP1559={supportsEIP1559}
         setShowCustomizeGasPopover={setShowCustomizeGasPopover}
       />
       {showAdvancedDetails && hasLayer1GasFee && (
         <>
           <GasFeesRow
+            data-testid="gas-fee-details-l1"
             label={t('l1Fee')}
             tooltipText={t('l1FeeTooltip')}
-            fiatFee={l1FiatFee}
-            nativeFee={l1NativeFee}
+            fiatFee={l1FeeFiat}
+            nativeFee={l1FeeNative}
           />
           <GasFeesRow
+            data-testid="gas-fee-details-l2"
             label={t('l2Fee')}
             tooltipText={t('l2FeeTooltip')}
-            fiatFee={l2FiatFee}
-            nativeFee={l2NativeFee}
+            fiatFee={l2FeeFiat}
+            nativeFee={l2FeeNative}
           />
         </>
       )}
       {supportsEIP1559 && (
         <ConfirmInfoRow
+          data-testid="gas-fee-details-speed"
           label={t('speed')}
           variant={ConfirmInfoRowVariant.Default}
         >
@@ -92,10 +98,11 @@ export const GasFeesDetails = ({
       )}
       {showAdvancedDetails && (
         <GasFeesRow
+          data-testid="gas-fee-details-max-fee"
           label={t('maxFee')}
           tooltipText={t('maxFeeTooltip')}
-          fiatFee={maxFiatFee}
-          nativeFee={maxNativeFee}
+          fiatFee={maxFeeFiat}
+          nativeFee={maxFeeNative}
         />
       )}
     </>

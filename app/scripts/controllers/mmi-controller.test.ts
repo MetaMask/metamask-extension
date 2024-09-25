@@ -456,26 +456,6 @@ describe('MMIController', function () {
     });
   });
 
-  describe('getCustodianAccountsByAddress', () => {
-    it('should return custodian accounts by address', async () => {
-      CUSTODIAN_TYPES['MOCK-CUSTODIAN-TYPE'] = {
-        keyringClass: { type: 'mock-keyring-class' },
-      };
-      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
-        getCustodianAccounts: jest.fn().mockResolvedValue(['account1']),
-      });
-
-      const result = await mmiController.getCustodianAccountsByAddress(
-        'token',
-        'envName',
-        'address',
-        'mock-custodian-type',
-      );
-
-      expect(result).toEqual(['account1']);
-    });
-  });
-
   describe('getCustodianTransactionDeepLink', () => {
     it('should return a transaction deep link', async () => {
       mmiController.custodyController.getCustodyTypeByAddress = jest

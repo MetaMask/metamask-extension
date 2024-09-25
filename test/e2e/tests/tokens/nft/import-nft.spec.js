@@ -114,7 +114,9 @@ describe('Import NFT', function () {
 
         // By clicking creating button without filling in the account name
         // the default name would be set as Account 2
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="submit-add-account-with-name"]',
+        );
 
         await driver.isElementPresent({
           tag: 'span',

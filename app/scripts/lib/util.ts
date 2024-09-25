@@ -19,6 +19,7 @@ import {
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 
 /**
  * @see {@link getEnvironmentType}
@@ -382,3 +383,37 @@ export function formatValue(
 
   return includeParentheses ? `(${formattedNumber})` : formattedNumber;
 }
+
+type MethodData = {
+  name: string;
+  params: { type: string }[];
+};
+
+export const getMethodDataName = async (
+  knownMethodData: Record<string, MethodData>,
+  use4ByteResolution: boolean,
+  prefixedData: string,
+  addKnownMethodData: (fourBytePrefix: string, methodData: MethodData) => void,
+  provider: object,
+) => {
+  if (!prefixedData || !use4ByteResolution) {
+    return null;
+  }
+  const fourBytePrefix = prefixedData.slice(0, 10);
+
+  if (knownMethodData?.[fourBytePrefix]) {
+    return knownMethodData?.[fourBytePrefix];
+  }
+
+  const methodData = await getMethodDataAsync(
+    fourBytePrefix,
+    use4ByteResolution,
+    provider,
+  );
+
+  if (methodData?.name) {
+    addKnownMethodData(fourBytePrefix, methodData as MethodData);
+  }
+
+  return methodData;
+};

@@ -148,7 +148,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
     if (shouldShowEnableModal) {
       trackEvent({
-        category: MetaMetricsEventCategory.NotificationsActivationFlow,
         event: MetaMetricsEventName.NotificationsActivated,
         properties: {
           action_type: 'started',

@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../shared/constants/common';
 import {
   addHexes,
+  decGWEIToHexWEI,
+  decimalToHex,
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
   multiplyHexes,
@@ -15,9 +17,9 @@ import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { getCurrentCurrency } from '../../../../../../selectors';
 import { HEX_ZERO } from '../shared/constants';
-import { getGasFeeEstimate } from './getGasFeesEstimate';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
+import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 
 const EMPTY_FEE = '';
 const EMPTY_FEES = {
@@ -59,7 +61,10 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(transactionMeta);
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
-  const gasEstimate = getGasFeeEstimate(transactionMeta, supportsEIP1559);
+  const gasFeeEstimate = useTransactionGasFeeEstimate(
+    transactionMeta,
+    supportsEIP1559,
+  );
 
   const { gasFeeEstimates } = useGasFeeEstimates(
     transactionMeta.networkClientId,
@@ -78,8 +83,8 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
 
   // L2 fee
   const feesL2 = useMemo(
-    () => (hasLayer1GasFee ? getFeesFromHex(gasEstimate) : EMPTY_FEES),
-    [gasEstimate],
+    () => (hasLayer1GasFee ? getFeesFromHex(gasFeeEstimate) : EMPTY_FEES),
+    [gasFeeEstimate],
   );
 
   // Max fee
@@ -90,28 +95,28 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const gasPrice = transactionMeta?.txParams?.gasPrice || HEX_ZERO;
 
   const maxFee = useMemo(() => {
-    if (supportsEIP1559) {
-      return multiplyHexes(maxFeePerGas as Hex, gasLimit as Hex);
-    }
-    return multiplyHexes(gasPrice as Hex, gasLimit as Hex);
+    return multiplyHexes(
+      supportsEIP1559 ? (decimalToHex(maxFeePerGas) as Hex) : (gasPrice as Hex),
+      gasLimit as Hex,
+    );
   }, [supportsEIP1559, maxFeePerGas, gasLimit, gasPrice]);
 
-  const { currentCurrencyFee: maxFiatFee, nativeCurrencyFee: maxNativeFee } =
+  const { currentCurrencyFee: maxFeeFiat, nativeCurrencyFee: maxFeeNative } =
     getFeesFromHex(maxFee);
 
   // Estimated fee
   const estimatedFees = useMemo(() => {
     if (hasLayer1GasFee) {
       // Logic for L2 transactions with L1 and L2 fee components
-      const estimatedTotalFeesForL2 = addHexes(gasEstimate, layer1GasFee);
+      const estimatedTotalFeesForL2 = addHexes(gasFeeEstimate, layer1GasFee);
 
       return getFeesFromHex(estimatedTotalFeesForL2);
     }
 
     // Logic for any network without L1 and L2 fee components
     const minimumFeePerGas = addHexes(
-      estimatedBaseFee || HEX_ZERO,
-      maxPriorityFeePerGas,
+      decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
+      decimalToHex(maxPriorityFeePerGas),
     );
 
     const estimatedFee = multiplyHexes(
@@ -120,16 +125,16 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     );
 
     return getFeesFromHex(estimatedFee);
-  }, [gasEstimate, transactionMeta, estimatedBaseFee, getFeesFromHex]);
+  }, [gasFeeEstimate, transactionMeta, estimatedBaseFee, getFeesFromHex]);
 
   return {
-    estimatedFiatFee: estimatedFees.currentCurrencyFee,
-    estimatedNativeFee: estimatedFees.nativeCurrencyFee,
-    l1FiatFee: feesL1.currentCurrencyFee,
-    l1NativeFee: feesL1.nativeCurrencyFee,
-    l2FiatFee: feesL2.currentCurrencyFee,
-    l2NativeFee: feesL2.nativeCurrencyFee,
-    maxFiatFee,
-    maxNativeFee,
+    estimatedFeeFiat: estimatedFees.currentCurrencyFee,
+    estimatedFeeNative: estimatedFees.nativeCurrencyFee,
+    l1FeeFiat: feesL1.currentCurrencyFee,
+    l1FeeNative: feesL1.nativeCurrencyFee,
+    l2FeeFiat: feesL2.currentCurrencyFee,
+    l2FeeNative: feesL2.nativeCurrencyFee,
+    maxFeeFiat,
+    maxFeeNative,
   };
 }

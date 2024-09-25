@@ -1,9 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
-} from '../helpers';
+import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -13,6 +10,19 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
+import {
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
+import { TestSuiteArguments } from '../transactions/shared';
+import {
+  assertAccountDetailsMetrics,
+  assertHeaderInfoBalance,
+  assertPastedAddress,
+  assertSignatureMetrics,
+  clickHeaderInfoBtn,
+  copyAddressAndPasteWalletAddress,
+} from './signature-helpers';
 
 describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
@@ -21,11 +31,9 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
       async ({
         driver,
         ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
+        mockedEndpoint: mockedEndpoints,
+      }: TestSuiteArguments) => {
+        const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
@@ -33,17 +41,42 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await driver.clickElement('#signPermit');
         await switchToNotificationWindow(driver);
 
+        await clickHeaderInfoBtn(driver);
+        await assertHeaderInfoBalance(driver);
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData_v4',
+        );
+
+        await copyAddressAndPasteWalletAddress(driver);
+        await assertPastedAddress(driver);
+        await switchToNotificationWindow(driver);
+
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
+        await driver.delay(1000);
+
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData_v4',
+          'Permit',
+          ['redesigned_confirmation', 'permit'],
+        );
+
         await assertVerifiedResults(driver, publicAddress);
       },
     );
   });
 
-  it('initiates and rejects', async function () {
+  it('initiates and rejects and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
@@ -52,15 +85,24 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
         );
+        await driver.delay(1000);
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#signPermitResult',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        const rejectionResult = await driver.findElement('#signPermitResult');
+        assert.equal(
+          await rejectionResult.getText(),
+          'Error: User rejected the request.',
+        );
+
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData_v4',
+          'Permit',
+          ['redesigned_confirmation', 'permit'],
+        );
       },
     );
   });
@@ -81,7 +123,7 @@ async function assertInfoValues(driver: Driver) {
   });
   const value = driver.findElement({ text: '3,000' });
   const nonce = driver.findElement({ text: '0' });
-  const deadline = driver.findElement({ text: '02 August 1971, 16:53' });
+  const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
 
   assert.ok(await origin, 'origin');
   assert.ok(await contractPetName, 'contractPetName');

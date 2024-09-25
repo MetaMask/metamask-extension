@@ -1,29 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
+
 import {
-  TextColor,
   IconColor,
-  AlignItems,
-  Display,
-  JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import {
-  AvatarFavicon,
   BadgeWrapper,
   BadgeWrapperPosition,
   AvatarIcon,
-  AvatarBase,
   IconName,
   IconSize,
 } from '../../../component-library';
-import {
-  getSnapMetadata,
-  getTargetSubjectMetadata,
-} from '../../../../selectors';
-import { getAvatarFallbackLetter } from '../../../../helpers/utils/util';
+
+import { SnapIcon } from '../snap-icon';
 
 const SnapAvatar = ({
   snapId,
@@ -33,19 +24,6 @@ const SnapAvatar = ({
   className,
   badgeBackgroundColor = BackgroundColor.backgroundAlternative,
 }) => {
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
-  );
-
-  const { name: snapName } = useSelector((state) =>
-    getSnapMetadata(state, snapId),
-  );
-
-  const iconUrl = subjectMetadata?.iconUrl;
-
-  // We choose the first non-symbol char as the fallback icon.
-  const fallbackIcon = getAvatarFallbackLetter(snapName);
-
   return (
     <BadgeWrapper
       className={classnames('snap-avatar', className)}
@@ -63,30 +41,7 @@ const SnapAvatar = ({
       }
       position={BadgeWrapperPosition.bottomRight}
     >
-      {iconUrl ? (
-        <AvatarFavicon
-          style={{
-            'background-color': 'var(--color-background-alternative-hover)',
-          }}
-          size={avatarSize}
-          src={iconUrl}
-          name={snapName}
-        />
-      ) : (
-        <AvatarBase
-          size={avatarSize}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          color={TextColor.textAlternative}
-          style={{
-            borderWidth: '0px',
-            'background-color': 'var(--color-background-alternative-hover)',
-          }}
-        >
-          {fallbackIcon}
-        </AvatarBase>
-      )}
+      <SnapIcon snapId={snapId} avatarSize={avatarSize} />
     </BadgeWrapper>
   );
 };

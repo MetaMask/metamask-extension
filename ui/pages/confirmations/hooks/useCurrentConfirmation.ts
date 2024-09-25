@@ -10,6 +10,7 @@ import {
   ApprovalsMetaMaskState,
   getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
+  getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
   latestPendingConfirmationSelector,
   selectPendingApproval,
@@ -30,8 +31,12 @@ const useCurrentConfirmation = () => {
   const latestPendingApproval = useSelector(latestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? latestPendingApproval?.id;
 
-  const isRedesignedConfirmationsUserSettingEnabled = useSelector(
+  const isRedesignedSignaturesUserSettingEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
+  );
+
+  const isRedesignedTransactionsUserSettingEnabled = useSelector(
+    getRedesignedTransactionsEnabled,
   );
 
   const isRedesignedConfirmationsDeveloperEnabled = useSelector(
@@ -55,19 +60,30 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const isCorrectTransactionType =
-    isRedesignedConfirmationsDeveloperSettingEnabled &&
-    REDESIGN_TRANSACTION_TYPES.includes(
-      transactionMetadata?.type as TransactionType,
-    );
+  const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
+    transactionMetadata?.type as TransactionType,
+  );
 
   const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
     pendingApproval?.type as ApprovalType,
   );
 
+  const shouldUseRedesignForSignatures =
+    (isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType) ||
+    (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
+
+  const shouldUseRedesignForTransactions =
+    (isRedesignedTransactionsUserSettingEnabled && isCorrectTransactionType) ||
+    (isRedesignedConfirmationsDeveloperSettingEnabled &&
+      isCorrectTransactionType);
+
+  // If the developer toggle or the build time environment variable are enabled,
+  // all the signatures and transactions in development are shown. If the user
+  // facing feature toggles for signature or transactions are enabled, we show
+  // only confirmations that shipped (contained in `REDESIGN_APPROVAL_TYPES` and
+  // `REDESIGN_TRANSACTION_TYPES` respectively).
   const shouldUseRedesign =
-    isRedesignedConfirmationsUserSettingEnabled &&
-    (isCorrectApprovalType || isCorrectTransactionType);
+    shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {

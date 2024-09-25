@@ -34,8 +34,9 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-      "redesignedConfirmationsEnabled": true
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean",
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -106,10 +107,9 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
-    "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": true,
-    "useTokenDetection": false,
+    "useTokenDetection": true,
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
     "useRequestQueue": true,
@@ -136,6 +136,7 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
+    "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
@@ -218,10 +219,8 @@
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0,
-    "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0,
     "swapsState": {
@@ -249,7 +248,8 @@
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2
+      "swapsStxMaxFeeMultiplier": 2,
+      "swapsFeatureFlags": {}
     },
     "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } },
     "ensEntries": "object",

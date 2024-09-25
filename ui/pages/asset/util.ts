@@ -9,6 +9,14 @@ export const getShortDateFormatter = () =>
     minute: 'numeric',
   });
 
+/** Formats a datetime in a short human readable format like 'Feb 8, 2030' */
+export const getShortDateFormatterV2 = () =>
+  Intl.DateTimeFormat(navigator.language, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
 /**
  * Formats a potentially large number to the nearest unit.
  * e.g. 1T for trillions, 2.3B for billions, 4.56M for millions, 7,890 for thousands, etc.

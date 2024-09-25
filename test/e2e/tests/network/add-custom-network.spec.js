@@ -5,6 +5,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
+  openMenuSafe,
   regularDelayMs,
   unlockWallet,
   WINDOW_TITLES,
@@ -66,7 +67,7 @@ const MOCK_CHAINLIST_RESPONSE = [
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   informationSymbol: '[data-testid="info-tooltip"]',
-  settingsOption: { text: 'Settings', tag: 'div' },
+  settingsOption: '[data-testid="global-menu-settings"]',
   networkOption: { text: 'Networks', tag: 'div' },
   addNetwork: { text: 'Add a network', tag: 'button' },
   addNetworkManually: { text: 'Add a network manually', tag: 'h6' },
@@ -79,11 +80,9 @@ const selectors = {
   saveButton: { text: 'Save', tag: 'button' },
   updatedNetworkDropDown: { tag: 'span', text: 'Update Network' },
   errorMessageInvalidUrl: {
-    tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   warningSymbol: {
-    tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   suggestedTicker: '[data-testid="network-form-ticker-suggestion"]',
@@ -112,7 +111,8 @@ const selectors = {
 };
 
 async function navigateToAddNetwork(driver) {
-  await driver.clickElement(selectors.accountOptionsMenuButton);
+  await openMenuSafe(driver);
+
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
   await driver.clickElement(selectors.addNetwork);
@@ -603,10 +603,9 @@ describe('Custom network', function () {
         async ({ driver }) => {
           await unlockWallet(driver);
 
-          await driver.clickElement(
-            '[data-testid="account-options-menu-button"]',
-          );
-          await driver.clickElement({ text: 'Settings', tag: 'div' });
+          await openMenuSafe(driver);
+
+          await driver.clickElement('[data-testid="global-menu-settings"]');
           await driver.clickElement({ text: 'Networks', tag: 'div' });
 
           const arbitrumNetwork = await driver.clickElement({
@@ -802,6 +801,8 @@ describe('Custom network', function () {
           );
           await driver.fill(selectors.chainIdInputField, '1');
           await driver.fill(selectors.tickerInputField, 'TST');
+          // fix flaky test
+          await driver.delay(regularDelayMs);
           await driver.fill(selectors.explorerInputField, 'https://test.com');
 
           const suggestedTicker = await driver.isElementPresent(
@@ -849,6 +850,9 @@ describe('Custom network', function () {
             inputData.networkName,
           );
           await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
+
+          // fix flaky test
+          await driver.delay(regularDelayMs);
           await driver.fill(selectors.chainIdInputField, inputData.chainId);
           await driver.fill(selectors.tickerInputField, inputData.ticker);
 
@@ -881,7 +885,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   const accountOptionsMenuSelector =
     '[data-testid="account-options-menu-button"]';
   await driver.waitForSelector(accountOptionsMenuSelector);
-  await driver.clickElement(accountOptionsMenuSelector);
+  await openMenuSafe(driver);
 
   const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
   await driver.waitForSelector(globalMenuSettingsSelector);
@@ -945,7 +949,6 @@ async function failCandidateNetworkValidation(driver) {
 
   const chainIdValidationMessageRawLocator = {
     text: 'Could not fetch chain ID. Is your RPC URL correct?',
-    tag: 'h6',
   };
   await driver.waitForSelector(chainIdValidationMessageRawLocator);
   await driver.waitForSelector('[data-testid="network-form-ticker-warning"]');
@@ -1047,6 +1050,8 @@ async function candidateNetworkIsNotValidated(driver) {
   await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
+  // fix flaky test
+  await driver.delay(regularDelayMs);
   const saveButtonRawLocator = {
     text: 'Save',
     tag: 'button',

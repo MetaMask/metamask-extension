@@ -15,14 +15,12 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
-
 import {
   CHAIN_IDS,
   ETH_TOKEN_IMAGE_URL,
   MAINNET_DISPLAY_NAME,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
-
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { AccountsState } from './accounts';
 import {

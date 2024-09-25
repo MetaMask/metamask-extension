@@ -43,7 +43,7 @@ describe('useRamps', () => {
       },
     };
 
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}`;
+    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
     const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
     const { result } = renderHook(() => useRamps(), { wrapper }); // default metamask entry
@@ -68,7 +68,7 @@ describe('useRamps', () => {
       },
     };
 
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}`;
+    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
     const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
     const { result } = renderHook(
@@ -97,7 +97,7 @@ describe('useRamps', () => {
         },
       };
 
-      const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_sell_button&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}`;
+      const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_sell_button&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
       const openTabSpy = jest.spyOn(global.platform, 'openTab');
       const { result } = renderHook(() => useRamps(), { wrapper });
 

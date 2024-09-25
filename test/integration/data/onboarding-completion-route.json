@@ -57,6 +57,11 @@
     "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
+  "bridgeState": {
+    "bridgeFeatureFlags": {
+      "extensionSupport": false
+    }
+  },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
   "completedOnboarding": false,
   "confirmationExchangeRates": {},
@@ -83,7 +88,6 @@
   "defaultHomeActiveTabName": null,
   "desktopEnabled": false,
   "detectedTokens": [],
-  "disabledRpcMethodPreferences": { "eth_sign": false },
   "dismissSeedBackUpReminder": false,
   "domains": {},
   "enableMV3TimestampSave": true,
@@ -129,7 +133,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -423,8 +426,6 @@
   "unapprovedDecryptMsgs": {},
   "unapprovedEncryptionPublicKeyMsgCount": 0,
   "unapprovedEncryptionPublicKeyMsgs": {},
-  "unapprovedMsgCount": 0,
-  "unapprovedMsgs": {},
   "unapprovedPersonalMsgCount": 0,
   "unapprovedPersonalMsgs": {},
   "unapprovedTypedMessages": {},

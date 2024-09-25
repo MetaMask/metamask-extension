@@ -14,6 +14,10 @@ const mockState = {
       type: 'localhost',
     },
     networkConfigurations: {},
+    orderedNetworkList: {
+      chainId: '0x539',
+      rpcUrl: 'http://localhost:8545',
+    },
   },
   appState: {
     networksTabSelectedRpcUrl: 'http://localhost:8545',
@@ -48,7 +52,7 @@ describe('NetworksTab Component', () => {
     expect(queryByText('New RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();
     expect(queryByText('Currency symbol')).toBeInTheDocument();
-    expect(queryByText('Block explorer URL')).toBeInTheDocument();
+    expect(queryByText('Block explorer URL (Optional)')).toBeInTheDocument();
     expect(queryByText('Cancel')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
   });

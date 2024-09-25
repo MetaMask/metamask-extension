@@ -18,7 +18,6 @@ export { ProductTour } from './product-tour-popover';
 export { AccountDetails } from './account-details';
 export { CreateAccount } from './create-account';
 export { CreateEthAccount } from './create-eth-account';
-export { CreateBtcAccount } from './create-btc-account';
 export { ConnectedAccountsMenu } from './connected-accounts-menu';
 export { ImportAccount } from './import-account';
 export { ImportNftsModal } from './import-nfts-modal';

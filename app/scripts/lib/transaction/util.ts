@@ -16,13 +16,13 @@ import { PPOMController } from '@metamask/ppom-validator';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
 import { SecurityAlertResponse } from '../ppom/types';
 import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
 } from '../../../../shared/constants/security-provider';
 
 export type AddTransactionOptions = NonNullable<
@@ -43,6 +43,7 @@ type BaseAddTransactionRequest = {
     securityAlertResponse: SecurityAlertResponse,
   ) => void;
   userOperationController: UserOperationController;
+  internalAccounts: InternalAccount[];
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
@@ -86,7 +87,7 @@ export async function addDappTransaction(
 export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
-  validateSecurity(request);
+  await validateSecurity(request);
 
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
@@ -215,7 +216,7 @@ function getTransactionByHash(
   );
 }
 
-function validateSecurity(request: AddTransactionRequest) {
+async function validateSecurity(request: AddTransactionRequest) {
   const {
     chainId,
     ppomController,
@@ -223,9 +224,12 @@ function validateSecurity(request: AddTransactionRequest) {
     transactionOptions,
     transactionParams,
     updateSecurityAlertResponse,
+    internalAccounts,
   } = request;
 
   const { type } = transactionOptions;
+
+  const isCurrentChainSupported = await isChainSupported(chainId);
 
   const typeIsExcludedFromPPOM =
     SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
@@ -234,8 +238,17 @@ function validateSecurity(request: AddTransactionRequest) {
 
   if (
     !securityAlertsEnabled ||
-    !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId) ||
+    !isCurrentChainSupported ||
     typeIsExcludedFromPPOM
+  ) {
+    return;
+  }
+
+  if (
+    internalAccounts.some(
+      ({ address }) =>
+        address.toLowerCase() === transactionParams.to?.toLowerCase(),
+    )
   ) {
     return;
   }
@@ -261,6 +274,7 @@ function validateSecurity(request: AddTransactionRequest) {
 
     const securityAlertId = generateSecurityAlertId();
 
+    // Intentionally not awaited to avoid blocking the confirmation process while the validation occurs.
     validateRequestWithPPOM({
       ppomController,
       request: ppomRequest,

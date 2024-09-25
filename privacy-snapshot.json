@@ -1,5 +1,6 @@
 [
   "acl.execution.metamask.io",
+  "api.blockchair.com",
   "api.lens.dev",
   "api.segment.io",
   "api.web3modal.com",
@@ -7,6 +8,7 @@
   "arbitrum-mainnet.infura.io",
   "bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link",
   "bafybeidxfmwycgzcp4v2togflpqh2gnibuexjy4m4qqwxp7nh3jx5zlh4y.ipfs.dweb.link",
+  "bridge.api.cx.metamask.io",
   "cdn.segment.com",
   "cdn.segment.io",
   "cdnjs.cloudflare.com",

@@ -1,0 +1,323 @@
+diff --git a/dist/chunk-77LSWSGB.js b/dist/chunk-77LSWSGB.js
+index 7f29fc213985d9817d7d279ae494f6a27527ecf8..fbfb937f3579c610ea3d800e8a3953f995462595 100644
+--- a/dist/chunk-77LSWSGB.js
++++ b/dist/chunk-77LSWSGB.js
+@@ -1,23 +1,17 @@
+-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
+ 
++var _chunkR2S3HIDNjs = require("./chunk-R2S3HIDN.js");
+ 
+-var _chunkR2S3HIDNjs = require('./chunk-R2S3HIDN.js');
++var _chunk3TE6M5TVjs = require("./chunk-3TE6M5TV.js");
+ 
++var _chunkSLHAVOTEjs = require("./chunk-SLHAVOTE.js");
+ 
+-var _chunk3TE6M5TVjs = require('./chunk-3TE6M5TV.js');
++var _chunkAK7OTIWAjs = require("./chunk-AK7OTIWA.js");
+ 
++var _chunkT3FNDVE3js = require("./chunk-T3FNDVE3.js");
+ 
+-var _chunkSLHAVOTEjs = require('./chunk-SLHAVOTE.js');
+-
+-
+-var _chunkAK7OTIWAjs = require('./chunk-AK7OTIWA.js');
+-
+-
+-
+-var _chunkT3FNDVE3js = require('./chunk-T3FNDVE3.js');
+-
+-
+-var _chunkIGY2S5BCjs = require('./chunk-IGY2S5BC.js');
++var _chunkIGY2S5BCjs = require("./chunk-IGY2S5BC.js");
+ 
+ // src/controllers/user-storage/index.ts
+ var user_storage_exports = {};
+@@ -26,7 +20,7 @@ _chunkIGY2S5BCjs.__export.call(void 0, user_storage_exports, {
+   Encryption: () => _chunkT3FNDVE3js.encryption_default,
+   Mocks: () => fixtures_exports,
+   createSHA256Hash: () => _chunkT3FNDVE3js.createSHA256Hash,
+-  defaultState: () => _chunkR2S3HIDNjs.defaultState
++  defaultState: () => _chunkR2S3HIDNjs.defaultState,
+ });
+ 
+ // src/controllers/user-storage/__fixtures__/index.ts
+@@ -36,46 +30,52 @@ _chunkIGY2S5BCjs.__export.call(void 0, fixtures_exports, {
+   MOCK_STORAGE_DATA: () => MOCK_STORAGE_DATA,
+   MOCK_STORAGE_KEY: () => MOCK_STORAGE_KEY,
+   MOCK_STORAGE_KEY_SIGNATURE: () => MOCK_STORAGE_KEY_SIGNATURE,
+-  MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT: () => MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,
++  MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT: () =>
++    MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,
+   getMockUserStorageGetResponse: () => getMockUserStorageGetResponse,
+-  getMockUserStoragePutResponse: () => getMockUserStoragePutResponse
++  getMockUserStoragePutResponse: () => getMockUserStoragePutResponse,
+ });
+ 
+ // src/controllers/user-storage/__fixtures__/mockStorage.ts
+ var MOCK_STORAGE_KEY_SIGNATURE = "mockStorageKey";
+-var MOCK_STORAGE_KEY = _chunkT3FNDVE3js.createSHA256Hash.call(void 0, MOCK_STORAGE_KEY_SIGNATURE);
+-var MOCK_STORAGE_DATA = JSON.stringify({ hello: "world" });
+-var MOCK_ENCRYPTED_STORAGE_DATA = _chunkAK7OTIWAjs.encryption_default.encryptString(
+-  MOCK_STORAGE_DATA,
+-  MOCK_STORAGE_KEY
++var MOCK_STORAGE_KEY = _chunkT3FNDVE3js.createSHA256Hash.call(
++  void 0,
++  MOCK_STORAGE_KEY_SIGNATURE
+ );
++var MOCK_STORAGE_DATA = JSON.stringify({ hello: "world" });
++var MOCK_ENCRYPTED_STORAGE_DATA =
++  _chunkAK7OTIWAjs.encryption_default.encryptString(
++    MOCK_STORAGE_DATA,
++    MOCK_STORAGE_KEY
++  );
+ 
+ // src/controllers/user-storage/__fixtures__/mockResponses.ts
+-var MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT = `${_chunk3TE6M5TVjs.USER_STORAGE_ENDPOINT}${_chunkSLHAVOTEjs.createEntryPath.call(void 0, 
+-  "notifications.notificationSettings",
++var MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT = `${
++  _chunk3TE6M5TVjs.USER_STORAGE_ENDPOINT
++}${_chunkSLHAVOTEjs.createEntryPath.call(
++  void 0,
++  "notifications.notification_settings",
+   MOCK_STORAGE_KEY
+ )}`;
+ var MOCK_GET_USER_STORAGE_RESPONSE = {
+   HashedKey: "HASHED_KEY",
+-  Data: MOCK_ENCRYPTED_STORAGE_DATA
++  Data: MOCK_ENCRYPTED_STORAGE_DATA,
+ };
+ var getMockUserStorageGetResponse = () => {
+   return {
+     url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,
+     requestMethod: "GET",
+-    response: MOCK_GET_USER_STORAGE_RESPONSE
++    response: MOCK_GET_USER_STORAGE_RESPONSE,
+   };
+ };
+ var getMockUserStoragePutResponse = () => {
+   return {
+     url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,
+     requestMethod: "PUT",
+-    response: null
++    response: null,
+   };
+ };
+ 
+-
+-
+-
+-exports.fixtures_exports = fixtures_exports; exports.user_storage_exports = user_storage_exports;
++exports.fixtures_exports = fixtures_exports;
++exports.user_storage_exports = user_storage_exports;
+ //# sourceMappingURL=chunk-77LSWSGB.js.map
+diff --git a/dist/chunk-77LSWSGB.js.map b/dist/chunk-77LSWSGB.js.map
+index dae9a343058b5d0c21707b57044e7329082cc969..c7d6a2d8c599ca4e090cb928af1b8394634e04d3 100644
+--- a/dist/chunk-77LSWSGB.js.map
++++ b/dist/chunk-77LSWSGB.js.map
+@@ -1 +1 @@
+-{"version":3,"sources":["../src/controllers/user-storage/index.ts","../src/controllers/user-storage/__fixtures__/index.ts","../src/controllers/user-storage/__fixtures__/mockStorage.ts","../src/controllers/user-storage/__fixtures__/mockResponses.ts"],"names":["encryption_default"],"mappings":";;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACEO,IAAM,6BAA6B;AACnC,IAAM,mBAAmB,iBAAiB,0BAA0B;AACpE,IAAM,oBAAoB,KAAK,UAAU,EAAE,OAAO,QAAQ,CAAC;AAC3D,IAAM,8BAA8BA,oBAAW;AAAA,EACpD;AAAA,EACA;AACF;;;ACGO,IAAM,2CAA2C,GAAG,qBAAqB,GAAG;AAAA,EACjF;AAAA,EACA;AACF,CAAC;AAED,IAAM,iCAAyD;AAAA,EAC7D,WAAW;AAAA,EACX,MAAM;AACR;AAEO,IAAM,gCAAgC,MAAM;AACjD,SAAO;AAAA,IACL,KAAK;AAAA,IACL,eAAe;AAAA,IACf,UAAU;AAAA,EACZ;AACF;AAEO,IAAM,gCAAgC,MAAM;AACjD,SAAO;AAAA,IACL,KAAK;AAAA,IACL,eAAe;AAAA,IACf,UAAU;AAAA,EACZ;AACF","sourcesContent":["import Controller from './UserStorageController';\n\nexport { Controller };\nexport * from './UserStorageController';\nexport * from './encryption';\nexport * as Mocks from './__fixtures__';\n","export * from './mockResponses';\nexport * from './mockStorage';\n","import encryption, { createSHA256Hash } from '../encryption';\n\nexport const MOCK_STORAGE_KEY_SIGNATURE = 'mockStorageKey';\nexport const MOCK_STORAGE_KEY = createSHA256Hash(MOCK_STORAGE_KEY_SIGNATURE);\nexport const MOCK_STORAGE_DATA = JSON.stringify({ hello: 'world' });\nexport const MOCK_ENCRYPTED_STORAGE_DATA = encryption.encryptString(\n  MOCK_STORAGE_DATA,\n  MOCK_STORAGE_KEY,\n);\n","import { createEntryPath } from '../schema';\nimport type { GetUserStorageResponse } from '../services';\nimport { USER_STORAGE_ENDPOINT } from '../services';\nimport { MOCK_ENCRYPTED_STORAGE_DATA, MOCK_STORAGE_KEY } from './mockStorage';\n\ntype MockResponse = {\n  url: string;\n  requestMethod: 'GET' | 'POST' | 'PUT';\n  response: unknown;\n};\n\nexport const MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT = `${USER_STORAGE_ENDPOINT}${createEntryPath(\n  'notifications.notificationSettings',\n  MOCK_STORAGE_KEY,\n)}`;\n\nconst MOCK_GET_USER_STORAGE_RESPONSE: GetUserStorageResponse = {\n  HashedKey: 'HASHED_KEY',\n  Data: MOCK_ENCRYPTED_STORAGE_DATA,\n};\n\nexport const getMockUserStorageGetResponse = () => {\n  return {\n    url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,\n    requestMethod: 'GET',\n    response: MOCK_GET_USER_STORAGE_RESPONSE,\n  } satisfies MockResponse;\n};\n\nexport const getMockUserStoragePutResponse = () => {\n  return {\n    url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,\n    requestMethod: 'PUT',\n    response: null,\n  } satisfies MockResponse;\n};\n"]}
+\ No newline at end of file
++{"version":3,"sources":["../src/controllers/user-storage/index.ts","../src/controllers/user-storage/__fixtures__/index.ts","../src/controllers/user-storage/__fixtures__/mockStorage.ts","../src/controllers/user-storage/__fixtures__/mockResponses.ts"],"names":["encryption_default"],"mappings":";;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACEO,IAAM,6BAA6B;AACnC,IAAM,mBAAmB,iBAAiB,0BAA0B;AACpE,IAAM,oBAAoB,KAAK,UAAU,EAAE,OAAO,QAAQ,CAAC;AAC3D,IAAM,8BAA8BA,oBAAW;AAAA,EACpD;AAAA,EACA;AACF;;;ACGO,IAAM,2CAA2C,GAAG,qBAAqB,GAAG;AAAA,EACjF;AAAA,EACA;AACF,CAAC;AAED,IAAM,iCAAyD;AAAA,EAC7D,WAAW;AAAA,EACX,MAAM;AACR;AAEO,IAAM,gCAAgC,MAAM;AACjD,SAAO;AAAA,IACL,KAAK;AAAA,IACL,eAAe;AAAA,IACf,UAAU;AAAA,EACZ;AACF;AAEO,IAAM,gCAAgC,MAAM;AACjD,SAAO;AAAA,IACL,KAAK;AAAA,IACL,eAAe;AAAA,IACf,UAAU;AAAA,EACZ;AACF","sourcesContent":["import Controller from './UserStorageController';\n\nexport { Controller };\nexport * from './UserStorageController';\nexport * from './encryption';\nexport * as Mocks from './__fixtures__';\n","export * from './mockResponses';\nexport * from './mockStorage';\n","import encryption, { createSHA256Hash } from '../encryption';\n\nexport const MOCK_STORAGE_KEY_SIGNATURE = 'mockStorageKey';\nexport const MOCK_STORAGE_KEY = createSHA256Hash(MOCK_STORAGE_KEY_SIGNATURE);\nexport const MOCK_STORAGE_DATA = JSON.stringify({ hello: 'world' });\nexport const MOCK_ENCRYPTED_STORAGE_DATA = encryption.encryptString(\n  MOCK_STORAGE_DATA,\n  MOCK_STORAGE_KEY,\n);\n","import { createEntryPath } from '../schema';\nimport type { GetUserStorageResponse } from '../services';\nimport { USER_STORAGE_ENDPOINT } from '../services';\nimport { MOCK_ENCRYPTED_STORAGE_DATA, MOCK_STORAGE_KEY } from './mockStorage';\n\ntype MockResponse = {\n  url: string;\n  requestMethod: 'GET' | 'POST' | 'PUT';\n  response: unknown;\n};\n\nexport const MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT = `${USER_STORAGE_ENDPOINT}${createEntryPath(\n  'notifications.notification_settings',\n  MOCK_STORAGE_KEY,\n)}`;\n\nconst MOCK_GET_USER_STORAGE_RESPONSE: GetUserStorageResponse = {\n  HashedKey: 'HASHED_KEY',\n  Data: MOCK_ENCRYPTED_STORAGE_DATA,\n};\n\nexport const getMockUserStorageGetResponse = () => {\n  return {\n    url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,\n    requestMethod: 'GET',\n    response: MOCK_GET_USER_STORAGE_RESPONSE,\n  } satisfies MockResponse;\n};\n\nexport const getMockUserStoragePutResponse = () => {\n  return {\n    url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,\n    requestMethod: 'PUT',\n    response: null,\n  } satisfies MockResponse;\n};\n"]}
+\ No newline at end of file
+diff --git a/dist/chunk-ILIZJQ6X.mjs b/dist/chunk-ILIZJQ6X.mjs
+index 75b92fcd4de183213c06ef83b119fcd085087064..9732ca708bd2939972cf39f03a18878254354aa2 100644
+--- a/dist/chunk-ILIZJQ6X.mjs
++++ b/dist/chunk-ILIZJQ6X.mjs
+@@ -1,10 +1,8 @@
+-import {
+-  createSHA256Hash
+-} from "./chunk-K5UKU454.mjs";
++import { createSHA256Hash } from "./chunk-K5UKU454.mjs";
+ 
+ // src/controllers/user-storage/schema.ts
+ var USER_STORAGE_SCHEMA = {
+-  notifications: ["notificationSettings"]
++  notifications: ["notification_settings"],
+ };
+ var getFeatureAndKeyFromPath = (path) => {
+   const pathRegex = /^\w+\.\w+$/u;
+@@ -32,9 +30,5 @@ function createEntryPath(path, storageKey) {
+   return `/${feature}/${hashedKey}`;
+ }
+ 
+-export {
+-  USER_STORAGE_SCHEMA,
+-  getFeatureAndKeyFromPath,
+-  createEntryPath
+-};
++export { USER_STORAGE_SCHEMA, getFeatureAndKeyFromPath, createEntryPath };
+ //# sourceMappingURL=chunk-ILIZJQ6X.mjs.map
+diff --git a/dist/chunk-ILIZJQ6X.mjs.map b/dist/chunk-ILIZJQ6X.mjs.map
+index 5cfdb8f82d2f3c75b64e692bcff173a81d75af8f..2caaf734426228ae7e8e08b24ac8fe7c763a2edd 100644
+--- a/dist/chunk-ILIZJQ6X.mjs.map
++++ b/dist/chunk-ILIZJQ6X.mjs.map
+@@ -1 +1 @@
+-{"version":3,"sources":["../src/controllers/user-storage/schema.ts"],"sourcesContent":["import { createSHA256Hash } from './encryption';\n\n/**\n * The User Storage Endpoint requires a feature name and a namespace key.\n * Developers can provide additional features and keys by extending these types below.\n */\n\nexport const USER_STORAGE_SCHEMA = {\n  notifications: ['notificationSettings'],\n} as const;\n\ntype UserStorageSchema = typeof USER_STORAGE_SCHEMA;\ntype UserStorageFeatures = keyof UserStorageSchema;\ntype UserStorageFeatureKeys<Feature extends UserStorageFeatures> =\n  UserStorageSchema[Feature][number];\n\ntype UserStorageFeatureAndKey = {\n  feature: UserStorageFeatures;\n  key: UserStorageFeatureKeys<UserStorageFeatures>;\n};\n\nexport type UserStoragePath = {\n  [K in keyof UserStorageSchema]: `${K}.${UserStorageSchema[K][number]}`;\n}[keyof UserStorageSchema];\n\nexport const getFeatureAndKeyFromPath = (\n  path: UserStoragePath,\n): UserStorageFeatureAndKey => {\n  const pathRegex = /^\\w+\\.\\w+$/u;\n\n  if (!pathRegex.test(path)) {\n    throw new Error(\n      `user-storage - path is not in the correct format. Correct format: 'feature.key'`,\n    );\n  }\n\n  const [feature, key] = path.split('.') as [\n    UserStorageFeatures,\n    UserStorageFeatureKeys<UserStorageFeatures>,\n  ];\n\n  if (!(feature in USER_STORAGE_SCHEMA)) {\n    throw new Error(`user-storage - invalid feature provided: ${feature}`);\n  }\n\n  const validFeature = USER_STORAGE_SCHEMA[feature] as readonly string[];\n\n  if (!validFeature.includes(key)) {\n    const validKeys = USER_STORAGE_SCHEMA[feature].join(', ');\n\n    throw new Error(\n      `user-storage - invalid key provided for this feature: ${key}. Valid keys: ${validKeys}`,\n    );\n  }\n\n  return { feature, key };\n};\n\n/**\n * Constructs a unique entry path for a user.\n * This can be done due to the uniqueness of the storage key (no users will share the same storage key).\n * The users entry is a unique hash that cannot be reversed.\n *\n * @param path - string in the form of `${feature}.${key}` that matches schema\n * @param storageKey - users storage key\n * @returns path to store entry\n */\nexport function createEntryPath(\n  path: UserStoragePath,\n  storageKey: string,\n): string {\n  const { feature, key } = getFeatureAndKeyFromPath(path);\n  const hashedKey = createSHA256Hash(key + storageKey);\n\n  return `/${feature}/${hashedKey}`;\n}\n"],"mappings":";;;;;AAOO,IAAM,sBAAsB;AAAA,EACjC,eAAe,CAAC,sBAAsB;AACxC;AAgBO,IAAM,2BAA2B,CACtC,SAC6B;AAC7B,QAAM,YAAY;AAElB,MAAI,CAAC,UAAU,KAAK,IAAI,GAAG;AACzB,UAAM,IAAI;AAAA,MACR;AAAA,IACF;AAAA,EACF;AAEA,QAAM,CAAC,SAAS,GAAG,IAAI,KAAK,MAAM,GAAG;AAKrC,MAAI,EAAE,WAAW,sBAAsB;AACrC,UAAM,IAAI,MAAM,4CAA4C,OAAO,EAAE;AAAA,EACvE;AAEA,QAAM,eAAe,oBAAoB,OAAO;AAEhD,MAAI,CAAC,aAAa,SAAS,GAAG,GAAG;AAC/B,UAAM,YAAY,oBAAoB,OAAO,EAAE,KAAK,IAAI;AAExD,UAAM,IAAI;AAAA,MACR,yDAAyD,GAAG,iBAAiB,SAAS;AAAA,IACxF;AAAA,EACF;AAEA,SAAO,EAAE,SAAS,IAAI;AACxB;AAWO,SAAS,gBACd,MACA,YACQ;AACR,QAAM,EAAE,SAAS,IAAI,IAAI,yBAAyB,IAAI;AACtD,QAAM,YAAY,iBAAiB,MAAM,UAAU;AAEnD,SAAO,IAAI,OAAO,IAAI,SAAS;AACjC;","names":[]}
+\ No newline at end of file
++{"version":3,"sources":["../src/controllers/user-storage/schema.ts"],"sourcesContent":["import { createSHA256Hash } from './encryption';\n\n/**\n * The User Storage Endpoint requires a feature name and a namespace key.\n * Developers can provide additional features and keys by extending these types below.\n */\n\nexport const USER_STORAGE_SCHEMA = {\n  notifications: ['notification_settings'],\n} as const;\n\ntype UserStorageSchema = typeof USER_STORAGE_SCHEMA;\ntype UserStorageFeatures = keyof UserStorageSchema;\ntype UserStorageFeatureKeys<Feature extends UserStorageFeatures> =\n  UserStorageSchema[Feature][number];\n\ntype UserStorageFeatureAndKey = {\n  feature: UserStorageFeatures;\n  key: UserStorageFeatureKeys<UserStorageFeatures>;\n};\n\nexport type UserStoragePath = {\n  [K in keyof UserStorageSchema]: `${K}.${UserStorageSchema[K][number]}`;\n}[keyof UserStorageSchema];\n\nexport const getFeatureAndKeyFromPath = (\n  path: UserStoragePath,\n): UserStorageFeatureAndKey => {\n  const pathRegex = /^\\w+\\.\\w+$/u;\n\n  if (!pathRegex.test(path)) {\n    throw new Error(\n      `user-storage - path is not in the correct format. Correct format: 'feature.key'`,\n    );\n  }\n\n  const [feature, key] = path.split('.') as [\n    UserStorageFeatures,\n    UserStorageFeatureKeys<UserStorageFeatures>,\n  ];\n\n  if (!(feature in USER_STORAGE_SCHEMA)) {\n    throw new Error(`user-storage - invalid feature provided: ${feature}`);\n  }\n\n  const validFeature = USER_STORAGE_SCHEMA[feature] as readonly string[];\n\n  if (!validFeature.includes(key)) {\n    const validKeys = USER_STORAGE_SCHEMA[feature].join(', ');\n\n    throw new Error(\n      `user-storage - invalid key provided for this feature: ${key}. Valid keys: ${validKeys}`,\n    );\n  }\n\n  return { feature, key };\n};\n\n/**\n * Constructs a unique entry path for a user.\n * This can be done due to the uniqueness of the storage key (no users will share the same storage key).\n * The users entry is a unique hash that cannot be reversed.\n *\n * @param path - string in the form of `${feature}.${key}` that matches schema\n * @param storageKey - users storage key\n * @returns path to store entry\n */\nexport function createEntryPath(\n  path: UserStoragePath,\n  storageKey: string,\n): string {\n  const { feature, key } = getFeatureAndKeyFromPath(path);\n  const hashedKey = createSHA256Hash(key + storageKey);\n\n  return `/${feature}/${hashedKey}`;\n}\n"],"mappings":";;;;;AAOO,IAAM,sBAAsB;AAAA,EACjC,eAAe,CAAC,sBAAsB;AACxC;AAgBO,IAAM,2BAA2B,CACtC,SAC6B;AAC7B,QAAM,YAAY;AAElB,MAAI,CAAC,UAAU,KAAK,IAAI,GAAG;AACzB,UAAM,IAAI;AAAA,MACR;AAAA,IACF;AAAA,EACF;AAEA,QAAM,CAAC,SAAS,GAAG,IAAI,KAAK,MAAM,GAAG;AAKrC,MAAI,EAAE,WAAW,sBAAsB;AACrC,UAAM,IAAI,MAAM,4CAA4C,OAAO,EAAE;AAAA,EACvE;AAEA,QAAM,eAAe,oBAAoB,OAAO;AAEhD,MAAI,CAAC,aAAa,SAAS,GAAG,GAAG;AAC/B,UAAM,YAAY,oBAAoB,OAAO,EAAE,KAAK,IAAI;AAExD,UAAM,IAAI;AAAA,MACR,yDAAyD,GAAG,iBAAiB,SAAS;AAAA,IACxF;AAAA,EACF;AAEA,SAAO,EAAE,SAAS,IAAI;AACxB;AAWO,SAAS,gBACd,MACA,YACQ;AACR,QAAM,EAAE,SAAS,IAAI,IAAI,yBAAyB,IAAI;AACtD,QAAM,YAAY,iBAAiB,MAAM,UAAU;AAEnD,SAAO,IAAI,OAAO,IAAI,SAAS;AACjC;","names":[]}
+\ No newline at end of file
+diff --git a/dist/chunk-IQECLCH4.mjs b/dist/chunk-IQECLCH4.mjs
+index fbfb0670fd8dd1c15cf1d70809a59ac10435af23..e4a5b1a4728a4d2dad7c1d64048d2a869b84874c 100644
+--- a/dist/chunk-IQECLCH4.mjs
++++ b/dist/chunk-IQECLCH4.mjs
+@@ -1,23 +1,9 @@
+-import {
+-  UserStorageController,
+-  defaultState
+-} from "./chunk-LNSB4L7K.mjs";
+-import {
+-  USER_STORAGE_ENDPOINT
+-} from "./chunk-FU7PSGFP.mjs";
+-import {
+-  createEntryPath
+-} from "./chunk-ILIZJQ6X.mjs";
+-import {
+-  encryption_default as encryption_default2
+-} from "./chunk-5TOWF6UW.mjs";
+-import {
+-  createSHA256Hash,
+-  encryption_default
+-} from "./chunk-K5UKU454.mjs";
+-import {
+-  __export
+-} from "./chunk-U5UIDVOO.mjs";
++import { UserStorageController, defaultState } from "./chunk-LNSB4L7K.mjs";
++import { USER_STORAGE_ENDPOINT } from "./chunk-FU7PSGFP.mjs";
++import { createEntryPath } from "./chunk-ILIZJQ6X.mjs";
++import { encryption_default as encryption_default2 } from "./chunk-5TOWF6UW.mjs";
++import { createSHA256Hash, encryption_default } from "./chunk-K5UKU454.mjs";
++import { __export } from "./chunk-U5UIDVOO.mjs";
+ 
+ // src/controllers/user-storage/index.ts
+ var user_storage_exports = {};
+@@ -26,7 +12,7 @@ __export(user_storage_exports, {
+   Encryption: () => encryption_default,
+   Mocks: () => fixtures_exports,
+   createSHA256Hash: () => createSHA256Hash,
+-  defaultState: () => defaultState
++  defaultState: () => defaultState,
+ });
+ 
+ // src/controllers/user-storage/__fixtures__/index.ts
+@@ -36,9 +22,10 @@ __export(fixtures_exports, {
+   MOCK_STORAGE_DATA: () => MOCK_STORAGE_DATA,
+   MOCK_STORAGE_KEY: () => MOCK_STORAGE_KEY,
+   MOCK_STORAGE_KEY_SIGNATURE: () => MOCK_STORAGE_KEY_SIGNATURE,
+-  MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT: () => MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,
++  MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT: () =>
++    MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,
+   getMockUserStorageGetResponse: () => getMockUserStorageGetResponse,
+-  getMockUserStoragePutResponse: () => getMockUserStoragePutResponse
++  getMockUserStoragePutResponse: () => getMockUserStoragePutResponse,
+ });
+ 
+ // src/controllers/user-storage/__fixtures__/mockStorage.ts
+@@ -52,30 +39,27 @@ var MOCK_ENCRYPTED_STORAGE_DATA = encryption_default2.encryptString(
+ 
+ // src/controllers/user-storage/__fixtures__/mockResponses.ts
+ var MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT = `${USER_STORAGE_ENDPOINT}${createEntryPath(
+-  "notifications.notificationSettings",
++  "notifications.notification_settings",
+   MOCK_STORAGE_KEY
+ )}`;
+ var MOCK_GET_USER_STORAGE_RESPONSE = {
+   HashedKey: "HASHED_KEY",
+-  Data: MOCK_ENCRYPTED_STORAGE_DATA
++  Data: MOCK_ENCRYPTED_STORAGE_DATA,
+ };
+ var getMockUserStorageGetResponse = () => {
+   return {
+     url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,
+     requestMethod: "GET",
+-    response: MOCK_GET_USER_STORAGE_RESPONSE
++    response: MOCK_GET_USER_STORAGE_RESPONSE,
+   };
+ };
+ var getMockUserStoragePutResponse = () => {
+   return {
+     url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,
+     requestMethod: "PUT",
+-    response: null
++    response: null,
+   };
+ };
+ 
+-export {
+-  fixtures_exports,
+-  user_storage_exports
+-};
++export { fixtures_exports, user_storage_exports };
+ //# sourceMappingURL=chunk-IQECLCH4.mjs.map
+diff --git a/dist/chunk-IQECLCH4.mjs.map b/dist/chunk-IQECLCH4.mjs.map
+index 431f888e4c0a529b7213d83381f50ad5657899f9..78bc07ced21dbad3da0a955cb0d0d9a49ac53cb6 100644
+--- a/dist/chunk-IQECLCH4.mjs.map
++++ b/dist/chunk-IQECLCH4.mjs.map
+@@ -1 +1 @@
+-{"version":3,"sources":["../src/controllers/user-storage/index.ts","../src/controllers/user-storage/__fixtures__/index.ts","../src/controllers/user-storage/__fixtures__/mockStorage.ts","../src/controllers/user-storage/__fixtures__/mockResponses.ts"],"sourcesContent":["import Controller from './UserStorageController';\n\nexport { Controller };\nexport * from './UserStorageController';\nexport * from './encryption';\nexport * as Mocks from './__fixtures__';\n","export * from './mockResponses';\nexport * from './mockStorage';\n","import encryption, { createSHA256Hash } from '../encryption';\n\nexport const MOCK_STORAGE_KEY_SIGNATURE = 'mockStorageKey';\nexport const MOCK_STORAGE_KEY = createSHA256Hash(MOCK_STORAGE_KEY_SIGNATURE);\nexport const MOCK_STORAGE_DATA = JSON.stringify({ hello: 'world' });\nexport const MOCK_ENCRYPTED_STORAGE_DATA = encryption.encryptString(\n  MOCK_STORAGE_DATA,\n  MOCK_STORAGE_KEY,\n);\n","import { createEntryPath } from '../schema';\nimport type { GetUserStorageResponse } from '../services';\nimport { USER_STORAGE_ENDPOINT } from '../services';\nimport { MOCK_ENCRYPTED_STORAGE_DATA, MOCK_STORAGE_KEY } from './mockStorage';\n\ntype MockResponse = {\n  url: string;\n  requestMethod: 'GET' | 'POST' | 'PUT';\n  response: unknown;\n};\n\nexport const MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT = `${USER_STORAGE_ENDPOINT}${createEntryPath(\n  'notifications.notificationSettings',\n  MOCK_STORAGE_KEY,\n)}`;\n\nconst MOCK_GET_USER_STORAGE_RESPONSE: GetUserStorageResponse = {\n  HashedKey: 'HASHED_KEY',\n  Data: MOCK_ENCRYPTED_STORAGE_DATA,\n};\n\nexport const getMockUserStorageGetResponse = () => {\n  return {\n    url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,\n    requestMethod: 'GET',\n    response: MOCK_GET_USER_STORAGE_RESPONSE,\n  } satisfies MockResponse;\n};\n\nexport const getMockUserStoragePutResponse = () => {\n  return {\n    url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,\n    requestMethod: 'PUT',\n    response: null,\n  } satisfies MockResponse;\n};\n"],"mappings":";;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACEO,IAAM,6BAA6B;AACnC,IAAM,mBAAmB,iBAAiB,0BAA0B;AACpE,IAAM,oBAAoB,KAAK,UAAU,EAAE,OAAO,QAAQ,CAAC;AAC3D,IAAM,8BAA8BA,oBAAW;AAAA,EACpD;AAAA,EACA;AACF;;;ACGO,IAAM,2CAA2C,GAAG,qBAAqB,GAAG;AAAA,EACjF;AAAA,EACA;AACF,CAAC;AAED,IAAM,iCAAyD;AAAA,EAC7D,WAAW;AAAA,EACX,MAAM;AACR;AAEO,IAAM,gCAAgC,MAAM;AACjD,SAAO;AAAA,IACL,KAAK;AAAA,IACL,eAAe;AAAA,IACf,UAAU;AAAA,EACZ;AACF;AAEO,IAAM,gCAAgC,MAAM;AACjD,SAAO;AAAA,IACL,KAAK;AAAA,IACL,eAAe;AAAA,IACf,UAAU;AAAA,EACZ;AACF;","names":["encryption_default"]}
+\ No newline at end of file
++{"version":3,"sources":["../src/controllers/user-storage/index.ts","../src/controllers/user-storage/__fixtures__/index.ts","../src/controllers/user-storage/__fixtures__/mockStorage.ts","../src/controllers/user-storage/__fixtures__/mockResponses.ts"],"sourcesContent":["import Controller from './UserStorageController';\n\nexport { Controller };\nexport * from './UserStorageController';\nexport * from './encryption';\nexport * as Mocks from './__fixtures__';\n","export * from './mockResponses';\nexport * from './mockStorage';\n","import encryption, { createSHA256Hash } from '../encryption';\n\nexport const MOCK_STORAGE_KEY_SIGNATURE = 'mockStorageKey';\nexport const MOCK_STORAGE_KEY = createSHA256Hash(MOCK_STORAGE_KEY_SIGNATURE);\nexport const MOCK_STORAGE_DATA = JSON.stringify({ hello: 'world' });\nexport const MOCK_ENCRYPTED_STORAGE_DATA = encryption.encryptString(\n  MOCK_STORAGE_DATA,\n  MOCK_STORAGE_KEY,\n);\n","import { createEntryPath } from '../schema';\nimport type { GetUserStorageResponse } from '../services';\nimport { USER_STORAGE_ENDPOINT } from '../services';\nimport { MOCK_ENCRYPTED_STORAGE_DATA, MOCK_STORAGE_KEY } from './mockStorage';\n\ntype MockResponse = {\n  url: string;\n  requestMethod: 'GET' | 'POST' | 'PUT';\n  response: unknown;\n};\n\nexport const MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT = `${USER_STORAGE_ENDPOINT}${createEntryPath(\n  'notifications.notification_settings',\n  MOCK_STORAGE_KEY,\n)}`;\n\nconst MOCK_GET_USER_STORAGE_RESPONSE: GetUserStorageResponse = {\n  HashedKey: 'HASHED_KEY',\n  Data: MOCK_ENCRYPTED_STORAGE_DATA,\n};\n\nexport const getMockUserStorageGetResponse = () => {\n  return {\n    url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,\n    requestMethod: 'GET',\n    response: MOCK_GET_USER_STORAGE_RESPONSE,\n  } satisfies MockResponse;\n};\n\nexport const getMockUserStoragePutResponse = () => {\n  return {\n    url: MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT,\n    requestMethod: 'PUT',\n    response: null,\n  } satisfies MockResponse;\n};\n"],"mappings":";;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACEO,IAAM,6BAA6B;AACnC,IAAM,mBAAmB,iBAAiB,0BAA0B;AACpE,IAAM,oBAAoB,KAAK,UAAU,EAAE,OAAO,QAAQ,CAAC;AAC3D,IAAM,8BAA8BA,oBAAW;AAAA,EACpD;AAAA,EACA;AACF;;;ACGO,IAAM,2CAA2C,GAAG,qBAAqB,GAAG;AAAA,EACjF;AAAA,EACA;AACF,CAAC;AAED,IAAM,iCAAyD;AAAA,EAC7D,WAAW;AAAA,EACX,MAAM;AACR;AAEO,IAAM,gCAAgC,MAAM;AACjD,SAAO;AAAA,IACL,KAAK;AAAA,IACL,eAAe;AAAA,IACf,UAAU;AAAA,EACZ;AACF;AAEO,IAAM,gCAAgC,MAAM;AACjD,SAAO;AAAA,IACL,KAAK;AAAA,IACL,eAAe;AAAA,IACf,UAAU;AAAA,EACZ;AACF;","names":["encryption_default"]}
+\ No newline at end of file
+diff --git a/dist/chunk-SLHAVOTE.js b/dist/chunk-SLHAVOTE.js
+index 74a4398618d0d0f6a9a6b57b299722df40ced840..f4765cb6110283c23a87685665a980faaaa84152 100644
+--- a/dist/chunk-SLHAVOTE.js
++++ b/dist/chunk-SLHAVOTE.js
+@@ -1,10 +1,11 @@
+-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
+ 
+-var _chunkT3FNDVE3js = require('./chunk-T3FNDVE3.js');
++var _chunkT3FNDVE3js = require("./chunk-T3FNDVE3.js");
+ 
+ // src/controllers/user-storage/schema.ts
+ var USER_STORAGE_SCHEMA = {
+-  notifications: ["notificationSettings"]
++  notifications: ["notification_settings"],
+ };
+ var getFeatureAndKeyFromPath = (path) => {
+   const pathRegex = /^\w+\.\w+$/u;
+@@ -28,13 +29,14 @@ var getFeatureAndKeyFromPath = (path) => {
+ };
+ function createEntryPath(path, storageKey) {
+   const { feature, key } = getFeatureAndKeyFromPath(path);
+-  const hashedKey = _chunkT3FNDVE3js.createSHA256Hash.call(void 0, key + storageKey);
++  const hashedKey = _chunkT3FNDVE3js.createSHA256Hash.call(
++    void 0,
++    key + storageKey
++  );
+   return `/${feature}/${hashedKey}`;
+ }
+ 
+-
+-
+-
+-
+-exports.USER_STORAGE_SCHEMA = USER_STORAGE_SCHEMA; exports.getFeatureAndKeyFromPath = getFeatureAndKeyFromPath; exports.createEntryPath = createEntryPath;
++exports.USER_STORAGE_SCHEMA = USER_STORAGE_SCHEMA;
++exports.getFeatureAndKeyFromPath = getFeatureAndKeyFromPath;
++exports.createEntryPath = createEntryPath;
+ //# sourceMappingURL=chunk-SLHAVOTE.js.map
+diff --git a/dist/chunk-SLHAVOTE.js.map b/dist/chunk-SLHAVOTE.js.map
+index 9c00f76f521bd1783bf4dc24300cc51b412761c8..ed723ce11446984f3db8cb9c41b42a592c57398e 100644
+--- a/dist/chunk-SLHAVOTE.js.map
++++ b/dist/chunk-SLHAVOTE.js.map
+@@ -1 +1 @@
+-{"version":3,"sources":["../src/controllers/user-storage/schema.ts"],"names":[],"mappings":";;;;;AAOO,IAAM,sBAAsB;AAAA,EACjC,eAAe,CAAC,sBAAsB;AACxC;AAgBO,IAAM,2BAA2B,CACtC,SAC6B;AAC7B,QAAM,YAAY;AAElB,MAAI,CAAC,UAAU,KAAK,IAAI,GAAG;AACzB,UAAM,IAAI;AAAA,MACR;AAAA,IACF;AAAA,EACF;AAEA,QAAM,CAAC,SAAS,GAAG,IAAI,KAAK,MAAM,GAAG;AAKrC,MAAI,EAAE,WAAW,sBAAsB;AACrC,UAAM,IAAI,MAAM,4CAA4C,OAAO,EAAE;AAAA,EACvE;AAEA,QAAM,eAAe,oBAAoB,OAAO;AAEhD,MAAI,CAAC,aAAa,SAAS,GAAG,GAAG;AAC/B,UAAM,YAAY,oBAAoB,OAAO,EAAE,KAAK,IAAI;AAExD,UAAM,IAAI;AAAA,MACR,yDAAyD,GAAG,iBAAiB,SAAS;AAAA,IACxF;AAAA,EACF;AAEA,SAAO,EAAE,SAAS,IAAI;AACxB;AAWO,SAAS,gBACd,MACA,YACQ;AACR,QAAM,EAAE,SAAS,IAAI,IAAI,yBAAyB,IAAI;AACtD,QAAM,YAAY,iBAAiB,MAAM,UAAU;AAEnD,SAAO,IAAI,OAAO,IAAI,SAAS;AACjC","sourcesContent":["import { createSHA256Hash } from './encryption';\n\n/**\n * The User Storage Endpoint requires a feature name and a namespace key.\n * Developers can provide additional features and keys by extending these types below.\n */\n\nexport const USER_STORAGE_SCHEMA = {\n  notifications: ['notificationSettings'],\n} as const;\n\ntype UserStorageSchema = typeof USER_STORAGE_SCHEMA;\ntype UserStorageFeatures = keyof UserStorageSchema;\ntype UserStorageFeatureKeys<Feature extends UserStorageFeatures> =\n  UserStorageSchema[Feature][number];\n\ntype UserStorageFeatureAndKey = {\n  feature: UserStorageFeatures;\n  key: UserStorageFeatureKeys<UserStorageFeatures>;\n};\n\nexport type UserStoragePath = {\n  [K in keyof UserStorageSchema]: `${K}.${UserStorageSchema[K][number]}`;\n}[keyof UserStorageSchema];\n\nexport const getFeatureAndKeyFromPath = (\n  path: UserStoragePath,\n): UserStorageFeatureAndKey => {\n  const pathRegex = /^\\w+\\.\\w+$/u;\n\n  if (!pathRegex.test(path)) {\n    throw new Error(\n      `user-storage - path is not in the correct format. Correct format: 'feature.key'`,\n    );\n  }\n\n  const [feature, key] = path.split('.') as [\n    UserStorageFeatures,\n    UserStorageFeatureKeys<UserStorageFeatures>,\n  ];\n\n  if (!(feature in USER_STORAGE_SCHEMA)) {\n    throw new Error(`user-storage - invalid feature provided: ${feature}`);\n  }\n\n  const validFeature = USER_STORAGE_SCHEMA[feature] as readonly string[];\n\n  if (!validFeature.includes(key)) {\n    const validKeys = USER_STORAGE_SCHEMA[feature].join(', ');\n\n    throw new Error(\n      `user-storage - invalid key provided for this feature: ${key}. Valid keys: ${validKeys}`,\n    );\n  }\n\n  return { feature, key };\n};\n\n/**\n * Constructs a unique entry path for a user.\n * This can be done due to the uniqueness of the storage key (no users will share the same storage key).\n * The users entry is a unique hash that cannot be reversed.\n *\n * @param path - string in the form of `${feature}.${key}` that matches schema\n * @param storageKey - users storage key\n * @returns path to store entry\n */\nexport function createEntryPath(\n  path: UserStoragePath,\n  storageKey: string,\n): string {\n  const { feature, key } = getFeatureAndKeyFromPath(path);\n  const hashedKey = createSHA256Hash(key + storageKey);\n\n  return `/${feature}/${hashedKey}`;\n}\n"]}
+\ No newline at end of file
++{"version":3,"sources":["../src/controllers/user-storage/schema.ts"],"names":[],"mappings":";;;;;AAOO,IAAM,sBAAsB;AAAA,EACjC,eAAe,CAAC,sBAAsB;AACxC;AAgBO,IAAM,2BAA2B,CACtC,SAC6B;AAC7B,QAAM,YAAY;AAElB,MAAI,CAAC,UAAU,KAAK,IAAI,GAAG;AACzB,UAAM,IAAI;AAAA,MACR;AAAA,IACF;AAAA,EACF;AAEA,QAAM,CAAC,SAAS,GAAG,IAAI,KAAK,MAAM,GAAG;AAKrC,MAAI,EAAE,WAAW,sBAAsB;AACrC,UAAM,IAAI,MAAM,4CAA4C,OAAO,EAAE;AAAA,EACvE;AAEA,QAAM,eAAe,oBAAoB,OAAO;AAEhD,MAAI,CAAC,aAAa,SAAS,GAAG,GAAG;AAC/B,UAAM,YAAY,oBAAoB,OAAO,EAAE,KAAK,IAAI;AAExD,UAAM,IAAI;AAAA,MACR,yDAAyD,GAAG,iBAAiB,SAAS;AAAA,IACxF;AAAA,EACF;AAEA,SAAO,EAAE,SAAS,IAAI;AACxB;AAWO,SAAS,gBACd,MACA,YACQ;AACR,QAAM,EAAE,SAAS,IAAI,IAAI,yBAAyB,IAAI;AACtD,QAAM,YAAY,iBAAiB,MAAM,UAAU;AAEnD,SAAO,IAAI,OAAO,IAAI,SAAS;AACjC","sourcesContent":["import { createSHA256Hash } from './encryption';\n\n/**\n * The User Storage Endpoint requires a feature name and a namespace key.\n * Developers can provide additional features and keys by extending these types below.\n */\n\nexport const USER_STORAGE_SCHEMA = {\n  notifications: ['notification_settings'],\n} as const;\n\ntype UserStorageSchema = typeof USER_STORAGE_SCHEMA;\ntype UserStorageFeatures = keyof UserStorageSchema;\ntype UserStorageFeatureKeys<Feature extends UserStorageFeatures> =\n  UserStorageSchema[Feature][number];\n\ntype UserStorageFeatureAndKey = {\n  feature: UserStorageFeatures;\n  key: UserStorageFeatureKeys<UserStorageFeatures>;\n};\n\nexport type UserStoragePath = {\n  [K in keyof UserStorageSchema]: `${K}.${UserStorageSchema[K][number]}`;\n}[keyof UserStorageSchema];\n\nexport const getFeatureAndKeyFromPath = (\n  path: UserStoragePath,\n): UserStorageFeatureAndKey => {\n  const pathRegex = /^\\w+\\.\\w+$/u;\n\n  if (!pathRegex.test(path)) {\n    throw new Error(\n      `user-storage - path is not in the correct format. Correct format: 'feature.key'`,\n    );\n  }\n\n  const [feature, key] = path.split('.') as [\n    UserStorageFeatures,\n    UserStorageFeatureKeys<UserStorageFeatures>,\n  ];\n\n  if (!(feature in USER_STORAGE_SCHEMA)) {\n    throw new Error(`user-storage - invalid feature provided: ${feature}`);\n  }\n\n  const validFeature = USER_STORAGE_SCHEMA[feature] as readonly string[];\n\n  if (!validFeature.includes(key)) {\n    const validKeys = USER_STORAGE_SCHEMA[feature].join(', ');\n\n    throw new Error(\n      `user-storage - invalid key provided for this feature: ${key}. Valid keys: ${validKeys}`,\n    );\n  }\n\n  return { feature, key };\n};\n\n/**\n * Constructs a unique entry path for a user.\n * This can be done due to the uniqueness of the storage key (no users will share the same storage key).\n * The users entry is a unique hash that cannot be reversed.\n *\n * @param path - string in the form of `${feature}.${key}` that matches schema\n * @param storageKey - users storage key\n * @returns path to store entry\n */\nexport function createEntryPath(\n  path: UserStoragePath,\n  storageKey: string,\n): string {\n  const { feature, key } = getFeatureAndKeyFromPath(path);\n  const hashedKey = createSHA256Hash(key + storageKey);\n\n  return `/${feature}/${hashedKey}`;\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/types/controllers/user-storage/schema.d.ts b/dist/types/controllers/user-storage/schema.d.ts
+index 0f7fa2b3224fcafc1e01869338a9b978a50a2b4e..311b0309b076dd1d0d05e59ff20845952bc917d9 100644
+--- a/dist/types/controllers/user-storage/schema.d.ts
++++ b/dist/types/controllers/user-storage/schema.d.ts
+@@ -3,7 +3,7 @@
+  * Developers can provide additional features and keys by extending these types below.
+  */
+ export declare const USER_STORAGE_SCHEMA: {
+-    readonly notifications: readonly ["notificationSettings"];
++    readonly notifications: readonly ["notification_settings"];
+ };
+ type UserStorageSchema = typeof USER_STORAGE_SCHEMA;
+ type UserStorageFeatures = keyof UserStorageSchema;

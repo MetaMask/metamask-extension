@@ -50,6 +50,8 @@ type ExperimentalTabProps = {
   setFeatureNotificationsEnabled: (value: boolean) => void;
   redesignedConfirmationsEnabled: boolean;
   setRedesignedConfirmationsEnabled: (value: boolean) => void;
+  redesignedTransactionsEnabled: boolean;
+  setRedesignedTransactionsEnabled: (value: boolean) => void;
 };
 
 export default class ExperimentalTab extends PureComponent<ExperimentalTabProps> {
@@ -141,7 +143,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
-  renderToggleRedesignedConfirmations() {
+  renderToggleRedesignedSignatures() {
     const { t } = this.context;
     const {
       redesignedConfirmationsEnabled,
@@ -155,6 +157,22 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       toggleCallback: (value) => setRedesignedConfirmationsEnabled(!value),
       toggleContainerDataTestId: 'toggle-redesigned-confirmations-container',
       toggleDataTestId: 'toggle-redesigned-confirmations',
+      toggleOffLabel: t('off'),
+      toggleOnLabel: t('on'),
+    });
+  }
+
+  renderToggleRedesignedTransactions() {
+    const { t } = this.context;
+    const { redesignedTransactionsEnabled, setRedesignedTransactionsEnabled } =
+      this.props;
+
+    return this.renderToggleSection({
+      title: t('redesignedTransactionsEnabledToggle'),
+      description: t('redesignedTransactionsToggleDescription'),
+      toggleValue: redesignedTransactionsEnabled,
+      toggleCallback: (value) => setRedesignedTransactionsEnabled(!value),
+      toggleDataTestId: 'toggle-redesigned-transactions',
       toggleOffLabel: t('off'),
       toggleOnLabel: t('on'),
     });
@@ -289,6 +307,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
             });
             setBitcoinSupportEnabled(!value);
           },
+          toggleContainerDataTestId: 'bitcoin-support-toggle-div',
           toggleDataTestId: 'bitcoin-support-toggle',
           toggleOffLabel: t('off'),
           toggleOnLabel: t('on'),
@@ -320,7 +339,8 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
-        {this.renderToggleRedesignedConfirmations()}
+        {this.renderToggleRedesignedSignatures()}
+        {this.renderToggleRedesignedTransactions()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {this.renderToggleRequestQueue()}
         {/* Section: Account Management Snaps */}

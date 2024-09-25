@@ -64,6 +64,8 @@ import {
   getHardwareWalletType,
   getIsBridgeChain,
   getMetaMetricsId,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
 import {
   getSmartTransactionsOptInStatus,
@@ -219,6 +221,8 @@ export default function PrepareSwapPage({
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
@@ -1024,6 +1028,8 @@ export default function PrepareSwapPage({
                 'bridge',
                 'ext_bridge_prepare_swap_link',
                 metaMetricsId,
+                isMetaMetricsEnabled,
+                isMarketingEnabled,
               );
 
               global.platform.openTab({

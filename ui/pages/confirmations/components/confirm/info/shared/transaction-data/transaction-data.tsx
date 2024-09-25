@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
@@ -18,15 +18,7 @@ import {
   FlexWrap,
   JustifyContent,
 } from '../../../../../../../helpers/constants/design-system';
-import {
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  IconName,
-} from '../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../components/ui/tooltip';
-import { useCopyToClipboard } from '../../../../../../../hooks/useCopyToClipboard';
+import { Box } from '../../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import Preloader from '../../../../../../../components/ui/icon/preloader';
@@ -36,6 +28,7 @@ import {
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
+import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 
 export const TransactionData = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector) as
@@ -51,15 +44,14 @@ export const TransactionData = () => {
     return <Container isLoading />;
   }
 
-  if (!transactionData?.length) {
+  if (!hasTransactionData(transactionData)) {
     return null;
   }
 
   if (!value) {
     return (
-      <Container>
+      <Container transactionData={transactionData}>
         <RawDataRow transactionData={transactionData} />
-        <CopyDataButton transactionData={transactionData} />
       </Container>
     );
   }
@@ -68,20 +60,18 @@ export const TransactionData = () => {
   const isExpandable = data.length > 1;
 
   return (
-    <Container>
+    <Container transactionData={transactionData}>
       <>
         {data.map((method, index) => (
-          <>
+          <React.Fragment key={index}>
             <FunctionContainer
-              key={index}
               method={method}
               source={source}
               isExpandable={isExpandable}
             />
             {index < data.length - 1 && <ConfirmInfoRowDivider />}
-          </>
+          </React.Fragment>
         ))}
-        <CopyDataButton transactionData={transactionData} />
       </>
     </Container>
   );
@@ -90,16 +80,22 @@ export const TransactionData = () => {
 function Container({
   children,
   isLoading,
+  transactionData,
 }: {
   children?: React.ReactNode;
   isLoading?: boolean;
+  transactionData?: string;
 }) {
   const t = useI18nContext();
 
   return (
     <>
-      <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('advancedDetailsDataDesc')}>
+      <ConfirmInfoSection data-testid="advanced-details-data-section">
+        <ConfirmInfoRow
+          label={t('advancedDetailsDataDesc')}
+          copyEnabled={Boolean(transactionData)}
+          copyText={transactionData || undefined}
+        >
           <Box>{isLoading && <Preloader size={20} />}</Box>
         </ConfirmInfoRow>
         {children}
@@ -110,10 +106,12 @@ function Container({
 
 function RawDataRow({ transactionData }: { transactionData: string }) {
   const t = useI18nContext();
-
   return (
     <ConfirmInfoRow label={t('advancedDetailsHexDesc')}>
-      <ConfirmInfoRowText text={transactionData} />
+      <ConfirmInfoRowText
+        data-testid="advanced-details-transaction-hex"
+        text={transactionData}
+      />
     </ConfirmInfoRow>
   );
 }
@@ -150,7 +148,10 @@ function FunctionContainer({
         content={paramRows}
         startExpanded
       >
-        <ConfirmInfoRowText text={method.name} />
+        <ConfirmInfoRowText
+          data-testid="advanced-details-data-function"
+          text={method.name}
+        />
       </ConfirmInfoExpandableRow>
     );
   }
@@ -158,6 +159,7 @@ function FunctionContainer({
   return (
     <>
       <ConfirmInfoRow
+        data-testid="advanced-details-data-function"
         label={t('transactionDataFunction')}
         tooltip={method.description}
       >
@@ -206,6 +208,7 @@ function ParamRow({
   const { name, type, description } = param;
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
   const tooltip = `${type}${description ? ` - ${description}` : ''}`;
+  const dataTestId = `advanced-details-data-param-${index}`;
 
   const childRows = param.children?.map((childParam, childIndex) => (
     <ParamRow
@@ -218,35 +221,11 @@ function ParamRow({
 
   return (
     <>
-      <ConfirmInfoRow label={label} tooltip={tooltip}>
+      <ConfirmInfoRow label={label} tooltip={tooltip} data-testid={dataTestId}>
         {!childRows?.length && <ParamValue param={param} source={source} />}
       </ConfirmInfoRow>
       {childRows && <Box paddingLeft={2}>{childRows}</Box>}
     </>
-  );
-}
-
-function CopyDataButton({ transactionData }: { transactionData: string }) {
-  const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard();
-
-  const handleClick = useCallback(() => {
-    handleCopy(transactionData);
-  }, [handleCopy, transactionData]);
-
-  return (
-    <Box paddingInline={2}>
-      <Tooltip position="right" title={copied ? t('copiedExclamation') : ''}>
-        <Button
-          onClick={handleClick}
-          variant={ButtonVariant.Link}
-          size={ButtonSize.Lg}
-          startIconName={copied ? IconName.CopySuccess : IconName.Copy}
-        >
-          {t('copyRawTransactionData')}
-        </Button>
-      </Tooltip>
-    </Box>
   );
 }
 

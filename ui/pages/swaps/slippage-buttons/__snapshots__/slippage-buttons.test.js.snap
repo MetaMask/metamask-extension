@@ -4,11 +4,11 @@ exports[`SlippageButtons renders the component with initial props 1`] = `
 <button
   class="slippage-buttons__header slippage-buttons__header--open"
 >
-  <div
-    class="slippage-buttons__header-text"
+  <span
+    class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-right-2 mm-box--color-primary-default"
   >
     Advanced options
-  </div>
+  </span>
   <i
     class="fa fa-angle-up"
   />

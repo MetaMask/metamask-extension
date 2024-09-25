@@ -19,7 +19,11 @@ const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   ERC_4337_ACCOUNT,
   DEFAULT_GANACHE_ETH_BALANCE_DEC,
+  DEFAULT_FIXTURE_ACCOUNT,
 } = require('./constants');
+const {
+  getServerMochaToBackground,
+} = require('./background-socket/server-mocha-to-background');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -48,6 +52,7 @@ async function withFixtures(options, testSuite) {
     ignoredConsoleErrors = [],
     dappPath = undefined,
     disableGanache,
+    disableServerMochaToBackground = false,
     dappPaths,
     testSpecificMock = function () {
       // do nothing.
@@ -69,6 +74,10 @@ async function withFixtures(options, testSuite) {
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
+
+  if (!disableServerMochaToBackground) {
+    getServerMochaToBackground();
+  }
 
   let webDriver;
   let driver;
@@ -616,6 +625,12 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
 const openSRPRevealQuiz = async (driver) => {
   // navigate settings to reveal SRP
   await driver.clickElement('[data-testid="account-options-menu-button"]');
+
+  // fix race condition with mmi build
+  if (process.env.MMI) {
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+  }
+
   await driver.clickElement({ text: 'Settings', tag: 'div' });
   await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
   await driver.clickElement('[data-testid="reveal-seed-words"]');
@@ -693,20 +708,28 @@ const createDappTransaction = async (driver, transaction) => {
   );
 };
 
+const createDappTransactionTypeTwo = async (driver) => {
+  await createDappTransaction(driver, {
+    data: '0x',
+    from: DEFAULT_FIXTURE_ACCOUNT,
+    maxFeePerGas: '0x0',
+    maxPriorityFeePerGas: '0x0',
+    to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+    value: '0x38d7ea4c68000',
+    type: '0x2',
+  });
+};
+
 const switchToOrOpenDapp = async (
   driver,
   contract = null,
   dappURL = DAPP_URL,
 ) => {
-  try {
-    // Do an unusually fast switchToWindowWithTitle, just 1 second
-    await driver.switchToWindowWithTitle(
-      WINDOW_TITLES.TestDApp,
-      null,
-      1000,
-      1000,
-    );
-  } catch {
+  const handle = await driver.windowHandles.switchToWindowIfKnown(
+    WINDOW_TITLES.TestDApp,
+  );
+
+  if (!handle) {
     await openDapp(driver, contract, dappURL);
   }
 };
@@ -735,7 +758,7 @@ const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
 const PRIVATE_KEY_TWO =
-  '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
@@ -768,6 +791,12 @@ const multipleGanacheOptions = {
   ],
 };
 
+const multipleGanacheOptionsForType2Transactions = {
+  ...multipleGanacheOptions,
+  // EVM version that supports type 2 transactions (EIP1559)
+  hardfork: 'london',
+};
+
 const generateGanacheOptions = ({
   secretKey = PRIVATE_KEY,
   balance = convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
@@ -797,7 +826,6 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
-  await driver.delay(500);
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
@@ -821,22 +849,10 @@ const sendScreenToConfirmScreen = async (
   await driver.fill('.unit-input__input', quantity);
 
   // check if element exists and click it
-  await driver
-    .findElement({
-      text: 'I understand',
-      tag: 'button',
-    })
-    .then(
-      (_found) => {
-        driver.clickElement({
-          text: 'I understand',
-          tag: 'button',
-        });
-      },
-      (error) => {
-        console.error('Element not found.', error);
-      },
-    );
+  await driver.clickElementSafe({
+    text: 'I understand',
+    tag: 'button',
+  });
 
   await driver.clickElement({ text: 'Continue', tag: 'button' });
 };
@@ -846,6 +862,7 @@ const sendTransaction = async (
   recipientAddress,
   quantity,
   isAsyncFlow = false,
+  skipConfirm = false,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
@@ -855,10 +872,13 @@ const sendTransaction = async (
     text: 'Continue',
     tag: 'button',
   });
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-  });
+
+  if (skipConfirm !== true) {
+    await driver.clickElement({
+      text: 'Confirm',
+      tag: 'button',
+    });
+  }
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
@@ -866,6 +886,19 @@ const sendTransaction = async (
     await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
+};
+
+const createInternalTransaction = async (driver) => {
+  // Firefox has incorrect balance if send flow started too quickly.
+  await driver.delay(1000);
+
+  await sendTransaction(
+    driver,
+    '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+    '1',
+    true,
+    true,
+  );
 };
 
 const findAnotherAccountFromAccountList = async (
@@ -890,11 +923,23 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
-const locateAccountBalanceDOM = async (driver, ganacheServer) => {
+/**
+ * Checks the balance for a specific address. If no address is provided, it defaults to the first address.
+ * This function is typically used during onboarding to ensure the state is retrieved correctly from metamaskState,
+ * or after a transaction is made.
+ *
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {string} [address] - The address to check the balance for (optional).
+ */
+const locateAccountBalanceDOM = async (
+  driver,
+  ganacheServer,
+  address = null,
+) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
   if (ganacheServer) {
-    const balance = await ganacheServer.getBalance();
+    const balance = await ganacheServer.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -970,12 +1015,10 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  *
  * @param {object} options - Options for the function.
  * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {string} [options.locatorID] - ID of the signature element (if any).
  * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
 async function clickSignOnSignatureConfirmation({
   driver,
-  locatorID = null,
   snapSigInsights = false,
 }) {
   if (snapSigInsights) {
@@ -985,15 +1028,6 @@ async function clickSignOnSignatureConfirmation({
   }
 
   await driver.clickElement({ text: 'Sign', tag: 'button' });
-
-  // #ethSign has a second Sign confirmation button that says "Your funds may be at risk"
-  if (locatorID === '#ethSign') {
-    await driver.clickElement({
-      text: 'Sign',
-      tag: 'button',
-      css: '[data-testid="signature-warning-sign-button"]',
-    });
-  }
 }
 
 /**
@@ -1004,36 +1038,24 @@ async function clickSignOnSignatureConfirmation({
  * @param {WebDriver} driver
  */
 async function validateContractDetails(driver) {
-  const verifyContractDetailsButton = await driver.findElement(
-    '.signature-request-content__verify-contract-details',
-  );
+  const verifyDetailsBtnSelector =
+    '.signature-request-content__verify-contract-details';
 
-  verifyContractDetailsButton.click();
+  await driver.clickElement(verifyDetailsBtnSelector);
   await driver.clickElement({ text: 'Got it', tag: 'button' });
 
-  // Approve signing typed data
-  try {
-    await driver.clickElement(
-      '[data-testid="signature-request-scroll-button"]',
-    );
-  } catch (error) {
-    // Ignore error if scroll button is not present
-  }
-  await driver.delay(regularDelayMs);
+  await driver.clickElementSafe(
+    '[data-testid="signature-request-scroll-button"]',
+  );
 }
 
 /**
- * This method assumes the extension is open, the dapp is open and waits for a
- * third window handle to open (the notification window). Once it does it
- * switches to the new window.
- *
+ * @deprecated since the background socket was added, and special handling is no longer necessary
+ * Just call `await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)` instead.
  * @param {WebDriver} driver
- * @param numHandles
  */
-async function switchToNotificationWindow(driver, numHandles = 3) {
-  const windowHandles = await driver.waitUntilXWindowHandles(numHandles);
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
+async function switchToNotificationWindow(driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
 /**
@@ -1042,7 +1064,7 @@ async function switchToNotificationWindow(driver, numHandles = 3) {
  * for each mock in the array.
  *
  * @param {WebDriver} driver
- * @param {import('mockttp').Mockttp} mockedEndpoints
+ * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints
  * @param {boolean} hasRequest
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
@@ -1140,6 +1162,25 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
+async function removeSelectedAccount(driver) {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement(
+    '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
+  );
+  await driver.clickElement('[data-testid="account-list-menu-remove"]');
+  await driver.clickElement({ text: 'Remove', tag: 'button' });
+}
+
+async function getSelectedAccountAddress(driver) {
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement('[data-testid="account-list-menu-details"]');
+  const accountAddress = await (
+    await driver.findElement('[data-testid="address-copy-button-text"]')
+  ).getText();
+  await driver.clickElement('.mm-box button[aria-label="Close"]');
+
+  return accountAddress;
+}
 /**
  * Rather than using the FixtureBuilder#withPreferencesController to set the setting
  * we need to manually set the setting because the migration #122 overrides this.
@@ -1157,6 +1198,10 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   await driver.waitForSelector(accountOptionsMenuSelector);
   await driver.clickElement(accountOptionsMenuSelector);
 
+  // fix race condition with mmi build
+  if (process.env.MMI) {
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+  }
   // Click settings from dropdown menu
   await driver.clickElement('[data-testid="global-menu-settings"]');
 
@@ -1171,6 +1216,22 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   await driver.clickElement(
     '[data-testid="toggle-redesigned-confirmations-container"]',
   );
+}
+
+/**
+ * Opens the account options menu safely, handling potential race conditions
+ * with the MMI build.
+ *
+ * @param {WebDriver} driver - The WebDriver instance used to interact with the browser.
+ * @returns {Promise<void>} A promise that resolves when the menu is opened and any necessary waits are complete.
+ */
+async function openMenuSafe(driver) {
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+
+  // fix race condition with mmi build
+  if (process.env.MMI) {
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+  }
 }
 
 module.exports = {
@@ -1211,6 +1272,8 @@ module.exports = {
   connectToDapp,
   multipleGanacheOptions,
   defaultGanacheOptions,
+  defaultGanacheOptionsForType2Transactions,
+  multipleGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   findAnotherAccountFromAccountList,
@@ -1239,6 +1302,10 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  defaultGanacheOptionsForType2Transactions,
+  removeSelectedAccount,
+  getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
+  openMenuSafe,
+  createDappTransactionTypeTwo,
+  createInternalTransaction,
 };

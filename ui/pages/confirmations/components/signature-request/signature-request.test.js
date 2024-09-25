@@ -23,6 +23,7 @@ import {
   getAccountType,
   getMemoizedMetaMaskInternalAccounts,
   getSelectedInternalAccount,
+  pendingApprovalsSortedSelector,
 } from '../../../../selectors';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import SignatureRequest from './signature-request';
@@ -80,6 +81,19 @@ const mockStore = {
       },
     },
     unapprovedTypedMessagesCount: 2,
+    pendingApprovals: {
+      '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+        id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        origin: 'http://127.0.0.1:8080',
+        type: 'transaction',
+        time: 1721383540624,
+        requestData: {
+          txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        },
+        requestState: null,
+        expectsResult: true,
+      },
+    },
   },
 };
 jest.mock('react-redux', () => {
@@ -142,6 +156,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
       return 'custody';
     case unconfirmedTransactionsHashSelector:
       return {};
+    case pendingApprovalsSortedSelector:
+      return Object.values(opts.metamask.pendingApprovals);
     default:
       return undefined;
   }

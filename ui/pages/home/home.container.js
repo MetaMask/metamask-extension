@@ -93,6 +93,7 @@ import {
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 import { hasTransactionPendingApprovals } from '../../selectors/transactions';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -117,6 +118,8 @@ const mapStateToProps = (state) => {
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
   const pendingConfirmationsPrioritized =
     getPrioritizedUnapprovedTemplatedConfirmations(state);
+  const networkMenuRedesign = getLocalNetworkMenuRedesignFeatureFlag(state);
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
   ///: END:ONLY_INCLUDE_IF
@@ -152,6 +155,7 @@ const mapStateToProps = (state) => {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ///: END:ONLY_INCLUDE_IF
   ]);
@@ -191,6 +195,7 @@ const mapStateToProps = (state) => {
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
     pendingConfirmationsPrioritized,
+    networkMenuRedesign,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,

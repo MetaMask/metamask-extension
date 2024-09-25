@@ -13,10 +13,19 @@ jest.mock('../../../../../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn(),
 }));
 
+jest.mock(
+  '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
+
 describe('<GasFeesDetails />', () => {
   const middleware = [thunk];
 
-  it('renders component for gas fees section with advanced details toggled off', async () => {
+  it('renders component for gas fees section', async () => {
     (getGasFeeTimeEstimate as jest.Mock).mockImplementation(() =>
       Promise.resolve({ upperTimeBound: '1000' }),
     );
@@ -33,37 +42,6 @@ describe('<GasFeesDetails />', () => {
       const renderResult = renderWithProvider(
         <GasFeesDetails
           setShowCustomizeGasPopover={() => console.log('open popover')}
-          showAdvancedDetails={false}
-        />,
-        mockStore,
-      );
-      container = renderResult.container;
-
-      // Wait for any asynchronous operations to complete
-      await new Promise(setImmediate);
-    });
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('renders component for gas fees section with advanced details toggled on', async () => {
-    (getGasFeeTimeEstimate as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ upperTimeBound: '1000' }),
-    );
-
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-      },
-    };
-    const mockStore = configureMockStore(middleware)(state);
-    let container;
-    await act(async () => {
-      const renderResult = renderWithProvider(
-        <GasFeesDetails
-          setShowCustomizeGasPopover={() => console.log('open popover')}
-          showAdvancedDetails={true}
         />,
         mockStore,
       );

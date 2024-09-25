@@ -11,6 +11,7 @@ import {
   setPetnamesEnabled,
   setFeatureNotificationsEnabled,
   setRedesignedConfirmationsEnabled,
+  setRedesignedTransactionsEnabled,
 } from '../../../store/actions';
 import {
   getIsBitcoinSupportEnabled,
@@ -22,6 +23,7 @@ import {
   getPetnamesEnabled,
   getFeatureNotificationsEnabled,
   getRedesignedConfirmationsEnabled,
+  getRedesignedTransactionsEnabled,
 } from '../../../selectors';
 import type {
   MetaMaskReduxDispatch,
@@ -42,6 +44,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     petnamesEnabled,
     featureNotificationsEnabled,
     redesignedConfirmationsEnabled: getRedesignedConfirmationsEnabled(state),
+    redesignedTransactionsEnabled: getRedesignedTransactionsEnabled(state),
   };
 };
 
@@ -64,6 +67,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     },
     setRedesignedConfirmationsEnabled: (value: boolean) =>
       dispatch(setRedesignedConfirmationsEnabled(value)),
+    setRedesignedTransactionsEnabled: (value: boolean) =>
+      dispatch(setRedesignedTransactionsEnabled(value)),
   };
 };
 

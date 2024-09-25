@@ -1,15 +1,24 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { Container } from '@metamask/snaps-sdk/jsx';
 
 import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { SnapDelineator } from '../snap-delineator';
 import { getSnapMetadata, getMemoizedInterface } from '../../../../selectors';
-import { Box, FormTextField } from '../../../component-library';
+import { Box } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
+import PulseLoader from '../../../ui/pulse-loader';
+import {
+  AlignItems,
+  BlockSize,
+  Display,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { mapToTemplate } from './utils';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
@@ -27,7 +36,12 @@ const SnapUIRendererComponent = ({
   onClick,
   boxProps,
   interfaceId,
+  useDelineator = true,
+  useFooter = false,
+  onCancel,
 }) => {
+  const t = useI18nContext();
+
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
@@ -38,37 +52,53 @@ const SnapUIRendererComponent = ({
     // We do this to avoid useless re-renders.
     (oldState, newState) => isEqual(oldState.content, newState.content),
   );
+  const rawContent = interfaceState?.content;
+  const content =
+    rawContent?.type === 'Container' || !rawContent
+      ? rawContent
+      : Container({ children: rawContent });
 
-  const content = interfaceState?.content;
+  const promptLegacyProps = useMemo(
+    () =>
+      isPrompt && {
+        inputValue,
+        onInputChange,
+        placeholder,
+      },
+    [inputValue, onInputChange, placeholder, isPrompt],
+  );
 
-  // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
     () =>
       content &&
       mapToTemplate({
         map: {},
         element: content,
+        onCancel,
+        useFooter,
+        promptLegacyProps,
+        t,
       }),
-    [content],
+    [content, onCancel, useFooter, promptLegacyProps, t],
   );
 
   if (isLoading || !content) {
     return (
-      <SnapDelineator
-        snapName={snapName}
-        type={delineatorType}
-        isCollapsable={isCollapsable}
-        isCollapsed={isCollapsed}
-        onClick={onClick}
-        boxProps={boxProps}
-        isLoading
-      />
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+      >
+        <PulseLoader />
+      </Box>
     );
   }
 
   const { state: initialState, context } = interfaceState;
 
-  return (
+  return useDelineator ? (
     <SnapDelineator
       snapName={snapName}
       type={delineatorType}
@@ -86,18 +116,19 @@ const SnapUIRendererComponent = ({
         >
           <MetaMaskTemplateRenderer sections={sections} />
         </SnapInterfaceContextProvider>
-        {isPrompt && (
-          <FormTextField
-            marginTop={4}
-            className="snap-prompt-input"
-            maxLength={300}
-            value={inputValue}
-            onChange={onInputChange}
-            placeholder={placeholder}
-          />
-        )}
       </Box>
     </SnapDelineator>
+  ) : (
+    <SnapInterfaceContextProvider
+      snapId={snapId}
+      interfaceId={interfaceId}
+      initialState={initialState}
+      context={context}
+    >
+      <Box className="snap-ui-renderer__content" height={BlockSize.Full}>
+        <MetaMaskTemplateRenderer sections={sections} />
+      </Box>
+    </SnapInterfaceContextProvider>
   );
 };
 
@@ -120,4 +151,7 @@ SnapUIRendererComponent.propTypes = {
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
   interfaceId: PropTypes.string,
+  useDelineator: PropTypes.bool,
+  useFooter: PropTypes.bool,
+  onCancel: PropTypes.func,
 };

@@ -149,4 +149,31 @@ describe('add-ethereum-chain confirmation', () => {
       expect(getByText('https://rpcurl.test.chain')).toBeInTheDocument();
     });
   });
+
+  it('should show warning if RPC URL has special characters', async () => {
+    const testStore = {
+      metamask: {
+        ...mockBaseStore.metamask,
+        pendingApprovals: {
+          [mockApprovalId]: {
+            ...mockApproval,
+            type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+            requestData: {
+              ...mockApproval.requestData,
+              rpcUrl: 'https://iոfura.io/gnosis',
+            },
+          },
+        },
+      },
+    };
+    const store = configureMockStore(middleware)(testStore);
+    const { getByText } = renderWithProvider(<Confirmation />, store);
+    await waitFor(() => {
+      expect(
+        getByText(
+          "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: https://iոfura.io/gnosis",
+        ),
+      ).toBeInTheDocument();
+    });
+  });
 });

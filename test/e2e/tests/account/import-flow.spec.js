@@ -16,6 +16,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { emptyHtmlPage } = require('../../mock-e2e');
+const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 
 const ganacheOptions = {
   accounts: [
@@ -46,7 +47,7 @@ describe('Import flow @no-mmi', function () {
         ganacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
 
         await completeImportSRPOnboardingFlow(
@@ -109,7 +110,7 @@ describe('Import flow @no-mmi', function () {
         // set account name
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.delay(regularDelayMs);
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement({ text: 'Add account', tag: 'button' });
 
         // should show the correct account name
         const accountName = await driver.isElementPresent({
@@ -128,6 +129,7 @@ describe('Import flow @no-mmi', function () {
 
         // Send ETH from inside MetaMask
         // starts a send transaction
+        await locateAccountBalanceDOM(driver, ganacheServer);
         await openActionMenuAndStartSendFlow(driver);
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -319,7 +321,8 @@ describe('Import flow @no-mmi', function () {
           '[data-testid="import-account-confirm-button"]',
         );
 
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        const importedAccount = '0x0961Ca10D49B9B8e371aA0Bcf77fE5730b18f2E4';
+        await locateAccountBalanceDOM(driver, ganacheServer, importedAccount);
         // New imported account has correct name and label
         await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
@@ -413,11 +416,7 @@ describe('Import flow @no-mmi', function () {
 
         const allWindows = await driver.waitUntilXWindowHandles(2);
 
-        const isMv3Enabled =
-          process.env.ENABLE_MV3 === 'true' ||
-          process.env.ENABLE_MV3 === undefined;
-
-        assert.equal(allWindows.length, isMv3Enabled ? 3 : 2);
+        assert.equal(allWindows.length, isManifestV3 ? 3 : 2);
       },
     );
   });

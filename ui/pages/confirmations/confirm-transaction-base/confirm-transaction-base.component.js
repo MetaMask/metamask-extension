@@ -34,6 +34,10 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NoteToTrader from '../../../components/institutional/note-to-trader';
 ///: END:ONLY_INCLUDE_IF
+import {
+  AccountType,
+  CustodyStatus,
+} from '../../../../shared/constants/custody';
 
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import TransactionDetail from '../components/transaction-detail/transaction-detail.component';
@@ -69,6 +73,8 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+import { NetworkChangeToastLegacy } from '../components/confirm/network-change-toast';
+import { hasTransactionData } from '../../../../shared/modules/transaction.utils';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -625,7 +631,7 @@ export default class ConfirmTransactionBase extends Component {
     const {
       txParams: { data },
     } = txData;
-    if (!data) {
+    if (!hasTransactionData(data)) {
       return null;
     }
     return (
@@ -841,8 +847,8 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { noteText } = this.state;
 
-    if (accountType === 'custody') {
-      txData.custodyStatus = 'created';
+    if (accountType === AccountType.CUSTODY) {
+      txData.custodyStatus = CustodyStatus.CREATED;
       txData.metadata = txData.metadata || {};
 
       if (isNoteToTraderSupported) {
@@ -1165,7 +1171,7 @@ export default class ConfirmTransactionBase extends Component {
           noteComponent={
             isNoteToTraderSupported && (
               <NoteToTrader
-                maxLength="280"
+                maxLength={280}
                 placeholder={t('notePlaceholder')}
                 onChange={(value) => this.setState({ noteText: value })}
                 noteText={this.state.noteText}
@@ -1208,6 +1214,7 @@ export default class ConfirmTransactionBase extends Component {
           txData={txData}
           displayAccountBalanceHeader={displayAccountBalanceHeader}
         />
+        <NetworkChangeToastLegacy confirmation={txData} />
       </TransactionModalContextProvider>
     );
   }

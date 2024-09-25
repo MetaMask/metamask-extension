@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import NftsItems from '../../../app/nfts-items/nfts-items';
+import NftsItems from '../../../app/assets/nfts/nfts-items/nfts-items';
 import {
   Box,
   Text,
@@ -25,7 +25,7 @@ import {
   getNftIsStillFetchingIndication,
   getUseNftDetection,
 } from '../../../../selectors';
-import NFTsDetectionNoticeNFTsTab from '../../../app/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
+import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 
 type NFT = {
   address: string;

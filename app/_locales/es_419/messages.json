@@ -42,7 +42,7 @@
     "message": "Cartera HW con QR"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault y Ngrave (próximamente)"
+    "message": "Ngrave Zero"
   },
   "about": {
     "message": "Acerca de"
@@ -1363,9 +1363,6 @@
   "nonceField": {
     "message": "Personalizar nonce de transacción"
   },
-  "nonceFieldDescription": {
-    "message": "Active esta opción para cambiar el nonce (número de transacción) en las pantallas de confirmación. Esta es una función avanzada, úsela con precaución."
-  },
   "nonceFieldHeading": {
     "message": "Nonce personalizado"
   },
@@ -1698,13 +1695,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Asegurar mi cartera (recomendado)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Escríbala y guárdela en varios lugares secretos."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Guárdela en un administrador de contraseñas"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Guárdela en una caja fuerte."
   },
   "seedPhraseIntroSidebarCopyOne": {

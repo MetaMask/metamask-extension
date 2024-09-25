@@ -4,11 +4,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+      />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
@@ -24,7 +29,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -40,6 +45,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -71,7 +77,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -121,7 +128,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -166,7 +174,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -182,6 +190,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -213,7 +222,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -263,7 +273,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -302,7 +313,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-2"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -341,7 +353,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-3"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -457,7 +470,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-4"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -502,7 +516,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -518,6 +532,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -549,7 +564,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -599,7 +615,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -649,7 +666,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-2"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -694,7 +712,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -710,6 +728,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -741,7 +760,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -791,7 +811,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -841,7 +862,8 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-2"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -881,21 +903,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
     </div>
-    <div
-      class="mm-box mm-box--padding-inline-2"
-    >
-      <div>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/copy.svg');"
-          />
-          Copy raw transaction data
-        </button>
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -904,11 +911,16 @@ exports[`TransactionData renders decoded data with no names 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+      />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
@@ -924,7 +936,8 @@ exports[`TransactionData renders decoded data with no names 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="advanced-details-data-function"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -951,7 +964,8 @@ exports[`TransactionData renders decoded data with no names 1`] = `
     >
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px;"
+        data-testid="advanced-details-data-param-0"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -990,7 +1004,8 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       </div>
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px;"
+        data-testid="advanced-details-data-param-1"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1040,7 +1055,8 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       </div>
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px;"
+        data-testid="advanced-details-data-param-2"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1078,21 +1094,6 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box mm-box--padding-inline-2"
-    >
-      <div>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/copy.svg');"
-          />
-          Copy raw transaction data
-        </button>
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -1101,11 +1102,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+      />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
@@ -1121,7 +1127,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      data-testid="advanced-details-data-function"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1163,7 +1170,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
     >
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px;"
+        data-testid="advanced-details-data-param-0"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1213,7 +1221,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       </div>
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px;"
+        data-testid="advanced-details-data-param-1"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1245,7 +1254,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       >
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-          style="overflow-wrap: anywhere; min-height: 24px;"
+          data-testid="advanced-details-data-param-0"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1277,7 +1287,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-0"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1309,7 +1320,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1359,7 +1371,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1398,7 +1411,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-2"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1437,7 +1451,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-3"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1477,7 +1492,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-1"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1509,7 +1525,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1559,7 +1576,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1598,7 +1616,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-2"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1637,7 +1656,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-3"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1677,7 +1697,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-            style="overflow-wrap: anywhere; min-height: 24px;"
+            data-testid="advanced-details-data-param-2"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1709,7 +1730,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1759,7 +1781,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1798,7 +1821,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-2"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1837,7 +1861,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              data-testid="advanced-details-data-param-3"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1878,7 +1903,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-          style="overflow-wrap: anywhere; min-height: 24px;"
+          data-testid="advanced-details-data-param-1"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1928,7 +1954,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-          style="overflow-wrap: anywhere; min-height: 24px;"
+          data-testid="advanced-details-data-param-2"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -1968,7 +1995,8 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       </div>
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px;"
+        data-testid="advanced-details-data-param-2"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -2006,21 +2034,6 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box mm-box--padding-inline-2"
-    >
-      <div>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/copy.svg');"
-          />
-          Copy raw transaction data
-        </button>
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -2031,11 +2044,16 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+      />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
@@ -2051,7 +2069,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
@@ -2064,6 +2082,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        data-testid="advanced-details-transaction-hex"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2071,21 +2090,6 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
         >
           0x123456
         </p>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-box--padding-inline-2"
-    >
-      <div>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/copy.svg');"
-          />
-          Copy raw transaction data
-        </button>
       </div>
     </div>
   </div>

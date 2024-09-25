@@ -11,7 +11,6 @@ export const IN_PROGRESS_TRANSACTION_STATUSES = [
 ];
 
 export const SIGNING_METHODS = Object.freeze([
-  'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
@@ -195,5 +194,3 @@ export enum TokenStandard {
   /** Not a token, but rather the base asset of the selected chain. */
   none = 'NONE',
 }
-
-export const EIP712_PRIMARY_TYPE_PERMIT = 'Permit';

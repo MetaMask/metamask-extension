@@ -52,7 +52,7 @@ describe('confirm selectors', () => {
           id: '3',
           origin: 'origin',
           time: Date.now() - 20,
-          type: ApprovalType.EthSign,
+          type: ApprovalType.PersonalSign,
           requestData: {},
           requestState: null,
           expectsResult: false,

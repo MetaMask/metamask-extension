@@ -12,7 +12,6 @@ import { isSignatureTransactionType } from '../utils';
 import { getPreferences } from '../../../selectors/selectors';
 
 const ConfirmationApprovalTypes = [
-  ApprovalType.EthSign,
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
   ApprovalType.Transaction,

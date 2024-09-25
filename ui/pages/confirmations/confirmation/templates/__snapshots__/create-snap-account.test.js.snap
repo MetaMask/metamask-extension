@@ -12,55 +12,68 @@ exports[`create-snap-account confirmation should match snapshot 1`] = `
         class="mm-box create-snap-account-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
       >
         <div
-          class="mm-box snaps-authorship-header mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
-          style="box-shadow: var(--shadow-size-lg) var(--color-shadow-default);"
+          class="mm-box snaps-authorship-header mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-alternative"
+          style="box-shadow: var(--shadow-size-md) var(--color-shadow-default);"
         >
-          <div
-            class="mm-box"
+          <button
+            aria-label="Close"
+            class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           >
-            <div
-              class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
-            >
-              <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
-                style="border-width: 0px;"
-              >
-                T
-              </div>
-              <div
-                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
-              >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-alternative mm-box--border-width-2 box--border-style-solid"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-info-inverse"
-                    style="mask-image: url('./images/icons/snaps.svg');"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/close.svg');"
+            />
+          </button>
           <div
-            class="mm-box mm-box--margin-right-4 mm-box--margin-left-4 mm-box--display-flex mm-box--flex-direction-column"
+            class="mm-box mm-box--margin-right-4 mm-box--margin-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             style="overflow: hidden;"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
             >
-              Test Snap
-            </p>
-            <p
-              class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+              <div
+                class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+                  style="border-width: 0px;"
+                >
+                  T
+                </div>
+                <div
+                  class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-alternative mm-box--border-width-2 box--border-style-solid"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
+                      style="mask-image: url('./images/icons/snaps.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default"
+              >
+                Test Snap
+              </p>
+            </div>
+            <div
+              class="mm-box mm-box--padding-top-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
             >
-              @metamask/snap-test
-            </p>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+              >
+                @metamask/snap-test
+              </p>
+            </div>
           </div>
           <div
             class="mm-box mm-box--margin-left-auto"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon snaps-authorship-header__button mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon snaps-authorship-header__button mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"

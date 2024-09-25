@@ -38,7 +38,7 @@ export const NotificationDetailButton = ({
   const onClick = () => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationDetailClicked,
+      event: MetaMetricsEventName.NotificationClicked,
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,

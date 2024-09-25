@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from 'react';
+import React, { useContext, useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -9,8 +9,17 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   InternalAccount,
   KeyringAccountType,
+  KeyringClient,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { CaipChainId } from '@metamask/utils';
+import {
+  BITCOIN_WALLET_NAME,
+  BITCOIN_WALLET_SNAP_ID,
+  BitcoinWalletSnapSender,
+} from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 import {
   Box,
   ButtonLink,
@@ -27,12 +36,9 @@ import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import {
   AccountListItem,
+  AccountListItemMenuTypes,
   CreateEthAccount,
   ImportAccount,
-  AccountListItemMenuTypes,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  CreateBtcAccount,
-  ///: END:ONLY_INCLUDE_IF
 } from '..';
 import {
   AlignItems,
@@ -45,12 +51,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
-  getOriginOfCurrentTab,
-  getUpdatedAndSortedAccounts,
   getHiddenAccountsList,
-  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -58,6 +60,10 @@ import {
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getMetaMaskAccountsOrdered,
+  getOriginOfCurrentTab,
+  getSelectedInternalAccount,
+  getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -174,7 +180,7 @@ type AccountListMenuProps = {
 export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
-  accountListItemProps = {},
+  accountListItemProps,
   allowedAccountTypes = [
     EthAccountType.Eoa,
     EthAccountType.Erc4337,
@@ -223,6 +229,16 @@ export const AccountListMenu = ({
   const isBtcTestnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcTestnetAccount,
   );
+
+  const createBitcoinAccount = async (scope: CaipChainId) => {
+    // Client to create the account using the Bitcoin Snap
+    const client = new KeyringClient(new BitcoinWalletSnapSender());
+
+    // This will trigger the Snap account creation flow (+ account renaming)
+    await client.createAccount({
+      scope,
+    });
+  };
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -243,10 +259,13 @@ export const AccountListMenu = ({
   }
   searchResults = mergeAccounts(searchResults, filteredAccounts);
 
-  const title = getActionTitle(t as (text: string) => string, actionMode);
+  const title = useMemo(
+    () => getActionTitle(t as (text: string) => string, actionMode),
+    [actionMode, t],
+  );
 
   // eslint-disable-next-line no-empty-function
-  let onBack = () => {};
+  let onBack;
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
@@ -254,6 +273,23 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  const onAccountListItemItemClicked = useCallback(
+    (account) => {
+      return () => {
+        onClose();
+        trackEvent({
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.NavAccountSwitched,
+          properties: {
+            location: 'Main Menu',
+          },
+        });
+        dispatch(setSelectedAccount(account.address));
+      };
+    },
+    [dispatch, onClose, trackEvent],
+  );
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -283,47 +319,6 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
-        {
-          // Bitcoin mainnet:
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-          bitcoinSupportEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
-            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-              <CreateBtcAccount
-                defaultAccountName="Bitcoin Account"
-                network={MultichainNetworks.BITCOIN}
-                onActionComplete={async (confirmed) => {
-                  if (confirmed) {
-                    onClose();
-                  } else {
-                    setActionMode(ACTION_MODES.LIST);
-                  }
-                }}
-              />
-            </Box>
-          ) : null
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {
-          // Bitcoin testnet:
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-          bitcoinTestnetSupportEnabled &&
-          actionMode === ACTION_MODES.ADD_BITCOIN_TESTNET ? (
-            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-              <CreateBtcAccount
-                defaultAccountName="Bitcoin Testnet Account"
-                network={MultichainNetworks.BITCOIN_TESTNET}
-                onActionComplete={async (confirmed) => {
-                  if (confirmed) {
-                    onClose();
-                  } else {
-                    setActionMode(ACTION_MODES.LIST);
-                  }
-                }}
-              />
-            </Box>
-          ) : null
-          ///: END:ONLY_INCLUDE_IF
-        }
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
@@ -367,29 +362,37 @@ export const AccountListMenu = ({
             </Box>
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              bitcoinSupportEnabled ? (
+              bitcoinSupportEnabled && (
                 <Box marginTop={4}>
                   <ButtonLink
                     disabled={isBtcMainnetAccountAlreadyCreated}
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
-                    onClick={() => {
+                    onClick={async () => {
                       trackEvent({
                         category: MetaMetricsEventCategory.Navigation,
                         event: MetaMetricsEventName.AccountAddSelected,
                         properties: {
-                          account_type: MetaMetricsEventAccountType.Default,
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          snap_id: BITCOIN_WALLET_SNAP_ID,
+                          snap_name: BITCOIN_WALLET_NAME,
                           location: 'Main Menu',
                         },
                       });
-                      setActionMode(ACTION_MODES.ADD_BITCOIN);
+
+                      // The account creation + renaming is handled by the
+                      // Snap account bridge, so we need to close the current
+                      // model
+                      onClose();
+
+                      await createBitcoinAccount(MultichainNetworks.BITCOIN);
                     }}
-                    data-testid="multichain-account-menu-popover-add-account"
+                    data-testid="multichain-account-menu-popover-add-btc-account"
                   >
                     {t('addNewBitcoinAccount')}
                   </ButtonLink>
                 </Box>
-              ) : null
+              )
               ///: END:ONLY_INCLUDE_IF
             }
             {
@@ -400,10 +403,16 @@ export const AccountListMenu = ({
                     disabled={isBtcTestnetAccountAlreadyCreated}
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
-                    onClick={() => {
-                      setActionMode(ACTION_MODES.ADD_BITCOIN_TESTNET);
+                    onClick={async () => {
+                      // The account creation + renaming is handled by the Snap account bridge, so
+                      // we need to close the current model
+                      onClose();
+
+                      await createBitcoinAccount(
+                        MultichainNetworks.BITCOIN_TESTNET,
+                      );
                     }}
-                    data-testid="multichain-account-menu-popover-add-account-testnet"
+                    data-testid="multichain-account-menu-popover-add-btc-account-testnet"
                   >
                     {t('addNewBitcoinTestnetAccount')}
                   </ButtonLink>
@@ -575,17 +584,7 @@ export const AccountListMenu = ({
                     key={account.address}
                   >
                     <AccountListItem
-                      onClick={() => {
-                        onClose();
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.NavAccountSwitched,
-                          properties: {
-                            location: 'Main Menu',
-                          },
-                        });
-                        dispatch(setSelectedAccount(account.address));
-                      }}
+                      onClick={onAccountListItemItemClicked(account)}
                       account={account}
                       key={account.address}
                       selected={selectedAccount.address === account.address}

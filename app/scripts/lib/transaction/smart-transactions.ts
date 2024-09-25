@@ -63,6 +63,7 @@ export type SubmitSmartTransactionRequest = {
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
+  isHardwareWallet: boolean;
   controllerMessenger: SmartTransactionsControllerMessenger;
   featureFlags: FeatureFlags;
 };
@@ -90,6 +91,8 @@ class SmartTransactionHook {
 
   #isSmartTransaction: boolean;
 
+  #isHardwareWallet: boolean;
+
   #smartTransactionsController: SmartTransactionsController;
 
   #transactionController: TransactionController;
@@ -104,6 +107,7 @@ class SmartTransactionHook {
       smartTransactionsController,
       transactionController,
       isSmartTransaction,
+      isHardwareWallet,
       controllerMessenger,
       featureFlags,
     } = request;
@@ -113,6 +117,7 @@ class SmartTransactionHook {
     this.#smartTransactionsController = smartTransactionsController;
     this.#transactionController = transactionController;
     this.#isSmartTransaction = isSmartTransaction;
+    this.#isHardwareWallet = isHardwareWallet;
     this.#controllerMessenger = controllerMessenger;
     this.#featureFlags = featureFlags;
     this.#isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
@@ -132,6 +137,7 @@ class SmartTransactionHook {
     const useRegularTransactionSubmit = { transactionHash: undefined };
     if (
       !this.#isSmartTransaction ||
+      this.#isHardwareWallet ||
       isUnsupportedTransactionTypeForSmartTransaction
     ) {
       return useRegularTransactionSubmit;

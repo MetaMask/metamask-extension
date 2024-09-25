@@ -12,6 +12,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { CombinedBackgroundAndReduxState } from '../../../store/store';
+import { Text } from '../../component-library';
+import {
+  TextVariant,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 export default connect(mapStateToProps)(QrCodeView);
 
@@ -49,9 +54,13 @@ function QrCodeView({
       {Array.isArray(message) ? (
         <div className="qr-code__message-container">
           {message.map((msg, index) => (
-            <div className="qr_code__message" key={index}>
+            <Text
+              key={index}
+              variant={TextVariant.bodyXs}
+              color={TextColor.warningDefault}
+            >
               {msg}
-            </div>
+            </Text>
           ))}
         </div>
       ) : (

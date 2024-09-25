@@ -819,7 +819,6 @@ describe('Actions', () => {
                 options: {},
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
@@ -867,7 +866,6 @@ describe('Actions', () => {
                 options: {},
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
@@ -2574,27 +2572,6 @@ describe('Actions', () => {
       ];
 
       expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#setBridgeFeatureFlags', () => {
-    it('calls setBridgeFeatureFlags in the background', async () => {
-      const store = mockStore();
-      background.setBridgeFeatureFlags = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-      setBackgroundConnection(background);
-
-      await store.dispatch(
-        actions.setBridgeFeatureFlags({ extensionSupport: true }),
-      );
-
-      expect(background.setBridgeFeatureFlags.callCount).toStrictEqual(1);
-      expect(background.setBridgeFeatureFlags.getCall(0).args[0]).toStrictEqual(
-        {
-          extensionSupport: true,
-        },
-      );
     });
   });
 });

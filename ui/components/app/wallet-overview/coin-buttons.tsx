@@ -36,7 +36,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
   getCurrentKeyring,
+  getDataCollectionForMarketing,
   getMetaMetricsId,
+  getParticipateInMetaMetrics,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
 } from '../../../selectors';
@@ -65,7 +67,7 @@ import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-
+import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
@@ -97,6 +99,8 @@ const CoinButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
@@ -208,6 +212,8 @@ const CoinButtons = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
+
+  const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
   const handleSendOnClick = useCallback(async () => {
@@ -285,32 +291,24 @@ const CoinButtons = ({
   }, [chainId, defaultSwapsToken]);
 
   const handleBridgeOnClick = useCallback(() => {
-    if (isBridgeChain) {
-      const portfolioUrl = getPortfolioUrl(
-        'bridge',
-        'ext_bridge_button',
-        metaMetricsId,
-      );
-      global.platform.openTab({
-        url: `${portfolioUrl}${
-          location.pathname.includes('asset') ? '&token=native' : ''
-        }`,
-      });
-      trackEvent({
-        category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.BridgeLinkClicked,
-        properties: {
-          location: 'Home',
-          text: 'Bridge',
-          chain_id: chainId,
-          token_symbol: 'ETH',
-        },
-      });
+    if (!defaultSwapsToken) {
+      return;
     }
-  }, [isBridgeChain, chainId, metaMetricsId]);
+    openBridgeExperience(
+      'Home',
+      defaultSwapsToken,
+      location.pathname.includes('asset') ? '&token=native' : '',
+    );
+  }, [defaultSwapsToken, location, openBridgeExperience]);
 
   const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl('', 'ext_portfolio_button', metaMetricsId);
+    const url = getPortfolioUrl(
+      '',
+      'ext_portfolio_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
     global.platform.openTab({ url });
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,

@@ -169,6 +169,7 @@ const mapStateToProps = (state, ownProps) => {
   const conversionRate = getConversionRate(state);
   const { addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
+
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;

@@ -36,27 +36,6 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export default function setupSentry() {
-  if (!RELEASE) {
-    throw new Error('Missing release');
-  }
-
-  if (!getSentryTarget()) {
-    log('Skipped initialization');
-    return undefined;
-  }
-
-  log('Initializing');
-
-  integrateLogging();
-  setSentryClient();
-
-  return {
-    ...Sentry,
-    getMetaMetricsEnabled,
-  };
-}
-
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
@@ -87,6 +66,26 @@ function getClientOptions() {
   };
 }
 
+export default function setupSentry() {
+  if (!RELEASE) {
+    throw new Error('Missing release');
+  }
+
+  if (!getSentryTarget()) {
+    log('Skipped initialization');
+    return undefined;
+  }
+
+  log('Initializing');
+
+  integrateLogging();
+  setSentryClient();
+
+  return {
+    ...Sentry,
+    getMetaMetricsEnabled,
+  };
+}
 /**
  * Returns whether MetaMetrics is enabled, given the application state.
  *
@@ -237,7 +236,6 @@ function setSentryClient() {
     .catch((error) => {
       console.log('Error getting extension installType', error);
     });
-
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
    * potentially clashing with a website also using Sentry, but this could only happen in the content script.
@@ -351,6 +349,7 @@ export function rewriteReport(report) {
     }
 
     report.extra.appState = appState;
+
     if (browser.runtime && browser.runtime.id) {
       report.extra.extensionId = browser.runtime.id;
     }

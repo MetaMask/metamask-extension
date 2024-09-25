@@ -1,13 +1,8 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
 import {
-  getMockAuthNonceResponse,
-  getMockAuthLoginResponse,
-  getMockAuthAccessTokenResponse,
-} from '../../../../app/scripts/controllers/authentication/mocks/mockResponses';
-import {
-  getMockUserStorageGetResponse,
-  getMockUserStoragePutResponse,
-} from '../../../../app/scripts/controllers/user-storage/mocks/mockResponses';
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
 import {
   getMockFeatureAnnouncementResponse,
   getMockBatchCreateTriggersResponse,
@@ -22,6 +17,9 @@ import {
   getMockDeleteFCMRegistrationTokenResponse,
 } from '../../../../app/scripts/controllers/push-platform-notifications/mocks/mockResponse';
 
+const AuthMocks = AuthenticationController.Mocks;
+const StorageMocks = UserStorageController.Mocks;
+
 type MockResponse = {
   url: string | RegExp;
   requestMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -35,13 +33,13 @@ type MockResponse = {
  */
 export function mockNotificationServices(server: Mockttp) {
   // Auth
-  mockAPICall(server, getMockAuthNonceResponse());
-  mockAPICall(server, getMockAuthLoginResponse());
-  mockAPICall(server, getMockAuthAccessTokenResponse());
+  mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
+  mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
+  mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  mockAPICall(server, getMockUserStorageGetResponse());
-  mockAPICall(server, getMockUserStoragePutResponse());
+  mockAPICall(server, StorageMocks.getMockUserStorageGetResponse());
+  mockAPICall(server, StorageMocks.getMockUserStoragePutResponse());
 
   // Notifications
   mockAPICall(server, getMockFeatureAnnouncementResponse());

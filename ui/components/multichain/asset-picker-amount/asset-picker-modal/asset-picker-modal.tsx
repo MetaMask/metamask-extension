@@ -279,8 +279,14 @@ export function AssetPickerModal({
   ]);
 
   const Search = useCallback(
-    ({ isNFTSearch = false }: { isNFTSearch?: boolean }) => (
-      <Box padding={1} paddingLeft={4} paddingRight={4}>
+    ({
+      isNFTSearch = false,
+      props,
+    }: {
+      isNFTSearch?: boolean;
+      props?: React.ComponentProps<typeof Box>;
+    }) => (
+      <Box padding={4} {...props}>
         <TextFieldSearch
           borderRadius={BorderRadius.LG}
           placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
@@ -301,7 +307,6 @@ export function AssetPickerModal({
           }}
           endAccessory={null}
           size={TextFieldSearchSize.Lg}
-          marginBottom={1}
         />
       </Box>
     ),
@@ -317,7 +322,7 @@ export function AssetPickerModal({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader paddingBottom={2} onClose={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
           </Text>
@@ -328,7 +333,7 @@ export function AssetPickerModal({
             gap={1}
             alignItems={AlignItems.center}
             marginInline="auto"
-            marginBottom={4}
+            marginBottom={3}
           >
             <AvatarToken
               borderRadius={BorderRadius.full}
@@ -343,7 +348,7 @@ export function AssetPickerModal({
         <Box className="modal-tab__wrapper">
           {isDest ? (
             <>
-              <Search />
+              <Search props={{ paddingTop: 1 }} />
               <AssetList
                 handleAssetChange={handleAssetChange}
                 asset={asset}
@@ -358,8 +363,6 @@ export function AssetPickerModal({
               tabsClassName="modal-tab__tabs"
             >
               {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 <Tab
                   activeClassName="modal-tab__tab--active"
                   className="modal-tab__tab"
@@ -377,8 +380,6 @@ export function AssetPickerModal({
               }
 
               {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 <Tab
                   activeClassName="modal-tab__tab--active"
                   className="modal-tab__tab"

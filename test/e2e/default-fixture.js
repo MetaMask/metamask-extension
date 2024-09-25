@@ -41,7 +41,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               options: {},
               methods: [
                 'personal_sign',
-                'eth_sign',
                 'eth_signTransaction',
                 'eth_signTypedData_v1',
                 'eth_signTypedData_v3',
@@ -116,6 +115,13 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           [CHAIN_IDS.LOCALHOST]: true,
         },
         snapsInstallPrivacyWarningShown: true,
+      },
+      BridgeController: {
+        bridgeState: {
+          bridgeFeatureFlags: {
+            extensionSupport: false,
+          },
+        },
       },
       CurrencyController: {
         currentCurrency: 'usd',
@@ -209,6 +215,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
           isRedesignedConfirmationsDeveloperEnabled: false,
+          showConfirmationAdvancedDetails: false,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',

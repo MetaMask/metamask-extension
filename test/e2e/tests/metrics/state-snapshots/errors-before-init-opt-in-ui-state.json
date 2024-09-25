@@ -118,6 +118,7 @@
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
+        "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean"
       },
       "selectedAddress": "string",
@@ -148,6 +149,13 @@
       "detectedTokens": "object",
       "ignoredTokens": "object",
       "tokens": "object"
+    },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean"
+        }
+      }
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",

@@ -3,13 +3,13 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
+import { Text } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
 import {
-  FONT_WEIGHT,
-  TEXT_ALIGN,
-  TypographyVariant,
+  FontWeight,
+  TextAlign,
   AlignItems,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -25,6 +25,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCreateSession } from '../../../hooks/metamask-notifications/useCreateSession';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectIsSignedIn } from '../../../selectors/metamask-notifications/authentication';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -36,45 +37,48 @@ export default function CreationSuccessful() {
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
+  const isSignedIn = useSelector(selectIsSignedIn);
+
   return (
     <div className="creation-successful" data-testid="creation-successful">
-      <Box textAlign={TEXT_ALIGN.CENTER}>
+      <Box textAlign={TextAlign.Center}>
         <img src="./images/tada.png" />
-        <Typography
-          variant={TypographyVariant.H2}
-          fontWeight={FONT_WEIGHT.BOLD}
+        <Text
+          variant={TextVariant.headingLg}
+          fontWeight={FontWeight.Bold}
           margin={6}
         >
           {t('walletCreationSuccessTitle')}
-        </Typography>
-        <Typography variant={TypographyVariant.H4}>
+        </Text>
+        <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Normal}>
           {t('walletCreationSuccessDetail')}
-        </Typography>
+        </Text>
       </Box>
-      <Typography
-        variant={TypographyVariant.H4}
-        boxProps={{ align: AlignItems.flexStart }}
+      <Text
+        variant={TextVariant.headingSm}
+        alignItems={AlignItems.flexStart}
+        fontWeight={FontWeight.Normal}
         marginLeft={12}
       >
         {t('remember')}
-      </Typography>
+      </Text>
       <ul>
         <li>
-          <Typography variant={TypographyVariant.H4}>
+          <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Normal}>
             {isBeta()
               ? t('betaWalletCreationSuccessReminder1')
               : t('walletCreationSuccessReminder1')}
-          </Typography>
+          </Text>
         </li>
         <li>
-          <Typography variant={TypographyVariant.H4}>
+          <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Normal}>
             {isBeta()
               ? t('betaWalletCreationSuccessReminder2')
               : t('walletCreationSuccessReminder2')}
-          </Typography>
+          </Text>
         </li>
         <li>
-          <Typography variant={TypographyVariant.H4}>
+          <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Normal}>
             {t('walletCreationSuccessReminder3', [
               <span
                 key="creation-successful__bold"
@@ -83,7 +87,7 @@ export default function CreationSuccessful() {
                 {t('walletCreationSuccessReminder3BoldSection')}
               </span>,
             ])}
-          </Typography>
+          </Text>
         </li>
         <li>
           <Button
@@ -114,6 +118,7 @@ export default function CreationSuccessful() {
               event: MetaMetricsEventName.OnboardingWalletCreationComplete,
               properties: {
                 method: firstTimeFlowType,
+                is_signed_in: isSignedIn,
                 is_profile_syncing_enabled: isProfileSyncingEnabled,
               },
             });

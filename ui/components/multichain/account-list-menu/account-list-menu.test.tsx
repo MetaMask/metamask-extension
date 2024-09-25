@@ -21,12 +21,20 @@ import { AccountListMenu } from '.';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
+const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => mockGetEnvironmentType,
 }));
 ///: END:ONLY_INCLUDE_IF
+
+jest.mock('../../../store/actions', () => {
+  return {
+    ...jest.requireActual('../../../store/actions'),
+    getNextAvailableAccountName: () => mockNextAccountName,
+  };
+});
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -109,6 +117,7 @@ describe('AccountListMenu', () => {
 
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
     expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 
   it('displays accounts for list and filters by search', () => {
@@ -259,7 +268,10 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Add a new Ethereum account'));
-    expect(getByText('Create')).toBeInTheDocument();
+    const addAccountButton = document.querySelector(
+      '[data-testid="submit-add-account-with-name"]',
+    );
+    expect(addAccountButton).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 
     fireEvent.click(getByText('Cancel'));

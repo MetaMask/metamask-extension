@@ -1,4 +1,14 @@
 .snap-ui-renderer {
+  &__content {
+    margin-bottom: 0 !important;
+  }
+
+  &__container {
+    & > div:first-child {
+      padding: 16px;
+    }
+  }
+
   &__error {
     margin-top: 0 !important;
   }
@@ -13,7 +23,6 @@
   }
 
   &__panel {
-    height: 100%;
     gap: 8px;
   }
 
@@ -29,6 +38,30 @@
     span {
       font-style: inherit;
       font-weight: inherit;
+    }
+  }
+
+  &__image {
+    max-width: 100%;
+  }
+
+  &__footer {
+    margin-top: auto;
+
+    &-centered {
+      margin-top: auto;
+
+      & button {
+        &:first-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    & button {
+      &:first-child {
+        margin-right: 16px;
+      }
     }
   }
 }
