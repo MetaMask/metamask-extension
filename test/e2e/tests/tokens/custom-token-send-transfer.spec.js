@@ -136,6 +136,12 @@ describe('Transfer custom tokens @no-mmi', function () {
           text: '-1.5 TST',
         });
 
+        // this selector helps prevent flakiness. it allows driver to wait until send transfer is "confirmed"
+        await driver.waitForSelector({
+          text: 'Confirmed',
+          tag: 'div',
+        });
+
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');
         const tokenAmount = await driver.findElement(
