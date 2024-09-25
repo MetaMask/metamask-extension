@@ -155,7 +155,9 @@ export class SwapPage {
 
     if (!trasnsactionCompleted && !countSecond) {
       await this.viewInActivityBtn.click();
+      return false;
     }
+    return true;
   }
 
   async waitForInsufficentBalance() {

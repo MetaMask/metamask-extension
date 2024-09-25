@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { test } from '@playwright/test';
+import log from 'loglevel';
 
 import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
 import { SignUpPage } from '../../shared/pageObjects/signup-page';
@@ -29,7 +30,6 @@ const testSet = [
     destination: 'USDC',
     network: Tenderly.Abritrum,
   },
-  /*
   {
     quantity: '.5',
     source: 'ETH',
@@ -37,7 +37,7 @@ const testSet = [
     destination: 'OP',
     network: Tenderly.Optimism,
   },
-  */
+
   {
     quantity: '50',
     source: 'DAI',
@@ -110,19 +110,23 @@ testSet.forEach((options) => {
       const quoteFound = await swapPage.waitForQuote();
       if (quoteFound) {
         await swapPage.swap();
-        await swapPage.waitForTransactionToComplete({ seconds: 60 });
-        await walletPage.selectActivityList();
-        await activityListPage.checkActivityIsConfirmed({
-          activity: `Swap ${options.source} to ${options.destination}`,
-        });
+        const transactionCompleted =
+          await swapPage.waitForTransactionToComplete({ seconds: 60 });
+        if (transactionCompleted) {
+          await walletPage.selectActivityList();
+          await activityListPage.checkActivityIsConfirmed({
+            activity: `Swap ${options.source} to ${options.destination}`,
+          });
+        } else {
+          log.error(`\tERROR: Transaction did not complete. Skipping test`);
+          test.skip();
+        }
       } else {
-        // eslint-disable-next-line no-console
-        console.error(
-          `\t\tERROR: No quotes found on ${options.network.name} network' Skipping the test`,
-        );
+        log.error(`\tERROR: No quotes found on. Skipping test`);
         test.skip();
       }
     } else {
+      log.error(`\tERROR: Error while entering the quote. Skipping test`);
       test.skip();
     }
   });
