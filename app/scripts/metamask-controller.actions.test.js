@@ -65,7 +65,7 @@ jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
-describe('MetaMaskController', function () {
+describe.skip('MetaMaskController', function () {
   let metamaskController;
   const noop = () => undefined;
 

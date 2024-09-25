@@ -6982,11 +6982,11 @@ export default class MetamaskController extends EventEmitter {
     this.#checkTokenListPolling(currentState, previousState);
 
     // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
-    // this.controllerMessenger.publish(
-    //   'PreferencesController:stateChange',
-    //   currentState,
-    //   [],
-    // );
+    this.controllerMessenger.publish(
+      'PreferencesController:stateChange',
+      currentState,
+      [],
+    );
   }
 
   #checkTokenListPolling(currentState, previousState) {

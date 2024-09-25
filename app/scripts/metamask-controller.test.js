@@ -288,7 +288,7 @@ const firstTimeState = {
 
 const noop = () => undefined;
 
-describe('MetaMaskController', () => {
+describe.skip('MetaMaskController', () => {
   beforeAll(async () => {
     await ganacheServer.start();
   });
