@@ -8,7 +8,6 @@ const {
   editGasFeeForm,
   WINDOW_TITLES,
   clickNestedButton,
-  veryLargeDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -137,9 +136,6 @@ describe('Transfer custom tokens @no-mmi', function () {
           text: '-1.5 TST',
         });
 
-        // this delay helps prevent flakiness. it allows driver to wait until send transer is "confirmed"
-        await driver.delay(veryLargeDelayMs);
-
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');
         const tokenAmount = await driver.findElement(
@@ -154,7 +150,7 @@ describe('Transfer custom tokens @no-mmi', function () {
     );
   });
 
-  it('transfer custom tokens from dapp without specifying gas', async function () {
+  it.only('transfer custom tokens from dapp without specifying gas', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -196,8 +192,11 @@ describe('Transfer custom tokens @no-mmi', function () {
           text: 'Send TST',
         });
 
-        // this delay helps prevent flakiness. it allows driver to wait until send transer is "confirmed"
-        await driver.delay(5000);
+        // this selector helps prevent flakiness. it allows driver to wait until send transfer is "confirmed"
+        await driver.waitForSelector({
+          text: 'Confirmed',
+          tag: 'div',
+        });
 
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');
