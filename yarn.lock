@@ -4372,10 +4372,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@lavamoat/snow@npm:2.0.1"
-  checksum: 10/f48aa87a4691748a48c0b90606119a07bba85f5315245ad3a076b4093eab0c74c0211d34a9b0b5029cb51b16b20704fdca18c1cbe182a82f0052374d61aa2c81
+"@lavamoat/snow@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@lavamoat/snow@npm:2.0.2"
+  checksum: 10/613d4b7f42a80fb0c447f124ef0b7497afc7e5a5f81edd961975e14f35e9cfcbde04f649155f5d2fdcc334d5a190246ae90e23d53ca4e126e672e229c26895ae
   languageName: node
   linkType: hard
 
@@ -5666,19 +5666,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^8.0.0, @metamask/keyring-api@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "@metamask/keyring-api@npm:8.1.0"
+"@metamask/keyring-api@npm:^8.0.0, @metamask/keyring-api@npm:^8.1.0, @metamask/keyring-api@npm:^8.1.2":
+  version: 8.1.2
+  resolution: "@metamask/keyring-api@npm:8.1.2"
   dependencies:
-    "@metamask/snaps-sdk": "npm:^6.1.0"
+    "@metamask/snaps-sdk": "npm:^6.5.1"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/utils": "npm:^9.2.1"
     "@types/uuid": "npm:^9.0.8"
     bech32: "npm:^2.0.0"
     uuid: "npm:^9.0.1"
   peerDependencies:
     "@metamask/providers": ">=15 <18"
-  checksum: 10/15711ddaa0007794cc23f9c02f6cfbee85aa1cf79a46468a0398404c295eef1511555ce6bd60a691081d33864d288ea8b309ee9ac9c4d6f277ab22e4d97cb76e
+  checksum: 10/bddb6d8c86f39b9afef0b484b473cfff5e33c99037de6ded2bc5d04d935971bf232237121c0e1297e43f266006f9c8a0cf48aa7d5588a7c4796fc803acdcfd00
   languageName: node
   linkType: hard
 
@@ -6078,11 +6078,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/profile-sync-controller@npm:0.8.0"
+"@metamask/profile-sync-controller@npm:^0.9.1":
+  version: 0.9.1
+  resolution: "@metamask/profile-sync-controller@npm:0.9.1"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/keyring-api": "npm:^8.1.2"
+    "@metamask/keyring-controller": "npm:^17.2.1"
     "@metamask/snaps-sdk": "npm:^6.5.0"
     "@metamask/snaps-utils": "npm:^8.1.1"
     "@noble/ciphers": "npm:^0.5.2"
@@ -6094,7 +6096,7 @@ __metadata:
     "@metamask/accounts-controller": ^18.1.1
     "@metamask/keyring-controller": ^17.2.0
     "@metamask/snaps-controllers": ^9.7.0
-  checksum: 10/613e2e87615f1db4a1a4559895a74c2b89c15720e831440eec0916aa96305f3db9b3e0926ac4a5d7532c462baaa18a117e2b9aa107949777163488c203cfea05
+  checksum: 10/9f0c22e136a526527ec3a147084024b6d5a20219894166f00fc6b22d1554f61f19b357ccbdd32973745e03ab0481d1908295309870f723e7d3bf06f720569d8a
   languageName: node
   linkType: hard
 
@@ -26108,7 +26110,7 @@ __metadata:
     "@lavamoat/lavadome-core": "npm:0.0.10"
     "@lavamoat/lavadome-react": "npm:0.0.17"
     "@lavamoat/lavapack": "npm:^6.1.0"
-    "@lavamoat/snow": "npm:^2.0.1"
+    "@lavamoat/snow": "npm:^2.0.2"
     "@lgbot/madge": "npm:^6.2.0"
     "@lydell/node-pty": "npm:^1.0.1"
     "@material-ui/core": "npm:^4.11.0"
@@ -26180,7 +26182,7 @@ __metadata:
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
     "@metamask/preinstalled-example-snap": "npm:^0.1.0"
-    "@metamask/profile-sync-controller": "npm:^0.8.0"
+    "@metamask/profile-sync-controller": "npm:^0.9.1"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.0"

@@ -71,7 +71,7 @@ exports[`<ApproveStaticSimulation /> renders component 1`] = `
         style="margin-left: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
           <div
             class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
