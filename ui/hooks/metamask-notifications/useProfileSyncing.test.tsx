@@ -29,6 +29,7 @@ type ArrangeMocksMetamaskStateOverrides = {
   isProfileSyncingEnabled?: boolean;
   isUnlocked?: boolean;
   useExternalServices?: boolean;
+  completedOnboarding?: boolean;
 };
 
 const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
@@ -36,6 +37,7 @@ const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
   isProfileSyncingEnabled: false,
   isUnlocked: true,
   useExternalServices: true,
+  completedOnboarding: true,
 };
 
 const arrangeMocks = (

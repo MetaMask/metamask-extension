@@ -73,6 +73,7 @@ import FeeDetailsComponent from '../components/fee-details-component/fee-details
 import { SimulationDetails } from '../components/simulation-details';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
 import { NetworkChangeToastLegacy } from '../components/confirm/network-change-toast';
+import { hasTransactionData } from '../../../../shared/modules/transaction.utils';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -640,7 +641,7 @@ export default class ConfirmTransactionBase extends Component {
     const {
       txParams: { data },
     } = txData;
-    if (!data) {
+    if (!hasTransactionData(data)) {
       return null;
     }
     return (
