@@ -274,7 +274,8 @@
     "@metamask/keyring-controller@npm:^16.0.0": "patch:@metamask/keyring-controller@npm%3A17.1.1#~/.yarn/patches/@metamask-keyring-controller-npm-17.1.1-098cb41930.patch",
     "@metamask/keyring-controller@npm:^17.1.0": "patch:@metamask/keyring-controller@npm%3A17.1.1#~/.yarn/patches/@metamask-keyring-controller-npm-17.1.1-098cb41930.patch",
     "@trezor/connect-web@npm:^9.1.11": "patch:@trezor/connect-web@npm%3A9.3.0#~/.yarn/patches/@trezor-connect-web-npm-9.3.0-040ab10d9a.patch",
-    "path-to-regexp": "1.9.0"
+    "path-to-regexp": "1.9.0",
+    "@metamask/queued-request-controller": "file:../core/packages/queued-request-controller"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
