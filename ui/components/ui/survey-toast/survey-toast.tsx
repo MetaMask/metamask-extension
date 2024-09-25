@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../../shared/constants/time';
@@ -32,13 +32,19 @@ export function SurveyToast() {
   const basicFunctionality = useSelector(getUseExternalServices);
   const internalAccount = useSelector(getSelectedInternalAccount);
 
+  const surveyId = 1;
+  const surveyUrl = useMemo(
+    () =>
+      `https://accounts.dev-api.cx.metamask.io/v1/users/${internalAccount?.address}/surveys?surveyId=${surveyId}`,
+    [internalAccount?.address],
+  );
+
   useEffect(() => {
     if (!basicFunctionality || !internalAccount?.address) {
-      return;
+      return undefined;
     }
 
-    const surveyId = 1;
-    const surveyUrl = `https://accounts.dev-api.cx.metamask.io/v1/users/${internalAccount.address}/surveys?surveyId=${surveyId}`;
+    const controller = new AbortController();
 
     const fetchSurvey = async () => {
       try {
@@ -49,6 +55,7 @@ export function SurveyToast() {
             headers: {
               'x-metamask-clientproduct': 'metamask-extension',
             },
+            signal: controller.signal,
           },
           functionName: 'fetchSurveys',
           cacheOptions: { cacheRefreshTime: DAY * 7 },
@@ -56,21 +63,23 @@ export function SurveyToast() {
 
         const _survey: Survey = response?.surveys?.[0];
 
-        if (
-          response.surveys.length === 0 ||
-          !_survey ||
-          _survey.surveyId <= lastViewedUserSurvey
-        ) {
+        if (!_survey || _survey.surveyId <= lastViewedUserSurvey) {
           return;
         }
 
         setSurvey(_survey);
-      } catch (error) {
-        console.error('Failed to fetch survey:', error);
+      } catch (error: unknown) {
+        if (error instanceof Error && error.name !== 'AbortError') {
+          console.error('Failed to fetch survey:', error);
+        }
       }
     };
 
     fetchSurvey();
+
+    return () => {
+      controller.abort();
+    };
   }, [
     internalAccount?.address,
     lastViewedUserSurvey,
@@ -82,7 +91,9 @@ export function SurveyToast() {
     if (!survey) {
       return;
     }
-    window.open(survey.url, '_blank');
+    global.platform.openTab({
+      url: survey.url,
+    });
     dispatch(setLastViewedUserSurvey(survey.surveyId));
     trackAction('accept');
   }
@@ -122,7 +133,7 @@ export function SurveyToast() {
       actionText={survey.cta}
       onActionClick={handleActionClick}
       onClose={handleClose}
-      startAdornment={undefined}
+      startAdornment={null}
     />
   );
 }
