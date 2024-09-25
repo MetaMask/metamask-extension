@@ -179,6 +179,11 @@ class AccountListPage {
     console.log(`Check that hidden accounts list is displayed in account list`);
     await this.driver.waitForSelector(this.hiddenAccountsList);
   }
+
+  async getAccountMenuItems(): Promise<any[]> {
+    console.log('Getting account menu items');
+    return await this.driver.findElements(this.accountListItem);
+  }
 }
 
 export default AccountListPage;
