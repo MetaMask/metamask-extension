@@ -3,47 +3,29 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import Name from '../../../../../../../components/app/name';
-import { Box, Text } from '../../../../../../../components/component-library';
+import { Box } from '../../../../../../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
   Display,
-  TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 
-export const SetApprovalForAllStaticSimulation = () => {
+export const RevokeSetApprovalForAllStaticSimulation = ({
+  spender,
+}: {
+  spender: string;
+}) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>() as {
-      currentConfirmation: TransactionMeta;
-    };
+    useConfirmContext<TransactionMeta>();
 
-  const SetApprovalForAllRow = (
-    <ConfirmInfoRow label={t('withdrawing')}>
+  const nftsRow = (
+    <ConfirmInfoRow label={t('nfts')}>
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         <Box display={Display.Flex} alignItems={AlignItems.center}>
-          <Box
-            display={Display.Inline}
-            marginInlineEnd={1}
-            minWidth={BlockSize.Zero}
-          >
-            <Text
-              data-testid="simulation-token-value"
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              borderRadius={BorderRadius.XL}
-              paddingInline={2}
-              textAlign={TextAlign.Center}
-              alignItems={AlignItems.center}
-            >
-              {t('all')}
-            </Text>
-          </Box>
           <Name
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
@@ -53,13 +35,30 @@ export const SetApprovalForAllStaticSimulation = () => {
     </ConfirmInfoRow>
   );
 
-  const simulationElements = SetApprovalForAllRow;
+  const permissionFromRow = (
+    <ConfirmInfoRow label={t('permissionFrom')}>
+      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+        <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Name value={spender} type={NameType.ETHEREUM_ADDRESS} />
+        </Box>
+      </Box>
+    </ConfirmInfoRow>
+  );
+
+  const RevokeSetApprovalForAllRows = (
+    <>
+      {nftsRow}
+      {permissionFromRow}
+    </>
+  );
+
+  const simulationElements = RevokeSetApprovalForAllRows;
 
   return (
     <StaticSimulation
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
-      description={t('simulationDetailsSetApprovalForAllDesc')}
+      description={t('simulationDetailsRevokeSetApprovalForAllDesc')}
       simulationElements={simulationElements}
     />
   );

@@ -1,14 +1,38 @@
 import { Driver } from '../../webdriver/driver';
 
-export default class SettingsPage {
-  private driver: Driver;
+
+class SettingsPage {
+  private readonly driver: Driver;
+
+  // Locators
+  private readonly experimentalSettingsButton: object = {
+    text: 'Experimental',
+    css: '.tab-bar__tab__content__title',
+  };
+
+  private readonly settingsPageTitle: object = {
+    text: 'Settings',
+    css: 'h3',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async navigateToSnaps(): Promise<void> {
-    await this.driver.clickElement('[data-testid="account-options-menu-button"]');
-    await this.driver.clickElement({ text: 'Snaps', tag: 'div' });
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.settingsPageTitle);
+    } catch (e) {
+      console.log('Timeout while waiting for Settings page to be loaded', e);
+      throw e;
+    }
+    console.log('Settings page is loaded');
+  }
+
+  async goToExperimentalSettings(): Promise<void> {
+    console.log('Navigating to Experimental Settings page');
+    await this.driver.clickElement(this.experimentalSettingsButton);
   }
 }
+
+export default SettingsPage;
