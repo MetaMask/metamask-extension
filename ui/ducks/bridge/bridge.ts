@@ -7,16 +7,16 @@ import { MultichainProviderConfig } from '../../../shared/constants/multichain/n
 
 export type BridgeState = {
   toChain: MultichainProviderConfig | null;
-  fromToken: SwapsTokenObject | SwapsEthToken | undefined;
-  toToken: SwapsTokenObject | SwapsEthToken | undefined;
-  fromTokenInputValue: string | undefined;
+  fromToken: SwapsTokenObject | SwapsEthToken | null;
+  toToken: SwapsTokenObject | SwapsEthToken | null;
+  fromTokenInputValue: string | null;
 };
 
 const initialState: BridgeState = {
   toChain: null,
-  fromToken: undefined,
-  toToken: undefined,
-  fromTokenInputValue: undefined,
+  fromToken: null,
+  toToken: null,
+  fromTokenInputValue: null,
 };
 
 const bridgeSlice = createSlice({

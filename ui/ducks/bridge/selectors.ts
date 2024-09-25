@@ -73,11 +73,11 @@ export const getFromToken = (
 
 export const getToToken = (
   state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken | undefined => {
+): SwapsTokenObject | SwapsEthToken | null => {
   return state.bridge.toToken;
 };
 
-export const getFromAmount = (state: BridgeAppState): string | undefined =>
+export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 export const getToAmount = (_state: BridgeAppState) => {
   return '0';
