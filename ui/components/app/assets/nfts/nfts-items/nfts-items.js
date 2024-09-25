@@ -245,6 +245,7 @@ export default function NftsItems({
                 color={Color.textDefault}
                 variant={TextVariant.bodyMd}
                 margin={2}
+                as="h5"
               >
                 {`${collectionName ?? t('unknownCollection')} (${nfts.length})`}
               </Text>
