@@ -135,7 +135,7 @@ describe('ConfirmFooter', () => {
     });
   });
 
-  it('invoke action rejectPendingApproval when cancel button is clicked', () => {
+  it('invoke required actions when cancel button is clicked', () => {
     const { getAllByRole } = render();
     const cancelButton = getAllByRole('button')[0];
     const rejectSpy = jest
@@ -143,11 +143,23 @@ describe('ConfirmFooter', () => {
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
+    const updateCustomNonceSpy = jest
+      .spyOn(Actions, 'updateCustomNonce')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => ({} as any));
+    const setNextNonceSpy = jest
+      .spyOn(Actions, 'setNextNonce')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => ({} as any));
     fireEvent.click(cancelButton);
     expect(rejectSpy).toHaveBeenCalled();
+    expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
+    expect(setNextNonceSpy).toHaveBeenCalledWith('');
   });
 
-  it('invoke action resolvePendingApproval when submit button is clicked', () => {
+  it('invoke required actions when submit button is clicked', () => {
     const { getAllByRole } = render();
     const submitButton = getAllByRole('button')[1];
     const resolveSpy = jest
@@ -155,8 +167,20 @@ describe('ConfirmFooter', () => {
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
+    const updateCustomNonceSpy = jest
+      .spyOn(Actions, 'updateCustomNonce')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => ({} as any));
+    const setNextNonceSpy = jest
+      .spyOn(Actions, 'setNextNonce')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => ({} as any));
     fireEvent.click(submitButton);
     expect(resolveSpy).toHaveBeenCalled();
+    expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
+    expect(setNextNonceSpy).toHaveBeenCalledWith('');
   });
 
   it('displays a danger "Confirm" button there are danger alerts', async () => {

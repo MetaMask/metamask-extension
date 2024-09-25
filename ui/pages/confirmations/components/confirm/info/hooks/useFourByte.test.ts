@@ -54,7 +54,7 @@ describe('useFourByte', () => {
       },
     );
 
-    expect(result.current).toEqual({});
+    expect(result.current).toBeNull();
   });
 
   it("returns undefined if it's not known even if resolution is enabled", () => {
@@ -75,6 +75,6 @@ describe('useFourByte', () => {
       },
     );
 
-    expect(result.current).toEqual({});
+    expect(result.current).toBeNull();
   });
 });
