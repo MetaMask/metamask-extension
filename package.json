@@ -276,7 +276,7 @@
     "@keystonehq/bc-ur-registry-eth": "^0.19.1",
     "@keystonehq/metamask-airgapped-keyring": "^0.13.1",
     "@lavamoat/lavadome-react": "0.0.17",
-    "@lavamoat/snow": "^2.0.1",
+    "@lavamoat/snow": "^2.0.2",
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "^0.2.31",
     "@metamask-institutional/custody-keyring": "^2.0.3",
@@ -712,5 +712,5 @@
       "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false
     }
   },
-  "packageManager": "yarn@4.2.2"
+  "packageManager": "yarn@4.3.1"
 }
