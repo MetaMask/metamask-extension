@@ -2,6 +2,7 @@ import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   AccountOverviewEth,
   AccountOverviewEthProps,
@@ -16,6 +17,9 @@ const render = (props: AccountOverviewEthProps) => {
 };
 
 describe('AccountOverviewEth', () => {
+  beforeEach(() => {
+    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
+  });
   it('shows all tabs', () => {
     const { queryByTestId } = render({
       defaultHomeActiveTabName: '',

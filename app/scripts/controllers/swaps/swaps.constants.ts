@@ -1,4 +1,5 @@
 import {
+  FALLBACK_SMART_TRANSACTIONS_DEADLINE,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
 } from '../../../../shared/constants/smartTransactions';
@@ -44,6 +45,7 @@ export function getDefaultSwapsControllerState(): SwapsControllerState {
       swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
       swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
       swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+      swapsStxStatusDeadline: FALLBACK_SMART_TRANSACTIONS_DEADLINE,
       swapsStxGetTransactionsRefreshTime:
         FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
       swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,

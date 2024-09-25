@@ -7,8 +7,9 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
+import { mockNetworkState } from '../../../test/stub/networks';
 import MetaMetricsController from './metametrics';
 
 const segment = createSegmentMock(2, 10000);
@@ -17,6 +18,7 @@ const VERSION = '0.0.1-test';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
+const TEST_GA_COOKIE_ID = '123456.123455';
 const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
 const MOCK_EXTENSION_ID = 'testid';
 
@@ -50,6 +52,7 @@ const DEFAULT_TEST_CONTEXT = {
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
   userAgent: window.navigator.userAgent,
+  marketingCampaignCookieId: null,
 };
 
 const DEFAULT_SHARED_PROPERTIES = {
@@ -113,6 +116,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
 function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
+  marketingCampaignCookieId = null,
   preferencesStore = getMockPreferencesStore(),
   getCurrentChainId = () => FAKE_CHAIN_ID,
   onNetworkDidChange = () => {
@@ -130,6 +134,7 @@ function getMetaMetricsController({
     initState: {
       participateInMetaMetrics,
       metaMetricsId,
+      marketingCampaignCookieId,
       fragments: {
         testid: SAMPLE_PERSISTED_EVENT,
         testid2: SAMPLE_NON_PERSISTED_EVENT,
@@ -143,10 +148,7 @@ function getMetaMetricsController({
 describe('MetaMetricsController', function () {
   const now = new Date();
   beforeEach(function () {
-    globalThis.sentry = {
-      startSession: jest.fn(),
-      endSession: jest.fn(),
-    };
+    globalThis.sentry = {};
     jest.useFakeTimers().setSystemTime(now.getTime());
     jest.spyOn(Utils, 'generateRandomId').mockReturnValue('DUMMY_RANDOM_ID');
   });
@@ -163,6 +165,9 @@ describe('MetaMetricsController', function () {
       expect(metaMetricsController.state.metaMetricsId).toStrictEqual(
         TEST_META_METRICS_ID,
       );
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
       expect(metaMetricsController.locale).toStrictEqual(
         LOCALE.replace('_', '-'),
       );
@@ -316,7 +321,6 @@ describe('MetaMetricsController', function () {
         metaMetricsController.state.participateInMetaMetrics,
       ).toStrictEqual(null);
       await metaMetricsController.setParticipateInMetaMetrics(true);
-      expect(globalThis.sentry.startSession).toHaveBeenCalledTimes(1);
       expect(
         metaMetricsController.state.participateInMetaMetrics,
       ).toStrictEqual(true);
@@ -339,10 +343,24 @@ describe('MetaMetricsController', function () {
     it('should not nullify the metaMetricsId when set to false', async function () {
       const metaMetricsController = getMetaMetricsController();
       await metaMetricsController.setParticipateInMetaMetrics(false);
-      expect(globalThis.sentry.endSession).toHaveBeenCalledTimes(1);
       expect(metaMetricsController.state.metaMetricsId).toStrictEqual(
         TEST_META_METRICS_ID,
       );
+    });
+    it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+        marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+      });
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      await metaMetricsController.setParticipateInMetaMetrics(false);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
     });
   });
 
@@ -560,6 +578,38 @@ describe('MetaMetricsController', function () {
         spy.mock.calls[1][1],
       );
     });
+  });
+
+  describe('Change Signature XXX anonymous event names', function () {
+    it.each([
+      ['Signature Requested', 'Signature Requested Anon'],
+      ['Signature Rejected', 'Signature Rejected Anon'],
+      ['Signature Approved', 'Signature Approved Anon'],
+    ])(
+      'should change "%s" anonymous event names to "%s"',
+      (eventType, anonEventType) => {
+        const metaMetricsController = getMetaMetricsController();
+        const spy = jest.spyOn(segment, 'track');
+        metaMetricsController.submitEvent({
+          event: eventType,
+          category: 'Unit Test',
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+          sensitiveProperties: { foo: 'bar' },
+        });
+
+        expect(spy).toHaveBeenCalledTimes(2);
+
+        expect(spy.mock.calls[0][0]).toMatchObject({
+          event: anonEventType,
+          properties: { foo: 'bar', ...DEFAULT_EVENT_PROPERTIES },
+        });
+
+        expect(spy.mock.calls[1][0]).toMatchObject({
+          event: eventType,
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+        });
+      },
+    );
   });
 
   describe('Change Transaction XXX anonymous event namnes', function () {
@@ -1020,17 +1070,11 @@ describe('MetaMetricsController', function () {
           },
         },
         allTokens: MOCK_ALL_TOKENS,
-        networkConfigurations: {
-          'network-configuration-id-1': {
-            chainId: CHAIN_IDS.MAINNET,
-            ticker: CURRENCY_SYMBOLS.ETH,
-          },
-          'network-configuration-id-2': {
-            chainId: CHAIN_IDS.GOERLI,
-            ticker: CURRENCY_SYMBOLS.TEST_ETH,
-          },
-          'network-configuration-id-3': { chainId: '0xaf' },
-        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.MAINNET },
+          { chainId: CHAIN_IDS.GOERLI },
+          { chainId: '0xaf' },
+        ),
         internalAccounts: {
           accounts: {
             mock1: {},
@@ -1114,16 +1158,17 @@ describe('MetaMetricsController', function () {
 
     it('should return only changed traits object on subsequent calls', function () {
       const metaMetricsController = getMetaMetricsController();
+      const networkState = mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.GOERLI },
+      );
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
-        },
+        ...networkState,
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         internalAccounts: {
@@ -1149,10 +1194,7 @@ describe('MetaMetricsController', function () {
             '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }],
           },
         },
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
-        },
+        ...networkState,
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
         internalAccounts: {
@@ -1180,16 +1222,17 @@ describe('MetaMetricsController', function () {
 
     it('should return null if no traits changed', function () {
       const metaMetricsController = getMetaMetricsController();
+      const networkState = mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.GOERLI },
+      );
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
-        },
+        ...networkState,
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         internalAccounts: {
@@ -1211,10 +1254,7 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
-        },
+        ...networkState,
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         internalAccounts: {
@@ -1257,7 +1297,65 @@ describe('MetaMetricsController', function () {
       expect(Object.keys(segmentApiCalls).length === 0).toStrictEqual(true);
     });
   });
-
+  describe('setMarketingCampaignCookieId', function () {
+    it('should update marketingCampaignCookieId in the context when cookieId is available', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+      });
+      metaMetricsController.setMarketingCampaignCookieId(TEST_GA_COOKIE_ID);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      const spy = jest.spyOn(segment, 'track');
+      metaMetricsController.submitEvent(
+        {
+          event: 'Fake Event',
+          category: 'Unit Test',
+          properties: {
+            test: 1,
+          },
+        },
+        { isOptIn: true },
+      );
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: {
+            ...DEFAULT_TEST_CONTEXT,
+            marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+          },
+          properties: {
+            test: 1,
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        },
+        spy.mock.calls[0][1],
+      );
+    });
+  });
+  describe('setDataCollectionForMarketing', function () {
+    it('should nullify the marketingCampaignCookieId when Data collection for marketing is toggled off', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+        marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+      });
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      await metaMetricsController.setDataCollectionForMarketing(false);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
+    });
+  });
   afterEach(function () {
     // flush the queues manually after each test
     segment.flush();

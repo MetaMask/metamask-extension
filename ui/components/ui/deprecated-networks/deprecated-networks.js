@@ -7,21 +7,21 @@ import {
   Severity,
 } from '../../../helpers/constants/design-system';
 
-import { getCurrentNetwork } from '../../../selectors';
+import {
+  getCurrentNetwork,
+  getNetworkConfigurationsByChainId,
+} from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { BannerAlert, Box } from '../../component-library';
 import {
-  AURORA_DISPLAY_NAME,
   CHAIN_IDS,
-  CURRENCY_SYMBOLS,
   DEPRECATED_NETWORKS,
-  NEAR_AURORA_MAINNET_IMAGE_URL,
 } from '../../../../shared/constants/network';
-import { editAndSetNetworkConfiguration } from '../../../store/actions';
-import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
+import { updateNetwork } from '../../../store/actions';
 
 export default function DeprecatedNetworks() {
-  const { id, chainId, rpcUrl } = useSelector(getCurrentNetwork) ?? {};
+  const { chainId, rpcUrl } = useSelector(getCurrentNetwork) ?? {};
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [isClosed, setIsClosed] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
@@ -58,22 +58,13 @@ export default function DeprecatedNetworks() {
       actionButtonLabel: t('switchToNetwork', ['mainnet.aurora.dev']),
       actionButtonOnClick: async () => {
         setIsClosed(true);
-        await dispatch(
-          editAndSetNetworkConfiguration(
-            {
-              networkConfigurationId: id,
-              chainId: CHAIN_IDS.AURORA,
-              nickname: AURORA_DISPLAY_NAME,
-              rpcUrl: 'https://mainnet.aurora.dev',
-              ticker: CURRENCY_SYMBOLS.ETH,
-              rpcPrefs: {
-                imageUrl: NEAR_AURORA_MAINNET_IMAGE_URL,
-                blockExplorerUrl: 'https://aurorascan.dev',
-              },
-            },
-            { source: MetaMetricsNetworkEventSource.DeprecatedNetworkModal },
-          ),
-        );
+
+        const networkConfiguration = networkConfigurations[chainId];
+        networkConfiguration.rpcEndpoints[
+          networkConfiguration.defaultRpcEndpointIndex
+        ].url = 'https://mainnet.aurora.dev';
+
+        await dispatch(updateNetwork(networkConfiguration));
       },
     };
   }

@@ -6,9 +6,6 @@ export default {
   title: 'Components/Multichain/DomainInputResolutionCell',
   component: DomainInputResolutionCell,
   argTypes: {
-    domainType: {
-      control: 'text',
-    },
     address: {
       control: 'text',
     },
@@ -26,7 +23,6 @@ export default {
     },
   },
   args: {
-    domainType: 'ENS',
     address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
     protocol: 'Ethereum Name Service',
     domainName: 'hamer.eth',
@@ -41,7 +37,6 @@ DefaultStory.storyName = 'ENS Resolution';
 
 export const LensStory = (args) => <DomainInputResolutionCell {...args} />;
 LensStory.args = {
-  domainType: 'Other',
   address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
   protocol: 'Lens Protocol',
   domainName: 'm0nt0y4.lens',
@@ -58,7 +53,6 @@ export const OverflowingTitleStory = (args) => (
 );
 
 OverflowingTitleStory.args = {
-  domainType: 'Other',
   address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
   protocol: 'Test Protocol',
   domainName: 'superduperlongnamethatisoverflowingthiscontainer.testprotocol',

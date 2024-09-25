@@ -1,17 +1,30 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
+import { BtcAccountType } from '@metamask/keyring-api';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import { SEND_STAGES } from '../../../../../ducks/send';
-import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../../test/jest/mocks';
+import {
+  INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+  createMockInternalAccount,
+} from '../../../../../../test/jest/mocks';
+import { CombinedBackgroundAndReduxState } from '../../../../../store/store';
+import { shortenAddress } from '../../../../../helpers/utils/util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multichain/address';
 import { SendPageAccountPicker } from '.';
 
-const render = (props = {}, sendStage = SEND_STAGES.ADD_RECIPIENT) => {
+const render = (
+  state: Partial<CombinedBackgroundAndReduxState> = {},
+  props = {},
+  sendStage = SEND_STAGES.ADD_RECIPIENT,
+) => {
   const middleware = [thunk];
   const store = configureMockStore(middleware)({
     ...mockState,
+    ...state,
     send: {
       ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
       stage: sendStage,
@@ -20,6 +33,7 @@ const render = (props = {}, sendStage = SEND_STAGES.ADD_RECIPIENT) => {
     history: { mostRecentOverviewPage: 'activity' },
     metamask: {
       ...mockState.metamask,
+      ...state.metamask,
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {
@@ -65,7 +79,7 @@ describe('SendPageAccountPicker', () => {
     it('renders as disabled when editing a send', () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const { getByTestId } = render({}, SEND_STAGES.EDIT);
+      const { getByTestId } = render({}, {}, SEND_STAGES.EDIT);
 
       expect(getByTestId('send-page-account-picker')).toBeDisabled();
     });
@@ -78,6 +92,54 @@ describe('SendPageAccountPicker', () => {
       expect(
         document.querySelector('.multichain-account-menu-popover'),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('Multichain', () => {
+    it('cannot select BTC accounts', async () => {
+      const mockAccount = createMockInternalAccount();
+      const mockBtcAccount = createMockInternalAccount({
+        name: 'Bitcoin Account',
+        type: BtcAccountType.P2wpkh,
+        address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+      });
+      const { queryByText, queryAllByTestId, getByTestId } = render({
+        metamask: {
+          internalAccounts: {
+            accounts: {
+              [mockAccount.id]: mockAccount,
+              [mockBtcAccount.id]: mockBtcAccount,
+            },
+            selectedAccount: mockAccount.id,
+          },
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: [mockAccount.address],
+            },
+            {
+              type: 'Snap Keyring',
+              accounts: [mockBtcAccount.address],
+            },
+          ],
+        },
+      } as CombinedBackgroundAndReduxState);
+
+      expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
+
+      const accountPicker = getByTestId('send-page-account-picker');
+      fireEvent.click(accountPicker);
+
+      const accountListAddresses = queryAllByTestId('account-list-address');
+      expect(accountListAddresses).toHaveLength(1);
+
+      const accountListAddressesContent = accountListAddresses[0].textContent;
+      expect(accountListAddressesContent).toContain(
+        shortenAddress(normalizeSafeAddress(mockAccount.address)),
+      );
+      expect(accountListAddressesContent).not.toContain(
+        shortenAddress(normalizeSafeAddress(mockBtcAccount.address)),
+      );
     });
   });
 });

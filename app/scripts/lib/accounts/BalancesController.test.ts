@@ -19,9 +19,7 @@ import { BalancesTracker } from './BalancesTracker';
 const mockBtcAccount = createMockInternalAccount({
   address: '',
   name: 'Btc Account',
-  // @ts-expect-error - account type may be btc or eth, mock file is not typed
   type: BtcAccountType.P2wpkh,
-  // @ts-expect-error - snap options is not typed and defaults to undefined
   snapOptions: {
     id: 'mock-btc-snap',
     name: 'mock-btc-snap',

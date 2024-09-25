@@ -6,6 +6,11 @@ import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import { Slippage } from '../../../../shared/constants/swaps';
+import { Text } from '../../../components/component-library';
+import {
+  TextVariant,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 export default function SlippageButtons({
   onSelect,
@@ -78,9 +83,14 @@ export default function SlippageButtons({
           'slippage-buttons__header--open': open,
         })}
       >
-        <div className="slippage-buttons__header-text">
+        <Text
+          variant={TextVariant.bodySmBold}
+          marginRight={2}
+          color={TextColor.primaryDefault}
+          as="span"
+        >
           {t('swapsAdvancedOptions')}
-        </div>
+        </Text>
         {open ? (
           <i className="fa fa-angle-up" />
         ) : (
@@ -93,9 +103,13 @@ export default function SlippageButtons({
             {!isDirectWrappingEnabled && (
               <div className="slippage-buttons__dropdown-content">
                 <div className="slippage-buttons__buttons-prefix">
-                  <div className="slippage-buttons__prefix-text">
+                  <Text
+                    variant={TextVariant.bodySmBold}
+                    marginRight={1}
+                    color={TextColor.textDefault}
+                  >
                     {t('swapsMaxSlippage')}
-                  </div>
+                  </Text>
                   <InfoTooltip
                     position="top"
                     contentText={t('swapSlippageTooltip')}
@@ -189,7 +203,13 @@ export default function SlippageButtons({
           </>
         )}
         {errorText && (
-          <div className="slippage-buttons__error-text">{errorText}</div>
+          <Text
+            variant={TextVariant.bodyXs}
+            color={TextColor.errorDefault}
+            marginTop={2}
+          >
+            {errorText}
+          </Text>
         )}
       </div>
     </div>

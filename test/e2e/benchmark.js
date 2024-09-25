@@ -20,7 +20,10 @@ const ALL_PAGES = Object.values(PAGES);
 async function measurePage(pageName) {
   let metrics;
   await withFixtures(
-    { fixtures: new FixtureBuilder().build() },
+    {
+      fixtures: new FixtureBuilder().build(),
+      disableServerMochaToBackground: true,
+    },
     async ({ driver }) => {
       await driver.delay(tinyDelayMs);
       await unlockWallet(driver, {

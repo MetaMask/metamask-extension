@@ -42,7 +42,7 @@
     "message": "Carteira de hardware baseada em QR code"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault e Ngrave (em breve)"
+    "message": "Ngrave Zero"
   },
   "about": {
     "message": "Sobre"
@@ -534,9 +534,6 @@
   "delete": {
     "message": "Excluir"
   },
-  "deleteNetwork": {
-    "message": "Excluir rede?"
-  },
   "description": {
     "message": "Descrição"
   },
@@ -704,12 +701,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "O endpoint retornou um ID diferente da chain: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "ensIllegalCharacter": {
-    "message": "Caractere inválido para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Erro no registro do nome ENS"
   },
   "ensUnknownError": {
     "message": "Falha na busca de ENS."
@@ -1020,12 +1011,6 @@
   "invalidAddressRecipient": {
     "message": "O endereço do destinatário é inválido"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Não é uma rede de ETH; configurar em minúsculas"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL inválido do Block Explorer"
-  },
   "invalidChainIdTooBig": {
     "message": "ID de cadeia inválido. O ID de cadeia é muito grande."
   },
@@ -1272,9 +1257,6 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "O ID da cadeia é usado para assinar transações. É preciso ser igual ao ID da cadeia retornado pela rede. Você pode informar um número decimal ou um número hexadecimal com prefixo “0x”, mas exibiremos o número em casas decimais."
-  },
   "networkStatus": {
     "message": "Status da rede"
   },
@@ -1338,9 +1320,6 @@
   },
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a busca efetuada"
-  },
-  "noAddressForName": {
-    "message": "Não foi configurado nenhum endereço para esse nome."
   },
   "noConversionDateAvailable": {
     "message": "Não há uma data de conversão de moeda disponível"
@@ -1436,9 +1415,6 @@
     "message": "Os alertas de detecção de phishing dependem de comunicação com $1. O jsDeliver terá acesso ao seu endereço IP. Veja $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "Um provedor de rede mal-intencionado pode mentir sobre o estado do blockchain e registrar as atividades da sua rede. Adicione somente as redes personalizadas em que você confia."
-  },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em que você confia.",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -1449,9 +1425,6 @@
   },
   "optional": {
     "message": "Opcional"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Opcional)"
   },
   "or": {
     "message": "ou"
@@ -1565,9 +1538,6 @@
   },
   "receive": {
     "message": "Receber"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Busca, endereço público (0x) ou ENS"
   },
   "recommendedGasLabel": {
     "message": "Recomendado"
@@ -1699,13 +1669,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Proteger minha carteira (recomendado)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Anote e guarde em vários locais secretos."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Salve em um gerenciador de senhas"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Guarde em um cofre de banco."
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -2447,9 +2414,6 @@
   },
   "urlErrorMsg": {
     "message": "Os URLs precisam do prefixo HTTP/HTTPS adequado."
-  },
-  "urlExistsErrorMsg": {
-    "message": "O ID da cadeia está sendo usado pela rede $1."
   },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"

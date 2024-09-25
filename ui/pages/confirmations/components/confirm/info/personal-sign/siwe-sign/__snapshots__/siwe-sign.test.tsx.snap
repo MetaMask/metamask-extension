@@ -7,13 +7,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Message
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Message
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -31,13 +35,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        URL
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          URL
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -55,13 +63,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Network
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Network
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -79,13 +91,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Account
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Account
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -150,13 +166,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Version
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Version
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -174,13 +194,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Chain ID
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Chain ID
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -198,13 +222,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Nonce
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Nonce
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -222,13 +250,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Issued
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Issued
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -246,13 +278,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Request ID
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Request ID
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -275,13 +311,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Message
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Message
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -299,13 +339,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        URL
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          URL
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -323,13 +367,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Network
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Network
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -347,13 +395,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Account
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Account
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -418,13 +470,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Version
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Version
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -442,13 +498,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Chain ID
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Chain ID
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -466,13 +526,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Nonce
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Nonce
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -490,13 +554,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Issued
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Issued
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -514,13 +582,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Request ID
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Request ID
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -538,13 +610,17 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Resources
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Resources
+        </p>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"

@@ -3,6 +3,7 @@ import { BN, toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
+import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
 import * as util from './util';
 
 describe('util', () => {
@@ -1043,15 +1044,15 @@ describe('util', () => {
     });
   });
 
-  describe('formatUTCDate', () => {
+  describe('formatUTCDateFromUnixTimestamp', () => {
     it('formats passed date string', () => {
-      expect(util.formatUTCDate(1633019124000)).toStrictEqual(
-        '30 September 2021, 16:25',
+      expect(util.formatUTCDateFromUnixTimestamp(2036528542)).toStrictEqual(
+        '14 July 2034, 22:22',
       );
     });
 
     it('returns empty string if empty string is passed', () => {
-      expect(util.formatUTCDate('')).toStrictEqual('');
+      expect(util.formatUTCDateFromUnixTimestamp('')).toStrictEqual('');
     });
   });
 
@@ -1080,6 +1081,149 @@ describe('util', () => {
           truncatedEndChars: 4,
         }),
       ).toStrictEqual('0x12...7890');
+    });
+
+    it('should shorten the string and remove all characters from the end if skipCharacterInEnd is true', () => {
+      expect(
+        util.shortenString('0x1234567890123456789012345678901234567890', {
+          truncatedCharLimit: 10,
+          truncatedStartChars: 4,
+          truncatedEndChars: 4,
+          skipCharacterInEnd: true,
+        }),
+      ).toStrictEqual('0x12...');
+    });
+  });
+
+  describe('getFilteredSnapPermissions', () => {
+    it('should return permission filtered by weight', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(mockPermissions, WEIGHT_THRESHOLD, 2),
+      ).toStrictEqual([
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ]);
+    });
+
+    it('should return the first three permissions because none matches the filter criteria', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 6,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(
+          mockPermissions,
+          WEIGHT_THRESHOLD,
+          MinPermissionAbstractionDisplayCount,
+        ),
+      ).toStrictEqual([
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+      ]);
+    });
+
+    it('should return permissions filtered by weight and gap filled with other permissions', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 6,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(
+          mockPermissions,
+          WEIGHT_THRESHOLD,
+          MinPermissionAbstractionDisplayCount,
+        ),
+      ).toStrictEqual([
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+      ]);
     });
   });
 });

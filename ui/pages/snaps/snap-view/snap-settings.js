@@ -51,6 +51,7 @@ import { DelineatorType } from '../../../helpers/constants/snaps';
 import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
 import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
 import { ShowMore } from '../../../components/app/snaps/show-more';
+import { isSnapId } from '../../../helpers/utils/snaps';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF
@@ -129,6 +130,15 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     }
   };
 
+  const connectedTitle = () => {
+    if (connectedSubjects.every((subject) => isSnapId(subject.origin))) {
+      return t('connectedSnaps');
+    } else if (connectedSubjects.some((subject) => isSnapId(subject.origin))) {
+      return t('connectedSitesAndSnaps');
+    }
+    return t('connectedSites');
+  };
+
   useEffect(() => {
     if (initRemove) {
       setIsShowingRemoveWarning(true);
@@ -162,11 +172,12 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
           snapName={snapName}
           permissions={permissions ?? {}}
           showOptions
+          showAllPermissions
         />
       </Box>
       <Box className="snap-view__content__connected-sites" marginTop={12}>
         <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
-          {t('connectedSites')}
+          {connectedTitle()}
         </Text>
         <ConnectedSitesList
           connectedSubjects={connectedSubjects}

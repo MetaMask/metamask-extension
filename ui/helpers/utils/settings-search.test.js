@@ -160,7 +160,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(13);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(11);
     });
 
     it('returns "Contact" section count', () => {
@@ -170,7 +170,7 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(18);
+      ).toStrictEqual(20);
     });
 
     it('returns "Alerts" section count', () => {
@@ -183,7 +183,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        4,
+        5,
       );
     });
 

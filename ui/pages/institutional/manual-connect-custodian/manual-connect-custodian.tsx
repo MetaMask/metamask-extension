@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { Dispatch, SetStateAction, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Text,
@@ -27,10 +27,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { Account } from '../custody/custody';
 
 type ManualConnectCustodianProps = {
   cancelConnectCustodianToken: () => void;
-  custodianImage: string;
+  custodianImage: string | null;
   custodianDisplayName: string;
   jwtList: string[];
   token: string;
@@ -41,9 +42,9 @@ type ManualConnectCustodianProps = {
   custodianType: string;
   addNewTokenClicked: boolean;
   handleConnectError: (e: Error) => void;
-  setAccounts: (accountsValue: object) => void;
+  setAccounts: Dispatch<SetStateAction<Account[] | undefined | null>>;
   removeConnectRequest: () => void;
-  connectRequest: object;
+  connectRequest?: object;
 };
 
 const ManualConnectCustodian: React.FC<ManualConnectCustodianProps> = ({
@@ -71,17 +72,18 @@ const ManualConnectCustodian: React.FC<ManualConnectCustodianProps> = ({
   const connectCustodian = async () => {
     try {
       setConnectError('');
-      let accountsValue = {};
+      let accountsValue: Account[] = [];
       if (token || (jwtList.length > 0 && jwtList[0])) {
-        accountsValue = await dispatch(
+        accountsValue = (await dispatch(
           mmiActions.getCustodianAccounts(
             token || jwtList[0],
             custodianName,
             custodianType,
             true,
           ),
-        );
+        )) as unknown as Account[];
       }
+
       setAccounts(accountsValue);
       await removeConnectRequest();
       trackEvent({

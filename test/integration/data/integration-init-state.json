@@ -26,18 +26,19 @@
     }
   },
   "accountsByChainId": {
-    "0x5": {
+    "0xaa36a7": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
         "balance": "0x15f6f0b9d4f8d000"
       }
     }
   },
   "addSnapAccountEnabled": false,
   "addressBook": {
-    "0x5": {
+    "0xaa36a7": {
       "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
         "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-        "chainId": "0x5",
+        "chainId": "0xaa36a7",
         "isEns": false,
         "memo": "",
         "name": "Address Book Account 1"
@@ -45,7 +46,7 @@
     }
   },
   "advancedGasFee": {
-    "0x5": {
+    "0xaa36a7": {
       "maxBaseFee": "75",
       "priorityFee": "2"
     }
@@ -92,6 +93,17 @@
           "createdDate": null,
           "schemaName": "ERC721",
           "externalLink": null
+        },
+        {
+          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+          "description": null,
+          "name": "Punk Generator",
+          "logo": null,
+          "symbol": "PUNK",
+          "assetContractType": "non-fungible",
+          "createdDate": null,
+          "schemaName": "ERC1155",
+          "externalLink": null
         }
       ],
       "0x5": [
@@ -104,17 +116,6 @@
           "assetContractType": "non-fungible",
           "createdDate": null,
           "schemaName": "ERC721",
-          "externalLink": null
-        },
-        {
-          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-          "description": null,
-          "name": "Punk Generator",
-          "logo": null,
-          "symbol": "PUNK",
-          "assetContractType": "non-fungible",
-          "createdDate": null,
-          "schemaName": "ERC1155",
           "externalLink": null
         }
       ],
@@ -155,7 +156,7 @@
           "standard": "ERC721"
         }
       ],
-      "0xaa36a7": [
+      "0x5": [
         {
           "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
           "tokenId": "1",
@@ -165,7 +166,7 @@
           "standard": "ERC721"
         }
       ],
-      "0x5": [
+      "0xaa36a7": [
         {
           "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
           "tokenId": "58076532811975507823669075598676816378162417803895263482849101575514658701313",
@@ -358,9 +359,6 @@
   "defaultHomeActiveTabName": "activity",
   "desktopEnabled": false,
   "detectedTokens": [],
-  "disabledRpcMethodPreferences": {
-    "eth_sign": false
-  },
   "dismissSeedBackUpReminder": false,
   "ensEntries": {},
   "ensResolutionsByAddress": {},
@@ -395,10 +393,10 @@
     "latestPriorityFeeRange": ["1", "40"],
     "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
     "priorityFeeTrend": "down",
-    "networkCongestion": 0.90625
+    "networkCongestion": 0.10625
   },
   "gasFeeEstimatesByChainId": {
-    "0x5": {
+    "0xaa36a7": {
       "estimatedGasFeeTimeBounds": {
         "lowerTimeBound": 15000,
         "upperTimeBound": 60000
@@ -429,7 +427,7 @@
         "latestPriorityFeeRange": ["1", "40"],
         "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
         "priorityFeeTrend": "down",
-        "networkCongestion": 0.90625
+        "networkCongestion": 0.10625
       }
     }
   },
@@ -465,7 +463,7 @@
     "0xe708": false,
     "0xfa": true,
     "0x5": false,
-    "0xaa36a7": true,
+    "0xaa36a7": false,
     "0xe704": true
   },
   "internalAccounts": {
@@ -482,7 +480,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -502,7 +499,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -522,7 +518,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -542,7 +537,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -562,7 +556,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -586,7 +579,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -663,24 +655,70 @@
       }
     }
   },
-  "networkConfigurations": {
-    "testNetworkConfigurationId": {
-      "rpcUrl": "https://testrpc.com",
+  "networkConfigurationsByChainId": {
+    "0x1": {
       "chainId": "0x1",
-      "nickname": "Custom Mainnet RPC",
-      "type": "rpc",
-      "id": "testNetworkConfigurationId"
+      "rpcEndpoints": [
+        {
+          "networkClientId": "testNetworkConfigurationId",
+          "url": "https://testrpc.com",
+          "type": "custom",
+          "name": "Custom Mainnet RPC"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": [],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Custom Mainnet RPC",
+      "nativeCurrency": "ETH"
     },
-    "chain5": {
-      "type": "rpc",
+    "0x5": {
       "chainId": "0x5",
-      "ticker": "ETH",
-      "nickname": "Chain 5",
-      "id": "chain5"
+      "rpcEndpoints": [
+        {
+          "networkClientId": "goerli-network-id",
+          "url": "https://testrpc2.com",
+          "type": "custom",
+          "name": "Chain 5"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": [],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Chain 5",
+      "nativeCurrency": "ETH"
+    },
+    "0xaa36a7": {
+      "chainId": "0xaa36a7",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "sepolia",
+          "url": "https://sepolia.infura.io/v3/{infuraProjectId}",
+          "type": "infura",
+          "name": "Sepolia"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Sepolia",
+      "nativeCurrency": "SepoliaETH"
     }
   },
   "networksMetadata": {
-    "goerli": {
+    "goerli-network-id": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
+    },
+    "sepolia": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
+    },
+    "testNetworkConfigurationId": {
       "EIPS": {
         "1559": true
       },
@@ -689,7 +727,7 @@
   },
   "nftsDropdownState": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-      "0x5": {
+      "0xaa36a7": {
         "0x495f947276749Ce646f68AC8c248420045cb7b5e": false
       }
     }
@@ -745,22 +783,16 @@
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": false,
     "useNativeCurrencyAsPrimaryCurrency": true,
-    "petnamesEnabled": false
+    "petnamesEnabled": false,
+    "showConfirmationAdvancedDetails": false
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
   "previousMigrationVersion": 112,
-  "providerConfig": {
-    "type": "rpc",
-    "nickname": "goerli",
-    "chainId": "0x5",
-    "ticker": "ETH",
-    "id": "chain5"
-  },
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-  "selectedNetworkClientId": "goerli",
+  "selectedNetworkClientId": "sepolia",
   "showAccountBanner": false,
   "showBetaHeader": false,
   "showNetworkBanner": true,
@@ -773,7 +805,7 @@
     "liveness": true,
     "smartTransactions": {
       "0x1": [],
-      "0x5": []
+      "0xaa36a7": []
     },
     "userOptInV2": true
   },
@@ -1266,7 +1298,7 @@
       "id": 3387511061307736,
       "time": 1528133130531,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1281,7 +1313,7 @@
           "id": 3387511061307736,
           "time": 1528133130531,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1398,7 +1430,7 @@
       "id": 3387511061307737,
       "time": 1528133149983,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1413,7 +1445,7 @@
           "id": 3387511061307737,
           "time": 1528133149983,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1530,7 +1562,7 @@
       "id": 3387511061307738,
       "time": 1528133180635,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1545,7 +1577,7 @@
           "id": 3387511061307738,
           "time": 1528133180635,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1662,7 +1694,7 @@
       "id": 3387511061307739,
       "time": 1528133223918,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1678,7 +1710,7 @@
           "id": 3387511061307739,
           "time": 1528133223918,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1799,7 +1831,7 @@
       "id": 3387511061307740,
       "time": 1528133291381,
       "status": "confirmed",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1815,7 +1847,7 @@
           "id": 3387511061307740,
           "time": 1528133291381,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1933,7 +1965,7 @@
       "id": 3387511061307741,
       "time": 1528133318440,
       "status": "rejected",
-      "chainId": "0x5",
+      "chainId": "0xaa36a7",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1947,7 +1979,7 @@
           "id": 3387511061307741,
           "time": 1528133318440,
           "status": "unapproved",
-          "chainId": "0x5",
+          "chainId": "0xaa36a7",
           "loadingDefaults": true,
           "txParams": {
             "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -2004,8 +2036,6 @@
   "unapprovedDecryptMsgs": {},
   "unapprovedEncryptionPublicKeyMsgCount": 0,
   "unapprovedEncryptionPublicKeyMsgs": {},
-  "unapprovedMsgCount": 0,
-  "unapprovedMsgs": {},
   "unapprovedPersonalMsgCount": 0,
   "unapprovedPersonalMsgs": {},
   "unapprovedTypedMessages": {},
@@ -2026,12 +2056,12 @@
   "useTokenDetection": false,
   "useTransactionSimulations": true,
   "usedNetworks": {
-    "0x5": {
-      "rpcUrl": "https://goerli.infura.io/v3/8f8f7f9f6f4c4f3e8f8f7f9f6f4c4f3e",
-      "chainId": "0x5",
-      "nickname": "Goerli Test Network",
+    "0xaa36a7": {
+      "rpcUrl": "https://sepolia.infura.io/v3/dummy_key",
+      "chainId": "0xaa36a7",
+      "nickname": "Sepolia Test Network",
       "ticker": "ETH",
-      "blockExplorerUrl": "https://goerli.etherscan.io"
+      "blockExplorerUrl": "https://sepolia.etherscan.io"
     }
   },
   "userOperations": {},

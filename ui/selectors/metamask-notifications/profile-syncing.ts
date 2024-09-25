@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
-import type { UserStorageControllerState } from '../../../app/scripts/controllers/user-storage/user-storage-controller';
+import type { UserStorageController } from '@metamask/profile-sync-controller';
 
 type AppState = {
-  metamask: UserStorageControllerState;
+  metamask: UserStorageController.UserStorageControllerState;
 };
 
 const getMetamask = (state: AppState) => state.metamask;

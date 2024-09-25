@@ -104,7 +104,7 @@ describe('Increase Token Allowance', function () {
       tag: 'button',
       text: 'Next',
     });
-    driver.waitForSelector({
+    await driver.waitForSelector({
       css: '.box--display-flex > h6',
       text: `10 TST`,
     });
@@ -133,7 +133,7 @@ describe('Increase Token Allowance', function () {
     );
 
     await driver.fill('[placeholder="Account 2"]', newAccountName);
-    await driver.clickElement({ text: 'Create', tag: 'button' });
+    await driver.clickElement({ text: 'Add account', tag: 'button' });
     await driver.findElement({
       css: '[data-testid="account-menu-icon"]',
       text: newAccountName,
@@ -158,10 +158,7 @@ describe('Increase Token Allowance', function () {
     await transferFromRecipientInputEl.clear();
     await transferFromRecipientInputEl.fill(recipientAccount);
 
-    await driver.clickElement({
-      text: 'Transfer From Tokens',
-      tag: 'button',
-    });
+    await driver.clickElement('#transferFromTokens');
     await driver.delay(2000);
   }
 
@@ -283,7 +280,7 @@ describe('Increase Token Allowance', function () {
       text: `${finalSpendingCap} TST`,
       css: '.mm-box > h6',
     });
-    await driver.clickElement({
+    await driver.clickElementAndWaitForWindowToClose({
       tag: 'button',
       text: 'Approve',
     });
@@ -296,6 +293,8 @@ describe('Increase Token Allowance', function () {
       css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
       text: 'Increase TST spending cap',
     });
+
+    await driver.delay(2000);
   }
 
   async function confirmTransferFromTokensSuccess(driver) {

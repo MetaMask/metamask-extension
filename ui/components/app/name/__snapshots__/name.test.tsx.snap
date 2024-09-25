@@ -1,5 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Name renders address with image 1`] = `
+<div>
+  <div>
+    <div
+      class="name name__saved"
+    >
+      <img
+        alt=""
+        class="identicon"
+        src="test-image"
+        style="height: 16px; width: 16px; border-radius: 8px;"
+      />
+      <p
+        class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+      >
+        TestName
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Name renders address with no saved name 1`] = `
 <div>
   <div>
@@ -75,6 +97,24 @@ exports[`Name renders address with saved name 1`] = `
       >
         TestName
       </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Name renders when no address value is passed 1`] = `
+<div>
+  <div>
+    <div
+      class="name name__missing"
+    >
+      <span
+        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/question.svg');"
+      />
+      <p
+        class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+      />
     </div>
   </div>
 </div>

@@ -1,10 +1,10 @@
 import React, {
+  ChangeEvent,
+  KeyboardEvent,
+  useCallback,
   useContext,
   useEffect,
   useState,
-  KeyboardEvent,
-  ChangeEvent,
-  useCallback,
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -13,6 +13,7 @@ import {
   Box,
   ButtonPrimary,
   ButtonSecondary,
+  FormTextFieldSize,
   PolymorphicComponentPropWithRef,
   PolymorphicRef,
 } from '../../component-library';
@@ -124,6 +125,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         <Box as="form" onSubmit={onSubmit}>
           <FormTextField
             ref={ref}
+            size={FormTextFieldSize.Lg}
+            gap={2}
             autoFocus
             id="account-name"
             label={t('accountName')}
@@ -139,15 +142,24 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               }
             }}
           />
-          <Box display={Display.Flex} marginTop={6} gap={2}>
+          <Box display={Display.Flex} marginTop={1} gap={2}>
             <ButtonSecondary
-              onClick={async () => onActionComplete(false)}
+              data-testid="cancel-add-account-with-name"
+              type={
+                'button' /* needs to be 'button' to prevent submitting form on cancel */
+              }
+              onClick={async () => await onActionComplete(false)}
               block
             >
               {t('cancel')}
             </ButtonSecondary>
-            <ButtonPrimary type="submit" disabled={!isValidAccountName} block>
-              {t('create')}
+            <ButtonPrimary
+              data-testid="submit-add-account-with-name"
+              type="submit"
+              disabled={!isValidAccountName}
+              block
+            >
+              {t('addAccount')}
             </ButtonPrimary>
           </Box>
         </Box>

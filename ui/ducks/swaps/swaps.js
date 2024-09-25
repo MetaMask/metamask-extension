@@ -884,6 +884,8 @@ export const signAndSendSwapsSmartTransaction = ({
     dispatch(setSwapsSTXSubmitLoading(true));
     const state = getState();
     const fetchParams = getFetchParams(state);
+    const hardwareWalletUsed = isHardwareWallet(state);
+    const hardwareWalletType = getHardwareWalletType(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
@@ -926,6 +928,8 @@ export const signAndSendSwapsSmartTransaction = ({
       performance_savings: usedQuote.savings?.performance,
       fee_savings: usedQuote.savings?.fee,
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
@@ -1025,6 +1029,7 @@ export const signAndSendSwapsSmartTransaction = ({
       dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
+      dispatch(setSwapsSTXSubmitLoading(false));
       const {
         swaps: { isFeatureFlagLoaded },
       } = getState();

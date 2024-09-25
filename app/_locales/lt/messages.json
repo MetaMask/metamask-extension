@@ -205,9 +205,6 @@
   "delete": {
     "message": "Ištrinti"
   },
-  "deleteNetwork": {
-    "message": "Panaikinti tinklą?"
-  },
   "details": {
     "message": "Išsami informacija"
   },
@@ -228,9 +225,6 @@
   },
   "editContact": {
     "message": "Taisyti kontaktą"
-  },
-  "ensRegistrationError": {
-    "message": "ENS pavadinimo registracijos klaida"
   },
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
@@ -354,12 +348,6 @@
   "invalidAddressRecipient": {
     "message": "Gavėjo adresas netinkamas"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ne ETH tinklas, nustatykite į mažąsias raides"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Netinkamas Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Netinkamas RPC URL"
   },
@@ -459,9 +447,6 @@
   "next": {
     "message": "Toliau"
   },
-  "noAddressForName": {
-    "message": "Šiam pavadinimui nenurodytas adresas."
-  },
   "noConversionRateAvailable": {
     "message": "Nėra keitimo kurso"
   },
@@ -544,9 +529,6 @@
   },
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Ieška, viešieji adresai (0x) arba ENS"
   },
   "reject": {
     "message": "Atmesti"

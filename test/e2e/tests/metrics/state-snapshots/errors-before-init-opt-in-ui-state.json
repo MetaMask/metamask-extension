@@ -2,10 +2,10 @@
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
     "UserStorageController": { "isProfileSyncingEnabled": true },
-    "MetamaskNotificationsController": {
+    "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
-      "isMetamaskNotificationsEnabled": "boolean",
+      "isNotificationServicesEnabled": "boolean",
       "isMetamaskNotificationsFeatureSeen": "boolean",
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
@@ -40,14 +40,14 @@
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
+      "newPrivacyPolicyToastShownDate": "number",
       "usedNetworks": {
         "0x1": true,
         "0xe708": true,
         "0x5": true,
         "0x539": true
       },
-      "newPrivacyPolicyToastClickedOrClosed": "boolean",
-      "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
     "CurrencyController": {
@@ -74,20 +74,16 @@
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": null,
+      "metaMetricsDataDeletionTimestamp": 0
+    },
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
       },
-      "providerConfig": {
-        "chainId": "0x539",
-        "nickname": "Localhost 8545",
-        "rpcPrefs": "object",
-        "rpcUrl": "string",
-        "ticker": "ETH",
-        "type": "rpc",
-        "id": "networkConfigurationId"
-      },
+      "providerConfig": "object",
       "networkConfigurations": "object"
     },
     "OnboardingController": {
@@ -118,8 +114,9 @@
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
-        "showTokenAutodetectModal": "boolean",
-        "showConfirmationAdvancedDetails": false
+        "showConfirmationAdvancedDetails": false,
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+        "showMultiRpcModal": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -132,9 +129,7 @@
       "useMultiAccountBalanceChecker": true,
       "useRequestQueue": true
     },
-    "QueuedRequestController": {
-      "queuedRequestCount": 0
-    },
+    "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
@@ -151,6 +146,23 @@
       "detectedTokens": "object",
       "ignoredTokens": "object",
       "tokens": "object"
+    },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          },
+          "destNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          }
+        }
+      }
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",

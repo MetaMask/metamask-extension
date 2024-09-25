@@ -1,14 +1,15 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import type { NetworkConfiguration } from '@metamask/network-controller';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/types';
-import { getAllNetworks } from '../../../selectors';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { toHex } from '@metamask/controller-utils';
+import { getNetworkConfigurationsByChainId } from '../../../selectors';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ButtonVariant } from '../../component-library';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkDetailsByChainId } from '../../../helpers/utils/notification.util';
 import { NotificationDetailButton } from '../notification-detail-button';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 type NotificationDetailBlockExplorerButtonProps = {
   notification: Notification;
@@ -25,18 +26,33 @@ export const NotificationDetailBlockExplorerButton = ({
 }: NotificationDetailBlockExplorerButtonProps) => {
   const t = useI18nContext();
 
-  const chainIdHex = decimalToHex(chainId);
-  const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
-    `0x${chainIdHex}` as keyof typeof CHAIN_IDS,
+  const chainIdHex = toHex(chainId);
+  const { blockExplorerConfig } = getNetworkDetailsByChainId(
+    chainIdHex as keyof typeof CHAIN_IDS,
   );
 
-  const defaultNetworks: NetworkConfiguration[] = useSelector(getAllNetworks);
-  const defaultNetwork = useMemo(() => {
-    return defaultNetworks.find((n) => n.chainId === chainIdHex);
-  }, [defaultNetworks]);
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const networkConfiguration = networkConfigurations[chainIdHex];
+  const configuredBlockExplorer =
+    networkConfiguration?.blockExplorerUrls?.[
+      networkConfiguration.defaultBlockExplorerUrlIndex ?? -1
+    ];
 
-  const blockExplorerUrl =
-    defaultNetwork?.rpcPrefs?.blockExplorerUrl ?? nativeBlockExplorerUrl;
+  const blockExplorerUrl = configuredBlockExplorer ?? blockExplorerConfig?.url;
+
+  const getBlockExplorerButtonText = () => {
+    if (configuredBlockExplorer) {
+      return t('notificationItemCheckBlockExplorer');
+    }
+    if (blockExplorerConfig?.name) {
+      return t('notificationTransactionSuccessView', [
+        blockExplorerConfig.name,
+      ]);
+    }
+    return t('notificationItemCheckBlockExplorer');
+  };
+
+  const blockExplorerButtonText = getBlockExplorerButtonText();
 
   if (!blockExplorerUrl) {
     return null;
@@ -46,7 +62,7 @@ export const NotificationDetailBlockExplorerButton = ({
     <NotificationDetailButton
       notification={notification}
       variant={ButtonVariant.Secondary}
-      text={t('notificationItemCheckBlockExplorer') || ''}
+      text={blockExplorerButtonText}
       href={`${blockExplorerUrl}/tx/${txHash}`}
       id={id}
       isExternal={true}

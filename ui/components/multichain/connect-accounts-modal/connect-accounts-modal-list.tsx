@@ -94,6 +94,7 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
               <AccountListItem
                 onClick={() => handleAccountClick(account.address)}
                 account={account}
+                selected={isSelectedAccount}
                 key={account.address}
                 closeMenu={onClose}
                 startAccessory={<Checkbox isChecked={isSelectedAccount} />}

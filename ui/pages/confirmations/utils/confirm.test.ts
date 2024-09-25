@@ -3,15 +3,19 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import {
+  orderSignatureMsg,
   permitSignatureMsg,
   unapprovedTypedSignMsgV4,
 } from '../../../../test/data/confirmations/typed_sign';
 import { SignatureRequestType } from '../types/confirm';
 import {
+  isOrderSignatureRequest,
   isPermitSignatureRequest,
   isSignatureApprovalRequest,
   isSignatureTransactionType,
   parseSanitizeTypedDataMessage,
+  isValidASCIIURL,
+  toPunycodeURL,
 } from './confirm';
 
 const typedDataMsg =
@@ -77,6 +81,51 @@ describe('confirm util', () => {
         unapprovedTypedSignMsgV4 as SignatureRequestType,
       );
       expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('isOrderSignatureRequest', () => {
+    it('returns true for permit signature requests', () => {
+      const result = isOrderSignatureRequest(
+        orderSignatureMsg as SignatureRequestType,
+      );
+      expect(result).toStrictEqual(true);
+    });
+
+    it('returns false for request not of type permit signature', () => {
+      const result = isOrderSignatureRequest(
+        unapprovedTypedSignMsgV4 as SignatureRequestType,
+      );
+      expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('isValidASCIIURL', () => {
+    it('returns true for URL containing only ASCII characters', () => {
+      expect(isValidASCIIURL('https://www.google.com')).toEqual(true);
+    });
+
+    it('returns false for URL containing special character', () => {
+      expect(isValidASCIIURL('https://iոfura.io/gnosis')).toStrictEqual(false);
+    });
+  });
+
+  describe('toPunycodeURL', () => {
+    it('returns punycode version of URL', () => {
+      expect(toPunycodeURL('https://iոfura.io/gnosis')).toStrictEqual(
+        'https://xn--ifura-dig.io/gnosis',
+      );
+      expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
+        'https://www.google.com/',
+      );
+      expect(
+        toPunycodeURL('https://iոfura.io/gnosis:5050?test=iոfura&foo=bar'),
+      ).toStrictEqual(
+        'https://xn--ifura-dig.io/gnosis:5050?test=i%D5%B8fura&foo=bar',
+      );
+      expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
+        'https://www.google.com/',
+      );
     });
   });
 });

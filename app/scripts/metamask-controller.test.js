@@ -19,7 +19,6 @@ import {
   BtcMethod,
   EthAccountType,
 } from '@metamask/keyring-api';
-import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { TransactionController } from '@metamask/transaction-controller';
@@ -27,9 +26,9 @@ import {
   RatesController,
   TokenListController,
 } from '@metamask/assets-controllers';
+import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
-import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -39,6 +38,7 @@ import * as tokenUtils from '../../shared/lib/token-util';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
 import {
   BalancesController as MultichainBalancesController,
   BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
@@ -115,11 +115,11 @@ const rpcMethodMiddlewareMock = {
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
 
 jest.mock(
-  './controllers/preferences',
+  './controllers/preferences-controller',
   () =>
     function (...args) {
       const PreferencesController = jest.requireActual(
-        './controllers/preferences',
+        './controllers/preferences-controller',
       ).default;
       const controller = new PreferencesController(...args);
       // jest.spyOn gets hoisted to the top of this function before controller is initialized.
@@ -223,11 +223,9 @@ const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
-const POLYGON_RPC_URL_2 = 'https://polygon-rpc.com';
 
 const NETWORK_CONFIGURATION_ID_1 = 'networkConfigurationId1';
 const NETWORK_CONFIGURATION_ID_2 = 'networkConfigurationId2';
-const NETWORK_CONFIGURATION_ID_3 = 'networkConfigurationId3';
 
 const ETH = 'ETH';
 const MATIC = 'MATIC';
@@ -244,49 +242,24 @@ const firstTimeState = {
     },
   },
   NetworkController: {
-    providerConfig: {
-      type: NETWORK_TYPES.RPC,
-      rpcUrl: ALT_MAINNET_RPC_URL,
-      chainId: MAINNET_CHAIN_ID,
-      ticker: ETH,
-      nickname: 'Alt Mainnet',
-      id: NETWORK_CONFIGURATION_ID_1,
-    },
-    networkConfigurations: {
-      [NETWORK_CONFIGURATION_ID_1]: {
+    ...mockNetworkState(
+      {
         rpcUrl: ALT_MAINNET_RPC_URL,
-        type: NETWORK_TYPES.RPC,
         chainId: MAINNET_CHAIN_ID,
         ticker: ETH,
         nickname: 'Alt Mainnet',
         id: NETWORK_CONFIGURATION_ID_1,
+        blockExplorerUrl: undefined,
       },
-      [NETWORK_CONFIGURATION_ID_2]: {
+      {
         rpcUrl: POLYGON_RPC_URL,
-        type: NETWORK_TYPES.RPC,
         chainId: POLYGON_CHAIN_ID,
         ticker: MATIC,
         nickname: 'Polygon',
         id: NETWORK_CONFIGURATION_ID_2,
+        blockExplorerUrl: undefined,
       },
-      [NETWORK_CONFIGURATION_ID_3]: {
-        rpcUrl: POLYGON_RPC_URL_2,
-        type: NETWORK_TYPES.RPC,
-        chainId: POLYGON_CHAIN_ID,
-        ticker: MATIC,
-        nickname: 'Alt Polygon',
-        id: NETWORK_CONFIGURATION_ID_1,
-      },
-    },
-    selectedNetworkClientId: NetworkType.mainnet,
-    networksMetadata: {
-      [NetworkType.mainnet]: {
-        EIPS: {
-          1559: false,
-        },
-        status: 'available',
-      },
-    },
+    ),
   },
   NotificationController: {
     notifications: {
@@ -340,10 +313,6 @@ describe('MetaMaskController', () => {
             blocklist: ['test.metamask-phishing.io'],
             name: ListNames.MetaMask,
           },
-          phishfort_hotlist: {
-            blocklist: [],
-            name: ListNames.Phishfort,
-          },
         }),
       )
       .get(METAMASK_HOTLIST_DIFF_FILE)
@@ -357,6 +326,10 @@ describe('MetaMaskController', () => {
           },
         ]),
       );
+
+    globalThis.sentry = {
+      withIsolationScope: jest.fn(),
+    };
   });
 
   afterEach(() => {
@@ -726,7 +699,7 @@ describe('MetaMaskController', () => {
           });
 
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
         // Give account 2 a token
@@ -818,16 +791,21 @@ describe('MetaMaskController', () => {
           );
 
           await expect(result).rejects.toThrow(
-            'MetamaskController:withKeyringForDevice - Unknown device',
+            'MetamaskController:getKeyringForDevice - Unknown device',
           );
         });
 
         it('should add the Trezor Hardware keyring and return the first page of accounts', async () => {
+          jest.spyOn(metamaskController.keyringController, 'addNewKeyring');
+
           const firstPage = await metamaskController.connectHardware(
             HardwareDeviceNames.trezor,
             0,
           );
 
+          expect(
+            metamaskController.keyringController.addNewKeyring,
+          ).toHaveBeenCalledWith(KeyringType.trezor);
           expect(
             metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(TrezorKeyring.type);
@@ -835,11 +813,16 @@ describe('MetaMaskController', () => {
         });
 
         it('should add the Ledger Hardware keyring and return the first page of accounts', async () => {
+          jest.spyOn(metamaskController.keyringController, 'addNewKeyring');
+
           const firstPage = await metamaskController.connectHardware(
             HardwareDeviceNames.ledger,
             0,
           );
 
+          expect(
+            metamaskController.keyringController.addNewKeyring,
+          ).toHaveBeenCalledWith(KeyringType.ledger);
           expect(
             metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(LedgerKeyring.type);
@@ -854,7 +837,7 @@ describe('MetaMaskController', () => {
             `m/44/0'/0'`,
           );
           await expect(result).rejects.toThrow(
-            'MetamaskController:withKeyringForDevice - Unknown device',
+            'MetamaskController:getKeyringForDevice - Unknown device',
           );
         });
 
@@ -881,7 +864,7 @@ describe('MetaMaskController', () => {
             'Some random device name',
           );
           await expect(result).rejects.toThrow(
-            'MetamaskController:withKeyringForDevice - Unknown device',
+            'MetamaskController:getKeyringForDevice - Unknown device',
           );
         });
 
@@ -968,6 +951,22 @@ describe('MetaMaskController', () => {
                     accountToUnlock
                   ].address.toLowerCase(),
                 ]);
+              });
+
+              it('should call keyringController.addNewAccountForKeyring', async () => {
+                jest.spyOn(
+                  metamaskController.keyringController,
+                  'addNewAccountForKeyring',
+                );
+
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+
+                expect(
+                  metamaskController.keyringController.addNewAccountForKeyring,
+                ).toHaveBeenCalledTimes(1);
               });
 
               it('should call preferencesController.setSelectedAddress', async () => {
@@ -1161,6 +1160,14 @@ describe('MetaMaskController', () => {
       it('should return address', async () => {
         expect(ret).toStrictEqual('0x1');
       });
+      it('should call keyringController.getKeyringForAccount', async () => {
+        expect(
+          metamaskController.keyringController.getKeyringForAccount,
+        ).toHaveBeenCalledWith(addressToRemove);
+      });
+      it('should call keyring.destroy', async () => {
+        expect(mockKeyring.destroy).toHaveBeenCalledTimes(1);
+      });
     });
 
     describe('#setupUntrustedCommunicationEip1193', () => {
@@ -1172,7 +1179,7 @@ describe('MetaMaskController', () => {
           false,
         );
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
         metamaskController.preferencesController.setUsePhishDetect(true);
       });
@@ -1372,8 +1379,287 @@ describe('MetaMaskController', () => {
         });
 
         metamaskController.setupTrustedCommunication(streamTest, messageSender);
+
         await promise;
         streamTest.end();
+      });
+
+      it('uses a new multiplex to set up a connection', () => {
+        jest.spyOn(metamaskController, 'setupControllerConnection');
+
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          cb(chunk);
+        });
+
+        metamaskController.setupTrustedCommunication(streamTest, {});
+
+        expect(metamaskController.setupControllerConnection).toHaveBeenCalled();
+        expect(
+          metamaskController.setupControllerConnection,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            _name: 'controller',
+            _parent: expect.any(ObjectMultiplex),
+          }),
+        );
+      });
+
+      const createTestStream = () => {
+        const {
+          promise: onFinishedCallbackPromise,
+          resolve: onFinishedCallbackResolve,
+        } = deferredPromise();
+        const { promise: onStreamEndPromise, resolve: onStreamEndResolve } =
+          deferredPromise();
+        const testStream = createThroughStream((chunk, _, cb) => {
+          expect(chunk.name).toStrictEqual('controller');
+          onStreamEndResolve();
+          cb();
+        });
+
+        return {
+          onFinishedCallbackPromise,
+          onStreamEndPromise,
+          onFinishedCallbackResolve,
+          testStream,
+        };
+      };
+
+      it('sets up a controller connection which emits a controllerConnectionChanged event when the controller connection is created and ended, and activeControllerConnections are updated accordingly', async () => {
+        const mockControllerConnectionChangedHandler = jest.fn();
+
+        const {
+          onStreamEndPromise,
+          onFinishedCallbackPromise,
+          onFinishedCallbackResolve,
+          testStream,
+        } = createTestStream();
+
+        metamaskController.on(
+          'controllerConnectionChanged',
+          (activeControllerConnections) => {
+            mockControllerConnectionChangedHandler(activeControllerConnections);
+            if (
+              mockControllerConnectionChangedHandler.mock.calls.length === 2
+            ) {
+              onFinishedCallbackResolve();
+            }
+          },
+        );
+
+        expect(metamaskController.activeControllerConnections).toBe(0);
+
+        metamaskController.setupTrustedCommunication(testStream, {});
+
+        expect(mockControllerConnectionChangedHandler).toHaveBeenCalledTimes(1);
+        expect(mockControllerConnectionChangedHandler).toHaveBeenLastCalledWith(
+          1,
+        );
+
+        expect(metamaskController.activeControllerConnections).toBe(1);
+
+        await onStreamEndPromise;
+        testStream.end();
+
+        await onFinishedCallbackPromise;
+
+        expect(metamaskController.activeControllerConnections).toBe(0);
+        expect(mockControllerConnectionChangedHandler).toHaveBeenCalledTimes(2);
+        expect(mockControllerConnectionChangedHandler).toHaveBeenLastCalledWith(
+          0,
+        );
+      });
+
+      it('can be called multiple times to set up multiple controller connections, which can be ended independently', async () => {
+        const mockControllerConnectionChangedHandler = jest.fn();
+
+        const testStreams = [
+          createTestStream(),
+          createTestStream(),
+          createTestStream(),
+          createTestStream(),
+          createTestStream(),
+        ];
+        metamaskController.on(
+          'controllerConnectionChanged',
+          (activeControllerConnections) => {
+            const initialChangeHandlerCallCount =
+              mockControllerConnectionChangedHandler.mock.calls.length;
+            mockControllerConnectionChangedHandler(activeControllerConnections);
+
+            if (
+              initialChangeHandlerCallCount === 5 &&
+              activeControllerConnections === 4
+            ) {
+              testStreams[1].onFinishedCallbackResolve();
+            }
+            if (
+              initialChangeHandlerCallCount === 7 &&
+              activeControllerConnections === 2
+            ) {
+              testStreams[3].onFinishedCallbackResolve();
+              testStreams[4].onFinishedCallbackResolve();
+            }
+            if (
+              initialChangeHandlerCallCount === 9 &&
+              activeControllerConnections === 0
+            ) {
+              testStreams[2].onFinishedCallbackResolve();
+              testStreams[0].onFinishedCallbackResolve();
+            }
+          },
+        );
+
+        metamaskController.setupTrustedCommunication(
+          testStreams[0].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[1].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[2].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[3].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[4].testStream,
+          {},
+        );
+
+        expect(metamaskController.activeControllerConnections).toBe(5);
+
+        await testStreams[1].promise;
+        testStreams[1].testStream.end();
+
+        await testStreams[1].onFinishedCallbackPromise;
+
+        expect(metamaskController.activeControllerConnections).toBe(4);
+
+        await testStreams[3].promise;
+        testStreams[3].testStream.end();
+
+        await testStreams[4].promise;
+        testStreams[4].testStream.end();
+
+        await testStreams[3].onFinishedCallbackPromise;
+        await testStreams[4].onFinishedCallbackPromise;
+
+        expect(metamaskController.activeControllerConnections).toBe(2);
+
+        await testStreams[2].promise;
+        testStreams[2].testStream.end();
+
+        await testStreams[0].promise;
+        testStreams[0].testStream.end();
+
+        await testStreams[2].onFinishedCallbackPromise;
+        await testStreams[0].onFinishedCallbackPromise;
+
+        expect(metamaskController.activeControllerConnections).toBe(0);
+      });
+
+      // this test could be improved by testing for actual behavior of handlers,
+      // without touching rawListeners from test
+      it('attaches listeners for trusted communication streams and removes them as streams close', async () => {
+        jest
+          .spyOn(metamaskController, 'triggerNetworkrequests')
+          .mockImplementation();
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+        const mockControllerConnectionChangedHandler = jest.fn();
+
+        const testStreams = [
+          createTestStream(),
+          createTestStream(2),
+          createTestStream(3),
+          createTestStream(4),
+          createTestStream(5),
+        ];
+        const baseUpdateListenerCount =
+          metamaskController.rawListeners('update').length;
+
+        metamaskController.on(
+          'controllerConnectionChanged',
+          (activeControllerConnections) => {
+            const initialChangeHandlerCallCount =
+              mockControllerConnectionChangedHandler.mock.calls.length;
+            mockControllerConnectionChangedHandler(activeControllerConnections);
+            if (
+              initialChangeHandlerCallCount === 8 &&
+              activeControllerConnections === 1
+            ) {
+              testStreams[1].onFinishedCallbackResolve();
+              testStreams[3].onFinishedCallbackResolve();
+              testStreams[4].onFinishedCallbackResolve();
+              testStreams[2].onFinishedCallbackResolve();
+            }
+            if (
+              initialChangeHandlerCallCount === 9 &&
+              activeControllerConnections === 0
+            ) {
+              testStreams[0].onFinishedCallbackResolve();
+            }
+          },
+        );
+
+        metamaskController.setupTrustedCommunication(
+          testStreams[0].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[1].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[2].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[3].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[4].testStream,
+          {},
+        );
+
+        await testStreams[1].promise;
+
+        expect(metamaskController.rawListeners('update')).toHaveLength(
+          baseUpdateListenerCount + 5,
+        );
+
+        testStreams[1].testStream.end();
+        await testStreams[3].promise;
+        testStreams[3].testStream.end();
+        testStreams[3].testStream.end();
+
+        await testStreams[4].promise;
+        testStreams[4].testStream.end();
+        await testStreams[2].promise;
+        testStreams[2].testStream.end();
+        await testStreams[1].onFinishedCallbackPromise;
+        await testStreams[3].onFinishedCallbackPromise;
+        await testStreams[4].onFinishedCallbackPromise;
+        await testStreams[2].onFinishedCallbackPromise;
+        expect(metamaskController.rawListeners('update')).toHaveLength(
+          baseUpdateListenerCount + 1,
+        );
+
+        await testStreams[0].promise;
+        testStreams[0].testStream.end();
+
+        await testStreams[0].onFinishedCallbackPromise;
+
+        expect(metamaskController.rawListeners('update')).toHaveLength(
+          baseUpdateListenerCount,
+        );
       });
     });
 
@@ -1750,91 +2036,6 @@ describe('MetaMaskController', () => {
         expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
         expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
         expect(tokenDetails.balance).toStrictEqual(tokenData.balance);
-      });
-
-      describe('findNetworkConfigurationBy', () => {
-        it('returns null if passed an object containing a valid networkConfiguration key but no matching value is found', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              chainId: '0xnone',
-            }),
-          ).toStrictEqual(null);
-        });
-        it('returns null if passed an object containing an invalid networkConfiguration key', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              invalidKey: '0xnone',
-            }),
-          ).toStrictEqual(null);
-        });
-
-        it('returns matching networkConfiguration when passed a chainId that matches an existing configuration', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              chainId: MAINNET_CHAIN_ID,
-            }),
-          ).toStrictEqual({
-            chainId: MAINNET_CHAIN_ID,
-            nickname: 'Alt Mainnet',
-            id: NETWORK_CONFIGURATION_ID_1,
-            rpcUrl: ALT_MAINNET_RPC_URL,
-            ticker: ETH,
-            type: NETWORK_TYPES.RPC,
-          });
-        });
-
-        it('returns matching networkConfiguration when passed a ticker that matches an existing configuration', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              ticker: MATIC,
-            }),
-          ).toStrictEqual({
-            rpcUrl: POLYGON_RPC_URL,
-            type: NETWORK_TYPES.RPC,
-            chainId: POLYGON_CHAIN_ID,
-            ticker: MATIC,
-            nickname: 'Polygon',
-            id: NETWORK_CONFIGURATION_ID_2,
-          });
-        });
-
-        it('returns matching networkConfiguration when passed a nickname that matches an existing configuration', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              nickname: 'Alt Mainnet',
-            }),
-          ).toStrictEqual({
-            chainId: MAINNET_CHAIN_ID,
-            nickname: 'Alt Mainnet',
-            id: NETWORK_CONFIGURATION_ID_1,
-            rpcUrl: ALT_MAINNET_RPC_URL,
-            ticker: ETH,
-            type: NETWORK_TYPES.RPC,
-          });
-        });
-
-        it('returns null if passed an object containing mismatched networkConfiguration key/value combination', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              nickname: MAINNET_CHAIN_ID,
-            }),
-          ).toStrictEqual(null);
-        });
-
-        it('returns the first networkConfiguration added if passed an key/value combination for which there are multiple matching configurations', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              chainId: POLYGON_CHAIN_ID,
-            }),
-          ).toStrictEqual({
-            rpcUrl: POLYGON_RPC_URL,
-            type: NETWORK_TYPES.RPC,
-            chainId: POLYGON_CHAIN_ID,
-            ticker: MATIC,
-            nickname: 'Polygon',
-            id: NETWORK_CONFIGURATION_ID_2,
-          });
-        });
       });
     });
 

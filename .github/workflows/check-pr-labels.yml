@@ -1,4 +1,4 @@
-name: 'Check PR has required labels'
+name: Check PR has required labels
 on:
   pull_request:
     branches:
@@ -17,28 +17,13 @@ jobs:
       pull-requests: read
 
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-      - run: corepack enable
-
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1 # This retrieves only the latest commit.
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn --immutable
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: Check PR has required labels
-        id: check-pr-has-required-labels
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn run check-pr-has-required-labels

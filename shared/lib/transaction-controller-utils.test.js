@@ -278,4 +278,72 @@ describe('transaction controller utils', () => {
       ).toBe(calcTokenAmount(logs[0].data, 8).toString(10), 6);
     });
   });
+
+  it('respects the precision argument for the default token', () => {
+    const preTxBalance = new Numeric('5000000', 10, EtherDenomination.WEI);
+    const postTxBalance = new Numeric(
+      '592624562452462456762123343',
+      10,
+      EtherDenomination.WEI,
+    );
+    const gasUsed = new Numeric('28000', 10).toPrefixedHexString();
+    const effectiveGasPrice = new Numeric('21', 10).toPrefixedHexString();
+    const gasCost = calcGasTotal(gasUsed, effectiveGasPrice);
+    const ethReceived = postTxBalance
+      .minus(preTxBalance.minus(gasCost, 16))
+      .toDenomination(EtherDenomination.ETH);
+
+    const get = (precision) =>
+      getSwapsTokensReceivedFromTxMeta(
+        'ETH',
+        {
+          txReceipt: {
+            gasUsed,
+            effectiveGasPrice,
+            type: TransactionEnvelopeType.feeMarket,
+          },
+          preTxBalance: preTxBalance.toPrefixedHexString(),
+          postTxBalance: postTxBalance.toPrefixedHexString(),
+          swapMetaData: { token_to_amount: '0x1' },
+        },
+        '0x00',
+        '0x00',
+        '8',
+        {},
+        CHAIN_IDS.MAINNET,
+        precision,
+      );
+
+    expect(get(null)).toBe(ethReceived.toString());
+    for (let precision = 1; precision < 10; precision++) {
+      expect(get(precision)).toBe(ethReceived.round(precision).toString());
+    }
+  });
+
+  it('respects the precision argument for a non-default token', () => {
+    const logs = [
+      {
+        topics: [TOKEN_TRANSFER_LOG_TOPIC_HASH, '', '0x00'],
+        address: '0x00',
+        data: new Numeric('123456789', 10).toPrefixedHexString(),
+      },
+    ];
+    const fullPrecision = calcTokenAmount(logs[0].data, 8);
+    const get = (precision) =>
+      getSwapsTokensReceivedFromTxMeta(
+        'USDC',
+        { txReceipt: { logs, status: '0x1' } },
+        '0x00',
+        '0x00',
+        '8',
+        { txReceipt: {} },
+        CHAIN_IDS.MAINNET,
+        precision,
+      );
+
+    expect(get(null)).toBe(fullPrecision.toString());
+    for (let precision = 1; precision < 10; precision++) {
+      expect(get(precision)).toBe(fullPrecision.toPrecision(precision));
+    }
+  });
 });
