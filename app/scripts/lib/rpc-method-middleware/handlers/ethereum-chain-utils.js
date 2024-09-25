@@ -1,13 +1,6 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
-  BUILT_IN_INFURA_NETWORKS,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  CHAIN_ID_TO_TYPE_MAP,
-  CURRENCY_SYMBOLS,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
-import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
@@ -23,23 +16,6 @@ import {
   getPermittedEthChainIds,
   addPermittedEthChainId,
 } from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
-
-export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
-  if (
-    Object.values(BUILT_IN_INFURA_NETWORKS)
-      .map(({ chainId: id }) => id)
-      .includes(chainId)
-  ) {
-    return {
-      chainId,
-      ticker: CURRENCY_SYMBOLS.ETH,
-      nickname: NETWORK_TO_NAME_MAP[chainId],
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
-      type: CHAIN_ID_TO_TYPE_MAP[chainId],
-    };
-  }
-  return findNetworkConfigurationBy({ chainId });
-}
 
 export function validateChainId(chainId) {
   const _chainId = typeof chainId === 'string' ? chainId.toLowerCase() : '';

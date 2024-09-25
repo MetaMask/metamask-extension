@@ -2,6 +2,8 @@ import React from 'react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { PermissionsPage } from './permissions-page';
 
 mockState.metamask.subjectMetadata = {
@@ -98,7 +100,13 @@ mockState.metamask.domains = {
   'npm:@metamask/testSnap3': 'mainnet',
 };
 
-let store = configureStore(mockState);
+let store = configureStore({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+  },
+});
 
 describe('All Connections', () => {
   describe('render', () => {

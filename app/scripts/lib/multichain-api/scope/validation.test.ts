@@ -45,29 +45,11 @@ describe('Scope Validation', () => {
       ],
       [
         false,
-        'the scopeString is a CAIP chainId but scopes is nonempty',
+        'the scopeString is a CAIP chainId but references is nonempty',
         'eip155:1',
         {
           ...validScopeObject,
-          scopes: ['eip155:5'],
-        },
-      ],
-      [
-        false,
-        'the scopeString is a CAIP namespace but scopes contains CAIP chainIds for a different namespace',
-        'eip155:1',
-        {
-          ...validScopeObject,
-          scopes: ['eip155:5', 'bip122:000000000019d6689c085ae165831e93'],
-        },
-      ],
-      [
-        true,
-        'the scopeString is a CAIP namespace and scopes contains CAIP chainIds for only the same namespace',
-        'eip155',
-        {
-          ...validScopeObject,
-          scopes: ['eip155:5', 'eip155:64'],
+          references: ['5'],
         },
       ],
       [
@@ -138,7 +120,7 @@ describe('Scope Validation', () => {
         'only expected properties are defined',
         validScopeString,
         {
-          scopes: [],
+          references: [],
           methods: [],
           notifications: [],
           accounts: [],

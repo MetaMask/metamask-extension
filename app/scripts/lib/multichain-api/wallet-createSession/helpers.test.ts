@@ -1,6 +1,7 @@
+import { RpcEndpointType } from '@metamask/network-controller';
 import * as EthereumChainUtils from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 import { ScopesObject } from '../scope';
-import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
+import { assignAccountsToScopes, validateAndAddEip3085 } from './helpers';
 
 jest.mock('../../rpc-method-middleware/handlers/ethereum-chain-utils', () => ({
   validateAddEthereumChainParams: jest.fn(),
@@ -62,8 +63,8 @@ describe('wallet_createSession helpers', () => {
     });
   });
 
-  describe('validateAndUpsertEip3085', () => {
-    const upsertNetworkConfiguration = jest.fn();
+  describe('validateAndAddEip3085', () => {
+    const addNetwork = jest.fn();
     const findNetworkClientIdByChainId = jest.fn();
 
     beforeEach(() => {
@@ -82,10 +83,9 @@ describe('wallet_createSession helpers', () => {
 
     it('validates the eip3085 params', async () => {
       try {
-        await validateAndUpsertEip3085({
+        await validateAndAddEip3085({
           eip3085Params: { foo: 'bar' },
-          origin: 'http://test.com',
-          upsertNetworkConfiguration,
+          addNetwork,
           findNetworkClientIdByChainId,
         });
       } catch (err) {
@@ -98,10 +98,9 @@ describe('wallet_createSession helpers', () => {
 
     it('checks if the chainId can already be served', async () => {
       try {
-        await validateAndUpsertEip3085({
+        await validateAndAddEip3085({
           eip3085Params: { foo: 'bar' },
-          origin: 'http://test.com',
-          upsertNetworkConfiguration,
+          addNetwork,
           findNetworkClientIdByChainId,
         });
       } catch (err) {
@@ -110,39 +109,42 @@ describe('wallet_createSession helpers', () => {
       expect(findNetworkClientIdByChainId).toHaveBeenCalledWith('0x5');
     });
 
-    it('does not upsert the validated network configuration and returns undefined if a network client already exists for the chainId', async () => {
+    it('returns undefined if a network client already exists for the chainId', async () => {
       findNetworkClientIdByChainId.mockReturnValue('existingNetworkClientId');
-      const result = await validateAndUpsertEip3085({
+      const result = await validateAndAddEip3085({
         eip3085Params: {},
-        origin: 'http://test.com',
-        upsertNetworkConfiguration,
+        addNetwork,
         findNetworkClientIdByChainId,
       });
 
-      expect(upsertNetworkConfiguration).not.toHaveBeenCalled();
+      expect(addNetwork).not.toHaveBeenCalled();
       expect(result).toStrictEqual(undefined);
     });
 
-    it('upserts the validated network configuration and returns the networkClientId if a network client does not already exist for the chainId', async () => {
-      upsertNetworkConfiguration.mockResolvedValue('newNetworkClientId');
-      const result = await validateAndUpsertEip3085({
+    it('adds a new network returns the chainId if a network client does not already exist for the chainId', async () => {
+      addNetwork.mockResolvedValue({ chainId: '0x5' });
+      const result = await validateAndAddEip3085({
         eip3085Params: {},
-        origin: 'http://test.com',
-        upsertNetworkConfiguration,
+        addNetwork,
         findNetworkClientIdByChainId,
       });
 
-      expect(upsertNetworkConfiguration).toHaveBeenCalledWith(
-        {
-          chainId: '0x5',
-          rpcPrefs: { blockExplorerUrl: 'http://explorer.test.com' },
-          nickname: 'test',
-          rpcUrl: 'http://rpc.test.com',
-          ticker: 'TST',
-        },
-        { source: 'dapp', referrer: 'http://test.com' },
-      );
-      expect(result).toStrictEqual('newNetworkClientId');
+      expect(addNetwork).toHaveBeenCalledWith({
+        blockExplorerUrls: ['http://explorer.test.com'],
+        defaultBlockExplorerUrlIndex: 0,
+        chainId: '0x5',
+        defaultRpcEndpointIndex: 0,
+        name: 'test',
+        nativeCurrency: 'TST',
+        rpcEndpoints: [
+          {
+            url: 'http://rpc.test.com',
+            name: 'test',
+            type: RpcEndpointType.Custom,
+          },
+        ],
+      });
+      expect(result).toStrictEqual('0x5');
     });
   });
 });

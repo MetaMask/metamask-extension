@@ -83,6 +83,19 @@ describe('DataTree', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should match snapshot for permit signature type and deadline is -1 (None)', () => {
+    const mockPermitData = JSON.parse(
+      permitSignatureMsg.msgParams?.data as string,
+    );
+    mockPermitData.message.deadline = '-1';
+
+    const { container } = renderWithProvider(
+      <DataTree data={mockPermitData} />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('should match snapshot for order signature type', () => {
     const { container } = renderWithProvider(
       <DataTree

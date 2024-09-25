@@ -1,7 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  findExistingNetwork,
   validateSwitchEthereumChainParams,
   switchChain,
 } from './ethereum-chain-utils';
@@ -10,7 +9,7 @@ const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
   hookNames: {
-    findNetworkConfigurationBy: true,
+    getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
     getCaveat: true,
     getCurrentChainIdForDomain: true,
@@ -28,7 +27,7 @@ async function switchEthereumChainHandler(
   _next,
   end,
   {
-    findNetworkConfigurationBy,
+    getNetworkConfigurationByChainId,
     setActiveNetwork,
     getCaveat,
     getCurrentChainIdForDomain,
@@ -51,14 +50,12 @@ async function switchEthereumChainHandler(
     return end();
   }
 
-  const networkConfigurationForRequestedChainId = findExistingNetwork(
-    chainId,
-    findNetworkConfigurationBy,
-  );
-
+  const networkConfigurationForRequestedChainId =
+    getNetworkConfigurationByChainId(chainId);
   const networkClientIdToSwitchTo =
-    networkConfigurationForRequestedChainId?.id ??
-    networkConfigurationForRequestedChainId?.type;
+    networkConfigurationForRequestedChainId?.rpcEndpoints[
+      networkConfigurationForRequestedChainId.defaultRpcEndpointIndex
+    ].networkClientId;
 
   if (!networkClientIdToSwitchTo) {
     return end(
@@ -71,9 +68,8 @@ async function switchEthereumChainHandler(
 
   const requestData = {
     toNetworkConfiguration: networkConfigurationForRequestedChainId,
-    fromNetworkConfiguration: findExistingNetwork(
+    fromNetworkConfiguration: getNetworkConfigurationByChainId(
       currentChainIdForOrigin,
-      findNetworkConfigurationBy,
     ),
   };
 

@@ -16,7 +16,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
+import { assignAccountsToScopes, validateAndAddEip3085 } from './helpers';
 
 export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
   // TODO: Does this handler need a rate limiter/lock like the one in eth_requestAccounts?
@@ -39,7 +39,7 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
     );
   }
 
-  const networkClientIdsAdded = [];
+  const chainIdsForNetworksAdded = [];
 
   try {
     const { flattenedRequiredScopes, flattenedOptionalScopes } =
@@ -139,15 +139,14 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
           return;
         }
 
-        const networkClientId = await validateAndUpsertEip3085({
+        const chainId = await validateAndAddEip3085({
           eip3085Params: scopedProperties[scopeString].eip3085,
-          origin,
-          upsertNetworkConfiguration: hooks.upsertNetworkConfiguration,
+          addNetwork: hooks.addNetwork,
           findNetworkClientIdByChainId: hooks.findNetworkClientIdByChainId,
         });
 
-        if (networkClientId) {
-          networkClientIdsAdded.push(networkClientId);
+        if (chainId) {
+          chainIdsForNetworksAdded.push(chainId);
         }
       }),
     );
@@ -202,8 +201,8 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
     };
     return end();
   } catch (err) {
-    networkClientIdsAdded.forEach((networkClientId) => {
-      hooks.removeNetworkConfiguration(networkClientId);
+    chainIdsForNetworksAdded.forEach((chainId) => {
+      hooks.removeNetwork(chainId);
     });
     return end(err);
   }

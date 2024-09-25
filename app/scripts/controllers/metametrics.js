@@ -16,6 +16,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
@@ -40,6 +41,12 @@ export const overrideAnonymousEventNames = {
     AnonymousTransactionMetaMetricsEvent.rejected,
   [TransactionMetaMetricsEvent.submitted]:
     AnonymousTransactionMetaMetricsEvent.submitted,
+  [MetaMetricsEventName.SignatureRequested]:
+    MetaMetricsEventName.SignatureRequestedAnon,
+  [MetaMetricsEventName.SignatureApproved]:
+    MetaMetricsEventName.SignatureApprovedAnon,
+  [MetaMetricsEventName.SignatureRejected]:
+    MetaMetricsEventName.SignatureRejectedAnon,
 };
 
 const defaultCaptureException = (err) => {
@@ -333,7 +340,7 @@ export default class MetaMetricsController {
    * Updates an event fragment in state
    *
    * @param {string} id - The fragment id to update
-   * @param {MetaMetricsEventFragment} payload - Fragment settings and
+   * @param {Partial<MetaMetricsEventFragment>} payload - Fragment settings and
    *  properties to initiate the fragment with.
    */
   updateEventFragment(id, payload) {
@@ -357,18 +364,22 @@ export default class MetaMetricsController {
   }
 
   /**
+   * @typedef {object} MetaMetricsFinalizeEventFragmentOptions
+   * @property {boolean} [abandoned = false] - if true track the failure
+   * event instead of the success event
+   * @property {MetaMetricsContext.page} [page] - page the final event
+   * occurred on. This will override whatever is set on the fragment
+   * @property {MetaMetricsContext.referrer} [referrer] - Dapp that
+   * originated the fragment. This is for fallback only, the fragment referrer
+   * property will take precedence.
+   */
+
+  /**
    * Finalizes a fragment, tracking either a success event or failure Event
    * and then removes the fragment from state.
    *
    * @param {string} id - UUID of the event fragment to be closed
-   * @param {object} options
-   * @param {boolean} [options.abandoned] - if true track the failure
-   *  event instead of the success event
-   * @param {MetaMetricsContext.page} [options.page] - page the final event
-   *  occurred on. This will override whatever is set on the fragment
-   * @param {MetaMetricsContext.referrer} [options.referrer] - Dapp that
-   *  originated the fragment. This is for fallback only, the fragment referrer
-   *  property will take precedence.
+   * @param {MetaMetricsFinalizeEventFragmentOptions} options
    */
   finalizeEventFragment(id, { abandoned = false, page, referrer } = {}) {
     const fragment = this.store.getState().fragments[id];
@@ -811,12 +822,12 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.LedgerConnectionType]:
         metamaskState.ledgerTransportType,
       [MetaMetricsUserTrait.NetworksAdded]: Object.values(
-        metamaskState.networkConfigurations,
+        metamaskState.networkConfigurationsByChainId,
       ).map((networkConfiguration) => networkConfiguration.chainId),
       [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
-        metamaskState.networkConfigurations,
+        metamaskState.networkConfigurationsByChainId,
       )
-        .filter(({ ticker }) => !ticker)
+        .filter(({ nativeCurrency }) => !nativeCurrency)
         .map(({ chainId }) => chainId),
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
@@ -837,6 +848,7 @@ export default class MetaMetricsController {
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
         metamaskState.useNativeCurrencyAsPrimaryCurrency,
+      [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
