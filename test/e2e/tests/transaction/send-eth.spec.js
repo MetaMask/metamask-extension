@@ -8,7 +8,6 @@ const {
   unlockWallet,
   editGasFeeForm,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -18,11 +17,10 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
-        async ({ driver, ganacheServer }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, networkServer }) => {
+          await logInWithBalanceValidation(driver, networkServer);
 
           await openActionMenuAndStartSendFlow(driver);
 
@@ -99,8 +97,6 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
-          defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -154,18 +150,17 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: {
-            ...defaultGanacheOptions,
+          networkOptions: {
             hardfork: 'london',
           },
           smartContract,
           title: this.test.fullTitle(),
         },
-        async ({ driver, contractRegistry, ganacheServer }) => {
+        async ({ driver, contractRegistry, networkServer }) => {
           const contractAddress = await contractRegistry.getContractAddress(
             smartContract,
           );
-          await logInWithBalanceValidation(driver, ganacheServer);
+          await logInWithBalanceValidation(driver, networkServer);
 
           // Wait for balance to load
           await driver.delay(500);
@@ -210,7 +205,6 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -247,8 +241,6 @@ describe('Send ETH', function () {
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .build(),
-            ganacheOptions: defaultGanacheOptions,
-            defaultGanacheOptions,
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
@@ -321,8 +313,7 @@ describe('Send ETH', function () {
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .build(),
-            ganacheOptions: {
-              ...defaultGanacheOptions,
+            networkOptions: {
               hardfork: 'london',
             },
             title: this.test.fullTitle(),
@@ -427,7 +418,6 @@ describe('Send ETH', function () {
               })
               .withPreferencesControllerPetnamesDisabled()
               .build(),
-            ganacheOptions: defaultGanacheOptions,
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {

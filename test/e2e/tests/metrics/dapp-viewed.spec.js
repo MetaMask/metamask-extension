@@ -79,6 +79,7 @@ describe('Dapp viewed Event @no-mmi', function () {
             participateInMetaMetrics: true,
           })
           .build(),
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
