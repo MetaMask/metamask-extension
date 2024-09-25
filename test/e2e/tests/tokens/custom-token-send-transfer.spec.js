@@ -8,6 +8,7 @@ const {
   editGasFeeForm,
   WINDOW_TITLES,
   clickNestedButton,
+  veryLargeDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -137,7 +138,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         });
 
         // this delay helps prevent flakiness. it allows driver to wait until send transer is "confirmed"
-        await driver.delay(5000);
+        await driver.delay(veryLargeDelayMs);
 
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');
