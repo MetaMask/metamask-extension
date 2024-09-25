@@ -253,6 +253,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       >
         {t('allPermissions')}
       </MenuItem>
+
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         mmiPortfolioEnabled && (

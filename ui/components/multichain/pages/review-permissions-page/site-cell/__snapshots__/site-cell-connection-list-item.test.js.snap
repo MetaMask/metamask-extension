@@ -2,7 +2,7 @@
 
 exports[`SiteCellConnectionListItem renders correctly with required props 1`] = `
 <div>
-  <button
+  <div
     class="mm-box multichain-connection-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
     data-testid="site-cell-connection-list-item"
   >
@@ -41,6 +41,6 @@ exports[`SiteCellConnectionListItem renders correctly with required props 1`] = 
     >
       [edit]
     </button>
-  </button>
+  </div>
 </div>
 `;

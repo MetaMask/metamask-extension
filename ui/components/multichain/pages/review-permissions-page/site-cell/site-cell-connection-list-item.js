@@ -7,7 +7,6 @@ import {
   Display,
   FlexDirection,
   IconColor,
-  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -16,10 +15,10 @@ import {
   AvatarIcon,
   AvatarIconSize,
   Box,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonLink,
-  Icon,
   IconName,
-  IconSize,
   Text,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -38,7 +37,6 @@ export const SiteCellConnectionListItem = ({
   return (
     <Box
       data-testid="site-cell-connection-list-item"
-      as="button"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.baseline}
@@ -84,22 +82,13 @@ export const SiteCellConnectionListItem = ({
       {isConnectFlow ? (
         <ButtonLink onClick={() => onClick()}>{t('edit')}</ButtonLink>
       ) : (
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.flexEnd}
-          alignItems={AlignItems.center}
-          style={{ flex: 1, alignSelf: 'center' }}
-          gap={2}
+        <ButtonIcon
+          iconName={IconName.MoreVertical}
+          data-testid="site-cell-edit-button"
+          ariaLabel={t('edit')}
           onClick={() => onClick()}
-        >
-          <Icon
-            display={Display.Flex}
-            name={IconName.MoreVertical}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-            backgroundColor={BackgroundColor.backgroundDefault}
-          />
-        </Box>
+          size={ButtonIconSize.Sm}
+        />
       )}
     </Box>
   );
