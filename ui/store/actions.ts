@@ -5659,7 +5659,7 @@ export async function grantPermittedChain(
           caveats: [
             {
               type: CaveatTypes.restrictNetworkSwitching,
-              values: [chainId],
+              value: [chainId],
             },
           ],
         },
@@ -5680,7 +5680,7 @@ export async function grantPermittedChains(
           caveats: [
             {
               type: CaveatTypes.restrictNetworkSwitching,
-              values: chainIds,
+              value: chainIds,
             },
           ],
         },
