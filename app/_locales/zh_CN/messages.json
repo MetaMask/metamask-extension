@@ -456,18 +456,6 @@
   "alertReasonWrongAccount": {
     "message": "错误账户"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "浏览网站时选择的账户未连接"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "当您在浏览已连接的Web3网站，但当前所选择的账户没有连接时，此提醒会在弹出的窗口中显示。"
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "当网站尝试使用已经删除的 window.web3 API 时"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "当您浏览尝试使用已删除的 window.web3 API 并因此可能出现故障的网站时，此警报会显示在弹出窗口中。"
-  },
   "alerts": {
     "message": "提醒"
   },

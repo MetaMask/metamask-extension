@@ -10,7 +10,6 @@ const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 const EXPERIMENTAL_ROUTE = '/settings/experimental';
 const SECURITY_ROUTE = '/settings/security';
 const ABOUT_US_ROUTE = '/settings/about-us';
-const ALERTS_ROUTE = '/settings/alerts';
 const NETWORKS_ROUTE = '/settings/networks';
 const NETWORKS_FORM_ROUTE = '/settings/networks/form';
 const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
@@ -119,7 +118,6 @@ const PATH_NAME_MAP = {
   [EXPERIMENTAL_ROUTE]: 'Experimental Settings Page',
   [SECURITY_ROUTE]: 'Security Settings Page',
   [ABOUT_US_ROUTE]: 'About Us Page',
-  [ALERTS_ROUTE]: 'Alerts Settings Page',
   [NETWORKS_ROUTE]: 'Network Settings Page',
   [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
   [ADD_NETWORK_ROUTE]: 'Add Network From Settings Page Form',
@@ -205,7 +203,6 @@ const PATH_NAME_MAP = {
 
 export {
   DEFAULT_ROUTE,
-  ALERTS_ROUTE,
   ASSET_ROUTE,
   UNLOCK_ROUTE,
   LOCK_ROUTE,

@@ -80,12 +80,6 @@ const t = (key) => {
       return 'Participate in MetaMetrics';
     case 'participateInMetaMetricsDescription':
       return 'Participate in MetaMetrics to help us make MetaMask better';
-    case 'alerts':
-      return 'Alerts';
-    case 'alertSettingsUnconnectedAccount':
-      return 'Browsing a website with an unconnected account selected';
-    case 'alertSettingsWeb3ShimUsage':
-      return 'When a website tries to use the removed window.web3 API';
     case 'networks':
       return 'Networks';
     case 'mainnet':

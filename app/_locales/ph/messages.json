@@ -81,18 +81,6 @@
   "alertDisableTooltip": {
     "message": "Mababago ito sa \"Mga Setting > Mga Alerto\""
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Napili ang pag-browse ng website nang may hindi nakakonektang account"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Makikita ang alertong ito sa popup kapag nagba-browse ka sa isang nakakonektang web3 site, pero hindi nakakonekta ang kasalukuyang napiling account."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Kapag sinubukan ng isang website na gamitin ang inalis na window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Makikita ang alertong ito sa popup kapag nagba-browse ka sa isang site na sumusubok na gamitin ang inalis na window.web3 API, at posibleng sira bilang resulta."
-  },
   "alerts": {
     "message": "Mga Alerto"
   },

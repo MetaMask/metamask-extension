@@ -456,18 +456,6 @@
   "alertReasonWrongAccount": {
     "message": "잘못된 계정"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "연결되지 않은 계정을 선택하여 웹사이트 탐색"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "이 경고는 연결된 web3 사이트를 탐색하고 있지만 현재 선택한 계정이 연결되지 않은 경우 팝업에 표시됩니다."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "웹사이트가 제거된 window.web3 API를 이용하는 경우"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "이 경고는 제거된 window.web3 API를 이용하려다가 작동이 정지된 사이트를 탐색할 때 팝업으로 표시됩니다."
-  },
   "alerts": {
     "message": "경고"
   },

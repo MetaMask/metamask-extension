@@ -456,18 +456,6 @@
   "alertReasonWrongAccount": {
     "message": "Tài khoản không đúng"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Đang duyệt trang web khi chọn một tài khoản không được kết nối"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Cảnh báo này hiển thị trong cửa sổ bật lên khi bạn đang duyệt một trang web đã được kết nối trên web3, nhưng tài khoản đang chọn không được kết nối."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Khi một trang web cố dùng API window.web3 đã bị xóa"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Cảnh báo này hiển thị trong cửa sổ bật lên khi bạn đang duyệt một trang web cố sử dụng API window.web3 đã bị xóa nên có thể bị lỗi."
-  },
   "alerts": {
     "message": "Cảnh báo"
   },

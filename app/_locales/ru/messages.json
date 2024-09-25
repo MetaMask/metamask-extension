@@ -456,18 +456,6 @@
   "alertReasonWrongAccount": {
     "message": "Неверный счет"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Просмотр веб-сайта с выбранным неподключенным счетом"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Это предупреждение отображается во всплывающем окне, когда вы просматриваете подключенный сайт web3, но текущий выбранный счет не подключен."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Когда веб-сайт пытается использовать удаленный API window.web3"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Это предупреждение отображается во всплывающем окне, когда вы просматриваете сайт, который пытается использовать удаленный API window.web3 и из-за этого может не работать."
-  },
   "alerts": {
     "message": "Оповещения"
   },

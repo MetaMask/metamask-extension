@@ -1,7 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import { IconName } from '../../components/component-library';
 import {
-  ALERTS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -323,20 +322,6 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('dataCollectionForMarketingDescription'),
     route: `${SECURITY_ROUTE}#dataCollectionForMarketing`,
     icon: 'fa fa-lock',
-  },
-  {
-    tabMessage: (t) => t('alerts'),
-    sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
-    descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
-    route: `${ALERTS_ROUTE}#unconnected-account`,
-    iconName: IconName.Notification,
-  },
-  {
-    tabMessage: (t) => t('alerts'),
-    sectionMessage: (t) => t('alertSettingsWeb3ShimUsage'),
-    descriptionMessage: (t) => t('alertSettingsWeb3ShimUsage'),
-    route: `${ALERTS_ROUTE}#web3-shimusage`,
-    icon: 'fa fa-bell',
   },
   {
     tabMessage: (t) => t('networks'),

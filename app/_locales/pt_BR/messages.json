@@ -157,18 +157,6 @@
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Navegando em um site com uma conta não conectada selecionada"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Esse alerta é exibido no pop-up quando você estiver navegando em um site conectado da web3, mas a conta atualmente selecionada não estiver conectada."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Quando um site tenta usar a API window.web3 removida"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Esse alerta é exibido no pop-up quando você estiver navegando em um site que tente usar a API window.web3 removida, e que consequentemente possa apresentar problemas."
-  },
   "alerts": {
     "message": "Alertas"
   },
