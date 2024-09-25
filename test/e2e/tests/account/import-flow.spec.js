@@ -393,7 +393,7 @@ describe('Import flow @no-mmi', function () {
     );
   });
 
-  it.only('Connects to a Hardware wallet for lattice', async function () {
+  it('Connects to a Hardware wallet for lattice', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
