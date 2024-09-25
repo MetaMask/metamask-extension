@@ -1,7 +1,7 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import { isValidHexAddress, Json } from '@metamask/utils';
+import { isHexString, Json } from '@metamask/utils';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -77,10 +77,11 @@ export const isOrderSignatureRequest = (request: SignatureRequestType) => {
 };
 
 /**
- * Returns true if the request appears to be a Permit Typed Sign signature request
- * based on EIP-2612 spec and the primaryType. This may exclude EIP-2612 types if
- * the primaryType does not match our list. Ideally, we will remove the strict
- * primaryType specification.
+ * Returns true if the request appears to be a Permit or Permit2 Typed Sign signature request
+ * Caution: This is a limited check. It may exclude valid types if the primaryType does not
+ * match our list.
+ *
+ * TODO: Improve detection of fields and remove explicit primaryType check.
  *
  * @param request - The confirmation request to check
  */
@@ -99,17 +100,11 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
   );
 
   const {
-    message: { owner, spender, value },
+    message: { spender },
     primaryType,
   } = parsedData;
 
-  const hasPermitFields =
-    isValidHexAddress(owner) &&
-    isValidHexAddress(spender) &&
-    value !== undefined &&
-    value !== null;
-
-  if (!hasPermitFields) {
+  if (!isHexString(spender)) {
     return false;
   }
 
