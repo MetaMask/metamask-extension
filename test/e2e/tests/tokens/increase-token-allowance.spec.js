@@ -272,6 +272,10 @@ describe('Increase Token Allowance', function () {
       css: '.box--display-flex > h6',
       text: `10 TST`,
     });
+    await driver.assertElementNotPresent({
+      tag: 'h6',
+      text: '0.000054 ETH',
+    });
     await driver.waitForSelector({
       tag: 'h6',
       text: '0.000062 ETH',
