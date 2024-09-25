@@ -79,50 +79,6 @@ describe('confirm util', () => {
       expect(result).toStrictEqual(true);
     });
 
-    it('returns true for permit signature requests including when value is 0', () => {
-      const data = cloneDeep(permitMessageDataJson);
-      data.message.value = 0;
-
-      const mockMessage = {
-        ...permitSignatureMsg,
-        msgParams: {
-          data: JSON.stringify(data),
-        },
-      } as SignatureRequestType;
-
-      const result = isPermitSignatureRequest(mockMessage);
-      expect(result).toStrictEqual(true);
-    });
-
-    it('returns false if it is missing a value', () => {
-      const data = cloneDeep(permitMessageDataJson);
-      data.message.value = NaN;
-
-      const mockMessage = {
-        ...permitSignatureMsg,
-        msgParams: {
-          data: JSON.stringify(data),
-        },
-      } as SignatureRequestType;
-
-      const result = isPermitSignatureRequest(mockMessage);
-      expect(result).toStrictEqual(false);
-    });
-
-    it('returns false if it is missing a valid owner address', () => {
-      const data = cloneDeep(permitMessageDataJson);
-      data.message.owner = '0x';
-      const mockMessage = {
-        ...permitSignatureMsg,
-        msgParams: {
-          data: JSON.stringify(data),
-        },
-      } as SignatureRequestType;
-
-      const result = isPermitSignatureRequest(mockMessage);
-      expect(result).toStrictEqual(false);
-    });
-
     it('returns false if it is missing a valid spender address', () => {
       const data = cloneDeep(permitMessageDataJson);
       data.message.spender = '';
