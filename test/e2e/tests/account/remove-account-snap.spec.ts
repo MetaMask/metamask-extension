@@ -9,7 +9,7 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import SettingsPage from '../../page-objects/pages/settings-page';
-import SnapsPage from '../../page-objects/pages/snaps-page';
+import SnapListPage from '../../page-objects/pages/snap-list-page';
 
 describe('Remove Account Snap', function (this: Suite) {
   it('disable a snap and remove it', async function () {
@@ -24,35 +24,31 @@ describe('Remove Account Snap', function (this: Suite) {
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
         await snapSimpleKeyringPage.createNewAccount();
 
-        // Check accounts after adding the snap account.
+        // Check snap account is displayed after adding the snap account.
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList('Snap Account');
-        const accountMenuItemsWithSnapAdded = await accountListPage.getAccountMenuItems();
+        await headerNavbar.check_accountLabel('Snap Account');
 
-        await headerNavbar.closeAccountMenu();
-
-        // Navigate to settings.
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.navigateToSnaps();
-
-        const snapsPage = new SnapsPage(driver);
-        await snapsPage.selectSnapByName('MetaMask Simple Snap Keyring');
-
-        // Disable the snap.
-        await snapsPage.toggleSnapStatus();
+        // Navigate to account snaps listpage.
+        await headerNavbar.openSnapListPagee();
+        const snapListPage = new SnapListPage(driver);
 
         // Remove the snap.
-        await snapsPage.removeSnap();
-        await snapsPage.confirmRemoval('MetaMask Simple Snap Keyring');
+        await snapListPage.removeSnapByName('MetaMask Simple Snap Keyring');
+
+        await snapListPage.selectSnapByName('MetaMask Simple Snap Keyring');
+
+        // Disable the snap.
+        await snapListPage.toggleSnapStatus();
+
+        // Remove the snap.
+        await snapListPage.removeSnap();
+        await snapListPage.confirmRemoval('MetaMask Simple Snap Keyring');
 
         // Checking result modal
-        await snapsPage.verifySnapRemovalMessage('MetaMask Simple Snap Keyring removed');
+        await snapListPage.verifySnapRemovalMessage('MetaMask Simple Snap Keyring removed');
 
         // Assert that the snap was removed.
-        await snapsPage.verifyNoSnapsInstalled();
+        await snapListPage.verifyNoSnapsInstalled();
         await headerNavbar.closeModal();
 
         // Assert that an account was removed.

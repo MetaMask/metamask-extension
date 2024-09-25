@@ -11,12 +11,15 @@ class HeaderNavbar {
 
   private settingsButton: string;
 
+  private accountSnapButton: object;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.accountMenuButton = '[data-testid="account-menu-icon"]';
     this.accountOptionMenu = '[data-testid="account-options-menu-button"]';
     this.lockMetaMaskButton = '[data-testid="global-menu-lock"]';
     this.settingsButton = '[data-testid="global-menu-settings"]';
+    this.accountSnapButton = { text: 'Snaps', tag: 'div' };
   }
 
   async lockMetaMask(): Promise<void> {
@@ -26,6 +29,12 @@ class HeaderNavbar {
 
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
+  }
+
+  async openSnapListPagee(): Promise<void> {
+    console.log('Open account snap page');
+    await this.driver.clickElement(this.accountOptionMenu);
+    await this.driver.clickElement(this.accountSnapButton);
   }
 
   async openSettingsPage(): Promise<void> {

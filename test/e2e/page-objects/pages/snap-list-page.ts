@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 
-export default class SnapsPage {
+export default class SnapListPage {
   private driver: Driver;
 
   constructor(driver: Driver) {
