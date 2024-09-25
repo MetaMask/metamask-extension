@@ -777,12 +777,25 @@ class Driver {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
-      await this.driver.wait(
-        until.elementLocated(this.buildLocator('.controller-loaded')),
-        10 * 1000,
-      );
+      this.waitForControllersLoaded();
     }
     return response;
+  }
+
+  /**
+   * Waits for the controllers to be loaded on the page.
+   *
+   * This function waits until an element with the class 'controller-loaded' is located,
+   * indicating that the controllers have finished loading.
+   *
+   * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
+   * @throws {Error} Will throw an error if the element is not located within the timeout period.
+   */
+  async waitForControllersLoaded() {
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.controller-loaded')),
+      10 * 1000,
+    );
   }
 
   /**
