@@ -87,7 +87,10 @@ export default class AppStateController extends EventEmitter {
       'PreferencesController:stateChange',
       ({ preferences }) => {
         const currentState = this.store.getState();
-        if (preferences && currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
+        if (
+          preferences &&
+          currentState.timeoutMinutes !== preferences.autoLockTimeLimit
+        ) {
           this._setInactiveTimeout(preferences.autoLockTimeLimit);
         }
       },

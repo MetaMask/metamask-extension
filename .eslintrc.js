@@ -286,6 +286,7 @@ module.exports = {
         'app/scripts/controllers/swaps/**/*.test.ts',
         'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
+        'app/scripts/controllers/preferences-controller.test.ts',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/metamask-controller.test.js',
         'app/scripts/migrations/*.test.js',
