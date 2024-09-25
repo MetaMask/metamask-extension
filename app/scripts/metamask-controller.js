@@ -2822,8 +2822,27 @@ export default class MetamaskController extends EventEmitter {
     let lastSelectedAddress;
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
-      previousValueComparator((prevState, currState) => {
-        this.#onPreferencesControllerStateChange(currState, prevState);
+      previousValueComparator(async (prevState, currState) => {
+        const { currentLocale } = currState;
+        const chainId = getCurrentChainId({
+          metamask: this.networkController.state,
+        });
+
+        await updateCurrentLocale(currentLocale);
+        if (currState.incomingTransactionsPreferences?.[chainId]) {
+          this.txController.startIncomingTransactionPolling();
+        } else {
+          this.txController.stopIncomingTransactionPolling();
+        }
+
+        this.#checkTokenListPolling(currState, prevState);
+
+        // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
+        // this.controllerMessenger.publish(
+        //   'PreferencesController:stateChange',
+        //   currState,
+        //   [],
+        // );
       }, this.preferencesController.state),
     );
 
@@ -6966,28 +6985,32 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  async #onPreferencesControllerStateChange(currentState, previousState) {
-    const { currentLocale } = currentState;
-    const chainId = getCurrentChainId({
-      metamask: this.networkController.state,
-    });
+  // async #onPreferencesControllerStateChange(currentState, previousState) {
+  //   currentState = { incomingTransactionsPreferences: { '0x1': true } };
+  //   previousState = { incomingTransactionsPreferences: { '0x1': true } };
+  //   console.log('Prev State:', previousState);
+  //   console.log('Curr State:', previousState);
+  //   const { currentLocale } = currentState;
+  //   const chainId = getCurrentChainId({
+  //     metamask: this.networkController.state,
+  //   });
 
-    await updateCurrentLocale(currentLocale);
-    if (currentState.incomingTransactionsPreferences?.[chainId]) {
-      this.txController.startIncomingTransactionPolling();
-    } else {
-      this.txController.stopIncomingTransactionPolling();
-    }
+  //   await updateCurrentLocale(currentLocale);
+  //   if (currentState.incomingTransactionsPreferences?.[chainId]) {
+  //     this.txController.startIncomingTransactionPolling();
+  //   } else {
+  //     this.txController.stopIncomingTransactionPolling();
+  //   }
 
-    this.#checkTokenListPolling(currentState, previousState);
+  //   this.#checkTokenListPolling(currentState, previousState);
 
-    // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
-    // this.controllerMessenger.publish(
-    //   'PreferencesController:stateChange',
-    //   currentState,
-    //   [],
-    // );
-  }
+  //   // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
+  //   // this.controllerMessenger.publish(
+  //   //   'PreferencesController:stateChange',
+  //   //   currentState,
+  //   //   [],
+  //   // );
+  // }
 
   #checkTokenListPolling(currentState, previousState) {
     const previousEnabled = this.#isTokenListPollingRequired(previousState);
