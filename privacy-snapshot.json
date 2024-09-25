@@ -59,6 +59,5 @@
   "price.api.cx.metamask.io",
   "token.api.cx.metamask.io",
   "client-side-detection.api.cx.metamask.io",
-  "user-storage.api.cx.metamask.io",
-  "api.etherscan.io"
+  "user-storage.api.cx.metamask.io"
 ]
