@@ -1,6 +1,8 @@
+import { Hex } from '@metamask/utils';
 import React from 'react';
 import { PrimaryType } from '../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import { Box } from '../../../../../../../components/component-library';
 import {
   Display,
@@ -48,14 +50,27 @@ const PermitSimulation: React.FC<object> = () => {
 
   const tokenDetails = extractTokenDetailsByPrimaryType(message, primaryType);
 
-  return (
-    <StaticSimulation
-      title={t('simulationDetailsTitle')}
-      titleTooltip={t('simulationDetailsTitleTooltip')}
-      description={t('permitSimulationDetailInfo')}
-      simulationHeading={t('spendingCap')}
-      simulationElements={
-        Array.isArray(tokenDetails) ? (
+  const TokenDetail = ({
+    token,
+    amount,
+    i,
+  }: {
+    token: Hex | string;
+    amount: number | string;
+    i: number;
+  }) => (
+    <PermitSimulationValueDisplay
+      key={`${token}-${i}`}
+      primaryType={primaryType}
+      tokenContract={token}
+      value={amount}
+    />
+  );
+
+  const SpendingCapRow = (
+    <ConfirmInfoRow label={t('spendingCap')}>
+      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+        {Array.isArray(tokenDetails) ? (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -66,12 +81,7 @@ const PermitSimulation: React.FC<object> = () => {
                 { token, amount }: { token: string; amount: string },
                 i: number,
               ) => (
-                <PermitSimulationValueDisplay
-                  key={`${token}-${i}`}
-                  primaryType={primaryType}
-                  tokenContract={token}
-                  value={amount}
-                />
+                <TokenDetail token={token} amount={amount} i={i} />
               ),
             )}
           </Box>
@@ -80,8 +90,17 @@ const PermitSimulation: React.FC<object> = () => {
             tokenContract={verifyingContract}
             value={message.value}
           />
-        )
-      }
+        )}
+      </Box>
+    </ConfirmInfoRow>
+  );
+
+  return (
+    <StaticSimulation
+      title={t('simulationDetailsTitle')}
+      titleTooltip={t('simulationDetailsTitleTooltip')}
+      description={t('permitSimulationDetailInfo')}
+      simulationElements={SpendingCapRow}
     />
   );
 };
