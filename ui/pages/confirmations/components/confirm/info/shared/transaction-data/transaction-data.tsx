@@ -28,6 +28,7 @@ import {
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
+import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 
 export const TransactionData = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector) as
@@ -43,7 +44,7 @@ export const TransactionData = () => {
     return <Container isLoading />;
   }
 
-  if (!transactionData?.length) {
+  if (!hasTransactionData(transactionData)) {
     return null;
   }
 

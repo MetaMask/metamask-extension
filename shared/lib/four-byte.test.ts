@@ -25,6 +25,25 @@ describe('Four Byte', () => {
 
       expect(result).toStrictEqual('someOtherFunction(address,uint256)');
     });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([undefined, null, '', '0x', '0X'])(
+      'returns undefined if four byte prefix is %s',
+      async (prefix: string) => {
+        expect(await getMethodFrom4Byte(prefix)).toBeUndefined();
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      ['with hex prefix', '0x1234567'],
+      ['without hex prefix', '1234567'],
+    ])(
+      'returns undefined if length of four byte prefix %s is less than 8',
+      async (_: string, prefix: string) => {
+        expect(await getMethodFrom4Byte(prefix)).toBeUndefined();
+      },
+    );
   });
 
   describe('getMethodDataAsync', () => {
