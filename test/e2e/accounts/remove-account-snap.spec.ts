@@ -4,6 +4,7 @@ import FixtureBuilder from '../fixture-builder';
 import { WINDOW_TITLES, defaultGanacheOptions, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { installSnapSimpleKeyring, makeNewAccountAndSwitch } from './common';
+import { RemoveAccountSnapPage } from '../page-objects/RemoveAccountSnapPage';
 
 describe('Remove Account Snap', function (this: Suite) {
   it('disable a snap and remove it', async function () {
@@ -14,76 +15,44 @@ describe('Remove Account Snap', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await installSnapSimpleKeyring(driver, false);
+        const removeAccountSnapPage = new RemoveAccountSnapPage(driver);
 
+        await installSnapSimpleKeyring(driver, false);
         await makeNewAccountAndSwitch(driver);
 
         // Check accounts after adding the snap account.
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        const accountMenuItemsWithSnapAdded = await driver.findElements(
-          '.multichain-account-list-item',
-        );
-        await driver.clickElement('.mm-box button[aria-label="Close"]');
+        await removeAccountSnapPage.clickAccountMenuIcon();
+        const accountMenuItemsWithSnapAdded = await removeAccountSnapPage.getAccountMenuItems();
+        await removeAccountSnapPage.closeAccountMenu();
 
         // Navigate to settings.
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        await driver.clickElement({ text: 'Snaps', tag: 'div' });
-        await driver.clickElement({
-          text: 'MetaMask Simple Snap Keyring',
-          tag: 'p',
-        });
+        await removeAccountSnapPage.clickAccountOptionsMenu();
+        await removeAccountSnapPage.navigateToSnaps();
+        await removeAccountSnapPage.selectSimpleSnapKeyring();
 
         // Disable the snap.
-        await driver.clickElement('.toggle-button > div');
+        await removeAccountSnapPage.disableSnap();
 
         // Remove the snap.
-        const removeButton = await driver.findElement(
-          '[data-testid="remove-snap-button"]',
-        );
-        await driver.scrollToElement(removeButton);
-        await driver.clickElement('[data-testid="remove-snap-button"]');
-
-        await driver.clickElement({
-          text: 'Continue',
-          tag: 'button',
-        });
-
-        await driver.fill(
-          '[data-testid="remove-snap-confirmation-input"]',
-          'MetaMask Simple Snap Keyring',
-        );
-
-        await driver.clickElement({
-          text: 'Remove Snap',
-          tag: 'button',
-        });
+        await removeAccountSnapPage.removeSnap();
+        await removeAccountSnapPage.confirmRemoval();
+        await removeAccountSnapPage.fillRemovalConfirmation('MetaMask Simple Snap Keyring');
+        await removeAccountSnapPage.clickRemoveSnapButton();
 
         // Checking result modal
-        await driver.findVisibleElement({
-          text: 'MetaMask Simple Snap Keyring removed',
-          tag: 'p',
-        });
+        await removeAccountSnapPage.verifyRemovalMessage();
 
         // Assert that the snap was removed.
-        await driver.findElement({
-          css: '.mm-box',
-          text: "You don't have any snaps installed.",
-          tag: 'p',
-        });
-        await driver.clickElement('.mm-box button[aria-label="Close"]');
+        await removeAccountSnapPage.verifyNoSnapsInstalled();
+        await removeAccountSnapPage.closeAccountMenu();
 
         // Assert that an account was removed.
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        const accountMenuItemsAfterRemoval = await driver.findElements(
-          '.multichain-account-list-item',
-        );
+        await removeAccountSnapPage.clickAccountMenuIcon();
+        const accountMenuItemsAfterRemoval = await removeAccountSnapPage.getAccountMenuItems();
         assert.equal(
           accountMenuItemsAfterRemoval.length,
           accountMenuItemsWithSnapAdded.length - 1,
