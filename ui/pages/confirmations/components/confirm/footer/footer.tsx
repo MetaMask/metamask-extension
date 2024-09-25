@@ -23,9 +23,11 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  setNextNonce,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   updateAndApproveTx,
   ///: END:ONLY_INCLUDE_IF
+  updateCustomNonce,
 } from '../../../../../store/actions';
 import { selectUseTransactionSimulations } from '../../../selectors/preferences';
 
@@ -180,6 +182,8 @@ const Footer = () => {
       dispatch(
         rejectPendingApproval(currentConfirmation.id, serializeError(error)),
       );
+      dispatch(updateCustomNonce(''));
+      dispatch(setNextNonce(''));
     },
     [currentConfirmation],
   );
@@ -219,6 +223,8 @@ const Footer = () => {
       mmiOnSignCallback();
       ///: END:ONLY_INCLUDE_IF
     }
+    dispatch(updateCustomNonce(''));
+    dispatch(setNextNonce(''));
   }, [
     currentConfirmation,
     customNonceValue,
