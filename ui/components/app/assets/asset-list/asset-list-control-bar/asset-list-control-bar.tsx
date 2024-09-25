@@ -97,6 +97,7 @@ const AssetListControlBar = ({
         paddingTop={4}
       >
         <ButtonBase
+          data-testid="sort-by-popover-toggle"
           className="asset-list-control-bar__button"
           onClick={handleOpenPopover}
           size={ButtonBaseSize.Sm}
