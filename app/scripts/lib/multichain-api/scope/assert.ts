@@ -24,6 +24,7 @@ export const assertScopeSupported = (
   const allMethodsSupported = methods.every((method) =>
     isSupportedMethod(scopeString, method),
   );
+
   if (!allMethodsSupported) {
     // not sure which one of these to use
     // When provider evaluates requested methods to not be supported
