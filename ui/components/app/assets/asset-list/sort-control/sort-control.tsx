@@ -23,17 +23,20 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 type SelectableListItemProps = {
   isSelected: boolean;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
+  testId?: string;
   children: ReactNode;
 };
 
 export const SelectableListItem = ({
   isSelected,
   onClick,
+  testId,
   children,
 }: SelectableListItemProps) => {
   return (
-    <Box className="selectable-list-item-wrapper">
+    <Box className="selectable-list-item-wrapper" data-testid={testId}>
       <Box
+        data-testid={`${testId}__button`}
         className={classnames('selectable-list-item', {
           'selectable-list-item--selected': isSelected,
         })}
@@ -84,12 +87,14 @@ const SortControl = () => {
       <SelectableListItem
         isSelected={tokenSortConfig?.key === 'symbol'}
         onClick={() => handleSort('symbol', 'alphaNumeric', 'asc')}
+        testId="sortByAlphabetically"
       >
         {t('sortByAlphabetically')}
       </SelectableListItem>
       <SelectableListItem
         isSelected={tokenSortConfig?.key === 'tokenFiatAmount'}
         onClick={() => handleSort('tokenFiatAmount', 'stringNumeric', 'dsc')}
+        testId="sortByDecliningBalance"
       >
         {t('sortByDecliningBalance')}
       </SelectableListItem>

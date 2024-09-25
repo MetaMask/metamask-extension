@@ -60,16 +60,17 @@ describe('SortControl', () => {
   it('renders correctly', () => {
     renderComponent();
 
-    expect(screen.getByText('Alphabetically (A-Z)')).toBeInTheDocument();
-    expect(
-      screen.getByText('Declining balance ($ high-low)'),
-    ).toBeInTheDocument();
+    screen.debug();
+    expect(screen.getByTestId('sortByAlphabetically')).toBeInTheDocument();
+    expect(screen.getByTestId('sortByDecliningBalance')).toBeInTheDocument();
   });
 
   it('dispatches setTokenSortConfig with expected config, and tracks event when Alphabetically is clicked', () => {
     renderComponent();
 
-    const alphabeticallyButton = screen.getByText('Alphabetically (A-Z)');
+    const alphabeticallyButton = screen.getByTestId(
+      'sortByAlphabetically__button',
+    );
     fireEvent.click(alphabeticallyButton);
 
     expect(mockDispatch).toHaveBeenCalled();
@@ -91,8 +92,8 @@ describe('SortControl', () => {
   it('dispatches setTokenSortConfig with expected config, and tracks event when Declining balance is clicked', () => {
     renderComponent();
 
-    const decliningBalanceButton = screen.getByText(
-      'Declining balance ($ high-low)',
+    const decliningBalanceButton = screen.getByTestId(
+      'sortByDecliningBalance__button',
     );
     fireEvent.click(decliningBalanceButton);
 
