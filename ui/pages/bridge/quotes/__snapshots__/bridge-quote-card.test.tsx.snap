@@ -145,11 +145,26 @@ Fees are based on network traffic and transaction complexity. MetaMask does not 
     <div
       class="mm-box bridge-box quote-card__footer"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-      >
-        Includes a 0.875% MetaMask fee.
-      </p>
+      <span>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Includes a 0.875% MetaMask fee.
+        </p>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              view all quotes
+            </p>
+          </span>
+        </button>
+      </span>
       <button
         class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
       >
@@ -303,11 +318,26 @@ Fees are based on network traffic and transaction complexity. MetaMask does not 
     <div
       class="mm-box bridge-box quote-card__footer"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-      >
-        Includes a 0.875% MetaMask fee.
-      </p>
+      <span>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Includes a 0.875% MetaMask fee.
+        </p>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              view all quotes
+            </p>
+          </span>
+        </button>
+      </span>
       <button
         class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
       >

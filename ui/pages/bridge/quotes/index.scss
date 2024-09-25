@@ -62,3 +62,22 @@
     }
   }
 }
+
+.quotes-modal {
+  &__column-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__quotes {
+    display: flex;
+    flex-direction: column;
+
+    &__row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+}
