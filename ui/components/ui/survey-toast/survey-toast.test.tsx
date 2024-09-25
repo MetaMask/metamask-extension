@@ -114,7 +114,7 @@ describe('SurveyToast', () => {
     });
   });
 
-  xit('handles action click correctly', async () => {
+  it('handles action click correctly', async () => {
     const survey = {
       url: 'https://example.com',
       description: 'Test Survey',

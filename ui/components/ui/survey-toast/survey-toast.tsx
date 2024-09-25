@@ -35,7 +35,7 @@ export function SurveyToast() {
   const surveyId = 1;
   const surveyUrl = useMemo(
     () =>
-      `https://accounts.dev-api.cx.metamask.io/v1/users/${internalAccount?.address}/surveys?surveyId=${surveyId}`,
+      `https://accounts.dev-api.cx.metamask.io/v1/users/0xe440f3bfca06198470e46cc32b7d108f607055f70a6f03ef8ee0fd423860cb47/surveys?surveyId=${surveyId}`,
     [internalAccount?.address],
   );
 
