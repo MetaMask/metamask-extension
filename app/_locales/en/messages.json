@@ -1059,6 +1059,9 @@
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
   },
+  "confirmTitleSetApprovalForAllRevokeTransaction": {
+    "message": "Remove permission"
+  },
   "confirmTitleSignature": {
     "message": "Signature request"
   },
@@ -3766,6 +3769,9 @@
   "permissionFor": {
     "message": "Permission for"
   },
+  "permissionFrom": {
+    "message": "Permission from"
+  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -4850,6 +4856,9 @@
   },
   "simulationDetailsOutgoingHeading": {
     "message": "You send"
+  },
+  "simulationDetailsRevokeSetApprovalForAllDesc": {
+    "message": "You're removing someone else's permission to withdraw NFTs from your account."
   },
   "simulationDetailsSetApprovalForAllDesc": {
     "message": "You're giving permission for someone else to withdraw NFTs from your account."

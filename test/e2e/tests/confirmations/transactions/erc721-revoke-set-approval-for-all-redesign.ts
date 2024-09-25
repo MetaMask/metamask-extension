@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { DAPP_URL, unlockWallet, WINDOW_TITLES } from '../../../helpers';
+import { DAPP_URL } from '../../../constants';
+import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -11,17 +12,14 @@ import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
-describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
-  describe('Submit a transaction @no-mmi', function () {
+describe('Confirmation Redesign ERC721 Revoke setApprovalForAll', function () {
+  describe('Submit an revoke transaction @no-mmi', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withRedesignConfirmationFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createTransactionAssertDetailsAndConfirm(
-            driver,
-            contractRegistry,
-          );
+          await createTransactionAndAssertDetails(driver, contractRegistry);
         },
         mocks,
         SMART_CONTRACTS.NFTS,
@@ -33,10 +31,7 @@ describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createTransactionAssertDetailsAndConfirm(
-            driver,
-            contractRegistry,
-          );
+          await createTransactionAndAssertDetails(driver, contractRegistry);
         },
         mocks,
         SMART_CONTRACTS.NFTS,
@@ -73,7 +68,7 @@ export async function mocked4BytesSetApprovalForAll(mockServer: Mockttp) {
     }));
 }
 
-async function createTransactionAssertDetailsAndConfirm(
+async function createTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: GanacheContractAddressRegistry,
 ) {
@@ -86,14 +81,15 @@ async function createTransactionAssertDetailsAndConfirm(
   const testDapp = new TestDapp(driver);
 
   await testDapp.open({ contractAddress, url: DAPP_URL });
-  await testDapp.clickERC1155SetApprovalForAllButton();
+
+  await testDapp.clickERC721RevokeSetApprovalForAllButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
   const setApprovalForAllConfirmation =
     new SetApprovalForAllTransactionConfirmation(driver);
 
-  await setApprovalForAllConfirmation.check_setApprovalForAllTitle();
-  await setApprovalForAllConfirmation.check_setApprovalForAllSubHeading();
+  await setApprovalForAllConfirmation.check_revokeSetApprovalForAllTitle();
 
   await setApprovalForAllConfirmation.clickScrollToBottomButton();
   await setApprovalForAllConfirmation.clickFooterConfirmButton();
