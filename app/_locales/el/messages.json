@@ -5393,9 +5393,6 @@
   "swapRequestForQuotation": {
     "message": "Αίτημα για προσφορά"
   },
-  "swapReviewSwap": {
-    "message": "Έλεγχος της ανταλλαγής"
-  },
   "swapSearchNameOrAddress": {
     "message": "Αναζήτηση ονόματος ή επικόλληση διεύθυνσης"
   },
@@ -5502,20 +5499,6 @@
     "message": "Ανταλλαγή $1 έως $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Αυτό το token έχει προστεθεί χειροκίνητα."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Πάντα να επιβεβαιώνετε τη διεύθυνση του token στο $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Επαληθεύτηκε μόνο σε 1 πηγή."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Επαληθεύτηκε μόνο σε $1 πηγές.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "Το $1 επαληθεύτηκε μόνο από 1 πηγή. Εξετάστε το ενδεχόμενο επαλήθευσης σε $2 πριν προχωρήσετε.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5536,14 +5519,6 @@
   "swapUnknown": {
     "message": "Άγνωστο"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Πολλαπλά tokens μπορούν να χρησιμοποιούν το ίδιο όνομα και σύμβολο. Ελέγξτε το $1 για να επιβεβαιώσετε ότι αυτό είναι το token που ψάχνετε.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 διαθέσιμα για ανταλλαγή",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% Απόκλιση"
   },
@@ -5555,10 +5530,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Ανοχή απόκλισης"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Δεν υπάρχουν αρκετά $1 για να ολοκληρωθεί αυτή η συναλλαγή",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Δεν υπάρχουν αρκετά $1",
@@ -6054,14 +6025,6 @@
   },
   "verifyContractDetails": {
     "message": "Επαλήθευση στοιχείων τρίτων"
-  },
-  "verifyThisTokenOn": {
-    "message": "Επαλήθευση αυτού του token στο $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Επαληθεύστε αυτό το token στο $1 και βεβαιωθείτε ότι αυτό είναι το token που θέλετε να κάνετε συναλλαγές.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "Έκδοση"

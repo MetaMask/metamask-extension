@@ -5393,9 +5393,6 @@
   "swapRequestForQuotation": {
     "message": "उद्धरण के लिए अनुरोध"
   },
-  "swapReviewSwap": {
-    "message": "स्वैप की समीक्षा करें"
-  },
   "swapSearchNameOrAddress": {
     "message": "नाम खोजें या ऐड्रेस पेस्ट करें"
   },
@@ -5502,20 +5499,6 @@
     "message": "$1 से $2 में स्वैप करें",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "इस टोकन को मैन्युअल रूप से जोड़ा गया है।"
-  },
-  "swapTokenVerificationMessage": {
-    "message": "हमेशा $1 पर टोकन एड्रेस की कन्फर्म करें।",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "केवल 1 स्रोत पर वेरीफ़ाई।"
-  },
-  "swapTokenVerificationSources": {
-    "message": "$1 स्रोतों पर वेरीफ़ाई।",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 केवल 1 स्रोत पर वेरीफ़ाई है। आगे बढ़ने से पहले इसे $2 पर वेरीफ़ाई करने पर विचार करें।",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5536,14 +5519,6 @@
   "swapUnknown": {
     "message": "अज्ञात"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "एकाधिक टोकन एक ही नाम और प्रतीक का इस्तेमाल कर सकते हैं। यह वेरीफ़ाई करने के लिए $1 देखें कि यह वही टोकन है, जिसकी आप तलाश कर रहे हैं।",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 स्वैप के लिए उपलब्ध है",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% स्लिपेज"
   },
@@ -5555,10 +5530,6 @@
   },
   "swapsMaxSlippage": {
     "message": "स्लिपेज टॉलरेंस"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "इस ट्रांसेक्शन को पूरा करने के लिए $1 कम है",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "$1 कम",
@@ -6054,14 +6025,6 @@
   },
   "verifyContractDetails": {
     "message": "थर्ड-पार्टी विवरण वेरीफ़ाई करें"
-  },
-  "verifyThisTokenOn": {
-    "message": "इस टोकन को $1 पर वेरीफ़ाई करें",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "इस टोकन को $1 पर वेरीफ़ाई करें और पक्का करें कि यह वही टोकन है जिससे आप ट्रेड करना चाहते हैं।",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "वर्शन"

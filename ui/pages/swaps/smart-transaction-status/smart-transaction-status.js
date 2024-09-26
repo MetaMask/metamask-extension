@@ -26,7 +26,7 @@ import {
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import {
   DEFAULT_ROUTE,
-  BUILD_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Text } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
@@ -465,7 +465,7 @@ export default function SmartTransactionStatusPage() {
             await dispatch(prepareToLeaveSwaps());
             history.push(DEFAULT_ROUTE);
           } else {
-            history.push(BUILD_QUOTE_ROUTE);
+            history.push(PREPARE_SWAP_ROUTE);
           }
         }}
         onCancel={async () => {

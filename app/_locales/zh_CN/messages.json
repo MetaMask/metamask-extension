@@ -5393,9 +5393,6 @@
   "swapRequestForQuotation": {
     "message": "请求报价"
   },
-  "swapReviewSwap": {
-    "message": "审查交换"
-  },
   "swapSearchNameOrAddress": {
     "message": "搜索名称或粘贴地址"
   },
@@ -5502,20 +5499,6 @@
     "message": "用 $1 交换 $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "此代币已手动添加。"
-  },
-  "swapTokenVerificationMessage": {
-    "message": "始终在 $1 上确认代币地址。",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "仅在1个来源上进行了验证。"
-  },
-  "swapTokenVerificationSources": {
-    "message": "在 $1 个来源上进行了验证。",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 仅在 1 个源上进行了验证。在继续之前，考虑在 $2 上进行验证。",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5536,14 +5519,6 @@
   "swapUnknown": {
     "message": "未知"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "多个代币可以使用相同的名称和符号。检查 $1 以确认这是您正在寻找的代币。",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 可用于交换",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0%滑点"
   },
@@ -5555,10 +5530,6 @@
   },
   "swapsMaxSlippage": {
     "message": "最大滑点"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "没有足够的 $1 来完成此交易",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "$1 不足",
@@ -6054,14 +6025,6 @@
   },
   "verifyContractDetails": {
     "message": "验证第三方详情"
-  },
-  "verifyThisTokenOn": {
-    "message": "在 $1 上验证此代币",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "在 $1 上验证此代币，并确保这是您想要交易的代币。",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "版本"

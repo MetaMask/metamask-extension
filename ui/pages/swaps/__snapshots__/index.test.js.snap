@@ -12,8 +12,15 @@ exports[`Swap renders the component with initial props 1`] = `
         class="swaps__header"
       >
         <div
-          class="swaps__header-edit"
-        />
+          class="box box--margin-left-4 box--display-flex box--flex-direction-row box--justify-content-center box--width-1/12"
+          tabindex="0"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"
+            style="mask-image: url('./images/icons/arrow-2-left.svg'); cursor: pointer;"
+            title="Cancel"
+          />
+        </div>
         <div
           class="swaps__title"
         >

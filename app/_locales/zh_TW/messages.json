@@ -1373,10 +1373,6 @@
   "userName": {
     "message": "使用者名稱"
   },
-  "verifyThisTokenOn": {
-    "message": "在 $1 驗證這個代幣的資訊",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "viewAllDetails": {
     "message": "查看所有詳情"
   },

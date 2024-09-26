@@ -5393,9 +5393,6 @@
   "swapRequestForQuotation": {
     "message": "견적 요청"
   },
-  "swapReviewSwap": {
-    "message": "스왑 검토"
-  },
   "swapSearchNameOrAddress": {
     "message": "이름 검색 또는 주소 붙여넣기"
   },
@@ -5502,20 +5499,6 @@
     "message": "$1에서 $2(으)로 스왑",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "이 토큰은 직접 추가되었습니다."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "항상 $1에서 토큰 주소를 컨펌하세요.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "1개의 소스에서만 확인됩니다."
-  },
-  "swapTokenVerificationSources": {
-    "message": "$1개 소스에서 확인되었습니다.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 토큰은 1 소스에서만 확인됩니다. 계속 진행하기 전에 $2에서도 확인하세요.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5536,14 +5519,6 @@
   "swapUnknown": {
     "message": "알 수 없음"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. $1에서 원하는 토큰인지 확인하세요.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 스왑 가능",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% 슬리패지"
   },
@@ -5555,10 +5530,6 @@
   },
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "$1이(가) 부족하여 이 트랜잭션을 완료할 수 없습니다.",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "$1 부족",
@@ -6054,14 +6025,6 @@
   },
   "verifyContractDetails": {
     "message": "타사 세부 정보 확인"
-  },
-  "verifyThisTokenOn": {
-    "message": "$1에서 이 토큰 확인",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "$1에서 이 토큰이 트랜잭션할 토큰이 맞는지 확인하세요.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "버전"

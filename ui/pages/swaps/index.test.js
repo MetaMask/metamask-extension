@@ -22,7 +22,7 @@ jest.mock('react-router-dom', () => ({
   }),
   useLocation: jest.fn(() => {
     return {
-      pathname: '/swaps/build-quote',
+      pathname: '/swaps/prepare-swap-page',
     };
   }),
 }));

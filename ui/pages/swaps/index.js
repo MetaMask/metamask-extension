@@ -55,7 +55,6 @@ import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
-  BUILD_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
   SWAPS_ERROR_ROUTE,
   DEFAULT_ROUTE,
@@ -96,7 +95,6 @@ import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
-import BuildQuote from './build-quote';
 import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
 import NotificationPage from './notification-page/notification-page';
 
@@ -431,47 +429,15 @@ export default function Swap() {
             <FeatureToggledRoute
               redirectRoute={SWAPS_MAINTENANCE_ROUTE}
               flag={swapsEnabled}
-              path={BUILD_QUOTE_ROUTE}
-              exact
-              render={() => {
-                if (swapRedesignEnabled) {
-                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
-                }
-                if (tradeTxData && !conversionError) {
-                  return <Redirect to={{ pathname: AWAITING_SWAP_ROUTE }} />;
-                } else if (tradeTxData && routeState) {
-                  return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />;
-                } else if (routeState === 'loading' && aggregatorMetadata) {
-                  return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />;
-                }
-
-                return (
-                  <BuildQuote
-                    ethBalance={ethBalance}
-                    selectedAccountAddress={selectedAccountAddress}
-                    shuffledTokensList={shuffledTokensList}
-                  />
-                );
-              }}
-            />
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={swapsEnabled}
               path={PREPARE_SWAP_ROUTE}
               exact
-              render={() => {
-                if (!swapRedesignEnabled) {
-                  return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
-                }
-
-                return (
-                  <PrepareSwapPage
-                    ethBalance={ethBalance}
-                    selectedAccountAddress={selectedAccountAddress}
-                    shuffledTokensList={shuffledTokensList}
-                  />
-                );
-              }}
+              render={() => (
+                <PrepareSwapPage
+                  ethBalance={ethBalance}
+                  selectedAccountAddress={selectedAccountAddress}
+                  shuffledTokensList={shuffledTokensList}
+                />
+              )}
             />
             <Route
               path={SWAPS_ERROR_ROUTE}
@@ -488,7 +454,7 @@ export default function Swap() {
                     />
                   );
                 }
-                return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
+                return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
               }}
             />
             <Route
@@ -538,7 +504,7 @@ export default function Swap() {
                 return swapsEnabled === false ? (
                   <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
                 ) : (
-                  <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
+                  <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />
                 );
               }}
             />
