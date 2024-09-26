@@ -7,12 +7,10 @@ import {
   SignatureRequestType,
 } from '../../../ui/pages/confirmations/types/confirm';
 import mockState from '../mock-state.json';
-import {
-  genUnapprovedApproveConfirmation,
-  genUnapprovedContractInteractionConfirmation,
-  genUnapprovedSetApprovalForAllConfirmation,
-} from './contract-interaction';
+import { genUnapprovedContractInteractionConfirmation } from './contract-interaction';
 import { unapprovedPersonalSignMsg } from './personal_sign';
+import { genUnapprovedSetApprovalForAllConfirmation } from './set-approval-for-all';
+import { genUnapprovedApproveConfirmation } from './token-approve';
 import { genUnapprovedTokenTransferConfirmation } from './token-transfer';
 import { unapprovedTypedSignMsgV4 } from './typed_sign';
 
