@@ -5,7 +5,6 @@ const {
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
-  veryLargeDelayMs,
   WINDOW_TITLES,
   withFixtures,
 } = require('../../helpers');
@@ -134,7 +133,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // There is an extra window appearing and disappearing
         // so we leave this delay until the issue is fixed (#27360)
-        await driver.delay(veryLargeDelayMs);
+        await driver.delay(3000);
 
         const newDialog = await driver.getNewOrLastWindowHandle({
           driver,
@@ -294,6 +293,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
         // Wait for switch confirmation to close then tx confirmation to show.
+        // There is an extra window appearing and disappearing
+        // so we leave this delay until the issue is fixed (#27360)
+        await driver.delay(3000);
         const newDialog = await driver.getNewOrLastWindowHandle({
           driver,
           windowsBefore,

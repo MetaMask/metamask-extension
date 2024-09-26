@@ -1100,7 +1100,7 @@ class Driver {
    * @param {Array<string>} params.windowsBefore - The list of window handles before the action.
    * @param {number} [params.maxAttempts] - The maximum number of attempts to find the new window handle.
    * @param {number} [params.retryDelayMs] - The delay in milliseconds between retry attempts.
-   * @returns {string} The new window handle if found, or the last window handle from the array if not found.
+   * @returns {Promise<string>} A promise that resolves to the new window handle if found, or the last window handle from the array if not found.
    */
   async getNewOrLastWindowHandle({
     driver,
