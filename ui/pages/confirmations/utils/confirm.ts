@@ -21,11 +21,11 @@ export const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.deployContract,
   TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodIncreaseAllowance,
+  TransactionType.tokenMethodSetApprovalForAll,
 ];
 
 export const REDESIGN_DEV_TRANSACTION_TYPES = [
   ...REDESIGN_USER_TRANSACTION_TYPES,
-  TransactionType.tokenMethodSetApprovalForAll,
 ];
 
 const SIGNATURE_APPROVAL_TYPES = [
