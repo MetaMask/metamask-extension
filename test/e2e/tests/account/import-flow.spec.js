@@ -59,7 +59,7 @@ describe('Import flow @no-mmi', function () {
         // Show account information
         await driver.clickElement('[data-testid="account-menu-icon"]');
         // Wait until account list is loaded to mitigate race condition
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Account 1',
           tag: 'span',
         });
@@ -105,7 +105,7 @@ describe('Import flow @no-mmi', function () {
         // choose Create account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
         // Wait until account list is loaded to mitigate race condition
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Account 1',
           tag: 'span',
         });
@@ -193,7 +193,7 @@ describe('Import flow @no-mmi', function () {
         // Show account information
         await driver.clickElement('[data-testid="account-menu-icon"]');
         // Wait until account list is loaded to mitigate race condition
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Account 1',
           tag: 'span',
         });
@@ -242,7 +242,7 @@ describe('Import flow @no-mmi', function () {
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         // Wait until account list is loaded to mitigate race condition
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Account 1',
           tag: 'span',
         });
@@ -270,7 +270,7 @@ describe('Import flow @no-mmi', function () {
         });
 
         // Wait until account list is loaded to mitigate race condition
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Account 4',
           tag: 'span',
         });
@@ -333,7 +333,7 @@ describe('Import flow @no-mmi', function () {
         // Imports an account with JSON file
         await driver.clickElement('[data-testid="account-menu-icon"]');
         // Wait until account list is loaded to mitigate race condition
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Account 1',
           tag: 'span',
         });
@@ -443,7 +443,7 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement('[data-testid="account-menu-icon"]');
 
         // Wait until account list is loaded to mitigate race condition
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Account 1',
           tag: 'span',
         });

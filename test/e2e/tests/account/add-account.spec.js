@@ -75,7 +75,7 @@ describe('Add account', function () {
         // Create 2nd account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         // Wait until account list is loaded to mitigate race condition
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Account 1',
           tag: 'span',
         });
