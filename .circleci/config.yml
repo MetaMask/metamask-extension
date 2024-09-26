@@ -108,18 +108,13 @@ workflows:
           value: << pipeline.git.branch >>
     jobs:
       - prep-deps
-      - prep-build-test:
-          requires:
-            - prep-deps
       - prep-build-test-webpack:
           requires:
             - prep-deps
-      - test-e2e-chrome:
-          requires:
-            - prep-build-test
       - test-e2e-chrome-webpack:
           requires:
             - prep-build-test-webpack
+            - get-changed-files-with-git-diff
 
   locales_only:
     when:
