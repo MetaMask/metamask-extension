@@ -23,6 +23,7 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import Typography from '../../components/ui/typography/typography';
 
 import {
   FontWeight,
@@ -40,7 +41,6 @@ import {
   ButtonIconSize,
   IconName,
   Box,
-  Text,
   Icon,
   Modal,
   ModalBody,
@@ -830,7 +830,7 @@ export default class Home extends PureComponent {
               gap={2}
               margin={4}
             >
-              <Text>
+              <Typography>
                 {t('onboardedMetametricsParagraph1', [
                   <a
                     href={METAMETRICS_SETTINGS_LINK}
@@ -841,14 +841,14 @@ export default class Home extends PureComponent {
                     {t('onboardedMetametricsLink')}
                   </a>,
                 ])}
-              </Text>
-              <Text>{t('onboardedMetametricsParagraph2')}</Text>
+              </Typography>
+              <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
               <ul className="home__onboarding_list">
                 <li>{t('onboardedMetametricsKey1')}</li>
                 <li>{t('onboardedMetametricsKey2')}</li>
                 <li>{t('onboardedMetametricsKey3')}</li>
               </ul>
-              <Text>{t('onboardedMetametricsParagraph3')}</Text>
+              <Typography>{t('onboardedMetametricsParagraph3')}</Typography>
             </Box>
           </ModalBody>
           <ModalFooter>
