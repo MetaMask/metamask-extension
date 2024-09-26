@@ -108,11 +108,27 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
   };
 }
 
+async function createAndAssertIncreaseAllowanceSubmission(
+  driver: Driver,
+  newSpendingCap: string,
+  contractRegistry?: GanacheContractAddressRegistry,
+) {
+  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.HST);
+
+  await createERC20IncreaseAllowanceTransaction(driver);
+
+  await editSpendingCap(driver, newSpendingCap);
+
+  await scrollAndConfirmAndAssertConfirm(driver);
+
+  await assertChangedSpendingCap(driver, newSpendingCap);
+}
+
 async function mocks(server: Mockttp) {
   return [await mocked4BytesIncreaseAllowance(server)];
 }
 
-async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
+export async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .always()
@@ -131,7 +147,6 @@ async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
               text_signature: 'increaseAllowance(address,uint256)',
               hex_signature: '0x39509351',
               bytes_signature: '9PQ',
-              test: 'Priya',
             },
           ],
         },
@@ -139,28 +154,12 @@ async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
     });
 }
 
-async function createAndAssertIncreaseAllowanceSubmission(
-  driver: Driver,
-  newSpendingCap: string,
-  contractRegistry?: GanacheContractAddressRegistry,
-) {
-  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.HST);
-
-  await createERC20IncreaseAllowanceTransaction(driver);
-
-  await editSpendingCap(driver, newSpendingCap);
-
-  await scrollAndConfirmAndAssertConfirm(driver);
-
-  await assertChangedSpendingCap(driver, newSpendingCap);
-}
-
 async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#increaseTokenAllowance');
 }
 
-async function editSpendingCap(driver: Driver, newSpendingCap: string) {
+export async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement('[data-testid="edit-spending-cap-icon"');
 
@@ -177,7 +176,7 @@ async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   await driver.delay(veryLargeDelayMs * 2);
 }
 
-async function assertChangedSpendingCap(
+export async function assertChangedSpendingCap(
   driver: Driver,
   newSpendingCap: string,
 ) {

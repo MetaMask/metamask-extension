@@ -3,7 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
-
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -22,6 +21,7 @@ import {
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
+import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const { generalAlerts } = useAlerts(ownerId);
@@ -55,6 +55,7 @@ const getTitle = (
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
+  customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
 ) => {
   switch (confirmation?.type) {
@@ -75,6 +76,9 @@ const getTitle = (
       if (isNFT) {
         return t('confirmTitleApproveTransaction');
       }
+      if (customSpendingCap === '0') {
+        return t('confirmTitleRevokeApproveTransaction');
+      }
       return t('confirmTitlePermitTokens');
     case TransactionType.tokenMethodIncreaseAllowance:
       return t('confirmTitlePermitTokens');
@@ -92,6 +96,7 @@ const getDescription = (
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
+  customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
 ) => {
   switch (confirmation?.type) {
@@ -111,6 +116,9 @@ const getDescription = (
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleDescApproveTransaction');
+      }
+      if (customSpendingCap === '0') {
+        return '';
       }
       return t('confirmTitleDescERC20ApproveTransaction');
     case TransactionType.tokenMethodIncreaseAllowance:
@@ -132,6 +140,8 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
+  const { customSpendingCap } = useCurrentSpendingCap(currentConfirmation);
+
   let isRevokeSetApprovalForAll = false;
   if (
     currentConfirmation?.type === TransactionType.tokenMethodSetApprovalForAll
@@ -149,9 +159,10 @@ const ConfirmTitle: React.FC = memo(() => {
         t as IntlFunction,
         currentConfirmation,
         isNFT,
+        customSpendingCap,
         isRevokeSetApprovalForAll,
       ),
-    [currentConfirmation, isNFT, isRevokeSetApprovalForAll],
+    [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],
   );
 
   const description = useMemo(
@@ -160,9 +171,11 @@ const ConfirmTitle: React.FC = memo(() => {
         t as IntlFunction,
         currentConfirmation,
         isNFT,
+        customSpendingCap,
         isRevokeSetApprovalForAll,
       ),
-    [currentConfirmation, isNFT, isRevokeSetApprovalForAll],
+
+    [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],
   );
 
   if (!currentConfirmation) {

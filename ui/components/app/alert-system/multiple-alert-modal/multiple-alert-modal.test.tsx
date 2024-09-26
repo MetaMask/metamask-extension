@@ -209,6 +209,7 @@ describe('MultipleAlertModal', () => {
       fireEvent.click(getByTestId('alert-modal-next-button'));
 
       expect(getByText(alertsMock[2].message)).toBeInTheDocument();
+      expect(getByText(alertsMock[2].message)).toBeInTheDocument();
     });
 
     it('calls previous alert when the previous button is clicked', () => {
