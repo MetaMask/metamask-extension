@@ -1,4 +1,5 @@
 import { shallowEqual, useSelector } from 'react-redux';
+import { toChecksumAddress } from 'ethereumjs-util';
 import {
   getAllTokens,
   getCurrentChainId,
@@ -21,7 +22,6 @@ import {
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { useTokenTracker } from './useTokenTracker';
 
 export const useAccountTotalFiatBalance = (
@@ -62,15 +62,14 @@ export const useAccountTotalFiatBalance = (
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });
 
+  const mergedRates = {
+    ...contractExchangeRates,
+    ...confirmationExchangeRates,
+  };
+
   // Create fiat values for token balances
   const tokenFiatBalances = tokensWithBalances.map((token) => {
-    const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
-      (key) => isEqualCaseInsensitive(key, token.address),
-    );
-    const tokenExchangeRate =
-      (contractExchangeTokenKey &&
-        contractExchangeRates[contractExchangeTokenKey]) ??
-      0;
+    const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
 
     const totalFiatValue = getTokenFiatAmount(
       tokenExchangeRate,
@@ -84,11 +83,6 @@ export const useAccountTotalFiatBalance = (
 
     return totalFiatValue;
   });
-
-  const mergedRates = {
-    ...contractExchangeRates,
-    ...confirmationExchangeRates,
-  };
 
   // Create an object with native token info. NOTE: Native token info is fetched from a separate controller
   const nativeTokenValues = {
@@ -153,12 +147,7 @@ export const useAccountTotalFiatBalance = (
 
   // to sort by fiat balance, we need to compute this at this level
   tokensWithBalances.forEach((token) => {
-    const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
-      isEqualCaseInsensitive(key, token.address),
-    );
-
-    const tokenExchangeRate =
-      contractExchangeTokenKey && mergedRates[contractExchangeTokenKey];
+    const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
 
     token.tokenFiatAmount =
       getTokenFiatAmount(
