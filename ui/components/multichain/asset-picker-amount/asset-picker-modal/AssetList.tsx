@@ -72,6 +72,15 @@ export default function AssetList({
         const tokenAddress = token.address?.toLowerCase();
         const isSelected = tokenAddress === selectedToken?.toLowerCase();
         const isDisabled = isTokenDisabled?.(token) ?? false;
+
+        let tokenSymbol;
+        if (useNativeCurrencyAsPrimaryCurrency) {
+          tokenSymbol =
+            token.symbol === primaryCurrency ? primaryCurrency : token.symbol;
+        } else {
+          tokenSymbol = secondaryCurrency;
+        }
+
         return (
           <Box
             padding={0}
@@ -123,14 +132,7 @@ export default function AssetList({
                           secondaryCurrencyProperties.value
                         : undefined
                     }
-                    tokenSymbol={
-                      // eslint-disable-next-line no-nested-ternary
-                      useNativeCurrencyAsPrimaryCurrency
-                        ? token.symbol === primaryCurrency
-                          ? primaryCurrency
-                          : token.symbol
-                        : secondaryCurrency
-                    }
+                    tokenSymbol={tokenSymbol}
                     secondary={secondaryCurrencyDisplay}
                     tokenImage={token.image}
                     isOriginalTokenSymbol={token.symbol === nativeCurrency}
