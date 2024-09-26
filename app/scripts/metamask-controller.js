@@ -1513,7 +1513,7 @@ export default class MetamaskController extends EventEmitter {
           onAccountAdded: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAccountAdded,
+              event: MetaMetricsEventName.AccountsSyncAdded,
               properties: {
                 profile_id: profileId,
               },
@@ -1522,7 +1522,7 @@ export default class MetamaskController extends EventEmitter {
           onAccountNameUpdated: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAccountNameUpdated,
+              event: MetaMetricsEventName.AccountsSyncNameUpdated,
               properties: {
                 profile_id: profileId,
               },
