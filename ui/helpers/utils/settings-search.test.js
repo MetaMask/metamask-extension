@@ -5,6 +5,7 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
   getSpecificSettingsRoute,
+  escapeRegExp,
 } from './settings-search';
 
 const t = (key) => {
@@ -196,6 +197,42 @@ describe('Settings Search Utils', () => {
 
     it('returns "About" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('about'))).toStrictEqual(9);
+    });
+  });
+
+  describe('escapeRegExp', () => {
+    it('should escape special characters for use in regular expressions', () => {
+      const input = '.*+?^${}()|[]\\';
+      const expectedOutput = '\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\';
+      expect(escapeRegExp(input)).toBe(expectedOutput);
+    });
+
+    it('should return the same string if no special characters are present', () => {
+      const input = 'hello';
+      expect(escapeRegExp(input)).toBe(input);
+    });
+
+    it('should escape only the special characters in a mixed string', () => {
+      const input = 'hello.*world';
+      const expectedOutput = 'hello\\.\\*world';
+      expect(escapeRegExp(input)).toBe(expectedOutput);
+    });
+
+    it('should handle an empty string correctly', () => {
+      const input = '';
+      expect(escapeRegExp(input)).toBe('');
+    });
+
+    it('should escape backslashes properly', () => {
+      const input = '\\';
+      const expectedOutput = '\\\\';
+      expect(escapeRegExp(input)).toBe(expectedOutput);
+    });
+
+    it('should escape backslashes with content properly', () => {
+      const input = 'foobar\\';
+      const expectedOutput = 'foobar\\\\';
+      expect(escapeRegExp(input)).toBe(expectedOutput);
     });
   });
 
