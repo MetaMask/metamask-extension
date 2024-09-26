@@ -85,7 +85,6 @@ export const GasFeesDetails = ({
           alertKey={RowAlertKey.Speed}
           data-testid="gas-fee-details-speed"
           label={t('speed')}
-          variant={ConfirmInfoRowVariant.Default}
           ownerId={transactionMeta.id}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
