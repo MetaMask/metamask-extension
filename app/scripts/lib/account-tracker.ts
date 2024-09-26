@@ -261,7 +261,7 @@ export default class AccountTracker {
    * @param networkClientId - The networkClientId to start polling for
    * @returns pollingToken
    */
-  startPollingByNetworkClientId(networkClientId: NetworkClientId) {
+  startPollingByNetworkClientId(networkClientId: NetworkClientId): string {
     const pollToken = random();
 
     const pollingTokenSet = this.#pollingTokenSets.get(networkClientId);
@@ -293,7 +293,7 @@ export default class AccountTracker {
    *
    * @param pollingToken - The polling token to stop polling for
    */
-  stopPollingByPollingToken(pollingToken: string | undefined) {
+  stopPollingByPollingToken(pollingToken: string | undefined): void {
     if (!pollingToken) {
       throw new Error('pollingToken required');
     }
@@ -318,7 +318,7 @@ export default class AccountTracker {
    *
    * @param networkClientId - network client ID to fetch a block tracker with
    */
-  #subscribeWithNetworkClientId(networkClientId: NetworkClientId) {
+  #subscribeWithNetworkClientId(networkClientId: NetworkClientId): void {
     if (this.#listeners[networkClientId]) {
       return;
     }
@@ -339,7 +339,7 @@ export default class AccountTracker {
    *
    * @param networkClientId - The network client ID to fetch a block tracker with
    */
-  #unsubscribeWithNetworkClientId(networkClientId: NetworkClientId) {
+  #unsubscribeWithNetworkClientId(networkClientId: NetworkClientId): void {
     if (!this.#listeners[networkClientId]) {
       return;
     }
@@ -355,13 +355,13 @@ export default class AccountTracker {
    *
    * @param chainId - The chain ID
    */
-  #getAccountsForChainId(chainId: Hex) {
+  #getAccountsForChainId(chainId: Hex): AccountTrackerState['accounts'] {
     const { accounts, accountsByChainId } = this.store.getState();
     if (accountsByChainId[chainId]) {
       return cloneDeep(accountsByChainId[chainId]);
     }
 
-    const newAccounts: Record<string, Record<string, never>> = {};
+    const newAccounts: AccountTrackerState['accounts'] = {};
     Object.keys(accounts).forEach((address) => {
       newAccounts[address] = {};
     });
