@@ -731,16 +731,8 @@
     },
     "@metamask/address-book-controller": {
       "packages": {
-        "@metamask/address-book-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true
-      }
-    },
-    "@metamask/address-book-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/announcement-controller": {
@@ -2169,14 +2161,18 @@
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
+        "clearInterval": true,
         "console.error": true,
         "dispatchEvent": true,
         "fetch": true,
         "removeEventListener": true,
+        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
         "@metamask/message-signing-snap>@noble/ciphers": true,
         "@metamask/profile-sync-controller>siwe": true,
         "@noble/hashes": true,

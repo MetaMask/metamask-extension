@@ -101,6 +101,7 @@ async function switchToDialogPopoverValidateDetails(driver, expectedDetails) {
   });
 
   // Get state details
+  await driver.waitForControllersLoaded();
   const notificationWindowState = await driver.executeScript(() =>
     window.stateHooks?.getCleanAppState?.(),
   );

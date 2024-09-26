@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "J’ai pris connaissance de l’alerte, mais je souhaite quand même continuer"
   },
-  "confirmAlertModalDetails": {
-    "message": "Si vous vous connectez, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs. Veuillez examiner les alertes avant de continuer."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Vous risquez de perdre tout ou partie de vos actifs"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Nous vous redirigerons vers $1 une fois que vous cliquerez sur « Continuer »."
   },
@@ -1004,9 +998,6 @@
   },
   "confirmTitleDescSIWESignature": {
     "message": "Un site vous demande de vous connecter pour prouver que vous êtes le titulaire de ce compte."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Ne confirmez ce message que si vous approuvez son contenu et faites confiance au site demandeur."
   },
   "confirmTitlePermitTokens": {
     "message": "Demande de plafonnement des dépenses"
@@ -2867,10 +2858,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "L’ID ou le nom de la chaîne associée à ce réseau n’est pas correct. De nombreux jetons populaires utilisent le nom $1, ce qui en fait une cible pour les escrocs. Vérifiez tout avant de continuer, car vous risquez de vous faire arnaquer.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Il pourrait s’agir d’une arnaque"
+    "message": "Il pourrait s’agir d’une arnaque",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Vous avez besoin d’aide ? Contactez $1",
