@@ -90,7 +90,7 @@ describe('domain resolution using preinstalled snap', () => {
     jest.clearAllMocks();
   });
 
-  it('should not skip snap for mainnet', async () => {
+  it('does not skip ENS snap for mainnet', async () => {
     const state = {
       metamask: {
         networkConfigurationsByChainId: {
@@ -113,7 +113,7 @@ describe('domain resolution using preinstalled snap', () => {
     };
 
     await fetchResolutions({
-      domain: 'luc.eth',
+      domain: 'test.eth',
       chainId: 'eip155:1',
       state,
     });
@@ -127,13 +127,13 @@ describe('domain resolution using preinstalled snap', () => {
         method: ' ',
         params: {
           chainId: 'eip155:1',
-          domain: 'luc.eth',
+          domain: 'test.eth',
         },
       },
     });
   });
 
-  it('should not skip other snaps', async () => {
+  it('does not skip other snaps', async () => {
     const skip = shouldSkipEnsResolutionSnap(
       'eip155:100',
       'npm:@metamask/other-snap',
@@ -143,7 +143,7 @@ describe('domain resolution using preinstalled snap', () => {
     expect(skip).toBe(false);
   });
 
-  it('should not skip snap when non-mainnet and using infura', async () => {
+  it('does not skip ENS snap when non-mainnet and using infura', async () => {
     const state = {
       metamask: {
         networkConfigurationsByChainId: {
@@ -166,7 +166,7 @@ describe('domain resolution using preinstalled snap', () => {
     };
 
     await fetchResolutions({
-      domain: 'luc.eth',
+      domain: 'test.eth',
       chainId: 'eip155:100',
       state,
     });
@@ -180,13 +180,13 @@ describe('domain resolution using preinstalled snap', () => {
         method: ' ',
         params: {
           chainId: 'eip155:100',
-          domain: 'luc.eth',
+          domain: 'test.eth',
         },
       },
     });
   });
 
-  it('should skip snap when non-mainnet and using custom RPC', async () => {
+  it('skips ENS snap when non-mainnet and using custom RPC', async () => {
     const state = {
       metamask: {
         networkConfigurationsByChainId: {
@@ -214,7 +214,7 @@ describe('domain resolution using preinstalled snap', () => {
       },
     };
     const resolutions = await fetchResolutions({
-      domain: 'luc.eth',
+      domain: 'test.eth',
       chainId: 'eip155:100',
       state,
     });
@@ -222,7 +222,7 @@ describe('domain resolution using preinstalled snap', () => {
     expect(mockedStoreActions.handleSnapRequest).not.toHaveBeenCalled();
   });
 
-  it('should skip snap when non-mainnet and no RPC for mainnet', async () => {
+  it('skips ENS snap when non-mainnet and no RPC defined for mainnet', async () => {
     const skip = shouldSkipEnsResolutionSnap(
       'eip155:100',
       'npm:@metamask/ens-resolver-snap',
