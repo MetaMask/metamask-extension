@@ -1111,7 +1111,7 @@ class Driver {
     let newWindowHandle;
     let windowsAfter;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      windowsAfter = await driver.getAllWindowHandles();
+      windowsAfter = await this.getAllWindowHandles();
       const foundNewWindow = windowsAfter.find(
         (handle) => !windowsBefore.includes(handle),
       );
