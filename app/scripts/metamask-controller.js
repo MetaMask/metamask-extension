@@ -2836,13 +2836,6 @@ export default class MetamaskController extends EventEmitter {
         }
 
         this.#checkTokenListPolling(currState, prevState);
-
-        // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
-        // this.controllerMessenger.publish(
-        //   'PreferencesController:stateChange',
-        //   currState,
-        //   [],
-        // );
       }, this.preferencesController.state),
     );
 
@@ -6986,8 +6979,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   // async #onPreferencesControllerStateChange(currentState, previousState) {
-  //   currentState = { incomingTransactionsPreferences: { '0x1': true } };
-  //   previousState = { incomingTransactionsPreferences: { '0x1': true } };
   //   console.log('Prev State:', previousState);
   //   console.log('Curr State:', previousState);
   //   const { currentLocale } = currentState;

@@ -433,13 +433,13 @@ export default class PreferencesController extends BaseController<
       name: controllerName,
       state: {
         ...getDefaultPreferencesControllerState(),
-        ...state,
         incomingTransactionsPreferences: {
           ...mainNetworks,
           ...addedNonMainNetwork,
           ...testNetworks,
         },
         currentLocale: initLangCode ?? '',
+        ...state,
       },
     });
 
