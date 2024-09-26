@@ -215,4 +215,5 @@ export const getEthUsdtApproveResetTx = (approval: TransactionParams) => {
 };
 
 export const isEthUsdt = (chainId: Hex, address: string) =>
-  chainId === CHAIN_IDS.MAINNET && address === ETH_USDT_ADDRESS;
+  chainId === CHAIN_IDS.MAINNET &&
+  address.toLowerCase() === ETH_USDT_ADDRESS.toLowerCase();
