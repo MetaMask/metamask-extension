@@ -114,22 +114,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             margin={4}
           />
         )}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        shouldShowBuy ? (
-          <RampsCard
-            variant={
-              isBtc
-                ? RAMPS_CARD_VARIANT_TYPES.BTC
-                : RAMPS_CARD_VARIANT_TYPES.TOKEN
-            }
-            handleOnClick={
-              isBtc ? undefined : () => setShowFundingMethodModal(true)
-            }
-          />
-        ) : null
-        ///: END:ONLY_INCLUDE_IF
-      }
       <AssetListControlBar
         setTokenList={setTokenList}
         showTokensLinks={showTokensLinks}
@@ -150,6 +134,22 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
           });
         }}
       />
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        shouldShowBuy ? (
+          <RampsCard
+            variant={
+              isBtc
+                ? RAMPS_CARD_VARIANT_TYPES.BTC
+                : RAMPS_CARD_VARIANT_TYPES.TOKEN
+            }
+            handleOnClick={
+              isBtc ? undefined : () => setShowFundingMethodModal(true)
+            }
+          />
+        ) : null
+        ///: END:ONLY_INCLUDE_IF
+      }
       {shouldShowTokensLinks && (
         <ImportTokenLink
           margin={4}
