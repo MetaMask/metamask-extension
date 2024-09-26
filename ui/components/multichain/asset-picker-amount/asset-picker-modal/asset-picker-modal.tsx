@@ -32,7 +32,6 @@ import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import {
   getAllTokens,
   getCurrentChainId,
-  getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
@@ -42,6 +41,7 @@ import {
 } from '../../../../selectors';
 import {
   getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';

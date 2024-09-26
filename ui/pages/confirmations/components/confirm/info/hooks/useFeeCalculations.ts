@@ -10,10 +10,12 @@ import {
   getValueFromWeiHex,
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
-import { getConversionRate } from '../../../../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
-import { getCurrentCurrency } from '../../../../../../selectors';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 import { useEIP1559TxFees } from './useEIP1559TxFees';

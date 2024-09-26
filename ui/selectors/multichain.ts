@@ -15,6 +15,7 @@ import {
   getCompletedOnboarding,
   getConversionRate,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
@@ -32,7 +33,6 @@ import {
 } from './networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
-  getCurrentCurrency,
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,

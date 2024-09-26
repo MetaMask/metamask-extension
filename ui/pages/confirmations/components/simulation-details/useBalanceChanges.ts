@@ -11,8 +11,11 @@ import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { getCurrentChainId, getCurrentCurrency } from '../../../../selectors';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../../ducks/metamask/metamask';
+import { getCurrentChainId } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import {
   BalanceChange,

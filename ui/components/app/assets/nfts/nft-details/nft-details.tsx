@@ -25,7 +25,6 @@ import {
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
-  getCurrentCurrency,
   getCurrentNetwork,
   getIpfsGateway,
 } from '../../../../../selectors';
@@ -70,7 +69,10 @@ import { Content, Footer, Page } from '../../../../multichain/pages/page';
 import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
 import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/swaps';
-import { getConversionRate } from '../../../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
 import NftDetailInformationRow from './nft-detail-information-row';

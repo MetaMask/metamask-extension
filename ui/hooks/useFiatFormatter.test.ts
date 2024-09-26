@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { getIntlLocale } from '../ducks/locale/locale';
-import { getCurrentCurrency } from '../selectors';
+import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { useFiatFormatter } from './useFiatFormatter';
 
 jest.mock('react-redux', () => ({

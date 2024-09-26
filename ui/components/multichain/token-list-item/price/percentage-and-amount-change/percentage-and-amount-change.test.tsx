@@ -4,12 +4,12 @@ import '@testing-library/jest-dom';
 import { zeroAddress } from 'ethereumjs-util';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import {
-  getCurrentCurrency,
   getSelectedAccountCachedBalance,
   getTokensMarketData,
 } from '../../../../../selectors';
 import {
   getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
 import { PercentageAndAmountChange } from './percentage-and-amount-change';

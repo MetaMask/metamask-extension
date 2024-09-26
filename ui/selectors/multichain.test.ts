@@ -1,6 +1,9 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-api';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -39,11 +42,7 @@ import {
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
 } from './multichain';
-import {
-  getCurrentCurrency,
-  getSelectedAccountCachedBalance,
-  getShouldShowFiat,
-} from '.';
+import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
 type TestState = MultichainState &
   AccountsState & {
