@@ -58,6 +58,11 @@ describe('Import flow @no-mmi', function () {
 
         // Show account information
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        // Wait until account list is loaded to mitigate race condition
+        await driver.findElement({
+          text: 'Account 1',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
         );
@@ -187,6 +192,11 @@ describe('Import flow @no-mmi', function () {
 
         // Show account information
         await driver.clickElement('[data-testid="account-menu-icon"]');
+          // Wait until account list is loaded to mitigate race condition
+          await driver.findElement({
+            text: 'Account 1',
+            tag: 'span',
+          });
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
         );
