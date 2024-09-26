@@ -403,7 +403,7 @@ describe('Import flow @no-mmi', function () {
         // choose Import Account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
         // Wait until account list is loaded to mitigate race condition
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Account 1',
           tag: 'span',
         });
