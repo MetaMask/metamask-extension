@@ -5344,25 +5344,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^4.3.1":
-  version: 4.3.3
-  resolution: "@metamask/eth-snap-keyring@npm:4.3.3"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/eth-sig-util": "npm:^7.0.3"
-    "@metamask/keyring-api": "npm:^8.1.0"
-    "@metamask/snaps-controllers": "npm:^9.6.0"
-    "@metamask/snaps-sdk": "npm:^6.4.0"
-    "@metamask/snaps-utils": "npm:^7.8.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^9.2.1"
-    "@types/uuid": "npm:^9.0.1"
-    uuid: "npm:^9.0.0"
-  checksum: 10/035c82afef82a4cee7bc63b5c4f152a132b683017ec90a4b614764a4bc7adcca8faccf78c25adcddca2d29eee2fed08706f07d72afb93640956b86e862d4f555
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-snap-keyring@npm:^4.3.6":
+"@metamask/eth-snap-keyring@npm:^4.3.1, @metamask/eth-snap-keyring@npm:^4.3.6":
   version: 4.3.6
   resolution: "@metamask/eth-snap-keyring@npm:4.3.6"
   dependencies:
@@ -5634,7 +5616,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^8.0.0, @metamask/keyring-api@npm:^8.1.0, @metamask/keyring-api@npm:^8.1.3":
+"@metamask/keyring-api@npm:^8.0.0, @metamask/keyring-api@npm:^8.1.3":
   version: 8.1.3
   resolution: "@metamask/keyring-api@npm:8.1.3"
   dependencies:
@@ -6240,7 +6222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^9.6.0, @metamask/snaps-controllers@npm:^9.7.0":
+"@metamask/snaps-controllers@npm:^9.7.0":
   version: 9.7.0
   resolution: "@metamask/snaps-controllers@npm:9.7.0"
   dependencies:
@@ -6337,7 +6319,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^7.4.0, @metamask/snaps-utils@npm:^7.8.0, @metamask/snaps-utils@npm:^7.8.1":
+"@metamask/snaps-utils@npm:^7.4.0, @metamask/snaps-utils@npm:^7.8.1":
   version: 7.8.1
   resolution: "@metamask/snaps-utils@npm:7.8.1"
   dependencies:
