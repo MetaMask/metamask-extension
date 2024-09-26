@@ -114,7 +114,6 @@ workflows:
       - test-e2e-chrome-webpack:
           requires:
             - prep-build-test-webpack
-            - get-changed-files-with-git-diff
 
   locales_only:
     when:
