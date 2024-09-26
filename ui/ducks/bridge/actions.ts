@@ -35,13 +35,14 @@ import {
   getSelectedNetworkClientId,
 } from '../../selectors';
 import { getGasFeeEstimates } from '../metamask/metamask';
-import {
-  addHexes,
-  decGWEIToHexWEI,
-} from '../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { MetaMetricsNetworkEventSource } from '../../../shared/constants/metametrics';
 import { DEFAULT_TOKEN_ADDRESS } from '../../../shared/constants/swaps';
+import {
+  getEthUsdtApproveResetTx as getEthUsdtApproveResetTxParams,
+  isEthUsdt,
+} from '../../pages/bridge/bridge.util';
 import { bridgeSlice } from './bridge';
 import {
   DUMMY_QUOTES_APPROVAL,
@@ -163,8 +164,32 @@ export const signBridgeTransaction = (
       // );
     }
 
-    const handleUSDTAllowanceReset = () => {
-      const;
+    const handleUsdtAllowanceReset = async (hexChainId: Hex) => {
+      const gasLimit = quoteMeta.approval.gasLimit.toString();
+      const txParams = getEthUsdtApproveResetTxParams({
+        ...quoteMeta.approval,
+        chainId: hexChainId,
+        gasLimit,
+        gas: gasLimit, // must set this field
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      });
+
+      await addTransactionAndWaitForPublish(txParams, {
+        requireApproval: false,
+        // @ts-expect-error Need TransactionController v37+, TODO add this type
+        type: 'bridgeApproval', // TransactionType.bridgeApproval,
+
+        // TODO update TransactionController to change this to a bridge field
+        // swaps.meta is of type Partial<TransactionMeta>, will get merged with TransactionMeta by the TransactionController
+        swaps: {
+          hasApproveTx: true,
+          meta: {
+            type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
+            sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
+          },
+        },
+      });
     };
 
     const handleApprovalTx = async () => {
@@ -176,6 +201,10 @@ export const signBridgeTransaction = (
       ).toPrefixedHexString() as `0x${string}`;
       if (!hexChainId) {
         throw new Error('Invalid chain ID');
+      }
+
+      if (isEthUsdt(hexChainId, quoteMeta.quote.srcAsset.address)) {
+        await handleUsdtAllowanceReset(hexChainId);
       }
 
       const gasLimit = quoteMeta.approval.gasLimit.toString();
