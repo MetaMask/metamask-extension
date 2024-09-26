@@ -6213,20 +6213,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "@metamask/signature-controller@npm:19.0.0"
+"@metamask/signature-controller@npm:^19.1.0":
+  version: 19.1.0
+  resolution: "@metamask/signature-controller@npm:19.1.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.0"
-    "@metamask/controller-utils": "npm:^11.1.0"
-    "@metamask/message-manager": "npm:^10.0.3"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.3.0"
+    "@metamask/message-manager": "npm:^10.1.1"
     "@metamask/utils": "npm:^9.1.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/logging-controller": ^6.0.0
-  checksum: 10/9eec874bddee00a969a0231367c55c2b1768ad029c8125929603544ddc94b1e7c833457e39aa0aa5fed19608cb68633f0a90ca40a5639a8d6e2c84dbf9756feb
+  checksum: 10/ac01b4ba6708e2e74b92ef1c5d4fb9aeff06ae2bd3b445fe8a10bc8e84641ad3bed6fb245f0303ef9d13b7458d022ef07d5ce211a05b14e1ad5ce44ad49cd4ec
   languageName: node
   linkType: hard
 
@@ -26146,7 +26146,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^18.0.1"
-    "@metamask/signature-controller": "npm:^19.0.0"
+    "@metamask/signature-controller": "npm:^19.1.0"
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.7.0"
     "@metamask/snaps-execution-environments": "npm:^6.7.2"
