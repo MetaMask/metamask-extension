@@ -1951,6 +1951,7 @@ export default class MetamaskController extends EventEmitter {
       getAllState: this.getState.bind(this),
       getCurrentChainId: () =>
         getCurrentChainId({ metamask: this.networkController.state }),
+      trace,
     });
 
     this.signatureController.hub.on(
