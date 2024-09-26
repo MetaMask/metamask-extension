@@ -69,9 +69,6 @@ describe('Token List', function () {
           '[data-testid="sort-by-popover-toggle"]',
         );
         await await driver.clickElement('[data-testid="sortByAlphabetically"]');
-        await await driver.clickElement(
-          '[data-testid="sort-by-popover-toggle"]',
-        );
 
         await driver.delay(regularDelayMs);
         const tokenListAfterSortingAlphabetically = await driver.findElements(
@@ -92,9 +89,6 @@ describe('Token List', function () {
         );
         await await driver.clickElement(
           '[data-testid="sortByDecliningBalance"]',
-        );
-        await await driver.clickElement(
-          '[data-testid="sort-by-popover-toggle"]',
         );
 
         await driver.delay(regularDelayMs);
