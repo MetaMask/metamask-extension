@@ -312,10 +312,11 @@ import {
   CaveatFactories,
   CaveatMutatorFactories,
   getCaveatSpecifications,
-  getChangedAccounts,
+  diffMap,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
+  getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
   PermissionNames,
   unrestrictedMethods,
@@ -2853,13 +2854,47 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
-        const changedAccounts = getChangedAccounts(currentValue, previousValue);
+        const changedAccounts = diffMap(currentValue, previousValue);
 
         for (const [origin, accounts] of changedAccounts.entries()) {
           this._notifyAccountsChange(origin, accounts);
         }
       },
       getPermittedAccountsByOrigin,
+    );
+
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const changedChains = diffMap(currentValue, previousValue);
+
+        // This operates under the assumption that there will be at maximum
+        // one origin permittedChains value change per event handler call
+        for (const [origin, chains] of changedChains.entries()) {
+          const currentNetworkClientIdForOrigin =
+            this.selectedNetworkController.getNetworkClientIdForDomain(origin);
+          const { chainId: currentChainIdForOrigin } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              currentNetworkClientIdForOrigin,
+            );
+          // if(chains.length === 0) {
+          // TODO: This particular case should also occur at the same time
+          // that eth_accounts is revoked. When eth_accounts is revoked,
+          // the networkClientId for that origin should be reset to track
+          // the globally selected network.
+          // }
+          if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
+            const networkClientId =
+              this.networkController.findNetworkClientIdByChainId(chains[0]);
+            this.selectedNetworkController.setNetworkClientIdForDomain(
+              origin,
+              networkClientId,
+            );
+            this.networkController.setActiveNetwork(networkClientId);
+          }
+        }
+      },
+      getPermittedChainsByOrigin,
     );
 
     this.controllerMessenger.subscribe(
@@ -3226,6 +3261,13 @@ export default class MetamaskController extends EventEmitter {
         getProviderConfig({
           metamask: this.networkController.state,
         }),
+      grantPermissionsIncremental:
+        this.permissionController.grantPermissionsIncremental.bind(
+          this.permissionController,
+        ),
+      grantPermissions: this.permissionController.grantPermissions.bind(
+        this.permissionController,
+      ),
       setSecurityAlertsEnabled:
         preferencesController.setSecurityAlertsEnabled.bind(
           preferencesController,
@@ -5674,7 +5716,12 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
-            { eth_accounts: {} },
+            {
+              eth_accounts: {},
+              ...(process.env.CHAIN_PERMISSIONS && {
+                [PermissionNames.permittedChains]: {},
+              }),
+            },
           ),
         requestPermittedChainsPermission: (chainIds) =>
           this.permissionController.requestPermissionsIncremental(
@@ -5689,10 +5736,29 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           ),
-        requestPermissionsForOrigin:
-          this.permissionController.requestPermissions.bind(
-            this.permissionController,
+        grantPermittedChainsPermissionIncremental: (chainIds) =>
+          this.permissionController.grantPermissionsIncremental({
+            subject: { origin },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          }),
+        requestPermissionsForOrigin: (requestedPermissions) =>
+          this.permissionController.requestPermissions(
             { origin },
+            {
+              ...(process.env.CHAIN_PERMISSIONS &&
+                requestedPermissions[RestrictedMethods.eth_accounts] && {
+                  [PermissionNames.permittedChains]: {},
+                }),
+              ...requestedPermissions,
+            },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
