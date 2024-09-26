@@ -104,9 +104,9 @@ export default class AppStateController extends EventEmitter {
         }),
     );
 
-    this._setInactiveTimeout(
-      preferencesController.state.preferences.autoLockTimeLimit,
-    );
+    const { preferences } = preferencesController.state;
+
+    this._setInactiveTimeout(preferences.autoLockTimeLimit);
 
     this.messagingSystem = messenger;
     this._approvalRequestId = null;

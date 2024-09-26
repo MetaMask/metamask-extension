@@ -58,8 +58,5 @@
   "oidc.api.cx.metamask.io",
   "price.api.cx.metamask.io",
   "token.api.cx.metamask.io",
-  "client-side-detection.api.cx.metamask.io",
-  "api.etherscan.io",
-  "api-optimistic.etherscan.io",
-  "api.bscscan.com"
+  "client-side-detection.api.cx.metamask.io"
 ]

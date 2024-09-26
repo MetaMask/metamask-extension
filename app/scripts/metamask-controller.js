@@ -6978,31 +6978,6 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  // async #onPreferencesControllerStateChange(currentState, previousState) {
-  //   console.log('Prev State:', previousState);
-  //   console.log('Curr State:', previousState);
-  //   const { currentLocale } = currentState;
-  //   const chainId = getCurrentChainId({
-  //     metamask: this.networkController.state,
-  //   });
-
-  //   await updateCurrentLocale(currentLocale);
-  //   if (currentState.incomingTransactionsPreferences?.[chainId]) {
-  //     this.txController.startIncomingTransactionPolling();
-  //   } else {
-  //     this.txController.stopIncomingTransactionPolling();
-  //   }
-
-  //   this.#checkTokenListPolling(currentState, previousState);
-
-  //   // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
-  //   // this.controllerMessenger.publish(
-  //   //   'PreferencesController:stateChange',
-  //   //   currentState,
-  //   //   [],
-  //   // );
-  // }
-
   #checkTokenListPolling(currentState, previousState) {
     const previousEnabled = this.#isTokenListPollingRequired(previousState);
     const newEnabled = this.#isTokenListPollingRequired(currentState);

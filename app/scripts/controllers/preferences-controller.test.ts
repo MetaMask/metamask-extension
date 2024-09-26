@@ -15,9 +15,7 @@ import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
 } from './preferences-controller';
-import PreferencesController, {
-  getDefaultPreferencesControllerState,
-} from './preferences-controller';
+import PreferencesController from './preferences-controller';
 
 const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   {
@@ -37,10 +35,10 @@ const NETWORK_CONFIGURATION_DATA = mockNetworkState(
 ).networkConfigurationsByChainId;
 
 const setupController = ({
-  state = getDefaultPreferencesControllerState(),
+  state,
 }: {
   state?: Partial<PreferencesControllerState>;
-} = {}) => {
+}) => {
   const controllerMessenger = new ControllerMessenger<
     AllowedActions,
     | AllowedEvents
