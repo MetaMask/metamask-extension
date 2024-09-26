@@ -34,10 +34,9 @@ export function SurveyToast() {
   const internalAccount = useSelector(getSelectedInternalAccount);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  const surveyId = 1;
   const surveyUrl = useMemo(
     () =>
-      `https://accounts.dev-api.cx.metamask.io/v1/users/${metaMetricsId}/surveys?surveyId=${surveyId}`,
+      `https://accounts.dev-api.cx.metamask.io/v1/users/${metaMetricsId}/surveys`,
     [metaMetricsId],
   );
 
@@ -63,7 +62,7 @@ export function SurveyToast() {
           cacheOptions: { cacheRefreshTime: DAY * 7 },
         });
 
-        const _survey: Survey = response?.surveys?.[0];
+        const _survey: Survey = response?.surveys;
 
         if (!_survey || _survey.surveyId <= lastViewedUserSurvey) {
           return;
