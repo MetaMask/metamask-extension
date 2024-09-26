@@ -9,6 +9,7 @@ import {
 import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
+import { IOptions } from '@open-rpc/test-coverage/build/coverage';
 import { ScopeString } from '../../app/scripts/lib/multichain-api/scope';
 import { Driver, PAGES } from './webdriver/driver';
 
@@ -24,6 +25,7 @@ import {
   unlockWallet,
   DAPP_URL,
   ACCOUNT_1,
+  Fixtures,
 } from './helpers';
 import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
 import transformOpenRPCDocument from './api-specs/transform';
@@ -43,7 +45,7 @@ async function main() {
       disableGanache: true,
       title: 'api-specs coverage',
     },
-    async ({ driver }: { driver: Driver }) => {
+    async ({ driver, extensionId }: any) => {
       await unlockWallet(driver);
 
       // Navigate to extension home screen
@@ -80,7 +82,7 @@ async function main() {
         'net_version',
       ];
 
-      const transport = createMultichainDriverTransport(driver);
+      const transport = createMultichainDriverTransport(driver, extensionId);
       const [transformedDoc, filteredMethods, methodsWithConfirmations] =
         transformOpenRPCDocument(
           MetaMaskOpenRPCDocument as OpenrpcDocument,
@@ -174,13 +176,7 @@ async function main() {
       const testCoverageResults = await testCoverage({
         openrpcDocument: doc,
         transport,
-        reporters: [
-          'console-streaming',
-          new HtmlReporter({
-            autoOpen: !process.env.CI,
-            destination: `${process.cwd()}/html-report-multichain`,
-          }),
-        ],
+        reporters: ['console-streaming'],
         skip: ['wallet_invokeMethod'],
         rules: [
           new MultichainAuthorizationConfirmation({
@@ -194,14 +190,12 @@ async function main() {
 
       const testCoverageResultsCaip27 = await testCoverage({
         openrpcDocument: MetaMaskOpenRPCDocument as OpenrpcDocument,
-        transport: createCaip27DriverTransport(driver, reverseScopeMap),
-        reporters: [
-          'console-streaming',
-          new HtmlReporter({
-            autoOpen: !process.env.CI,
-            destination: `${process.cwd()}/html-report-caip27`,
-          }),
-        ],
+        transport: createCaip27DriverTransport(
+          driver,
+          reverseScopeMap,
+          extensionId,
+        ),
+        reporters: ['console-streaming'],
         skip: [
           'eth_coinbase',
           'wallet_revokePermissions',
@@ -235,6 +229,14 @@ async function main() {
       const joinedResults = testCoverageResults.concat(
         testCoverageResultsCaip27,
       );
+
+      const htmlReporter = new HtmlReporter({
+        autoOpen: !process.env.CI,
+        destination: `${process.cwd()}/html-report-multichain`,
+      });
+
+      await htmlReporter.onEnd({} as IOptions, joinedResults);
+
 
       await driver.quit();
 
