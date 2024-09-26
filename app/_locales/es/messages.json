@@ -957,12 +957,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Soy consciente de la alerta y aun así deseo continuar"
   },
-  "confirmAlertModalDetails": {
-    "message": "Si inicia sesión, un tercero conocido por estafas podría quedarse con todos sus activos. Revise las alertas antes de continuar."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Sus activos podrían estar en riesgo"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Lo redirigiremos a $1 al hacer clic en continuar."
   },

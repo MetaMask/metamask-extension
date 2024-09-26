@@ -960,12 +960,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Saya telah mengetahui peringatannya dan tetap ingin melanjutkan"
   },
-  "confirmAlertModalDetails": {
-    "message": "Jika masuk, pihak ketiga yang terdeteksi melakukan penipuan dapat mengambil semua aset Anda. Tinjau peringatannya sebelum melanjutkan."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Aset Anda mungkin berisiko"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Kami akan mengarahkan Anda ke $1 setelah mengeklik lanjutkan."
   },

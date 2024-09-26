@@ -960,12 +960,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "我已知晓提醒并仍想继续"
   },
-  "confirmAlertModalDetails": {
-    "message": "如果您登录，以欺诈闻名的第三方可能会拿走您的所有资产。在继续操作之前，请查看提醒。"
-  },
-  "confirmAlertModalTitle": {
-    "message": "您的资产可能面临风险"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "点击“继续”后，我们会将您重定向到 $1。"
   },
