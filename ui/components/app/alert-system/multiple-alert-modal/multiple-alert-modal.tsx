@@ -163,9 +163,7 @@ export function MultipleAlertModal({
   );
 
   // If the selected alert is not found, default to the first alert
-  const selectedAlert = alerts[selectedIndex]
-    ? alerts[selectedIndex]
-    : alerts[0];
+  const selectedAlert = alerts[selectedIndex] ?? alerts[0];
 
   const hasUnconfirmedAlerts = alerts.some(
     (alert: Alert) =>
