@@ -121,7 +121,7 @@ async function assertInfoValues(driver: Driver) {
   });
   const value = driver.findElement({ text: '3,000' });
   const nonce = driver.findElement({ text: '0' });
-  const deadline = driver.findElement({ text: '02 August 1971, 16:53' });
+  const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
 
   assert.ok(await origin, 'origin');
   assert.ok(await contractPetName, 'contractPetName');

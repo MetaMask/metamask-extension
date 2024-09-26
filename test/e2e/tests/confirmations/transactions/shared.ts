@@ -94,7 +94,6 @@ export async function createDepositTransaction(driver: Driver) {
 
 export async function confirmDepositTransaction(driver: Driver) {
   await driver.waitUntilXWindowHandles(3);
-
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -102,7 +101,6 @@ export async function confirmDepositTransaction(driver: Driver) {
     text: 'Transaction request',
   });
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await toggleAdvancedDetails(driver);
 
   await driver.waitForSelector({

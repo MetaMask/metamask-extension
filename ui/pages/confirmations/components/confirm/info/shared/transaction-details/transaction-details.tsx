@@ -77,7 +77,7 @@ export const MethodDataRow = () => {
 
   const methodData = useFourByte(currentConfirmation);
 
-  if (!methodData) {
+  if (!methodData?.name) {
     return null;
   }
 

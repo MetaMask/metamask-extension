@@ -48,8 +48,7 @@ export const NotificationDetailButton = ({
         ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
           chain_id: notification?.chain_id,
         }),
-        notification_is_read: notification.isRead,
-        click_type: 'detail',
+        clicked_item: 'block_explorer',
       },
     });
   };

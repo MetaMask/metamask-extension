@@ -3274,6 +3274,9 @@
   "nonceFieldHeading": {
     "message": "Custom nonce"
   },
+  "none": {
+    "message": "None"
+  },
   "notBusy": {
     "message": "Not busy"
   },

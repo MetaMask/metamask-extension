@@ -1,6 +1,4 @@
 import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
-import * as ControllerUtils from '@metamask/controller-utils';
-
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
@@ -110,6 +108,14 @@ describe('PPOMMiddleware', () => {
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
     isChainSupportedMock.mockResolvedValue(true);
+
+    globalThis.sentry = {
+      withIsolationScope: jest
+        .fn()
+        .mockImplementation((fn) => fn({ setTags: jest.fn() })),
+      startSpan: jest.fn().mockImplementation((_, fn) => fn({})),
+      startSpanManual: jest.fn().mockImplementation((_, fn) => fn({})),
+    };
   });
 
   it('updates alert response after validating request', async () => {
@@ -173,7 +179,6 @@ describe('PPOMMiddleware', () => {
       securityAlertResponse: undefined,
     };
 
-    // @ts-expect-error Passing in invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();
@@ -260,27 +265,7 @@ describe('PPOMMiddleware', () => {
       tabId: 1048745900,
       securityAlertResponse: undefined,
     };
-    jest.spyOn(ControllerUtils, 'detectSIWE').mockReturnValue({
-      isSIWEMessage: true,
-      parsedMessage: {
-        address: '0x935e73edb9ff52e23bac7f7e049a1ecd06d05477',
-        chainId: 1,
-        domain: 'metamask.github.io',
-        expirationTime: null,
-        issuedAt: '2021-09-30T16:25:24.000Z',
-        nonce: '32891757',
-        notBefore: '2022-03-17T12:45:13.610Z',
-        requestId: 'some_id',
-        scheme: null,
-        statement:
-          'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
-        uri: 'https://metamask.github.io',
-        version: '1',
-        resources: null,
-      },
-    });
 
-    // @ts-expect-error Passing invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();
