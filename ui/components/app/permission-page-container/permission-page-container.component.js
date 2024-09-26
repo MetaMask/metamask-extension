@@ -8,10 +8,10 @@ import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
@@ -22,6 +22,8 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
+// eslint-disable-next-line import/no-restricted-paths
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
@@ -140,18 +142,22 @@ export default class PermissionPageContainer extends Component {
       selectedAccounts,
     } = this.props;
 
+    const approvedAccounts = selectedAccounts.map(
+      (selectedAccount) => selectedAccount.address,
+    );
+
+    const permittedChainsPermission =
+      _request.permissions[PermissionNames.permittedChains];
+    const approvedChainIds = permittedChainsPermission?.caveats.find(
+      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+    )?.value;
+
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      ...(_request.permissions.eth_accounts && {
-        approvedAccounts: selectedAccounts.map(
-          (selectedAccount) => selectedAccount.address,
-        ),
-      }),
-      ...(_request.permissions.permittedChains && {
-        approvedChainIds: _request.permissions?.permittedChains?.caveats.find(
-          (caveat) => caveat.type === 'restrictNetworkSwitching',
-        )?.value,
+      ...(_request.permissions.eth_accounts && { approvedAccounts }),
+      ...(_request.permissions[PermissionNames.permittedChains] && {
+        approvedChainIds,
       }),
     };
 

@@ -55,7 +55,10 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { CONNECTIONS } from '../../../helpers/constants/routes';
+import {
+  CONNECTIONS,
+  REVIEW_PERMISSIONS,
+} from '../../../helpers/constants/routes';
 import { MultichainNetwork } from '../../../selectors/multichain';
 
 type AppHeaderUnlockedContentProps = {
@@ -119,7 +122,11 @@ export const AppHeaderUnlockedContent = ({
   };
 
   const handleConnectionsRoute = () => {
-    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+    if (process.env.CHAIN_PERMISSIONS) {
+      history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
+    } else {
+      history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+    }
   };
 
   return (
