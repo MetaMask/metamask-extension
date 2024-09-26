@@ -50,6 +50,23 @@
       },
       "snapsInstallPrivacyWarningShown": true
     },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          },
+          "destNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          }
+        }
+      }
+    },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -80,11 +97,11 @@
     },
     "NetworkController": {
       "selectedNetworkClientId": "string",
+      "networkConfigurations": "object",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
       },
-      "providerConfig": "object",
-      "networkConfigurations": "object"
+      "providerConfig": "object"
     },
     "OnboardingController": {
       "completedOnboarding": true,
@@ -114,9 +131,10 @@
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
-        "showConfirmationAdvancedDetails": false,
+        "showMultiRpcModal": "boolean",
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-        "showMultiRpcModal": "boolean"
+        "showConfirmationAdvancedDetails": false,
+        "tokenSortConfig": "object"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -136,23 +154,6 @@
         "fees": {},
         "liveness": true,
         "smartTransactions": "object"
-      }
-    },
-    "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionSupport": "boolean",
-          "srcNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          },
-          "destNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          }
-        }
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },
