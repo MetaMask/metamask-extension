@@ -1307,6 +1307,10 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+export function getShowPermittedNetworkToastOpen(state) {
+  return state.appState.showPermittedNetworkToastOpen;
+}
+
 /**
  * Returns a memoized selector that gets the internal accounts from the Redux store.
  *
