@@ -210,6 +210,7 @@ async function addEthereumChainHandler(
       networkClientId,
       approvalFlowId,
       {
+        isAddFlow: true,
         setActiveNetwork,
         requestUserApproval,
         getCaveat,

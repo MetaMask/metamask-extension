@@ -170,6 +170,7 @@ export async function switchChain(
   networkClientId,
   approvalFlowId,
   {
+    isAddFlow,
     setActiveNetwork,
     endApprovalFlow,
     requestUserApproval,
@@ -195,13 +196,21 @@ export async function switchChain(
             ),
           ); // TODO: better error
         }
-        await requestPermissionApprovalForOrigin({
-          [PermissionNames.permittedChains]: {
-            caveats: [
-              { type: CaveatTypes.restrictNetworkSwitching, value: [chainId] },
-            ],
-          },
-        });
+
+        // TODO: This behavior may have deviated from the original permittedChains add chain behavior
+        // Verify that this helper behaves as expected
+        if (!isAddFlow) {
+          await requestPermissionApprovalForOrigin({
+            [PermissionNames.permittedChains]: {
+              caveats: [
+                {
+                  type: CaveatTypes.restrictNetworkSwitching,
+                  value: [chainId],
+                },
+              ],
+            },
+          });
+        }
 
         const updatedCaveatValue = addPermittedEthChainId(
           caip25Caveat.value,

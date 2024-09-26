@@ -109,7 +109,7 @@ export const createCaip27DriverTransport = (
             unknown[] | Record<string, unknown>,
             string,
             ScopeString,
-            string
+            string,
           ]) => {
             const extensionPort = chrome.runtime.connect(e);
 
@@ -163,7 +163,10 @@ export const createCaip27DriverTransport = (
   };
 };
 
-export const createMultichainDriverTransport = (driver: Driver, extensionId: string) => {
+export const createMultichainDriverTransport = (
+  driver: Driver,
+  extensionId: string,
+) => {
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
   return async (
@@ -190,7 +193,7 @@ export const createMultichainDriverTransport = (driver: Driver, extensionId: str
             string,
             unknown[] | Record<string, unknown>,
             string,
-            string
+            string,
           ]) => {
             const extensionPort = chrome.runtime.connect(e);
 

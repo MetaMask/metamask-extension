@@ -12,6 +12,7 @@ describe('Ethereum Chain Utils', () => {
   const createMockedSwitchChain = () => {
     const end = jest.fn();
     const mocks = {
+      isAddFlow: false,
       setActiveNetwork: jest.fn(),
       endApprovalFlow: jest.fn(),
       requestUserApproval: jest.fn().mockResolvedValue(123),
@@ -165,8 +166,31 @@ describe('Ethereum Chain Utils', () => {
     });
 
     describe('with an existing CAIP-25 permission granted from the legacy flow (isMultichainOrigin: false) and the chainId is not already permissioned', () => {
-      it('requests permittedChains approval and switches to it', async () => {
+      it('skips permittedChains approval and switches to it if isAddFlow: true', async () => {
         const { mocks, switchChain } = createMockedSwitchChain();
+        mocks.isAddFlow = true;
+        mocks.getCaveat.mockReturnValue({
+          value: {
+            requiredScopes: {},
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          },
+        });
+        await switchChain(
+          'example.com',
+          '0x1',
+          { foo: 'bar' },
+          'mainnet',
+          'approvalFlowId',
+        );
+
+        expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
+        expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
+      });
+
+      it('requests permittedChains approval then switches to it if isAddFlow: false', async () => {
+        const { mocks, switchChain } = createMockedSwitchChain();
+        mocks.isAddFlow = false;
         mocks.getCaveat.mockReturnValue({
           value: {
             requiredScopes: {},
