@@ -30,6 +30,7 @@ import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   checkNetworkAndAccountSupports1559,
+  getIsBridgeEnabled,
   getNetworkConfigurations,
   getSelectedNetworkClientId,
 } from '../../selectors';
@@ -127,12 +128,12 @@ export const signBridgeTransaction = (
     getState: () => MetaMaskReduxState,
   ) => {
     const state = getState();
+    const isBridgeEnabled = getIsBridgeEnabled(state);
 
-    // TODO Check feature flags to see if enabled
-    // if (!isLive) {
-    //   history.push(BRIDGE_MAINTENANCE_ROUTE);
-    //   return;
-    // }
+    if (!isBridgeEnabled) {
+      // TODO do we want to do something here?
+      return;
+    }
 
     const quoteMeta = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
     // const quoteMeta = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
@@ -162,6 +163,10 @@ export const signBridgeTransaction = (
       // );
     }
 
+    const handleUSDTAllowanceReset = () => {
+      const;
+    };
+
     const handleApprovalTx = async () => {
       console.log('Bridge', 'handleApprovalTx');
 
@@ -186,6 +191,9 @@ export const signBridgeTransaction = (
         requireApproval: false,
         // @ts-expect-error Need TransactionController v37+, TODO add this type
         type: 'bridgeApproval', // TransactionType.bridgeApproval,
+
+        // TODO update TransactionController to change this to a bridge field
+        // swaps.meta is of type Partial<TransactionMeta>, will get merged with TransactionMeta by the TransactionController
         swaps: {
           hasApproveTx: true,
           meta: {
@@ -222,7 +230,9 @@ export const signBridgeTransaction = (
         requireApproval: false,
         // @ts-expect-error Need TransactionController v37+, TODO add this type
         type: 'bridge', // TransactionType.bridge,
-        bridge: {
+
+        // TODO update TransactionController to change this to a bridge field
+        swaps: {
           hasApproveTx: Boolean(quoteMeta?.approval),
           meta: {
             // estimatedBaseFee: decEstimatedBaseFee,
@@ -322,22 +332,26 @@ export const signBridgeTransaction = (
       }
     };
 
-    // Execute transaction(s)
-    let approvalTxId: string | undefined;
-    if (quoteMeta?.approval) {
-      approvalTxId = await handleApprovalTx();
-    }
-    await handleBridgeTx(approvalTxId);
+    const execute = async () => {
+      // Execute transaction(s)
+      let approvalTxId: string | undefined;
+      if (quoteMeta?.approval) {
+        approvalTxId = await handleApprovalTx();
+      }
+      await handleBridgeTx(approvalTxId);
 
-    // Add tokens if not the native gas token
-    if (quoteMeta.quote.srcAsset.address !== DEFAULT_TOKEN_ADDRESS) {
-      addSourceToken();
-    }
-    if (quoteMeta.quote.destAsset.address !== DEFAULT_TOKEN_ADDRESS) {
-      addDestToken();
-    }
+      // Add tokens if not the native gas token
+      if (quoteMeta.quote.srcAsset.address !== DEFAULT_TOKEN_ADDRESS) {
+        addSourceToken();
+      }
+      if (quoteMeta.quote.destAsset.address !== DEFAULT_TOKEN_ADDRESS) {
+        addDestToken();
+      }
 
-    // Return user to home screen
-    history.push(DEFAULT_ROUTE);
+      // Return user to home screen
+      history.push(DEFAULT_ROUTE);
+    };
+
+    await execute();
   };
 };
