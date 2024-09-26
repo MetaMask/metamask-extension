@@ -30,6 +30,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { REFRESH_INTERVAL_MS } from '../../../app/scripts/controllers/bridge/constants';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BridgeAsset,
   BridgeFlag,
@@ -197,7 +198,7 @@ export async function fetchBridgeQuotes(
  * @param approval
  * @returns
  */
-export const getEthUsdtRemovalTx = (approval: TransactionParams) => {
+export const getEthUsdtApproveResetTx = (approval: TransactionParams) => {
   const USDTContractInterface = new Contract(
     ETH_USDT_ADDRESS,
     ETHEREUM_USDT_APPROVALS_ABI,
@@ -212,3 +213,6 @@ export const getEthUsdtRemovalTx = (approval: TransactionParams) => {
     data,
   };
 };
+
+export const isEthUsdt = (chainId: Hex, address: string) =>
+  chainId === CHAIN_IDS.MAINNET && address === ETH_USDT_ADDRESS;
