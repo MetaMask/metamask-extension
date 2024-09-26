@@ -45,16 +45,16 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   it('validate the change language functionality', async function () {
     let languageIndex = 10;
 
-    this.timeout(6000);
-    await fixtures.start (
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
 
-      async ({ driver }: { driver: Driver }) => {
+    const { driver } =
+      await fixtures.start(
+        {
+          fixtures: new FixtureBuilder().build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test?.fullTitle(),
+        });
         await unlockWallet(driver);
+
         await changeLanguage(driver, languageIndex);
 
         // Validate the label changes to Spanish
@@ -79,180 +79,180 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
           selectors.currentLanguageLabel,
         );
         assert.equal(isLabelTextChanged, true, 'Language did not change');
-      },
-    );
+
   });
 
   it('validate "Dansk" language on page navigation', async function () {
     const languageIndex = 6;
-      await fixtures.start (
+    const { driver } =
+      await fixtures.start(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
-        },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex);
+        });
 
-        await driver.assertElementNotPresent('.loading-overlay__spinner');
+    await unlockWallet(driver);
+    await changeLanguage(driver, languageIndex);
 
-        await driver.clickElement(selectors.advanceText);
+    await driver.assertElementNotPresent('.loading-overlay__spinner');
 
-        // Confirm that the language change is reflected in search box water text
-        const isWaterTextChanged = await driver.isElementPresent(
-          selectors.waterText,
-        );
-        assert.equal(
-          isWaterTextChanged,
-          true,
-          'Water text in the search box does not match with the selected language',
-        );
+    await driver.clickElement(selectors.advanceText);
 
-        // Confirm that the language change is reflected in headers
-        const isHeaderTextChanged = await driver.isElementPresent(
-          selectors.headerTextDansk,
-        );
-        assert.equal(
-          isHeaderTextChanged,
-          true,
-          'Language change is not reflected in headers',
-        );
-
-        // Confirm that the language change is reflected in button
-        const isButtonTextChanged = await driver.isElementPresent(
-          selectors.buttonText,
-        );
-        assert.equal(
-          isButtonTextChanged,
-          true,
-          'Language change is not reflected in button',
-        );
-      },
+    // Confirm that the language change is reflected in search box water text
+    const isWaterTextChanged = await driver.isElementPresent(
+      selectors.waterText,
     );
+    assert.equal(
+      isWaterTextChanged,
+      true,
+      'Water text in the search box does not match with the selected language',
+    );
+
+    // Confirm that the language change is reflected in headers
+    const isHeaderTextChanged = await driver.isElementPresent(
+      selectors.headerTextDansk,
+    );
+    assert.equal(
+      isHeaderTextChanged,
+      true,
+      'Language change is not reflected in headers',
+    );
+
+    // Confirm that the language change is reflected in button
+    const isButtonTextChanged = await driver.isElementPresent(
+      selectors.buttonText,
+    );
+    assert.equal(
+      isButtonTextChanged,
+      true,
+      'Language change is not reflected in button',
+    );
+
+
   });
 
-  it.skip('validate "Deutsch" language on error messages', async function () {
-    const languageIndex = 7;
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
+  // it.skip('validate "Deutsch" language on error messages', async function () {
+  //   const languageIndex = 7;
+  //   await withFixtures(
+  //     {
+  //       fixtures: new FixtureBuilder().build(),
+  //       ganacheOptions: defaultGanacheOptions,
+  //       title: this.test?.fullTitle(),
+  //     },
 
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex);
-        await driver.navigate();
-        await driver.clickElement(selectors.ethOverviewSend);
-        await driver.pasteIntoField(
-          selectors.ensInput,
-          // use wrong checksum address; other inputs don't show error until snaps name-lookup has happened
-          '0xAAAA6BF26964aF9D7eEd9e03E53415D37aA96045',
-        );
+  //     async ({ driver }: { driver: Driver }) => {
+  //       await unlockWallet(driver);
+  //       await changeLanguage(driver, languageIndex);
+  //       await driver.navigate();
+  //       await driver.clickElement(selectors.ethOverviewSend);
+  //       await driver.pasteIntoField(
+  //         selectors.ensInput,
+  //         // use wrong checksum address; other inputs don't show error until snaps name-lookup has happened
+  //         '0xAAAA6BF26964aF9D7eEd9e03E53415D37aA96045',
+  //       );
 
-        // Validate the language change is reflected in the dialog message
-        const isDialogMessageChanged = await driver.isElementPresent(
-          selectors.dialogText,
-        );
-        assert.equal(
-          isDialogMessageChanged,
-          true,
-          'Language change is not reflected in dialog message',
-        );
-      },
-    );
-  });
+  //       // Validate the language change is reflected in the dialog message
+  //       const isDialogMessageChanged = await driver.isElementPresent(
+  //         selectors.dialogText,
+  //       );
+  //       assert.equal(
+  //         isDialogMessageChanged,
+  //         true,
+  //         'Language change is not reflected in dialog message',
+  //       );
+  //     },
+  //   );
+  // });
 
-  it.skip('validate "मानक हिन्दी" language on tooltips', async function () {
-    const languageIndex = 19;
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
+  // it.skip('validate "मानक हिन्दी" language on tooltips', async function () {
+  //   const languageIndex = 19;
+  //   await withFixtures(
+  //     {
+  //       fixtures: new FixtureBuilder().build(),
+  //       ganacheOptions: defaultGanacheOptions,
+  //       title: this.test?.fullTitle(),
+  //     },
 
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex);
-        await driver.navigate();
+  //     async ({ driver }: { driver: Driver }) => {
+  //       await unlockWallet(driver);
+  //       await changeLanguage(driver, languageIndex);
+  //       await driver.navigate();
 
-        // Validate the account tooltip
-        const isAccountTooltipChanged = await driver.isElementPresent(
-          selectors.accountTooltipText,
-        );
-        assert.equal(
-          isAccountTooltipChanged,
-          true,
-          'Language changes is not reflected on the account toolTip',
-        );
+  //       // Validate the account tooltip
+  //       const isAccountTooltipChanged = await driver.isElementPresent(
+  //         selectors.accountTooltipText,
+  //       );
+  //       assert.equal(
+  //         isAccountTooltipChanged,
+  //         true,
+  //         'Language changes is not reflected on the account toolTip',
+  //       );
 
-        // Validate the bridge tooltip
-        const isBridgeTooltipChanged = await driver.isElementPresent(
-          selectors.bridgeTooltipText,
-        );
-        assert.equal(
-          isBridgeTooltipChanged,
-          true,
-          'Language changes is not reflected on the bridge toolTip',
-        );
-      },
-    );
-  });
+  //       // Validate the bridge tooltip
+  //       const isBridgeTooltipChanged = await driver.isElementPresent(
+  //         selectors.bridgeTooltipText,
+  //       );
+  //       assert.equal(
+  //         isBridgeTooltipChanged,
+  //         true,
+  //         'Language changes is not reflected on the bridge toolTip',
+  //       );
+  //     },
+  //   );
+  // });
 
-  it.skip('validate "Magyar" language change on hypertext', async function () {
-    const languageIndex = 23;
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
+  // it.skip('validate "Magyar" language change on hypertext', async function () {
+  //   const languageIndex = 23;
+  //   await withFixtures(
+  //     {
+  //       fixtures: new FixtureBuilder().build(),
+  //       ganacheOptions: defaultGanacheOptions,
+  //       title: this.test?.fullTitle(),
+  //     },
 
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        // selects "Magyar" language
-        await changeLanguage(driver, languageIndex);
-        await driver.navigate();
-        await driver.clickElement(selectors.nftsTab);
+  //     async ({ driver }: { driver: Driver }) => {
+  //       await unlockWallet(driver);
+  //       // selects "Magyar" language
+  //       await changeLanguage(driver, languageIndex);
+  //       await driver.navigate();
+  //       await driver.clickElement(selectors.nftsTab);
 
-        // Validate the hypertext
-        const isHyperTextChanged = await driver.isElementPresent(
-          selectors.hyperText,
-        );
-        assert.equal(
-          isHyperTextChanged,
-          true,
-          'Language change is not reflected on hypertext',
-        );
-      },
-    );
-  });
+  //       // Validate the hypertext
+  //       const isHyperTextChanged = await driver.isElementPresent(
+  //         selectors.hyperText,
+  //       );
+  //       assert.equal(
+  //         isHyperTextChanged,
+  //         true,
+  //         'Language change is not reflected on hypertext',
+  //       );
+  //     },
+  //   );
+  // });
 
-  it.skip('validate "العربية" language change on page indent', async function () {
-    const languageIndex = 1;
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex);
+  // it.skip('validate "العربية" language change on page indent', async function () {
+  //   const languageIndex = 1;
+  //   await withFixtures(
+  //     {
+  //       fixtures: new FixtureBuilder().build(),
+  //       ganacheOptions: defaultGanacheOptions,
+  //       title: this.test?.fullTitle(),
+  //     },
+  //     async ({ driver }: { driver: Driver }) => {
+  //       await unlockWallet(driver);
+  //       await changeLanguage(driver, languageIndex);
 
-        // Validate the header text
-        const isHeaderTextChanged = await driver.isElementPresent(
-          selectors.headerText,
-        );
-        assert.equal(
-          isHeaderTextChanged,
-          true,
-          'Language change is not reflected in headers',
-        );
-      },
-    );
-  });
+  //       // Validate the header text
+  //       const isHeaderTextChanged = await driver.isElementPresent(
+  //         selectors.headerText,
+  //       );
+  //       assert.equal(
+  //         isHeaderTextChanged,
+  //         true,
+  //         'Language change is not reflected in headers',
+  //       );
+  //     },
+  //   );
+  // });
 });
