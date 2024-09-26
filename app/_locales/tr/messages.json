@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Uyarıyı kabul ediyor ve yine de ilerlemek istiyorum"
   },
-  "confirmAlertModalDetails": {
-    "message": "Oturum açarsanız dolandırıcıklarla bilinen üçüncü bir taraf tüm varlıklarınızı ele geçirebilir. İlerlemeden önce lütfen uyarıları inceleyin."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Varlıklarınız risk altında olabilir"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Devam et düğmesine tıkladığınızda sizi şuraya yönlendireceğiz: $1."
   },

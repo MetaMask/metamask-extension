@@ -147,12 +147,11 @@ describe('Confirm', () => {
     });
 
     await act(async () => {
-      const { container, findByText } = await renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
+      const { container, findAllByText } =
+        await renderWithConfirmContextProvider(<Confirm />, mockStore);
 
-      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+      const valueElement = await findAllByText('14,615,016,373,...');
+      expect(valueElement[0]).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });
@@ -172,12 +171,11 @@ describe('Confirm', () => {
     });
 
     await act(async () => {
-      const { container, findByText } = await renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
+      const { container, findAllByText } =
+        await renderWithConfirmContextProvider(<Confirm />, mockStore);
 
-      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+      const valueElement = await findAllByText('14,615,016,373,...');
+      expect(valueElement[0]).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });

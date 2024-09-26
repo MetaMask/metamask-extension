@@ -332,6 +332,9 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
+///: END:ONLY_INCLUDE_IF
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
@@ -1513,7 +1516,7 @@ export default class MetamaskController extends EventEmitter {
           onAccountAdded: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAccountAdded,
+              event: MetaMetricsEventName.AccountsSyncAdded,
               properties: {
                 profile_id: profileId,
               },
@@ -1522,7 +1525,7 @@ export default class MetamaskController extends EventEmitter {
           onAccountNameUpdated: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAccountNameUpdated,
+              event: MetaMetricsEventName.AccountsSyncNameUpdated,
               properties: {
                 profile_id: profileId,
               },
@@ -1956,6 +1959,7 @@ export default class MetamaskController extends EventEmitter {
       getAllState: this.getState.bind(this),
       getCurrentChainId: () =>
         getCurrentChainId({ metamask: this.networkController.state }),
+      trace,
     });
 
     this.signatureController.hub.on(
@@ -2248,22 +2252,27 @@ export default class MetamaskController extends EventEmitter {
         ),
       // msg signing
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      processTypedMessage:
-        this.signatureController.newUnsignedTypedMessage.bind(
-          this.signatureController,
-        ),
-      processTypedMessageV3:
-        this.signatureController.newUnsignedTypedMessage.bind(
-          this.signatureController,
-        ),
-      processTypedMessageV4:
-        this.signatureController.newUnsignedTypedMessage.bind(
-          this.signatureController,
-        ),
-      processPersonalMessage:
-        this.signatureController.newUnsignedPersonalMessage.bind(
-          this.signatureController,
-        ),
+
+      processTypedMessage: (...args) =>
+        addTypedMessage({
+          signatureController: this.signatureController,
+          signatureParams: args,
+        }),
+      processTypedMessageV3: (...args) =>
+        addTypedMessage({
+          signatureController: this.signatureController,
+          signatureParams: args,
+        }),
+      processTypedMessageV4: (...args) =>
+        addTypedMessage({
+          signatureController: this.signatureController,
+          signatureParams: args,
+        }),
+      processPersonalMessage: (...args) =>
+        addPersonalMessage({
+          signatureController: this.signatureController,
+          signatureParams: args,
+        }),
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Ich habe die Benachrichtigung zur Kenntnis genommen und möchte trotzdem fortfahren"
   },
-  "confirmAlertModalDetails": {
-    "message": "Wenn Sie sich anmelden, könnten Dritte, die für Betrügereien bekannt sind, all Ihre Assets an sich reißen. Lesen Sie bitte die Benachrichtigungen, bevor Sie fortfahren."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Ihre Assets könnten gefährdet sein"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Sobald Sie auf „Weiter“ klicken, leiten wir Sie weiter zu $1."
   },

@@ -22,6 +22,22 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import ConfirmTitle from './title';
 
+jest.mock('../info/approve/hooks/use-approve-token-simulation', () => ({
+  useApproveTokenSimulation: jest.fn(() => ({
+    spendingCap: '1000',
+    formattedSpendingCap: '1000',
+    value: '1000',
+  })),
+}));
+
+jest.mock('../../../hooks/useAssetDetails', () => ({
+  useAssetDetails: jest.fn(() => ({
+    decimals: 18,
+    userBalance: '1000000',
+    tokenSymbol: 'TST',
+  })),
+}));
+
 jest.mock('../info/approve/hooks/use-is-nft', () => ({
   useIsNFT: jest.fn(() => ({ isNFT: true })),
 }));
