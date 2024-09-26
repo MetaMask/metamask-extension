@@ -77,11 +77,11 @@ export const isOrderSignatureRequest = (request: SignatureRequestType) => {
 };
 
 /**
- * Returns true if the request appears to be a Permit or Permit2 Typed Sign signature request
- * Caution: This is a limited check. It may exclude valid types if the primaryType does not
- * match our list.
+ * Returns true if the request appears to be an EIP-2612 Permit or Permit2 signTypedData signature request.
+ * Caution: This is a limited check. It may include other Permits which are not the specific types mentioned
+ * if they match the primaryType check and have a spender field.
  *
- * TODO: Improve detection of fields and remove explicit primaryType check.
+ * TODO: Improve detection of fields.
  *
  * @param request - The confirmation request to check
  */
