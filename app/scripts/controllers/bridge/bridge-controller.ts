@@ -1,11 +1,13 @@
 import { BaseController, StateMetadata } from '@metamask/base-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { Hex } from '@metamask/utils';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeTokens,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/pages/bridge/bridge.util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
 import {
   BRIDGE_CONTROLLER_NAME,
