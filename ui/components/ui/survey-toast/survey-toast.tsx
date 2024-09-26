@@ -21,7 +21,7 @@ type Survey = {
   url: string;
   description: string;
   cta: string;
-  surveyId: number;
+  id: number;
 };
 
 export function SurveyToast() {
@@ -64,7 +64,7 @@ export function SurveyToast() {
 
         const _survey: Survey = response?.surveys;
 
-        if (!_survey || _survey.surveyId <= lastViewedUserSurvey) {
+        if (!_survey || _survey.id <= lastViewedUserSurvey) {
           return;
         }
 
@@ -96,7 +96,7 @@ export function SurveyToast() {
     global.platform.openTab({
       url: survey.url,
     });
-    dispatch(setLastViewedUserSurvey(survey.surveyId));
+    dispatch(setLastViewedUserSurvey(survey.id));
     trackAction('accept');
   }
 
@@ -104,7 +104,7 @@ export function SurveyToast() {
     if (!survey) {
       return;
     }
-    dispatch(setLastViewedUserSurvey(survey.surveyId));
+    dispatch(setLastViewedUserSurvey(survey.id));
     trackAction('deny');
   }
 
@@ -118,12 +118,12 @@ export function SurveyToast() {
       category: MetaMetricsEventCategory.Feedback,
       properties: {
         response,
-        survey: survey.surveyId,
+        survey: survey.id,
       },
     });
   }
 
-  if (!survey || survey.surveyId <= lastViewedUserSurvey) {
+  if (!survey || survey.id <= lastViewedUserSurvey) {
     return null;
   }
 

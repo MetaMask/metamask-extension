@@ -26,13 +26,13 @@ const surveyData = {
     url: 'https://example.com',
     description: 'Test Survey',
     cta: 'Take Survey',
-    surveyId: 3,
+    id: 3,
   },
   stale: {
     url: 'https://example.com',
     description: 'Test Survey',
     cta: 'Take Survey',
-    surveyId: 1,
+    id: 1,
   },
 };
 
@@ -133,7 +133,7 @@ describe('SurveyToast', () => {
       category: MetaMetricsEventCategory.Feedback,
       properties: {
         response: 'accept',
-        survey: surveyData.valid.surveyId,
+        survey: surveyData.valid.id,
       },
     });
   });
