@@ -23,9 +23,11 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  setNextNonce,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   updateAndApproveTx,
   ///: END:ONLY_INCLUDE_IF
+  updateCustomNonce,
 } from '../../../../../store/actions';
 import { selectUseTransactionSimulations } from '../../../selectors/preferences';
 
@@ -37,12 +39,29 @@ import {
 import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { Severity } from '../../../../../helpers/constants/design-system';
 
 export type OnCancelHandler = ({
   location,
 }: {
   location: MetaMetricsEventLocation;
 }) => void;
+
+function getButtonDisabledState(
+  hasUnconfirmedDangerAlerts: boolean,
+  hasBlockingAlerts: boolean,
+  disabled: boolean,
+) {
+  if (hasBlockingAlerts) {
+    return true;
+  }
+
+  if (hasUnconfirmedDangerAlerts) {
+    return false;
+  }
+
+  return disabled;
+}
 
 const ConfirmButton = ({
   alertOwnerId = '',
@@ -62,6 +81,10 @@ const ConfirmButton = ({
 
   const { dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
     useAlerts(alertOwnerId);
+
+  const hasDangerBlockingAlerts = dangerAlerts.some(
+    (alert) => alert.severity === Severity.Danger && alert.isBlocking,
+  );
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -86,12 +109,16 @@ const ConfirmButton = ({
           block
           danger
           data-testid="confirm-footer-button"
-          disabled={hasUnconfirmedDangerAlerts ? false : disabled}
+          disabled={getButtonDisabledState(
+            hasUnconfirmedDangerAlerts,
+            hasDangerBlockingAlerts,
+            disabled,
+          )}
           onClick={handleOpenConfirmModal}
           size={ButtonSize.Lg}
           startIconName={IconName.Danger}
         >
-          {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
+          {dangerAlerts?.length > 0 ? t('reviewAlerts') : t('confirm')}
         </Button>
       ) : (
         <Button
@@ -155,6 +182,8 @@ const Footer = () => {
       dispatch(
         rejectPendingApproval(currentConfirmation.id, serializeError(error)),
       );
+      dispatch(updateCustomNonce(''));
+      dispatch(setNextNonce(''));
     },
     [currentConfirmation],
   );
@@ -194,6 +223,8 @@ const Footer = () => {
       mmiOnSignCallback();
       ///: END:ONLY_INCLUDE_IF
     }
+    dispatch(updateCustomNonce(''));
+    dispatch(setNextNonce(''));
   }, [
     currentConfirmation,
     customNonceValue,

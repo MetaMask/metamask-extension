@@ -40,6 +40,8 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import MetafoxLogo from '../../components/ui/metafox-logo';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import SettingsTab from './settings-tab';
