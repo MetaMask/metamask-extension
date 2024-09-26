@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "アラートを確認したうえで続行します"
   },
-  "confirmAlertModalDetails": {
-    "message": "サインインすると、詐欺が判明しているサードパーティにすべての資産を奪われる可能性があります。続ける前にアラートを確認してください。"
-  },
-  "confirmAlertModalTitle": {
-    "message": "資産が危険にさらされている可能性があります"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "「続行」をクリックすると、$1にリダイレクトされます。"
   },

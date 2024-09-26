@@ -65,7 +65,7 @@ export const ApproveStaticSimulation = () => {
     </Text>
   );
 
-  const simulationElements = (
+  const SpendingCapRow = (
     <ConfirmInfoRow
       label={t(isNFT ? 'simulationApproveHeading' : 'spendingCap')}
     >
@@ -92,6 +92,8 @@ export const ApproveStaticSimulation = () => {
       </Box>
     </ConfirmInfoRow>
   );
+
+  const simulationElements = SpendingCapRow;
 
   return (
     <StaticSimulation

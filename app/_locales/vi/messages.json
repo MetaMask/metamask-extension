@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Tôi đã hiểu rõ cảnh báo và vẫn muốn tiếp tục"
   },
-  "confirmAlertModalDetails": {
-    "message": "Nếu bạn đăng nhập, một bên thứ ba nổi tiếng là lừa đảo có thể lấy tất cả tài sản của bạn. Vui lòng xem lại các cảnh báo trước khi tiếp tục."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Tài sản của bạn có thể gặp rủi ro"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Chúng tôi sẽ chuyển hướng bạn đến $1 sau khi nhấn vào tiếp tục."
   },
