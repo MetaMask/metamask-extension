@@ -68,7 +68,7 @@ export function handleSettingsRefs(t, tabMessage, settingsRefs) {
   }
 }
 
-function colorText(menuElement, regex) {
+export function colorText(menuElement, regex) {
   if (menuElement !== null) {
     let elemText = menuElement.innerHTML;
     elemText = elemText.replace('&amp;', '&');
