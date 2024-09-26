@@ -87,7 +87,7 @@ export const getUnapprovedContractDeploymentTransaction = (
         pendingTransactionId,
         pendingTransactionTime,
       ).txParams,
-      data: '0x095ea7b30000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000001',
+      data: '0xd0e30db0',
     },
     type: TransactionType.deployContract,
   };

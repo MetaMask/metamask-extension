@@ -77,8 +77,8 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
     },
     pendingApprovalCount: 1,
     knownMethodData: {
-      '0x3b4b1381': {
-        name: 'Mint NFTs',
+      '0xd0e30db0': {
+        name: 'Deposit',
         params: [
           {
             type: 'uint256',
@@ -105,7 +105,7 @@ const advancedDetailsMockedRequests = {
   decodeTransactionData: {
     data: [
       {
-        name: 'mintNFTs',
+        name: 'Deposit',
         params: [
           {
             name: 'numberOfTokens',
@@ -134,8 +134,8 @@ describe('Contract Deployment Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
-    const MINT_NFT_HEX_SIG = '0x3b4b1381';
-    mock4byte(MINT_NFT_HEX_SIG);
+    const DEPOSIT_HEX_SIG = '0xd0e30db0';
+    mock4byte(DEPOSIT_HEX_SIG);
   });
 
   afterEach(() => {
@@ -396,7 +396,7 @@ describe('Contract Deployment Confirmation', () => {
     expect(dataSectionFunction).toHaveTextContent(
       tEn('transactionDataFunction') as string,
     );
-    expect(dataSectionFunction).toHaveTextContent('mintNFTs');
+    expect(dataSectionFunction).toHaveTextContent('Deposit');
 
     const transactionDataParams = screen.getByTestId(
       'advanced-details-data-param-0',
