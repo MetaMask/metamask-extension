@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.4.0]
-### Uncategorized
+### Fixed
 - fix: flaky test `Test Snap Interactive UI test interactive ui elements` ([#26792](https://github.com/MetaMask/metamask-extension/pull/26792))
 - feat: Update Polygon from `MATIC` to `POL` ([#26671](https://github.com/MetaMask/metamask-extension/pull/26671))
 - feat: implement client side malicious network request detection ([#25839](https://github.com/MetaMask/metamask-extension/pull/25839))
