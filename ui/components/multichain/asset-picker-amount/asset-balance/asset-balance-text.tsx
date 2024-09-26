@@ -4,10 +4,7 @@ import { Text } from '../../../component-library';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { Asset } from '../../../../ducks/send';
-import {
-  getCurrentCurrency,
-  getSelectedAccountCachedBalance,
-} from '../../../../selectors';
+import { getSelectedAccountCachedBalance } from '../../../../selectors';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   TextColor,
@@ -21,6 +18,7 @@ import { getIsFiatPrimary } from '../utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenWithBalance } from '../asset-picker-modal/types';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 
 export type AssetBalanceTextProps = {
   asset: Asset;

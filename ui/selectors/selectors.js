@@ -686,10 +686,6 @@ export function getNftDetectionEnablementToast(state) {
   return state.appState.showNftDetectionEnablementToast;
 }
 
-export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
-}
-
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
 }
