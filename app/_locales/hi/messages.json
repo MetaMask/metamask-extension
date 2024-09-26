@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "मैंने एलर्ट को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
   },
-  "confirmAlertModalDetails": {
-    "message": "यदि आप साइन इन करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है। कृपया आगे बढ़ने से पहले एलर्ट की समीक्षा करें।"
-  },
-  "confirmAlertModalTitle": {
-    "message": "आपके एसेट खतरे में हो सकते हैं"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "'जारी रखें' पर क्लिक करने पर हम आपको $1 पर रीडायरेक्ट कर देंगे।"
   },
