@@ -28,6 +28,8 @@ import { useNativeTokenBalance } from '../native-token/use-native-token-balance'
 import ImportControl from '../import-control';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -47,8 +49,7 @@ const AssetListControlBar = ({
   const controlBarRef = useRef<HTMLDivElement>(null); // Create a ref
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const { useNativeCurrencyAsPrimaryCurrency, tokenSortConfig } =
-    useSelector(getPreferences);
+  const { tokenSortConfig } = useSelector(getPreferences);
 
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
