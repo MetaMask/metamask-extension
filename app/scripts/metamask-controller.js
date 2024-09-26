@@ -156,10 +156,7 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import {
-  methodsRequiringNetworkSwitch,
-  methodsWithConfirmation,
-} from '../../shared/constants/methods-tags';
+import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -1517,7 +1514,7 @@ export default class MetamaskController extends EventEmitter {
           onAccountAdded: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAccountAdded,
+              event: MetaMetricsEventName.AccountsSyncAdded,
               properties: {
                 profile_id: profileId,
               },
@@ -1526,7 +1523,7 @@ export default class MetamaskController extends EventEmitter {
           onAccountNameUpdated: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAccountNameUpdated,
+              event: MetaMetricsEventName.AccountsSyncNameUpdated,
               properties: {
                 profile_id: profileId,
               },
@@ -1535,7 +1532,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: true,
+        isAccountSyncingEnabled: isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -5547,16 +5544,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
       ),
       shouldEnqueueRequest: (request) => {
-        if (
-          request.method === 'eth_requestAccounts' &&
-          this.permissionController.hasPermission(
-            request.origin,
-            PermissionNames.eth_accounts,
-          )
-        ) {
-          return false;
-        }
-        return methodsWithConfirmation.includes(request.method);
+        return methodsRequiringNetworkSwitch.includes(request.method);
       },
     });
     engine.push(requestQueueMiddleware);

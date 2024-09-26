@@ -99,7 +99,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only confirm this message if you approve the content and trust the requesting site.
+            Review request details before you confirm.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -295,7 +295,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-18"
+                aria-describedby="tippy-tooltip-19"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -356,7 +356,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-19"
+                      aria-describedby="tippy-tooltip-20"
                       class=""
                       data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                       data-tooltipped=""
@@ -419,7 +419,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-20"
+                            aria-describedby="tippy-tooltip-26"
                             class=""
                             data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                             data-tooltipped=""
@@ -469,7 +469,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-21"
+                            aria-describedby="tippy-tooltip-27"
                             class=""
                             data-original-title="24,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                             data-tooltipped=""
@@ -608,7 +608,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-22"
+                      aria-describedby="tippy-tooltip-23"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -906,7 +906,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                                   style="min-width: 0;"
                                 >
                                   <div
-                                    aria-describedby="tippy-tooltip-23"
+                                    aria-describedby="tippy-tooltip-24"
                                     class=""
                                     data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                                     data-tooltipped=""
@@ -1100,7 +1100,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                                   style="min-width: 0;"
                                 >
                                   <div
-                                    aria-describedby="tippy-tooltip-24"
+                                    aria-describedby="tippy-tooltip-25"
                                     class=""
                                     data-original-title="24,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                                     data-tooltipped=""
@@ -1525,7 +1525,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-15"
+                            aria-describedby="tippy-tooltip-18"
                             class=""
                             data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                             data-tooltipped=""
@@ -2248,7 +2248,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only confirm this message if you approve the content and trust the requesting site.
+            Review request details before you confirm.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -3766,7 +3766,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only confirm this message if you approve the content and trust the requesting site.
+            Review request details before you confirm.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"

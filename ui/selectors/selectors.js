@@ -107,6 +107,7 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
+import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -1164,14 +1165,20 @@ export function getRpcPrefsForCurrentProvider(state) {
 }
 
 export function getKnownMethodData(state, data) {
-  if (!data) {
+  const { knownMethodData, use4ByteResolution } = state.metamask;
+
+  if (!use4ByteResolution || !hasTransactionData(data)) {
     return null;
   }
+
   const prefixedData = addHexPrefix(data);
   const fourBytePrefix = prefixedData.slice(0, 10);
-  const { knownMethodData, use4ByteResolution } = state.metamask;
-  // If 4byte setting is off, we do not want to return the knownMethodData
-  return use4ByteResolution ? knownMethodData?.[fourBytePrefix] ?? {} : {};
+
+  if (fourBytePrefix.length < 10) {
+    return null;
+  }
+
+  return knownMethodData?.[fourBytePrefix] ?? null;
 }
 
 export function getFeatureFlags(state) {
