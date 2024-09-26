@@ -226,6 +226,15 @@ function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
 
+  // The existing RPC URL for the network, or undefined
+  // if there's no existing network for this chain id
+  const oldRpcUrl = data.existingNetworkConfiguration?.rpcEndpoints?.[
+    data.existingNetworkConfiguration?.defaultRpcEndpointIndex
+  ]?.url;
+
+  console.log('oldRpcUrl', oldRpcUrl);
+  console.log('newRpcUrl', customRpcUrl);
+
   let title;
   if (originIsMetaMask) {
     title = t('wantToAddThisNetwork');
