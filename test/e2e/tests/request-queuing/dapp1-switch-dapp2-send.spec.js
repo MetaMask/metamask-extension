@@ -124,23 +124,16 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const windowsBefore = await driver.getAllWindowHandles();
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
         // Wait for switch confirmation to close then tx confirmation to show.
-
         // There is an extra window appearing and disappearing
         // so we leave this delay until the issue is fixed (#27360)
-        await driver.delay(3000);
+        await driver.delay(5000);
 
-        const newDialog = await driver.getNewOrLastWindowHandle({
-          driver,
-          windowsBefore,
-        });
-
-        await driver.switchToWindow(newDialog);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
         await driver.findElement({
@@ -287,21 +280,14 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const windowsBefore = await driver.getAllWindowHandles();
-
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
         // Wait for switch confirmation to close then tx confirmation to show.
         // There is an extra window appearing and disappearing
         // so we leave this delay until the issue is fixed (#27360)
-        await driver.delay(3000);
-        const newDialog = await driver.getNewOrLastWindowHandle({
-          driver,
-          windowsBefore,
-        });
-
-        await driver.switchToWindow(newDialog);
+        await driver.delay(5000);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
         await driver.findElement({

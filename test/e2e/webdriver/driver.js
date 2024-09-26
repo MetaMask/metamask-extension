@@ -1090,54 +1090,6 @@ class Driver {
     }
   }
 
-  /**
-   * Gets a new window handle if one is found, or returns the last window handle if no new one is found
-   * after several retrials.
-   * This function is specially suitable when there are multiple popups queued, and context is invalidated.
-   *
-   * @param {object} params - The parameters for the function.
-   * @param {WebDriver} params.driver - The WebDriver instance used to interact with the browser.
-   * @param {Array<string>} params.windowsBefore - The list of window handles before the action.
-   * @param {number} [params.maxAttempts] - The maximum number of attempts to find the new window handle.
-   * @param {number} [params.retryDelayMs] - The delay in milliseconds between retry attempts.
-   * @returns {Promise<string>} A promise that resolves to the new window handle if found, or the last window handle from the array if not found.
-   */
-  async getNewOrLastWindowHandle({
-    driver,
-    maxAttempts = 5,
-    retryDelayMs = 2000,
-    windowsBefore,
-  }) {
-    let newWindowHandle;
-    let windowsAfter;
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      windowsAfter = await this.getAllWindowHandles();
-      const foundNewWindow = windowsAfter.find(
-        (handle) => !windowsBefore.includes(handle),
-      );
-
-      if (foundNewWindow) {
-        newWindowHandle = foundNewWindow;
-        console.log(`New window handle found: ${foundNewWindow}`);
-      }
-
-      if (attempt < maxAttempts) {
-        console.log(
-          `Checking for additional new windows in ${retryDelayMs}ms...`,
-        );
-        await driver.delay(retryDelayMs);
-      }
-    }
-
-    if (!newWindowHandle) {
-      console.log(
-        'Failed to identify a new window handle after multiple attempts',
-      );
-      newWindowHandle = windowsAfter.slice(-1)[0];
-    }
-    return newWindowHandle;
-  }
-
   // Error handling
 
   async verboseReportOnFailure(title, error) {
