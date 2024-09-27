@@ -147,5 +147,5 @@ export const RampsCard = ({ variant, handleOnClick }) => {
 
 RampsCard.propTypes = {
   variant: PropTypes.oneOf(Object.values(RAMPS_CARD_VARIANT_TYPES)),
-  handleOnClick: PropTypes.oneOfType([PropTypes.func, PropTypes.undefined]),
+  handleOnClick: PropTypes.func,
 };
