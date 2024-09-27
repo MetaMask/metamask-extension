@@ -318,8 +318,8 @@ async function setupMocking(
   );
 
   [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/:metaMetricsId/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/:metaMetricsId/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
   ].forEach(
     async (url) =>
       await server.forGet(url).thenCallback(() => {
