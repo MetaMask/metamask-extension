@@ -5,7 +5,7 @@ import configureStore from '../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../context/confirm';
 import TokenTransferInfo from './token-transfer';
 
-const store = configureStore(getMockTokenTransferConfirmState());
+const store = configureStore(getMockTokenTransferConfirmState({}));
 
 const Story = {
   title: 'Components/App/Confirm/info/TokenTransferInfo',
