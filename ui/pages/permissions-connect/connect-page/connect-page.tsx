@@ -62,14 +62,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const ethAccountsPermission =
     request?.permissions?.[RestrictedMethods.eth_accounts];
   const requestedAccounts =
-    ethAccountsPermission?.caveats.find(
+    ethAccountsPermission?.caveats?.find(
       (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
     )?.value || [];
 
   const permittedChainsPermission =
     request?.permissions?.[EndowmentTypes.permittedChains];
   const requestedChainIds =
-    permittedChainsPermission?.caveats.find(
+    permittedChainsPermission?.caveats?.find(
       (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
     )?.value || [];
 
