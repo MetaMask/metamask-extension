@@ -251,6 +251,8 @@ describe('preferences controller', () => {
       const updatedSelectedAccount = accountsController.getSelectedAccount();
 
       expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
+
+      expect(controller.getSelectedAddress()).toBe(secondAddress);
     });
 
     it('updating selectedAccount from accounts controller updates the selectedAddress in preferences controller', () => {
@@ -582,6 +584,251 @@ describe('preferences controller', () => {
 
       controller.setBitcoinSupportEnabled(false);
       expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
+    });
+  });
+
+  describe('useNonceField', () => {
+    it('defaults useNonceField to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.useNonceField).toStrictEqual(false);
+    });
+
+    it('setUseNonceField to true', () => {
+      const { controller } = setupController({});
+      controller.setUseNonceField(true);
+      expect(controller.state.useNonceField).toStrictEqual(true);
+    });
+  });
+
+  describe('globalThis.setPreference', () => {
+    it('setFeatureFlags to true', () => {
+      const { controller } = setupController({});
+      globalThis.setPreference('showFiatInTestnets', true);
+      expect(controller.state.featureFlags.showFiatInTestnets).toStrictEqual(
+        true,
+      );
+    });
+  });
+
+  describe('useExternalServices', () => {
+    it('defaults useExternalServices to true', () => {
+      const { controller } = setupController({});
+      expect(controller.state.useExternalServices).toStrictEqual(true);
+      expect(controller.state.useExternalServices).toStrictEqual(true);
+      expect(controller.state.useTokenDetection).toStrictEqual(true);
+      expect(controller.state.useCurrencyRateCheck).toStrictEqual(true);
+      expect(controller.state.usePhishDetect).toStrictEqual(true);
+      expect(controller.state.useAddressBarEnsResolution).toStrictEqual(true);
+      expect(controller.state.openSeaEnabled).toStrictEqual(true);
+      expect(controller.state.useNftDetection).toStrictEqual(true);
+    });
+
+    it('useExternalServices to false', () => {
+      const { controller } = setupController({});
+      controller.toggleExternalServices(false);
+      expect(controller.state.useExternalServices).toStrictEqual(false);
+      expect(controller.state.useTokenDetection).toStrictEqual(false);
+      expect(controller.state.useCurrencyRateCheck).toStrictEqual(false);
+      expect(controller.state.usePhishDetect).toStrictEqual(false);
+      expect(controller.state.useAddressBarEnsResolution).toStrictEqual(false);
+      expect(controller.state.openSeaEnabled).toStrictEqual(false);
+      expect(controller.state.useNftDetection).toStrictEqual(false);
+    });
+  });
+
+  describe('useRequestQueue', () => {
+    it('defaults useRequestQueue to true', () => {
+      const { controller } = setupController({});
+      expect(controller.state.useRequestQueue).toStrictEqual(true);
+    });
+
+    it('setUseRequestQueue to false', () => {
+      const { controller } = setupController({});
+      controller.setUseRequestQueue(false);
+      expect(controller.state.useRequestQueue).toStrictEqual(false);
+    });
+  });
+
+  describe('addSnapAccountEnabled', () => {
+    it('defaults addSnapAccountEnabled to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.addSnapAccountEnabled).toStrictEqual(false);
+    });
+
+    it('setAddSnapAccountEnabled to true', () => {
+      const { controller } = setupController({});
+      controller.setAddSnapAccountEnabled(true);
+      expect(controller.state.addSnapAccountEnabled).toStrictEqual(true);
+    });
+  });
+
+  describe('watchEthereumAccountEnabled', () => {
+    it('defaults watchEthereumAccountEnabled to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.watchEthereumAccountEnabled).toStrictEqual(false);
+    });
+
+    it('setWatchEthereumAccountEnabled to true', () => {
+      const { controller } = setupController({});
+      controller.setWatchEthereumAccountEnabled(true);
+      expect(controller.state.watchEthereumAccountEnabled).toStrictEqual(true);
+    });
+  });
+
+  describe('bitcoinTestnetSupportEnabled', () => {
+    it('defaults bitcoinTestnetSupportEnabled to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(
+        false,
+      );
+    });
+
+    it('setBitcoinTestnetSupportEnabled to true', () => {
+      const { controller } = setupController({});
+      controller.setBitcoinTestnetSupportEnabled(true);
+      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(true);
+    });
+  });
+
+  describe('knownMethodData', () => {
+    it('defaults knownMethodData', () => {
+      const { controller } = setupController({});
+      expect(controller.state.knownMethodData).toStrictEqual({});
+    });
+
+    it('addKnownMethodData', () => {
+      const { controller } = setupController({});
+      controller.addKnownMethodData('0x60806040', 'testMethodName');
+      expect(controller.state.knownMethodData).toStrictEqual({
+        '0x60806040': 'testMethodName',
+      });
+    });
+  });
+
+  describe('featureFlags', () => {
+    it('defaults featureFlags', () => {
+      const { controller } = setupController({});
+      expect(controller.state.featureFlags).toStrictEqual({});
+    });
+
+    it('setFeatureFlags', () => {
+      const { controller } = setupController({});
+      controller.setFeatureFlag('showConfirmationAdvancedDetails', true);
+      expect(
+        controller.state.featureFlags.showConfirmationAdvancedDetails,
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('preferences', () => {
+    it('defaults preferences', () => {
+      const { controller } = setupController({});
+      expect(controller.state.preferences).toStrictEqual({
+        autoLockTimeLimit: undefined,
+        showExtensionInFullSizeView: false,
+        showFiatInTestnets: false,
+        showTestNetworks: false,
+        smartTransactionsOptInStatus: null,
+        useNativeCurrencyAsPrimaryCurrency: true,
+        hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        redesignedTransactionsEnabled: true,
+        featureNotificationsEnabled: false,
+        isRedesignedConfirmationsDeveloperEnabled: false,
+        showConfirmationAdvancedDetails: false,
+        showMultiRpcModal: false,
+      });
+    });
+
+    it('setPreference', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showConfirmationAdvancedDetails', true);
+      expect(controller.getPreferences()).toStrictEqual({
+        autoLockTimeLimit: undefined,
+        showExtensionInFullSizeView: false,
+        showFiatInTestnets: false,
+        showTestNetworks: false,
+        smartTransactionsOptInStatus: null,
+        useNativeCurrencyAsPrimaryCurrency: true,
+        hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        redesignedTransactionsEnabled: true,
+        featureNotificationsEnabled: false,
+        isRedesignedConfirmationsDeveloperEnabled: false,
+        showConfirmationAdvancedDetails: true,
+        showMultiRpcModal: false,
+      });
+    });
+  });
+
+  describe('ipfsGateway', () => {
+    it('defaults ipfsGate to dweb.link', () => {
+      const { controller } = setupController({});
+      expect(controller.state.ipfsGateway).toStrictEqual('dweb.link');
+    });
+
+    it('setIpfsGateway to test.link', () => {
+      const { controller } = setupController({});
+      controller.setIpfsGateway('test.link');
+      expect(controller.getIpfsGateway()).toStrictEqual('test.link');
+    });
+  });
+
+  describe('isIpfsGatewayEnabled', () => {
+    it('defaults isIpfsGatewayEnabled to true', () => {
+      const { controller } = setupController({});
+      expect(controller.state.isIpfsGatewayEnabled).toStrictEqual(true);
+    });
+
+    it('set isIpfsGatewayEnabled to false', () => {
+      const { controller } = setupController({});
+      controller.setIsIpfsGatewayEnabled(false);
+      expect(controller.state.isIpfsGatewayEnabled).toStrictEqual(false);
+    });
+  });
+
+  describe('useAddressBarEnsResolution', () => {
+    it('defaults useAddressBarEnsResolution to true', () => {
+      const { controller } = setupController({});
+      expect(controller.state.useAddressBarEnsResolution).toStrictEqual(true);
+    });
+
+    it('set useAddressBarEnsResolution to false', () => {
+      const { controller } = setupController({});
+      controller.setUseAddressBarEnsResolution(false);
+      expect(controller.state.useAddressBarEnsResolution).toStrictEqual(false);
+    });
+  });
+
+  describe('dismissSeedBackUpReminder', () => {
+    it('defaults dismissSeedBackUpReminder to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.dismissSeedBackUpReminder).toStrictEqual(false);
+    });
+
+    it('set dismissSeedBackUpReminder to true', () => {
+      const { controller } = setupController({});
+      controller.setDismissSeedBackUpReminder(true);
+      expect(controller.state.dismissSeedBackUpReminder).toStrictEqual(true);
+    });
+  });
+
+  describe('snapsAddSnapAccountModalDismissed', () => {
+    it('defaults snapsAddSnapAccountModalDismissed to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
+        false,
+      );
+    });
+
+    it('set snapsAddSnapAccountModalDismissed to true', () => {
+      const { controller } = setupController({});
+      controller.setSnapsAddSnapAccountModalDismissed(true);
+      expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
+        true,
+      );
     });
   });
 });
