@@ -129,7 +129,10 @@ import {
   createQueuedRequestMiddleware,
 } from '@metamask/queued-request-controller';
 
-import { UserOperationController } from '@metamask/user-operation-controller';
+import {
+  UserOperationController,
+  Version4337,
+} from '@metamask/user-operation-controller';
 
 import {
   TransactionController,
@@ -2193,6 +2196,7 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.UserOperationController,
+      version: Version4337.V07,
     });
 
     this.userOperationController.hub.on(

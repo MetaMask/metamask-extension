@@ -5983,6 +5983,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/polling-controller@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@metamask/polling-controller@npm:10.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.3.0"
+    "@metamask/utils": "npm:^9.1.0"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^21.0.0
+  checksum: 10/25c11e65eeccb08a2b4b7dec21ccabb4b797907edb03a1534ebacb87d0754a3ade52aad061aad8b3ac23bfc39917c0d61b9734e32bc748c210b2997410ae45a9
+  languageName: node
+  linkType: hard
+
 "@metamask/polling-controller@npm:^8.0.0":
   version: 8.0.0
   resolution: "@metamask/polling-controller@npm:8.0.0"
@@ -6538,33 +6554,53 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/user-operation-controller@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "@metamask/user-operation-controller@npm:13.0.0"
+"@metamask/user-operation-controller@npm:15.0.1":
+  version: 15.0.1
+  resolution: "@metamask/user-operation-controller@npm:15.0.1"
   dependencies:
-    "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/controller-utils": "npm:^11.0.0"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.3.0"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^18.0.0"
-    "@metamask/keyring-controller": "npm:^17.1.0"
-    "@metamask/network-controller": "npm:^19.0.0"
-    "@metamask/polling-controller": "npm:^8.0.0"
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/transaction-controller": "npm:^34.0.0"
-    "@metamask/utils": "npm:^8.3.0"
+    "@metamask/polling-controller": "npm:^10.0.1"
+    "@metamask/rpc-errors": "npm:^6.3.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.1.0"
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
-    superstruct: "npm:^1.0.3"
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
-    "@metamask/gas-fee-controller": ^18.0.0
+    "@metamask/gas-fee-controller": ^20.0.0
     "@metamask/keyring-controller": ^17.0.0
-    "@metamask/network-controller": ^19.0.0
-    "@metamask/transaction-controller": ^34.0.0
-  checksum: 10/600dd845dfc30ff852d766bd012ce40b4a6fb2276538d358cbe3ef1ce5815e4dba8f94e4911b7cb0506857133b185923b43af73ec39c7628eb86eedfdaf8dc59
+    "@metamask/network-controller": ^21.0.0
+    "@metamask/transaction-controller": ^37.0.0
+  checksum: 10/7c99aa3bfef89b3babdaf46967a115e7df090ed1317c98460052a3e45aeb5614b332573e4cc49da3c699270109e61825b098fcdac67b623cb40c35a4ddb9039a
+  languageName: node
+  linkType: hard
+
+"@metamask/user-operation-controller@patch:@metamask/user-operation-controller@npm%3A15.0.1#~/.yarn/patches/@metamask-user-operation-controller-npm-15.0.1-ba0f2e79bc.patch":
+  version: 15.0.1
+  resolution: "@metamask/user-operation-controller@patch:@metamask/user-operation-controller@npm%3A15.0.1#~/.yarn/patches/@metamask-user-operation-controller-npm-15.0.1-ba0f2e79bc.patch::version=15.0.1&hash=6f278c"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.3.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/polling-controller": "npm:^10.0.1"
+    "@metamask/rpc-errors": "npm:^6.3.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.1.0"
+    bn.js: "npm:^5.2.1"
+    immer: "npm:^9.0.6"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/gas-fee-controller": ^20.0.0
+    "@metamask/keyring-controller": ^17.0.0
+    "@metamask/network-controller": ^21.0.0
+    "@metamask/transaction-controller": ^37.0.0
+  checksum: 10/8d09c6c6fd794f69defbbcc99b201513dc3abe770b8e1d15a02e6b6f69a84e9cdf22d82c2548055fb3d1d3c27b6aa94d1ba7cb11eda25f02b71a848eca744bad
   languageName: node
   linkType: hard
 
@@ -26154,7 +26190,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
     "@metamask/transaction-controller": "npm:^37.0.0"
-    "@metamask/user-operation-controller": "npm:^13.0.0"
+    "@metamask/user-operation-controller": "patch:@metamask/user-operation-controller@npm%3A15.0.1#~/.yarn/patches/@metamask-user-operation-controller-npm-15.0.1-ba0f2e79bc.patch"
     "@metamask/utils": "npm:^9.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
     "@noble/hashes": "npm:^1.3.3"
