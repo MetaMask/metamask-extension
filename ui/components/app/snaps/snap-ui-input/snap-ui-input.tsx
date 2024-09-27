@@ -22,7 +22,6 @@ export const SnapUIInput: FunctionComponent<
   const inputRef = useRef<HTMLDivElement>(null);
 
   const initialValue = getValue(name, form) as string;
-  console.log(name);
 
   const [value, setValue] = useState(initialValue ?? '');
 
