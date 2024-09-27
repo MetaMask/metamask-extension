@@ -508,6 +508,7 @@ const NetworksForm = ({
       }
 
       if (
+        networkMenuRedesign &&
         addNewNetwork &&
         networksList.some(
           (network) =>
