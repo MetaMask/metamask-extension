@@ -1,136 +1,43 @@
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React from 'react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
   Text,
 } from '../../../../../components/component-library';
 import Identicon from '../../../../../components/ui/identicon';
 import {
   AlignItems,
-  BackgroundColor,
-  BorderRadius,
   Display,
-  FlexDirection,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
+import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import HeaderInfo from './header-info';
-import { useConfirmContext } from '../../../context/confirm';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
 import { Confirmation } from '../../../types/confirm';
-import { useDispatch, useSelector } from 'react-redux';
-import { editExistingTransaction } from '../../../../../ducks/send';
-import { AssetType } from '../../../../../../shared/constants/transaction';
-import { clearConfirmTransaction } from '../../../../../ducks/confirm-transaction/confirm-transaction.duck';
-import {
-  setConfirmationAdvancedDetailsOpen,
-  showSendTokenPage,
-} from '../../../../../store/actions';
-import { SEND_ROUTE } from '../../../../../helpers/constants/routes';
-import { useHistory } from 'react-router-dom';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import HeaderInfo from './header-info';
+import { WalletInitiatedHeader } from './wallet-initiated-header';
 
 const Header = () => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-  const history = useHistory();
-
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
 
   const { currentConfirmation } = useConfirmContext<Confirmation>();
 
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
-
-  const setShowAdvancedDetails = (value: boolean): void => {
-    dispatch(setConfirmationAdvancedDetailsOpen(value));
-  };
-
   if (currentConfirmation.type === TransactionType.tokenMethodTransfer) {
     const isWalletInitiated =
       (currentConfirmation as TransactionMeta).origin === 'metamask';
 
     if (isWalletInitiated) {
-      const onClickBackHandler = () => {
-        const handleEditTransaction = async ({
-          txData,
-        }: {
-          txData: TransactionMeta;
-        }) => {
-          const { id } = txData;
-          await dispatch(
-            editExistingTransaction(AssetType.token, id.toString()),
-          );
-          dispatch(clearConfirmTransaction());
-          dispatch(showSendTokenPage());
-        };
-
-        handleEditTransaction({
-          txData: currentConfirmation as TransactionMeta,
-        }).then(() => history.push(SEND_ROUTE));
-      };
-
-      const WalletInitiatedHeading = (
-        <Box
-          alignItems={AlignItems.center}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          padding={3}
-          style={{ zIndex: 2 }}
-        >
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            ariaLabel={t('back')}
-            size={ButtonIconSize.Md}
-            onClick={onClickBackHandler}
-            data-testid="wallet-initiated-header-back-button"
-            color={IconColor.iconDefault}
-          />
-          <Text variant={TextVariant.headingMd} color={TextColor.inherit}>
-            {t('review')}
-          </Text>
-          <Box
-            backgroundColor={
-              showAdvancedDetails
-                ? BackgroundColor.infoMuted
-                : BackgroundColor.transparent
-            }
-            borderRadius={BorderRadius.MD}
-            marginRight={1}
-          >
-            <ButtonIcon
-              ariaLabel="Advanced tx details"
-              color={IconColor.iconDefault}
-              iconName={IconName.Customize}
-              data-testid="header-advanced-details-button"
-              size={ButtonIconSize.Md}
-              onClick={() => {
-                setShowAdvancedDetails(!showAdvancedDetails);
-              }}
-            />
-          </Box>
-        </Box>
-      );
-
-      return WalletInitiatedHeading;
+      return <WalletInitiatedHeader />;
     }
   }
 
