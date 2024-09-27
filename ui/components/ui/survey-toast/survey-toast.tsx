@@ -24,6 +24,12 @@ type Survey = {
   id: number;
 };
 
+const ACCOUNTS_DEV_API_BASE_URL = 'https://accounts.dev-api.cx.metamask.io';
+const ACCOUNTS_PROD_API_BASE_URL = 'https://accounts.api.cx.metamask.io';
+export const ACCOUNTS_API_BASE_URL = process.env.ACCOUNTS_USE_DEV_APIS
+  ? ACCOUNTS_DEV_API_BASE_URL
+  : ACCOUNTS_PROD_API_BASE_URL;
+
 export function SurveyToast() {
   const [survey, setSurvey] = useState<Survey | null>(null);
   const dispatch = useDispatch();
@@ -35,8 +41,7 @@ export function SurveyToast() {
   const metaMetricsId = useSelector(getMetaMetricsId);
 
   const surveyUrl = useMemo(
-    () =>
-      `https://accounts.dev-api.cx.metamask.io/v1/users/${metaMetricsId}/surveys`,
+    () => `${ACCOUNTS_API_BASE_URL}/v1/users/${metaMetricsId}/surveys`,
     [metaMetricsId],
   );
 
