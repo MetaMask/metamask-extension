@@ -270,7 +270,7 @@ export const signBridgeTransaction = (
         });
 
         await addTransactionAndWaitForPublish(txParams, {
-          // requireApproval: false,
+          requireApproval: false,
           // @ts-expect-error Need TransactionController v37+, TODO add this type
           type: 'bridgeApproval', // TransactionType.bridgeApproval,
 
