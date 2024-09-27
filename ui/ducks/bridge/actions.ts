@@ -32,6 +32,7 @@ import {
 import {
   SwapsEthToken,
   checkNetworkAndAccountSupports1559,
+  getIsBridgeChain,
   getIsBridgeEnabled,
   getNetworkConfigurations,
   getSelectedNetworkClientId,
@@ -152,8 +153,9 @@ export const signBridgeTransaction = (
   ) => {
     const state = getState();
     const isBridgeEnabled = getIsBridgeEnabled(state);
+    const isBridgeChain = getIsBridgeChain(state);
 
-    if (!isBridgeEnabled) {
+    if (!(isBridgeEnabled && isBridgeChain)) {
       // TODO do we want to do something here?
       return;
     }
