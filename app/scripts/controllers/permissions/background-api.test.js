@@ -10,6 +10,7 @@ import {
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { getPermissionBackgroundApiMethods } from './background-api';
 import { PermissionNames } from './specifications';
+import { KnownNotifications, KnownRpcMethods } from '../../lib/multichain-api/scope';
 
 describe('permission background API methods', () => {
   afterEach(() => {
@@ -594,13 +595,13 @@ describe('permission background API methods', () => {
                   requiredScopes: {},
                   optionalScopes: {
                     'eip155:1': {
-                      methods: [],
-                      notifications: [],
+                      methods: KnownRpcMethods.eip155,
+                      notifications: KnownNotifications.eip155,
                       accounts: ['eip155:1:0xdeadbeef'],
                     },
                     'eip155:5': {
-                      methods: [],
-                      notifications: [],
+                      methods: KnownRpcMethods.eip155,
+                      notifications: KnownNotifications.eip155,
                       accounts: ['eip155:5:0xdeadbeef'],
                     },
                   },
@@ -720,8 +721,8 @@ describe('permission background API methods', () => {
               accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:1337': {
-              methods: [],
-              notifications: [],
+              methods: KnownRpcMethods.eip155,
+              notifications: KnownNotifications.eip155,
               accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
             },
           },
@@ -837,13 +838,13 @@ describe('permission background API methods', () => {
               accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:4': {
-              methods: [],
-              notifications: [],
+              methods: KnownRpcMethods.eip155,
+              notifications: KnownNotifications.eip155,
               accounts: ['eip155:4:0x1', 'eip155:4:0x2'],
             },
             'eip155:5': {
-              methods: [],
-              notifications: [],
+              methods: KnownRpcMethods.eip155,
+              notifications: KnownNotifications.eip155,
               accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
             },
           },

@@ -109,7 +109,7 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
 
     // These should be EVM accounts already although the name does not necessary imply that
     // These addresses are lowercased already
-    const existingEvmAddresses = await hooks
+    const existingEvmAddresses = hooks
       .listAccounts()
       .map((account) => account.address);
     const supportedEthAccounts = getEthAccounts({
