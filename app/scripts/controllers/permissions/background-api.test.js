@@ -1,6 +1,5 @@
 import { MethodNames } from '@metamask/permission-controller';
 import {
-  CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import {
@@ -473,45 +472,7 @@ describe('permission background API methods', () => {
   });
 
   describe('requestAccountsAndChainPermissionsWithId', () => {
-    it('gets the networkConfiguration for the current globally selected network client', () => {
-      const networkController = {
-        state: {
-          selectedNetworkClientId: 'mainnet',
-        },
-        getNetworkConfigurationByNetworkClientId: jest.fn().mockReturnValue({
-          chainId: '0x1',
-        }),
-      };
-      const approvalController = {
-        addAndShowApprovalRequest: jest.fn().mockResolvedValue({
-          approvedChainIds: ['0x1', '0x5'],
-          approvedAccounts: ['0xdeadbeef'],
-        }),
-      };
-      const permissionController = {
-        grantPermissions: jest.fn(),
-      };
-
-      getPermissionBackgroundApiMethods({
-        networkController,
-        approvalController,
-        permissionController,
-      }).requestAccountsAndChainPermissionsWithId('foo.com');
-
-      expect(
-        networkController.getNetworkConfigurationByNetworkClientId,
-      ).toHaveBeenCalledWith('mainnet');
-    });
-
     it('requests eth_accounts and permittedChains approval and returns the request id', async () => {
-      const networkController = {
-        state: {
-          selectedNetworkClientId: 'mainnet',
-        },
-        getNetworkConfigurationByNetworkClientId: jest.fn().mockReturnValue({
-          chainId: '0x1',
-        }),
-      };
       const approvalController = {
         addAndShowApprovalRequest: jest.fn().mockResolvedValue({
           approvedChainIds: ['0x1', '0x5'],
@@ -523,7 +484,6 @@ describe('permission background API methods', () => {
       };
 
       const result = getPermissionBackgroundApiMethods({
-        networkController,
         approvalController,
         permissionController,
       }).requestAccountsAndChainPermissionsWithId('foo.com');
@@ -543,14 +503,7 @@ describe('permission background API methods', () => {
             },
             permissions: {
               [RestrictedMethods.eth_accounts]: {},
-              [PermissionNames.permittedChains]: {
-                caveats: [
-                  {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1'],
-                  },
-                ],
-              },
+              [PermissionNames.permittedChains]: {},
             },
           },
           type: MethodNames.requestPermissions,
@@ -559,14 +512,6 @@ describe('permission background API methods', () => {
     });
 
     it('grants a legacy CAIP-25 permission (isMultichainOrigin: false) with the approved eip155 chainIds and accounts', async () => {
-      const networkController = {
-        state: {
-          selectedNetworkClientId: 'mainnet',
-        },
-        getNetworkConfigurationByNetworkClientId: jest.fn().mockReturnValue({
-          chainId: '0x1',
-        }),
-      };
       const approvalController = {
         addAndShowApprovalRequest: jest.fn().mockResolvedValue({
           approvedChainIds: ['0x1', '0x5'],
@@ -578,7 +523,6 @@ describe('permission background API methods', () => {
       };
 
       getPermissionBackgroundApiMethods({
-        networkController,
         approvalController,
         permissionController,
       }).requestAccountsAndChainPermissionsWithId('foo.com');

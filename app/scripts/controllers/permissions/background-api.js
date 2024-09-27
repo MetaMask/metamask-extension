@@ -13,7 +13,6 @@ import {
   setPermittedEthChainIds,
 } from '../../lib/multichain-api/adapters/caip-permission-adapter-permittedChains';
 import {
-  CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import { PermissionNames } from './specifications';
@@ -21,7 +20,6 @@ import { PermissionNames } from './specifications';
 export function getPermissionBackgroundApiMethods({
   permissionController,
   approvalController,
-  networkController,
 }) {
   // To add more than one account when already connected to the dapp
   const addMoreAccounts = (origin, accounts) => {
@@ -101,11 +99,6 @@ export function getPermissionBackgroundApiMethods({
   };
 
   const requestAccountsAndChainPermissionsWithId = (origin) => {
-    const { chainId } =
-      networkController.getNetworkConfigurationByNetworkClientId(
-        networkController.state.selectedNetworkClientId,
-      );
-
     const id = nanoid();
     // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
     // Until they are actually combined, when testing, you must request both
@@ -121,14 +114,7 @@ export function getPermissionBackgroundApiMethods({
           },
           permissions: {
             [RestrictedMethods.eth_accounts]: {},
-            [PermissionNames.permittedChains]: {
-              caveats: [
-                {
-                  type: CaveatTypes.restrictNetworkSwitching,
-                  value: [chainId],
-                },
-              ],
-            },
+            [PermissionNames.permittedChains]: {},
           },
         },
         type: MethodNames.requestPermissions,

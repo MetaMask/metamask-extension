@@ -5,7 +5,6 @@ import {
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
 import {
-  CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
@@ -66,9 +65,6 @@ const createMockedHandler = () => {
     },
   };
   const grantPermissions = jest.fn();
-  const getNetworkConfigurationByNetworkClientId = jest.fn().mockReturnValue({
-    chainId: '0x1',
-  });
   const response = {};
   const handler = (request) =>
     requestEthereumAccounts.implementation(request, response, next, end, {
@@ -78,7 +74,6 @@ const createMockedHandler = () => {
       sendMetrics,
       metamaskState,
       grantPermissions,
-      getNetworkConfigurationByNetworkClientId,
     });
 
   return {
@@ -90,7 +85,6 @@ const createMockedHandler = () => {
     requestPermissionApprovalForOrigin,
     sendMetrics,
     grantPermissions,
-    getNetworkConfigurationByNetworkClientId,
     handler,
   };
 };
@@ -159,16 +153,6 @@ describe('requestEthereumAccountsHandler', () => {
   });
 
   describe('eip155 account permissions do not exist', () => {
-    it('gets the network configuration for the request networkClientId', async () => {
-      const { handler, getNetworkConfigurationByNetworkClientId } =
-        createMockedHandler();
-
-      await handler(baseRequest);
-      expect(getNetworkConfigurationByNetworkClientId).toHaveBeenCalledWith(
-        'mainnet',
-      );
-    });
-
     it('requests eth_accounts and permittedChains approval', async () => {
       const { handler, requestPermissionApprovalForOrigin } =
         createMockedHandler();
@@ -176,14 +160,7 @@ describe('requestEthereumAccountsHandler', () => {
       await handler(baseRequest);
       expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
         [RestrictedMethods.eth_accounts]: {},
-        [PermissionNames.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: ['0x1'],
-            },
-          ],
-        },
+        [PermissionNames.permittedChains]: {},
       });
     });
 

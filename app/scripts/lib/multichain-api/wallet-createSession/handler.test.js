@@ -1,7 +1,5 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import {
-  CaveatTypes,
-} from '../../../../../shared/constants/permissions';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import {
   validateAndFlattenScopes,
   processScopedProperties,
