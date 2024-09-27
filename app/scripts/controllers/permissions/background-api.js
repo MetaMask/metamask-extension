@@ -75,16 +75,22 @@ export function getPermissionBackgroundApiMethods({
       throw new Error('tried to add chains when none have been permissioned'); // TODO: better error
     }
 
+    // get the list of permitted eth accounts before we modify the permitted chains and potentially lose some
+    const ethAccounts = getEthAccounts(caip25Caveat.value);
+
     const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
     const updatedEthChainIds = Array.from(
       new Set([...ethChainIds, ...chainIds]),
     );
 
-    const updatedCaveatValue = setPermittedEthChainIds(
+    let updatedCaveatValue = setPermittedEthChainIds(
       caip25Caveat.value,
       updatedEthChainIds,
     );
+
+    // ensure that the list of permitted eth accounts is intact after permitted chain updates
+    updatedCaveatValue = setEthAccounts(updatedCaveatValue, ethAccounts);
 
     permissionController.updateCaveat(
       origin,

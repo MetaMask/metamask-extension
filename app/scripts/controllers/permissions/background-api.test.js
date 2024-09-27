@@ -649,7 +649,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('calls updateCaveat with the chain added', () => {
+    it('calls updateCaveat with the chain added and all eip155 accounts synced', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -661,7 +661,7 @@ describe('permission background API methods', () => {
               'eip155:10': {
                 methods: [],
                 notifications: [],
-                accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
+                accounts: ['eip155:10:0x2'],
               },
             },
             optionalScopes: {
@@ -675,7 +675,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
-                accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
+                accounts: ['eip155:1:0x1'],
               },
             },
             isMultichainOrigin: true,
@@ -698,6 +698,7 @@ describe('permission background API methods', () => {
             'eip155:1': {
               methods: [],
               notifications: [],
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:10': {
               methods: [],
@@ -716,12 +717,12 @@ describe('permission background API methods', () => {
             'eip155:1': {
               methods: [],
               notifications: [],
-              accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:1337': {
               methods: [],
               notifications: [],
-              accounts: [],
+              accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
             },
           },
           isMultichainOrigin: true,
@@ -765,7 +766,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('calls updateCaveat with the chains added', () => {
+    it('calls updateCaveat with the chains added and all eip155 accounts synced', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -777,7 +778,7 @@ describe('permission background API methods', () => {
               'eip155:10': {
                 methods: [],
                 notifications: [],
-                accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
+                accounts: ['eip155:10:0x2'],
               },
             },
             optionalScopes: {
@@ -791,7 +792,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
-                accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
+                accounts: ['eip155:1:0x1'],
               },
             },
             isMultichainOrigin: true,
@@ -814,6 +815,7 @@ describe('permission background API methods', () => {
             'eip155:1': {
               methods: [],
               notifications: [],
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:10': {
               methods: [],
@@ -832,17 +834,17 @@ describe('permission background API methods', () => {
             'eip155:1': {
               methods: [],
               notifications: [],
-              accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:4': {
               methods: [],
               notifications: [],
-              accounts: [],
+              accounts: ['eip155:4:0x1', 'eip155:4:0x2'],
             },
             'eip155:5': {
               methods: [],
               notifications: [],
-              accounts: [],
+              accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
             },
           },
           isMultichainOrigin: true,
