@@ -1,5 +1,7 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { CaveatTypes, RestrictedMethods } from '../../../../../shared/constants/permissions';
+import {
+  CaveatTypes,
+} from '../../../../../shared/constants/permissions';
 import {
   validateAndFlattenScopes,
   processScopedProperties,
@@ -13,9 +15,9 @@ import {
   Caip25EndowmentPermissionName,
 } from '../caip25permissions';
 import { shouldEmitDappViewedEvent } from '../../util';
+import { PermissionNames } from '../../../controllers/permissions';
 import { walletCreateSessionHandler } from './handler';
 import { validateAndAddEip3085 } from './helpers';
-import { PermissionNames } from '../../../controllers/permissions';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -69,7 +71,7 @@ const createMockedHandler = () => {
   const end = jest.fn();
   const requestPermissionApprovalForOrigin = jest.fn().mockResolvedValue({
     approvedAccounts: ['0x1', '0x2', '0x3', '0x4'],
-    approvedChainIds: ['0x1', '0x5']
+    approvedChainIds: ['0x1', '0x5'],
   });
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
@@ -98,7 +100,7 @@ const createMockedHandler = () => {
       '0x3': {},
     },
   };
-  const listAccounts = jest.fn().mockReturnValue([])
+  const listAccounts = jest.fn().mockReturnValue([]);
   const response = {};
   const handler = (request) =>
     walletCreateSessionHandler(request, response, next, end, {
@@ -111,7 +113,7 @@ const createMockedHandler = () => {
       multichainSubscriptionManager,
       metamaskState,
       sendMetrics,
-      listAccounts
+      listAccounts,
     });
 
   return {
@@ -353,8 +355,7 @@ describe('wallet_createSession', () => {
   });
 
   it('gets a list of evm accounts in the wallet', async () => {
-    const { handler, listAccounts } =
-      createMockedHandler();
+    const { handler, listAccounts } = createMockedHandler();
     await handler(baseRequest);
 
     expect(listAccounts).toHaveBeenCalled();
@@ -363,7 +364,11 @@ describe('wallet_createSession', () => {
   it('requests approval for account and permitted chains permission based on the supported eth accounts and eth chains from the supported scopes in the request', async () => {
     const { handler, listAccounts, requestPermissionApprovalForOrigin } =
       createMockedHandler();
-    listAccounts.mockReturnValue([{address: '0x1'}, {address: '0x3'}, {address: '0x4'}])
+    listAccounts.mockReturnValue([
+      { address: '0x1' },
+      { address: '0x3' },
+      { address: '0x4' },
+    ]);
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
@@ -384,8 +389,8 @@ describe('wallet_createSession', () => {
             accounts: ['eip155:2:0x1', 'eip155:2:0x3', 'eip155:2:0xdeadbeef'],
           },
         },
-        supportableScopes: { },
-        unsupportableScopes: { },
+        supportableScopes: {},
+        unsupportableScopes: {},
       });
     await handler(baseRequest);
 
@@ -499,7 +504,8 @@ describe('wallet_createSession', () => {
   });
 
   it('grants the CAIP-25 permission for the supported scopes and accounts that were approved', async () => {
-    const { handler, grantPermissions, requestPermissionApprovalForOrigin } = createMockedHandler();
+    const { handler, grantPermissions, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
@@ -525,8 +531,8 @@ describe('wallet_createSession', () => {
       });
     requestPermissionApprovalForOrigin.mockResolvedValue({
       approvedAccounts: ['0x1', '0x2'],
-      approvedChainIds: ['0x5', '0x64', '0x539'] // 5, 100, 1337
-    })
+      approvedChainIds: ['0x5', '0x64', '0x539'], // 5, 100, 1337
+    });
     await handler(baseRequest);
 
     expect(grantPermissions).toHaveBeenCalledWith({
@@ -601,7 +607,8 @@ describe('wallet_createSession', () => {
   });
 
   it('returns the session ID, properties, and merged scopes', async () => {
-    const { handler, requestPermissionApprovalForOrigin, response } = createMockedHandler();
+    const { handler, requestPermissionApprovalForOrigin, response } =
+      createMockedHandler();
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
@@ -632,8 +639,8 @@ describe('wallet_createSession', () => {
       });
     requestPermissionApprovalForOrigin.mockResolvedValue({
       approvedAccounts: ['0x1', '0x2'],
-      approvedChainIds: ['0x5', '0x64'] // 5, 100
-    })
+      approvedChainIds: ['0x5', '0x64'], // 5, 100
+    });
     await handler(baseRequest);
 
     expect(response.result).toStrictEqual({
@@ -643,16 +650,16 @@ describe('wallet_createSession', () => {
         foo: 'bar',
       },
       sessionScopes: {
-          'eip155:5': {
-            methods: ['eth_chainId', 'net_version'],
-            notifications: ['accountsChanged', 'chainChanged'],
-            accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
-          },
-          'eip155:100': {
-            methods: ['eth_sendTransaction'],
-            notifications: ['chainChanged'],
-            accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
-          },
+        'eip155:5': {
+          methods: ['eth_chainId', 'net_version'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
+        },
+        'eip155:100': {
+          methods: ['eth_sendTransaction'],
+          notifications: ['chainChanged'],
+          accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
+        },
       },
     });
   });

@@ -8,9 +8,12 @@ import {
   Caip25EndowmentPermissionName,
 } from '../../lib/multichain-api/caip25permissions';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import {
+  KnownNotifications,
+  KnownRpcMethods,
+} from '../../lib/multichain-api/scope';
 import { getPermissionBackgroundApiMethods } from './background-api';
 import { PermissionNames } from './specifications';
-import { KnownNotifications, KnownRpcMethods } from '../../lib/multichain-api/scope';
 
 describe('permission background API methods', () => {
   afterEach(() => {
