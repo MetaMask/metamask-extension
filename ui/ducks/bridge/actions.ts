@@ -4,13 +4,12 @@ import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge/
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { swapsSlice } from '../swaps/swaps';
 import { bridgeSlice } from './bridge';
 
-// eslint-disable-next-line no-empty-pattern
-const {} = swapsSlice.actions;
+const { setToChain, setFromToken, setToToken, setFromTokenInputValue } =
+  bridgeSlice.actions;
 
-export const { setToChain } = bridgeSlice.actions;
+export { setToChain, setFromToken, setToToken, setFromTokenInputValue };
 
 const callBridgeControllerMethod = <T>(
   bridgeAction: BridgeBackgroundAction,
