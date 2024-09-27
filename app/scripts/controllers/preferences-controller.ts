@@ -106,6 +106,7 @@ export type Preferences = {
   showMultiRpcModal: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
+  shouldShowAggregatedBalancePopover: boolean;
 };
 
 export type PreferencesControllerState = {
@@ -234,6 +235,7 @@ export default class PreferencesController {
         showMultiRpcModal: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
+        shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,

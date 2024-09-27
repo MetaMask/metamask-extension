@@ -77,6 +77,7 @@ function onboardingFixture() {
           showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+          shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
         theme: 'light',

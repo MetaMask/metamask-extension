@@ -74,7 +74,6 @@ export default class AppStateController extends EventEmitter {
       // States used for displaying the changed network toast
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage: false,
-      shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       currentExtensionPopupId: 0,
       lastInteractedConfirmationInfo: undefined,
     });
@@ -463,16 +462,6 @@ export default class AppStateController extends EventEmitter {
     this.store.updateState({
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage,
-    });
-  }
-
-  /**
-   * Sets shouldShowAggregatedBalancePopover to false once the user toggles
-   * the setting to show native token as main balance.
-   */
-  setAggregatedBalancePopoverShown() {
-    this.store.updateState({
-      shouldShowAggregatedBalancePopover: false,
     });
   }
 

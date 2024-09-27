@@ -37,7 +37,8 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "showMultiRpcModal": "boolean"
+      "showMultiRpcModal": "boolean",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -89,7 +90,6 @@
     "currentMigrationVersion": "number",
     "balances": "object",
     "selectedNetworkClientId": "string",
-    "shouldShowAggregatedBalancePopover": "boolean",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },

@@ -29,7 +29,6 @@
     "fullScreenGasPollTokens": "object",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
-    "shouldShowAggregatedBalancePopover": "boolean",
     "outdatedBrowserWarningLastShown": "object",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
@@ -217,7 +216,8 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "showMultiRpcModal": "boolean"
+      "showMultiRpcModal": "boolean",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",

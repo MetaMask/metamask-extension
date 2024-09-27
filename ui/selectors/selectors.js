@@ -1464,7 +1464,8 @@ export const getConnectedSitesList = createDeepEqualSelector(
 );
 
 export function getShouldShowAggregatedBalancePopover(state) {
-  return state.metamask.shouldShowAggregatedBalancePopover;
+  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
+  return shouldShowAggregatedBalancePopover;
 }
 
 export const getConnectedSnapsList = createDeepEqualSelector(

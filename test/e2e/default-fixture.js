@@ -211,6 +211,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+          shouldShowAggregatedBalancePopover: true,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',

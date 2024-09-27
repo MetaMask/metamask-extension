@@ -5,7 +5,7 @@ import React, {
   useCallback,
   ///: END:ONLY_INCLUDE_IF
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
@@ -61,7 +61,7 @@ import Spinner from '../../ui/spinner';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { setAggregatedBalancePopover } from '../../../store/actions';
+import { setAggregatedBalancePopoverShown } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -123,6 +123,7 @@ export const CoinOverview = ({
     t('showNativeTokenAsMainBalance'),
   );
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
   const isTestnet = useSelector(getIsTestnet);
@@ -158,7 +159,7 @@ export const CoinOverview = ({
 
   const handleClick = () => {
     setIsOpen(!isOpen);
-    setAggregatedBalancePopover();
+    dispatch(setAggregatedBalancePopoverShown());
   };
 
   const [referenceElement, setReferenceElement] =
