@@ -98,9 +98,39 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
       unsupportableOptionalScopes,
     });
 
-    // use old account popup for now to get the accounts
+    // These should be EVM accounts already although the name does not necessary imply that
+    // These addresses are lowercased already
+    const existingEvmAddresses = await hooks
+      .listAccounts()
+      .map((account) => account.address);
+    const supportedEthAccounts = getEthAccounts({
+      requiredScopes: supportedRequiredScopes,
+      optionalScopes: supportedOptionalScopes,
+    })
+      .map((address) => address.toLowerCase())
+      .filter((address) => existingEvmAddresses.includes(address));
+    const supportedEthChainIds = getPermittedEthChainIds({
+      requiredScopes: supportedRequiredScopes,
+      optionalScopes: supportedOptionalScopes,
+    });
+
     const legacyApproval = await hooks.requestPermissionApprovalForOrigin({
-      [RestrictedMethods.eth_accounts]: {},
+      [PermissionNames.eth_accounts]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictReturnedAccounts,
+            value: supportedEthAccounts,
+          },
+        ],
+      },
+      [PermissionNames.permittedChains]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: supportedEthChainIds,
+          },
+        ],
+      },
     });
     assignAccountsToScopes(
       supportedRequiredScopes,

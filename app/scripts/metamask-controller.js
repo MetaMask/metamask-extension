@@ -6167,6 +6167,9 @@ export default class MetamaskController extends EventEmitter {
               this.networkController.findNetworkClientIdByChainId.bind(
                 this.networkController,
               ),
+            listAccounts: this.accountsController.listAccounts.bind(
+              this.accountsController,
+            ),
             addNetwork: this.networkController.addNetwork.bind(
               this.networkController,
             ),
