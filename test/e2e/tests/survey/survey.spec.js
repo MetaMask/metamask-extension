@@ -9,22 +9,20 @@ async function mockSurveys(mockServer) {
   return [
     await mockServer
       .forGet(
-        'https://accounts.api.cx.metamask.io/v1/users/fake-metrics-id/surveys',
+        'https://accounts.api.cx.metamask.io/v1/users/fake-metrics-id-2/surveys',
       )
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          body: {
-            userId: '0x123',
-            surveys: {
-              url: 'https://example.com',
-              description: 'Test survey',
-              cta: 'Take survey',
-              id: 1,
-            },
+      .thenCallback(() => ({
+        statusCode: 200,
+        body: {
+          userId: '0x123',
+          surveys: {
+            url: 'https://example.com',
+            description: 'Test survey',
+            cta: 'Take survey',
+            id: 1,
           },
-        };
-      }),
+        },
+      })),
   ];
 }
 
@@ -36,9 +34,8 @@ describe('Test Survey', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesController()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: 'fake-metrics-id-2',
             participateInMetaMetrics: true,
-            basicFunctionality: false,
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
