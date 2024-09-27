@@ -278,12 +278,31 @@ describe('MetaMask onboarding @no-mmi', function () {
         );
 
         // Add custom network localhost 8546 during onboarding
-        await driver.clickElement({
-          text: 'Manage default settings',
-          tag: 'button',
-        });
-        await driver.clickElement('[data-testid="category-item-General"]');
-        await driver.clickElement('.mm-picker-network');
+        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement({ text: 'Add a network' });
+        await driver.waitForSelector(
+          '.multichain-network-list-menu-content-wrapper__dialog',
+        );
+
+        await driver.fill(
+          '[data-testid="network-form-network-name"]',
+          networkName,
+        );
+        await driver.fill(
+          '[data-testid="network-form-chain-id"]',
+          chainId.toString(),
+        );
+        await driver.fill(
+          '[data-testid="network-form-ticker-input"]',
+          currencySymbol,
+        );
+
+        // Add rpc url
+        const rpcUrlInputDropDown = await driver.waitForSelector(
+          '[data-testid="test-add-rpc-drop-down"]',
+        );
+        await rpcUrlInputDropDown.click();
+        await driver.delay(tinyDelayMs);
         await driver.clickElement({
           text: 'Add RPC URL',
           tag: 'button',
@@ -308,14 +327,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement(
           `[data-rbd-draggable-id="${toHex(chainId)}"]`,
         );
-        await driver.clickElement('[data-testid="category-back-button"]');
-        await driver.clickElement(
-          '[data-testid="privacy-settings-back-button"]',
-        );
-
-        await driver.clickElement('[data-testid="onboarding-complete-done"]');
-        await driver.clickElement('[data-testid="pin-extension-next"]');
-        await driver.clickElement('[data-testid="pin-extension-done"]');
 
         // Check localhost 8546 is selected and its balance value is correct
         await driver.findElement({
