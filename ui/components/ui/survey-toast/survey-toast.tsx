@@ -64,7 +64,11 @@ export function SurveyToast() {
 
         const _survey: Survey = response?.surveys;
 
-        if (!_survey || _survey.id <= lastViewedUserSurvey) {
+        if (
+          !_survey ||
+          Object.keys(_survey).length === 0 ||
+          _survey.id <= lastViewedUserSurvey
+        ) {
           return;
         }
 
