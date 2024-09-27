@@ -5990,10 +5990,6 @@ export default class MetamaskController extends EventEmitter {
         grantPermissions: this.permissionController.grantPermissions.bind(
           this.permissionController,
         ),
-        getNetworkConfigurationByNetworkClientId:
-          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-            this.networkController,
-          ),
         updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
         ),
