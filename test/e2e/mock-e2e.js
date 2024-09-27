@@ -326,10 +326,13 @@ async function setupMocking(
         return {
           statusCode: 200,
           json: {
-            url: 'https://example.com',
-            description: 'Test Survey',
-            cta: 'Take Survey',
-            id: 1,
+            userId: '0x123',
+            surveys: {
+              url: 'https://example.com',
+              description: 'Test survey',
+              cta: 'Take survey',
+              id: 1,
+            },
           },
         };
       }),
