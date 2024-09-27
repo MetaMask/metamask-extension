@@ -701,7 +701,7 @@ describe('Permit Confirmation', () => {
     });
   });
 
-  it.only('displays the trade order signature', async () => {
+  it('displays the trade order signature', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -755,11 +755,11 @@ describe('Permit Confirmation', () => {
       'confirmation_message-section',
     );
     expect(messageDetailsSection).toBeInTheDocument();
-    expect(messageDetailsSection).toHaveTextContent('Message');
-    expect(messageDetailsSection).toHaveTextContent('Primary type:');
-    expect(messageDetailsSection).toHaveTextContent('ERC721Order');
 
     const messageDetails = [
+      'Message',
+      'Primary type:',
+      'ERC721Order',
       'Direction',
       '0',
       'Maker',
