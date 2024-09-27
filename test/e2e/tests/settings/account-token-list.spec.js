@@ -62,7 +62,7 @@ describe('Settings', function () {
           '.eth-overview__primary-container',
         );
         await driver.delay(1000);
-        assert.equal(await tokenListAmount.getText(), '$42,500.00USD');
+        assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
           '.multichain-account-list-item .multichain-account-list-item__asset',

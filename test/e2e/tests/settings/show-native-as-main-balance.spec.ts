@@ -96,7 +96,7 @@ describe('Settings: Show native token as main balance', function () {
         const tokenListAmount = await driver.findElement(
           '.eth-overview__primary-container',
         );
-        assert.equal(await tokenListAmount.getText(), '$42,500.00USD');
+        assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
       },
     );
   });

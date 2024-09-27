@@ -190,7 +190,7 @@ describe('Send ETH', function () {
             '[data-testid="eth-overview__primary-currency"]',
           );
 
-          assert.ok(/^[\d.]+ETH$/u.test(await balance.getText()));
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
           await driver.clickElement(
             '[data-testid="account-overview__activity-tab"]',
@@ -222,7 +222,7 @@ describe('Send ETH', function () {
           const balance = await driver.findElement(
             '[data-testid="eth-overview__primary-currency"]',
           );
-          assert.ok(/^[\d.]+ETH$/u.test(await balance.getText()));
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
@@ -439,7 +439,7 @@ describe('Send ETH', function () {
             const balance = await driver.findElement(
               '[data-testid="eth-overview__primary-currency"]',
             );
-            assert.ok(/^[\d.]+ETH$/u.test(await balance.getText()));
+            assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
             await openActionMenuAndStartSendFlow(driver);
 
