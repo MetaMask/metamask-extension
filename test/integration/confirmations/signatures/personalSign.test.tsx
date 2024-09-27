@@ -163,9 +163,7 @@ describe('PersonalSign Confirmation', () => {
 
     expect(getByText('Signature request')).toBeInTheDocument();
     expect(
-      getByText(
-        'Only confirm this message if you approve the content and trust the requesting site.',
-      ),
+      getByText('Review request details before you confirm.'),
     ).toBeInTheDocument();
   });
 

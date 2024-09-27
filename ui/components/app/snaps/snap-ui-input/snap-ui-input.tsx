@@ -34,6 +34,7 @@ export const SnapUIInput: FunctionComponent<
 
   return (
     <FormTextField
+      autoFocus
       className="snap-ui-renderer__input"
       id={name}
       value={value}

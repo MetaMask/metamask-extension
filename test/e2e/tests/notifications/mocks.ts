@@ -34,6 +34,19 @@ export async function mockNotificationServices(server: Mockttp) {
   mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
   mockAPICall(server, await StorageMocks.getMockUserStoragePutResponse());
 
+  // TODO - add better mock responses for other Profile Sync features
+  // (Account Sync, Network Sync, ...)
+  server
+    .forGet(/https:\/\/user-storage\.api\.cx\.metamask\.io\/.*/gu)
+    ?.thenCallback(() => ({
+      statusCode: 404,
+    }));
+  server
+    .forPut(/https:\/\/user-storage\.api\.cx\.metamask\.io\/.*/gu)
+    ?.thenCallback(() => ({
+      statusCode: 204,
+    }));
+
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
   mockAPICall(server, NotificationMocks.getMockBatchCreateTriggersResponse());

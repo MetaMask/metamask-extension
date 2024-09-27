@@ -7,6 +7,8 @@ import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { isBeta } from '../../../ui/helpers/utils/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,

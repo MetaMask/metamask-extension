@@ -155,10 +155,7 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import {
-  methodsRequiringNetworkSwitch,
-  methodsWithConfirmation,
-} from '../../shared/constants/methods-tags';
+import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -228,7 +225,11 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
 import { endTrace, trace } from '../../shared/lib/trace';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
@@ -331,6 +332,9 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
+///: END:ONLY_INCLUDE_IF
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
@@ -1526,7 +1530,7 @@ export default class MetamaskController extends EventEmitter {
           onAccountAdded: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAccountAdded,
+              event: MetaMetricsEventName.AccountsSyncAdded,
               properties: {
                 profile_id: profileId,
               },
@@ -1535,7 +1539,7 @@ export default class MetamaskController extends EventEmitter {
           onAccountNameUpdated: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAccountNameUpdated,
+              event: MetaMetricsEventName.AccountsSyncNameUpdated,
               properties: {
                 profile_id: profileId,
               },
@@ -1544,7 +1548,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: true,
+        isAccountSyncingEnabled: isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1760,10 +1764,17 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.addressBookController = new AddressBookController(
-      undefined,
-      initState.AddressBookController,
-    );
+    const addressBookControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'AddressBookController',
+        allowedActions: [],
+        allowedEvents: [],
+      });
+
+    this.addressBookController = new AddressBookController({
+      messenger: addressBookControllerMessenger,
+      state: initState.AddressBookController,
+    });
 
     this.alertController = new AlertController({
       initState: initState.AlertController,
@@ -1960,6 +1971,7 @@ export default class MetamaskController extends EventEmitter {
       getAllState: this.getState.bind(this),
       getCurrentChainId: () =>
         getCurrentChainId({ metamask: this.networkController.state }),
+      trace,
     });
 
     this.signatureController.hub.on(
@@ -2165,6 +2177,7 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: [
         'NameController:stateChange',
         'AccountsController:stateChange',
+        'AddressBookController:stateChange',
       ],
       allowedActions: ['AccountsController:listAccounts'],
     });
@@ -2251,22 +2264,27 @@ export default class MetamaskController extends EventEmitter {
         ),
       // msg signing
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      processTypedMessage:
-        this.signatureController.newUnsignedTypedMessage.bind(
-          this.signatureController,
-        ),
-      processTypedMessageV3:
-        this.signatureController.newUnsignedTypedMessage.bind(
-          this.signatureController,
-        ),
-      processTypedMessageV4:
-        this.signatureController.newUnsignedTypedMessage.bind(
-          this.signatureController,
-        ),
-      processPersonalMessage:
-        this.signatureController.newUnsignedPersonalMessage.bind(
-          this.signatureController,
-        ),
+
+      processTypedMessage: (...args) =>
+        addTypedMessage({
+          signatureController: this.signatureController,
+          signatureParams: args,
+        }),
+      processTypedMessageV3: (...args) =>
+        addTypedMessage({
+          signatureController: this.signatureController,
+          signatureParams: args,
+        }),
+      processTypedMessageV4: (...args) =>
+        addTypedMessage({
+          signatureController: this.signatureController,
+          signatureParams: args,
+        }),
+      processPersonalMessage: (...args) =>
+        addPersonalMessage({
+          signatureController: this.signatureController,
+          signatureParams: args,
+        }),
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -5518,16 +5536,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
       ),
       shouldEnqueueRequest: (request) => {
-        if (
-          request.method === 'eth_requestAccounts' &&
-          this.permissionController.hasPermission(
-            request.origin,
-            PermissionNames.eth_accounts,
-          )
-        ) {
-          return false;
-        }
-        return methodsWithConfirmation.includes(request.method);
+        return methodsRequiringNetworkSwitch.includes(request.method);
       },
     });
     engine.push(requestQueueMiddleware);

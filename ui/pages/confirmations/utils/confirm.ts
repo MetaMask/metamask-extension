@@ -19,12 +19,13 @@ export const REDESIGN_APPROVAL_TYPES = [
 export const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
   TransactionType.deployContract,
+  TransactionType.tokenMethodApprove,
+  TransactionType.tokenMethodIncreaseAllowance,
 ];
 
 export const REDESIGN_DEV_TRANSACTION_TYPES = [
   ...REDESIGN_USER_TRANSACTION_TYPES,
-  TransactionType.tokenMethodApprove,
-  TransactionType.tokenMethodIncreaseAllowance,
+  TransactionType.tokenMethodSetApprovalForAll,
 ];
 
 const SIGNATURE_APPROVAL_TYPES = [

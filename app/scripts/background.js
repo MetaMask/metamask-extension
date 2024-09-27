@@ -53,6 +53,8 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
