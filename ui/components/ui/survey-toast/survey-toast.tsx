@@ -71,7 +71,7 @@ export function SurveyToast() {
         setSurvey(_survey);
       } catch (error: unknown) {
         if (error instanceof Error && error.name !== 'AbortError') {
-          console.error('Failed to fetch survey:', error);
+          console.error('Failed to fetch survey:', metaMetricsId, error);
         }
       }
     };
