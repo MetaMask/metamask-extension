@@ -810,10 +810,10 @@ async function buildEventFragmentProperties({
 
   let contractMethodName;
   if (transactionMeta.txParams.data) {
-    const { name } = await transactionMetricsRequest.getMethodData(
+    const methodData = await transactionMetricsRequest.getMethodData(
       transactionMeta.txParams.data,
     );
-    contractMethodName = name;
+    contractMethodName = methodData?.name;
   }
 
   // TODO: Replace `any` with type
