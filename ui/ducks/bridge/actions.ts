@@ -182,10 +182,12 @@ export const signBridgeTransaction = (
     }
 
     const handleEthUsdtAllowanceReset = async (hexChainId: Hex) => {
-      const allowance = await getBridgeERC20Allowance(
-        ETH_USDT_ADDRESS,
-        quoteMeta.approval.from,
-        hexChainId,
+      const allowance = BigNumber.from(
+        await getBridgeERC20Allowance(
+          ETH_USDT_ADDRESS,
+          quoteMeta.approval.from,
+          hexChainId,
+        ),
       );
 
       // quote.srcTokenAmount is actually after the fees
@@ -208,7 +210,7 @@ export const signBridgeTransaction = (
         });
 
         await addTransactionAndWaitForPublish(txParams, {
-          requireApproval: false,
+          // requireApproval: false,
           // @ts-expect-error Need TransactionController v37+, TODO add this type
           type: 'bridgeApproval', // TransactionType.bridgeApproval,
 
