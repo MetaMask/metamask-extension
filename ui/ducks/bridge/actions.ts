@@ -204,7 +204,10 @@ export const signBridgeTransaction = (
       const shouldResetApproval = allowance.lt(sentAmount) && allowance.gt(0);
 
       if (shouldResetApproval) {
-        const gasLimit = quoteMeta.approval.gasLimit.toString();
+        const gasLimit = new Numeric(
+          quoteMeta.approval.gasLimit,
+          10,
+        ).toPrefixedHexString();
         const txParams = getEthUsdtApproveResetTxParams({
           ...quoteMeta.approval,
           chainId: hexChainId,
@@ -249,7 +252,10 @@ export const signBridgeTransaction = (
         await handleEthUsdtAllowanceReset(hexChainId);
       }
 
-      const gasLimit = quoteMeta.approval.gasLimit.toString();
+      const gasLimit = new Numeric(
+        quoteMeta.approval.gasLimit,
+        10,
+      ).toPrefixedHexString();
       const txParams = {
         ...quoteMeta.approval,
         chainId: hexChainId,
@@ -288,7 +294,10 @@ export const signBridgeTransaction = (
         throw new Error('Invalid chain ID');
       }
 
-      const gasLimit = quoteMeta.trade.gasLimit.toString();
+      const gasLimit = new Numeric(
+        quoteMeta.trade.gasLimit,
+        10,
+      ).toPrefixedHexString();
       const txParams = {
         ...quoteMeta.trade,
         chainId: hexChainId,
