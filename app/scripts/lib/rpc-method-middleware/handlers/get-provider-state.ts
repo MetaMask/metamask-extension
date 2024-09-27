@@ -16,14 +16,14 @@ import {
  * @property networkVersion - The current network ID.
  * @property accounts - List of permitted accounts for the specified origin.
  */
-type ProviderStateHandlerResult = {
+export type ProviderStateHandlerResult = {
   chainId: string;
   isUnlocked: boolean;
   networkVersion: string;
   accounts: string[];
 };
 
-type GetProviderState = (
+export type GetProviderState = (
   origin: OriginString,
 ) => Promise<ProviderStateHandlerResult>;
 
