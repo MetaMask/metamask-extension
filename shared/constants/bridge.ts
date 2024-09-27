@@ -24,3 +24,8 @@ export const BRIDGE_CLIENT_ID = 'extension';
 export const ETH_USDT_ADDRESS = '0xdac17f958d2ee523a2206206994597c13d831ec7'; // ETH:USDT's address
 export const METABRIDGE_ETHEREUM_ADDRESS =
   '0x0439e60F02a8900a951603950d8D4527f400C3f1'; // the address the user approves to spend bridgeable tokens
+
+export enum FeeType {
+  METABRIDGE = 'metabridge',
+  REFUEL = 'refuel',
+}
