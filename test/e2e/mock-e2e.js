@@ -333,6 +333,27 @@ async function setupMocking(
       }),
   );
 
+  [
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            userId: '0x123',
+            surveys: {
+              url: 'https://example.com',
+              description: 'Test survey',
+              cta: 'Take survey',
+              id: 1,
+            },
+          },
+        };
+      }),
+  );
+
   await server
     .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
     .thenCallback(() => {
