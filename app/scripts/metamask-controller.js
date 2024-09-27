@@ -1535,7 +1535,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: false,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
