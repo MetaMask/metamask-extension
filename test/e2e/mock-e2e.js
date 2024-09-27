@@ -5,6 +5,10 @@ const {
   BRIDGE_PROD_API_BASE_URL,
 } = require('../../shared/constants/bridge');
 const {
+  ACCOUNTS_DEV_API_BASE_URL,
+  ACCOUNTS_PROD_API_BASE_URL,
+} = require('../../shared/constants/accounts');
+const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
@@ -309,6 +313,18 @@ async function setupMocking(
         return {
           statusCode: 200,
           json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
+        };
+      }),
+  );
+
+  [
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/:metaMetricsId/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/:metaMetricsId/surveys`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        return {
+          statusCode: 200,
         };
       }),
   );
