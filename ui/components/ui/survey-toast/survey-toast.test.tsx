@@ -76,7 +76,7 @@ describe('SurveyToast', () => {
   });
 
   it('should match snapshot', async () => {
-    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.valid] });
+    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
     let container;
     await act(async () => {
@@ -94,13 +94,13 @@ describe('SurveyToast', () => {
   });
 
   it('renders nothing if the survey is stale', () => {
-    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.stale] });
+    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.stale });
     renderComponent();
     expect(screen.queryByTestId('survey-toast')).toBeNull();
   });
 
   it('renders the survey toast when a valid survey is available', async () => {
-    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.valid] });
+    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
     await act(async () => {
       renderComponent();
@@ -116,7 +116,7 @@ describe('SurveyToast', () => {
   });
 
   it('handles action click correctly when metametrics is enabled', async () => {
-    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.valid] });
+    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
     renderComponent({ metametricsEnabled: true });
 
@@ -140,7 +140,7 @@ describe('SurveyToast', () => {
   });
 
   it('handles action click correctly when metametrics is disabled', async () => {
-    mockFetchWithCache.mockResolvedValue({ surveys: [surveyData.valid] });
+    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
     renderComponent({ metametricsEnabled: false });
 
