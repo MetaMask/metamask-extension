@@ -5,7 +5,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-describe('Survey', function () {
+describe('Test Survey', function () {
   async function mockSurveys(mockServer) {
     return await mockServer
       .forGet(
