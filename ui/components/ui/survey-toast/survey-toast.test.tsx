@@ -43,6 +43,7 @@ const createStore = (options = { metametricsEnabled: true }) =>
       lastViewedUserSurvey: 2,
       useExternalServices: true,
       participateInMetaMetrics: options.metametricsEnabled,
+      metaMetricsId: '0x123',
       internalAccounts: {
         selectedAccount: '0x123',
         accounts: { '0x123': { address: '0x123' } },
