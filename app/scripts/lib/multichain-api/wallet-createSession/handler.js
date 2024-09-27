@@ -1,5 +1,5 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { RestrictedMethods } from '../../../../../shared/constants/permissions';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import {
   mergeScopes,
   validateAndFlattenScopes,
@@ -16,7 +16,16 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { assignAccountsToScopes, validateAndAddEip3085 } from './helpers';
+import { PermissionNames } from '../../../controllers/permissions';
+import {
+  getEthAccounts,
+  setEthAccounts,
+} from '../adapters/caip-permission-adapter-eth-accounts';
+import {
+  getPermittedEthChainIds,
+  setPermittedEthChainIds,
+} from '../adapters/caip-permission-adapter-permittedChains';
+import { validateAndAddEip3085 } from './helpers';
 
 export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
   // TODO: Does this handler need a rate limiter/lock like the one in eth_requestAccounts?
@@ -132,34 +141,26 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
         ],
       },
     });
-    assignAccountsToScopes(
-      supportedRequiredScopes,
-      legacyApproval.approvedAccounts,
+
+    let caip25CaveatValue = {
+      requiredScopes: supportedRequiredScopes,
+      optionalScopes: supportedOptionalScopes,
+      isMultichainOrigin: true,
+      // TODO: preserve sessionProperties?
+    };
+
+    caip25CaveatValue = setPermittedEthChainIds(
+      caip25CaveatValue,
+      legacyApproval.approvedChainIds,
     );
-    assignAccountsToScopes(
-      supportableRequiredScopes,
-      legacyApproval.approvedAccounts,
-    );
-    assignAccountsToScopes(
-      supportedOptionalScopes,
-      legacyApproval.approvedAccounts,
-    );
-    assignAccountsToScopes(
-      supportableOptionalScopes,
+    caip25CaveatValue = setEthAccounts(
+      caip25CaveatValue,
       legacyApproval.approvedAccounts,
     );
 
-    const grantedRequiredScopes = mergeScopes(
-      supportedRequiredScopes,
-      supportableRequiredScopes,
-    );
-    const grantedOptionalScopes = mergeScopes(
-      supportedOptionalScopes,
-      supportableOptionalScopes,
-    );
     const sessionScopes = mergeScopes(
-      grantedRequiredScopes,
-      grantedOptionalScopes,
+      caip25CaveatValue.requiredScopes,
+      caip25CaveatValue.optionalScopes,
     );
 
     await Promise.all(
@@ -190,11 +191,7 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
           caveats: [
             {
               type: Caip25CaveatType,
-              value: {
-                requiredScopes: grantedRequiredScopes,
-                optionalScopes: grantedOptionalScopes,
-                isMultichainOrigin: true,
-              },
+              value: caip25CaveatValue,
             },
           ],
         },
