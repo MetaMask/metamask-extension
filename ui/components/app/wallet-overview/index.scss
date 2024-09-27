@@ -159,5 +159,6 @@
 .balance-popover {
   &__container {
     z-index: design-system.$modal-z-index;
+    margin-top: -4px;
   }
 }
