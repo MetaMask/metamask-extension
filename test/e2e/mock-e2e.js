@@ -325,6 +325,12 @@ async function setupMocking(
       await server.forGet(url).thenCallback(() => {
         return {
           statusCode: 200,
+          json: {
+            url: 'https://example.com',
+            description: 'Test Survey',
+            cta: 'Take Survey',
+            id: 1,
+          },
         };
       }),
   );
