@@ -297,13 +297,13 @@ export default class BridgeController extends StaticIntervalPollingController<
     contractAddress: string,
     walletAddress: string,
     chainId: Hex,
-  ): Promise<BigNumber> => {
+  ): Promise<string> => {
     const web3Provider = new Web3Provider(this.#provider);
     const contract = new Contract(contractAddress, abiERC20, web3Provider);
     const allowance = await contract.allowance(
       walletAddress,
       METABRIDGE_CHAIN_TO_ADDRESS_MAP[chainId],
     );
-    return allowance;
+    return BigNumber.from(allowance).toString();
   };
 }
