@@ -6,24 +6,26 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 async function mockSurveys(mockServer) {
-  return await mockServer
-    .forGet(
-      'https://accounts.api.cx.metamask.io/v1/users/fake-metrics-id/surveys',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: {
-          userId: '0x123',
-          surveys: {
-            url: 'https://example.com',
-            description: 'Test survey',
-            cta: 'Take survey',
-            id: 1,
+  return [
+    await mockServer
+      .forGet(
+        'https://accounts.api.cx.metamask.io/v1/users/fake-metrics-id/surveys',
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          body: {
+            userId: '0x123',
+            surveys: {
+              url: 'https://example.com',
+              description: 'Test survey',
+              cta: 'Take survey',
+              id: 1,
+            },
           },
-        },
-      };
-    });
+        };
+      }),
+  ];
 }
 
 describe('Test Survey', function () {
@@ -41,7 +43,7 @@ describe('Test Survey', function () {
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        testSpecificMock: [mockSurveys],
+        testSpecificMock: mockSurveys,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
