@@ -4,6 +4,7 @@ import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
+import { BigNumber } from '@ethersproject/bignumber';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -24,25 +25,29 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { SwapsEthToken } from '../../selectors';
-import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
+  SwapsTokenObject,
+  DEFAULT_TOKEN_ADDRESS,
+} from '../../../shared/constants/swaps';
+import {
+  SwapsEthToken,
   checkNetworkAndAccountSupports1559,
   getIsBridgeEnabled,
   getNetworkConfigurations,
   getSelectedNetworkClientId,
 } from '../../selectors';
+import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getGasFeeEstimates } from '../metamask/metamask';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { MetaMetricsNetworkEventSource } from '../../../shared/constants/metametrics';
-import { DEFAULT_TOKEN_ADDRESS } from '../../../shared/constants/swaps';
 import {
-  getEthUsdtApproveResetTx as getEthUsdtApproveResetTxParams,
+  getEthUsdtApproveResetTxParams,
   isEthUsdt,
 } from '../../pages/bridge/bridge.util';
+import { ETH_USDT_ADDRESS, FeeType } from '../../../shared/constants/bridge';
+import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { bridgeSlice } from './bridge';
 import {
   DUMMY_QUOTES_APPROVAL,
@@ -121,6 +126,18 @@ export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
     );
   };
 };
+
+export const getBridgeERC20Allowance = async (
+  contractAddress: string,
+  walletAddress: string,
+  chainId: Hex,
+): ReturnType<BridgeController['getBridgeERC20Allowance']> => {
+  return await submitRequestToBackground(
+    BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
+    [contractAddress, walletAddress, chainId],
+  );
+};
+
 export const signBridgeTransaction = (
   history: ReturnType<typeof useHistory>,
 ) => {
@@ -164,32 +181,48 @@ export const signBridgeTransaction = (
       // );
     }
 
-    const handleUsdtAllowanceReset = async (hexChainId: Hex) => {
-      const gasLimit = quoteMeta.approval.gasLimit.toString();
-      const txParams = getEthUsdtApproveResetTxParams({
-        ...quoteMeta.approval,
-        chainId: hexChainId,
-        gasLimit,
-        gas: gasLimit, // must set this field
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-      });
+    const handleEthUsdtAllowanceReset = async (hexChainId: Hex) => {
+      const allowance = await getBridgeERC20Allowance(
+        ETH_USDT_ADDRESS,
+        quoteMeta.approval.from,
+        hexChainId,
+      );
 
-      await addTransactionAndWaitForPublish(txParams, {
-        requireApproval: false,
-        // @ts-expect-error Need TransactionController v37+, TODO add this type
-        type: 'bridgeApproval', // TransactionType.bridgeApproval,
+      // quote.srcTokenAmount is actually after the fees
+      // so we need to add fees back in for total allowance to give
+      const sentAmount = BigNumber.from(quoteMeta.quote.srcTokenAmount)
+        .add(quoteMeta.quote.feeData[FeeType.METABRIDGE].amount)
+        .toString();
 
-        // TODO update TransactionController to change this to a bridge field
-        // swaps.meta is of type Partial<TransactionMeta>, will get merged with TransactionMeta by the TransactionController
-        swaps: {
-          hasApproveTx: true,
-          meta: {
-            type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
-            sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
+      const shouldResetApproval = allowance.lt(sentAmount) && allowance.gt(0);
+
+      if (shouldResetApproval) {
+        const gasLimit = quoteMeta.approval.gasLimit.toString();
+        const txParams = getEthUsdtApproveResetTxParams({
+          ...quoteMeta.approval,
+          chainId: hexChainId,
+          gasLimit,
+          gas: gasLimit, // must set this field
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+        });
+
+        await addTransactionAndWaitForPublish(txParams, {
+          requireApproval: false,
+          // @ts-expect-error Need TransactionController v37+, TODO add this type
+          type: 'bridgeApproval', // TransactionType.bridgeApproval,
+
+          // TODO update TransactionController to change this to a bridge field
+          // swaps.meta is of type Partial<TransactionMeta>, will get merged with TransactionMeta by the TransactionController
+          swaps: {
+            hasApproveTx: true,
+            meta: {
+              type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
+              sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
+            },
           },
-        },
-      });
+        });
+      }
     };
 
     const handleApprovalTx = async () => {
@@ -203,8 +236,10 @@ export const signBridgeTransaction = (
         throw new Error('Invalid chain ID');
       }
 
+      // On Ethereum, we need to reset the allowance to 0 for USDT first if we need to set a new allowance
+      // https://www.google.com/url?q=https://docs.unizen.io/trade-api/before-you-get-started/token-allowance-management-for-non-updatable-allowance-tokens&sa=D&source=docs&ust=1727386175513609&usg=AOvVaw3Opm6BSJeu7qO0Ve5iLTOh
       if (isEthUsdt(hexChainId, quoteMeta.quote.srcAsset.address)) {
-        await handleUsdtAllowanceReset(hexChainId);
+        await handleEthUsdtAllowanceReset(hexChainId);
       }
 
       const gasLimit = quoteMeta.approval.gasLimit.toString();

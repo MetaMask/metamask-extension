@@ -1,4 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
+import { Web3Provider } from '@ethersproject/providers';
 import { Hex, add0x } from '@metamask/utils';
 import { TransactionParams } from '@metamask/transaction-controller';
 import {
@@ -193,17 +194,16 @@ export async function fetchBridgeQuotes(
 }
 /**
  * A function to return tx for setting allowance to 0 for USDT on Ethereum
- * https://www.google.com/url?q=https://docs.unizen.io/trade-api/before-you-get-started/token-allowance-management-for-non-updatable-allowance-tokens&sa=D&source=docs&ust=1727386175513609&usg=AOvVaw3Opm6BSJeu7qO0Ve5iLTOh
  *
- * @param approval
- * @returns
+ * @param approval - The original transaction params for the required allowance
+ * @returns Modified approval transaction params that will reset allowance to 0
  */
-export const getEthUsdtApproveResetTx = (approval: TransactionParams) => {
-  const USDTContractInterface = new Contract(
+export const getEthUsdtApproveResetTxParams = (approval: TransactionParams) => {
+  const UsdtContractInterface = new Contract(
     ETH_USDT_ADDRESS,
     ETHEREUM_USDT_APPROVALS_ABI,
   ).interface;
-  const data = USDTContractInterface.encodeFunctionData('approve', [
+  const data = UsdtContractInterface.encodeFunctionData('approve', [
     METABRIDGE_ETHEREUM_ADDRESS,
     '0',
   ]);

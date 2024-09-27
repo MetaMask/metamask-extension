@@ -5,6 +5,7 @@ import { StateMetadata } from '@metamask/base-controller';
 import { Contract } from '@ethersproject/contracts';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { Web3Provider } from '@ethersproject/providers';
+import { BigNumber } from '@ethersproject/bignumber';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
@@ -52,10 +53,7 @@ export default class BridgeController extends StaticIntervalPollingController<
 > {
   #abortController: AbortController | undefined;
 
-  #provider: Provider;
-
   constructor({
-    provider,
     messenger,
   }: {
     provider: Provider;
@@ -93,6 +91,10 @@ export default class BridgeController extends StaticIntervalPollingController<
     this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:resetState`,
       this.resetState.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:getBridgeERC20Allowance`,
+      this.getBridgeERC20Allowance.bind(this),
     );
   }
 
@@ -284,16 +286,24 @@ export default class BridgeController extends StaticIntervalPollingController<
     );
   }
 
-  getErc20Allowance = async (
+  /**
+   *
+   * @param contractAddress - The address of the ERC20 token contract
+   * @param walletAddress - The address of the wallet
+   * @param chainId - The hex chain ID of the bridge network
+   * @returns The atomic allowance of the ERC20 token contract
+   */
+  getBridgeERC20Allowance = async (
     contractAddress: string,
     walletAddress: string,
     chainId: Hex,
-  ) => {
+  ): Promise<BigNumber> => {
     const web3Provider = new Web3Provider(this.#provider);
     const contract = new Contract(contractAddress, abiERC20, web3Provider);
-    return await contract.allowance(
+    const allowance = await contract.allowance(
       walletAddress,
       METABRIDGE_CHAIN_TO_ADDRESS_MAP[chainId],
     );
+    return allowance;
   };
 }
