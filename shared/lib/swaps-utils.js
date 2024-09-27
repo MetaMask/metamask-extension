@@ -14,6 +14,8 @@ import {
 import { SECOND } from '../constants/time';
 import { isValidHexAddress } from '../modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../modules/string-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decimalToHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';

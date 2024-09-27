@@ -183,9 +183,6 @@
   "addANetwork": {
     "message": "एक नेटवर्क जोड़ें"
   },
-  "addANetworkManually": {
-    "message": "मैन्युअल रूप से नेटवर्क जोड़ें"
-  },
   "addANickname": {
     "message": "एक उपनाम जोड़ें"
   },
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "उन मित्रों और पतों को जोड़ें, जिन पर आप भरोसा करते हैं"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "पॉपुलर नेटवर्क की लिस्ट से जोड़ें या मैन्युअल रूप से नेटवर्क जोड़ें। केवल उन संस्थाओं के साथ संवाद करें जिन पर आप भरोसा करते हैं।"
-  },
   "addHardwareWallet": {
     "message": "hardware wallet जोड़ें"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "मेमो जोड़ें"
   },
-  "addMoreNetworks": {
-    "message": "मैन्युअल रूप से अधिक नेटवर्क जोड़ें"
-  },
   "addNetwork": {
     "message": "नेटवर्क जोड़ें"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "यह नेटवर्क कनेक्शन थर्ड पार्टियों पर निर्भर करता है। यह कनेक्शन संभवतः कम विश्वसनीय है या थर्ड-पार्टियों को एक्टिविटी को ट्रैक करने के लिए इनेबल कर सकता है। $1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "एक नया Ethereum अकाउंट जोड़ें"
@@ -976,12 +963,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "मैंने एलर्ट को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
   },
-  "confirmAlertModalDetails": {
-    "message": "यदि आप साइन इन करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है। कृपया आगे बढ़ने से पहले एलर्ट की समीक्षा करें।"
-  },
-  "confirmAlertModalTitle": {
-    "message": "आपके एसेट खतरे में हो सकते हैं"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "'जारी रखें' पर क्लिक करने पर हम आपको $1 पर रीडायरेक्ट कर देंगे।"
   },
@@ -990,9 +971,6 @@
   },
   "confirmConnectionTitle": {
     "message": "$1 से कनेक्शन को कन्फर्म करें"
-  },
-  "confirmDeletion": {
-    "message": "हटाना कन्फर्म करें"
   },
   "confirmFieldPaymaster": {
     "message": "के द्वारा शुल्क का भुगतान किया गया"
@@ -1006,17 +984,11 @@
   "confirmRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज कन्फर्म करें"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "क्या आप वाकई RPC URL को हटाना चाहते हैं? आपकी जानकारी इस नेटवर्क के लिए सेव नहीं की जाएगी।"
-  },
   "confirmTitleDescPermitSignature": {
     "message": "यह साइट आपके टोकन खर्च करने की अनुमति चाहती है।"
   },
   "confirmTitleDescSIWESignature": {
     "message": "एक साइट चाहती है कि आप यह साबित करने के लिए साइन इन करें कि यह आपका अकाउंट है।"
-  },
-  "confirmTitleDescSignature": {
-    "message": "इस संदेश को केवल तभी कन्फर्म करें जब आप कंटेंट को एप्रूव करते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं।"
   },
   "confirmTitlePermitTokens": {
     "message": "खर्च करने की सीमा का अनुरोध"
@@ -1359,9 +1331,6 @@
   "custom": {
     "message": "एडवांस्ड"
   },
-  "customContentSearch": {
-    "message": "पहले से जुड़े हुए नेटवर्क के लिए खोजें"
-  },
   "customGasSettingToolTipMessage": {
     "message": "गैस प्राइस को कस्टमाइज़ करने के लिए $1 का इस्तेमाल करें। यदि आपको इसकी जानकारी नहीं हैं तो ये कंफ्यूज़ करने वाला हो सकता है। अपनी ज़िम्मेदारी पर इंटरैक्ट करें।",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1481,18 +1450,12 @@
   "deleteContact": {
     "message": "कॉन्टेक्ट मिटाएं"
   },
-  "deleteNetwork": {
-    "message": "नेटवर्क हटाएं?"
-  },
   "deleteNetworkIntro": {
     "message": "अगर आप इस नेटवर्क को हटाते हैं, तो आपको इस नेटवर्क में अपने एसेट देखने के लिए इसे फिर से जोड़ना होगा"
   },
   "deleteNetworkTitle": {
     "message": "$1 नेटवर्क को हटाएं?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "RPC URL को हटाएं"
   },
   "deposit": {
     "message": "डिपॉज़िट करें"
@@ -1858,9 +1821,6 @@
   "existingRequestsBannerAlertDesc": {
     "message": "अपने सबसे हालिया अनुरोध को देखने और कन्फर्म करने के लिए, आपको पहले मौजूदा अनुरोधों को एप्रूव या रिजेक्ट करना होगा।"
   },
-  "existingRpcUrl": {
-    "message": "यह URL किसी अन्य चेन ID से जुड़ा है।"
-  },
   "expandView": {
     "message": "व्यू को बड़ा करें"
   },
@@ -1892,9 +1852,6 @@
   "failedToFetchChainId": {
     "message": "चेन ID प्राप्त नहीं की जा सकी। क्या आपका RPC URL सही है?"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "टिकर सिंबल वेरिफिकेशन डेटा वर्तमान में अनुपलब्ध है, पक्का करें कि आपने जो चिन्ह डाला है वह सही है। ये उन कन्वर्शन दरों को प्रभावित करेगा जो आपको इस नेटवर्क के लिए दिख रहे हैं"
-  },
   "failureMessage": {
     "message": "कुछ गलत हुआ और हम एक्शन को पूरा नहीं कर सकें"
   },
@@ -1914,9 +1871,6 @@
   "fileImportFail": {
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "यहां पर सही खोजें:"
   },
   "flaskWelcomeUninstall": {
     "message": "आपको इस एक्सटेन्शन को अनइंस्टाल करना चाहिए",
@@ -2407,9 +2361,6 @@
   "invalidAssetType": {
     "message": "ये एसेट एक NFT है और इसे इंपोर्ट NFTज़ पेज पर फिर से जोड़ना होगा जो NFTज़ टैब के नीचे मिलेगा"
   },
-  "invalidBlockExplorerURL": {
-    "message": "ग़लत ब्लॉक एक्सप्लोरर URL"
-  },
   "invalidChainIdTooBig": {
     "message": "ग़लत चेन ID। चेन ID बहुत बड़ी है।"
   },
@@ -2895,10 +2846,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "यह नेटवर्क अपनी एसोसिएटेड चेन ID या नाम से मेल नहीं खाता है। कई लोकप्रिय टोकन $1 नाम का उपयोग करते हैं, जिससे इसमें स्कैम किया जा सकता है। स्कैम करने वाले आपको बदले में ज़्यादा कीमती करेंसी भेजने का झांसा दे सकते हैं। आगे बढ़ने से पहले सब कुछ वेरीफाई करें।",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "यह एक बड़ा स्कैम हो सकता है"
+    "message": "यह एक बड़ा स्कैम हो सकता है",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "मदद चाहिए? $1 से कॉन्टेक्ट करें",
@@ -2925,9 +2877,6 @@
   },
   "network": {
     "message": "नेटवर्क:"
-  },
-  "networkAddedSuccessfully": {
-    "message": "नेटवर्क सफलतापूर्वक जोड़ा गया!"
   },
   "networkDetails": {
     "message": "नेटवर्क विवरण"
@@ -2988,9 +2937,6 @@
   },
   "networkProvider": {
     "message": "नेटवर्क प्रोवाइडर"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "चेन ID का इस्तेमाल ट्रांसेक्शन पर हस्ताक्षर करने के लिए किया जाता है। इसे नेटवर्क द्वारा दी गई चेन ID से मेल खाना चाहिए। आप डेसीमल या '0x'-प्रीफिक्स्ड वाली हेक्साडेसिमल संख्या डाल सकते हैं, लेकिन हम संख्या को डेसीमल में दिखाएंगे।"
   },
   "networkStatus": {
     "message": "नेटवर्क का स्टेटस"
@@ -3440,9 +3386,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "IPFS गेटवे URL मान्य है"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "कस्टम नेटवर्क जोड़ें"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "हम अपने रिमोट प्रोसीजर कॉल (RPC) प्रोवाइडर के रूप में Infura का इस्तेमाल करते हैं ताकि हम Ethereum डेटा तक सबसे विश्वसनीय और निजी ऐक्सेस प्रदान कर सकें। आप अपना स्वयं का RPC चुन सकते हैं, लेकिन याद रखें कि कोई भी RPC ट्रांसेक्शन करने के लिए आपका IP एड्रेस और Ethereum वॉलेट प्राप्त करेगा। Infura डेटा को कैसे प्रबंधित करता है, इस बारे में अधिक जानने के लिए हमारा $1 पढ़ें।"
   },
@@ -3470,9 +3413,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "गोपनीयता नीति"
-  },
-  "onboardingMetametricsModalTitle": {
-    "message": "कस्टम नेटवर्क जोड़ें"
   },
   "onboardingMetametricsNeverCollect": {
     "message": "ऐप पर $1 क्लिक और व्यूज़ स्टोर किए जाते हैं, लेकिन अन्य विवरण (जैसे आपका पब्लिक एड्रेस) स्टोर नहीं होते।",
@@ -3562,9 +3502,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "एक बुरी नीयत वाला नेटवर्क प्रोवाइडर ब्लॉकचेन की स्थिति के बारे में झूठ बोल सकता है और आपकी नेटवर्क एक्टिविटी को रिकॉर्ड कर सकता है। केवल उन कस्टम नेटवर्क को जोड़ें, जिन पर आप भरोसा करते हैं।"
-  },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं। $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3588,9 +3525,6 @@
   },
   "optional": {
     "message": "वैकल्पिक"
-  },
-  "optionalWithParanthesis": {
-    "message": "(वैकल्पिक)"
   },
   "options": {
     "message": "विकल्प"
@@ -3942,9 +3876,6 @@
   "plusXMore": {
     "message": "+ $1 अधिक",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
-  },
-  "popularCustomNetworks": {
-    "message": "पॉपुलर कस्टम नेटवर्क"
   },
   "popularNetworkAddToolTip": {
     "message": "इनमें से कुछ नेटवर्क थर्ड पार्टीज़ पर निर्भर हैं। कनेक्शन कम विश्वसनीय हो सकते हैं या गतिविधि को ट्रैक करने के लिए थर्ड पार्टीज़ को चालू कर सकते हैं। $1",
@@ -5276,9 +5207,6 @@
   "suggestedTokenName": {
     "message": "सुझाया गया नाम:"
   },
-  "suggestedTokenSymbol": {
-    "message": "सुझाया गया टिकर सिंबल:"
-  },
   "support": {
     "message": "सहायता"
   },
@@ -5767,9 +5695,6 @@
   "termsOfUseTitle": {
     "message": "हमारी इस्तेमाल की शर्तों को अपडेट कर दिया गया है"
   },
-  "testNetworks": {
-    "message": "टेस्ट नेटवर्क्स"
-  },
   "theme": {
     "message": "थीम"
   },
@@ -6081,9 +6006,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "हमारे रिकॉर्ड के अनुसार, यह URL इस चेन ID के लिए ज्ञात प्रदाता से मेल नहीं खाता है।"
-  },
   "unapproved": {
     "message": "रिजेक्ट"
   },
@@ -6152,9 +6074,6 @@
   },
   "urlErrorMsg": {
     "message": "URL को उपयुक्त HTTP/HTTPS प्रीफिक्स्ड की आवश्यकता होती है।"
-  },
-  "urlExistsErrorMsg": {
-    "message": "यह URL वर्तमान में $1 नेटवर्क द्वारा इस्तेमाल किया जाता है।"
   },
   "use4ByteResolution": {
     "message": "स्मार्ट कॉन्ट्रैक्ट्स को डीकोड करें"
@@ -6345,9 +6264,6 @@
   "whatsThis": {
     "message": "यह क्या है?"
   },
-  "wrongChainId": {
-    "message": "यह चेन ID नेटवर्क के नाम से मेल नहीं खाती।"
-  },
   "wrongNetworkName": {
     "message": "हमारे रिकॉर्ड के अनुसार, नेटवर्क का नाम इस चेन ID से ठीक से मेल नहीं खा सकता है।"
   },
@@ -6360,10 +6276,6 @@
   },
   "you": {
     "message": "आप"
-  },
-  "youHaveAddedAll": {
-    "message": "आपने सभी पॉपुलर नेटवर्क जोड़ लिए हैं। आप अधिक नेटवर्क खोज सकते हैं $1 या आप $2 कर सकते हैं",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "आपको इस सुविधा का इस्तेमाल करने के लिए कैमरे तक पहुंच की अनुमति देने की आवश्यकता है।"

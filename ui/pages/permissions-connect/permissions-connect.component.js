@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -14,6 +16,8 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../shared/constants/permissions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
@@ -21,6 +25,7 @@ import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
+import { ConnectPage } from './connect-page/connect-page';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
@@ -143,6 +148,9 @@ export default class PermissionConnect extends Component {
       history.replace(DEFAULT_ROUTE);
       return;
     }
+    if (process.env.CHAIN_PERMISSIONS) {
+      history.replace(confirmPermissionPath);
+    }
     // if this is an incremental permission request for permitted chains, skip the account selection
     if (
       permissionsRequest?.diff?.permissionDiffMap?.[
@@ -151,7 +159,6 @@ export default class PermissionConnect extends Component {
     ) {
       history.replace(confirmPermissionPath);
     }
-
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       switch (requestType) {
         case 'wallet_installSnap':
@@ -288,9 +295,14 @@ export default class PermissionConnect extends Component {
     );
   }
 
+  approveConnection = (...args) => {
+    const { approvePermissionsRequest } = this.props;
+    approvePermissionsRequest(...args);
+    this.redirect(true);
+  };
+
   render() {
     const {
-      approvePermissionsRequest,
       accounts,
       showNewAccountModal,
       newAccountNumber,
@@ -310,6 +322,7 @@ export default class PermissionConnect extends Component {
       approvePendingApproval,
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
+      approvePermissionsRequest,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -353,30 +366,42 @@ export default class PermissionConnect extends Component {
             <Route
               path={confirmPermissionPath}
               exact
-              render={() => (
-                <PermissionPageContainer
-                  request={permissionsRequest || {}}
-                  approvePermissionsRequest={(...args) => {
-                    approvePermissionsRequest(...args);
-                    this.redirect(true);
-                  }}
-                  rejectPermissionsRequest={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
-                  }
-                  selectedAccounts={accounts.filter((account) =>
-                    selectedAccountAddresses.has(account.address),
-                  )}
-                  targetSubjectMetadata={targetSubjectMetadata}
-                  history={this.props.history}
-                  connectPath={connectPath}
-                  snapsInstallPrivacyWarningShown={
-                    snapsInstallPrivacyWarningShown
-                  }
-                  setSnapsInstallPrivacyWarningShownStatus={
-                    setSnapsInstallPrivacyWarningShownStatus
-                  }
-                />
-              )}
+              render={() =>
+                process.env.CHAIN_PERMISSIONS && !permissionsRequest?.diff ? (
+                  <ConnectPage
+                    rejectPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    activeTabOrigin={this.state.origin}
+                    request={permissionsRequest}
+                    permissionsRequestId={permissionsRequestId}
+                    approveConnection={this.approveConnection}
+                  />
+                ) : (
+                  <PermissionPageContainer
+                    request={permissionsRequest || {}}
+                    approvePermissionsRequest={(...args) => {
+                      approvePermissionsRequest(...args);
+                      this.redirect(true);
+                    }}
+                    rejectPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    selectedAccounts={accounts.filter((account) =>
+                      selectedAccountAddresses.has(account.address),
+                    )}
+                    targetSubjectMetadata={targetSubjectMetadata}
+                    history={this.props.history}
+                    connectPath={connectPath}
+                    snapsInstallPrivacyWarningShown={
+                      snapsInstallPrivacyWarningShown
+                    }
+                    setSnapsInstallPrivacyWarningShownStatus={
+                      setSnapsInstallPrivacyWarningShownStatus
+                    }
+                  />
+                )
+              }
             />
             <Route
               path={snapsConnectPath}
@@ -384,10 +409,7 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapsConnect
                   request={permissionsRequest || {}}
-                  approveConnection={(...args) => {
-                    approvePermissionsRequest(...args);
-                    this.redirect(true);
-                  }}
+                  approveConnection={this.approveConnection}
                   rejectConnection={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
                   }

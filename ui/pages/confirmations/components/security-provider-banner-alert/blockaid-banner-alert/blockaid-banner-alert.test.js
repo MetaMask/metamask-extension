@@ -6,6 +6,7 @@ import BlockaidPackage from '@blockaid/ppom_release/package.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import configureStore from '../../../../../store/store';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 
 import {
   BlockaidReason,
@@ -42,6 +43,11 @@ const mockSecurityAlertResponse = {
 };
 
 describe('Blockaid Banner Alert', () => {
+  const mockStore = {
+    metamask: {
+      ...mockNetworkState({}),
+    },
+  };
   it('should not render when securityAlertResponse is not present', () => {
     const { container } = renderWithProvider(
       <BlockaidBannerAlert
@@ -49,7 +55,7 @@ describe('Blockaid Banner Alert', () => {
           securityAlertResponse: undefined,
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
 
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
@@ -65,7 +71,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
 
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
@@ -81,7 +87,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
     const warningBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-warning',
@@ -98,7 +104,7 @@ describe('Blockaid Banner Alert', () => {
           securityAlertResponse: mockSecurityAlertResponse,
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
     const warningBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-warning',
@@ -118,7 +124,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
     const dangerBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-danger',
@@ -138,7 +144,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
 
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
@@ -154,7 +160,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
 
     expect(getByText('Be careful')).toBeInTheDocument();
@@ -171,7 +177,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
 
     expect(getByText('This is a suspicious request')).toBeInTheDocument();
@@ -192,7 +198,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
 
     expect(container).toMatchSnapshot();
@@ -210,7 +216,7 @@ describe('Blockaid Banner Alert', () => {
           features: undefined,
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
 
     expect(container).toMatchSnapshot();
@@ -225,7 +231,7 @@ describe('Blockaid Banner Alert', () => {
           features: undefined,
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
 
     expect(container).toMatchSnapshot();
@@ -243,7 +249,7 @@ describe('Blockaid Banner Alert', () => {
           features: undefined,
         }}
       />,
-      configureStore(),
+      configureStore(mockStore),
     );
 
     const elm = getByRole('link', { name: 'Report an issue' });
@@ -264,7 +270,7 @@ describe('Blockaid Banner Alert', () => {
               },
             }}
           />,
-          configureStore(),
+          configureStore(mockStore),
         );
 
         const elm = getByRole('link', { name: 'Report an issue' });
@@ -315,7 +321,7 @@ describe('Blockaid Banner Alert', () => {
               },
             }}
           />,
-          configureStore(),
+          configureStore(mockStore),
         );
 
         expect(getByText(expectedDescription)).toBeInTheDocument();
@@ -337,7 +343,7 @@ describe('Blockaid Banner Alert', () => {
             },
           }}
         />,
-        configureStore(),
+        configureStore(mockStore),
       );
 
       expect(getByText(stubOtherDescription)).toBeInTheDocument();
@@ -362,7 +368,7 @@ describe('Blockaid Banner Alert', () => {
             },
           }}
         />,
-        configureStore(),
+        configureStore(mockStore),
       );
 
       fireEvent.click(screen.queryByText('See details'));

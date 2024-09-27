@@ -997,12 +997,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
-  "confirmAlertModalDetails": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Your assets may be at risk"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
   },
@@ -1035,9 +1029,6 @@
   },
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
   "confirmTitlePermitTokens": {
     "message": "Spending cap request"
@@ -6457,9 +6448,6 @@
   },
   "whatsThis": {
     "message": "What's this?"
-  },
-  "wrongChainId": {
-    "message": "This chain ID doesn’t match the network name."
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."

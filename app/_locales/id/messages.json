@@ -183,9 +183,6 @@
   "addANetwork": {
     "message": "Tambahkan jaringan"
   },
-  "addANetworkManually": {
-    "message": "Tambahkan jaringan secara manual"
-  },
   "addANickname": {
     "message": "Tambahkan nama panggilan"
   },
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "Tambahkan teman dan alamat yang Anda percayai"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "Tambahkan dari daftar jaringan populer atau tambahkan jaringan secara manual. Lakukan interaksi hanya dengan entitas yang Anda percayai."
-  },
   "addHardwareWallet": {
     "message": "Tambahkan dompet perangkat keras"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "Tambahkan memo"
   },
-  "addMoreNetworks": {
-    "message": "tambahkan jaringan lainnya secara manual"
-  },
   "addNetwork": {
     "message": "Tambahkan jaringan"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "Koneksi jaringan ini mengandalkan pihak ketiga. Koneksi ini mungkin kurang bisa diandalkan atau memungkinkan pihak ketiga melacak aktivitas. $1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "Tambahkan akun Ethereum baru"
@@ -976,12 +963,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Saya telah mengetahui peringatannya dan tetap ingin melanjutkan"
   },
-  "confirmAlertModalDetails": {
-    "message": "Jika masuk, pihak ketiga yang terdeteksi melakukan penipuan dapat mengambil semua aset Anda. Tinjau peringatannya sebelum melanjutkan."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Aset Anda mungkin berisiko"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Kami akan mengarahkan Anda ke $1 setelah mengeklik lanjutkan."
   },
@@ -990,9 +971,6 @@
   },
   "confirmConnectionTitle": {
     "message": "Konfirmasikan koneksi ke $1"
-  },
-  "confirmDeletion": {
-    "message": "Konfirmasikan penghapusan"
   },
   "confirmFieldPaymaster": {
     "message": "Biaya dibayar oleh"
@@ -1006,17 +984,11 @@
   "confirmRecoveryPhrase": {
     "message": "Konfirmasikan Frasa Pemulihan Rahasia"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "Yakin ingin menghapus URL RPC? Informasi Anda tidak akan disimpan untuk jaringan ini."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Situs ini meminta izin untuk menggunakan token Anda."
   },
   "confirmTitleDescSIWESignature": {
     "message": "Sebuah situs ingin Anda masuk untuk membuktikan Anda pemilik akun ini."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Konfirmasikan pesan ini hanya jika Anda menyetujui isinya dan memercayai situs yang memintanya."
   },
   "confirmTitlePermitTokens": {
     "message": "Permintaan batas penggunaan"
@@ -1359,9 +1331,6 @@
   "custom": {
     "message": "Lanjutan"
   },
-  "customContentSearch": {
-    "message": "Cari jaringan yang ditambahkan sebelumnya"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Gunakan $1 untuk menyesuaikan harga gas. Anda akan bingung jika tidak terbiasa. Berinteraksi dengan risiko Anda sendiri.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1481,18 +1450,12 @@
   "deleteContact": {
     "message": "Hapus kontak"
   },
-  "deleteNetwork": {
-    "message": "Hapus jaringan?"
-  },
   "deleteNetworkIntro": {
     "message": "Jika menghapus jaringan ini, Anda harus menambahkannya lagi untuk melihat aset Anda di jaringan ini"
   },
   "deleteNetworkTitle": {
     "message": "Hapus jaringan $1?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "Hapus URL RPC"
   },
   "deposit": {
     "message": "Deposit"
@@ -1858,9 +1821,6 @@
   "existingRequestsBannerAlertDesc": {
     "message": "Untuk melihat dan mengonfirmasi permintaan terkini, Anda harus menyetujui atau menolak permintaan yang ada terlebih dahulu."
   },
-  "existingRpcUrl": {
-    "message": "URL ini terhubung dengan ID chain lain."
-  },
   "expandView": {
     "message": "Perluas tampilan"
   },
@@ -1892,9 +1852,6 @@
   "failedToFetchChainId": {
     "message": "Tidak dapat mengambil ID chain. Apakah URL RPC Anda benar?"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "Data verifikasi simbol ticker saat ini tidak tersedia, pastikan simbol yang Anda masukkan sudah benar. Ini akan memengaruhi tingkat konversi yang Anda lihat untuk jaringan ini"
-  },
   "failureMessage": {
     "message": "Terjadi kesalahan dan kami tidak dapat menyelesaikan tindakan"
   },
@@ -1914,9 +1871,6 @@
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "Temukan yang tepat di:"
   },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
@@ -2407,9 +2361,6 @@
   "invalidAssetType": {
     "message": "Aset ini merupakan NFT dan harus ditambahkan kembali di halaman Impor NFT yang ada di bawah tab NFT"
   },
-  "invalidBlockExplorerURL": {
-    "message": "URL block explorer tidak valid"
-  },
   "invalidChainIdTooBig": {
     "message": "ID chain tidak valid. ID chain terlalu besar."
   },
@@ -2895,10 +2846,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Jaringan ini tidak cocok dengan ID chain atau nama yang terkait. Banyak token populer menggunakan nama $1, menjadikannya target penipuan. Penipu dapat mengelabui Anda agar mengirimkan mata uang yang lebih berharga sebagai imbalannya. Verifikasikan semuanya sebelum melanjutkan.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Ini berpotensi penipuan"
+    "message": "Ini berpotensi penipuan",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Butuh bantuan? Hubungi $1",
@@ -2925,9 +2877,6 @@
   },
   "network": {
     "message": "Jaringan:"
-  },
-  "networkAddedSuccessfully": {
-    "message": "Jaringan berhasil ditambahkan!"
   },
   "networkDetails": {
     "message": "Detail jaringan"
@@ -2988,9 +2937,6 @@
   },
   "networkProvider": {
     "message": "Penyedia jaringan"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "ID chain digunakan untuk menandatangani transaksi. Harus cocok dengan ID chain yang dikembalikan oleh jaringan. Anda dapat memasukkan bilangan heksadesimal berawalan '0x' atau desimal, namun kami akan menampilkan bilangan tersebut dalam desimal."
   },
   "networkStatus": {
     "message": "Status jaringan"
@@ -3440,9 +3386,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "URL gateway IPFS valid"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "Tambahkan jaringan khusus"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Kami menggunakan Infura sebagai penyedia pemanggilan prosedur jarak jauh (RPC) kami untuk menawarkan akses paling andal dan pribadi ke data Ethereum. Anda dapat memilih RPC Anda sendiri, tetapi ingatlah bahwa setiap RPC akan menerima alamat IP dan dompet Ethereum Anda untuk melakukan transaksi. Baca $1 kami untuk mempelajari lebih lanjut seputar cara Infura menangani data."
   },
@@ -3470,9 +3413,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Kebijakan Privasi"
-  },
-  "onboardingMetametricsModalTitle": {
-    "message": "Tambahkan jaringan khusus"
   },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 klik dan tampilan pada aplikasi disimpan, tetapi tidak untuk detail lainnya (seperti alamat publik).",
@@ -3562,9 +3502,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "Penyedia jaringan jahat dapat berbohong tentang status blockchain dan merekam aktivitas jaringan Anda. Hanya tambahkan jaringan kustom yang Anda percayai."
-  },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3588,9 +3525,6 @@
   },
   "optional": {
     "message": "Opsional"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Opsional)"
   },
   "options": {
     "message": "Opsi"
@@ -3942,9 +3876,6 @@
   "plusXMore": {
     "message": "+ $1 lagi",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
-  },
-  "popularCustomNetworks": {
-    "message": "Jaringan khusus populer"
   },
   "popularNetworkAddToolTip": {
     "message": "Beberapa jaringan ini mengandalkan pihak ketiga. Koneksi ini kurang dapat diandalkan atau memungkinkan pihak ketiga melacak aktivitas. $1",
@@ -5276,9 +5207,6 @@
   "suggestedTokenName": {
     "message": "Nama yang disarankan:"
   },
-  "suggestedTokenSymbol": {
-    "message": "Simbol ticker yang disarankan:"
-  },
   "support": {
     "message": "Dukungan"
   },
@@ -5767,9 +5695,6 @@
   "termsOfUseTitle": {
     "message": "Syarat Penggunaan kami telah diperbarui"
   },
-  "testNetworks": {
-    "message": "Jaringan pengujian"
-  },
   "theme": {
     "message": " Saya menyetujui Ketentuan Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
   },
@@ -6081,9 +6006,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "Menurut catatan kami, URL ini tidak sesuai dengan penyedia yang dikenal untuk ID chain ini."
-  },
   "unapproved": {
     "message": "Tidak disetujui"
   },
@@ -6152,9 +6074,6 @@
   },
   "urlErrorMsg": {
     "message": "URL memerlukan awalan HTTP/HTTPS yang sesuai."
-  },
-  "urlExistsErrorMsg": {
-    "message": "URL ini saat ini digunakan oleh jaringan $1."
   },
   "use4ByteResolution": {
     "message": "Uraikan kode kontrak cerdas"
@@ -6345,9 +6264,6 @@
   "whatsThis": {
     "message": "Apa ini?"
   },
-  "wrongChainId": {
-    "message": "ID chain ini tidak sesuai dengan nama jaringan."
-  },
   "wrongNetworkName": {
     "message": "Menurut catatan kami, nama jaringan mungkin tidak cocok dengan ID chain ini."
   },
@@ -6360,10 +6276,6 @@
   },
   "you": {
     "message": "Anda"
-  },
-  "youHaveAddedAll": {
-    "message": "Anda telah menambahkan semua jaringan populer. Anda dapat menemukan lebih banyak jaringan $1 atau dapat $2",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda harus mengizinkan akses kamera untuk menggunakan fitur ini."

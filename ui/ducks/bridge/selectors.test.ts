@@ -5,11 +5,15 @@ import { getProviderConfig } from '../metamask/metamask';
 import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getAllBridgeableNetworks,
+  getFromAmount,
   getFromChain,
   getFromChains,
+  getFromToken,
   getIsBridgeTx,
+  getToAmount,
   getToChain,
   getToChains,
+  getToToken,
 } from './selectors';
 
 describe('Bridge selectors', () => {
@@ -63,12 +67,22 @@ describe('Bridge selectors', () => {
     it('uses config from allNetworks if network is in both FEATURED_RPCS and allNetworks', () => {
       const addedFeaturedNetwork = {
         ...FEATURED_RPCS[FEATURED_RPCS.length - 1],
-        id: 'testid',
       };
+
       const state = {
         ...createBridgeMockStore(),
         metamask: {
           networkConfigurations: [addedFeaturedNetwork],
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+            {
+              ...FEATURED_RPCS[FEATURED_RPCS.length - 1],
+              id: 'testid',
+              blockExplorerUrl: 'https://basescan.org',
+              rpcUrl: 'https://mainnet.base.org',
+            },
+          ),
         },
       };
       const result = getAllBridgeableNetworks(state as never);
@@ -81,28 +95,31 @@ describe('Bridge selectors', () => {
         expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       );
       expect(result[2]).toStrictEqual({
-        ...addedFeaturedNetwork,
-        removable: true,
-        blockExplorerUrl: 'https://basescan.org',
+        blockExplorerUrls: addedFeaturedNetwork.blockExplorerUrls,
+        chainId: addedFeaturedNetwork.chainId,
+        defaultBlockExplorerUrlIndex:
+          addedFeaturedNetwork.defaultBlockExplorerUrlIndex,
+        defaultRpcEndpointIndex: addedFeaturedNetwork.defaultRpcEndpointIndex,
+        name: addedFeaturedNetwork.name,
+        nativeCurrency: addedFeaturedNetwork.nativeCurrency,
+        rpcEndpoints: [
+          {
+            networkClientId: 'testid',
+            ...addedFeaturedNetwork.rpcEndpoints[0],
+          },
+        ],
       });
       expect(result.slice(3)).toStrictEqual(FEATURED_RPCS.slice(0, -1));
     });
 
     it('returns network if included in ALLOWED_BRIDGE_CHAIN_IDS', () => {
-      const addedFeaturedNetwork = {
-        chainId: '0x11212131241523151',
-        nickname: 'scroll',
-        rpcUrl: 'https://a',
-        ticker: 'ETH',
-        rpcPrefs: {
-          blockExplorerUrl: 'https://a',
-          imageUrl: 'https://a',
-        },
-      };
       const state = {
         ...createBridgeMockStore(),
         metamask: {
-          networkConfigurations: [addedFeaturedNetwork],
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+          ),
         },
       };
       const result = getAllBridgeableNetworks(state as never);
@@ -257,6 +274,96 @@ describe('Bridge selectors', () => {
       const result = getIsBridgeTx(state as never);
 
       expect(result).toBe(true);
+    });
+  });
+
+  describe('getFromToken', () => {
+    it('returns fromToken', () => {
+      const state = createBridgeMockStore(
+        {},
+
+        { fromToken: { address: '0x123', symbol: 'TEST' } },
+      );
+      const result = getFromToken(state as never);
+
+      expect(result).toStrictEqual({ address: '0x123', symbol: 'TEST' });
+    });
+
+    it('returns defaultToken if fromToken has no address', () => {
+      const state = createBridgeMockStore(
+        {},
+        { fromToken: { symbol: 'NATIVE' } },
+      );
+      const result = getFromToken(state as never);
+
+      expect(result).toStrictEqual({
+        address: '0x0000000000000000000000000000000000000000',
+        balance: '0',
+        decimals: 18,
+        iconUrl: './images/eth_logo.svg',
+        name: 'Ether',
+        string: '0',
+        symbol: 'ETH',
+      });
+    });
+
+    it('returns defaultToken if fromToken is undefined', () => {
+      const state = createBridgeMockStore({}, { fromToken: undefined });
+      const result = getFromToken(state as never);
+
+      expect(result).toStrictEqual({
+        address: '0x0000000000000000000000000000000000000000',
+        balance: '0',
+        decimals: 18,
+        iconUrl: './images/eth_logo.svg',
+        name: 'Ether',
+        string: '0',
+        symbol: 'ETH',
+      });
+    });
+  });
+
+  describe('getToToken', () => {
+    it('returns toToken', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toToken: { address: '0x123', symbol: 'TEST' } },
+      );
+      const result = getToToken(state as never);
+
+      expect(result).toStrictEqual({ address: '0x123', symbol: 'TEST' });
+    });
+
+    it('returns undefined if toToken is undefined', () => {
+      const state = createBridgeMockStore({}, { toToken: null });
+      const result = getToToken(state as never);
+
+      expect(result).toStrictEqual(null);
+    });
+  });
+
+  describe('getFromAmount', () => {
+    it('returns fromTokenInputValue', () => {
+      const state = createBridgeMockStore({}, { fromTokenInputValue: '123' });
+      const result = getFromAmount(state as never);
+
+      expect(result).toStrictEqual('123');
+    });
+
+    it('returns empty string', () => {
+      const state = createBridgeMockStore({}, { fromTokenInputValue: '' });
+      const result = getFromAmount(state as never);
+
+      expect(result).toStrictEqual('');
+    });
+  });
+
+  describe('getToAmount', () => {
+    it('returns hardcoded 0', () => {
+      const state = createBridgeMockStore();
+      const result = getToAmount(state as never);
+
+      expect(result).toStrictEqual('0');
     });
   });
 });
