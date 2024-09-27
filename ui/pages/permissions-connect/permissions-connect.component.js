@@ -14,6 +14,7 @@ import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-hea
 import PermissionConnectHeader from '../../components/app/permission-connect-header';
 import {
   CaveatTypes,
+  EndowmentTypes,
   RestrictedMethods,
 } from '../../../shared/constants/permissions';
 // TODO: Remove restricted import
@@ -147,9 +148,6 @@ export default class PermissionConnect extends Component {
     if (!permissionsRequest) {
       history.replace(DEFAULT_ROUTE);
       return;
-    }
-    if (process.env.CHAIN_PERMISSIONS) {
-      history.replace(confirmPermissionPath);
     }
     // if this is an incremental permission request for permitted chains, skip the account selection
     if (
@@ -342,32 +340,7 @@ export default class PermissionConnect extends Component {
               path={connectPath}
               exact
               render={() => (
-                <ChooseAccount
-                  accounts={accounts}
-                  nativeCurrency={nativeCurrency}
-                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
-                  selectNewAccountViaModal={(handleAccountClick) => {
-                    showNewAccountModal({
-                      onCreateNewAccount: (address) =>
-                        handleAccountClick(address),
-                      newAccountNumber,
-                    });
-                  }}
-                  addressLastConnectedMap={addressLastConnectedMap}
-                  cancelPermissionsRequest={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
-                  }
-                  permissionsRequestId={permissionsRequestId}
-                  selectedAccountAddresses={selectedAccountAddresses}
-                  targetSubjectMetadata={targetSubjectMetadata}
-                />
-              )}
-            />
-            <Route
-              path={confirmPermissionPath}
-              exact
-              render={() =>
-                process.env.CHAIN_PERMISSIONS && !permissionsRequest?.diff ? (
+                process.env.CHAIN_PERMISSIONS ? (
                   <ConnectPage
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
@@ -378,6 +351,32 @@ export default class PermissionConnect extends Component {
                     approveConnection={this.approveConnection}
                   />
                 ) : (
+                  <ChooseAccount
+                    accounts={accounts}
+                    nativeCurrency={nativeCurrency}
+                    selectAccounts={(addresses) => this.selectAccounts(addresses)}
+                    selectNewAccountViaModal={(handleAccountClick) => {
+                      showNewAccountModal({
+                        onCreateNewAccount: (address) =>
+                          handleAccountClick(address),
+                        newAccountNumber,
+                      });
+                    }}
+                    addressLastConnectedMap={addressLastConnectedMap}
+                    cancelPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    permissionsRequestId={permissionsRequestId}
+                    selectedAccountAddresses={selectedAccountAddresses}
+                    targetSubjectMetadata={targetSubjectMetadata}
+                  />
+                )
+              )}
+            />
+            <Route
+              path={confirmPermissionPath}
+              exact
+              render={() =>
                   <PermissionPageContainer
                     request={permissionsRequest || {}}
                     approvePermissionsRequest={(...args) => {
@@ -400,7 +399,6 @@ export default class PermissionConnect extends Component {
                       setSnapsInstallPrivacyWarningShownStatus
                     }
                   />
-                )
               }
             />
             <Route
