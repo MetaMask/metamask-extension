@@ -24,7 +24,7 @@ export default function Chip({
   dataTestId,
   className,
   children,
-  borderColor = BorderColor.borderDefault,
+  borderColor = BorderColor.borderMuted,
   backgroundColor,
   label,
   labelProps = {},
@@ -70,7 +70,7 @@ export default function Chip({
           className="chip__label"
           variant={TextVariant.bodySm}
           as="span"
-          color={TextColor.textAlternative}
+          color={TextColor.textDefault}
           {...labelProps}
         >
           {label}

@@ -6494,7 +6494,7 @@
     "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
-    "message": "Want to add this network?"
+    "message": "Add this network?"
   },
   "wantsToAddThisAsset": {
     "message": "This allows the following asset to be added to your wallet."
