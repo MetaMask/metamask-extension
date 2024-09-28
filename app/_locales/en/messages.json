@@ -223,7 +223,7 @@
     "message": "Add custom network"
   },
   "addEthereumChainConfirmationDescription": {
-    "message": "This will allow this network to be used within MetaMask."
+    "message": "This allows this network to be used in MetaMask."
   },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask does not verify custom networks."
@@ -6467,7 +6467,7 @@
     "message": "Wallet creation successful"
   },
   "wantToAddThisNetwork": {
-    "message": "Want to add this network?"
+    "message": "Add this network?"
   },
   "wantsToAddThisAsset": {
     "message": "This allows the following asset to be added to your wallet."

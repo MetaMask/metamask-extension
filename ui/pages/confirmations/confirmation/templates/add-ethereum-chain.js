@@ -269,7 +269,7 @@ function getValues(pendingApproval, t, actions, history, data) {
             key: 'network-chip',
             props: {
               label: pendingApproval.requestData.chainName,
-              backgroundColor: BackgroundColor.backgroundAlternative,
+              backgroundColor: BackgroundColor.backgroundDefault,
               leftIconUrl: pendingApproval.requestData.imageUrl,
             },
           },

@@ -214,7 +214,7 @@
     "message": "Add custom network"
   },
   "addEthereumChainConfirmationDescription": {
-    "message": "This will allow this network to be used within MetaMask."
+    "message": "This allows this network to be used in MetaMask."
   },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask does not verify custom networks."

@@ -32,10 +32,9 @@ export default function DefinitionList({
       {Object.entries(dictionary).map(([term, definition]) => (
         <React.Fragment key={`definition-for-${term}`}>
           <Text
-            variant={TextVariant.bodySmBold}
+            variant={TextVariant.bodyMdMedium}
             {...termTypography}
             marginTop={0}
-            marginBottom={1}
             className="definition-list__term"
             as="dt"
           >
@@ -56,7 +55,7 @@ export default function DefinitionList({
             )}
           </Text>
           <Text
-            variant={TextVariant.bodySm}
+            variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             {...definitionTypography}
             marginTop={0}

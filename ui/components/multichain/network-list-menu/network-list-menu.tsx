@@ -340,7 +340,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   marginRight={4}
                   borderRadius={BorderRadius.LG}
                   padding={4}
-                  marginBottom={4}
                   marginTop={2}
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   startAccessory={
