@@ -231,6 +231,26 @@
   "addCustomNetwork": {
     "message": "Add custom network"
   },
+<<<<<<< HEAD
+=======
+  "addEthereumChainConfirmationDescription": {
+    "message": "This allows this network to be used in MetaMask."
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMask does not verify custom networks."
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "Learn about $1.",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "scams and network security risks",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "Allow this site to add a network?"
+  },
+>>>>>>> d79fe55339 (fix: banner margin and confirmation page ui)
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -6604,7 +6624,7 @@
     "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
-    "message": "Want to add this network?"
+    "message": "Add this network?"
   },
   "wantsToAddThisAsset": {
     "message": "This allows the following asset to be added to your wallet."

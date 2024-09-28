@@ -35,7 +35,6 @@ export default function DefinitionList({
             variant={TextVariant.bodyMdMedium}
             {...termTypography}
             marginTop={0}
-            marginBottom={1}
             className="definition-list__term"
             as="dt"
           >

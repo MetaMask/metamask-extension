@@ -244,6 +244,109 @@ function getValues(pendingApproval, t, actions, history, data) {
   return {
     content: [
       {
+<<<<<<< HEAD
+=======
+        hide: !originIsMetaMask,
+        element: 'Box',
+        key: 'network-box',
+        props: {
+          textAlign: TextAlign.Center,
+          display: Display.Flex,
+          justifyContent: JustifyContent.center,
+          marginTop: 4,
+          marginBottom: 2,
+        },
+        children: [
+          {
+            element: 'Chip',
+            key: 'network-chip',
+            props: {
+              label: pendingApproval.requestData.chainName,
+              backgroundColor: BackgroundColor.backgroundDefault,
+              leftIconUrl: pendingApproval.requestData.imageUrl,
+            },
+          },
+        ],
+      },
+      multichainFlag && {
+        element: 'BannerAlert',
+        key: 'only-add-networks-you-trust',
+        children: [
+          {
+            element: 'Typography',
+            key: 'description',
+            props: {
+              style: { display: originIsMetaMask && '-webkit-box' },
+            },
+            children: [
+              `${t('unknownChainWarning')} `,
+              {
+                hide: !originIsMetaMask,
+                element: 'Tooltip',
+                key: 'tooltip-info',
+                props: {
+                  position: 'bottom',
+                  interactive: true,
+                  trigger: 'mouseenter',
+                  html: (
+                    <div
+                      style={{
+                        width: '180px',
+                        margin: '16px',
+                        textAlign: 'left',
+                      }}
+                    >
+                      <a
+                        key="zendesk_page_link"
+                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
+                        rel="noreferrer"
+                        target="_blank"
+                        style={{ color: 'var(--color-primary-default)' }}
+                      >
+                        {t('learnMoreUpperCase')}
+                      </a>
+                    </div>
+                  ),
+                },
+                children: [
+                  {
+                    element: 'i',
+                    key: 'info-circle',
+                    props: {
+                      className: 'fas fa-info-circle',
+                      style: {
+                        marginLeft: '4px',
+                        color: 'var(--color-icon-default)',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            element: 'a',
+            children: t('learnMoreUpperCase'),
+            key: 'learnMoreUpperCase',
+            props: {
+              href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
+              target: '__blank',
+            },
+          },
+        ],
+        props: {
+          severity: BannerAlertSeverity.Warning,
+          boxProps: {
+            margin: [0, 4],
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
+          },
+        },
+      },
+
+      {
+>>>>>>> d79fe55339 (fix: banner margin and confirmation page ui)
         element: 'Typography',
         key: 'title',
         children: title,
