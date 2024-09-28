@@ -9,7 +9,10 @@ export type ManifestFlags = {
     nodeIndex?: number;
     prNumber?: number;
   };
-  doNotForceSentryForThisTest?: boolean;
+  sentry?: {
+    tracesSampleRate?: number;
+    doNotForceSentryForThisTest?: boolean;
+  };
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- you can't extend a type, we want this to be an interface
