@@ -1,4 +1,6 @@
 const { strict: assert } = require('assert');
+const { mockNetworkStateOld } = require('../../../stub/networks');
+
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -12,21 +14,15 @@ describe('Block Explorer', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
-            networkConfigurations: {
-              networkConfigurationId: {
-                chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-              },
-            },
-            selectedNetworkClientId: 'networkConfigurationId',
-          })
+          .withNetworkController(
+            mockNetworkStateOld({
+              chainId: '0x539',
+              nickname: 'Localhost 8545',
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+              blockExplorerUrl: 'https://etherscan.io/',
+            }),
+          )
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
@@ -65,19 +61,13 @@ describe('Block Explorer', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
-            networkConfigurations: {
-              networkConfigurationId: {
-                chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-              },
-            },
-            selectedNetworkClientId: 'networkConfigurationId',
+            ...mockNetworkStateOld({
+              chainId: '0x539',
+              nickname: 'Localhost 8545',
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+              blockExplorerUrl: 'https://etherscan.io/',
+            }),
           })
           .withTokensControllerERC20()
           .build(),
@@ -125,19 +115,14 @@ describe('Block Explorer', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
-            networkConfigurations: {
-              networkConfigurationId: {
-                chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-              },
-            },
-            selectedNetworkClientId: 'networkConfigurationId',
+            ...mockNetworkStateOld({
+              id: 'localhost-client-id',
+              chainId: '0x539',
+              nickname: 'Localhost 8545',
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+              blockExplorerUrl: 'https://etherscan.io',
+            }),
           })
           .withTransactionControllerCompletedTransaction()
           .build(),

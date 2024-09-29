@@ -3,9 +3,17 @@ import { Provider } from 'react-redux';
 
 import testData from '../../../../../.storybook/test-data';
 import configureStore from '../../../../store/store';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover';
 
-const store = configureStore(testData);
+const store = configureStore({
+  ...testData,
+  metamask: {
+    ...testData.metamask,
+    ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+  },
+});
 
 export default {
   title: 'Components/App/DetectedToken/DetectedTokenSelectionPopover',

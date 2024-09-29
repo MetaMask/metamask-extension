@@ -61,7 +61,6 @@ export const AccountOverviewTabs = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const tabPadding = 4;
   const tabProps = useMemo(
     () => ({
       activeClassName: 'account-overview__tab--active',
@@ -128,7 +127,7 @@ export const AccountOverviewTabs = ({
   ///: END:ONLY_INCLUDE_IF
 
   return (
-    <Box style={{ flexGrow: '1' }} paddingTop={tabPadding}>
+    <Box style={{ flexGrow: '1' }}>
       <Tabs
         defaultActiveTabKey={defaultHomeActiveTabName}
         onTabClick={handleTabClick}

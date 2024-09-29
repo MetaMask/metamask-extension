@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Connectez votre portefeuille électronique QR"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (bientôt disponible)"
-  },
   "SIWEAddressInvalid": {
     "message": "L’adresse figurant dans la demande de connexion ne correspond pas à l’adresse du compte que vous utilisez pour vous connecter."
   },
@@ -186,14 +183,14 @@
   "addANetwork": {
     "message": "Ajouter un réseau"
   },
-  "addANetworkManually": {
-    "message": "Ajouter manuellement un réseau"
-  },
   "addANickname": {
     "message": "Ajouter un pseudo"
   },
   "addAccount": {
     "message": "Ajouter un compte"
+  },
+  "addAccountToMetaMask": {
+    "message": "Ajouter un compte à MetaMask"
   },
   "addAcquiredTokens": {
     "message": "Ajouter les jetons que vous avez acquis par l’intermédiaire de MetaMask"
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "Ajoutez uniquement des amis et des adresses de confiance"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "Ajoutez à partir d’une liste de réseaux populaires ou ajoutez un réseau manuellement. Interagissez uniquement avec les entités en lesquelles vous avez confiance."
-  },
   "addHardwareWallet": {
     "message": "Ajouter un portefeuille matériel"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "Ajouter un mémo"
   },
-  "addMoreNetworks": {
-    "message": "ajouter manuellement d’autres réseaux"
-  },
   "addNetwork": {
     "message": "Ajouter un réseau"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "Cette connexion réseau repose sur des tiers. Elle peut être moins fiable ou permettre à des tiers de suivre l’activité des utilisateurs. $1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "Ajouter un nouveau compte Ethereum"
@@ -320,6 +307,9 @@
   "addUrl": {
     "message": "Ajouter l'URL"
   },
+  "addingAccount": {
+    "message": "Ajouter un compte"
+  },
   "addingCustomNetwork": {
     "message": "Ajout de réseau"
   },
@@ -328,9 +318,6 @@
   },
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
-  },
-  "additionalRpcUrl": {
-    "message": "URL supplémentaire de RPC"
   },
   "address": {
     "message": "Adresse"
@@ -513,12 +500,6 @@
   "allow": {
     "message": "Autoriser"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Autorisez MetaMask à détecter et à afficher vos NFT grâce à la détection automatique des NFT. Vous pourrez ainsi :"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Autorisez MetaMask à détecter et à afficher vos jetons grâce à la détection automatique des jetons. Vous pourrez ainsi :"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Cela permettra à MMI de se connecter à $1 pour importer vos comptes."
   },
@@ -549,9 +530,6 @@
   "andForTwoItems": {
     "message": "$1 et $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "Annonces"
   },
   "appDescription": {
     "message": "Extension Ethereum pour navigateur",
@@ -672,9 +650,6 @@
   "back": {
     "message": "Retour"
   },
-  "backup": {
-    "message": "Sauvegarder"
-  },
   "backupApprovalInfo": {
     "message": "Ce code secret est requis pour récupérer votre portefeuille si jamais vous perdez votre appareil, oubliez votre mot de passe, devez réinstaller MetaMask ou souhaitez accéder à votre portefeuille depuis un autre appareil."
   },
@@ -686,12 +661,6 @@
   },
   "backupNow": {
     "message": "Sauvegarder maintenant"
-  },
-  "backupUserData": {
-    "message": "Sauvegardez vos données"
-  },
-  "backupUserDataDescription": {
-    "message": "Vous pouvez sauvegarder des paramètres tels que vos contacts et vos préférences."
   },
   "balance": {
     "message": "Solde"
@@ -1003,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "J’ai pris connaissance de l’alerte, mais je souhaite quand même continuer"
   },
-  "confirmAlertModalDetails": {
-    "message": "Si vous vous connectez, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs. Veuillez examiner les alertes avant de continuer."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Vous risquez de perdre tout ou partie de vos actifs"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Nous vous redirigerons vers $1 une fois que vous cliquerez sur « Continuer »."
   },
@@ -1017,9 +980,6 @@
   },
   "confirmConnectionTitle": {
     "message": "Confirmer la connexion à $1"
-  },
-  "confirmDeletion": {
-    "message": "Confirmer la suppression"
   },
   "confirmFieldPaymaster": {
     "message": "Frais payés par"
@@ -1033,22 +993,13 @@
   "confirmRecoveryPhrase": {
     "message": "Confirmer la phrase secrète de récupération"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "Voulez-vous vraiment supprimer l’URL du RPC ? Vos informations ne seront pas sauvegardées pour ce réseau."
-  },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Ne confirmez cette transaction que si vous comprenez parfaitement son contenu et si vous faites confiance au site demandeur."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Ce site demande que vous lui accordiez l'autorisation de dépenser vos jetons."
   },
   "confirmTitleDescSIWESignature": {
     "message": "Un site vous demande de vous connecter pour prouver que vous êtes le titulaire de ce compte."
   },
-  "confirmTitleDescSignature": {
-    "message": "Ne confirmez ce message que si vous approuvez son contenu et faites confiance au site demandeur."
-  },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Demande de plafonnement des dépenses"
   },
   "confirmTitleSIWESignature": {
@@ -1389,9 +1340,6 @@
   "custom": {
     "message": "Paramètres avancés"
   },
-  "customContentSearch": {
-    "message": "Chercher un réseau ajouté précédemment"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Utilisez $1 pour personnaliser le prix du carburant. Cela peut porter à confusion si vous n’en avez pas l’habitude. Agissez avec prudence !",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1452,9 +1400,6 @@
   "data": {
     "message": "Données"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Impossible de restaurer vos données. Le fichier semble corrompu."
-  },
   "dataCollectionForMarketing": {
     "message": "Collecte de données à des fins de marketing"
   },
@@ -1514,18 +1459,12 @@
   "deleteContact": {
     "message": "Supprimer le contact"
   },
-  "deleteNetwork": {
-    "message": "Supprimer le réseau ?"
-  },
   "deleteNetworkIntro": {
     "message": "Si vous supprimez ce réseau, vous devrez l’ajouter à nouveau pour voir vos actifs sur ce réseau"
   },
   "deleteNetworkTitle": {
     "message": "Supprimer le réseau $1 ?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "Supprimer l’URL du RPC"
   },
   "deposit": {
     "message": "Effectuez un dépôt"
@@ -1554,27 +1493,6 @@
   },
   "developerOptions": {
     "message": "Options pour les développeurs"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Active ou désactive la fonction de restructuration des confirmations actuellement en phase de développement"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Restructuration des confirmations"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Permet de changer le design du menu « Réseaux »"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Refonte du menu « Réseaux »"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Règle la valeur de « isShown boolean » sur faux (false) pour toutes les annonces. Les annonces sont les notifications affichées dans la fenêtre contextuelle « Nouveautés »."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Réinitialise divers états liés au processus d’intégration et redirige vers la page d’accueil « Sécuriser votre portefeuille »."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Les résultats d’un horodatage sont continuellement sauvegardés dans « session.storage »"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "« $1 » est désactivé parce qu’il ne correspond pas au minimum d’augmentation de 10 % par rapport aux gas fees initiaux.",
@@ -1636,20 +1554,11 @@
   "displayNftMediaDescription": {
     "message": "L’affichage des médias et des données NFT expose votre adresse IP à OpenSea ou à d’autres fournisseurs de services tiers. Cela permet à des hackers d’associer votre adresse IP à votre adresse Ethereum. La détection automatique des NFT dépend de ce paramètre et ne sera pas disponible lorsque celui-ci est désactivé."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Commencer à utiliser vos NFT"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Commencez à utiliser vos jetons"
-  },
   "doNotShare": {
     "message": "Ne partagez ceci avec personne"
   },
   "domain": {
     "message": "Domaine"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "Le réseau ne prend pas en charge la recherche de noms de domaine"
   },
   "done": {
     "message": "Terminé"
@@ -1773,9 +1682,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Modifier les gas fees d’accélération"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Gérez facilement à vos actifs numériques"
-  },
   "enable": {
     "message": "Activer"
   },
@@ -1785,21 +1691,12 @@
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
   },
-  "enableNftAutoDetection": {
-    "message": "Activer la détection automatique des NFT"
-  },
   "enableSnap": {
     "message": "Activer"
   },
   "enableToken": {
     "message": "activer $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Activer la détection automatique des jetons"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Cette option sera automatiquement activée dans l’extension Metamask v12.3.0 si l’option « Fonctionnalité de base » est déjà activée"
   },
   "enabled": {
     "message": "Activé"
@@ -1835,12 +1732,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Afficher les domaines ENS dans la barre d’adresse"
-  },
-  "ensIllegalCharacter": {
-    "message": "Caractère invalide pour l’ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Erreur dans l’enregistrement du nom ENS"
   },
   "ensUnknownError": {
     "message": "La recherche d’ENS a échoué."
@@ -1936,8 +1827,8 @@
   "existingChainId": {
     "message": "Les informations que vous avez saisies sont associées à un ID de chaîne existant."
   },
-  "existingRpcUrl": {
-    "message": "Cette URL est associée à un autre ID de chaîne."
+  "existingRequestsBannerAlertDesc": {
+    "message": "Pour afficher et confirmer votre demande la plus récente, vous devez d’abord approuver ou rejeter les demandes existantes."
   },
   "expandView": {
     "message": "Agrandir la vue"
@@ -1970,9 +1861,6 @@
   "failedToFetchChainId": {
     "message": "Impossible de récupérer l’ID de la chaîne. Votre URL de RPC est-elle correcte ?"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "Les données de vérification de code mnémonique sont actuellement indisponibles. Assurez-vous que le code que vous avez saisi est correct. Il aura une incidence sur les taux de conversion que vous voyez pour ce réseau"
-  },
   "failureMessage": {
     "message": "Un problème est survenu et nous n’avons pas pu mener à bien l’action"
   },
@@ -1992,9 +1880,6 @@
   "fileImportFail": {
     "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "Trouvez le bon ID de chaîne sur :"
   },
   "flaskWelcomeUninstall": {
     "message": "vous devriez désinstaller cette extension",
@@ -2313,12 +2198,6 @@
   "imToken": {
     "message": "imToken"
   },
-  "immediateAccessToYourNFTs": {
-    "message": "Accéder immédiatement à vos NFT"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Accès immédiat à vos jetons"
-  },
   "import": {
     "message": "Importer",
     "description": "Button to import an account from a selected file"
@@ -2488,14 +2367,8 @@
   "invalidAddressRecipient": {
     "message": "L’adresse du destinataire n’est pas valide"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Pas de réseau ETH, régler en minuscules"
-  },
   "invalidAssetType": {
     "message": "Cet actif est un NFT et doit être ajouté de nouveau à la page Importer des NFT qui se trouve sous l’onglet NFT"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "L’URL de l’explorateur de blocs est invalide"
   },
   "invalidChainIdTooBig": {
     "message": "ID de chaîne invalide. L’ID de la chaîne est trop grand."
@@ -2968,6 +2841,10 @@
     "message": "Choisissez un pseudonyme…",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 vous demande votre approbation pour :",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Voulez-vous que ce site fasse ce qui suit ?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -2981,10 +2858,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "L’ID ou le nom de la chaîne associée à ce réseau n’est pas correct. De nombreux jetons populaires utilisent le nom $1, ce qui en fait une cible pour les escrocs. Vérifiez tout avant de continuer, car vous risquez de vous faire arnaquer.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Il pourrait s’agir d’une arnaque"
+    "message": "Il pourrait s’agir d’une arnaque",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Vous avez besoin d’aide ? Contactez $1",
@@ -3011,9 +2889,6 @@
   },
   "network": {
     "message": "Réseau :"
-  },
-  "networkAddedSuccessfully": {
-    "message": "Réseau ajouté avec succès !"
   },
   "networkDetails": {
     "message": "Détails du réseau"
@@ -3074,9 +2949,6 @@
   },
   "networkProvider": {
     "message": "Fournisseur de réseau"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "L’ID de la chaîne est utilisé pour la signature des transactions. Il doit correspondre à l’ID de la chaîne renvoyé par le réseau. Vous pouvez saisir un numéro décimal ou hexadécimal avec le préfixe « 0x », mais nous afficherons le numéro en décimal."
   },
   "networkStatus": {
     "message": "Statut du réseau"
@@ -3214,9 +3086,6 @@
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
   },
-  "noAddressForName": {
-    "message": "Aucune adresse n’a été définie pour ce nom."
-  },
   "noConnectedAccountDescription": {
     "message": "Sélectionnez un compte que vous souhaitez utiliser sur ce site pour continuer."
   },
@@ -3282,9 +3151,6 @@
   },
   "notEnoughGas": {
     "message": "Pas assez de gaz"
-  },
-  "notRightNow": {
-    "message": "Pas maintenant"
   },
   "note": {
     "message": "Note"
@@ -3520,9 +3386,6 @@
   "onboardedMetametricsTitle": {
     "message": "Aidez-nous à améliorer votre expérience utilisateur"
   },
-  "onboarding": {
-    "message": "Intégration"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "La passerelle IPFS vous permet d’accéder aux données hébergées par des tiers et de les visualiser. Vous pouvez ajouter une passerelle IPFS personnalisée ou continuer à utiliser la passerelle par défaut."
   },
@@ -3534,9 +3397,6 @@
   },
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "L’URL de la passerelle IPFS est valide"
-  },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "Ajouter un réseau personnalisé"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Nous utilisons Infura comme fournisseur de RPC (Remote Procedure Call) pour vous fournir l’accès le plus fiable et le plus privé possible aux données Ethereum. Vous pouvez choisir votre propre RPC, mais n’oubliez pas que tout RPC a besoin d’accéder à votre adresse IP et à l’adresse de votre portefeuille Ethereum pour valider les transactions. Lisez notre $1 pour en savoir plus sur la façon dont Infura traite les données personnelles."
@@ -3566,9 +3426,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Politique de confidentialité"
   },
-  "onboardingMetametricsModalTitle": {
-    "message": "Ajouter un réseau personnalisé"
-  },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 les clics et les contenus visualisés sur l’application sont enregistrés, mais d’autres renseignements (comme votre adresse publique) ne le sont pas.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
@@ -3589,6 +3446,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Facultatif :"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Découvrez comment nous protégeons votre vie privée lors de la collecte de données d’utilisation pour votre profil."
   },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
@@ -3658,9 +3518,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "Un fournisseur de réseau malveillant peut mentir quant à l’état de la blockchain et enregistrer votre activité réseau. N’ajoutez que des réseaux personnalisés auxquels vous faites confiance."
-  },
   "onlyConnectTrust": {
     "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3684,9 +3541,6 @@
   },
   "optional": {
     "message": "Facultatif"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Facultatif)"
   },
   "options": {
     "message": "Options"
@@ -4039,9 +3893,6 @@
     "message": "+ $1 de plus",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "popularCustomNetworks": {
-    "message": "Réseaux personnalisés populaires"
-  },
   "popularNetworkAddToolTip": {
     "message": "Certains de ces réseaux dépendent de services tiers. Ils peuvent être moins fiables ou permettre à des tiers de suivre l’activité des utilisateurs. $1",
     "description": "$1 is Learn more link"
@@ -4231,15 +4082,6 @@
   "receive": {
     "message": "Recevoir"
   },
-  "receiveTokensCamelCase": {
-    "message": "Recevez des jetons"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Saisissez l’adresse publique (0x) ou le nom de domaine ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Saisissez l’adresse publique (0x) ou le nom de domaine"
-  },
   "recommendedGasLabel": {
     "message": "Recommandé"
   },
@@ -4272,6 +4114,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "Activez cette option pour afficher les demandes de signature dans un format amélioré."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Demandes de transaction améliorées"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Activez cette option pour afficher les demandes de transaction dans un format amélioré."
   },
   "refreshList": {
     "message": "Rafraîchir la liste"
@@ -4388,9 +4236,6 @@
   "reset": {
     "message": "Reinitialiser"
   },
-  "resetStates": {
-    "message": "Réinitialiser les états"
-  },
   "resetWallet": {
     "message": "Réinitialiser le portefeuille"
   },
@@ -4409,17 +4254,8 @@
   "restore": {
     "message": "Restaurer"
   },
-  "restoreFailed": {
-    "message": "Impossible de restaurer vos données à partir du fichier fourni"
-  },
-  "restoreSuccessful": {
-    "message": "Vos données ont été restaurées avec succès"
-  },
   "restoreUserData": {
     "message": "Restaurer les données de l’utilisateur"
-  },
-  "restoreUserDataDescription": {
-    "message": "Vous pouvez restaurer des données telles que des contacts et des préférences à partir d’un fichier de sauvegarde."
   },
   "resultPageError": {
     "message": "Erreur"
@@ -4481,6 +4317,9 @@
   },
   "reviewAlerts": {
     "message": "Examiner les alertes"
+  },
+  "reviewPermissions": {
+    "message": "Revoir les autorisations"
   },
   "revokeAllTokensTitle": {
     "message": "Révoquer l’autorisation d’accès et de transfert de tous vos $1 ?",
@@ -4716,9 +4555,6 @@
   "sepolia": {
     "message": "Réseau de test Sepolia"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Garder le « Service Worker » activé"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask utilise ces services tiers de confiance pour améliorer la convivialité et la sécurité des produits."
   },
@@ -4807,9 +4643,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Ne signez ce message que si vous comprenez parfaitement son contenu et si le site demandeur vous inspire confiance."
-  },
-  "signatureRequestWarning": {
-    "message": "Signer ce message peut être dangereux. Vous risquez de céder le contrôle de tous vos actifs et de votre compte à la personne qui vous a envoyé ce message et si cette personne est malintentionnée, elle pourra vider votre compte à tout moment, alors agissez avec prudence. $1."
   },
   "signed": {
     "message": "Signé"
@@ -5285,9 +5118,6 @@
   "stateLogsDescription": {
     "message": "Les journaux d’état contiennent les adresses publiques de vos comptes et vos transactions envoyées."
   },
-  "states": {
-    "message": "États"
-  },
   "status": {
     "message": "État"
   },
@@ -5398,9 +5228,6 @@
   },
   "suggestedTokenName": {
     "message": "Nom suggéré :"
-  },
-  "suggestedTokenSymbol": {
-    "message": "Symbole boursier suggéré :"
   },
   "support": {
     "message": "Assistance"
@@ -5890,9 +5717,6 @@
   "termsOfUseTitle": {
     "message": "Nos conditions d’utilisation ont été mises à jour"
   },
-  "testNetworks": {
-    "message": "Réseaux de test"
-  },
   "theme": {
     "message": "Thème"
   },
@@ -5925,45 +5749,6 @@
   "toAddress": {
     "message": "Vers : $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleEthSignBannerDescription": {
-    "message": "Vous êtes vulnérable aux attaques par hameçonnage. Protégez-vous en désactivant eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Si vous activez ce paramètre, vous risquez de recevoir des demandes de signature illisibles. En signant un message que vous ne comprenez pas, vous pourriez accepter de céder vos fonds et vos NFTs."
-  },
-  "toggleEthSignField": {
-    "message": "Requêtes Eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " il se peut qu’il essaie de vous arnaquer"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Si quelqu’un vous a demandé d’activer ce paramètre,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Je sais que je peux perdre tous mes fonds et mes NFT si j’active les demandes eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "L’autorisation des demandes eth_sign peut vous rendre vulnérable aux attaques par hameçonnage. Assurez-vous de l’adresse URL et faites preuve de vigilance avant de signer des messages qui contiennent du code."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Le texte est incorrect"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Tapez « Je ne signe que ce que je comprends » pour continuer"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Je ne signe que ce que je comprends"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Utilisez cette fonctionnalité à vos risques et périls"
-  },
-  "toggleEthSignOff": {
-    "message": "Désactiver (recommandé)"
-  },
-  "toggleEthSignOn": {
-    "message": "Activer (recommandé)"
   },
   "toggleRequestQueueDescription": {
     "message": "Cette fonction vous permet de sélectionner un réseau pour chaque site au lieu d’un seul réseau pour tous les sites. Vous n’aurez donc pas à changer manuellement de réseau, ce qui pourrait nuire à l’expérience utilisateur sur certains sites."
@@ -6243,9 +6028,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "Selon nos informations, cette URL ne correspond pas à celle d’un fournisseur connu pour cet ID de chaîne."
-  },
   "unapproved": {
     "message": "Non autorisé"
   },
@@ -6314,9 +6096,6 @@
   },
   "urlErrorMsg": {
     "message": "Les URLs requièrent un préfixe HTTP/HTTPS approprié."
-  },
-  "urlExistsErrorMsg": {
-    "message": "Cette URL est actuellement utilisée par le réseau $1."
   },
   "use4ByteResolution": {
     "message": "Décoder les contrats intelligents"
@@ -6527,9 +6306,6 @@
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
   },
-  "wrongChainId": {
-    "message": "Cet ID de chaîne ne correspond pas au nom du réseau."
-  },
   "wrongNetworkName": {
     "message": "Selon nos informations, il se peut que le nom du réseau ne corresponde pas exactement à l’ID de chaîne."
   },
@@ -6542,10 +6318,6 @@
   },
   "you": {
     "message": "Vous"
-  },
-  "youHaveAddedAll": {
-    "message": "Vous avez ajouté tous les réseaux populaires. Vous pouvez découvrir d’autres réseaux $1 ou $2",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Vous devez autoriser l’accès à votre appareil pour utiliser cette fonctionnalité."
@@ -6561,9 +6333,6 @@
   },
   "yourBalance": {
     "message": "Votre solde"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Vous risquez de perdre une partie ou la totalité du capital investi"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Il peut y avoir des risques associés à votre NFT"

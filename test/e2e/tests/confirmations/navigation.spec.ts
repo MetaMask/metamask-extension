@@ -1,11 +1,12 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
-  unlockWallet,
   regularDelayMs,
+  unlockWallet,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from './helpers';
@@ -14,6 +15,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   it('initiates and queues multiple signatures and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
@@ -53,6 +55,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   it('initiates and queues a mix of signatures and transactions and navigates', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
@@ -90,6 +93,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   it('initiates multiple signatures and rejects all', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
@@ -151,24 +155,22 @@ async function verifySignedTypeV4Confirmation(driver: Driver) {
 }
 
 async function queueSignatures(driver: Driver) {
+  // There is a race condition which changes the order in which signatures are displayed (#25251)
+  // We fix it deterministically by waiting for an element in the screen for each signature
   await driver.clickElement('#signTypedData');
   await driver.waitUntilXWindowHandles(3);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.findElement({ text: 'Hi, Alice!' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.delay(2000); // Delay needed due to a race condition
-  // To be fixed in https://github.com/MetaMask/metamask-extension/issues/25251
-
   await driver.clickElement('#signTypedDataV3');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000);
+  await driver.findElement({ text: 'Reject all' });
 
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
   await driver.clickElement('#signTypedDataV4');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000);
 }
 
 async function queueSignaturesAndTransactions(driver: Driver) {

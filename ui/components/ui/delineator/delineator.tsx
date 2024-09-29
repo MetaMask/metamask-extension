@@ -38,7 +38,7 @@ const ExpandableIcon = ({ isExpanded }: { isExpanded: boolean }) => {
     <Icon
       name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
       size={IconSize.Sm}
-      color={IconColor.iconMuted}
+      color={IconColor.primaryDefault}
     />
   );
 };
@@ -49,14 +49,16 @@ const Header = ({
   isCollapsible,
   isExpanded,
   isLoading,
+  isDisabled,
   onHeaderClick,
   type,
 }: {
   headerComponent: DelineatorProps['headerComponent'];
-  iconName: IconName;
+  iconName?: IconName;
   isCollapsible: boolean;
   isExpanded: boolean;
   isLoading: boolean;
+  isDisabled: boolean;
   onHeaderClick: () => void;
   type?: DelineatorType;
 }) => {
@@ -67,18 +69,19 @@ const Header = ({
         delineator__header: true,
         'delineator__header--expanded': isExpanded,
         'delineator__header--loading': isLoading,
+        'delineator__header--disabled': isDisabled,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       paddingTop={2}
       paddingRight={4}
-      paddingBottom={2}
+      paddingBottom={isExpanded ? 0 : 2}
       paddingLeft={4}
       onClick={onHeaderClick}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center}>
-        <AvatarIcon iconName={iconName} {...iconProps} />
+        {iconName && <AvatarIcon iconName={iconName} {...iconProps} />}
         {overrideTextComponentColorByType({
           component: headerComponent,
           type,
@@ -89,7 +92,13 @@ const Header = ({
     </Box>
   );
 };
-const Content = ({ children }: { children: React.ReactNode }) => {
+const Content = ({
+  children,
+  contentBoxProps,
+}: {
+  children: React.ReactNode;
+  contentBoxProps: DelineatorProps['contentBoxProps'];
+}) => {
   return (
     <Box
       paddingTop={2}
@@ -97,6 +106,7 @@ const Content = ({ children }: { children: React.ReactNode }) => {
       paddingBottom={4}
       paddingLeft={4}
       flexDirection={FlexDirection.Column}
+      {...contentBoxProps}
     >
       {children}
     </Box>
@@ -131,21 +141,23 @@ export const Delineator: React.FC<DelineatorProps> = ({
   isCollapsible = true,
   isExpanded: isExpandedProp,
   isLoading = false,
+  isDisabled = false,
   onExpandChange,
   type,
   wrapperBoxProps,
+  contentBoxProps,
 }) => {
   const [isExpanded, setIsExpanded] = useState(isExpandedProp || false);
   const shouldShowContent = !isCollapsible || (isCollapsible && isExpanded);
 
   const handleHeaderClick = useCallback(() => {
-    if (isLoading || !isCollapsible) {
+    if (isDisabled || isLoading || !isCollapsible) {
       return;
     }
     const newExpandedState = !isExpanded;
     onExpandChange?.(newExpandedState);
     setIsExpanded(newExpandedState);
-  }, [isLoading, isCollapsible, isExpanded, onExpandChange]);
+  }, [isLoading, isCollapsible, isExpanded, isDisabled, onExpandChange]);
 
   return (
     <Container wrapperBoxProps={wrapperBoxProps}>
@@ -155,10 +167,13 @@ export const Delineator: React.FC<DelineatorProps> = ({
         isCollapsible={isCollapsible}
         isExpanded={isExpanded}
         isLoading={isLoading}
+        isDisabled={isDisabled}
         onHeaderClick={handleHeaderClick}
         type={type}
       />
-      {shouldShowContent && !isLoading && <Content>{children}</Content>}
+      {shouldShowContent && !isLoading && (
+        <Content contentBoxProps={contentBoxProps}>{children}</Content>
+      )}
     </Container>
   );
 };

@@ -27,20 +27,24 @@ export type NameProps = {
   /** Whether this is being rendered inside the NameDetails modal. */
   internal?: boolean;
 
-  /** The type of value, e.g. NameType.ETHEREUM_ADDRESS */
-  type: NameType;
-
-  /** The raw value to display the name of. */
-  value: string;
-
   /**
    * Applies to recognized contracts with no petname saved:
    * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
    */
   preferContractSymbol?: boolean;
+
+  /** The type of value, e.g. NameType.ETHEREUM_ADDRESS */
+  type: NameType;
+
+  /** The raw value to display the name of. */
+  value: string;
 };
 
 function formatValue(value: string, type: NameType): string {
+  if (!value.length) {
+    return value;
+  }
+
   switch (type) {
     case NameType.ETHEREUM_ADDRESS:
       return shortenAddress(toChecksumAddress(value));
@@ -61,7 +65,7 @@ const Name = memo(
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
-    const { name, hasPetname } = useDisplayName(
+    const { name, hasPetname, image } = useDisplayName(
       value,
       type,
       preferContractSymbol,
@@ -108,7 +112,7 @@ const Name = memo(
           onClick={handleClick}
         >
           {hasDisplayName ? (
-            <Identicon address={value} diameter={16} />
+            <Identicon address={value} diameter={16} image={image} />
           ) : (
             <Icon
               name={IconName.Question}

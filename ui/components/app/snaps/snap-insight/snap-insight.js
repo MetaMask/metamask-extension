@@ -21,12 +21,12 @@ import { Copyable } from '../copyable';
 import { getSnapMetadata } from '../../../../selectors';
 import { trackInsightSnapUsage } from '../../../../store/actions';
 
-export const SnapInsight = ({ snapId, data, loading }) => {
+export const SnapInsight = ({ snapId, data }) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const isLoading = loading;
+  const isLoading = data?.loading;
   const error = data?.error;
-  const interfaceId = data?.response?.id;
+  const interfaceId = data?.interfaceId;
 
   useEffect(() => {
     const trackInsightUsage = async () => {
@@ -88,7 +88,7 @@ export const SnapInsight = ({ snapId, data, loading }) => {
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               {t('snapsUIError', [<b key="0">{snapName}</b>])}
             </Text>
-            <Copyable text={error.message} />
+            <Copyable text={error} />
           </SnapDelineator>
         </Box>
       )}

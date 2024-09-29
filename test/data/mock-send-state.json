@@ -12,6 +12,7 @@
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
+    "showPermittedNetworkToastOpen": false,
     "gasIsLoading": false,
     "isLoading": false,
     "importTokensModalOpen": false,
@@ -64,9 +65,6 @@
   "metamask": {
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
-    "disabledRpcMethodPreferences": {
-      "eth_sign": false
-    },
     "usePhishDetect": true,
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
@@ -147,16 +145,23 @@
       "0x539": true
     },
     "showTestnetMessageInDropdown": true,
-    "networkConfigurations": {},
     "alertEnabledness": {
       "unconnectedAccount": true
     },
     "featureFlags": {},
     "network": "5",
-    "providerConfig": {
-      "type": "rpc",
-      "chainId": "0x5",
-      "ticker": "ETH"
+
+    "networkConfigurationsByChainId": {
+      "0x5": {
+        "nativeCurrency": "ETH",
+        "chainId": "0x5",
+        "defaultRpcEndpointIndex": 0,
+        "rpcEndpoints": [
+          {
+            "networkClientId": "goerli"
+          }
+        ]
+      }
     },
     "internalAccounts": {
       "accounts": {
@@ -173,7 +178,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -195,7 +199,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -217,7 +220,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -239,7 +241,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -393,8 +394,6 @@
         }
       }
     },
-    "unapprovedMsgs": {},
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
     "unapprovedDecryptMsgs": {},

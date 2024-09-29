@@ -9,7 +9,6 @@ export default function createMetamaskMiddleware({
   version,
   getAccounts,
   processTransaction,
-  processEthSignMessage,
   processTypedMessage,
   processTypedMessageV3,
   processTypedMessageV4,
@@ -27,7 +26,6 @@ export default function createMetamaskMiddleware({
     createWalletMiddleware({
       getAccounts,
       processTransaction,
-      processEthSignMessage,
       processTypedMessage,
       processTypedMessageV3,
       processTypedMessageV4,

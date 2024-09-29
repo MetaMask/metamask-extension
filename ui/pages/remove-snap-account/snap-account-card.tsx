@@ -8,6 +8,7 @@ import { BlockSize, BorderRadius } from '../../helpers/constants/design-system';
 import { Box } from '../../components/component-library';
 import { AccountListItem } from '../../components/multichain';
 import { mergeAccounts } from '../../components/multichain/account-list-menu/account-list-menu';
+import { MergedInternalAccount } from '../../selectors/selectors.types';
 
 // Wrapper component of AccountListItem with proper styling and auto populating information for the selected account
 export const SnapAccountCard = ({
@@ -24,7 +25,7 @@ export const SnapAccountCard = ({
   const account = mergedAccounts.find(
     (internalAccount: { address: string }) =>
       internalAccount.address === address,
-  );
+  ) as MergedInternalAccount;
 
   return (
     <Box
@@ -37,7 +38,7 @@ export const SnapAccountCard = ({
         boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
       }}
     >
-      <AccountListItem account={account} selected={remove} />
+      <AccountListItem account={account} selected={remove || false} />
     </Box>
   );
 };

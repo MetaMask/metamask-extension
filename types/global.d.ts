@@ -1,6 +1,10 @@
+// Many of the state hooks return untyped raw state.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // In order for variables to be considered on the global scope they must be
 // declared using var and not const or let, which is why this rule is disabled
 /* eslint-disable no-var */
+
 import * as Sentry from '@sentry/browser';
 import {
   Success,
@@ -17,6 +21,7 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from 'shared/constants/offscreen-communication';
+import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 
 declare class Platform {
   openTab: (opts: { url: string }) => void;
@@ -224,11 +229,30 @@ declare class Chrome {
   runtime: Runtime;
 }
 
-type SentryObject = Sentry;
+type SentryObject = Sentry & {
+  getMetaMetricsEnabled: () => Promise<boolean>;
+};
 
 type HttpProvider = {
   host: string;
   timeout: number;
+};
+
+type StateHooks = {
+  getCleanAppState?: () => Promise<any>;
+  getLogs?: () => any[];
+  getMostRecentPersistedState?: () => any;
+  getPersistedState: () => Promise<any>;
+  getSentryAppState?: () => any;
+  getSentryState: () => {
+    browser: string;
+    version: string;
+    state?: any;
+    persistedState?: any;
+  };
+  metamaskGetState?: () => Promise<any>;
+  throwTestBackgroundError?: (msg?: string) => Promise<void>;
+  throwTestError?: (msg?: string) => void;
 };
 
 export declare global {
@@ -239,6 +263,8 @@ export declare global {
   var chrome: Chrome;
 
   var ethereumProvider: HttpProvider;
+
+  var stateHooks: StateHooks;
 
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
@@ -253,4 +279,6 @@ export declare global {
    * Unions T with U; U's properties will override T's properties
    */
   type OverridingUnion<T, U> = Omit<T, keyof U> & U;
+
+  function setPreference(key: keyof Preferences, value: boolean);
 }

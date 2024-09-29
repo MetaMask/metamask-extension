@@ -1,4 +1,4 @@
-import { DialogType } from '@metamask/snaps-sdk';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -34,7 +34,6 @@ export const MESSAGE_TYPE = {
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
   ETH_SEND_TRANSACTION: 'eth_sendTransaction',
   ETH_SEND_RAW_TRANSACTION: 'eth_sendRawTransaction',
-  ETH_SIGN: 'eth_sign',
   ETH_SIGN_TRANSACTION: 'eth_signTransaction',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
   ETH_SIGN_TYPED_DATA_V1: 'eth_signTypedData_v1',
@@ -49,9 +48,10 @@ export const MESSAGE_TYPE = {
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
-  SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
-  SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
-  SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
+  SNAP_DIALOG_ALERT: DIALOG_APPROVAL_TYPES.alert,
+  SNAP_DIALOG_CONFIRMATION: DIALOG_APPROVAL_TYPES.confirmation,
+  SNAP_DIALOG_PROMPT: DIALOG_APPROVAL_TYPES.prompt,
+  SNAP_DIALOG_DEFAULT: DIALOG_APPROVAL_TYPES.default,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
   MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',
@@ -65,11 +65,7 @@ export const MESSAGE_TYPE = {
   ///: END:ONLY_INCLUDE_IF
 } as const;
 
-export const SNAP_DIALOG_TYPES = {
-  [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
-  [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
-  [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
-};
+export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
@@ -128,3 +124,11 @@ export const FIREFOX_BUILD_IDS = [
 ] as const;
 
 export const UNKNOWN_TICKER_SYMBOL = 'UNKNOWN';
+
+export const TRACE_ENABLED_SIGN_METHODS = [
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+  MESSAGE_TYPE.PERSONAL_SIGN,
+];

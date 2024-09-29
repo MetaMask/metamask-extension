@@ -6,53 +6,31 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-0"
+      style="margin-top: 0px; overflow-y: auto;"
     >
       <div
         class="mm-box create-snap-account-page mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
       >
         <div
-          class="mm-box snaps-authorship-header mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-alternative"
-          style="box-shadow: var(--shadow-size-md) var(--color-shadow-default);"
+          class="mm-box snaps-authorship-header mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+          style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); min-height: 64px; z-index: 1;"
         >
           <div
-            class="mm-box mm-box--margin-right-4 mm-box--margin-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            class="mm-box mm-box--margin-right-4 mm-box--margin-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
             style="overflow: hidden;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+                style="border-width: 0px;"
               >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
-                  style="border-width: 0px;"
-                >
-                  ?
-                </div>
-                <div
-                  class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
-                >
-                  <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-alternative mm-box--border-width-2 box--border-style-solid"
-                  >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
-                      style="mask-image: url('./images/icons/snaps.svg');"
-                    />
-                  </div>
-                </div>
+                ?
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default"
-              />
-            </div>
-            <div
-              class="mm-box mm-box--padding-top-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
               />
             </div>
           </div>

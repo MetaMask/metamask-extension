@@ -293,17 +293,17 @@ exports[`Connections Content should render correctly 1`] = `
                     <div
                       class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                       data-testid="first-currency-display"
-                      title="$880.18 USD"
+                      title="966.988 ETH"
                     >
                       <span
                         class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                       >
-                        $880.18
+                        966.988
                       </span>
                       <span
                         class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                       >
-                        USD
+                        ETH
                       </span>
                     </div>
                   </div>

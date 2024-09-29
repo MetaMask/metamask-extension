@@ -18,10 +18,7 @@ import {
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  getAssetImageURL,
-  shortenAddress,
-} from '../../../../../helpers/utils/util';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
@@ -72,7 +69,10 @@ import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/swaps';
 import { getConversionRate } from '../../../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -110,9 +110,10 @@ export default function NftDetails({ nft }: { nft: Nft }) {
 
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
-  const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
-  const isImageHosted = image?.startsWith('https:');
+  const isImageHosted =
+    image?.startsWith('https:') || image?.startsWith('http:');
+  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
@@ -165,6 +166,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   };
 
   const { chainId } = currentChain;
+
   useEffect(() => {
     trackEvent({
       event: MetaMetricsEventName.NftDetailsOpened,
@@ -345,7 +347,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
               alt={image ? nftImageAlt : ''}
               name={name}
               tokenId={tokenId}
-              networkName={currentChain.nickname}
+              networkName={currentChain.nickname ?? ''}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
               isIpfsURL={isIpfsURL}
               onClick={handleImageClick}

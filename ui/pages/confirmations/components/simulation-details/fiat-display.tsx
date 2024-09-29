@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   TextAlign,
   TextColor,
@@ -7,8 +8,9 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text } from '../../../../components/component-library';
 import { SizeNumber } from '../../../../components/component-library/box/box.types';
+import Tooltip from '../../../../components/ui/tooltip';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
-import { useHideFiatForTestnet } from '../../../../hooks/useHideFiatForTestnet';
+import { getShouldShowFiat } from '../../../../selectors';
 import { FIAT_UNAVAILABLE, FiatAmount } from './types';
 
 const textStyle = {
@@ -40,10 +42,10 @@ export const IndividualFiatDisplay: React.FC<{
   fiatAmount: FiatAmount;
   shorten?: boolean;
 }> = ({ fiatAmount, shorten = false }) => {
-  const hideFiatForTestnet = useHideFiatForTestnet();
+  const shouldShowFiat = useSelector(getShouldShowFiat);
   const fiatFormatter = useFiatFormatter();
 
-  if (hideFiatForTestnet) {
+  if (!shouldShowFiat) {
     return null;
   }
 
@@ -51,8 +53,19 @@ export const IndividualFiatDisplay: React.FC<{
     return <FiatNotAvailableDisplay />;
   }
   const absFiat = Math.abs(fiatAmount);
+  const fiatDisplayValue = fiatFormatter(absFiat, { shorten });
 
-  return <Text {...textStyle}>{fiatFormatter(absFiat, { shorten })}</Text>;
+  return shorten ? (
+    <Tooltip position="bottom" title={fiatDisplayValue} interactive>
+      <Text {...textStyle} data-testid="individual-fiat-display">
+        {fiatDisplayValue}
+      </Text>
+    </Tooltip>
+  ) : (
+    <Text {...textStyle} data-testid="individual-fiat-display">
+      {fiatDisplayValue}
+    </Text>
+  );
 };
 
 /**
@@ -64,12 +77,12 @@ export const IndividualFiatDisplay: React.FC<{
 export const TotalFiatDisplay: React.FC<{
   fiatAmounts: FiatAmount[];
 }> = ({ fiatAmounts }) => {
-  const hideFiatForTestnet = useHideFiatForTestnet();
+  const shouldShowFiat = useSelector(getShouldShowFiat);
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
   const totalFiat = calculateTotalFiat(fiatAmounts);
 
-  if (hideFiatForTestnet) {
+  if (!shouldShowFiat) {
     return null;
   }
 

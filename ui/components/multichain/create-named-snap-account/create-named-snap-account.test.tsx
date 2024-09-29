@@ -3,19 +3,15 @@ import React from 'react';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
-import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import {
   CreateNamedSnapAccount,
   CreateNamedSnapAccountProps,
 } from './create-named-snap-account';
 
-const mockAddress = '0x3f9658179a5c053bb2faaf7badbb95f6c9be0fa7';
-const mockAccount = createMockInternalAccount({
-  address: mockAddress,
-  name: 'New account',
-});
 const mockSnapSuggestedAccountName = 'Suggested Account Name';
 
 jest.mock('../../../store/actions', () => ({
@@ -61,9 +57,9 @@ const mockSnapAccount2 = {
 const render = (
   props: CreateNamedSnapAccountProps = {
     onActionComplete: jest.fn().mockResolvedValue({ success: true }),
-    address: mockAccount.address,
     snapSuggestedAccountName: mockSnapSuggestedAccountName,
   },
+  overrideAccountNames?: { [accountId: string]: string },
 ) => {
   const store = configureStore({
     ...mockState,
@@ -74,8 +70,24 @@ const render = (
         ...mockState.metamask.internalAccounts,
         accounts: {
           ...mockState.metamask.internalAccounts.accounts,
-          [mockSnapAccount1.id]: mockSnapAccount1,
-          [mockSnapAccount2.id]: mockSnapAccount2,
+          [mockSnapAccount1.id]: {
+            ...mockSnapAccount1,
+            metadata: {
+              ...mockSnapAccount1.metadata,
+              name:
+                overrideAccountNames?.[mockSnapAccount1.id] ||
+                mockSnapAccount1.metadata.name,
+            },
+          },
+          [mockSnapAccount2.id]: {
+            ...mockSnapAccount2,
+            metadata: {
+              ...mockSnapAccount2.metadata,
+              name:
+                overrideAccountNames?.[mockSnapAccount2.id] ||
+                mockSnapAccount2.metadata.name,
+            },
+          },
         },
         options: {},
         methods: ETH_EOA_METHODS,
@@ -105,7 +117,6 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
-      address: mockAccount.address,
       snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 
@@ -150,7 +161,6 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
-      address: mockAccount.address,
     });
 
     fireEvent.click(getByText(messages.addAccount.message));
@@ -166,11 +176,34 @@ describe('CreateNamedSnapAccount', () => {
     });
   });
 
+  it('increases suffix on snap account names when suggested name is already taken', async () => {
+    const onActionComplete = jest.fn();
+    const { getByText, getByPlaceholderText } = render(
+      {
+        onActionComplete,
+        snapSuggestedAccountName: mockSnapSuggestedAccountName,
+      },
+      { [mockSnapAccount1.id]: mockSnapSuggestedAccountName },
+    );
+
+    await waitFor(() =>
+      getByPlaceholderText(`${mockSnapSuggestedAccountName} 2`),
+    );
+    fireEvent.click(getByText(messages.addAccount.message));
+
+    await waitFor(() => {
+      expect(onActionComplete).toHaveBeenCalledTimes(1);
+      expect(onActionComplete).toHaveBeenCalledWith({
+        success: true,
+        name: `${mockSnapSuggestedAccountName} 2`,
+      });
+    });
+  });
+
   it('fires onActionComplete with false when clicking Cancel', async () => {
     const onActionComplete = jest.fn();
     const { getByText } = render({
       onActionComplete,
-      address: mockAccount.address,
       snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 

@@ -40,6 +40,7 @@ const SRP_REMINDER = '/onboarding/remind-srp';
 ///: END:ONLY_INCLUDE_IF
 const SEND_ROUTE = '/send';
 const CONNECTIONS = '/connections';
+const REVIEW_PERMISSIONS = '/review-permissions';
 const PERMISSIONS = '/permissions';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
@@ -54,6 +55,7 @@ const NOTIFICATIONS_ROUTE = '/notifications';
 const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
+const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 const SWAPS_ROUTE = '/swaps';
 const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
 const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
@@ -138,8 +140,8 @@ const PATH_NAME_MAP = {
   [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   [NOTIFICATIONS_ROUTE]: 'Notifications Page',
-  [`${NOTIFICATIONS_ROUTE}/:uuid`]: 'Notification Detail Page',
   [NOTIFICATIONS_SETTINGS_ROUTE]: 'Notifications Settings Page',
+  [`${NOTIFICATIONS_ROUTE}/:uuid`]: 'Notification Detail Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAPS_CONNECT_ROUTE}`]: 'Snaps Connect Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_INSTALL_ROUTE}`]: 'Snap Install Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_UPDATE_ROUTE}`]: 'Snap Update Page',
@@ -221,6 +223,7 @@ export {
   SEND_ROUTE,
   CONNECTIONS,
   PERMISSIONS,
+  REVIEW_PERMISSIONS,
   TOKEN_DETAILS,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_SEND_ETHER_PATH,
@@ -268,6 +271,7 @@ export {
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,

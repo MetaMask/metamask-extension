@@ -1,6 +1,7 @@
 const {
   METAMASK_STALELIST_URL,
   METAMASK_HOTLIST_DIFF_URL,
+  C2_DOMAIN_BLOCKLIST_URL,
   ListNames,
   BlockProvider,
 } = require('./helpers');
@@ -8,6 +9,11 @@ const {
 // last updated must not be 0
 const lastUpdated = 1;
 const defaultHotlist = { data: [] };
+const defaultC2DomainBlocklist = {
+  recentlyAdded: [],
+  recentlyRemoved: [],
+  lastFetchedAt: '2024-08-27T15:30:45Z',
+};
 const defaultStalelist = {
   version: 2,
   tolerance: 2,
@@ -16,11 +22,8 @@ const defaultStalelist = {
     fuzzylist: [],
     allowlist: [],
     blocklist: [],
+    c2DomainBlocklist: [],
     name: ListNames.MetaMask,
-  },
-  phishfort_hotlist: {
-    blocklist: [],
-    name: ListNames.Phishfort,
   },
 };
 
@@ -39,12 +42,13 @@ const emptyHtmlPage = (blockProvider) => `<!DOCTYPE html>
  * Setup fetch mocks for the phishing detection feature.
  *
  * The mock configuration will show that "127.0.0.1" is blocked. The dynamic lookup on the warning
- * page can be customized, so that we can test both the MetaMask and PhishFort block cases.
+ * page can be customized, so that we can test the MetaMask block cases.
  *
  * @param {import('mockttp').Mockttp} mockServer - The mock server.
  * @param {object} mockPhishingConfigResponseConfig - The response for the dynamic phishing
  * @param {number} mockPhishingConfigResponseConfig.statusCode - The status code for the response.
  * @param {string[]} mockPhishingConfigResponseConfig.blocklist - The blocklist for the response.
+ * @param {string[]} mockPhishingConfigResponseConfig.c2DomainBlocklist - The c2DomainBlocklist for the response.
  * @param {BlockProvider} mockPhishingConfigResponseConfig.blockProvider - The name of the provider who blocked the page.
  * configuration lookup performed by the warning page.
  */
@@ -53,6 +57,9 @@ async function setupPhishingDetectionMocks(
   {
     statusCode = 200,
     blocklist = ['127.0.0.1'],
+    c2DomainBlocklist = [
+      'a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947',
+    ],
     blockProvider = BlockProvider.MetaMask,
   },
 ) {
@@ -69,6 +76,7 @@ async function setupPhishingDetectionMocks(
               [blockProviderConfig]: {
                 ...defaultStalelist[blockProviderConfig],
                 blocklist,
+                c2DomainBlocklist,
               },
             },
           },
@@ -88,16 +96,17 @@ async function setupPhishingDetectionMocks(
     });
 
   await mockServer
-    .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
+    .forGet(C2_DOMAIN_BLOCKLIST_URL)
+    .withQuery({ timestamp: '2024-08-27T15:30:45Z' })
     .thenCallback(() => {
       return {
         statusCode: 200,
-        body: emptyHtmlPage(blockProvider),
+        json: defaultC2DomainBlocklist,
       };
     });
 
   await mockServer
-    .forGet('https://github.com/phishfort/phishfort-lists/issues/new')
+    .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -155,14 +164,10 @@ async function mockEmptyStalelistAndHotlist(mockServer) {
  * @returns {string} The name of the phishing config in the response.
  */
 function resolveProviderConfigName(providerName) {
-  switch (providerName.toLowerCase()) {
-    case BlockProvider.MetaMask:
-      return 'eth_phishing_detect_config';
-    case BlockProvider.PhishFort:
-      return 'phishfort_hotlist';
-    default:
-      throw new Error('Provider name must either be metamask or phishfort');
+  if (providerName.toLowerCase() === BlockProvider.MetaMask) {
+    return 'eth_phishing_detect_config';
   }
+  throw new Error(`Unknown provider: ${providerName}`);
 }
 
 module.exports = {

@@ -10,6 +10,8 @@ import {
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
@@ -65,14 +67,12 @@ export async function showAccountCreationDialog(
  * Show the account name suggestion confirmation dialog for a given Snap.
  *
  * @param snapId - Snap ID to show the account name suggestion dialog for.
- * @param address - The address of the new account.
  * @param controllerMessenger - The controller messenger instance.
  * @param accountNameSuggestion - Suggested name for the new account.
  * @returns The user's confirmation result.
  */
 export async function showAccountNameSuggestionDialog(
   snapId: string,
-  address: string,
   controllerMessenger: SnapKeyringBuilderMessenger,
   accountNameSuggestion: string,
 ): Promise<{ success: boolean; name?: string }> {
@@ -83,7 +83,6 @@ export async function showAccountNameSuggestionDialog(
         origin: snapId,
         type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
         requestData: {
-          address,
           snapSuggestedAccountName: accountNameSuggestion,
         },
       },
@@ -227,7 +226,6 @@ export const snapKeyringBuilder = (
           const accountNameConfirmationResult =
             await showAccountNameSuggestionDialog(
               snapId,
-              address,
               controllerMessenger,
               accountNameSuggestion,
             );

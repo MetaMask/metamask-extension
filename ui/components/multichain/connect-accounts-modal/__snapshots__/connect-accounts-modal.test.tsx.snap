@@ -354,17 +354,17 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                       <div
                         class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         data-testid="first-currency-display"
-                        title="$0.00 USD"
+                        title="0 ETH"
                       >
                         <span
                           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                         >
-                          $0.00
+                          0
                         </span>
                         <span
                           class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                         >
-                          USD
+                          ETH
                         </span>
                       </div>
                     </div>
@@ -422,6 +422,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
               data-testid="connect-more-accounts-button"
+              data-theme="light"
               disabled=""
             >
               Confirm

@@ -3,6 +3,7 @@
  */
 import { EthAccountType } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/stub/networks';
 import Backup from './backup';
 
 function getMockPreferencesController() {
@@ -61,11 +62,11 @@ function getMockAddressBookController() {
 
 function getMockNetworkController() {
   const state = {
-    networkConfigurations: {},
+    networkConfigurationsByChainId: {},
   };
 
-  const loadBackup = ({ networkConfigurations }) => {
-    Object.assign(state, { networkConfigurations });
+  const loadBackup = ({ networkConfigurationsByChainId }) => {
+    Object.assign(state, { networkConfigurationsByChainId });
   };
 
   return { state, loadBackup };
@@ -105,15 +106,17 @@ const jsonData = JSON.stringify({
     },
   },
   network: {
-    networkConfigurations: {
-      'network-configuration-id-1': {
+    ...mockNetworkState(
+      {
+        id: 'network-configuration-id-1',
         chainId: '0x539',
         nickname: 'Localhost 8545',
         rpcPrefs: {},
         rpcUrl: 'http://localhost:8545',
         ticker: 'ETH',
       },
-      'network-configuration-id-2': {
+      {
+        id: 'network-configuration-id-2',
         chainId: '0x38',
         nickname: 'Binance Smart Chain Mainnet',
         rpcPrefs: {
@@ -122,7 +125,8 @@ const jsonData = JSON.stringify({
         rpcUrl: 'https://bsc-dataseed1.binance.org',
         ticker: 'BNB',
       },
-      'network-configuration-id-3': {
+      {
+        id: 'network-configuration-id-3',
         chainId: '0x61',
         nickname: 'Binance Smart Chain Testnet',
         rpcPrefs: {
@@ -131,7 +135,8 @@ const jsonData = JSON.stringify({
         rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545',
         ticker: 'tBNB',
       },
-      'network-configuration-id-4': {
+      {
+        id: 'network-configuration-id-4',
         chainId: '0x89',
         nickname: 'Polygon Mainnet',
         rpcPrefs: {
@@ -140,7 +145,7 @@ const jsonData = JSON.stringify({
         rpcUrl: 'https://polygon-rpc.com',
         ticker: 'MATIC',
       },
-    },
+    ),
   },
   preferences: {
     useBlockie: false,
@@ -164,7 +169,7 @@ const jsonData = JSON.stringify({
       showTestNetworks: true,
       smartTransactionsOptInStatus: false,
       useNativeCurrencyAsPrimaryCurrency: true,
-      showTokenAutodetectModal: false,
+      showMultiRpcModal: false,
     },
     ipfsGateway: 'dweb.link',
     ledgerTransportType: 'webhid',
@@ -217,25 +222,21 @@ describe('Backup', function () {
       await backup.restoreUserData(jsonData);
       // check networks backup
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-1'
-        ].chainId,
-      ).toStrictEqual('0x539');
+        backup.networkController.state.networkConfigurationsByChainId['0x539']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-1');
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-2'
-        ].chainId,
-      ).toStrictEqual('0x38');
+        backup.networkController.state.networkConfigurationsByChainId['0x38']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-2');
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-3'
-        ].chainId,
-      ).toStrictEqual('0x61');
+        backup.networkController.state.networkConfigurationsByChainId['0x61']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-3');
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-4'
-        ].chainId,
-      ).toStrictEqual('0x89');
+        backup.networkController.state.networkConfigurationsByChainId['0x89']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-4');
       // make sure identities are not lost after restore
       expect(
         backup.preferencesController.store.identities[
@@ -299,7 +300,6 @@ describe('Backup', function () {
         },
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',

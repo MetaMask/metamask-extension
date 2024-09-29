@@ -236,6 +236,190 @@ exports[`NameDetails renders proposed names 1`] = `
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              data-theme="light"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/save.svg');"
+              />
+              Save
+            </button>
+            <div
+              class="mm-box mm-container mm-container--max-width-sm mm-box--margin-right-auto mm-box--margin-left-auto mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            />
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</body>
+`;
+
+exports[`NameDetails renders when no address value is passed 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div>
+    <div
+      class="mm-box"
+    />
+  </div>
+  <div
+    class="mm-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <div
+              class="mm-box mm-box--width-full"
+            >
+              <h4
+                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+              >
+                Unknown address
+              </h4>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </header>
+          <div
+            class="mm-box mm-modal-body name-details__modal-body mm-box--padding-right-4 mm-box--padding-left-4"
+          >
+            <div
+              style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
+            >
+              <div>
+                <div
+                  class="name name__missing"
+                >
+                  <span
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                  <p
+                    class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                  />
+                </div>
+              </div>
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-4 mm-box--justify-content-space-between mm-box--color-text-default"
+            >
+              If you know this address, give it a nickname to recognize it in the future.
+            </p>
+            <div
+              class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
+            >
+              <label
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                for="address"
+              >
+                Address
+              </label>
+              <div
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+              >
+                <input
+                  autocomplete="off"
+                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                  disabled=""
+                  focused="false"
+                  id="address"
+                  type="text"
+                  value=""
+                />
+                <button
+                  aria-label="Copy address to clipboard"
+                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/copy.svg');"
+                  />
+                </button>
+              </div>
+            </div>
+            <label
+              class="mm-box mm-text mm-label name-details__display-name mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--color-text-default"
+            >
+              Nickname
+              <div
+                class="form-combo-field"
+              >
+                <div>
+                  <div
+                    class="box mm-form-text-field form-combo-field__value box--display-flex box--flex-direction-column"
+                  >
+                    <div
+                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                    >
+                      <input
+                        autocomplete="off"
+                        class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                        focused="true"
+                        placeholder="Choose a nickname..."
+                        type="text"
+                        value=""
+                      />
+                      <button
+                        aria-label="Clear"
+                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                      >
+                        <span
+                          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                          style="mask-image: url('./images/icons/close.svg');"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div
+            class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+          >
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              data-theme="light"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -420,6 +604,7 @@ exports[`NameDetails renders with no saved name 1`] = `
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              data-theme="light"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -609,6 +794,7 @@ exports[`NameDetails renders with recognized name 1`] = `
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              data-theme="light"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -833,6 +1019,7 @@ exports[`NameDetails renders with saved name 1`] = `
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              data-theme="light"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"

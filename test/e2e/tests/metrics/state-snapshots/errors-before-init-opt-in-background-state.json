@@ -2,10 +2,10 @@
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
     "UserStorageController": { "isProfileSyncingEnabled": true },
-    "MetamaskNotificationsController": {
+    "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
-      "isMetamaskNotificationsEnabled": "boolean",
+      "isNotificationServicesEnabled": "boolean",
       "isMetamaskNotificationsFeatureSeen": "boolean",
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
@@ -74,20 +74,16 @@
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": null,
+      "metaMetricsDataDeletionTimestamp": 0
+    },
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
       },
-      "providerConfig": {
-        "chainId": "0x539",
-        "nickname": "Localhost 8545",
-        "rpcPrefs": "object",
-        "rpcUrl": "string",
-        "ticker": "ETH",
-        "type": "rpc",
-        "id": "networkConfigurationId"
-      },
+      "providerConfig": "object",
       "networkConfigurations": "object"
     },
     "OnboardingController": {
@@ -118,9 +114,9 @@
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
-        "showTokenAutodetectModal": "boolean",
         "showConfirmationAdvancedDetails": false,
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+        "showMultiRpcModal": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -140,6 +136,23 @@
         "fees": {},
         "liveness": true,
         "smartTransactions": "object"
+      }
+    },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          },
+          "destNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          }
+        }
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

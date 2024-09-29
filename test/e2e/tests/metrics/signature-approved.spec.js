@@ -3,7 +3,6 @@ const {
   defaultGanacheOptions,
   switchToNotificationWindow,
   withFixtures,
-  regularDelayMs,
   openDapp,
   unlockWallet,
   getEventPayloads,
@@ -96,6 +95,7 @@ describe('Signature Approved Event @no-mmi', function () {
           chain_id: '0x539',
           eip712_primary_type: 'Mail',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
         });
       },
@@ -144,6 +144,7 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
         });
       },
@@ -191,6 +192,7 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
         });
       },
@@ -238,62 +240,7 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          security_alert_response: 'NotApplicable',
-        });
-      },
-    );
-  });
-  it('Successfully tracked for eth_sign', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            disabledRpcMethodPreferences: {
-              eth_sign: true,
-            },
-          })
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
-          })
-          .build(),
-        defaultGanacheOptions,
-        title: this.test.fullTitle(),
-        testSpecificMock: mockSegment,
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
-        await openDapp(driver);
-
-        // creates a sign typed data signature request
-        await driver.clickElement('#ethSign');
-        await switchToNotificationWindow(driver);
-        await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
-        await driver.clickElement(
-          '[data-testid="signature-warning-sign-button"]',
-        );
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.deepStrictEqual(events[0].properties, {
-          account_type: 'MetaMask',
-          signature_type: 'eth_sign',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
           security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
-        });
-        assert.deepStrictEqual(events[1].properties, {
-          account_type: 'MetaMask',
-          signature_type: 'eth_sign',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
           security_alert_response: 'NotApplicable',
         });
       },

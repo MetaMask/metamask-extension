@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
-import { IS_FLASK, isValidDomainName } from '../../../../helpers/utils/util';
+import { isValidDomainName } from '../../../../helpers/utils/util';
 import DomainInput from '../../../confirmations/send/send-content/add-recipient/domain-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
@@ -11,7 +11,7 @@ import {
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send/send.constants';
-import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components/domain-input-resolution-cell';
+import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
@@ -68,8 +68,10 @@ export default class AddContact extends PureComponent {
       isValidHexAddress(input, { mixedCaseUseChecksum: true });
     const validEnsAddress = isValidDomainName(input);
 
-    if (!IS_FLASK && !validEnsAddress && !valid) {
+    if (!validEnsAddress && !valid) {
       this.setState({ error: INVALID_RECIPIENT_ADDRESS_ERROR });
+    } else {
+      this.setState({ error: null });
     }
   };
 
@@ -104,6 +106,10 @@ export default class AddContact extends PureComponent {
       this.props;
 
     const errorToRender = domainError || this.state.error;
+    const newAddress = this.state.selectedAddress || this.state.input;
+    const validAddress =
+      !isBurnAddress(newAddress) &&
+      isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
@@ -143,14 +149,11 @@ export default class AddContact extends PureComponent {
                 return (
                   <DomainInputResolutionCell
                     key={`${resolvedAddress}${resolvingSnap}${protocol}`}
-                    domainType={
-                      protocol === 'Ethereum Name Service' ? 'ENS' : 'Other'
-                    }
                     address={resolvedAddress}
                     domainName={addressBookEntryName ?? domainName}
                     onClick={() => {
                       this.setState({
-                        selectedAddress: resolvedAddress,
+                        input: resolvedAddress,
                         newName: this.state.newName || domainName,
                       });
                       this.props.resetDomainResolution();
@@ -171,15 +174,10 @@ export default class AddContact extends PureComponent {
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           disabled={Boolean(
-            this.state.error ||
-              !this.state.selectedAddress ||
-              !this.state.newName.trim(),
+            this.state.error || !validAddress || !this.state.newName.trim(),
           )}
           onSubmit={async () => {
-            await addToAddressBook(
-              this.state.selectedAddress,
-              this.state.newName,
-            );
+            await addToAddressBook(newAddress, this.state.newName);
             history.push(CONTACT_LIST_ROUTE);
           }}
           onCancel={() => {

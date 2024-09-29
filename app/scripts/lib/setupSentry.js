@@ -1,16 +1,21 @@
-import * as Sentry from '@sentry/browser';
 import { createModuleLogger, createProjectLogger } from '@metamask/utils';
+import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
-import { AllProperties } from '../../../shared/modules/object.utils';
+import browser from 'webextension-polyfill';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
+import { getManifestFlags } from './manifestFlags';
 import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
+let installType = 'unknown';
 
-const log = createModuleLogger(
+export const log = createModuleLogger(
   projectLogger,
   globalThis.document ? 'ui' : 'background',
 );
+
+const internalLog = createModuleLogger(log, 'internal');
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
@@ -23,430 +28,15 @@ const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
 
+// This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
+const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
+
 export const ERROR_URL_ALLOWLIST = {
   CRYPTOCOMPARE: 'cryptocompare.com',
   COINGECKO: 'coingecko.com',
   ETHERSCAN: 'etherscan.io',
   CODEFI: 'codefi.network',
   SEGMENT: 'segment.io',
-};
-
-export const MMI_SENTRY_BACKGROUND_STATE = {
-  MMIController: {
-    opts: true,
-  },
-  CustodyController: {
-    store: true,
-  },
-  MmiConfigurationController: {
-    store: true,
-    configurationClient: true,
-  },
-};
-
-// This describes the subset of background controller state attached to errors
-// sent to Sentry These properties have some potential to be useful for
-// debugging, and they do not contain any identifiable information.
-export const SENTRY_BACKGROUND_STATE = {
-  AccountsController: {
-    internalAccounts: {
-      accounts: false,
-      selectedAccount: false,
-    },
-  },
-  AccountTracker: {
-    accounts: false,
-    accountsByChainId: false,
-    currentBlockGasLimit: true,
-    currentBlockGasLimitByChainId: true,
-  },
-  AddressBookController: {
-    addressBook: false,
-  },
-  AlertController: {
-    alertEnabledness: true,
-    unconnectedAccountAlertShownOrigins: false,
-    web3ShimUsageOrigins: false,
-  },
-  AnnouncementController: {
-    announcements: false,
-  },
-  AuthenticationController: {
-    isSignedIn: false,
-  },
-  NetworkOrderController: {
-    orderedNetworkList: [],
-  },
-  AccountOrderController: {
-    pinnedAccountList: [],
-    hiddenAccountList: [],
-  },
-  AppMetadataController: {
-    currentAppVersion: true,
-    currentMigrationVersion: true,
-    previousAppVersion: true,
-    previousMigrationVersion: true,
-    showTokenAutodetectModalOnUpgrade: false,
-  },
-  ApprovalController: {
-    approvalFlows: false,
-    pendingApprovals: false,
-    pendingApprovalCount: false,
-  },
-  AppStateController: {
-    browserEnvironment: true,
-    connectedStatusPopoverHasBeenShown: true,
-    currentPopupId: false,
-    onboardingDate: false,
-    currentExtensionPopupId: false,
-    defaultHomeActiveTabName: true,
-    fullScreenGasPollTokens: true,
-    hadAdvancedGasFeesSetPriorToMigration92_3: true,
-    nftsDetectionNoticeDismissed: true,
-    nftsDropdownState: true,
-    notificationGasPollTokens: true,
-    outdatedBrowserWarningLastShown: true,
-    popupGasPollTokens: true,
-    qrHardware: true,
-    recoveryPhraseReminderHasBeenShown: true,
-    recoveryPhraseReminderLastShown: true,
-    showBetaHeader: true,
-    showPermissionsTour: true,
-    showNetworkBanner: true,
-    showAccountBanner: true,
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
-    showTestnetMessageInDropdown: true,
-    surveyLinkLastClickedOrClosed: true,
-    snapsInstallPrivacyWarningShown: true,
-    termsOfUseLastAgreed: true,
-    timeoutMinutes: true,
-    trezorModel: true,
-    usedNetworks: true,
-  },
-  MultichainBalancesController: {
-    balances: false,
-  },
-  BridgeController: {
-    bridgeState: {
-      bridgeFeatureFlags: {
-        extensionSupport: false,
-      },
-    },
-  },
-  CronjobController: {
-    jobs: false,
-  },
-  CurrencyController: {
-    currentCurrency: true,
-    currencyRates: true,
-  },
-  DecryptMessageController: {
-    unapprovedDecryptMsgs: false,
-    unapprovedDecryptMsgCount: true,
-  },
-  EncryptionPublicKeyController: {
-    unapprovedEncryptionPublicKeyMsgs: false,
-    unapprovedEncryptionPublicKeyMsgCount: true,
-  },
-  EnsController: {
-    ensResolutionsByAddress: false,
-    ensEntries: false,
-  },
-  GasFeeController: {
-    estimatedGasFeeTimeBounds: true,
-    gasEstimateType: true,
-    gasFeeEstimates: true,
-    gasFeeEstimatesByChainId: true,
-    nonRPCGasFeeApisDisabled: false,
-  },
-  KeyringController: {
-    isUnlocked: true,
-    keyrings: false,
-  },
-  LoggingController: {
-    logs: false,
-  },
-  MetamaskNotificationsController: {
-    subscriptionAccountsSeen: false,
-    isMetamaskNotificationsFeatureSeen: false,
-    isMetamaskNotificationsEnabled: false,
-    isFeatureAnnouncementsEnabled: false,
-    metamaskNotificationsList: false,
-    metamaskNotificationsReadList: false,
-    isCheckingAccountsPresence: false,
-    isFetchingMetamaskNotifications: false,
-    isUpdatingMetamaskNotifications: false,
-    isUpdatingMetamaskNotificationsAccount: false,
-  },
-  MetaMetricsController: {
-    eventsBeforeMetricsOptIn: false,
-    fragments: false,
-    metaMetricsId: true,
-    participateInMetaMetrics: true,
-    previousUserTraits: false,
-    segmentApiCalls: false,
-    traits: false,
-    dataCollectionForMarketing: false,
-  },
-  NameController: {
-    names: false,
-    nameSources: false,
-    useExternalNameSources: false,
-  },
-  NetworkController: {
-    networkConfigurations: false,
-    networksMetadata: true,
-    providerConfig: {
-      chainId: true,
-      id: true,
-      nickname: true,
-      rpcPrefs: false,
-      rpcUrl: false,
-      ticker: true,
-      type: true,
-    },
-    selectedNetworkClientId: false,
-  },
-  NftController: {
-    allNftContracts: false,
-    allNfts: false,
-    ignoredNfts: false,
-  },
-  NotificationController: {
-    notifications: false,
-  },
-  OnboardingController: {
-    completedOnboarding: true,
-    firstTimeFlowType: true,
-    onboardingTabs: false,
-    seedPhraseBackedUp: true,
-  },
-  PPOMController: {
-    securityAlertsEnabled: false,
-    storageMetadata: [],
-    versionInfo: [],
-  },
-  PermissionController: {
-    subjects: false,
-  },
-  PermissionLogController: {
-    permissionActivityLog: false,
-    permissionHistory: false,
-  },
-  PhishingController: {},
-  PreferencesController: {
-    advancedGasFee: true,
-    currentLocale: true,
-    disabledRpcMethodPreferences: true,
-    dismissSeedBackUpReminder: true,
-    featureFlags: true,
-    forgottenPassword: true,
-    identities: false,
-    incomingTransactionsPreferences: true,
-    isIpfsGatewayEnabled: false,
-    ipfsGateway: false,
-    knownMethodData: false,
-    ledgerTransportType: true,
-    lostIdentities: false,
-    openSeaEnabled: true,
-    preferences: {
-      autoLockTimeLimit: true,
-      hideZeroBalanceTokens: true,
-      redesignedConfirmationsEnabled: true,
-      redesignedTransactionsEnabled: false,
-      isRedesignedConfirmationsDeveloperEnabled: false,
-      showExtensionInFullSizeView: true,
-      showFiatInTestnets: true,
-      showTestNetworks: true,
-      smartTransactionsOptInStatus: true,
-      useNativeCurrencyAsPrimaryCurrency: true,
-      petnamesEnabled: true,
-      showTokenAutodetectModal: false,
-      showConfirmationAdvancedDetails: true,
-    },
-    useExternalServices: false,
-    selectedAddress: false,
-    snapRegistryList: false,
-    theme: true,
-    signatureSecurityAlertResponses: false,
-    use4ByteResolution: true,
-    useAddressBarEnsResolution: true,
-    useBlockie: true,
-    useCurrencyRateCheck: true,
-    useMultiAccountBalanceChecker: true,
-    useNftDetection: true,
-    useNonceField: true,
-    usePhishDetect: true,
-    useTokenDetection: true,
-    useRequestQueue: true,
-    useTransactionSimulations: true,
-    enableMV3TimestampSave: true,
-  },
-  PushPlatformNotificationsController: {
-    fcmToken: false,
-  },
-  MultichainRatesController: {
-    fiatCurrency: true,
-    rates: true,
-    cryptocurrencies: true,
-  },
-  QueuedRequestController: {
-    queuedRequestCount: true,
-  },
-  SelectedNetworkController: { domains: false },
-  SignatureController: {
-    unapprovedMsgCount: true,
-    unapprovedMsgs: false,
-    unapprovedPersonalMsgCount: true,
-    unapprovedPersonalMsgs: false,
-    unapprovedTypedMessages: false,
-    unapprovedTypedMessagesCount: true,
-  },
-  SmartTransactionsController: {
-    smartTransactionsState: {
-      fees: {
-        approvalTxFees: true,
-        tradeTxFees: true,
-      },
-      liveness: true,
-      smartTransactions: false,
-      userOptIn: true,
-      userOptInV2: true,
-    },
-  },
-  SnapController: {
-    unencryptedSnapStates: false,
-    snapStates: false,
-    snaps: false,
-  },
-  SnapInterface: {
-    interfaces: false,
-  },
-  SnapsRegistry: {
-    database: false,
-    lastUpdated: false,
-    databaseUnavailable: false,
-  },
-  SubjectMetadataController: {
-    subjectMetadata: false,
-  },
-  SwapsController: {
-    swapsState: {
-      approveTxId: false,
-      customApproveTxData: false,
-      customGasPrice: true,
-      customMaxFeePerGas: true,
-      customMaxGas: true,
-      customMaxPriorityFeePerGas: true,
-      errorKey: true,
-      fetchParams: true,
-      quotes: false,
-      quotesLastFetched: true,
-      quotesPollingLimitEnabled: true,
-      routeState: true,
-      saveFetchedQuotes: true,
-      selectedAggId: true,
-      swapsFeatureFlags: true,
-      swapsFeatureIsLive: true,
-      swapsQuotePrefetchingRefreshTime: true,
-      swapsQuoteRefreshTime: true,
-      swapsStxBatchStatusRefreshTime: true,
-      swapsStxGetTransactionsRefreshTime: true,
-      swapsStxMaxFeeMultiplier: true,
-      swapsUserFeeLevel: true,
-      tokens: false,
-      topAggId: false,
-      tradeTxId: false,
-    },
-  },
-  TokenDetectionController: {
-    [AllProperties]: false,
-  },
-  TokenListController: {
-    preventPollingOnNetworkRestart: true,
-    tokenList: false,
-    tokensChainsCache: {
-      [AllProperties]: false,
-    },
-  },
-  TokenRatesController: {
-    marketData: false,
-  },
-  TokensController: {
-    allDetectedTokens: {
-      [AllProperties]: false,
-    },
-    allIgnoredTokens: {
-      [AllProperties]: false,
-    },
-    allTokens: {
-      [AllProperties]: false,
-    },
-    detectedTokens: false,
-    ignoredTokens: false,
-    tokens: false,
-  },
-  TransactionController: {
-    transactions: false,
-    lastFetchedBlockNumbers: false,
-    methodData: false,
-  },
-  TxController: {
-    transactions: false,
-  },
-  UserOperationController: {
-    userOperations: false,
-  },
-  UserStorageController: {
-    isProfileSyncingEnabled: true,
-    isProfileSyncingUpdateLoading: false,
-  },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ...MMI_SENTRY_BACKGROUND_STATE,
-  ///: END:ONLY_INCLUDE_IF
-};
-
-const flattenedBackgroundStateMask = Object.values(
-  SENTRY_BACKGROUND_STATE,
-).reduce((partialBackgroundState, controllerState) => {
-  return {
-    ...partialBackgroundState,
-    ...controllerState,
-  };
-}, {});
-
-// This describes the subset of Redux state attached to errors sent to Sentry
-// These properties have some potential to be useful for debugging, and they do
-// not contain any identifiable information.
-export const SENTRY_UI_STATE = {
-  gas: true,
-  history: true,
-  metamask: {
-    ...flattenedBackgroundStateMask,
-    // This property comes from the background but isn't in controller state
-    isInitialized: true,
-    // These properties are in the `metamask` slice but not in the background state
-    customNonceValue: true,
-    isAccountMenuOpen: true,
-    isNetworkMenuOpen: true,
-    nextNonce: true,
-    pendingTokens: false,
-    welcomeScreenSeen: true,
-    confirmationExchangeRates: true,
-    useSafeChainsListValidation: true,
-    bitcoinSupportEnabled: false,
-    bitcoinTestnetSupportEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    addSnapAccountEnabled: false,
-    snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
-    newPrivacyPolicyToastClickedOrClosed: false,
-    newPrivacyPolicyToastShownDate: false,
-  },
-  unconnectedAccount: true,
 };
 
 export default function setupSentry() {
@@ -461,11 +51,24 @@ export default function setupSentry() {
 
   log('Initializing');
 
+  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
+  // If it's not, we still get the extensionId, but the installType will default to "unknown"
+  browser.management
+    .getSelf()
+    .then((extensionInfo) => {
+      if (extensionInfo.installType) {
+        installType = extensionInfo.installType;
+      }
+    })
+    .catch((error) => {
+      log('Error getting extension installType', error);
+    });
   integrateLogging();
   setSentryClient();
 
   return {
     ...Sentry,
+    getMetaMetricsEnabled,
   };
 }
 
@@ -477,11 +80,13 @@ function getClientOptions() {
     beforeBreadcrumb: beforeBreadcrumb(),
     beforeSend: (report) => rewriteReport(report),
     debug: METAMASK_DEBUG,
+    dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
+      Sentry.browserTracingIntegration(),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
@@ -492,8 +97,61 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
+    tracesSampleRate: getTracesSampleRate(sentryTarget),
     transport: makeTransport,
   };
+}
+
+/**
+ * Compute the tracesSampleRate depending on testing condition.
+ *
+ * @param {string} sentryTarget
+ * @returns tracesSampleRate to setup Sentry
+ */
+function getTracesSampleRate(sentryTarget) {
+  if (sentryTarget === SENTRY_DSN_FAKE) {
+    return 1.0;
+  }
+
+  const flags = getManifestFlags();
+
+  // Grab the tracesSampleRate that may have come in from a git message
+  // 0 is a valid value, so must explicitly check for undefined
+  if (flags.sentry?.tracesSampleRate !== undefined) {
+    return flags.sentry.tracesSampleRate;
+  }
+
+  if (flags.circleci) {
+    // Report very frequently on develop branch, and never on other branches
+    // (Unless you do a [flags.sentry.tracesSampleRate: x.xx] override)
+    if (flags.circleci.branch === 'develop') {
+      return 0.03;
+    }
+    return 0;
+  }
+
+  if (METAMASK_DEBUG) {
+    return 1.0;
+  }
+
+  return 0.01;
+}
+
+/**
+ * Get CircleCI tags passed from the test environment, through manifest.json,
+ * and give them to the Sentry client.
+ */
+function setCircleCiTags() {
+  const { circleci } = getManifestFlags();
+
+  if (circleci?.enabled) {
+    Sentry.setTag('circleci.enabled', circleci.enabled);
+    Sentry.setTag('circleci.branch', circleci.branch);
+    Sentry.setTag('circleci.buildNum', circleci.buildNum);
+    Sentry.setTag('circleci.job', circleci.job);
+    Sentry.setTag('circleci.nodeIndex', circleci.nodeIndex);
+    Sentry.setTag('circleci.prNumber', circleci.prNumber);
+  }
 }
 
 /**
@@ -579,6 +237,13 @@ function getSentryEnvironment() {
 }
 
 function getSentryTarget() {
+  if (
+    getManifestFlags().sentry?.doNotForceSentryForThisTest ||
+    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+  ) {
+    return SENTRY_DSN_FAKE;
+  }
+
   if (METAMASK_ENVIRONMENT !== 'production') {
     return SENTRY_DSN_DEV;
   }
@@ -603,7 +268,12 @@ function getSentryTarget() {
  * @returns `true` if MetaMetrics is enabled, `false` otherwise.
  */
 async function getMetaMetricsEnabled() {
-  if (METAMASK_BUILD_TYPE === 'mmi') {
+  const flags = getManifestFlags();
+
+  if (
+    METAMASK_BUILD_TYPE === 'mmi' ||
+    (flags.circleci && !flags.sentry?.doNotForceSentryForThisTest)
+  ) {
     return true;
   }
 
@@ -642,13 +312,22 @@ function setSentryClient() {
    */
   globalThis.nw = {};
 
+  /**
+   * Sentry checks session tracking support by looking for global history object and functions inside it.
+   * Scuttling sets this property to undefined which breaks Sentry logic and crashes background.
+   */
+  globalThis.history ??= {};
+
   log('Updating client', {
     environment,
     dsn,
     release,
   });
 
+  Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
+
+  setCircleCiTags();
 
   addDebugListeners();
 
@@ -746,6 +425,10 @@ export function rewriteReport(report) {
     }
 
     report.extra.appState = appState;
+    if (browser.runtime && browser.runtime.id) {
+      report.extra.extensionId = browser.runtime.id;
+    }
+    report.extra.installType = installType;
   } catch (err) {
     log('Error rewriting report', err);
   }
@@ -872,7 +555,7 @@ function integrateLogging() {
   for (const loggerType of ['log', 'error']) {
     logger[loggerType] = (...args) => {
       const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
-      log(message, ...args.slice(1));
+      internalLog(message, ...args.slice(1));
     };
   }
 
@@ -887,18 +570,14 @@ function addDebugListeners() {
   const client = Sentry.getClient();
 
   client?.on('beforeEnvelope', (event) => {
-    const type = event?.[1]?.[0]?.[0]?.type;
-    const data = event?.[1]?.[0]?.[1] ?? {};
-
-    if (type !== 'session' || data.status !== 'exited') {
-      return;
+    if (isCompletedSessionEnvelope(event)) {
+      log('Completed session', event);
     }
-
-    log('Completed session', data);
   });
 
   client?.on('afterSendEvent', (event) => {
-    log('Event', event);
+    const type = getEventType(event);
+    log(type, event);
   });
 
   log('Added debug listeners');
@@ -914,4 +593,23 @@ function makeTransport(options) {
 
     return await fetch(...args);
   });
+}
+
+function isCompletedSessionEnvelope(envelope) {
+  const type = envelope?.[1]?.[0]?.[0]?.type;
+  const data = envelope?.[1]?.[0]?.[1] ?? {};
+
+  return type === 'session' && data.status === 'exited';
+}
+
+function getEventType(event) {
+  if (event.type === 'transaction') {
+    return 'Trace';
+  }
+
+  if (event.level === 'error') {
+    return 'Error';
+  }
+
+  return 'Event';
 }

@@ -2,11 +2,11 @@ import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 import classnames from 'classnames';
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
 import { ButtonLinkProps, Text } from '../../../component-library';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   FontWeight,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUIButtonProps = {
   name?: string;
@@ -48,8 +48,8 @@ export const SnapUIButton: FunctionComponent<
 
   return (
     <Text
-      className={classnames(className, 'snap-ui-button', {
-        'snap-ui-button--disabled': disabled,
+      className={classnames(className, 'snap-ui-renderer__button', {
+        'snap-ui-renderer__button--disabled': disabled,
       })}
       as="button"
       id={name}

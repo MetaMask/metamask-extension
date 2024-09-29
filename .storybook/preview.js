@@ -18,8 +18,8 @@ import { createBrowserHistory } from 'history';
 import { setBackgroundConnection } from '../ui/store/background-connection';
 import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
-import { useDarkMode } from 'storybook-dark-mode';
 import { themes } from '@storybook/theming';
+import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
 
 // eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
@@ -35,7 +35,13 @@ export const parameters = {
   },
   docs: {
     container: (context) => {
-      const isDark = useDarkMode();
+      const theme = context?.globals?.theme || 'both';
+      const systemPrefersDark = window.matchMedia(
+        '(prefers-color-scheme: dark)',
+      ).matches;
+
+      const isDark =
+        theme === 'dark' || (theme === 'both' && systemPrefersDark);
 
       const props = {
         ...context,
@@ -81,6 +87,19 @@ export const globalTypes = {
       }),
     },
   },
+  theme: {
+    name: 'Color Theme',
+    description: 'The color theme for the component',
+    defaultValue: 'both',
+    toolbar: {
+      items: [
+        { value: 'light', title: 'Light', icon: 'sun' },
+        { value: 'dark', title: 'Dark', icon: 'moon' },
+        { value: 'both', title: 'Light/Dark', icon: 'paintbrush' },
+      ],
+      dynamicTitle: true,
+    },
+  },
 };
 
 export const getNewState = (state, props) => {
@@ -103,7 +122,13 @@ const proxiedBackground = new Proxy(
 setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
-  const isDark = useDarkMode();
+  const { theme } = context.globals;
+  const systemPrefersDark = window.matchMedia(
+    '(prefers-color-scheme: dark)',
+  ).matches;
+
+  const isDark = theme === 'dark' || (theme === 'both' && systemPrefersDark);
+
   const currentLocale = context.globals.locale;
   const current = allLocales[currentLocale];
 
@@ -124,17 +149,76 @@ const metamaskDecorator = (story, context) => {
     <Provider store={store}>
       <Router history={history}>
         <MetaMetricsProviderStorybook>
-          <I18nProvider
-            currentLocale={currentLocale}
-            current={current}
-            en={allLocales.en}
+          <AlertMetricsProvider
+            metrics={{
+              trackAlertActionClicked: () => undefined,
+              trackAlertRender: () => undefined,
+              trackInlineAlertClicked: () => undefined,
+            }}
           >
-            <LegacyI18nProvider>{story()}</LegacyI18nProvider>
-          </I18nProvider>
+            <I18nProvider
+              currentLocale={currentLocale}
+              current={current}
+              en={allLocales.en}
+            >
+              <LegacyI18nProvider>{story()}</LegacyI18nProvider>
+            </I18nProvider>
+          </AlertMetricsProvider>
         </MetaMetricsProviderStorybook>
       </Router>
     </Provider>
   );
 };
 
-export const decorators = [metamaskDecorator];
+// Add the withColorScheme decorator
+const withColorScheme = (Story, context) => {
+  const { theme } = context.globals;
+  const systemPrefersDark = window.matchMedia(
+    '(prefers-color-scheme: dark)',
+  ).matches;
+
+  const isDark = theme === 'dark' || (theme === 'both' && systemPrefersDark);
+
+  function Wrapper(props) {
+    return (
+      <div
+        {...props}
+        style={{
+          display: 'flex',
+          padding: '1rem',
+          backgroundColor: 'var(--color-background-default)',
+          color: 'var(--color-text-default)',
+        }}
+      />
+    );
+  }
+
+  if (theme === 'light') {
+    return (
+      <Wrapper data-theme="light">
+        <Story />
+      </Wrapper>
+    );
+  }
+
+  if (theme === 'dark') {
+    return (
+      <Wrapper data-theme="dark">
+        <Story />
+      </Wrapper>
+    );
+  }
+
+  return (
+    <div data-theme={isDark ? 'dark' : 'light'}>
+      <Wrapper data-theme="light">
+        <Story />
+      </Wrapper>
+      <Wrapper data-theme="dark">
+        <Story />
+      </Wrapper>
+    </div>
+  );
+};
+
+export const decorators = [metamaskDecorator, withColorScheme];

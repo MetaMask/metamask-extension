@@ -42,9 +42,6 @@ const customData = {
         custodianName: 'saturn-dev',
       },
     },
-    providerConfig: {
-      type: 'test',
-    },
     isUnlocked: true,
     interactiveReplacementToken: {
       oldRefreshToken: 'abc',

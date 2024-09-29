@@ -16,6 +16,7 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { setManifestFlags } = require('./set-manifest-flags');
 const {
   ERC_4337_ACCOUNT,
   DEFAULT_GANACHE_ETH_BALANCE_DEC,
@@ -39,6 +40,23 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
+/**
+ * @typedef {object} Fixtures
+ * @property {import('./webdriver/driver').Driver} driver - The driver number.
+ * @property {GanacheContractAddressRegistry | undefined} contractRegistry - The contract registry.
+ * @property {Ganache | undefined} ganacheServer - The Ganache server.
+ * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
+ * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
+ * @property {Bundler} bundlerServer - The bundler server.
+ * @property {mockttp.Mockttp} mockServer - The mock server.
+ * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
+ */
+
+/**
+ *
+ * @param {object} options
+ * @param {(fixtures: Fixtures) => Promise<void>} testSuite
+ */
 async function withFixtures(options, testSuite) {
   const {
     dapp,
@@ -59,6 +77,7 @@ async function withFixtures(options, testSuite) {
     useBundler,
     usePaymaster,
     ethConversionInUsd,
+    manifestFlags,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -163,6 +182,8 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
+    setManifestFlags(manifestFlags);
+
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
 
@@ -179,9 +200,9 @@ async function withFixtures(options, testSuite) {
           if (typeof originalProperty === 'function') {
             return (...args) => {
               console.log(
-                `[driver] Called '${prop}' with arguments ${JSON.stringify(
+                `${new Date().toISOString()} [driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
-                ).slice(0, 200)}`, // limit the length of the log entry to 200 characters
+                ).slice(0, 224)}`, // limit the length of the log entry to 224 characters
               );
               return originalProperty.bind(target)(...args);
             };
@@ -207,10 +228,6 @@ async function withFixtures(options, testSuite) {
     if (errorsAndExceptions) {
       throw new Error(errorsAndExceptions);
     }
-
-    // At this point the suite has executed successfully, so we can log out a success message
-    // (Note: a Chrome browser error will unfortunately pop up after this success message)
-    console.log(`\nSuccess on testcase: '${title}'\n`);
 
     // Evaluate whether any new hosts received network requests during E2E test
     // suite execution. If so, fail the test unless the
@@ -250,6 +267,10 @@ async function withFixtures(options, testSuite) {
         );
       }
     }
+
+    // At this point the suite has executed successfully, so we can log out a success message
+    // (Note: a Chrome browser error will unfortunately pop up after this success message)
+    console.log(`\nSuccess on testcase: '${title}'\n`);
   } catch (error) {
     failed = true;
     if (webDriver) {
@@ -721,6 +742,10 @@ const switchToOrOpenDapp = async (
   }
 };
 
+/**
+ *
+ * @param {import('./webdriver/driver').Driver} driver
+ */
 const connectToDapp = async (driver) => {
   await openDapp(driver);
   // Connect to dapp
@@ -729,12 +754,12 @@ const connectToDapp = async (driver) => {
     tag: 'button',
   });
 
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Next',
     tag: 'button',
   });
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'Confirm',
     tag: 'button',
   });
@@ -745,7 +770,7 @@ const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
 const PRIVATE_KEY_TWO =
-  '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
@@ -776,6 +801,12 @@ const multipleGanacheOptions = {
       balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
   ],
+};
+
+const multipleGanacheOptionsForType2Transactions = {
+  ...multipleGanacheOptions,
+  // EVM version that supports type 2 transactions (EIP1559)
+  hardfork: 'london',
 };
 
 const generateGanacheOptions = ({
@@ -887,7 +918,15 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
+/**
+ * Checks the balance for a specific address. If no address is provided, it defaults to the first address.
+ * This function is typically used during onboarding to ensure the state is retrieved correctly from metamaskState,
+ * or after a transaction is made.
+ *
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {string} [address] - The address to check the balance for (optional).
+ */
 const locateAccountBalanceDOM = async (
   driver,
   ganacheServer,
@@ -971,12 +1010,10 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  *
  * @param {object} options - Options for the function.
  * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {string} [options.locatorID] - ID of the signature element (if any).
  * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
 async function clickSignOnSignatureConfirmation({
   driver,
-  locatorID = null,
   snapSigInsights = false,
 }) {
   if (snapSigInsights) {
@@ -986,15 +1023,6 @@ async function clickSignOnSignatureConfirmation({
   }
 
   await driver.clickElement({ text: 'Sign', tag: 'button' });
-
-  // #ethSign has a second Sign confirmation button that says "Your funds may be at risk"
-  if (locatorID === '#ethSign') {
-    await driver.clickElement({
-      text: 'Sign',
-      tag: 'button',
-      css: '[data-testid="signature-warning-sign-button"]',
-    });
-  }
 }
 
 /**
@@ -1033,7 +1061,7 @@ async function switchToNotificationWindow(driver) {
  * @param {WebDriver} driver
  * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints
  * @param {boolean} hasRequest
- * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
+ * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse[]>}
  */
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(
@@ -1241,6 +1269,8 @@ module.exports = {
   connectToDapp,
   multipleGanacheOptions,
   defaultGanacheOptions,
+  defaultGanacheOptionsForType2Transactions,
+  multipleGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   findAnotherAccountFromAccountList,
@@ -1269,7 +1299,6 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  defaultGanacheOptionsForType2Transactions,
   removeSelectedAccount,
   getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,

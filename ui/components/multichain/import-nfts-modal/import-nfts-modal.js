@@ -114,7 +114,7 @@ export const ImportNftsModal = ({ onClose }) => {
       nftAddress,
       null,
       tokenId.toString(),
-    );
+    ).catch(() => ({}));
 
     trackEvent({
       event: MetaMetricsEventName.TokenAdded,

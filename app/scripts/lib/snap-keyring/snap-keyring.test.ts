@@ -50,6 +50,10 @@ const mockInternalAccount = {
       name: mockSnapName,
     },
     name: accountNameSuggestion,
+    keyring: {
+      type: '',
+    },
+    importTime: 0,
   },
 };
 
@@ -171,7 +175,6 @@ describe('Snap Keyring Methods', () => {
 
         await showAccountNameSuggestionDialog(
           mockSnapId,
-          mockAccount.address,
           controllerMessenger,
           accountNameSuggestion,
         );
@@ -182,7 +185,6 @@ describe('Snap Keyring Methods', () => {
             origin: mockSnapId,
             type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
             requestData: {
-              address: mockAccount.address,
               snapSuggestedAccountName: accountNameSuggestion,
             },
           },
@@ -229,7 +231,6 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            address: mockInternalAccount.address.toLowerCase(),
             snapSuggestedAccountName: '',
           },
         },
@@ -294,7 +295,6 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            address: mockInternalAccount.address.toLowerCase(),
             // No user defined name
             snapSuggestedAccountName: '',
           },
@@ -355,7 +355,6 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            address: mockInternalAccount.address.toLowerCase(),
             snapSuggestedAccountName: mockNameSuggestion,
           },
         },
@@ -428,7 +427,6 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            address: mockInternalAccount.address.toLowerCase(),
             snapSuggestedAccountName: mockNameSuggestion,
           },
         },
@@ -492,7 +490,6 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            address: mockInternalAccount.address.toLowerCase(),
             snapSuggestedAccountName: mockNameSuggestion,
           },
         },
