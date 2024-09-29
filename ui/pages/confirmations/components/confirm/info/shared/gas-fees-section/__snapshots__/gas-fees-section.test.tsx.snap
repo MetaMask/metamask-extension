@@ -15,26 +15,30 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Network fee
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-1"
-            class=""
-            data-original-title="Amount paid to process the transaction on network."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Network fee
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-1"
+              class=""
+              data-original-title="Amount paid to process the transaction on network."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="edit-gas-fees-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -45,13 +49,13 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
           data-testid="first-gas-field"
         >
-          0.004 ETH
+          0.0001 ETH
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
           data-testid="native-currency"
         >
-          $2.20
+          $0.04
         </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -74,14 +78,17 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
-        style="align-items: center;"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Speed
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Speed
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--align-items-center"

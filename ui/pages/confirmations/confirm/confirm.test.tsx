@@ -18,6 +18,7 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
+import { fetchErc20Decimals } from '../utils/token';
 import Confirm from './confirm';
 
 jest.mock('react-router-dom', () => ({
@@ -32,6 +33,9 @@ const middleware = [thunk];
 describe('Confirm', () => {
   afterEach(() => {
     jest.resetAllMocks();
+
+    /** Reset memoized function using getTokenStandardAndDetails for each test */
+    fetchErc20Decimals?.cache?.clear?.();
   });
 
   it('should render', () => {
@@ -143,12 +147,11 @@ describe('Confirm', () => {
     });
 
     await act(async () => {
-      const { container, findByText } = await renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
+      const { container, findAllByText } =
+        await renderWithConfirmContextProvider(<Confirm />, mockStore);
 
-      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+      const valueElement = await findAllByText('14,615,016,373,...');
+      expect(valueElement[0]).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });
@@ -168,12 +171,11 @@ describe('Confirm', () => {
     });
 
     await act(async () => {
-      const { container, findByText } = await renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
+      const { container, findAllByText } =
+        await renderWithConfirmContextProvider(<Confirm />, mockStore);
 
-      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+      const valueElement = await findAllByText('14,615,016,373,...');
+      expect(valueElement[0]).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });

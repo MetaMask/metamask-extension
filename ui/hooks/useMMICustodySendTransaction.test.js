@@ -7,7 +7,7 @@ import { useMMICustodySendTransaction } from './useMMICustodySendTransaction';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(),
+  useHistory: jest.fn().mockReturnValue({ push: jest.fn() }),
 }));
 
 jest.mock('react-redux', () => ({
@@ -23,12 +23,18 @@ jest.mock('../store/institutional/institution-background', () => ({
   mmiActionsFactory: jest.fn(),
 }));
 
-jest.mock('../selectors', () => ({
-  getAccountType: jest.fn(),
-}));
-
 jest.mock('../store/actions', () => ({
   updateAndApproveTx: jest.fn(),
+}));
+
+jest.mock('../pages/confirmations/context/confirm', () => ({
+  useConfirmContext: () => ({
+    currentConfirmation: { from: '0x123' },
+  }),
+}));
+
+jest.mock('../pages/confirmations/components/confirm/utils', () => ({
+  getConfirmationSender: () => ({ from: '0x123' }),
 }));
 
 describe('useMMICustodySendTransaction', () => {

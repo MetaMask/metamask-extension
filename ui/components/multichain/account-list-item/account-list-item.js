@@ -63,6 +63,8 @@ import { ConnectedStatus } from '../connected-status/connected-status';
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 import { useTheme } from '../../../hooks/useTheme';
 ///: END:ONLY_INCLUDE_IF
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AccountListItemMenuTypes } from './account-list-item.types';
@@ -418,7 +420,6 @@ const AccountListItem = ({
           anchorElement={accountListItemMenuElement}
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
-          closeMenu={closeMenu}
           disableAccountSwitcher={isSingleAccount && selected}
           isOpen={accountOptionsMenuOpen}
           onActionClick={onActionClick}

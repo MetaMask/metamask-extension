@@ -14,6 +14,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { TransactionParams } from '@metamask/transaction-controller';
 
+import { Hex } from '@metamask/utils';
 import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
@@ -319,3 +320,9 @@ export const parseTypedDataMessage = (dataToParse: string) => {
 
   return result;
 };
+
+export function hasTransactionData(transactionData?: Hex): boolean {
+  return Boolean(
+    transactionData?.length && transactionData?.toLowerCase?.() !== '0x',
+  );
+}

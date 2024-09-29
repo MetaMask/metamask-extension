@@ -183,9 +183,6 @@
   "addANetwork": {
     "message": "添加网络"
   },
-  "addANetworkManually": {
-    "message": "手动添加网络"
-  },
   "addANickname": {
     "message": "添加昵称"
   },
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "添加您信任的朋友和地址"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "从热门网络列表中选择网络来添加，或手动添加网络。仅可与您信任的实体互动。"
-  },
   "addHardwareWallet": {
     "message": "添加硬件钱包"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "添加备忘录"
   },
-  "addMoreNetworks": {
-    "message": "手动添加更多网络"
-  },
   "addNetwork": {
     "message": "添加网络"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "此网络连接依赖于第三方。此连接可能不太可靠，或使第三方可进行活动跟踪。$1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "添加新账户"
@@ -985,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "我已知晓提醒并仍想继续"
   },
-  "confirmAlertModalDetails": {
-    "message": "如果您登录，以欺诈闻名的第三方可能会拿走您的所有资产。在继续操作之前，请查看提醒。"
-  },
-  "confirmAlertModalTitle": {
-    "message": "您的资产可能面临风险"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "点击“继续”后，我们会将您重定向到 $1。"
   },
@@ -999,9 +980,6 @@
   },
   "confirmConnectionTitle": {
     "message": "确认连接到$1"
-  },
-  "confirmDeletion": {
-    "message": "确认删除"
   },
   "confirmFieldPaymaster": {
     "message": "费用支付方"
@@ -1015,17 +993,11 @@
   "confirmRecoveryPhrase": {
     "message": "确认私钥助记词"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "您确定要删除 RPC（远程过程调用）URL 吗？您的信息将不会保存到此网络。"
-  },
   "confirmTitleDescPermitSignature": {
     "message": "此网站需要获得许可来使用您的代币。"
   },
   "confirmTitleDescSIWESignature": {
     "message": "某个网站要求您登录以证明您拥有该账户。"
-  },
-  "confirmTitleDescSignature": {
-    "message": "仅在您批准该内容并信任请求网站的情况下，才能确认此消息。"
   },
   "confirmTitlePermitTokens": {
     "message": "支出上限请求"
@@ -1368,9 +1340,6 @@
   "custom": {
     "message": "高级"
   },
-  "customContentSearch": {
-    "message": "搜索以前添加的网络"
-  },
   "customGasSettingToolTipMessage": {
     "message": "使用$1来定制燃料价格。如果您不熟悉这可能会引起混淆。操作风险自付。",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1490,18 +1459,12 @@
   "deleteContact": {
     "message": "删除联系人"
   },
-  "deleteNetwork": {
-    "message": "删除网络？"
-  },
   "deleteNetworkIntro": {
     "message": "如果您删除此网络，则需要再次添加此网络才能查看您在其中的资产"
   },
   "deleteNetworkTitle": {
     "message": "要删除$1网络吗？",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "删除 RPC（远程过程调用）URL"
   },
   "deposit": {
     "message": "保证金"
@@ -1596,9 +1559,6 @@
   },
   "domain": {
     "message": "域"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "网络不支持域查找"
   },
   "done": {
     "message": "完成"
@@ -1773,12 +1733,6 @@
   "ensDomainsSettingTitle": {
     "message": "在地址栏中显示ENS域"
   },
-  "ensIllegalCharacter": {
-    "message": "ENS 的非法字符。"
-  },
-  "ensRegistrationError": {
-    "message": "ENS 名称注册错误"
-  },
   "ensUnknownError": {
     "message": "ENS 查找失败。"
   },
@@ -1876,9 +1830,6 @@
   "existingRequestsBannerAlertDesc": {
     "message": "如需查看和确认您的最新请求，您需要首先批准或拒绝现有请求。"
   },
-  "existingRpcUrl": {
-    "message": "此 URL 与另一个链 ID 相关联。"
-  },
   "expandView": {
     "message": "展开视图"
   },
@@ -1910,9 +1861,6 @@
   "failedToFetchChainId": {
     "message": "无法获取链 ID。您的 RPC URL 正确吗？"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "股票代码验证数据当前未能提供，请确保您输入的代码正确无误。这会影响您在此网络看到的兑换率"
-  },
   "failureMessage": {
     "message": "出了点问题，我们无法完成此操作"
   },
@@ -1932,9 +1880,6 @@
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "在下方找到合适的："
   },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
@@ -2422,14 +2367,8 @@
   "invalidAddressRecipient": {
     "message": "接收方地址无效"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 网络，请使用小写"
-  },
   "invalidAssetType": {
     "message": "该资产是NFT，需要在NFT选项卡下的“导入NFT”页面上重新添加"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "无效的区块浏览器 URL"
   },
   "invalidChainIdTooBig": {
     "message": "无效的链 ID，链 ID 过大。"
@@ -2919,10 +2858,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "此网络与其关联的链 ID 或名称不匹配。多种常用代币均使用名称 $1，使其成为欺诈目标。欺诈方可能会诱骗您向其发送更有价值的货币作为回报。在继续之前，请验证所有内容。",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "这可能是欺诈"
+    "message": "这可能是欺诈",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "需要帮助？请联系 $1",
@@ -2949,9 +2889,6 @@
   },
   "network": {
     "message": "网络： "
-  },
-  "networkAddedSuccessfully": {
-    "message": "网络添加成功！"
   },
   "networkDetails": {
     "message": "网络详情"
@@ -3012,9 +2949,6 @@
   },
   "networkProvider": {
     "message": "网络提供商"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "链 ID 用于签署交易。它必须与网络返回的链 ID 相匹配。您可以输入十进制或以'0x'开头的十六进制数字，但我们将以十进制显示该数字。"
   },
   "networkStatus": {
     "message": "网络状态"
@@ -3151,9 +3085,6 @@
   },
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
-  },
-  "noAddressForName": {
-    "message": "此名称尚未设置地址。"
   },
   "noConnectedAccountDescription": {
     "message": "选择要在此站点上使用的账户以继续。"
@@ -3467,9 +3398,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "IPFS 网关 URL 有效"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "添加自定义网络"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "我们使用 Infura 作为我们的远程过程调用（RPC）提供商，以提供最可靠和最私密的以太坊数据访问。您可以选择自己的 RPC，但请谨记，任何 RPC 都可以接收您的 IP 地址和以太坊钱包以进行交易。请阅读我们的 $1，进一步了解 Infura 如何处理数据。"
   },
@@ -3497,9 +3425,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "隐私政策"
-  },
-  "onboardingMetametricsModalTitle": {
-    "message": "添加自定义网络"
   },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 会存储点击量和应用程序的浏览量，但不会存储其他详情（如您的公钥）。",
@@ -3593,9 +3518,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "恶意网络提供商可能会谎报区块链的状态并记录您的网络活动。只添加您信任的自定义网络。"
-  },
   "onlyConnectTrust": {
     "message": "仅连接您信任的网站。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3619,9 +3541,6 @@
   },
   "optional": {
     "message": "可选"
-  },
-  "optionalWithParanthesis": {
-    "message": "（可选）"
   },
   "options": {
     "message": "期权"
@@ -3974,9 +3893,6 @@
     "message": "另外 $1 项",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "popularCustomNetworks": {
-    "message": "流行自定义网络"
-  },
   "popularNetworkAddToolTip": {
     "message": "这些网络中的其中一些依赖于第三方。此连接可能不太可靠，或使第三方可进行活动跟踪。$1",
     "description": "$1 is Learn more link"
@@ -4165,12 +4081,6 @@
   },
   "receive": {
     "message": "收款"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "输入公钥 (0x) 或 ENS 名称"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "输入公钥 (0x) 或域名"
   },
   "recommendedGasLabel": {
     "message": "建议"
@@ -5319,9 +5229,6 @@
   "suggestedTokenName": {
     "message": "建议名称："
   },
-  "suggestedTokenSymbol": {
-    "message": "建议的股票代码："
-  },
   "support": {
     "message": "获取帮助"
   },
@@ -5810,9 +5717,6 @@
   "termsOfUseTitle": {
     "message": "我们的使用条款已更新"
   },
-  "testNetworks": {
-    "message": "测试网络"
-  },
   "theme": {
     "message": "主题"
   },
@@ -6124,9 +6028,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "根据我们的记录，此 URL 与此链 ID 的已知提供者不匹配。"
-  },
   "unapproved": {
     "message": "未批准"
   },
@@ -6195,9 +6096,6 @@
   },
   "urlErrorMsg": {
     "message": "URL 需要相应的 HTTP/HTTPS 前缀。"
-  },
-  "urlExistsErrorMsg": {
-    "message": "此 URL 目前已被 $1 网络使用。"
   },
   "use4ByteResolution": {
     "message": "对智能合约进行解码"
@@ -6408,9 +6306,6 @@
   "whatsThis": {
     "message": "这是什么？"
   },
-  "wrongChainId": {
-    "message": "此链 ID 与网络名称不匹配。"
-  },
   "wrongNetworkName": {
     "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
   },
@@ -6423,10 +6318,6 @@
   },
   "you": {
     "message": "您"
-  },
-  "youHaveAddedAll": {
-    "message": "您已经添加了所有热门网络。您可以探索更多网络$1，或者您可以$2",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要开启相机访问权限，才能使用该功能。"

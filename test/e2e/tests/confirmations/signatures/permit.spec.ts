@@ -1,11 +1,12 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
@@ -32,6 +33,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -44,11 +46,6 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
-        await assertAccountDetailsMetrics(
-          driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-        );
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
@@ -57,6 +54,12 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
+
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData_v4',
+        );
 
         await assertSignatureConfirmedMetrics({
           driver,
@@ -75,6 +78,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
   it('initiates and rejects and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -123,9 +127,9 @@ async function assertInfoValues(driver: Driver) {
     css: '.name__value',
     text: '0x5B38D...eddC4',
   });
-  const value = driver.findElement({ text: '3,000' });
+  const value = driver.findElement({ text: '<0.000001' });
   const nonce = driver.findElement({ text: '0' });
-  const deadline = driver.findElement({ text: '02 August 1971, 16:53' });
+  const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
 
   assert.ok(await origin, 'origin');
   assert.ok(await contractPetName, 'contractPetName');
