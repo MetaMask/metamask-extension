@@ -279,7 +279,7 @@ export default class AccountTracker {
   /**
    * Stops polling for all networkClientIds
    */
-  stopAllPolling() {
+  stopAllPolling(): void {
     this.stop();
     this.#pollingTokenSets.forEach((tokenSet, _networkClientId) => {
       tokenSet.forEach((token) => {
