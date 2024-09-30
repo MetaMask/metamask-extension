@@ -1397,11 +1397,11 @@ export default class MetamaskController extends EventEmitter {
           rateLimitTimeout: 300000,
         },
         showInAppNotification: {
-          method: (origin, message) => {
+          method: (origin, notificationData) => {
             this.controllerMessenger.call(
               'NotificationController:show',
               origin,
-              message,
+              notificationData,
             );
 
             return null;
