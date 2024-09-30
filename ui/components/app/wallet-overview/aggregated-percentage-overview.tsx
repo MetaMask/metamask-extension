@@ -10,6 +10,8 @@ import {
 } from '../../../selectors';
 
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
