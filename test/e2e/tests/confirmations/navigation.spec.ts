@@ -165,13 +165,13 @@ async function queueSignatures(driver: Driver) {
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.findElement({ text: 'Reject all' });
-  await driver.findElement(By.xpath("//div[normalize-space(.)='1 of 2']"));
+  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 2']"));
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV4');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.findElement(By.xpath("//div[normalize-space(.)='1 of 3']"));
+  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 3']"));
 }
 
 async function queueSignaturesAndTransactions(driver: Driver) {
