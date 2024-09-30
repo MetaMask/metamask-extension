@@ -4758,18 +4758,14 @@ export function signAndSendSmartTransaction({
       unsignedTransaction,
       smartTransactionFees.fees,
     );
-    const signedCanceledTransactions = await createSignedTransactions(
-      unsignedTransaction,
-      [],
-      true,
-    );
     try {
       const response = await submitRequestToBackground<{ uuid: string }>(
         'submitSignedTransactions',
         [
           {
             signedTransactions,
-            signedCanceledTransactions,
+            // Deprecate the "signedCanceledTransactions" param in the STX controller since it's no longer needed.
+            signedCanceledTransactions: [],
             txParams: unsignedTransaction,
           },
         ],

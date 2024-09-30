@@ -912,6 +912,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   ]);
 
   useEffect(() => {
+    // If it's a smart transaction, has sufficient tokens, and gas is not included in the trade,
+    // set up gas fee polling.
     if (isSmartTransaction && !insufficientTokens && !isGasIncludedTrade) {
       const unsignedTx = {
         from: unsignedTransaction.from,
