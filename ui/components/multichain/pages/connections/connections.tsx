@@ -87,8 +87,8 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const { origin } = useParams<Params>() as Params;
-  const activeTabOrigin = decodeURIComponent(origin);
+  const urlParams = useParams<Params>() as Params;
+  const activeTabOrigin = decodeURIComponent(urlParams.origin);
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
