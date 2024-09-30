@@ -82,6 +82,7 @@ exports[`ConnectPage should render correctly 1`] = `
                         x="0"
                         y="0"
                       >
+<<<<<<< HEAD
                         <rect
                           fill="#18CDF2"
                           height="16"
@@ -89,6 +90,12 @@ exports[`ConnectPage should render correctly 1`] = `
                           width="16"
                           x="0"
                           y="0"
+=======
+                        <img
+                          alt="Custom Mainnet RPC logo"
+                          class="mm-avatar-token__token-image"
+                          src="./images/eth_logo.svg"
+>>>>>>> b4629f4c84 (Use requested permissions as default selected values for AmonHenV2 connection flow)
                         />
                         <rect
                           fill="#035E56"
