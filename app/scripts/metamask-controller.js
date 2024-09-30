@@ -1668,17 +1668,14 @@ export default class MetamaskController extends EventEmitter {
       onboardingController: this.onboardingController,
       controllerMessenger: this.controllerMessenger.getRestricted({
         name: 'AccountTracker',
+        allowedActions: ['AccountsController:getSelectedAccount'],
         allowedEvents: [
           'AccountsController:selectedEvmAccountChange',
           'OnboardingController:stateChange',
+          'KeyringController:accountRemoved',
         ],
-        allowedActions: ['AccountsController:getSelectedAccount'],
       }),
       initState: { accounts: {} },
-      onAccountRemoved: this.controllerMessenger.subscribe.bind(
-        this.controllerMessenger,
-        'KeyringController:accountRemoved',
-      ),
     });
 
     // start and stop polling for balances based on activeControllerConnections
