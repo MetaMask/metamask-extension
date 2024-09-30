@@ -118,7 +118,7 @@ describe('SurveyToast', () => {
   it('handles action click correctly when metametrics is enabled', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
-    renderComponent({ metametricsEnabled: true });
+    renderComponent();
 
     await waitFor(() => {
       expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
@@ -139,20 +139,15 @@ describe('SurveyToast', () => {
     });
   });
 
-  it('handles action click correctly when metametrics is disabled', async () => {
+  it('should not show the toast if metametrics is disabled', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
-    renderComponent({ metametricsEnabled: false });
+    renderComponent({
+      metametricsEnabled: false,
+    });
 
     await waitFor(() => {
-      expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
+      expect(screen.getByTestId('survey-toast')).not.toBeInTheDocument();
     });
-
-    fireEvent.click(screen.getByText(surveyData.valid.cta));
-
-    expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: surveyData.valid.url,
-    });
-    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 });
