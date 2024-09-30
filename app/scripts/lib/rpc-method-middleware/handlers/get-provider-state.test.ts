@@ -20,7 +20,7 @@ describe('getProviderState', () => {
     });
   });
 
-  it('should handle valid input for type ERC721 correctly', async () => {
+  it('should call getProviderState when the handler is invoked', async () => {
     const req: HandlerRequestType = {
       origin: 'testOrigin',
       params: [],

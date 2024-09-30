@@ -2,7 +2,11 @@ import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from 'json-rpc-engine';
-import type { PendingJsonRpcResponse, JsonRpcParams } from '@metamask/utils';
+import type {
+  PendingJsonRpcResponse,
+  JsonRpcParams,
+  Hex,
+} from '@metamask/utils';
 import { OriginString } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -17,7 +21,7 @@ import {
  * @property accounts - List of permitted accounts for the specified origin.
  */
 export type ProviderStateHandlerResult = {
-  chainId: string;
+  chainId: Hex;
   isUnlocked: boolean;
   networkVersion: string;
   accounts: string[];
