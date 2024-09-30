@@ -784,7 +784,9 @@ export default function PrepareSwapPage({
 
   const showMaxBalanceLink =
     fromTokenSymbol &&
-    !isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) &&
+    (isSmartTransaction ||
+      (!isSmartTransaction &&
+        !isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId))) &&
     rawFromTokenBalance > 0;
 
   return (
