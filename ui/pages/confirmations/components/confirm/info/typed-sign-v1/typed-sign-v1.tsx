@@ -14,6 +14,7 @@ import {
 import { useConfirmContext } from '../../../../context/confirm';
 import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { isSnapId } from '../../../../../../helpers/utils/snaps';
 
 const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
@@ -23,6 +24,10 @@ const TypedSignV1Info: React.FC = () => {
     return null;
   }
 
+  const toolTipMessage = isSnapId(currentConfirmation.msgParams.origin)
+    ? t('requestfromInfoSnap')
+    : t('requestFromInfo');
+
   return (
     <>
       <ConfirmInfoSection>
@@ -30,7 +35,7 @@ const TypedSignV1Info: React.FC = () => {
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={t('requestFromInfo')}
+          tooltip={toolTipMessage}
         >
           <ConfirmInfoRowUrl
             url={currentConfirmation.msgParams?.origin ?? ''}
