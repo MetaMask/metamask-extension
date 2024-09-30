@@ -421,7 +421,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           <div
                             aria-describedby="tippy-tooltip-26"
                             class=""
-                            data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
+                            data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
                             style="display: inline;"
                             tabindex="0"
@@ -431,7 +431,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                               data-testid="simulation-token-value"
                               style="padding-top: 1px; padding-bottom: 1px;"
                             >
-                              14,615,016,373,...
+                              1,461,501,637,3...
                             </p>
                           </div>
                         </div>
@@ -471,7 +471,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           <div
                             aria-describedby="tippy-tooltip-27"
                             class=""
-                            data-original-title="24,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
+                            data-original-title="2,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
                             style="display: inline;"
                             tabindex="0"
@@ -481,7 +481,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                               data-testid="simulation-token-value"
                               style="padding-top: 1px; padding-bottom: 1px;"
                             >
-                              24,615,016,373,...
+                              2,461,501,637,3...
                             </p>
                           </div>
                         </div>
@@ -1527,7 +1527,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           <div
                             aria-describedby="tippy-tooltip-18"
                             class=""
-                            data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
+                            data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
                             style="display: inline;"
                             tabindex="0"
@@ -1537,7 +1537,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                               data-testid="simulation-token-value"
                               style="padding-top: 1px; padding-bottom: 1px;"
                             >
-                              14,615,016,373,...
+                              1,461,501,637,3...
                             </p>
                           </div>
                         </div>
@@ -3065,7 +3065,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                         <div
                           aria-describedby="tippy-tooltip-4"
                           class=""
-                          data-original-title="30"
+                          data-original-title="3,000"
                           data-tooltipped=""
                           style="display: inline;"
                           tabindex="0"
@@ -3075,7 +3075,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                             data-testid="simulation-token-value"
                             style="padding-top: 1px; padding-bottom: 1px;"
                           >
-                            30
+                            3,000
                           </p>
                         </div>
                       </div>

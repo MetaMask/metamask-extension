@@ -8,7 +8,9 @@ import PermitSimulationValueDisplay from './value-display';
 
 jest.mock('../../../../../../../../store/actions', () => {
   return {
-    getTokenStandardAndDetails: jest.fn().mockResolvedValue({ decimals: 4 }),
+    getTokenStandardAndDetails: jest
+      .fn()
+      .mockResolvedValue({ decimals: 4, standard: 'ERC20' }),
   };
 });
 

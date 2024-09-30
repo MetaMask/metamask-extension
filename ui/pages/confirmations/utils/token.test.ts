@@ -1,6 +1,9 @@
 import { getTokenStandardAndDetails } from '../../../store/actions';
 import { ERC20_DEFAULT_DECIMALS } from '../constants/token';
-import { fetchErc20Decimals } from './token';
+import {
+  fetchErc20Decimals,
+  memoizedGetTokenStandardAndDetails,
+} from './token';
 
 const MOCK_ADDRESS = '0x514910771af9ca656af840dff83e8264ecf986ca';
 const MOCK_DECIMALS = 36;
@@ -15,6 +18,7 @@ describe('fetchErc20Decimals', () => {
 
     /** Reset memoized function using getTokenStandardAndDetails for each test */
     fetchErc20Decimals?.cache?.clear?.();
+    memoizedGetTokenStandardAndDetails?.cache?.clear?.();
   });
 
   it(`should return the default number, ${ERC20_DEFAULT_DECIMALS}, if no decimals were found from details`, async () => {

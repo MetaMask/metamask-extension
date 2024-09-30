@@ -18,7 +18,7 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
-import { fetchErc20Decimals } from '../utils/token';
+import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
 jest.mock('react-router-dom', () => ({
@@ -35,7 +35,7 @@ describe('Confirm', () => {
     jest.resetAllMocks();
 
     /** Reset memoized function using getTokenStandardAndDetails for each test */
-    fetchErc20Decimals?.cache?.clear?.();
+    memoizedGetTokenStandardAndDetails?.cache?.clear?.();
   });
 
   it('should render', () => {

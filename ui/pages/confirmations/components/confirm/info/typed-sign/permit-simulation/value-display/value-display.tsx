@@ -11,7 +11,7 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { useAsyncResult } from '../../../../../../../../hooks/useAsyncResult';
+import useGetTokenStandardAndDetails from '../../../../../../hooks/useGetTokenStandardAndDetails';
 
 import {
   Box,
@@ -27,7 +27,6 @@ import {
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
-import { fetchErc20Decimals } from '../../../../../../utils/token';
 
 type PermitSimulationValueDisplayParams = {
   /** The primaryType of the typed sign message */
@@ -49,10 +48,8 @@ const PermitSimulationValueDisplay: React.FC<
 > = ({ primaryType, tokenContract, value }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
-  const { value: tokenDecimals } = useAsyncResult(
-    async () => await fetchErc20Decimals(tokenContract),
-    [tokenContract],
-  );
+  const { decimalsNumber: tokenDecimals } =
+    useGetTokenStandardAndDetails(tokenContract);
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && value) {
