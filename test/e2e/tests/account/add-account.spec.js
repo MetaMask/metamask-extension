@@ -129,7 +129,6 @@ describe('Add account', function () {
         // Land in 1st account home page
         await driver.findElement('.home__main-view');
         await locateAccountBalanceDOM(driver);
-        await driver.delay(200);
 
         // Check address of 1st account
         await driver.findElement('[data-testid="app-header-copy-button"]');
