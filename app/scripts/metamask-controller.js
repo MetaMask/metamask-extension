@@ -3134,7 +3134,7 @@ export default class MetamaskController extends EventEmitter {
     const { completedOnboarding } = this.onboardingController.state;
 
     let networkVersion = this.deprecatedNetworkVersions[networkClientId];
-    if (!networkVersion && completedOnboarding) {
+    if (networkVersion === undefined && completedOnboarding) {
       const ethQuery = new EthQuery(networkClient.provider);
       networkVersion = await new Promise((resolve) => {
         ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
