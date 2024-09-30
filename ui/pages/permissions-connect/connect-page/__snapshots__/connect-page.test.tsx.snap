@@ -165,16 +165,6 @@ exports[`ConnectPage should render correctly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
                       >
-                        G
-                      </div>
-                    </div>
-                    <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: -8px;"
-                    >
-                      <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
-                      >
                         <img
                           alt="Custom Mainnet RPC logo"
                           class="mm-avatar-token__token-image"
