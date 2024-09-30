@@ -55,17 +55,15 @@ export const getFromChains = createDeepEqualSelector(
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getFromChains,
   getNetworkConfigurationsByChainId,
-  (state: BridgeAppState) => getProviderConfig(state),
+  getProviderConfig,
   (
-    fromChains,
     networkConfigurationsByChainId,
     providerConfig,
   ): NetworkConfiguration | undefined =>
-    providerConfig?.chainId &&
-    (fromChains.find(({ chainId }) => chainId === providerConfig.chainId) ??
-      networkConfigurationsByChainId[providerConfig.chainId]),
+    providerConfig?.chainId
+      ? networkConfigurationsByChainId[providerConfig.chainId]
+      : undefined,
 );
 
 export const getToChains = createDeepEqualSelector(
