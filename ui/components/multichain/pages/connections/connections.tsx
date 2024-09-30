@@ -67,6 +67,8 @@ import {
 } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
+type Params = { origin: string };
+
 export const Connections = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -85,10 +87,9 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const urlParams: { origin: string } = useParams();
-  const securedOrigin = decodeURIComponent(urlParams.origin);
+  const { origin } = useParams<Params>() as Params;
+  const activeTabOrigin = decodeURIComponent(origin);
 
-  const activeTabOrigin: string = securedOrigin;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -246,7 +247,7 @@ export const Connections = () => {
             textAlign={TextAlign.Center}
             ellipsis
           >
-            {getURLHost(securedOrigin)}
+            {getURLHost(activeTabOrigin)}
           </Text>
         </Box>
       </Header>

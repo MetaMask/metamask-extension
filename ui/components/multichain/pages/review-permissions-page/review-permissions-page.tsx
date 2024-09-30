@@ -56,11 +56,13 @@ import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { SiteCell } from '.';
 
+type Params = { origin: string };
+
 export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const urlParams: { origin: string } = useParams();
+  const urlParams = useParams<Params>() as Params;
   const securedOrigin = decodeURIComponent(urlParams.origin);
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
