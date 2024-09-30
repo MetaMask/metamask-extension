@@ -5862,8 +5862,8 @@ export default class MetamaskController extends EventEmitter {
           }
 
           return {
-            currency: fiatCurrency,
             ...rate,
+            currency: fiatCurrency,
           };
         },
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
