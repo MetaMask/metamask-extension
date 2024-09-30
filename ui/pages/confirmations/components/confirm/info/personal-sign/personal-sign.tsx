@@ -39,7 +39,7 @@ const PersonalSignInfo: React.FC = () => {
   let toolTipMessage;
   if (!isSIWE) {
     if (isSnapId(currentConfirmation.msgParams.origin)) {
-      toolTipMessage = t('requestfromInfoSnap');
+      toolTipMessage = t('requestFromInfoSnap');
     } else {
       toolTipMessage = t('requestFromInfo');
     }
