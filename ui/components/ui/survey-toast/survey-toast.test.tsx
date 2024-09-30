@@ -147,7 +147,7 @@ describe('SurveyToast', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('survey-toast')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('survey-toast')).toBeNull();
     });
   });
 });
