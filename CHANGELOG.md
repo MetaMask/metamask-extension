@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.3.1]
+### Fixed
+- Fix duplicate network validation ([#27463](https://github.com/MetaMask/metamask-extension/pull/27463))
+- Fix notification metrics ([#26807](https://github.com/MetaMask/metamask-extension/pull/26807))
+- Fix transaction metrics ([#27457](https://github.com/MetaMask/metamask-extension/pull/27457))
 
 ## [12.3.0]
 ### Added
