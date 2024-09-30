@@ -60,13 +60,15 @@ export const SiteCell: React.FC<SiteCellProps> = ({
     selectedChainIds.includes(chainId),
   );
 
+  const selectedChainIdsLength = selectedChainIds.length;
+
   // Determine the messages for connected and not connected states
   const accountMessageConnectedState =
     selectedAccounts.length === 1
-      ? t('connectedWithAccount', [
+      ? t('connectedWithAccountName', [
           selectedAccounts[0].label || selectedAccounts[0].metadata.name,
         ])
-      : t('connectedWith');
+      : t('connectedWithAccount', [accounts.length]);
   const accountMessageNotConnectedState =
     selectedAccounts.length === 1
       ? t('requestingForAccount', [
@@ -107,7 +109,9 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         <SiteCellConnectionListItem
           title={t('permission_walletSwitchEthereumChain')}
           iconName={IconName.Data}
-          connectedMessage={t('connectedWith')}
+          connectedMessage={t('connectedWithNetworks', [
+            selectedChainIdsLength,
+          ])}
           unconnectedMessage={t('requestingFor')}
           isConnectFlow={isConnectFlow}
           onClick={() => setShowEditNetworksModal(true)}

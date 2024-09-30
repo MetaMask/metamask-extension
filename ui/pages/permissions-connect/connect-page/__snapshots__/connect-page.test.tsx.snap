@@ -240,7 +240,7 @@ exports[`ConnectPage should render correctly 1`] = `
               data-testid="confirm-btn"
               data-theme="light"
             >
-              Confirm
+              Connect
             </button>
           </div>
         </div>

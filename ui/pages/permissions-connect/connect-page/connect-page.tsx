@@ -149,7 +149,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                 selectedChainIds.length === 0
               }
             >
-              {t('confirm')}
+              {t('connect')}
             </Button>
           </Box>
         </Box>

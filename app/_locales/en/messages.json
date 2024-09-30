@@ -1186,8 +1186,16 @@
     "message": "Connected with"
   },
   "connectedWithAccount": {
+    "message": "$1 accounts connected",
+    "description": "$1 represents account length"
+  },
+  "connectedWithAccountName": {
     "message": "Connected with $1",
     "description": "$1 represents account name"
+  },
+  "connectedWithNetworks": {
+    "message": "$1 networks connected",
+    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Connecting"
