@@ -39,6 +39,8 @@ import {
   Signature,
   ConnectionRequest,
 } from '../../../shared/constants/mmi-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
