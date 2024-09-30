@@ -70,6 +70,7 @@ describe('addEthereumChainHandler', () => {
       setActiveNetwork: jest.fn(),
       requestUserApproval: jest.fn().mockResolvedValue(123),
       requestPermittedChainsPermission: jest.fn(),
+      grantPermittedChainsPermissionIncremental: jest.fn(),
       getCaveat: jest.fn().mockReturnValue({ value: permissionedChainIds }),
       startApprovalFlow: () => ({ id: 'approvalFlowId' }),
       endApprovalFlow: jest.fn(),
@@ -411,10 +412,12 @@ describe('addEthereumChainHandler', () => {
       );
 
       expect(mocks.addNetwork).toHaveBeenCalledWith(nonInfuraConfiguration);
-      expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(1);
-      expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
-        createMockNonInfuraConfiguration().chainId,
-      ]);
+      expect(
+        mocks.grantPermittedChainsPermissionIncremental,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mocks.grantPermittedChainsPermissionIncremental,
+      ).toHaveBeenCalledWith([createMockNonInfuraConfiguration().chainId]);
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
     });
@@ -497,12 +500,12 @@ describe('addEthereumChainHandler', () => {
           );
 
           expect(mocks.updateNetwork).toHaveBeenCalledTimes(1);
-          expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(
-            1,
-          );
-          expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
-            NON_INFURA_CHAIN_ID,
-          ]);
+          expect(
+            mocks.grantPermittedChainsPermissionIncremental,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            mocks.grantPermittedChainsPermissionIncremental,
+          ).toHaveBeenCalledWith([NON_INFURA_CHAIN_ID]);
           expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
         });
       });
@@ -607,7 +610,7 @@ describe('addEthereumChainHandler', () => {
         getCurrentChainIdForDomain: jest
           .fn()
           .mockReturnValue(CHAIN_IDS.SEPOLIA),
-        requestPermittedChainsPermission: jest
+        grantPermittedChainsPermissionIncremental: jest
           .fn()
           .mockRejectedValue(mockError),
       },
@@ -636,7 +639,9 @@ describe('addEthereumChainHandler', () => {
       mocks,
     );
 
-    expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(1);
+    expect(
+      mocks.grantPermittedChainsPermissionIncremental,
+    ).toHaveBeenCalledTimes(1);
     expect(mockEnd).toHaveBeenCalledWith(mockError);
     expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
   });

@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Ich habe die Benachrichtigung zur Kenntnis genommen und möchte trotzdem fortfahren"
   },
-  "confirmAlertModalDetails": {
-    "message": "Wenn Sie sich anmelden, könnten Dritte, die für Betrügereien bekannt sind, all Ihre Assets an sich reißen. Lesen Sie bitte die Benachrichtigungen, bevor Sie fortfahren."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Ihre Assets könnten gefährdet sein"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Sobald Sie auf „Weiter“ klicken, leiten wir Sie weiter zu $1."
   },
@@ -2864,10 +2858,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Dieses Netzwerk passt nicht zu seiner zugehörigen Chain-ID oder seinem Namen. Viele beliebte Tokens verwenden den Namen $1, was sie zu einem Ziel für Betrüger macht. Betrüger könnten Sie dazu verleiten, ihnen im Gegenzug wertvollere Währung zu schicken. Überprüfen Sie alles, bevor Sie fortfahren.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Dies ist ein möglicher Betrug"
+    "message": "Dies ist ein möglicher Betrug",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Brauchen Sie Hilfe? Kontaktieren Sie $1.",

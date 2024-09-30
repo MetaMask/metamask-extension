@@ -89,7 +89,6 @@ async function createTransactionAssertDetailsAndConfirm(
   await testDapp.clickERC1155SetApprovalForAllButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
   const setApprovalForAllConfirmation =
     new SetApprovalForAllTransactionConfirmation(driver);
 

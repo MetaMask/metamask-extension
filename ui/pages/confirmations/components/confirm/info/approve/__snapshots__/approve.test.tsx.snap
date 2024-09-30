@@ -71,7 +71,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
         style="margin-left: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
           <div
             class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
@@ -80,7 +80,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
               class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
               data-testid="simulation-token-value"
             >
-              0
+              1000
             </p>
           </div>
           <div>
@@ -414,7 +414,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          0 
+          1000 
         </p>
         <button
           aria-label="Edit"
@@ -504,7 +504,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"

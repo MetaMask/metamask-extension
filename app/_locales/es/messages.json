@@ -969,12 +969,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Soy consciente de la alerta y aun así deseo continuar"
   },
-  "confirmAlertModalDetails": {
-    "message": "Si inicia sesión, un tercero conocido por estafas podría quedarse con todos sus activos. Revise las alertas antes de continuar."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Sus activos podrían estar en riesgo"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Lo redirigiremos a $1 al hacer clic en continuar."
   },
@@ -2861,10 +2855,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Esta red no coincide con su ID de cadena o nombre asociado. Muchos tokens populares usan el nombre $1, lo que los convierte en blanco de estafas. Los estafadores pueden engañarlo para que les envíe dinero más valioso a cambio. Verifique todo antes de continuar.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Esto es una estafa potencial"
+    "message": "Esto es una estafa potencial",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "¿Necesita ayuda? Comuníquese con $1",
