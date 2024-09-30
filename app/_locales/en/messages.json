@@ -4434,6 +4434,9 @@
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
   },
+  "requestFromInfoSnap": {
+    "message": "This is the snap asking for your signature."
+  },
   "requestFromTransactionDescription": {
     "message": "This is the site asking for your confirmation."
   },
