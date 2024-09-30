@@ -8,6 +8,7 @@ import {
 import { decodeTransactionData } from '../../../../../../store/actions';
 import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 import { useConfirmContext } from '../../../../context/confirm';
+import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 
 export function useDecodedTransactionData(): AsyncResult<
   DecodedTransactionDataResponse | undefined
@@ -19,7 +20,7 @@ export function useDecodedTransactionData(): AsyncResult<
   const transactionData = currentConfirmation?.txParams?.data as Hex;
 
   return useAsyncResult(async () => {
-    if (!transactionData?.length) {
+    if (!hasTransactionData(transactionData)) {
       return undefined;
     }
 

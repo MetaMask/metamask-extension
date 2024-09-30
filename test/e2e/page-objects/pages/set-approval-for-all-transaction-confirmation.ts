@@ -8,6 +8,8 @@ class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
 
   private setApprovalForAllSubHeadingElement: RawLocator;
 
+  private revokeSetApprovalForAllTitleElement: RawLocator;
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -21,6 +23,10 @@ class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
       css: 'p',
       text: tEn('confirmTitleDescApproveTransaction') as string,
     };
+    this.revokeSetApprovalForAllTitleElement = {
+      css: 'h2',
+      text: tEn('confirmTitleSetApprovalForAllRevokeTransaction') as string,
+    };
   }
 
   async check_setApprovalForAllTitle() {
@@ -29,6 +35,10 @@ class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
 
   async check_setApprovalForAllSubHeading() {
     await this.driver.waitForSelector(this.setApprovalForAllSubHeadingElement);
+  }
+
+  async check_revokeSetApprovalForAllTitle() {
+    await this.driver.waitForSelector(this.revokeSetApprovalForAllTitleElement);
   }
 }
 

@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "アラートを確認したうえで続行します"
   },
-  "confirmAlertModalDetails": {
-    "message": "サインインすると、詐欺が判明しているサードパーティにすべての資産を奪われる可能性があります。続ける前にアラートを確認してください。"
-  },
-  "confirmAlertModalTitle": {
-    "message": "資産が危険にさらされている可能性があります"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "「続行」をクリックすると、$1にリダイレクトされます。"
   },
@@ -2864,10 +2858,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "このネットワークは関連付けられているチェーンIDまたは名前と一致していません。人気のトークンの多くが「$1」という名前を使用しているため、詐欺の対象となっています。詐欺師はより価値の高い通貨を送り返すよう仕向けてくる可能性があります。続行する前にすべてを確認してください。",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "これは詐欺の可能性があります"
+    "message": "これは詐欺の可能性があります",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "アシスタンスが必要な場合は、$1にお問い合わせください",

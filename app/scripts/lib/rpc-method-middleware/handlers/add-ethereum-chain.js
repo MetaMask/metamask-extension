@@ -24,6 +24,7 @@ const addEthereumChain = {
     getCaveat: true,
     requestPermittedChainsPermission: true,
     getChainPermissionsFeatureFlag: true,
+    grantPermittedChainsPermissionIncremental: true,
   },
 };
 
@@ -46,6 +47,7 @@ async function addEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermission,
     getChainPermissionsFeatureFlag,
+    grantPermittedChainsPermissionIncremental,
   },
 ) {
   let validParams;
@@ -210,12 +212,14 @@ async function addEthereumChainHandler(
       networkClientId,
       approvalFlowId,
       {
+        isAddFlow: true,
         getChainPermissionsFeatureFlag,
         setActiveNetwork,
         requestUserApproval,
         getCaveat,
         requestPermittedChainsPermission,
         endApprovalFlow,
+        grantPermittedChainsPermissionIncremental,
       },
     );
   } else if (approvalFlowId) {
