@@ -136,6 +136,7 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
+              data-testid="advanced-setting-state-logs-button"
               onClick={() => {
                 window.logStateString(async (err, result) => {
                   if (err) {

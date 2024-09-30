@@ -29,6 +29,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         >
           <button
             class="button btn--rounded btn-secondary btn--large"
+            data-testid="advanced-setting-state-logs-button"
           >
             Download state logs
           </button>
