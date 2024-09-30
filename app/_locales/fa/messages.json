@@ -205,9 +205,6 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteNetwork": {
-    "message": "شبکه حذف شود؟"
-  },
   "details": {
     "message": "جزئیات"
   },
@@ -350,9 +347,6 @@
   },
   "invalidAddressRecipient": {
     "message": "آدرس دریافت کننده نامعتبر است"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URL نا معتبر"
   },
   "invalidRPC": {
     "message": "RPC URL نا معتبر"

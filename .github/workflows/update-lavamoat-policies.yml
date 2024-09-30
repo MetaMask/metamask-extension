@@ -201,7 +201,7 @@ jobs:
         run: |
           if [[ $HAS_CHANGES == 'true' ]]
           then
-            gh pr comment "${PR_NUMBER}" --body 'Policies updated'
+            echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff' |  gh pr comment "${PR_NUMBER}" --body-file -
           else
             gh pr comment "${PR_NUMBER}" --body 'No policy changes'
           fi

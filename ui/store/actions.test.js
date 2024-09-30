@@ -4,7 +4,11 @@ import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
@@ -13,6 +17,10 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+} from '../../shared/constants/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -23,6 +31,12 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
+    networkConfigurationsByChainId: {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        rpcEndpoints: [{}],
+      },
+    },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
@@ -67,6 +81,10 @@ describe('Actions', () => {
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
     background.getStatePatches = sinon.stub().callsFake((cb) => cb(null, []));
+    background.removePermittedChain = sinon.stub();
+    background.requestAccountsAndChainPermissionsWithId = sinon.stub();
+    background.grantPermissions = sinon.stub();
+    background.grantPermissionsIncremental = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -1015,20 +1033,57 @@ describe('Actions', () => {
     });
   });
 
-  describe('#upsertNetworkConfiguration', () => {
+  describe('updateNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls upsertNetworkConfiguration in the background with the correct arguments', async () => {
+    it('calls updateNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
-      const upsertNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const updateNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+        updateNetwork: updateNetworkStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        nativeCurrency: 'ETH',
+        name: 'nickname',
+        rpcEndpoints: [{ blockExplorerUrl: 'etherscan.io' }],
+      };
+
+      await store.dispatch(
+        actions.updateNetwork(networkConfiguration, {
+          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+        }),
+      );
+
+      expect(
+        updateNetworkStub.calledOnceWith(
+          '0x',
+          {
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            nativeCurrency: 'ETH',
+            name: 'nickname',
+            rpcEndpoints: [{ blockExplorerUrl: 'etherscan.io' }],
+          },
+          { source: MetaMetricsNetworkEventSource.CustomNetworkForm },
+        ),
+      ).toBe(true);
+    });
+
+    it('updateNetwork has empty object for default options', async () => {
+      const store = mockStore();
+
+      const updateNetworkStub = sinon.stub().callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        updateNetwork: updateNetworkStub,
       });
       setBackgroundConnection(background.getApi());
 
@@ -1042,36 +1097,23 @@ describe('Actions', () => {
       };
 
       await store.dispatch(
-        actions.upsertNetworkConfiguration(networkConfiguration, {
-          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-        }),
+        actions.updateNetwork(networkConfiguration, undefined),
       );
 
       expect(
-        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
-          referrer: ORIGIN_METAMASK,
-          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-          setActive: undefined,
-        }),
-      ).toBe(true);
-    });
-
-    it('throws when no options object is passed as a second argument', async () => {
-      const store = mockStore();
-      await expect(() =>
-        store.dispatch(
-          actions.upsertNetworkConfiguration({
+        updateNetworkStub.calledOnceWith(
+          '0x',
+          {
             id: 'networkConfigurationId',
             rpcUrl: 'newRpc',
             chainId: '0x',
             ticker: 'ETH',
             nickname: 'nickname',
             rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-          }),
+          },
+          {},
         ),
-      ).toThrow(
-        "Cannot destructure property 'setActive' of 'undefined' as it is undefined.",
-      );
+      ).toBe(true);
     });
   });
 
@@ -1116,31 +1158,25 @@ describe('Actions', () => {
     });
   });
 
-  describe('#removeNetworkConfiguration', () => {
+  describe('removeNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls removeNetworkConfiguration in the background with the correct arguments', async () => {
+    it('calls removeNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
-      const removeNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const removeNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        removeNetwork: removeNetworkStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(
-        actions.removeNetworkConfiguration('testNetworkConfigurationId'),
-      );
+      await store.dispatch(actions.removeNetwork('testNetworkConfigurationId'));
 
       expect(
-        removeNetworkConfigurationStub.calledOnceWith(
-          'testNetworkConfigurationId',
-        ),
+        removeNetworkStub.calledOnceWith('testNetworkConfigurationId'),
       ).toBe(true);
     });
   });
@@ -2500,6 +2536,126 @@ describe('Actions', () => {
       expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
         true,
       );
+    });
+  });
+
+  describe('removePermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removePermittedChain in the background', async () => {
+      const store = mockStore();
+
+      background.removePermittedChain.callsFake((_, __, cb) => cb());
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.removePermittedChain('test.com', '0x1'));
+
+      expect(
+        background.removePermittedChain.calledWith(
+          'test.com',
+          '0x1',
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('requestAccountsAndChainPermissionsWithId', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls requestAccountsAndChainPermissionsWithId in the background', async () => {
+      const store = mockStore();
+
+      background.requestAccountsAndChainPermissionsWithId.callsFake((_, cb) =>
+        cb(),
+      );
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.requestAccountsAndChainPermissionsWithId('test.com'),
+      );
+
+      expect(
+        background.requestAccountsAndChainPermissionsWithId.calledWith(
+          'test.com',
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls grantPermissionsIncremental in the background', async () => {
+      const store = mockStore();
+
+      background.grantPermissionsIncremental.callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChain('test.com', '0x1');
+      expect(
+        background.grantPermissionsIncremental.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [EndowmentTypes.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x1'],
+                  },
+                ],
+              },
+            },
+          },
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChains', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls grantPermissions in the background', async () => {
+      const store = mockStore();
+
+      background.grantPermissions.callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChains('test.com', ['0x1', '0x2']);
+      expect(
+        background.grantPermissions.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [EndowmentTypes.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x1', '0x2'],
+                  },
+                ],
+              },
+            },
+          },
+          sinon.match.func,
+        ),
+      ).toBe(true);
+
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 });

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -28,11 +29,41 @@ import {
 import { getURLHost } from '../../../../helpers/utils/util';
 import { getAvatarNetworkColor } from '../../../../helpers/utils/accounts';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
+import { getPermittedChainsForSelectedTab } from '../../../../selectors';
 import { ConnectionListTooltip } from './connection-list-tooltip/connection-list-tooltip';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
+  const connectedNetworks = useSelector((state) =>
+    getPermittedChainsForSelectedTab(state, connection.origin),
+  );
+
+  const renderListItem = process.env.CHAIN_PERMISSIONS ? (
+    <AvatarFavicon
+      data-testid="connection-list-item__avatar-favicon"
+      src={connection.iconUrl}
+    />
+  ) : (
+    <BadgeWrapper
+      badge={
+        <AvatarNetwork
+          data-testid="connection-list-item__avatar-network-badge"
+          size={AvatarNetworkSize.Xs}
+          name={connection.networkName}
+          src={connection.networkIconUrl}
+          borderWidth={1}
+          borderColor={BackgroundColor.backgroundDefault}
+          backgroundColor={getAvatarNetworkColor(connection.networkName)}
+        />
+      }
+    >
+      <AvatarFavicon
+        data-testid="connection-list-item__avatar-favicon"
+        src={connection.iconUrl}
+      />
+    </BadgeWrapper>
+  );
 
   return (
     <Box
@@ -60,24 +91,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
             avatarSize={IconSize.Md}
           />
         ) : (
-          <BadgeWrapper
-            badge={
-              <AvatarNetwork
-                data-testid="connection-list-item__avatar-network-badge"
-                size={AvatarNetworkSize.Xs}
-                name={connection.networkName}
-                src={connection.networkIconUrl}
-                borderWidth={1}
-                borderColor={BackgroundColor.backgroundDefault}
-                backgroundColor={getAvatarNetworkColor(connection.networkName)}
-              />
-            }
-          >
-            <AvatarFavicon
-              data-testid="connection-list-item__avatar-favicon"
-              src={connection.iconUrl}
-            />
-          </BadgeWrapper>
+          <>{renderListItem}</>
         )}
       </Box>
       <Box
@@ -96,18 +110,35 @@ export const ConnectionListItem = ({ connection, onClick }) => {
             alignItems={AlignItems.center}
             gap={1}
           >
-            <Text
-              as="span"
-              width={BlockSize.Max}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-            >
-              {t('connectedWith')}
-            </Text>
-            <ConnectionListTooltip connection={connection} />
+            {process.env.CHAIN_PERMISSIONS ? (
+              <Text
+                as="span"
+                width={BlockSize.Max}
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMd}
+              >
+                {connection.addresses.length} {t('accountsSmallCase')}&nbsp;
+                •&nbsp;
+                {connectedNetworks.length} {t('networksSmallCase')}
+              </Text>
+            ) : (
+              <>
+                <Text
+                  as="span"
+                  width={BlockSize.Max}
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodyMd}
+                >
+                  {t('connectedWith')}
+                </Text>
+
+                <ConnectionListTooltip connection={connection} />
+              </>
+            )}
           </Box>
         )}
       </Box>
+
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexEnd}

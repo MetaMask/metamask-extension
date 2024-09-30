@@ -9,6 +9,8 @@ import {
 import {
   TOKENS,
   MOCK_TRADE_RESPONSE_2,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../ui/pages/swaps/swaps-util-test-constants';
 import {
   fetchTradesInfo,

@@ -30,6 +30,8 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -39,13 +41,17 @@ export function formatDate(date, format = "M/d/y 'at' T") {
   return DateTime.fromMillis(date).toFormat(format);
 }
 
-export const formatUTCDate = (dateInMillis) => {
-  if (!dateInMillis) {
-    return dateInMillis;
+/**
+ * @param {number} unixTimestamp - timestamp as seconds since unix epoch
+ * @returns {string} formatted date string e.g. "14 July 2034, 22:22"
+ */
+export const formatUTCDateFromUnixTimestamp = (unixTimestamp) => {
+  if (!unixTimestamp) {
+    return unixTimestamp;
   }
 
-  return DateTime.fromMillis(dateInMillis)
-    .setZone('utc')
+  return DateTime.fromSeconds(unixTimestamp)
+    .toUTC()
     .toFormat('dd LLLL yyyy, HH:mm');
 };
 

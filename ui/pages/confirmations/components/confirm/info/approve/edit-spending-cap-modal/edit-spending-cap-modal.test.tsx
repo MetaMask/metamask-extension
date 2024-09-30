@@ -26,6 +26,27 @@ jest.mock('../hooks/use-approve-token-simulation', () => ({
   })),
 }));
 
+jest.mock('react-dom', () => ({
+  ...jest.requireActual('react-dom'),
+  createPortal: (node: ReactNode) => node,
+}));
+
+jest.mock('../../../../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../../../../store/actions'),
+  getGasFeeTimeEstimate: jest.fn().mockResolvedValue({
+    lowerTimeBound: 0,
+    upperTimeBound: 60000,
+  }),
+}));
+
+jest.mock('../hooks/use-approve-token-simulation', () => ({
+  useApproveTokenSimulation: jest.fn(() => ({
+    spendingCap: '1000',
+    formattedSpendingCap: '1000',
+    value: '1000',
+  })),
+}));
+
 jest.mock('../../../../../hooks/useAssetDetails', () => ({
   useAssetDetails: jest.fn(() => ({
     decimals: 18,
