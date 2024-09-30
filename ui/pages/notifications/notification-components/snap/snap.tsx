@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { hasProperty } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -11,6 +12,7 @@ import type { SnapNotification } from '../../snap/types/types';
 import { getSnapsMetadata } from '../../../../selectors';
 import { markNotificationsAsRead } from '../../../../store/actions';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
+import SnapNotificationModal from '../../../../components/app/snaps/snap-notification-modal/snap-notification-modal';
 
 type SnapComponentProps = {
   snapNotification: SnapNotification;
@@ -20,10 +22,17 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const [isOpen, setIsOpen] = useState(false);
 
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const snapsNameGetter = getSnapName(snapsMetadata);
+
+  const hasExpandedView = hasProperty(snapNotification.data, 'expandedView');
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
 
   const handleSnapClick = () => {
     dispatch(markNotificationsAsRead([snapNotification.id]));
@@ -36,6 +45,9 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
         previously_read: snapNotification.isRead,
       },
     });
+    if (hasExpandedView) {
+      setIsOpen(true);
+    }
   };
 
   const handleSnapButton = () => {
@@ -53,21 +65,30 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
   };
 
   return (
-    <NotificationListItemSnap
-      id={snapNotification.id}
-      snapId={snapNotification.data.origin}
-      isRead={snapNotification.isRead}
-      createdAt={new Date(snapNotification.createdAt)}
-      title={{
-        items: [
-          {
-            text: snapsNameGetter(snapNotification.data.origin) || 'Snap',
-          },
-        ],
-      }}
-      snapMessage={snapNotification.data.message}
-      handleSnapClick={handleSnapClick}
-      handleSnapButton={handleSnapButton}
-    />
+    <>
+      {hasExpandedView && (
+        <SnapNotificationModal
+          isOpen={isOpen}
+          handleClose={handleClose}
+          data={snapNotification.data}
+        />
+      )}
+      <NotificationListItemSnap
+        id={snapNotification.id}
+        snapId={snapNotification.data.origin}
+        isRead={snapNotification.isRead}
+        createdAt={new Date(snapNotification.createdAt)}
+        title={{
+          items: [
+            {
+              text: snapsNameGetter(snapNotification.data.origin) || 'Snap',
+            },
+          ],
+        }}
+        snapMessage={snapNotification.data.message}
+        handleSnapClick={handleSnapClick}
+        handleSnapButton={handleSnapButton}
+      />
+    </>
   );
 };
