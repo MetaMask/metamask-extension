@@ -48,8 +48,10 @@ const PermitSimulationValueDisplay: React.FC<
 > = ({ primaryType, tokenContract, value }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
-  const { decimalsNumber: tokenDecimals } =
-    useGetTokenStandardAndDetails(tokenContract);
+  const { decimalsNumber: tokenDecimals } = useGetTokenStandardAndDetails(
+    tokenContract,
+    { canTrackMissingDecimalsMetric: true },
+  );
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && value) {
