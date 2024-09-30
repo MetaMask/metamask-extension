@@ -12,9 +12,7 @@ import {
   getPermittedEthChainIds,
   setPermittedEthChainIds,
 } from '../../lib/multichain-api/adapters/caip-permission-adapter-permittedChains';
-import {
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionNames } from './specifications';
 
 export function getPermissionBackgroundApiMethods({

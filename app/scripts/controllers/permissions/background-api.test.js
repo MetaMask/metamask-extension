@@ -1,7 +1,5 @@
 import { MethodNames } from '@metamask/permission-controller';
-import {
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,

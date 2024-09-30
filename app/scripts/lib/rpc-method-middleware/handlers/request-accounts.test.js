@@ -4,9 +4,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
-import {
-  RestrictedMethods,
-} from '../../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 import PermittedChainsAdapters from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
 import EthAccountsAdapters from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
