@@ -7,7 +7,6 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
-
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
@@ -36,6 +35,13 @@ const callBridgeControllerMethod = <T>(
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground(bridgeAction, args);
+    await forceUpdateMetamaskState(dispatch);
+  };
+};
+
+export const getNetworkClientRegistry = () => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('getNetworkClientRegistry');
     await forceUpdateMetamaskState(dispatch);
   };
 };

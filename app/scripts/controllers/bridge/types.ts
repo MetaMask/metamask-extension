@@ -3,6 +3,11 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
+import {
+  AutoManagedNetworkClient,
+  NetworkClientConfiguration,
+  NetworkControllerGetNetworkClientByIdAction,
+} from '@metamask/network-controller';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './constants';
@@ -58,6 +63,6 @@ export type BridgeControllerMessenger = RestrictedControllerMessenger<
   typeof BRIDGE_CONTROLLER_NAME,
   BridgeControllerActions,
   BridgeControllerEvents,
-  never,
+  NetworkControllerGetNetworkClientByIdAction['type'],
   never
 >;

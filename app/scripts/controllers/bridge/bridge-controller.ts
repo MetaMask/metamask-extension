@@ -1,6 +1,11 @@
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
 import {
+  AutoManagedNetworkClient,
+  CustomNetworkClientId,
+  NetworkClientConfiguration,
+} from '@metamask/network-controller';
+import {
   fetchBridgeFeatureFlags,
   fetchBridgeTokens,
   // TODO: Remove restricted import
@@ -70,9 +75,20 @@ export default class BridgeController extends BaseController<
     await this.#setTokens(chainId, 'srcTokens');
   };
 
-  selectDestNetwork = async (chainId: Hex) => {
+  destNetworkClient?: AutoManagedNetworkClient<NetworkClientConfiguration> =
+    undefined;
+
+  selectDestNetwork = async (
+    chainId: Hex,
+    clientId?: CustomNetworkClientId,
+  ) => {
     await this.#setTopAssets(chainId, 'destTopAssets');
     await this.#setTokens(chainId, 'destTokens');
+    // this.destNetworkClient =
+    //   this.messagingSystem.call<'NetworkController:getNetworkClientById'>(
+    //     'NetworkController:getNetworkClientById',
+    //     clientId,
+    //   );
   };
 
   #setTopAssets = async (
