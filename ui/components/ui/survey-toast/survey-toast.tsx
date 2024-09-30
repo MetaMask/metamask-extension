@@ -41,7 +41,7 @@ export function SurveyToast() {
   );
 
   useEffect(() => {
-    if (!basicFunctionality || !metaMetricsId) {
+    if (!basicFunctionality || !metaMetricsId || !participateInMetaMetrics) {
       return undefined;
     }
 
