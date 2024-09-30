@@ -40,8 +40,6 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
     },
   } = req;
 
-  const sessionId = '0xdeadbeef';
-
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
     return end(
       new EthereumRpcError(5302, 'Invalid sessionProperties requested'),
@@ -222,7 +220,6 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
     }
 
     res.result = {
-      sessionId,
       sessionScopes,
       sessionProperties,
     };

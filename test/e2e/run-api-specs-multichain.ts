@@ -145,7 +145,6 @@ async function main() {
           result: {
             name: 'wallet_createSessionResultExample',
             value: {
-              sessionId: '0xdeadbeef',
               sessionScopes: {
                 [`eip155:${chainId}`]: {
                   accounts: [`eip155:${chainId}:${ACCOUNT_1}`],

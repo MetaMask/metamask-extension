@@ -13,12 +13,6 @@ export async function walletRevokeSessionHandler(
   end,
   hooks,
 ) {
-  if (request.params?.sessionId) {
-    return end(
-      new EthereumRpcError(5500, 'SessionId not recognized'), // we aren't currently storing a sessionId to check this against
-    );
-  }
-
   try {
     hooks.revokePermission(request.origin, Caip25EndowmentPermissionName);
   } catch (err) {
