@@ -45,6 +45,20 @@
     }
   }
 
+  &:not(&--disabled) {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &.mm-button-secondary {
+    &:hover:not(&--disabled) {
+      & > span {
+        color: var(--color-primary-inverse);
+      }
+    }
+  }
+
   &--disabled {
     cursor: default !important;
   }
