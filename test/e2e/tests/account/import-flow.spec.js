@@ -49,7 +49,6 @@ describe('Import flow @no-mmi', function () {
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.delay(200);
 
         await completeImportSRPOnboardingFlow(
           driver,
