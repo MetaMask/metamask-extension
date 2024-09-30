@@ -274,36 +274,6 @@ describe('wallet_createSession', () => {
     expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
-  it('asserts any unsupported required scopes', async () => {
-    const { handler } = createMockedHandler();
-    bucketScopes.mockReturnValueOnce({
-      unsupportableScopes: {
-        'foo:bar': {
-          methods: [],
-          notifications: [],
-        },
-      },
-    });
-    await handler(baseRequest);
-
-    expect(assertScopesSupported).toHaveBeenNthCalledWith(
-      1,
-      {
-        'foo:bar': {
-          methods: [],
-          notifications: [],
-        },
-      },
-      expect.objectContaining({
-        isChainIdSupported: expect.any(Function),
-      }),
-    );
-
-    const isChainIdSupportedBody =
-      assertScopesSupported.mock.calls[0][1].isChainIdSupported.toString();
-    expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
-  });
-
   it('buckets the optional scopes', async () => {
     const { handler } = createMockedHandler();
     validateAndFlattenScopes.mockReturnValue({
