@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -17,11 +17,7 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import {
-  BtcAccountType,
-  BtcMethod,
-  KeyringClient,
-} from '@metamask/keyring-api';
+import { BtcAccountType } from '@metamask/keyring-api';
 import { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -34,6 +30,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -44,6 +41,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
   getSelectedAccount,
+  getMemoizedUnapprovedTemplatedConfirmations,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -70,10 +68,9 @@ import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
-import { BitcoinWalletSnapSender } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
-import { v4 as uuidv4 } from 'uuid';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
+import { sendMultichainTransaction } from '../../../store/actions';
 
 const CoinButtons = ({
   chainId,
@@ -112,6 +109,10 @@ const CoinButtons = ({
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
+
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -224,24 +225,21 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
+  useEffect(() => {
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => approval.type === 'snap_dialog', // approval.origin === 'metamask', TODO: uncomment this when snap is released
+    );
+
+    if (templatedSnapApproval) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+    }
+  }, [unapprovedTemplatedConfirmations, history]);
+
   const handleSendOnClick = useCallback(async () => {
-    console.log('account.type', account.type);
     switch (account.type) {
       case BtcAccountType.P2wpkh: {
-        console.log('P2wpkh');
-        const client = new KeyringClient(new BitcoinWalletSnapSender());
+        await sendMultichainTransaction(account.id, chainId as CaipChainId);
 
-        // This will trigger the Snap account creation flow (+ account renaming)
-        await client.submitRequest({
-          id: uuidv4(),
-          scope: chainId as CaipChainId,
-          account: account.id,
-          request: {
-            method: BtcMethod.SendMany,
-            params: {},
-          },
-        });
-        console.log('finished');
         break;
       }
       default: {

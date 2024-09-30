@@ -46,7 +46,7 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
     [isProfileSyncingEnabled, isNotificationsEnabled],
   );
 
-  useAccountSyncingEffect();
+  // useAccountSyncingEffect();
 
   useEffect(() => {
     if (basicFunctionality && shouldFetchNotifications && isUnlocked) {

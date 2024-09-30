@@ -11,6 +11,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import type { Hex, Json } from '@metamask/utils';
+import { v4 as uuidv4 } from 'uuid';
 import {
   AssetsContractController,
   BalanceMap,
@@ -41,6 +42,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Patch } from 'immer';
+import { KeyringClient, BtcMethod } from '@metamask/keyring-api';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -66,7 +68,9 @@ import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getSelectedNetworkClientId,
+  getMemoizedUnapprovedTemplatedConfirmations,
 } from '../selectors';
+import { BitcoinWalletSnapSender } from '../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 import {
   computeEstimatedGasLimit,
   initializeSendState,
@@ -5776,4 +5780,22 @@ function applyPatches(
   }
 
   return newState;
+}
+
+export async function sendMultichainTransaction(
+  accountId: string,
+  chainId: string,
+) {
+  const client = new KeyringClient(new BitcoinWalletSnapSender());
+
+  await client.submitRequest({
+    id: uuidv4(),
+    scope: chainId as CaipChainId,
+    account: accountId,
+    request: {
+      method: BtcMethod.SendMany,
+      params: {},
+    },
+  });
+  console.log('refreshed');
 }
