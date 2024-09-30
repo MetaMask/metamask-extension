@@ -111,10 +111,10 @@ import {
   TextVariant,
   FRACTIONS,
   TEXT_ALIGN,
-  FONT_STYLE,
   Size,
   FlexDirection,
   Severity,
+  FontStyle,
 } from '../../../helpers/constants/design-system';
 import {
   BannerAlert,
@@ -1241,7 +1241,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                   as="h6"
                   color={TextColor.textDefault}
                   data-testid="review-quote-gas-fee-in-fiat"
-                  width={FRACTIONS.FOUR_TWELFTHS}
                   textAlign={TEXT_ALIGN.RIGHT}
                   style={{ textDecoration: 'line-through' }}
                   marginRight={1}
@@ -1253,7 +1252,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                   as="h6"
                   color={TextColor.textDefault}
                   textAlign={TEXT_ALIGN.RIGHT}
-                  fontStyle={FONT_STYLE.ITALIC}
+                  fontStyle={FontStyle.Italic}
                 >
                   {t('included')}
                 </Text>
