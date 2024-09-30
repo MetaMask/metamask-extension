@@ -9,7 +9,6 @@ import {
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
 import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
@@ -50,9 +49,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
   const selectedAccounts = accounts.filter(({ address }) =>
-    selectedAccountAddresses.some((selectedAccountAddress) =>
-      isEqualCaseInsensitive(selectedAccountAddress, address),
-    ),
+    selectedAccountAddresses.includes(address),
   );
   const selectedNetworks = allNetworks.filter(({ chainId }) =>
     selectedChainIds.includes(chainId),
