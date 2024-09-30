@@ -1078,11 +1078,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     }
   };
 
-  let tradeTxTokenFee;
-  if (isGasIncludedTrade) {
-    tradeTxTokenFee =
-      smartTransactionFees?.tradeTxFees?.fees?.[0]?.tokenFees?.[0] || null;
-  }
+  const tradeTxTokenFee = isGasIncludedTrade
+    ? smartTransactionFees?.tradeTxFees?.fees?.[0]?.tokenFees?.[0] ?? null
+    : null;
   const feeTokenBalanceNeededInFiat = useEthFiatAmount(
     Number(hexWEIToDecETH(tradeTxTokenFee?.balanceNeededToken)) || 0,
     { showFiat: true },
