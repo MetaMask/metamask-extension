@@ -24,8 +24,8 @@ const useAlerts = (ownerId: string) => {
     selectConfirmedAlertKeys(state as AlertsState, ownerId),
   );
 
-  const generalAlerts = useSelector((state) =>
-    selectGeneralAlerts(state as AlertsState, ownerId),
+  const generalAlerts = sortAlertsBySeverity(
+    useSelector((state) => selectGeneralAlerts(state as AlertsState, ownerId)),
   );
 
   const fieldAlerts = sortAlertsBySeverity(
@@ -92,7 +92,7 @@ const useAlerts = (ownerId: string) => {
   };
 };
 
-function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
+export function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
   const severityOrder = {
     [Severity.Danger]: 3,
     [Severity.Warning]: 2,
