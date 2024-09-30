@@ -32,7 +32,7 @@ const Header = () => {
 
   const { currentConfirmation } = useConfirmContext<Confirmation>();
 
-  if (currentConfirmation.type === TransactionType.tokenMethodTransfer) {
+  if (currentConfirmation?.type === TransactionType.tokenMethodTransfer) {
     const isWalletInitiated =
       (currentConfirmation as TransactionMeta).origin === 'metamask';
 
