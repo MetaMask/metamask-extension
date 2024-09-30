@@ -6161,20 +6161,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/queued-request-controller@npm:2.0.0"
+"@metamask/queued-request-controller@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@metamask/queued-request-controller@npm:5.1.0"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/controller-utils": "npm:^11.0.0"
-    "@metamask/json-rpc-engine": "npm:^9.0.0"
-    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.3.0"
+    "@metamask/json-rpc-engine": "npm:^9.0.3"
+    "@metamask/rpc-errors": "npm:^6.3.1"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
-    "@metamask/utils": "npm:^8.3.0"
+    "@metamask/utils": "npm:^9.1.0"
   peerDependencies:
-    "@metamask/network-controller": ^19.0.0
-    "@metamask/selected-network-controller": ^15.0.0
-  checksum: 10/b618fa05465a52e5b689d932d99b47552b5987a9141d58260966611f1057190132f14b1a2123c48399f218fc57c577e1c86375e8ee2b43871cdc597fbaeedb7a
+    "@metamask/network-controller": ^21.0.0
+    "@metamask/selected-network-controller": ^18.0.0
+  checksum: 10/71bfc03a1b4de2e611c4a744edf9b0159b9ed7245f62ffd040cf700b717820dcb78844c503bf73d4bac0ad377e0b91d4e20afd18381999fd5fd16c9c2d80b966
   languageName: node
   linkType: hard
 
@@ -26184,7 +26184,7 @@ __metadata:
     "@metamask/preinstalled-example-snap": "npm:^0.1.0"
     "@metamask/profile-sync-controller": "npm:^0.9.3"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:^2.0.0"
+    "@metamask/queued-request-controller": "npm:^5.1.0"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
