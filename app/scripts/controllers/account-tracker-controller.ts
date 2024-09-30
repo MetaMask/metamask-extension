@@ -270,7 +270,7 @@ export default class AccountTrackerController extends BaseController<
     );
   }
 
-  resetState() {
+  resetState(): void {
     const {
       accounts,
       accountsByChainId,
@@ -686,14 +686,11 @@ export default class AccountTrackerController extends BaseController<
     }
 
     const rpcUrl = 'http://127.0.0.1:8545';
-    const singleCallBalancesAddress =
-      SINGLE_CALL_BALANCES_ADDRESSES[
-        chainId as keyof typeof SINGLE_CALL_BALANCES_ADDRESSES
-      ];
     if (
       identifier === LOCALHOST_RPC_URL ||
       identifier === rpcUrl ||
-      !singleCallBalancesAddress
+      !((id): id is keyof typeof SINGLE_CALL_BALANCES_ADDRESSES =>
+        id in SINGLE_CALL_BALANCES_ADDRESSES)(chainId)
     ) {
       await Promise.all(
         addresses.map((address) =>
@@ -703,7 +700,7 @@ export default class AccountTrackerController extends BaseController<
     } else {
       await this.#updateAccountsViaBalanceChecker(
         addresses,
-        singleCallBalancesAddress,
+        SINGLE_CALL_BALANCES_ADDRESSES[chainId],
         provider,
         chainId,
       );
