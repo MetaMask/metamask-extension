@@ -68,8 +68,8 @@ import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getSelectedNetworkClientId,
-  getMemoizedUnapprovedTemplatedConfirmations,
 } from '../selectors';
+// eslint-disable-next-line import/no-restricted-paths
 import { BitcoinWalletSnapSender } from '../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 import {
   computeEstimatedGasLimit,
