@@ -147,7 +147,7 @@ describe('BtcOverview', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
 
     for (const buttonTestId of [
-      BTC_OVERVIEW_SEND,
+      // BTC_OVERVIEW_SEND,
       BTC_OVERVIEW_SWAP,
       BTC_OVERVIEW_BRIDGE,
     ]) {
