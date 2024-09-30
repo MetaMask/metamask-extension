@@ -1,12 +1,12 @@
 import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
+import { By } from 'selenium-webdriver';
 import {
   DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
   openDapp,
-  regularDelayMs,
   unlockWallet,
+  WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from './helpers';
@@ -98,7 +98,6 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await unlockWallet(driver);
         await openDapp(driver);
         await queueSignatures(driver);
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement('[data-testid="confirm-nav__reject-all"]');
 
@@ -166,11 +165,13 @@ async function queueSignatures(driver: Driver) {
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.findElement({ text: 'Reject all' });
+  await driver.findElement(By.xpath("//div[normalize-space(.)='1 of 2']"));
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV4');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.findElement(By.xpath("//div[normalize-space(.)='1 of 3']"));
 }
 
 async function queueSignaturesAndTransactions(driver: Driver) {
