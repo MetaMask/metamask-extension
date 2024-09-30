@@ -20,7 +20,7 @@ import {
 } from '../utils/token';
 
 type UseGetTokenStandardAndDetailsProps = {
-  canSendMissingDecimalsMetric: boolean;
+  canTrackMissingDecimalsMetric: boolean;
 
   // We can add these optional params to support ERC721 and ERC1155
   // tokenId?: string;
@@ -32,13 +32,13 @@ type UseGetTokenStandardAndDetailsProps = {
  *
  * @param tokenAddress
  * @param options
- * @param options.canSendMissingDecimalsMetric
+ * @param options.canTrackMissingDecimalsMetric
  * @returns
  */
 const useGetTokenStandardAndDetails = (
   tokenAddress: Hex | string | undefined,
   {
-    canSendMissingDecimalsMetric = false,
+    canTrackMissingDecimalsMetric = false,
   }: Partial<UseGetTokenStandardAndDetailsProps> = {},
 ) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -84,7 +84,7 @@ const useGetTokenStandardAndDetails = (
     details.decimals = String(parsedDecimals);
     details.decimalsNumber = parsedDecimals;
 
-    if (canSendMissingDecimalsMetric) {
+    if (canTrackMissingDecimalsMetric) {
       trackIncompleteAsset();
     }
   }
