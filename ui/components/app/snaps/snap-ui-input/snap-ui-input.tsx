@@ -22,7 +22,7 @@ export const SnapUIInput: FunctionComponent<
   const [value, setValue] = useState(initialValue ?? '');
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue !== undefined && initialValue !== null) {
       setValue(initialValue);
     }
   }, [initialValue]);
