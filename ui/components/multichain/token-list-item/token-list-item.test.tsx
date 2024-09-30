@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { TokenListItem } from '.';
 
 const state = {
@@ -33,13 +34,30 @@ const state = {
   },
 };
 
+const safeChainDetails = {
+  chainId: '1',
+  nativeCurrency: {
+    symbol: 'ETH',
+  },
+};
+
 let openTabSpy: jest.SpyInstance<void, [opts: { url: string }], unknown>;
 
 jest.mock('../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
 }));
 
+jest.mock(
+  '../../../pages/settings/networks-tab/networks-form/use-safe-chains',
+  () => ({
+    useSafeChains: jest.fn().mockReturnValue({
+      safeChains: [safeChainDetails],
+    }),
+  }),
+);
+
 const mockGetIntlLocale = getIntlLocale;
+const mockGetSafeChains = useSafeChains;
 
 describe('TokenListItem', () => {
   beforeAll(() => {
@@ -98,6 +116,7 @@ describe('TokenListItem', () => {
       showPercentage: true,
       tokenImage: '',
       title: '',
+      tokenSymbol: 'SCAM_TOKEN',
     };
     const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -107,7 +126,38 @@ describe('TokenListItem', () => {
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
-    expect(getByText('This is a potential scam')).toBeInTheDocument();
+    expect(
+      getByText(
+        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is ETH. Please verify you are connected to the correct chain.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('should display warning scam modal fallback when safechains fails to resolve correctly', () => {
+    (mockGetSafeChains as unknown as jest.Mock).mockReturnValue([]);
+    const store = configureMockStore()(state);
+    const propsToUse = {
+      primary: '11.9751 ETH',
+      isNativeCurrency: true,
+      isOriginalTokenSymbol: false,
+      showPercentage: true,
+      tokenImage: '',
+      title: '',
+      tokenSymbol: 'SCAM_TOKEN',
+    };
+    const { getByTestId, getByText } = renderWithProvider(
+      <TokenListItem {...propsToUse} />,
+      store,
+    );
+
+    const warningScamModal = getByTestId('scam-warning');
+    fireEvent.click(warningScamModal);
+
+    expect(
+      getByText(
+        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is something else. Please verify you are connected to the correct chain.',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('should render crypto balance', () => {

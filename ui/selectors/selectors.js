@@ -12,6 +12,8 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -102,7 +104,10 @@ import {
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
+import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -1160,14 +1165,20 @@ export function getRpcPrefsForCurrentProvider(state) {
 }
 
 export function getKnownMethodData(state, data) {
-  if (!data) {
+  const { knownMethodData, use4ByteResolution } = state.metamask;
+
+  if (!use4ByteResolution || !hasTransactionData(data)) {
     return null;
   }
+
   const prefixedData = addHexPrefix(data);
   const fourBytePrefix = prefixedData.slice(0, 10);
-  const { knownMethodData, use4ByteResolution } = state.metamask;
-  // If 4byte setting is off, we do not want to return the knownMethodData
-  return use4ByteResolution ? knownMethodData?.[fourBytePrefix] ?? {} : {};
+
+  if (fourBytePrefix.length < 10) {
+    return null;
+  }
+
+  return knownMethodData?.[fourBytePrefix] ?? null;
 }
 
 export function getFeatureFlags(state) {
@@ -1294,6 +1305,10 @@ export function getNextSuggestedNonce(state) {
 
 export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
+}
+
+export function getShowPermittedNetworkToastOpen(state) {
+  return state.appState.showPermittedNetworkToastOpen;
 }
 
 /**
@@ -1576,6 +1591,18 @@ export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
     return acc;
   }, {});
 });
+
+export const getPreinstalledSnaps = createDeepEqualSelector(
+  getSnaps,
+  (snaps) => {
+    return Object.values(snaps).reduce((acc, snap) => {
+      if (snap.preinstalled) {
+        acc[snap.id] = snap;
+      }
+      return acc;
+    }, {});
+  },
+);
 
 export const getInsightSnaps = createDeepEqualSelector(
   getEnabledSnaps,

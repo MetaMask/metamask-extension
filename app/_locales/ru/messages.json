@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Я подтвердил(-а) получение предупреждения и все еще хочу продолжить"
   },
-  "confirmAlertModalDetails": {
-    "message": "Если вы войдете, третья сторона, которая, как известно, совершала мошеннические действия, может похитиь твсе ваши активы. Прежде чем продолжить, просмотрите оповещения."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Ваши активы могут быть в опасности"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Мы перенаправим вас на $1 после нажатия кнопки «Продолжить»."
   },
@@ -1004,9 +998,6 @@
   },
   "confirmTitleDescSIWESignature": {
     "message": "Сайт требует, чтобы вы вошли в систему и доказали, что вы являетесь владельцем этого счета."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Подтверждайте это сообщение только в том случае, если вы одобряете его содержание и доверяете запрашивающему сайту."
   },
   "confirmTitlePermitTokens": {
     "message": "Запрос лимита расходов"
@@ -2863,10 +2854,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Эта сеть не соответствует ID или имени связанного с ней блокчейна. Многие популярные токены используют название $1, что делает его объектом мошенничества. Мошенники могут обманом заставить вас отправить им взамен более ценную валюту. Проверьте все, прежде чем продолжить.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Это потенциальное мошенничество"
+    "message": "Это потенциальное мошенничество",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Нужна помощь? Обратитесь в $1",

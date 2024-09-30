@@ -29,6 +29,7 @@ import {
   updateEditableParams,
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
+  setNextNonce,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -79,6 +80,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getEnvironmentType,
   ///: END:ONLY_INCLUDE_IF
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
 
 import {
@@ -426,6 +429,7 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(fetchSmartTransactionsLiveness());
     },
     getNextNonce: () => dispatch(getNextNonce()),
+    setNextNonce: (val) => dispatch(setNextNonce(val)),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {

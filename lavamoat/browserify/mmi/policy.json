@@ -731,16 +731,8 @@
     },
     "@metamask/address-book-controller": {
       "packages": {
-        "@metamask/address-book-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true
-      }
-    },
-    "@metamask/address-book-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/announcement-controller": {
@@ -1451,24 +1443,9 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/utils": true,
         "@metamask/scure-bip39": true,
+        "@metamask/utils": true,
         "browserify>buffer": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring": {
@@ -1476,24 +1453,9 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
         "crypto-browserify>randombytes": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
@@ -2169,14 +2131,18 @@
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
+        "clearInterval": true,
         "console.error": true,
         "dispatchEvent": true,
         "fetch": true,
         "removeEventListener": true,
+        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
         "@metamask/message-signing-snap>@noble/ciphers": true,
         "@metamask/profile-sync-controller>siwe": true,
         "@noble/hashes": true,

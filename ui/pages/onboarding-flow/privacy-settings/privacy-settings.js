@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ButtonVariant } from '@metamask/snaps-sdk';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
   useSetIsProfileSyncingEnabled,

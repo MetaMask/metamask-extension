@@ -1,4 +1,7 @@
 import { MethodRegistry } from 'eth-method-registry';
+import { Hex } from '@metamask/utils';
+import { hasTransactionData } from '../modules/transaction.utils';
+import { stripHexPrefix } from '../modules/hexstring-utils';
 import fetchWithCache from './fetch-with-cache';
 
 type FourByteResult = {
@@ -12,7 +15,14 @@ type FourByteResponse = {
 
 export async function getMethodFrom4Byte(
   fourBytePrefix: string,
-): Promise<string> {
+): Promise<string | undefined> {
+  if (
+    !hasTransactionData(fourBytePrefix as Hex) ||
+    stripHexPrefix(fourBytePrefix)?.length < 8
+  ) {
+    return undefined;
+  }
+
   const fourByteResponse = (await fetchWithCache({
     url: `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
     fetchOptions: {
