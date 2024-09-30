@@ -162,6 +162,10 @@
   "accountOptions": {
     "message": "Account options"
   },
+  "accountPermissionToast": {
+    "message": "Account permissions updated for $1",
+    "description": "$1 represents connected dapp"
+  },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
@@ -173,6 +177,12 @@
   },
   "accountsConnected": {
     "message": "Accounts connected"
+  },
+  "accountsPermissionsTitle": {
+    "message": "See your accounts and suggest transactions"
+  },
+  "accountsSmallCase": {
+    "message": "accounts"
   },
   "active": {
     "message": "Active"
@@ -1014,12 +1024,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
-  "confirmAlertModalDetails": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Your assets may be at risk"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
   },
@@ -1062,20 +1066,32 @@
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
   },
-  "confirmTitleDescSignature": {
-    "message": "Only confirm this message if you approve the content and trust the requesting site."
+  "confirmTitleDescSign": {
+    "message": "Review request details before you confirm."
   },
   "confirmTitlePermitTokens": {
     "message": "Spending cap request"
   },
+  "confirmTitleRevokeApproveTransaction": {
+    "message": "Remove permission"
+  },
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
+  },
+  "confirmTitleSetApprovalForAllRevokeTransaction": {
+    "message": "Remove permission"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
   },
   "confirmTitleTransaction": {
     "message": "Transaction request"
+  },
+  "confirmationAlertModalDetails": {
+    "message": "To protect your assets and login information, we suggest you reject the request."
+  },
+  "confirmationAlertModalTitle": {
+    "message": "This request is suspicious"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -1169,6 +1185,10 @@
   "connectedWith": {
     "message": "Connected with"
   },
+  "connectedWithAccount": {
+    "message": "Connected with $1",
+    "description": "$1 represents account name"
+  },
   "connecting": {
     "message": "Connecting"
   },
@@ -1195,6 +1215,9 @@
   },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
+  },
+  "connectionDescription": {
+    "message": "This site wants to"
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -1588,6 +1611,10 @@
   "disconnectAllAccountsText": {
     "message": "accounts"
   },
+  "disconnectAllDescription": {
+    "message": "If you disconnect from $1, you’ll need to reconnect your accounts and networks to use this site again.",
+    "description": "$1 represents the website hostname"
+  },
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
@@ -1598,6 +1625,10 @@
   "disconnectAllTitle": {
     "message": "Disconnect all $1",
     "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
+  },
+  "disconnectMessage": {
+    "message": "This will disconnect you from $1",
+    "description": "$1 is the name of the dapp"
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
@@ -1762,6 +1793,9 @@
   },
   "editPermission": {
     "message": "Edit permission"
+  },
+  "editPermissions": {
+    "message": "Edit permissions"
   },
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
@@ -2901,6 +2935,14 @@
   "more": {
     "message": "more"
   },
+  "moreAccounts": {
+    "message": "+ $1 more accounts",
+    "description": "$1 is the number of accounts"
+  },
+  "moreNetworks": {
+    "message": "+ $1 more networks",
+    "description": "$1 is the number of networks"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
@@ -2986,11 +3028,16 @@
     "message": "Edit network details"
   },
   "nativeTokenScamWarningDescription": {
-    "message": "This network doesn't match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
-    "description": "$1 represents the currency name"
+    "message": "The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered $1 while the expected token symbol is $2. Please verify you are connected to the correct chain.",
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
+  },
+  "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
+    "message": "something else",
+    "description": "graceful fallback for when token symbol isn't found"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "This is a potential scam"
+    "message": "Unexpected Native Token Symbol",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Need help? Contact $1",
@@ -3078,6 +3125,10 @@
   "networkOptions": {
     "message": "Network options"
   },
+  "networkPermissionToast": {
+    "message": "Network permissions updated for $1",
+    "description": "$1 represents connected dapp"
+  },
   "networkProvider": {
     "message": "Network provider"
   },
@@ -3115,6 +3166,9 @@
   },
   "networks": {
     "message": "Networks"
+  },
+  "networksSmallCase": {
+    "message": "networks"
   },
   "nevermind": {
     "message": "Nevermind"
@@ -3773,6 +3827,9 @@
   "permissionFor": {
     "message": "Permission for"
   },
+  "permissionFrom": {
+    "message": "Permission from"
+  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -4019,6 +4076,9 @@
   },
   "permitSimulationDetailInfo": {
     "message": "You're giving the spender permission to spend this many tokens from your account."
+  },
+  "permittedChainToastUpdate": {
+    "message": "$1 has been given access to $2."
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -4389,6 +4449,13 @@
   "requestNotVerifiedError": {
     "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
   },
+  "requestingFor": {
+    "message": "Requesting for"
+  },
+  "requestingForAccount": {
+    "message": "Requesting for $1",
+    "description": "Name of Account"
+  },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
   },
@@ -4477,6 +4544,9 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "reviewAlert": {
+    "message": "Review alert"
+  },
   "reviewAlerts": {
     "message": "Review alerts"
   },
@@ -4501,6 +4571,9 @@
   },
   "revokePermission": {
     "message": "Revoke permission"
+  },
+  "revokeSimulationDetailsDesc": {
+    "message": "You're removing someone's permission to spend tokens from your account."
   },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
@@ -4857,6 +4930,9 @@
   },
   "simulationDetailsOutgoingHeading": {
     "message": "You send"
+  },
+  "simulationDetailsRevokeSetApprovalForAllDesc": {
+    "message": "You're removing someone else's permission to withdraw NFTs from your account."
   },
   "simulationDetailsSetApprovalForAllDesc": {
     "message": "You're giving permission for someone else to withdraw NFTs from your account."

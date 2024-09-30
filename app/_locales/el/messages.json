@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Έχω ενημερωθεί για την ειδοποίηση και εξακολουθώ να θέλω να συνεχίσω"
   },
-  "confirmAlertModalDetails": {
-    "message": "Εάν συνδεθείτε, ένας τρίτος που είναι γνωστός για απάτες μπορεί να αποκτήσει όλα τα περιουσιακά σας στοιχεία. Ελέγξτε τις ειδοποιήσεις πριν συνεχίσετε."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Τα περιουσιακά σας στοιχεία μπορεί να κινδυνεύουν"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Θα σας ανακατευθύνουμε στο $1 όταν κάνετε κλικ για να συνεχίσετε."
   },
@@ -1004,9 +998,6 @@
   },
   "confirmTitleDescSIWESignature": {
     "message": "Ένας ιστότοπος θέλει να συνδεθείτε για να αποδείξετε ότι είστε ο κάτοχος αυτού του λογαριασμού."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Επιβεβαιώστε αυτό το μήνυμα μόνο εάν εγκρίνετε το περιεχόμενο και εμπιστεύεστε τον ιστότοπο που το ζητάει."
   },
   "confirmTitlePermitTokens": {
     "message": "Αίτημα ανώτατου ορίου δαπανών"
@@ -2867,10 +2858,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Αυτό το δίκτυο δεν ταιριάζει με το αναγνωριστικό ή το όνομα της σχετικής αλυσίδας. Πολλά δημοφιλή tokens χρησιμοποιούν το όνομα $1, καθιστώντας το στόχο για απάτες. Οι απατεώνες μπορεί να σας ξεγελάσουν για να τους στείλετε πιο πολύτιμα νομίσματα σε αντάλλαγμα. Επαληθεύστε τα πάντα προτού συνεχίσετε.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Πρόκειται για πιθανή απάτη"
+    "message": "Πρόκειται για πιθανή απάτη",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Χρειάζεστε βοήθεια; Επικοινωνήστε με $1",
