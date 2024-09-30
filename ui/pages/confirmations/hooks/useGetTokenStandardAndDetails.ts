@@ -20,7 +20,8 @@ import {
 } from '../utils/token';
 
 type UseGetTokenStandardAndDetailsProps = {
-  canTrackMissingDecimalsMetric: boolean;
+  canTrackMissingDecimalsMetric?: boolean;
+  metricLocation?: MetaMetricsEventLocation;
 
   // We can add these optional params to support ERC721 and ERC1155
   // tokenId?: string;
@@ -33,13 +34,15 @@ type UseGetTokenStandardAndDetailsProps = {
  * @param tokenAddress
  * @param options
  * @param options.canTrackMissingDecimalsMetric
+ * @param options.metricLocation
  * @returns
  */
 const useGetTokenStandardAndDetails = (
   tokenAddress: Hex | string | undefined,
   {
     canTrackMissingDecimalsMetric = false,
-  }: Partial<UseGetTokenStandardAndDetailsProps> = {},
+    metricLocation = MetaMetricsEventLocation.SignatureConfirmation,
+  }: UseGetTokenStandardAndDetailsProps = {},
 ) => {
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
@@ -63,7 +66,7 @@ const useGetTokenStandardAndDetails = (
         asset_address: tokenAddress,
         asset_type: TokenStandard.ERC20,
         chain_id: chainId,
-        location: MetaMetricsEventLocation.Confirmation,
+        location: metricLocation,
         ui_customizations: [
           MetaMetricsEventUiCustomization.RedesignedConfirmation,
         ],
