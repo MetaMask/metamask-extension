@@ -321,9 +321,11 @@ async function setupMocking(
     `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
     `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
     `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
     `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
     `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
     `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
   ].forEach(
     async (url) =>
       await server.forGet(url).thenCallback(() => {
