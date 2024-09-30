@@ -719,7 +719,6 @@ describe('wallet_createSession', () => {
     await handler(baseRequest);
 
     expect(response.result).toStrictEqual({
-      sessionId: '0xdeadbeef',
       sessionProperties: {
         expiry: 'date',
         foo: 'bar',

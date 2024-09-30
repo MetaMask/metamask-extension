@@ -32,19 +32,6 @@ const createMockedHandler = () => {
 };
 
 describe('wallet_revokeSession', () => {
-  it('throws a 5500 error when sessionId param is specified', async () => {
-    const { handler, end } = createMockedHandler();
-    await handler({
-      ...baseRequest,
-      params: {
-        sessionId: '0xdeadbeef',
-      },
-    });
-    expect(end).toHaveBeenCalledWith(
-      new EthereumRpcError(5500, 'SessionId not recognized'),
-    );
-  });
-
   it('revokes the the CAIP-25 endowment permission', async () => {
     const { handler, revokePermission } = createMockedHandler();
 
