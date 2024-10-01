@@ -4764,7 +4764,8 @@ export function signAndSendSmartTransaction({
         [
           {
             signedTransactions,
-            // Deprecate the "signedCanceledTransactions" param in the STX controller since it's no longer needed.
+            // The "signedCanceledTransactions" parameter is still expected by the STX controller but is no longer used. 
+            // So we are passing an empty array. The parameter may be deprecated in a future update.
             signedCanceledTransactions: [],
             txParams: unsignedTransaction,
           },
