@@ -15,7 +15,7 @@ import {
   addToken,
   addTransactionAndWaitForPublish,
   forceUpdateMetamaskState,
-  upsertNetworkConfiguration,
+  addNetwork,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { QuoteRequest } from '../../pages/bridge/types';
@@ -33,13 +33,12 @@ import {
   checkNetworkAndAccountSupports1559,
   getIsBridgeChain,
   getIsBridgeEnabled,
-  getNetworkConfigurations,
+  getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../selectors';
 import { getGasFeeEstimates } from '../metamask/metamask';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
-import { MetaMetricsNetworkEventSource } from '../../../shared/constants/metametrics';
 import { DEFAULT_TOKEN_ADDRESS } from '../../../shared/constants/swaps';
 import {
   getEthUsdtApproveResetTxParams,
@@ -394,7 +393,7 @@ export const signBridgeTransaction = (
     };
 
     const addSourceToken = () => {
-      const sourceNetworkClientId = getSelectedNetworkClientId(state);
+      const sourceNetworkClientId: string = getSelectedNetworkClientId(state);
       const {
         address,
         decimals,
@@ -413,33 +412,36 @@ export const signBridgeTransaction = (
     };
 
     const addDestToken = () => {
-      const networkConfigurations = getNetworkConfigurations(state);
-      const networkConfigurationsArr = Object.values<{
-        chainId: Hex;
-        id: string;
-      }>(networkConfigurations);
-      const hexDestChainId = new Numeric(
-        quoteMeta.quote.destChainId,
-        10,
-      ).toPrefixedHexString() as `0x${string}`;
-      const destNetworkConfig = networkConfigurationsArr.find(
-        (networkConfig) => networkConfig.chainId === hexDestChainId,
-      );
-      const {
-        address,
-        decimals,
-        symbol,
-        icon: image,
-      } = quoteMeta.quote.destAsset;
+      const networkConfigurations = getNetworkConfigurationsByChainId(state);
+      const hexDestChainId = new Numeric(quoteMeta.quote.destChainId, 10)
+        .toPrefixedHexString()
+        .toLowerCase() as `0x${string}`;
+      const destNetworkConfig = networkConfigurations[hexDestChainId];
 
       if (destNetworkConfig) {
+        const rpcEndpointIndex = destNetworkConfig.defaultRpcEndpointIndex;
+        const destNetworkClientId =
+          destNetworkConfig.rpcEndpoints[rpcEndpointIndex].networkClientId;
+        if (!destNetworkClientId) {
+          throw new Error(
+            `No network client ID found for destination chain ${hexDestChainId}`,
+          );
+        }
+
+        const {
+          address,
+          decimals,
+          symbol,
+          icon: image,
+        } = quoteMeta.quote.destAsset;
+
         dispatch(
           addToken({
             address,
             decimals,
             symbol,
             image,
-            networkClientId: destNetworkConfig.id,
+            networkClientId: destNetworkClientId,
           }),
         );
       } else {
@@ -449,23 +451,7 @@ export const signBridgeTransaction = (
         if (!featuredRpc) {
           throw new Error('No featured RPC found');
         }
-
-        const { rpcUrl, nickname, rpcPrefs, ticker } = featuredRpc;
-        dispatch(
-          upsertNetworkConfiguration(
-            {
-              rpcUrl,
-              chainId: hexDestChainId,
-              nickname,
-              rpcPrefs,
-              ticker,
-            },
-            {
-              setActive: false,
-              source: MetaMetricsNetworkEventSource.Bridge,
-            },
-          ),
-        );
+        dispatch(addNetwork(featuredRpc));
       }
     };
 
