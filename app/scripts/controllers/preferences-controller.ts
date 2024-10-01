@@ -19,6 +19,7 @@ import {
 } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { Json } from 'json-rpc-engine';
 
 type AccountIdentityEntry = {
   address: string;
@@ -143,9 +144,8 @@ export type PreferencesControllerState = {
   isIpfsGatewayEnabled: boolean;
   useAddressBarEnsResolution: boolean;
   ledgerTransportType: LedgerTransportTypes;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  snapRegistryList: Record<string, any>;
+  // TODO: Replace `Json` with correct type
+  snapRegistryList: Record<string, Json>;
   theme: ThemeType;
   snapsAddSnapAccountModalDismissed: boolean;
   useExternalNameSources: boolean;
