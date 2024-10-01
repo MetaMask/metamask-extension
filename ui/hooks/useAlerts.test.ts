@@ -4,7 +4,7 @@ import {
   ConfirmAlertsState,
   AlertSeverity,
 } from '../ducks/confirm-alerts/confirm-alerts';
-import useAlerts, { sortAlertsBySeverity } from './useAlerts';
+import useAlerts from './useAlerts';
 
 describe('useAlerts', () => {
   const ownerIdMock = '123';
@@ -175,17 +175,19 @@ describe('useAlerts', () => {
         message: 'Alert 2',
       };
       const expectedGeneralAlerts = [
-        warningGeneralAlert,
         {
           ...warningGeneralAlert,
           severity: Severity.Info as AlertSeverity,
           message: 'Alert 3',
+          key: fromAlertKeyMock,
         },
         {
           ...warningGeneralAlert,
           severity: Severity.Danger as AlertSeverity,
           message: 'Alert 1',
+          key: toAlertKeyMock,
         },
+        warningGeneralAlert,
       ];
 
       const result = renderAndReturnResult(undefined, {
@@ -196,9 +198,8 @@ describe('useAlerts', () => {
           confirmed: {},
         },
       });
-      expect(result.current.generalAlerts).toEqual(
-        sortAlertsBySeverity(expectedGeneralAlerts),
-      );
+
+      expect(result.current.generalAlerts).toEqual(expectedGeneralAlerts);
     });
   });
 

@@ -92,7 +92,7 @@ const useAlerts = (ownerId: string) => {
   };
 };
 
-export function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
+function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
   const severityOrder = {
     [Severity.Danger]: 3,
     [Severity.Warning]: 2,
