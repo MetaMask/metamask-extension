@@ -39,11 +39,6 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
-        await assertAccountDetailsMetrics(
-          driver,
-          mockedEndpoints as MockedEndpoint[],
-          'personal_sign',
-        );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -52,6 +47,12 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         await assertVerifiedSiweMessage(
           driver,
           '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c',
+        );
+
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'personal_sign',
         );
         await assertSignatureConfirmedMetrics({
           driver,
