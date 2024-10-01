@@ -368,7 +368,7 @@ export default function SmartTransactionStatusPage() {
         </Box>
         <Box
           marginTop={3}
-          className="smart-transaction-status__background-animation smart-transaction-status__background-animation--top"
+          className="smart-transaction-status__spacer-box--top"
         />
         {icon && (
           <Box marginTop={3} marginBottom={2}>
@@ -443,7 +443,7 @@ export default function SmartTransactionStatusPage() {
         )}
         <Box
           marginTop={3}
-          className="smart-transaction-status__background-animation smart-transaction-status__background-animation--bottom"
+          className="smart-transaction-status__spacer-box--bottom"
         />
         {subDescription && (
           <Text
