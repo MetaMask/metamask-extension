@@ -8,11 +8,10 @@ import {
   getFetchParams,
   prepareToLeaveSwaps,
   getCurrentSmartTransactions,
-  getSelectedQuote,
-  getTopQuote,
   getCurrentSmartTransactionsEnabled,
   getSwapsNetworkConfig,
   cancelSwapsSmartTransaction,
+  getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -74,9 +73,7 @@ export default function SmartTransactionStatusPage() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
-  const selectedQuote = useSelector(getSelectedQuote, isEqual);
-  const topQuote = useSelector(getTopQuote, isEqual);
-  const usedQuote = selectedQuote || topQuote;
+  const usedQuote = useSelector(getUsedQuote, isEqual);
   const currentSmartTransactions = useSelector(
     getCurrentSmartTransactions,
     isEqual,
