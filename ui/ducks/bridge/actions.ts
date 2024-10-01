@@ -341,7 +341,22 @@ export const signBridgeTransaction = (
         decimals,
         symbol,
         icon: image,
+        chainId,
       } = quoteMeta.quote.srcAsset;
+
+      const srcHexChainId = new Numeric(
+        quoteMeta.quote.srcChainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
+      const tokenHexChainId = new Numeric(
+        chainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
+
+      if (tokenHexChainId !== srcHexChainId) {
+        throw new Error('Token chain ID does not match source chain ID');
+      }
+
       dispatch(
         addToken({
           address,
@@ -353,13 +368,14 @@ export const signBridgeTransaction = (
       );
     };
 
-    const addDestToken = () => {
-      const networkConfigurations = getNetworkConfigurationsByChainId(state);
+    const addDestToken = async () => {
       const hexDestChainId = new Numeric(quoteMeta.quote.destChainId, 10)
         .toPrefixedHexString()
         .toLowerCase() as `0x${string}`;
+      const networkConfigurations = getNetworkConfigurationsByChainId(state);
       const destNetworkConfig = networkConfigurations[hexDestChainId];
 
+      // If destNetworkConfig exists, means the user has added the network in MetaMask
       if (destNetworkConfig) {
         const rpcEndpointIndex = destNetworkConfig.defaultRpcEndpointIndex;
         const destNetworkClientId =
@@ -387,13 +403,16 @@ export const signBridgeTransaction = (
           }),
         );
       } else {
+        // If user has not added the network in MetaMask, add it for them silently
         const featuredRpc = FEATURED_RPCS.find(
           (rpc) => rpc.chainId === hexDestChainId,
         );
         if (!featuredRpc) {
           throw new Error('No featured RPC found');
         }
-        dispatch(addNetwork(featuredRpc));
+        await dispatch(addNetwork(featuredRpc));
+
+        addDestToken();
       }
     };
 
@@ -410,7 +429,7 @@ export const signBridgeTransaction = (
         addSourceToken();
       }
       if (quoteMeta.quote.destAsset.address !== DEFAULT_TOKEN_ADDRESS) {
-        addDestToken();
+        await addDestToken();
       }
 
       // Return user to home screen
