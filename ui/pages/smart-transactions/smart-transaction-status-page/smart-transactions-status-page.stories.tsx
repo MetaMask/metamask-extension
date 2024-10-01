@@ -1,10 +1,45 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import configureStore from '../../../store/store';
 import SmartTransactionStatusPage from './smart-transaction-status-page';
 import { Meta, StoryObj } from '@storybook/react';
+import { SimulationData } from '@metamask/transaction-controller';
+import { mockNetworkState } from '../../../../test/stub/networks';
+
+// Mock data
+const CHAIN_ID_MOCK = '0x1';
+
+const simulationData: SimulationData = {
+  nativeBalanceChange: {
+    previousBalance: '0x0',
+    newBalance: '0x0',
+    difference: '0x12345678912345678',
+    isDecrease: true,
+  },
+  tokenBalanceChanges: [],
+};
+
+const TX_MOCK = {
+  id: 'txId',
+  simulationData,
+  chainId: CHAIN_ID_MOCK,
+};
+
+const storeMock = configureStore({
+  metamask: {
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: false,
+    },
+    ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
+    transactions: [TX_MOCK],
+    currentNetworkTxList: [TX_MOCK],
+  },
+});
 
 const meta: Meta<typeof SmartTransactionStatusPage> = {
   title: 'Pages/SmartTransactions/SmartTransactionStatusPage',
   component: SmartTransactionStatusPage,
+  decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 };
 
 export default meta;
