@@ -369,210 +369,207 @@ export const AccountListMenu = ({
           </Box>
         ) : null}
         {/* Add / Import / Hardware Menu */}
-        {
-          actionMode === ACTION_MODES.MENU ? (
-            <Box padding={4}>
-              <Box>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Add}
-                  onClick={() => {
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.AccountAddSelected,
-                      properties: {
-                        account_type: MetaMetricsEventAccountType.Default,
-                        location: 'Main Menu',
-                      },
-                    });
-                    setActionMode(ACTION_MODES.ADD);
-                  }}
-                  data-testid="multichain-account-menu-popover-add-account"
-                >
-                  {t('addNewAccount')}
-                </ButtonLink>
-              </Box>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-                bitcoinSupportEnabled && (
-                  <Box marginTop={4}>
-                    <ButtonLink
-                      disabled={isBtcMainnetAccountAlreadyCreated}
-                      size={ButtonLinkSize.Sm}
-                      startIconName={IconName.Add}
-                      onClick={async () => {
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.AccountAddSelected,
-                          properties: {
-                            account_type: MetaMetricsEventAccountType.Snap,
-                            snap_id: BITCOIN_WALLET_SNAP_ID,
-                            snap_name: BITCOIN_WALLET_NAME,
-                            location: 'Main Menu',
-                          },
-                        });
+        {actionMode === ACTION_MODES.MENU ? (
+          <Box padding={4}>
+            <Box>
+              <ButtonLink
+                size={ButtonLinkSize.Sm}
+                startIconName={IconName.Add}
+                onClick={() => {
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.AccountAddSelected,
+                    properties: {
+                      account_type: MetaMetricsEventAccountType.Default,
+                      location: 'Main Menu',
+                    },
+                  });
+                  setActionMode(ACTION_MODES.ADD);
+                }}
+                data-testid="multichain-account-menu-popover-add-account"
+              >
+                {t('addNewAccount')}
+              </ButtonLink>
+            </Box>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              bitcoinSupportEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isBtcMainnetAccountAlreadyCreated}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    onClick={async () => {
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          snap_id: BITCOIN_WALLET_SNAP_ID,
+                          snap_name: BITCOIN_WALLET_NAME,
+                          location: 'Main Menu',
+                        },
+                      });
 
-                        // The account creation + renaming is handled by the
-                        // Snap account bridge, so we need to close the current
-                        // model
-                        onClose();
+                      // The account creation + renaming is handled by the
+                      // Snap account bridge, so we need to close the current
+                      // model
+                      onClose();
 
-                        await createBitcoinAccount(MultichainNetworks.BITCOIN);
-                      }}
-                      data-testid="multichain-account-menu-popover-add-btc-account"
-                    >
-                      {t('addNewBitcoinAccount')}
-                    </ButtonLink>
-                  </Box>
-                )
-                ///: END:ONLY_INCLUDE_IF
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-                bitcoinTestnetSupportEnabled ? (
-                  <Box marginTop={4}>
-                    <ButtonLink
-                      disabled={isBtcTestnetAccountAlreadyCreated}
-                      size={ButtonLinkSize.Sm}
-                      startIconName={IconName.Add}
-                      onClick={async () => {
-                        // The account creation + renaming is handled by the Snap account bridge, so
-                        // we need to close the current model
-                        onClose();
+                      await createBitcoinAccount(MultichainNetworks.BITCOIN);
+                    }}
+                    data-testid="multichain-account-menu-popover-add-btc-account"
+                  >
+                    {t('addNewBitcoinAccount')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              bitcoinTestnetSupportEnabled ? (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isBtcTestnetAccountAlreadyCreated}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    onClick={async () => {
+                      // The account creation + renaming is handled by the Snap account bridge, so
+                      // we need to close the current model
+                      onClose();
 
-                        await createBitcoinAccount(
-                          MultichainNetworks.BITCOIN_TESTNET,
-                        );
-                      }}
-                      data-testid="multichain-account-menu-popover-add-btc-account-testnet"
-                    >
-                      {t('addNewBitcoinTestnetAccount')}
-                    </ButtonLink>
-                  </Box>
-                ) : null
-                ///: END:ONLY_INCLUDE_IF
-              }
-              <Box marginTop={4}>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Import}
-                  onClick={() => {
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.AccountAddSelected,
-                      properties: {
-                        account_type: MetaMetricsEventAccountType.Imported,
-                        location: 'Main Menu',
-                      },
-                    });
-                    setActionMode(ACTION_MODES.IMPORT);
-                  }}
-                >
-                  {t('importAccount')}
-                </ButtonLink>
-              </Box>
-              <Box marginTop={4}>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Hardware}
-                  onClick={() => {
-                    onClose();
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.AccountAddSelected,
-                      properties: {
-                        account_type: MetaMetricsEventAccountType.Hardware,
-                        location: 'Main Menu',
-                      },
-                    });
-                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                      global.platform.openExtensionInBrowser?.(
-                        CONNECT_HARDWARE_ROUTE,
+                      await createBitcoinAccount(
+                        MultichainNetworks.BITCOIN_TESTNET,
                       );
-                    } else {
-                      history.push(CONNECT_HARDWARE_ROUTE);
-                    }
-                  }}
-                >
-                  {t('addHardwareWallet')}
-                </ButtonLink>
-              </Box>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-                addSnapAccountEnabled ? (
-                  <Box marginTop={4}>
-                    <ButtonLink
-                      size={ButtonLinkSize.Sm}
-                      startIconName={IconName.Snaps}
-                      onClick={() => {
-                        onClose();
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.AccountAddSelected,
-                          properties: {
-                            account_type: MetaMetricsEventAccountType.Snap,
-                            location: 'Main Menu',
-                          },
-                        });
-                        global.platform.openTab({
-                          url: process.env
-                            .ACCOUNT_SNAPS_DIRECTORY_URL as string,
-                        });
-                      }}
-                    >
-                      {t('settingAddSnapAccount')}
-                    </ButtonLink>
-                  </Box>
-                ) : null
-                ///: END:ONLY_INCLUDE_IF
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                    }}
+                    data-testid="multichain-account-menu-popover-add-btc-account-testnet"
+                  >
+                    {t('addNewBitcoinTestnetAccount')}
+                  </ButtonLink>
+                </Box>
+              ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
+            <Box marginTop={4}>
+              <ButtonLink
+                size={ButtonLinkSize.Sm}
+                startIconName={IconName.Import}
+                onClick={() => {
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.AccountAddSelected,
+                    properties: {
+                      account_type: MetaMetricsEventAccountType.Imported,
+                      location: 'Main Menu',
+                    },
+                  });
+                  setActionMode(ACTION_MODES.IMPORT);
+                }}
+              >
+                {t('importAccount')}
+              </ButtonLink>
+            </Box>
+            <Box marginTop={4}>
+              <ButtonLink
+                size={ButtonLinkSize.Sm}
+                startIconName={IconName.Hardware}
+                onClick={() => {
+                  onClose();
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.AccountAddSelected,
+                    properties: {
+                      account_type: MetaMetricsEventAccountType.Hardware,
+                      location: 'Main Menu',
+                    },
+                  });
+                  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                    global.platform.openExtensionInBrowser?.(
+                      CONNECT_HARDWARE_ROUTE,
+                    );
+                  } else {
+                    history.push(CONNECT_HARDWARE_ROUTE);
+                  }
+                }}
+              >
+                {t('addHardwareWallet')}
+              </ButtonLink>
+            </Box>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+              addSnapAccountEnabled ? (
                 <Box marginTop={4}>
                   <ButtonLink
                     size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Custody}
+                    startIconName={IconName.Snaps}
                     onClick={() => {
                       onClose();
                       trackEvent({
                         category: MetaMetricsEventCategory.Navigation,
-                        event:
-                          MetaMetricsEventName.ConnectCustodialAccountClicked,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          location: 'Main Menu',
+                        },
                       });
-                      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                        global.platform.openExtensionInBrowser?.(
-                          CUSTODY_ACCOUNT_ROUTE,
-                        );
-                      } else {
-                        history.push(CUSTODY_ACCOUNT_ROUTE);
-                      }
+                      global.platform.openTab({
+                        url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
+                      });
                     }}
                   >
-                    {t('connectCustodialAccountMenu')}
+                    {t('settingAddSnapAccount')}
                   </ButtonLink>
                 </Box>
-                ///: END:ONLY_INCLUDE_IF
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-                isAddWatchEthereumAccountEnabled && (
-                  <Box marginTop={4}>
-                    <ButtonLink
-                      disabled={!isAddWatchEthereumAccountEnabled}
-                      size={ButtonLinkSize.Sm}
-                      startIconName={IconName.Eye}
-                      onClick={handleAddWatchAccount}
-                      data-testid="multichain-account-menu-popover-add-watch-only-account"
-                    >
-                      {t('addEthereumWatchOnlyAccount')}
-                    </ButtonLink>
-                  </Box>
-                )
-              }
-            </Box>
-          ) : null
-          ///: END:ONLY_INCLUDE_IF
-        }
+              ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Custody}
+                  onClick={() => {
+                    onClose();
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event:
+                        MetaMetricsEventName.ConnectCustodialAccountClicked,
+                    });
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      global.platform.openExtensionInBrowser?.(
+                        CUSTODY_ACCOUNT_ROUTE,
+                      );
+                    } else {
+                      history.push(CUSTODY_ACCOUNT_ROUTE);
+                    }
+                  }}
+                >
+                  {t('connectCustodialAccountMenu')}
+                </ButtonLink>
+              </Box>
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              isAddWatchEthereumAccountEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={!isAddWatchEthereumAccountEnabled}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Eye}
+                    onClick={handleAddWatchAccount}
+                    data-testid="multichain-account-menu-popover-add-watch-only-account"
+                  >
+                    {t('addEthereumWatchOnlyAccount')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
+          </Box>
+        ) : null}
         {actionMode === ACTION_MODES.LIST ? (
           <>
             {/* Search box */}
