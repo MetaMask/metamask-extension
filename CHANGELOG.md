@@ -110,6 +110,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: Remove double padding on Snap home page ([#26462](https://github.com/MetaMask/metamask-extension/pull/26462))
 - chore(webpack): update `html-bundler-webpack-plugin` from `v3.6.5` to `v3.17.3` ([#26371](https://github.com/MetaMask/metamask-extension/pull/26371))
 
+## [12.3.1]
+### Fixed
+- Fix duplicate network validation ([#27463](https://github.com/MetaMask/metamask-extension/pull/27463))
+- Fix notification metrics ([#27435](https://github.com/MetaMask/metamask-extension/pull/27435))
+- Fix transaction metrics ([#27457](https://github.com/MetaMask/metamask-extension/pull/27457))
+
 ## [12.3.0]
 ### Added
 - Added the ability to name accounts during the snap account creation flow ([#25191](https://github.com/MetaMask/metamask-extension/pull/25191))
@@ -5573,7 +5579,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.4.0...HEAD
-[12.4.0]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...v12.4.0
+[12.4.0]: https://github.com/MetaMask/metamask-extension/compare/v12.3.1...v12.4.0
+[12.3.1]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...v12.3.1
 [12.3.0]: https://github.com/MetaMask/metamask-extension/compare/v12.2.4...v12.3.0
 [12.2.4]: https://github.com/MetaMask/metamask-extension/compare/v12.2.3...v12.2.4
 [12.2.3]: https://github.com/MetaMask/metamask-extension/compare/v12.2.2...v12.2.3

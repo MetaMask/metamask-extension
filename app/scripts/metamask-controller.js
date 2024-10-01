@@ -1534,8 +1534,6 @@ export default class MetamaskController extends EventEmitter {
             notification_id: notification.id,
             notification_type: notification.type,
             chain_id: notification?.chain_id,
-            notification_is_read: notification.isRead,
-            click_type: 'push_notification',
           },
         });
       },
