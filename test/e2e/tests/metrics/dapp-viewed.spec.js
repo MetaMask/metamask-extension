@@ -8,7 +8,6 @@ const {
   logInWithBalanceValidation,
   WINDOW_TITLES,
   defaultGanacheOptions,
-  tinyDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -20,6 +19,48 @@ async function mockedDappViewedEndpoint(mockServer) {
     .forPost('https://api.segment.io/v1/batch')
     .withJsonBodyIncluding({
       batch: [{ type: 'track', event: MetaMetricsEventName.DappViewed }],
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
+async function mockedDappViewedEndpointFirstVisit(mockServer) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [
+        {
+          type: 'track',
+          event: MetaMetricsEventName.DappViewed,
+          properties: {
+            is_first_visit: true,
+          },
+        },
+      ],
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
+async function mockedDappViewedEndpointReVisit(mockServer) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [
+        {
+          type: 'track',
+          event: MetaMetricsEventName.DappViewed,
+          properties: {
+            is_first_visit: false,
+          },
+        },
+      ],
     })
     .thenCallback(() => {
       return {
@@ -164,8 +205,8 @@ describe('Dapp viewed Event @no-mmi', function () {
   it.only('is sent when refreshing dapp with one account connected', async function () {
     async function mockSegment(mockServer) {
       return [
-        await mockedDappViewedEndpoint(mockServer),
-        await mockedDappViewedEndpoint(mockServer),
+        await mockedDappViewedEndpointFirstVisit(mockServer),
+        await mockedDappViewedEndpointReVisit(mockServer),
         await mockPermissionApprovedEndpoint(mockServer),
       ];
     }
@@ -189,13 +230,12 @@ describe('Dapp viewed Event @no-mmi', function () {
         await waitForDappConnected(driver);
         // refresh dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-       await driver.delay(tinyDelayMs);
+        // await driver.delay(tinyDelayMs);
         await driver.refresh();
+        // await driver.delay(tinyDelayMs);
+        events = await getEventPayloads(driver, mockedEndpoints);
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        console.log(events);
-
-        // events are original dapp viewed, new dapp viewed when refresh, and permission approved
+        // events are original dapp viewed, navigate to dapp, new dapp viewed when refresh, new dapp viewed when navigate and permission approved
         const dappViewedEventProperties = events[1].properties;
         assert.equal(dappViewedEventProperties.is_first_visit, false);
         assert.equal(dappViewedEventProperties.number_of_accounts, 1);
