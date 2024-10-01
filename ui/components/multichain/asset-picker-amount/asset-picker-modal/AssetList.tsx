@@ -63,7 +63,7 @@ export default function AssetList({
     useCurrencyDisplay(balanceValue, {
       numberOfDecimals: secondaryNumberOfDecimals,
       currency: secondaryCurrency,
-      hideLabel: true,
+      hideLabel: secondaryCurrency !== nativeCurrency,
     });
 
   return (
@@ -136,6 +136,7 @@ export default function AssetList({
                     secondary={secondaryCurrencyDisplay}
                     tokenImage={token.image}
                     isOriginalTokenSymbol={token.symbol === nativeCurrency}
+                    isNativeCurrency={!useNativeCurrencyAsPrimaryCurrency}
                   />
                 ) : (
                   <AssetComponent
