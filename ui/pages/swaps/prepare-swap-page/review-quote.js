@@ -84,7 +84,7 @@ import {
   decimalToHex,
   decWEIToDecETH,
   sumHexes,
-  hexWEIToDecETH,
+  hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
 import {
@@ -145,6 +145,8 @@ import {
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
@@ -1080,14 +1082,39 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     }
   };
 
-  const tradeTxTokenFee = isGasIncludedTrade
-    ? smartTransactionFees?.tradeTxFees?.fees?.[0]?.tokenFees?.[0] ?? null
-    : null;
-  const feeTokenBalanceNeededInFiat = useEthFiatAmount(
-    Number(hexWEIToDecETH(tradeTxTokenFee?.balanceNeededToken)) || 0,
-    { showFiat: true },
-    true,
-  );
+  const gasTokenFiatAmount = useMemo(() => {
+    if (!isGasIncludedTrade) {
+      return undefined;
+    }
+    const tradeTxTokenFee =
+      smartTransactionFees?.tradeTxFees?.fees?.[0]?.tokenFees?.[0];
+    if (!tradeTxTokenFee) {
+      return undefined;
+    }
+    const { token: { address, decimals, symbol } = {}, balanceNeededToken } =
+      tradeTxTokenFee;
+    const checksumAddress = toChecksumHexAddress(address);
+    const contractExchangeRate = memoizedTokenConversionRates[checksumAddress];
+    const gasTokenAmountDec = calcTokenAmount(
+      hexToDecimal(balanceNeededToken),
+      decimals,
+    ).toString(10);
+    return getTokenFiatAmount(
+      contractExchangeRate,
+      conversionRate,
+      currentCurrency,
+      gasTokenAmountDec,
+      symbol,
+      true,
+      false,
+    );
+  }, [
+    isGasIncludedTrade,
+    smartTransactionFees,
+    memoizedTokenConversionRates,
+    conversionRate,
+    currentCurrency,
+  ]);
 
   return (
     <div className="review-quote">
@@ -1247,7 +1274,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                   style={{ textDecoration: 'line-through' }}
                   marginRight={1}
                 >
-                  {feeTokenBalanceNeededInFiat}
+                  {gasTokenFiatAmount}
                 </Text>
                 <Text
                   variant={TextVariant.bodySm}
