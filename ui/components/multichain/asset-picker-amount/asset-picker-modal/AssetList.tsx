@@ -47,7 +47,7 @@ export default function AssetList({
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const [, primaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    currency: 'ETH',
+    currency: nativeCurrency,
   });
 
   const [, secondaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
