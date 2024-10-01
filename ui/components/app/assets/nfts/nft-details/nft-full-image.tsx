@@ -24,14 +24,13 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 
-type Params = { asset: string; id: string };
-
 export default function NftFullImage() {
   const t = useI18nContext();
-  const { asset, id } = useParams<Params>() as Params;
+  const { asset, id } = useParams<{ asset: string; id: string }>();
   const nfts = useSelector(getNfts);
   const nft = nfts.find(
     ({ address, tokenId }: { address: string; tokenId: string }) =>
+      // @ts-expect-error TODO: Fix this type error by handling undefined parameters
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 

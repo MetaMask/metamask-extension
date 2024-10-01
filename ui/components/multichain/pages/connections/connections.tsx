@@ -67,8 +67,6 @@ import {
 } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
-type Params = { origin: string };
-
 export const Connections = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -87,7 +85,8 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const urlParams = useParams<Params>() as Params;
+  const urlParams = useParams<{ origin: string }>();
+  // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const activeTabOrigin = decodeURIComponent(urlParams.origin);
 
   // TODO: Replace `any` with type
