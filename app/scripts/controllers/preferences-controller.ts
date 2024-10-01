@@ -251,23 +251,23 @@ const controllerMetadata = {
   },
   useBlockie: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   useNonceField: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   usePhishDetect: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   dismissSeedBackUpReminder: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   useMultiAccountBalanceChecker: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   useSafeChainsListValidation: {
     persist: true,
@@ -275,27 +275,27 @@ const controllerMetadata = {
   },
   useTokenDetection: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   useNftDetection: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   use4ByteResolution: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   useCurrencyRateCheck: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   useRequestQueue: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   openSeaEnabled: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   securityAlertsEnabled: {
     persist: true,
@@ -319,15 +319,15 @@ const controllerMetadata = {
   },
   advancedGasFee: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   featureFlags: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   incomingTransactionsPreferences: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   knownMethodData: {
     persist: true,
@@ -335,7 +335,7 @@ const controllerMetadata = {
   },
   currentLocale: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   identities: {
     persist: true,
@@ -347,11 +347,11 @@ const controllerMetadata = {
   },
   forgottenPassword: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   preferences: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   ipfsGateway: {
     persist: true,
@@ -363,11 +363,11 @@ const controllerMetadata = {
   },
   useAddressBarEnsResolution: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   ledgerTransportType: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   snapRegistryList: {
     persist: true,
@@ -375,7 +375,7 @@ const controllerMetadata = {
   },
   theme: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   snapsAddSnapAccountModalDismissed: {
     persist: true,
@@ -387,11 +387,11 @@ const controllerMetadata = {
   },
   useTransactionSimulations: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   enableMV3TimestampSave: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
   useExternalServices: {
     persist: true,
