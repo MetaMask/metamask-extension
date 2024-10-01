@@ -1423,7 +1423,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                *{t('swapIncludesGasAndMetaMaskFee', [metaMaskFee])}
+                * {t('swapIncludesGasAndMetaMaskFee', [metaMaskFee])}
               </Text>
               <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
                 <ViewAllQuotesLink
