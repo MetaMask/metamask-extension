@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
+import { merge } from 'lodash';
 import { ManifestFlags } from '../../app/scripts/lib/manifestFlags';
 
 export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
@@ -8,20 +9,33 @@ function parseIntOrUndefined(value: string | undefined): number | undefined {
   return value ? parseInt(value, 10) : undefined;
 }
 
-// Grab the tracesSampleRate from the git message if it's set
-function getTracesSampleRateFromGitMessage(): number | undefined {
+/**
+ * Grab flags from the Git message if they are set
+ *
+ * To use this feature, add a line to your commit message like:
+ * `flags = {"sentry": {"tracesSampleRate": 0.1}}`
+ * (must be valid JSON)
+ *
+ * @returns flags object if found, undefined otherwise
+ */
+function getFlagsFromGitMessage(): object | undefined {
   const gitMessage = execSync(
     `git show --format='%B' --no-patch "HEAD"`,
   ).toString();
 
-  // Search gitMessage for `[flags.sentry.tracesSampleRate: 0.000 to 1.000]`
-  const tracesSampleRateMatch = gitMessage.match(
-    /\[flags\.sentry\.tracesSampleRate: (0*(\.\d+)?|1(\.0*)?)\]/u,
-  );
+  // Search gitMessage for `flags = {...}`
+  const flagsMatch = gitMessage.match(/flags\s*=\s*(\{.*\})/u);
 
-  if (tracesSampleRateMatch) {
-    // Return 1st capturing group from regex
-    return parseFloat(tracesSampleRateMatch[1]);
+  if (flagsMatch) {
+    try {
+      // Get 1st capturing group from regex
+      return JSON.parse(flagsMatch[1]);
+    } catch (error) {
+      console.error(
+        'Error parsing flags from git message, ignoring flags\n',
+        error,
+      );
+    }
   }
 
   return undefined;
@@ -41,12 +55,11 @@ export function setManifestFlags(flags: ManifestFlags = {}) {
       ),
     };
 
-    const tracesSampleRate = getTracesSampleRateFromGitMessage();
+    const gitMessageFlags = getFlagsFromGitMessage();
 
-    // 0 is a valid value, so must explicitly check for undefined
-    if (tracesSampleRate !== undefined) {
-      // Add tracesSampleRate to flags.sentry (which may or may not already exist)
-      flags.sentry = { ...flags.sentry, tracesSampleRate };
+    if (gitMessageFlags) {
+      // Use lodash merge to do a deep merge (spread operator is shallow)
+      flags = merge(flags, gitMessageFlags);
     }
   }
 
