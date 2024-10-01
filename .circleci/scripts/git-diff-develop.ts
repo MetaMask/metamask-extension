@@ -54,7 +54,10 @@ async function fetchUntilMergeBaseFound() {
   const depths = [1, 10, 100];
   for (const depth of depths) {
     console.log(`Attempting git diff with depth ${depth}...`);
-    await fetchWithDepth(depth);
+    const fetchSuccess = await fetchWithDepth(depth);
+    if (!fetchSuccess) {
+      continue;
+    }
 
     try {
       await exec(`git merge-base origin/${MAIN_BRANCH} HEAD`);
