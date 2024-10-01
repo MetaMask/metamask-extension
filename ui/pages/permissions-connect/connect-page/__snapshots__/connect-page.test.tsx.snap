@@ -165,6 +165,226 @@ exports[`ConnectPage should render correctly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
                       >
+                        G
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box mm-box--rounded-full"
+                      style="margin-left: -8px;"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+                      >
+                        <img
+                          alt="Custom Mainnet RPC logo"
+                          class="mm-avatar-token__token-image"
+                          src="./images/eth_logo.svg"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+            data-testid="cancel-btn"
+          >
+            Cancel
+          </button>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-testid="confirm-btn"
+            data-theme="light"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConnectPage should render with defaults from the requested permissions 1`] = `
+<div>
+  <div
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+  >
+    <div
+      class="mm-box multichain-page__inner-container main-container connections-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="connections-page"
+    >
+      <div
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
+      >
+        <div
+          class="mm-box"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          >
+            <h2
+              class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+            >
+              Connect with MetaMask
+            </h2>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              This site wants to
+              : 
+            </p>
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-page-content mm-box--padding-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      >
+        <div
+          class="mm-box multichain-connection-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+          data-testid="site-cell-connection-list-item"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/wallet.svg');"
+            />
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
+            style="align-self: center; flex-grow: 1;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+            >
+              See your accounts and suggest transactions
+            </p>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <span
+                class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--width-max mm-box--color-text-alternative"
+              >
+                Requesting for Test Account
+              </span>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              >
+                <div
+                  class="mm-avatar-account__jazzicon"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="16"
+                      width="16"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="16"
+                        transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="16"
+                        transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="16"
+                        transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            Edit
+          </button>
+        </div>
+        <div
+          class="mm-box multichain-connection-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+          data-testid="site-cell-connection-list-item"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/data.svg');"
+            />
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
+            style="align-self: center; flex-grow: 1;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+            >
+              Use your enabled networks
+            </p>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <span
+                class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--width-max mm-box--color-text-alternative"
+              >
+                Requesting for
+              </span>
+              <div
+                aria-describedby="tippy-tooltip-6"
+                class=""
+                data-original-title="This can be changed in "Settings > Alerts""
+                data-tooltipped=""
+                style="display: inline;"
+              >
+                <div
+                  class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                  data-testid="avatar-group"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex"
+                  >
+                    <div
+                      class="mm-box mm-box--rounded-full"
+                      style="margin-left: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+                      >
                         <img
                           alt="Custom Mainnet RPC logo"
                           class="mm-avatar-token__token-image"
