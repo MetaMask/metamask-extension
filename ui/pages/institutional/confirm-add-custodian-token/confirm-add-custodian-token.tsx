@@ -10,8 +10,8 @@ import {
   FontWeight,
   TextVariant,
   BorderColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
-import Chip from '../../../components/ui/chip';
 import {
   BUILT_IN_NETWORKS,
   NetworkType,
@@ -28,6 +28,7 @@ import {
   ButtonVariant,
   Box,
   Text,
+  Tag,
 } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
@@ -167,14 +168,21 @@ const ConfirmAddCustodianToken: React.FC = () => {
   return (
     <Box className="page-container">
       <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
-        <Chip
+        <Tag
           borderColor={BorderColor.borderMuted}
-          label={connectRequest.origin}
-          maxContent={false}
-          leftIconUrl={custodian?.iconUrl}
+          label={
+            <>
+              {custodian?.name && <span>{custodian.name}</span>}
+              <span>{connectRequest.origin}</span>
+            </>
+          }
           labelProps={{
-            textAlign: TextAlign.Center,
+            marginTop: 1,
+            marginBottom: 1,
+            display: Display.Flex,
+            gap: 2,
           }}
+          width={BlockSize.Full}
         />
       </Box>
       <Box padding={4} className="page-container__content">

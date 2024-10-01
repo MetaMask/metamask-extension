@@ -6,6 +6,7 @@ import type { BoxProps, PolymorphicRef } from '../box';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderColor,
   BorderRadius,
   Display,
@@ -39,6 +40,7 @@ export const Tag: TagComponent = React.forwardRef(
         gap={1}
         borderRadius={BorderRadius.pill}
         display={Display.Flex}
+        width={BlockSize.Max}
         {...(props as BoxProps<C>)}
       >
         {startIconName ? (
