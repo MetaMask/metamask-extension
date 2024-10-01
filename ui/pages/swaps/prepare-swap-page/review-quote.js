@@ -152,30 +152,29 @@ import SlippageNotificationModal from './slippage-notification-modal';
 
 let intervalId;
 
-const ViewAllQuotes = ({
+const ViewAllQuotesLink = React.memo(function ViewAllQuotesLink({
   trackAllAvailableQuotesOpened,
   setSelectQuotePopoverShown,
   t,
-}) => {
+}) {
+  const handleClick = useCallback(() => {
+    trackAllAvailableQuotesOpened();
+    setSelectQuotePopoverShown(true);
+  }, [trackAllAvailableQuotesOpened, setSelectQuotePopoverShown]);
+
   return (
     <ButtonLink
       key="view-all-quotes"
       data-testid="review-quote-view-all-quotes"
-      onClick={
-        /* istanbul ignore next */
-        () => {
-          trackAllAvailableQuotesOpened();
-          setSelectQuotePopoverShown(true);
-        }
-      }
+      onClick={handleClick}
       size={Size.inherit}
     >
       {t('viewAllQuotes')}
     </ButtonLink>
   );
-};
+});
 
-ViewAllQuotes.propTypes = {
+ViewAllQuotesLink.propTypes = {
   trackAllAvailableQuotesOpened: PropTypes.func.isRequired,
   setSelectQuotePopoverShown: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
@@ -1428,7 +1427,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 *{t('swapIncludesGasAndMetaMaskFee', [metaMaskFee])}
               </Text>
               <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-                <ViewAllQuotes
+                <ViewAllQuotesLink
                   trackAllAvailableQuotesOpened={trackAllAvailableQuotesOpened}
                   setSelectQuotePopoverShown={setSelectQuotePopoverShown}
                   t={t}
@@ -1450,7 +1449,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 *
                 {t('swapIncludesMetaMaskFeeViewAllQuotes', [
                   metaMaskFee,
-                  <ViewAllQuotes
+                  <ViewAllQuotesLink
                     key="view-all-quotes"
                     trackAllAvailableQuotesOpened={
                       trackAllAvailableQuotesOpened
