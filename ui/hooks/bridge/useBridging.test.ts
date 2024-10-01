@@ -88,8 +88,6 @@ describe('useBridging', () => {
           metamask: {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            // providerConfig: { chainId: '0x1', type: 'test-id' },
-            // networkConfigurations: [{ chainId: '0x1', id: 'test-id' }],
             metaMetricsId: MOCK_METAMETRICS_ID,
             bridgeState: {
               bridgeFeatureFlags: {
@@ -161,8 +159,6 @@ describe('useBridging', () => {
           metamask: {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            // providerConfig: { chainId: '0x1', type: 'test-id' },
-            // networkConfigurations: [{ chainId: '0x1', id: 'test-id' }],
             metaMetricsId: MOCK_METAMETRICS_ID,
             bridgeState: {
               bridgeFeatureFlags: {
