@@ -1,4 +1,4 @@
-import { NftContract } from '@metamask/assets-controllers';
+import { Nft, NftContract } from '@metamask/assets-controllers';
 import { createSelector } from 'reselect';
 import { getMemoizedCurrentChainId } from './selectors';
 
@@ -9,11 +9,20 @@ type NftState = {
         [chainId: string]: NftContract[];
       };
     };
+    allNfts: {
+      [account: string]: {
+        [chainId: string]: Nft[];
+      };
+    };
   };
 };
 
 function getNftContractsByChainByAccount(state: NftState) {
   return state.metamask.allNftContracts ?? {};
+}
+
+function getNftsByChainByAccount(state: NftState) {
+  return state.metamask.allNfts ?? {};
 }
 
 export const getNftContractsByAddressByChain = createSelector(
@@ -51,5 +60,16 @@ export const getNftContractsByAddressOnCurrentChain = createSelector(
   getMemoizedCurrentChainId,
   (nftContractsByAddressByChain, currentChainId) => {
     return nftContractsByAddressByChain[currentChainId] ?? {};
+  },
+);
+
+export const selectAllNftsFlat = createSelector(
+  getNftsByChainByAccount,
+  (nftsByChainByAccount) => {
+    const nftsByChainArray = Object.values(nftsByChainByAccount);
+    return nftsByChainArray.reduce((acc, nftsByChain) => {
+      const nftsArrays = Object.values(nftsByChain);
+      return acc.concat(...nftsArrays);
+    }, [] as Nft[]);
   },
 );

@@ -490,6 +490,18 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
+export const selectAllTokensFlat = createSelector(
+  getAllTokens,
+  (tokensByAccountByChain) => {
+    const tokensByAccountArray = Object.values(tokensByAccountByChain);
+
+    return tokensByAccountArray.reduce((acc, tokensByAccount) => {
+      const tokensArray = Object.values(tokensByAccount);
+      return acc.concat(...tokensArray);
+    }, []);
+  },
+);
+
 /**
  * Selector to return an origin to network ID map
  *

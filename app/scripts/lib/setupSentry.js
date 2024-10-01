@@ -86,7 +86,9 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration(),
+      Sentry.browserTracingIntegration({
+        enableLongAnimationFrame: true,
+      }),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
@@ -302,7 +304,7 @@ async function getMetaMetricsEnabled() {
 
 function setSentryClient() {
   const clientOptions = getClientOptions();
-  const { dsn, environment, release } = clientOptions;
+  const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
@@ -322,6 +324,7 @@ function setSentryClient() {
     environment,
     dsn,
     release,
+    tracesSampleRate,
   });
 
   Sentry.registerSpanErrorInstrumentation();

@@ -30,15 +30,22 @@ import {
   getSwitchedNetworkDetails,
   getUseRequestQueue,
   getCurrentChainId,
+  getTransactions,
+  getInternalAccounts,
+  getNotifications,
+  getPendingApprovals,
+  selectAllTokensFlat,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
+  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
+import { selectAllNftsFlat } from './selectors/nft';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -182,8 +189,14 @@ export async function setupInitialStore(
 async function startApp(metamaskState, backgroundConnection, opts) {
   const { traceContext } = opts;
 
+  const tags = getStartupTraceTags(metamaskState);
+
   const store = await trace(
-    { name: TraceName.SetupStore, parentContext: traceContext },
+    {
+      name: TraceName.SetupStore,
+      parentContext: traceContext,
+      tags,
+    },
     () =>
       setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
   );
@@ -340,3 +353,29 @@ window.logState = function (toClipboard) {
     }
   });
 };
+
+function getStartupTraceTags(metamaskState) {
+  const state = { metamask: metamaskState };
+
+  const accountCount = getInternalAccounts(state).length;
+  const nftCount = selectAllNftsFlat(state).length;
+  const notificationCount = getNotifications(state).length;
+  const tokenCount = selectAllTokensFlat(state).length;
+  const transactionCount = getTransactions(state).length;
+
+  const pendingApprovals = getPendingApprovals(state);
+  const firstApprovalType = pendingApprovals?.[0]?.type;
+  const unlocked = getIsUnlocked(state);
+  const uiType = getEnvironmentType();
+
+  return {
+    'wallet.account_count': accountCount,
+    'wallet.nft_count': nftCount,
+    'wallet.notification_count': notificationCount,
+    'wallet.pending_approval': firstApprovalType,
+    'wallet.token_count': tokenCount,
+    'wallet.transaction_count': transactionCount,
+    'wallet.unlocked': unlocked,
+    'wallet.ui_type': uiType,
+  };
+}
