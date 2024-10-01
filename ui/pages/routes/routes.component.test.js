@@ -115,13 +115,6 @@ describe('Routes Component', () => {
           announcements: {},
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
-          preferences: {
-            tokenSortConfig: {
-              key: 'tokenFiatAmount',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
-          },
         },
         send: {
           ...mockSendState.send,
