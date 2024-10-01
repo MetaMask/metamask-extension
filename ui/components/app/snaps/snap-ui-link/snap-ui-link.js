@@ -31,16 +31,14 @@ export const SnapUILink = ({ href, children }) => {
 
   if (isMetaMaskUrl) {
     return (
-      <>
-        <ButtonLink
-          as="a"
-          size={ButtonLinkSize.Inherit}
-          className="snap-ui-link"
-          onClick={handleLinkClick}
-        >
-          {children}
-        </ButtonLink>
-      </>
+      <ButtonLink
+        as="a"
+        size={ButtonLinkSize.Inherit}
+        className="snap-ui-link"
+        onClick={handleLinkClick}
+      >
+        {children}
+      </ButtonLink>
     );
   }
 
