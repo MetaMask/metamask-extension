@@ -9,7 +9,7 @@ import { BridgePage, getBridgeFixtures } from './bridge-test-utils';
 const ETHEREUM_MAINNET = 'Ethereum Mainnet';
 const ARBITRUM_ONE = 'Arbitrum One';
 const TOKEN_ON_ETHEREUM_MAINNET = 'TST';
-const TOKEN_ON_ARBITRUM_ONE = 'HST';
+const TOKEN_ON_ARBITRUM_ONE = 'ETH';
 const USDC_TOKEN = 'USDC';
 
 describe('Submit bridge transaction successfully @no-mmi', function (this: Suite) {
@@ -20,7 +20,7 @@ describe('Submit bridge transaction successfully @no-mmi', function (this: Suite
         {
           'extension-support': true,
         },
-        false,
+        true,
       ),
       async ({
         driver,
@@ -36,21 +36,17 @@ describe('Submit bridge transaction successfully @no-mmi', function (this: Suite
         const bridgePage = new BridgePage(driver);
         await logInWithBalanceValidation(driver, ganacheServer);
 
-        // Add secondary network (arb)
+        // Add and switch to secondary network (arb)
         await bridgePage.addNetwork();
-
-        // Import TST token to primary network
-        await bridgePage.navigateToAssetPage(TOKEN_ON_ETHEREUM_MAINNET);
-        await bridgePage.navigateToBridgePage('token-overview');
-        await bridgePage.verifySwapPage(1);
+        await bridgePage.navigateToBridgePage('wallet-overview');
+        await bridgePage.verifyBridgePage(1);
         await bridgePage.verifySelectedInputs(
           ETHEREUM_MAINNET,
-          TOKEN_ON_ETHEREUM_MAINNET,
+          TOKEN_ON_ARBITRUM_ONE,
         );
 
         // Switch to secondary network
         await bridgePage.selectNetwork('from', ARBITRUM_ONE);
-        await bridgePage.reloadHome();
 
         // Import HST token to secondary network
         await bridgePage.navigateToAssetPage(TOKEN_ON_ARBITRUM_ONE);

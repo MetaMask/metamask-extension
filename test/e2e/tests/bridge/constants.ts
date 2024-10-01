@@ -10,8 +10,7 @@ export const LOCATOR = {
   // bridge
   BRIDGE_BUTTON: (prefix: string) =>
     `[data-testid="${prefix}-overview-bridge"]`,
-  BRIDGE_ASSET_PICKER: (prefix: string) =>
-    `[data-testid="${prefix}-token-picker"]`,
+  BRIDGE_ASSET_PICKER: `[data-testid="asset-picker-button"]`,
   BRIDGE_FROM_AMOUNT: '[data-testid="from-amount"]',
   BRIDGE_TO_AMOUNT: '[data-testid="to-amount"]',
   // mutichain asset picker

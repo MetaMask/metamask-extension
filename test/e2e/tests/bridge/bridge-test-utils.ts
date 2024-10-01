@@ -72,19 +72,15 @@ export class BridgePage {
     await this.driver.delay(2000);
 
     await this.driver.clickElement('[data-testid="network-display"]');
-    await clickNestedButton(this.driver, 'Add network');
-    await this.driver.clickElement('[data-testid="add-network-Arbitrum One"]');
+    await clickNestedButton(this.driver, 'Add');
     await clickNestedButton(this.driver, 'Approve');
-    await this.driver.clickElement({
-      tag: 'h6',
-      text: 'Dismiss',
-    });
   };
 
   selectNetwork = async (prefix: 'from' | 'to', networkNickname: string) => {
-    await this.driver.clickElement(LOCATOR.BRIDGE_ASSET_PICKER(prefix));
+    await this.driver.clickElement(LOCATOR.BRIDGE_ASSET_PICKER);
     await this.driver.clickElement(LOCATOR.ASSET_PICKER_NETWORK);
-    await clickNestedButton(this.driver, networkNickname);
+    // await clickNestedButton(this.driver, networkNickname);
+    await this.driver.clickElement(`[data-testid="${networkNickname}"]`);
   };
 
   selectToken = async (symbol: string) => {
@@ -123,7 +119,7 @@ export class BridgePage {
     // TODO verify fromNetwork
     // TODO verify fiat value
     await this.driver.findElement({
-      css: LOCATOR.BRIDGE_ASSET_PICKER('from'),
+      css: LOCATOR.BRIDGE_ASSET_PICKER,
       text: fromSymbol,
     });
     await this.driver.waitForSelector({
@@ -134,7 +130,7 @@ export class BridgePage {
     // TODO verify toNetwork
     // TODO verify fiat value
     await this.driver.findElement({
-      css: LOCATOR.BRIDGE_ASSET_PICKER('to'),
+      css: LOCATOR.BRIDGE_ASSET_PICKER,
       text: toSymbol,
     });
     await this.driver.waitForSelector({
@@ -159,7 +155,7 @@ export class BridgePage {
     );
   };
 
-  verifySwapPage = async (expectedHandleCount: number) => {
+  verifyBridgePage = async (expectedHandleCount: number) => {
     await this.driver.delay(4000);
     assert.equal(
       (await this.driver.getAllWindowHandles()).length,
