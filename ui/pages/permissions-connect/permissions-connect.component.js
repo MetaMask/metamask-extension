@@ -148,9 +148,6 @@ export default class PermissionConnect extends Component {
       history.replace(DEFAULT_ROUTE);
       return;
     }
-    if (process.env.CHAIN_PERMISSIONS) {
-      history.replace(confirmPermissionPath);
-    }
     // if this is an incremental permission request for permitted chains, skip the account selection
     if (
       permissionsRequest?.diff?.permissionDiffMap?.[
@@ -341,33 +338,8 @@ export default class PermissionConnect extends Component {
             <Route
               path={connectPath}
               exact
-              render={() => (
-                <ChooseAccount
-                  accounts={accounts}
-                  nativeCurrency={nativeCurrency}
-                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
-                  selectNewAccountViaModal={(handleAccountClick) => {
-                    showNewAccountModal({
-                      onCreateNewAccount: (address) =>
-                        handleAccountClick(address),
-                      newAccountNumber,
-                    });
-                  }}
-                  addressLastConnectedMap={addressLastConnectedMap}
-                  cancelPermissionsRequest={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
-                  }
-                  permissionsRequestId={permissionsRequestId}
-                  selectedAccountAddresses={selectedAccountAddresses}
-                  targetSubjectMetadata={targetSubjectMetadata}
-                />
-              )}
-            />
-            <Route
-              path={confirmPermissionPath}
-              exact
               render={() =>
-                process.env.CHAIN_PERMISSIONS && !permissionsRequest?.diff ? (
+                process.env.CHAIN_PERMISSIONS ? (
                   <ConnectPage
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
@@ -378,30 +350,57 @@ export default class PermissionConnect extends Component {
                     approveConnection={this.approveConnection}
                   />
                 ) : (
-                  <PermissionPageContainer
-                    request={permissionsRequest || {}}
-                    approvePermissionsRequest={(...args) => {
-                      approvePermissionsRequest(...args);
-                      this.redirect(true);
+                  <ChooseAccount
+                    accounts={accounts}
+                    nativeCurrency={nativeCurrency}
+                    selectAccounts={(addresses) =>
+                      this.selectAccounts(addresses)
+                    }
+                    selectNewAccountViaModal={(handleAccountClick) => {
+                      showNewAccountModal({
+                        onCreateNewAccount: (address) =>
+                          handleAccountClick(address),
+                        newAccountNumber,
+                      });
                     }}
-                    rejectPermissionsRequest={(requestId) =>
+                    addressLastConnectedMap={addressLastConnectedMap}
+                    cancelPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
                     }
-                    selectedAccounts={accounts.filter((account) =>
-                      selectedAccountAddresses.has(account.address),
-                    )}
+                    permissionsRequestId={permissionsRequestId}
+                    selectedAccountAddresses={selectedAccountAddresses}
                     targetSubjectMetadata={targetSubjectMetadata}
-                    history={this.props.history}
-                    connectPath={connectPath}
-                    snapsInstallPrivacyWarningShown={
-                      snapsInstallPrivacyWarningShown
-                    }
-                    setSnapsInstallPrivacyWarningShownStatus={
-                      setSnapsInstallPrivacyWarningShownStatus
-                    }
                   />
                 )
               }
+            />
+            <Route
+              path={confirmPermissionPath}
+              exact
+              render={() => (
+                <PermissionPageContainer
+                  request={permissionsRequest || {}}
+                  approvePermissionsRequest={(...args) => {
+                    approvePermissionsRequest(...args);
+                    this.redirect(true);
+                  }}
+                  rejectPermissionsRequest={(requestId) =>
+                    this.cancelPermissionsRequest(requestId)
+                  }
+                  selectedAccounts={accounts.filter((account) =>
+                    selectedAccountAddresses.has(account.address),
+                  )}
+                  targetSubjectMetadata={targetSubjectMetadata}
+                  history={this.props.history}
+                  connectPath={connectPath}
+                  snapsInstallPrivacyWarningShown={
+                    snapsInstallPrivacyWarningShown
+                  }
+                  setSnapsInstallPrivacyWarningShownStatus={
+                    setSnapsInstallPrivacyWarningShownStatus
+                  }
+                />
+              )}
             />
             <Route
               path={snapsConnectPath}
