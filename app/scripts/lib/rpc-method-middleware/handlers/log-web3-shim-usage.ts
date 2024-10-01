@@ -10,9 +10,12 @@ import {
   HandlerRequestType as LogWeb3ShimUsageHandlerRequest,
 } from './types';
 
-type LogWeb3ShimUsageOptions = {
-  getWeb3ShimUsageState: (origin: OriginString) => undefined | 1 | 2;
-  setWeb3ShimUsageRecorded: (origin: OriginString) => void;
+export type GetWeb3ShimUsageState = (origin: OriginString) => undefined | 1 | 2;
+export type SetWeb3ShimUsageRecorded = (origin: OriginString) => void;
+
+export type LogWeb3ShimUsageOptions = {
+  getWeb3ShimUsageState: GetWeb3ShimUsageState;
+  setWeb3ShimUsageRecorded: SetWeb3ShimUsageRecorded;
 };
 type LogWeb3ShimUsageConstraint<Params extends JsonRpcParams = JsonRpcParams> =
   {
