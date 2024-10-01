@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export default function AccountListItem({

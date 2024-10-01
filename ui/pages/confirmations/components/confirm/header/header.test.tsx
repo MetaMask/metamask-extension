@@ -4,6 +4,7 @@ import { DefaultRootState } from 'react-redux';
 
 import {
   getMockContractInteractionConfirmState,
+  getMockTokenTransferConfirmState,
   getMockTypedSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -28,10 +29,30 @@ describe('Header', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should match snapshot with token transfer confirmation initiated in a dApp', () => {
+    const { container } = render(
+      getMockTokenTransferConfirmState({
+        isWalletInitiatedConfirmation: false,
+      }),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot with token transfer confirmation initiated in the wallet', () => {
+    const { container } = render(
+      getMockTokenTransferConfirmState({
+        isWalletInitiatedConfirmation: true,
+      }),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('contains network name and account name', () => {
     const { getByText } = render();
     expect(getByText('Test Account')).toBeInTheDocument();
-    expect(getByText('Chain 5')).toBeInTheDocument();
+    expect(getByText('Goerli')).toBeInTheDocument();
   });
 
   it('contains account info icon', async () => {

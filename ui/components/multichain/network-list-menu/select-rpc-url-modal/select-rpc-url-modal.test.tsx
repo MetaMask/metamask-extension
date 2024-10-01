@@ -1,10 +1,10 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
-  // TODO: Add this API with network controller v21 upgrade
-  // updateNetwork,
+  updateNetwork,
   setActiveNetwork,
   setEditedNetwork,
   toggleNetworkMenu,
@@ -20,8 +20,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../../store/actions', () => ({
-  // TODO: Add this API with network controller v21 upgrade
-  // updateNetwork: jest.fn(),
+  updateNetwork: jest.fn(),
   setActiveNetwork: jest.fn(),
   setEditedNetwork: jest.fn(),
   toggleNetworkMenu: jest.fn(),
@@ -36,7 +35,7 @@ const networkConfiguration = {
     { url: 'https://rpc.flashbots.net/', networkClientId: 'flashbots' },
   ],
   defaultRpcEndpointIndex: 0,
-};
+} as unknown as NetworkConfiguration;
 
 const store = mockStore({
   metamask: {
@@ -104,13 +103,12 @@ describe('SelectRpcUrlModal Component', () => {
     );
     fireEvent.click(rpcEndpoint);
 
-    // TODO: Add this API with network controller v21 upgrade
-    // expect(mockDispatch).toHaveBeenCalledWith(
-    //   updateNetwork({
-    //     ...networkConfiguration,
-    //     defaultRpcEndpointIndex: 1,
-    //   }),
-    // );
+    expect(mockDispatch).toHaveBeenCalledWith(
+      updateNetwork({
+        ...networkConfiguration,
+        defaultRpcEndpointIndex: 1,
+      }),
+    );
     expect(mockDispatch).toHaveBeenCalledWith(setActiveNetwork('flashbots'));
     expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
     expect(mockDispatch).toHaveBeenCalledWith(toggleNetworkMenu());
@@ -154,13 +152,12 @@ describe('SelectRpcUrlModal Component', () => {
       screen.getByText(stripProtocol(networkConfiguration.rpcEndpoints[1].url)),
     );
 
-    // TODO: Add this API with network controller v21 upgrade
-    // expect(mockDispatch).toHaveBeenCalledWith(
-    //   updateNetwork({
-    //     ...networkConfiguration,
-    //     defaultRpcEndpointIndex: 1,
-    //   }),
-    // );
+    expect(mockDispatch).toHaveBeenCalledWith(
+      updateNetwork({
+        ...networkConfiguration,
+        defaultRpcEndpointIndex: 1,
+      }),
+    );
     expect(mockDispatch).toHaveBeenCalledWith(
       setActiveNetwork(networkConfiguration.rpcEndpoints[1].networkClientId),
     );

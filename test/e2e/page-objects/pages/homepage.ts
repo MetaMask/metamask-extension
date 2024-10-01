@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import { Ganache } from '../../seeder/ganache';
 import HeaderNavbar from './header-navbar';
 
 class HomePage {
@@ -20,8 +20,6 @@ class HomePage {
 
   private transactionAmountsInActivity: string;
 
-  private accountMenuButton: string;
-
   public headerNavbar: HeaderNavbar;
 
   constructor(driver: Driver) {
@@ -38,7 +36,6 @@ class HomePage {
     this.completedTransactions = '[data-testid="activity-list-item"]';
     this.transactionAmountsInActivity =
       '[data-testid="transaction-list-item-primary-currency"]';
-    this.accountMenuButton = '[data-testid="account-menu-icon"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -55,26 +52,6 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
-  async check_expectedBalanceIsDisplayed(
-    expectedBalance: string = DEFAULT_GANACHE_ETH_BALANCE_DEC,
-  ): Promise<void> {
-    try {
-      await this.driver.waitForSelector({
-        css: this.balance,
-        text: `${expectedBalance} ETH`,
-      });
-    } catch (e) {
-      const balance = await this.driver.waitForSelector(this.balance);
-      const currentBalance = parseFloat(await balance.getText());
-      const errorMessage = `Expected balance ${expectedBalance} ETH, got balance ${currentBalance} ETH`;
-      console.log(errorMessage, e);
-      throw e;
-    }
-    console.log(
-      `Expected balance ${expectedBalance} ETH is displayed on homepage`,
-    );
-  }
-
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
   }
@@ -82,11 +59,6 @@ class HomePage {
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);
-  }
-
-  async openAccountMenu(): Promise<void> {
-    console.log(`Opening account menu`);
-    await this.driver.clickElement(this.accountMenuButton);
   }
 
   /**
@@ -135,6 +107,39 @@ class HomePage {
     console.log(
       `${expectedNumber} completed transactions found in activity list on homepage`,
     );
+  }
+
+  async check_expectedBalanceIsDisplayed(
+    expectedBalance: string,
+  ): Promise<void> {
+    try {
+      await this.driver.waitForSelector({
+        css: this.balance,
+        text: `${expectedBalance} ETH`,
+      });
+    } catch (e) {
+      const balance = await this.driver.waitForSelector(this.balance);
+      const currentBalance = parseFloat(await balance.getText());
+      const errorMessage = `Expected balance ${expectedBalance} ETH, got balance ${currentBalance} ETH`;
+      console.log(errorMessage, e);
+      throw e;
+    }
+    console.log(
+      `Expected balance ${expectedBalance} ETH is displayed on homepage`,
+    );
+  }
+
+  async check_ganacheBalanceIsDisplayed(
+    ganacheServer?: Ganache,
+    address = null,
+  ): Promise<void> {
+    let expectedBalance: string;
+    if (ganacheServer) {
+      expectedBalance = (await ganacheServer.getBalance(address)).toString();
+    } else {
+      expectedBalance = '0';
+    }
+    await this.check_expectedBalanceIsDisplayed(expectedBalance);
   }
 
   /**
