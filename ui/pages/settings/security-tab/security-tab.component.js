@@ -1228,7 +1228,7 @@ export default class SecurityTab extends PureComponent {
             setDataCollectionForMarketing={setDataCollectionForMarketing}
           />
           {this.renderDataCollectionForMarketing()}
-          <DeleteMetametricsDataButton wrapperRef={this.settingsRefs[20]} />
+          <DeleteMetametricsDataButton ref={this.settingsRefs[20]} />
         </div>
       </div>
     );
