@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   SmartTransactionStatuses,
@@ -26,16 +26,10 @@ import {
   TextColor,
   FontWeight,
   IconColor,
-  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId, getFullTxData } from '../../../selectors';
-import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
 import { BaseUrl } from '../../../../shared/constants/urls';
-import {
-  FALLBACK_SMART_TRANSACTIONS_EXPECTED_DEADLINE,
-  FALLBACK_SMART_TRANSACTIONS_MAX_DEADLINE,
-} from '../../../../shared/constants/smartTransactions';
 import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
@@ -66,15 +60,12 @@ export const showRemainingTimeInMinAndSec = (
 
 const getDisplayValues = ({
   t,
-  countdown,
   isSmartTransactionPending,
   isSmartTransactionSuccess,
   isSmartTransactionCancelled,
 }: {
   t: ReturnType<typeof useI18nContext>;
-  countdown: JSX.Element | undefined;
   isSmartTransactionPending: boolean;
-  isSmartTransactionTakingTooLong: boolean;
   isSmartTransactionSuccess: boolean;
   isSmartTransactionCancelled: boolean;
 }) => {
@@ -93,7 +84,7 @@ const getDisplayValues = ({
   } else if (isSmartTransactionCancelled) {
     return {
       title: t('smartTransactionCancelled'),
-      description: t('smartTransactionCancelledDescription', [countdown]),
+      description: t('smartTransactionCancelledDescription'),
       iconName: IconName.Danger,
       iconColor: IconColor.errorDefault,
     };
@@ -104,65 +95,6 @@ const getDisplayValues = ({
     description: t('smartTransactionErrorDescription'),
     iconName: IconName.Danger,
     iconColor: IconColor.errorDefault,
-  };
-};
-
-const useRemainingTime = ({
-  isSmartTransactionPending,
-  smartTransaction,
-  stxMaxDeadline,
-  stxEstimatedDeadline,
-}: {
-  isSmartTransactionPending: boolean;
-  smartTransaction?: SmartTransaction;
-  stxMaxDeadline: number;
-  stxEstimatedDeadline: number;
-}) => {
-  const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] =
-    useState(0);
-  const [isSmartTransactionTakingTooLong, setIsSmartTransactionTakingTooLong] =
-    useState(false);
-  const stxDeadline = isSmartTransactionTakingTooLong
-    ? stxMaxDeadline
-    : stxEstimatedDeadline;
-
-  useEffect(() => {
-    if (!isSmartTransactionPending) {
-      return;
-    }
-
-    const calculateRemainingTime = () => {
-      const secondsAfterStxSubmission = smartTransaction?.creationTime
-        ? Math.round((Date.now() - smartTransaction.creationTime) / 1000)
-        : 0;
-
-      if (secondsAfterStxSubmission > stxDeadline) {
-        setTimeLeftForPendingStxInSec(0);
-        if (!isSmartTransactionTakingTooLong) {
-          setIsSmartTransactionTakingTooLong(true);
-        }
-        return;
-      }
-
-      setTimeLeftForPendingStxInSec(stxDeadline - secondsAfterStxSubmission);
-    };
-
-    const intervalId = setInterval(calculateRemainingTime, 1000);
-    calculateRemainingTime();
-
-    // eslint-disable-next-line consistent-return
-    return () => clearInterval(intervalId);
-  }, [
-    isSmartTransactionPending,
-    isSmartTransactionTakingTooLong,
-    smartTransaction?.creationTime,
-    stxDeadline,
-  ]);
-
-  return {
-    timeLeftForPendingStxInSec,
-    isSmartTransactionTakingTooLong,
-    stxDeadline,
   };
 };
 
@@ -381,47 +313,15 @@ export const SmartTransactionStatusPage = ({
   const isSmartTransactionCancelled = Boolean(
     smartTransaction?.status?.startsWith(SmartTransactionStatuses.CANCELLED),
   );
-  const featureFlags: {
-    smartTransactions?: {
-      expectedDeadline?: number;
-      maxDeadline?: number;
-    };
-  } | null = useSelector(getFeatureFlagsByChainId);
-  const stxEstimatedDeadline =
-    featureFlags?.smartTransactions?.expectedDeadline ||
-    FALLBACK_SMART_TRANSACTIONS_EXPECTED_DEADLINE;
-  const stxMaxDeadline =
-    featureFlags?.smartTransactions?.maxDeadline ||
-    FALLBACK_SMART_TRANSACTIONS_MAX_DEADLINE;
-  const { timeLeftForPendingStxInSec, isSmartTransactionTakingTooLong } =
-    useRemainingTime({
-      isSmartTransactionPending,
-      smartTransaction,
-      stxMaxDeadline,
-      stxEstimatedDeadline,
-    });
+
   const chainId: string = useSelector(getCurrentChainId);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore: This same selector is used in the awaiting-swap component.
   const fullTxData = useSelector((state) => getFullTxData(state, txId)) || {};
 
-  const countdown = isSmartTransactionPending ? (
-    <Text
-      display={Display.InlineBlock}
-      textAlign={TextAlign.Center}
-      color={TextColor.textAlternative}
-      variant={TextVariant.bodySm}
-      className="smart-transaction-status-page__countdown"
-    >
-      {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
-    </Text>
-  ) : undefined;
-
   const { title, description, iconName, iconColor } = getDisplayValues({
     t,
-    countdown,
     isSmartTransactionPending,
-    isSmartTransactionTakingTooLong,
     isSmartTransactionSuccess,
     isSmartTransactionCancelled,
   });
