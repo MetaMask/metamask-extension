@@ -122,7 +122,9 @@ export type PreferencesControllerState = {
   useRequestQueue: boolean;
   openSeaEnabled: boolean;
   securityAlertsEnabled: boolean;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
   addSnapAccountEnabled: boolean;
@@ -425,6 +427,7 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
@@ -436,6 +439,7 @@ export default class PreferencesController {
       watchEthereumAccountEnabled,
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `bitcoinSupportEnabled` property.
