@@ -132,13 +132,10 @@ export async function fetchBridgeTokens(
     functionName: 'fetchBridgeTokens',
   });
 
-  const isSwapsChainId = (
-    c: string,
-  ): c is keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP =>
-    Object.keys(SWAPS_CHAINID_DEFAULT_TOKEN_MAP).includes(c);
-  const nativeToken = isSwapsChainId(chainId)
-    ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]
-    : null;
+  const nativeToken =
+    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+      chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+    ];
 
   const transformedTokens: Record<string, SwapsTokenObject> = {};
   if (nativeToken) {
