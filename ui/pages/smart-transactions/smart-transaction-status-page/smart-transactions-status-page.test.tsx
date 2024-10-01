@@ -6,6 +6,7 @@ import {
   SmartTransactionStatuses,
 } from '@metamask/smart-transactions-controller/dist/types';
 
+import { fireEvent } from '@testing-library/react';
 import {
   renderWithProvider,
   createSwapsMockStore,
@@ -241,5 +242,35 @@ describe('SmartTransactionStatusPage', () => {
     expect(queryByText('View transaction')).toBeInTheDocument();
     expect(queryByText('Close extension')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('calls onCloseExtension when Close extension button is clicked', () => {
+    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const { getByText } = renderWithProvider(
+      <SmartTransactionStatusPage
+        requestState={{ ...requestState, isDapp: true }}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
+      store,
+    );
+
+    const closeButton = getByText('Close extension');
+    fireEvent.click(closeButton);
+    expect(onCloseExtension).toHaveBeenCalled();
+  });
+
+  it('calls onViewActivity when View activity button is clicked', () => {
+    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const { getByText } = renderWithProvider(
+      <SmartTransactionStatusPage
+        requestState={{ ...requestState, isDapp: false }}
+        {...{ onCloseExtension, onViewActivity }}
+      />,
+      store,
+    );
+
+    const viewActivityButton = getByText('View activity');
+    fireEvent.click(viewActivityButton);
+    expect(onViewActivity).toHaveBeenCalled();
   });
 });
