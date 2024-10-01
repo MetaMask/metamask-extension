@@ -304,6 +304,25 @@ export function getAccountByAddress(accounts = [], targetAddress) {
 }
 
 /**
+ * Sort the given list of account their selecting order (descending). Meaning the
+ * first account of the sorted list will be the last selected account.
+
+ * @param {import('@metamask/keyring-api').InternalAccount[]} accounts - The internal accounts list.
+ * @returns {import('@metamask/keyring-api').InternalAccount[]} The sorted internal account list.
+ */
+export function sortSelectedInternalAccounts(accounts) {
+  // This logic comes from the `AccountsController`:
+  // TODO: Expose a free function from this controller and use it here
+  return accounts.sort((accountA, accountB) => {
+    // Sort by `.lastSelected` in descending order
+    return (
+      (accountB.metadata.lastSelected ?? 0) -
+      (accountA.metadata.lastSelected ?? 0)
+    );
+  });
+}
+
+/**
  * Strips the following schemes from URL strings:
  * - http
  * - https
