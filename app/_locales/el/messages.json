@@ -4747,13 +4747,6 @@
   "smartTransactionSuccess": {
     "message": "Η συναλλαγή σας ολοκληρώθηκε"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Συγγνώμη για την αναμονή"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Εάν η συναλλαγή σας δεν ολοκληρωθεί εντός $1, θα ακυρωθεί και δεν θα χρεωθείτε με τέλη συναλλαγών.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Έξυπνες συναλλαγές"
   },
@@ -5169,10 +5162,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Προσπαθήστε ξανά να κάνετε ανταλλαγή. Θα είμαστε εδώ για να σας προστατεύσουμε από παρόμοιους κινδύνους και την επόμενη φορά."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Εκτιμώμενη ολοκλήρωση σε < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Η ανταλλαγή απέτυχε"

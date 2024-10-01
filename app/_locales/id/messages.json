@@ -4747,13 +4747,6 @@
   "smartTransactionSuccess": {
     "message": "Transaksi Anda selesai"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Maaf telah menunggu"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Jika transaksi tidak diselesaikan dalam $1, transaksi akan dibatalkan dan Anda tidak akan dikenakan biaya gas.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Transaksi Pintar"
   },
@@ -5169,10 +5162,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Cobalah untuk menukar lagi. Kami akan selalu hadir untuk melindungi Anda dari risiko serupa di lain waktu."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Estimasi penyelesaian dalam < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Pertukaran gagal"

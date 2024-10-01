@@ -4747,13 +4747,6 @@
   "smartTransactionSuccess": {
     "message": "Sua transação foi concluída"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Desculpe pela espera"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Se a sua transação não for finalizada em $1, ela será cancelada e você não pagará gás.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Transações inteligentes"
   },
@@ -5169,10 +5162,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Tente trocar novamente. Estaremos aqui para proteger você contra riscos semelhantes no futuro."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Conclusão estimada em até $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Falha na troca"
