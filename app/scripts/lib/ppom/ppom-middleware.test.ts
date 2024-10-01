@@ -17,7 +17,6 @@ import {
 import { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
-jest.mock('@metamask/controller-utils');
 
 const SECURITY_ALERT_ID_MOCK = '123';
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
