@@ -89,7 +89,7 @@ describe('FundingMethodModal', () => {
   });
 
   it('should open a new tab with the correct URL when Transfer Crypto item is clicked', () => {
-    global.platform.openTab = jest.fn();
+    jest.spyOn(global.platform, 'openTab').mockImplementation();
 
     const { getByText } = renderWithProvider(
       <FundingMethodModal

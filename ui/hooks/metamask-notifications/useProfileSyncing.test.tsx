@@ -63,12 +63,15 @@ const arrangeMocks = (
     },
   });
 
-  store.dispatch = jest.fn().mockImplementation((action) => {
-    if (typeof action === 'function') {
-      return action(store.dispatch, store.getState);
-    }
-    return Promise.resolve();
-  });
+  jest
+    .spyOn(store, 'dispatch')
+    .mockImplementation()
+    .mockImplementation((action) => {
+      if (typeof action === 'function') {
+        return action(store.dispatch, store.getState);
+      }
+      return Promise.resolve();
+    });
 
   jest.clearAllMocks();
 

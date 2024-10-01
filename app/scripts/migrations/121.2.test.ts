@@ -15,7 +15,7 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('Does nothing if `networkConfigurations` or `providerConfig` are not in the network controller state', async () => {
+  it('does nothing if `networkConfigurations` or `providerConfig` are not in the network controller state', async () => {
     const oldState = {
       NetworkController: {
         selectedNetworkClientId: 'mainnet',
@@ -30,7 +30,7 @@ describe(`migration #${version}`, () => {
     expect(transformedState.data).toStrictEqual(oldState);
   });
 
-  it('Updates MATIC ticker to POL and updates imageURL in networkConfigurations', async () => {
+  it('updates MATIC ticker to POL and updates imageURL in networkConfigurations', async () => {
     const oldState = {
       NetworkController: {
         networkConfigurations: {
@@ -67,7 +67,7 @@ describe(`migration #${version}`, () => {
     expect(transformedState.data).toStrictEqual(expectedState);
   });
 
-  it('Does not update ticker to POL if ticker is not MATIC, but still updates imageURL in networkConfigurations', async () => {
+  it('does not update ticker to POL if ticker is not MATIC, but still updates imageURL in networkConfigurations', async () => {
     const oldState = {
       NetworkController: {
         networkConfigurations: {
@@ -104,7 +104,7 @@ describe(`migration #${version}`, () => {
     expect(transformedState.data).toStrictEqual(expectedState);
   });
 
-  it('Does not update tickers for other network configurations, updates only ticker and imageURL for chain 0x89', async () => {
+  it('does not update tickers for other network configurations, updates only ticker and imageURL for chain 0x89', async () => {
     const oldState = {
       NetworkController: {
         networkConfigurations: {
@@ -155,7 +155,7 @@ describe(`migration #${version}`, () => {
     expect(transformedState.data).toStrictEqual(expectedState);
   });
 
-  it('Does nothing if Polygon ChainId (0x89) is not in networkConfigurations', async () => {
+  it('does nothing if Polygon ChainId (0x89) is not in networkConfigurations', async () => {
     const oldState = {
       NetworkController: {
         networkConfigurations: {
@@ -185,7 +185,7 @@ describe(`migration #${version}`, () => {
     expect(transformedState.data).toStrictEqual(oldState);
   });
 
-  it('Updates Polygon ChainId (0x89) in ProviderConfig if exists, and ticker is set to MATIC, and updates imageUrl', async () => {
+  it('updates Polygon ChainId (0x89) in ProviderConfig if exists, and ticker is set to MATIC, and updates imageUrl', async () => {
     const oldState = {
       NetworkController: {
         providerConfig: {
@@ -218,7 +218,7 @@ describe(`migration #${version}`, () => {
     expect(transformedState.data).toStrictEqual(expectedState);
   });
 
-  it('Does nothing if Polygon ChainId (0x89) is not in providerConfig', async () => {
+  it('does nothing if Polygon ChainId (0x89) is not in providerConfig', async () => {
     const oldState = {
       NetworkController: {
         providerConfig: {
@@ -239,7 +239,7 @@ describe(`migration #${version}`, () => {
     expect(transformedState.data).toStrictEqual(oldState);
   });
 
-  it('Does not update ticker if Polygon ChainId (0x89) is in providerConfig, but ticker is not MATIC, but still updates imageUrl', async () => {
+  it('does not update ticker if Polygon ChainId (0x89) is in providerConfig, but ticker is not MATIC, but still updates imageUrl', async () => {
     const oldState = {
       NetworkController: {
         providerConfig: {

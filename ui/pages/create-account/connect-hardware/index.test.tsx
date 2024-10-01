@@ -198,7 +198,7 @@ describe('ConnectHardwareForm', () => {
 
   describe('Select Hardware', () => {
     it('should check link buttons for Ngrave Zero brand', async () => {
-      window.open = jest.fn();
+      jest.spyOn(window, 'open').mockImplementation();
 
       const { getByLabelText, getByTestId } = renderWithProvider(
         <ConnectHardwareForm {...mockProps} />,

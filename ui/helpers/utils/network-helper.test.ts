@@ -65,7 +65,7 @@ describe('netwotkHelper', () => {
       const result = getMatchedSymbols(decimalChainId, chains);
 
       expect(result).toEqual(expect.arrayContaining(expected));
-      expect(result.length).toBe(expected.length);
+      expect(result).toHaveLength(expected.length);
     });
 
     it('should return an empty array if no symbols match the given decimalChainId', () => {
@@ -106,7 +106,7 @@ describe('netwotkHelper', () => {
       const result = getMatchedNames(decimalChainId, chains);
 
       expect(result).toEqual(expect.arrayContaining(expected));
-      expect(result.length).toBe(expected.length);
+      expect(result).toHaveLength(expected.length);
     });
 
     it('should return an empty array if no symbols match the given decimalChainId', () => {

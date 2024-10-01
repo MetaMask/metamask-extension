@@ -180,7 +180,7 @@ describe('Transaction metrics', () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
     });
 
     it('should create event fragment', async () => {
@@ -191,10 +191,12 @@ describe('Transaction metrics', () => {
         actionId: mockActionId,
       });
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         failureEvent: TransactionMetaMetricsEvent.rejected,
@@ -220,10 +222,12 @@ describe('Transaction metrics', () => {
         actionId: mockActionId,
       });
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         failureEvent: TransactionMetaMetricsEvent.rejected,
@@ -248,10 +252,12 @@ describe('Transaction metrics', () => {
         actionId: mockActionId,
       });
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         failureEvent: TransactionMetaMetricsEvent.rejected,
@@ -279,13 +285,13 @@ describe('Transaction metrics', () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
     });
 
     it('should create, update, finalize event fragment', async () => {
@@ -298,10 +304,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-added-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.approved,
@@ -312,23 +320,22 @@ describe('Transaction metrics', () => {
         sensitiveProperties: expectedSensitiveProperties,
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: expectedSensitiveProperties,
-        },
-      );
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: expectedProperties,
+        sensitiveProperties: expectedSensitiveProperties,
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
 
     it('should create, update, finalize event fragment with blockaid', async () => {
@@ -341,10 +348,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-added-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.approved,
@@ -362,30 +371,29 @@ describe('Transaction metrics', () => {
         sensitiveProperties: expectedSensitiveProperties,
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: expectedSensitiveProperties,
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: {
+          ...expectedProperties,
+          ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
         },
-      );
+        sensitiveProperties: expectedSensitiveProperties,
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
   });
 
@@ -396,13 +404,13 @@ describe('Transaction metrics', () => {
       await handleTransactionFailed(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
     });
 
     it('should create, update, finalize event fragment', async () => {
@@ -423,10 +431,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -439,26 +449,25 @@ describe('Transaction metrics', () => {
         },
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            error: mockErrorMessage,
-          },
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: expectedProperties,
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          error: mockErrorMessage,
         },
-      );
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
 
     it('should create, update, finalize event fragment with blockaid', async () => {
@@ -479,10 +488,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -502,33 +513,32 @@ describe('Transaction metrics', () => {
         },
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            error: mockErrorMessage,
-          },
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: {
+          ...expectedProperties,
+          ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
         },
-      );
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          error: mockErrorMessage,
+        },
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
 
     it('should append error to event properties', async () => {
@@ -544,10 +554,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -560,26 +572,25 @@ describe('Transaction metrics', () => {
         },
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            error: mockErrorMessage,
-          },
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: expectedProperties,
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          error: mockErrorMessage,
         },
-      );
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
   });
 
@@ -593,13 +604,13 @@ describe('Transaction metrics', () => {
       );
       expect(
         mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
     });
 
     it('should create, update, finalize event fragment', async () => {
@@ -618,10 +629,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -636,28 +649,27 @@ describe('Transaction metrics', () => {
         },
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            completion_time: expect.any(String),
-            gas_used: '0.000000291',
-            status: METRICS_STATUS_FAILED,
-          },
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: expectedProperties,
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          completion_time: expect.any(String),
+          gas_used: '0.000000291',
+          status: METRICS_STATUS_FAILED,
         },
-      );
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
 
     it('should create, update, finalize event fragment with blockaid', async () => {
@@ -676,10 +688,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -701,35 +715,34 @@ describe('Transaction metrics', () => {
         },
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            completion_time: expect.any(String),
-            gas_used: '0.000000291',
-            status: METRICS_STATUS_FAILED,
-          },
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: {
+          ...expectedProperties,
+          ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
         },
-      );
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          completion_time: expect.any(String),
+          gas_used: '0.000000291',
+          status: METRICS_STATUS_FAILED,
+        },
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
   });
 
@@ -740,13 +753,13 @@ describe('Transaction metrics', () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
     });
 
     it('should create, update, finalize event fragment', async () => {
@@ -759,10 +772,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -776,27 +791,26 @@ describe('Transaction metrics', () => {
         },
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            dropped: true,
-            transaction_replaced: 'other',
-          },
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: expectedProperties,
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          dropped: true,
+          transaction_replaced: 'other',
         },
-      );
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
 
     it('should create, update, finalize event fragment with blockaid', async () => {
@@ -809,10 +823,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -833,34 +849,33 @@ describe('Transaction metrics', () => {
         },
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            dropped: true,
-            transaction_replaced: 'other',
-          },
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: {
+          ...expectedProperties,
+          ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
         },
-      );
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          dropped: true,
+          transaction_replaced: 'other',
+        },
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
   });
 
@@ -871,13 +886,13 @@ describe('Transaction metrics', () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
     });
 
     it('should create, update, finalize event fragment', async () => {
@@ -890,10 +905,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-added-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.approved,
@@ -904,23 +921,22 @@ describe('Transaction metrics', () => {
         sensitiveProperties: expectedSensitiveProperties,
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: expectedSensitiveProperties,
-        },
-      );
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: expectedProperties,
+        sensitiveProperties: expectedSensitiveProperties,
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId, {
+      ).toHaveBeenCalledWith(expectedUniqueId, {
         abandoned: true,
       });
     });
@@ -935,10 +951,12 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-added-1';
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.approved,
@@ -956,30 +974,29 @@ describe('Transaction metrics', () => {
         sensitiveProperties: expectedSensitiveProperties,
       });
 
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: expectedSensitiveProperties,
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId, {
+        properties: {
+          ...expectedProperties,
+          ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
         },
-      );
+        sensitiveProperties: expectedSensitiveProperties,
+      });
 
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId, {
+      ).toHaveBeenCalledWith(expectedUniqueId, {
         abandoned: true,
       });
     });
@@ -995,7 +1012,7 @@ describe('Transaction metrics', () => {
       );
       expect(
         mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
     });
 
     it('should only create event fragment', async () => {
@@ -1006,10 +1023,12 @@ describe('Transaction metrics', () => {
         actionId: mockActionId,
       });
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).toHaveBeenCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         initialEvent: TransactionMetaMetricsEvent.submitted,
@@ -1022,10 +1041,10 @@ describe('Transaction metrics', () => {
 
       expect(
         mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+      ).not.toHaveBeenCalled();
     });
   });
 });

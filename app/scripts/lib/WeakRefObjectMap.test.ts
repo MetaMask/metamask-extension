@@ -61,7 +61,7 @@ describe('WeakDomainProxyMap', () => {
 
     it('iterates over entries correctly', () => {
       const entries = Array.from(map.entries());
-      expect(entries.length).toBe(2);
+      expect(entries).toHaveLength(2);
       expect(entries).toEqual(
         expect.arrayContaining([
           ['key1', { objKey1: { detail: 'value1' } }],
@@ -72,13 +72,13 @@ describe('WeakDomainProxyMap', () => {
 
     it('iterates over keys correctly', () => {
       const keys = Array.from(map.keys());
-      expect(keys.length).toBe(2);
+      expect(keys).toHaveLength(2);
       expect(keys).toEqual(expect.arrayContaining(['key1', 'key2']));
     });
 
     it('iterates over values correctly', () => {
       const values = Array.from(map.values());
-      expect(values.length).toBe(2);
+      expect(values).toHaveLength(2);
       expect(values).toEqual(
         expect.arrayContaining([
           { objKey1: { detail: 'value1' } },
@@ -91,7 +91,7 @@ describe('WeakDomainProxyMap', () => {
       const mockCallback = jest.fn();
       map.forEach(mockCallback);
 
-      expect(mockCallback.mock.calls.length).toBe(2);
+      expect(mockCallback.mock.calls).toHaveLength(2);
       expect(mockCallback).toHaveBeenCalledWith(
         { objKey1: { detail: 'value1' } },
         'key1',
@@ -106,9 +106,9 @@ describe('WeakDomainProxyMap', () => {
 
     it('handles empty map in iterations', () => {
       const emptyMap = new WeakRefObjectMap<Record<string, object>>();
-      expect(Array.from(emptyMap.entries()).length).toBe(0);
-      expect(Array.from(emptyMap.keys()).length).toBe(0);
-      expect(Array.from(emptyMap.values()).length).toBe(0);
+      expect(Array.from(emptyMap.entries())).toHaveLength(0);
+      expect(Array.from(emptyMap.keys())).toHaveLength(0);
+      expect(Array.from(emptyMap.values())).toHaveLength(0);
 
       const mockCallback = jest.fn();
       emptyMap.forEach(mockCallback);

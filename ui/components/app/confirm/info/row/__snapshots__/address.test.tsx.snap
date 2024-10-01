@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with a name from the ENS resolution  1`] = `
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with a name from the ENS resolution 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"

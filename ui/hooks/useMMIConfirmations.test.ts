@@ -38,6 +38,6 @@ describe('useMMIConfirmations', () => {
   it('when invoking mmiOnSignCallback it should call useMMICustodySignMessage:custodySignFn with current confirmation', async () => {
     const { result } = render();
     result.current.mmiOnSignCallback();
-    expect(mockCustodySignFn).toBeCalledTimes(1);
+    expect(mockCustodySignFn).toHaveBeenCalledTimes(1);
   });
 });

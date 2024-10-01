@@ -43,7 +43,7 @@ describe('NotificationDetailCollection', () => {
   it('renders the main image and the badge image', () => {
     renderWithProvider(<NotificationDetailCollection {...defaultProps} />);
     const images = screen.getAllByRole('img');
-    expect(images.length).toBe(2);
+    expect(images).toHaveLength(2);
     expect(images[0]).toHaveAttribute('src', defaultProps.icon.src);
     expect(images[1]).toHaveAttribute('src', defaultProps.icon.badgeSrc);
   });

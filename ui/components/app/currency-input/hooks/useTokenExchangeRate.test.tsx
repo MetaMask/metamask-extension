@@ -48,7 +48,7 @@ describe('useProcessNewDecimalValue', () => {
     jest.clearAllMocks();
   });
 
-  it('ERC-20: price is available', () => {
+  it('eRC-20: price is available', () => {
     const {
       result: { current: exchangeRate },
     } = renderUseTokenExchangeRate(
@@ -58,7 +58,7 @@ describe('useProcessNewDecimalValue', () => {
     expect(String(exchangeRate?.value)).toEqual('5.55');
   });
 
-  it('ERC-20: price is unavailable through state but available through API', async () => {
+  it('eRC-20: price is unavailable through state but available through API', async () => {
     (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
       Promise.resolve({
         '0x0000000000000000000000000000000000000001': '2.34',
@@ -74,10 +74,10 @@ describe('useProcessNewDecimalValue', () => {
     waitFor(() => {
       expect(exchangeRate?.value).toBe('2.34');
     });
-    expect(fetchTokenExchangeRates).toBeCalledTimes(1);
+    expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(1);
   });
 
-  it('ERC-20: price is unavailable through state and through API', async () => {
+  it('eRC-20: price is unavailable through state and through API', async () => {
     (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
       Promise.resolve({
         'Not token': '2.34',
@@ -93,10 +93,10 @@ describe('useProcessNewDecimalValue', () => {
     waitFor(() => {
       expect(exchangeRate?.value).toBe(undefined);
     });
-    expect(fetchTokenExchangeRates).toBeCalledTimes(1);
+    expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(1);
   });
 
-  it('ERC-20: price is unavailable through state but API call fails', async () => {
+  it('eRC-20: price is unavailable through state but API call fails', async () => {
     (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
       Promise.reject(new Error('error')),
     );
@@ -110,7 +110,7 @@ describe('useProcessNewDecimalValue', () => {
     waitFor(() => {
       expect(exchangeRate?.value).toBe(undefined);
     });
-    expect(fetchTokenExchangeRates).toBeCalledTimes(1);
+    expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(1);
   });
 
   it('native: price is available', () => {

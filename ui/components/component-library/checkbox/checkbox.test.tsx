@@ -83,7 +83,7 @@ describe('Checkbox', () => {
     expect(getByTestId('label')).toHaveAttribute('for', 'option-1');
   });
 
-  test('Checkbox component is disabled when isDisabled is true', () => {
+  it('checkbox component is disabled when isDisabled is true', () => {
     const { getByRole, getByTestId } = render(
       <Checkbox
         label="Option 1"
@@ -99,7 +99,7 @@ describe('Checkbox', () => {
     expect(getByTestId('option-disabled')).toHaveClass('mm-checkbox--disabled');
   });
 
-  test('Checkbox component is readOnly when isReadOnly is true', () => {
+  it('checkbox component is readOnly when isReadOnly is true', () => {
     const { getByLabelText } = render(
       <Checkbox label="Option 1" id="option-1" isReadOnly={true} />,
     );
@@ -110,7 +110,7 @@ describe('Checkbox', () => {
     expect(checkbox).toHaveClass('mm-checkbox__input--readonly');
   });
 
-  it('Checkbox component fires onChange function when clicked', () => {
+  it('checkbox component fires onChange function when clicked', () => {
     const onChange = jest.fn();
 
     const { getByTestId } = render(
@@ -124,7 +124,7 @@ describe('Checkbox', () => {
     expect(onChange).toHaveBeenCalled();
   });
 
-  it('Checkbox component fires onChange function label clicked', () => {
+  it('checkbox component fires onChange function label clicked', () => {
     const onChange = jest.fn();
 
     const { getByText } = render(
@@ -138,7 +138,7 @@ describe('Checkbox', () => {
     expect(onChange).toHaveBeenCalled();
   });
 
-  test('Checkbox component is required when isRequired is true', () => {
+  it('checkbox component is required when isRequired is true', () => {
     const { getByLabelText } = render(
       <Checkbox label="Option 1" id="option-1" isRequired={true} />,
     );
@@ -148,7 +148,7 @@ describe('Checkbox', () => {
     expect(checkbox).toHaveAttribute('required');
   });
 
-  test('Checkbox component renders with the correct title attribute', () => {
+  it('checkbox component renders with the correct title attribute', () => {
     const { getByLabelText } = render(
       <Checkbox label="Option 1" id="option-1" title="pineapple" />,
     );
@@ -158,7 +158,7 @@ describe('Checkbox', () => {
     expect(checkbox).toHaveAttribute('title', 'pineapple');
   });
 
-  test('Checkbox component renders with the correct title attribute used from the label', () => {
+  it('checkbox component renders with the correct title attribute used from the label', () => {
     const { getByLabelText } = render(
       <Checkbox label="Option 1" id="option-1" />,
     );
@@ -168,7 +168,7 @@ describe('Checkbox', () => {
     expect(checkbox).toHaveAttribute('title', 'Option 1');
   });
 
-  test('Checkbox component renders with the correct title attribute used from the id', () => {
+  it('checkbox component renders with the correct title attribute used from the id', () => {
     const { getByRole } = render(<Checkbox id="option-1" />);
 
     const checkbox = getByRole('checkbox');
@@ -176,7 +176,7 @@ describe('Checkbox', () => {
     expect(checkbox).toHaveAttribute('title', 'option-1');
   });
 
-  test('Checkbox component renders with the correct name attribute', () => {
+  it('checkbox component renders with the correct name attribute', () => {
     const { getByRole } = render(<Checkbox name="option-1" />);
 
     const checkbox = getByRole('checkbox');

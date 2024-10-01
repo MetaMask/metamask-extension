@@ -76,7 +76,7 @@ describe('Bridge utils', () => {
 
       (fetchWithCache as jest.Mock).mockRejectedValue(mockError);
 
-      await expect(fetchBridgeFeatureFlags()).rejects.toThrowError(mockError);
+      await expect(fetchBridgeFeatureFlags()).rejects.toThrow(mockError);
     });
   });
 });

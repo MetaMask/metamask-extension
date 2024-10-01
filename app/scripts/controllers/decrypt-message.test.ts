@@ -142,7 +142,7 @@ describe('DecryptMessageController', () => {
   it('should clear unapproved messages', () => {
     decryptMessageController.clearUnapproved();
     expect(decryptMessageController.state).toStrictEqual(getDefaultState());
-    expect(decryptMessageManagerMock.update).toBeCalledTimes(1);
+    expect(decryptMessageManagerMock.update).toHaveBeenCalledTimes(1);
   });
   it('should add unapproved messages', async () => {
     await decryptMessageController.newRequestDecryptMessage(
@@ -152,13 +152,12 @@ describe('DecryptMessageController', () => {
       undefined as any,
     );
 
-    expect(decryptMessageManagerMock.addUnapprovedMessageAsync).toBeCalledTimes(
-      1,
-    );
-    expect(decryptMessageManagerMock.addUnapprovedMessageAsync).toBeCalledWith(
-      messageMock,
-      undefined,
-    );
+    expect(
+      decryptMessageManagerMock.addUnapprovedMessageAsync,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      decryptMessageManagerMock.addUnapprovedMessageAsync,
+    ).toHaveBeenCalledWith(messageMock, undefined);
   });
 
   it('should decrypt message', async () => {
@@ -182,23 +181,21 @@ describe('DecryptMessageController', () => {
       messageToDecrypt,
     );
 
-    expect(decryptMessageManagerMock.approveMessage).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.approveMessage).toBeCalledWith(
+    expect(decryptMessageManagerMock.approveMessage).toHaveBeenCalledTimes(1);
+    expect(decryptMessageManagerMock.approveMessage).toHaveBeenCalledWith(
       messageToDecrypt,
     );
-    expect(decryptMessageActionCallbackMock).toBeCalledTimes(1);
-    expect(decryptMessageActionCallbackMock).toBeCalledWith(
+    expect(decryptMessageActionCallbackMock).toHaveBeenCalledTimes(1);
+    expect(decryptMessageActionCallbackMock).toHaveBeenCalledWith(
       'KeyringController:decryptMessage',
       messageToDecrypt,
     );
-    expect(decryptMessageManagerMock.setMessageStatusAndResult).toBeCalledTimes(
-      1,
-    );
-    expect(decryptMessageManagerMock.setMessageStatusAndResult).toBeCalledWith(
-      messageIdMock,
-      'decryptedMessage',
-      'decrypted',
-    );
+    expect(
+      decryptMessageManagerMock.setMessageStatusAndResult,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      decryptMessageManagerMock.setMessageStatusAndResult,
+    ).toHaveBeenCalledWith(messageIdMock, 'decryptedMessage', 'decrypted');
     expect(result).toBe(mockExtState);
   });
 
@@ -252,8 +249,8 @@ describe('DecryptMessageController', () => {
       messageToDecrypt,
     );
 
-    expect(decryptMessageManagerMock.setResult).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.setResult).toBeCalledWith(
+    expect(decryptMessageManagerMock.setResult).toHaveBeenCalledTimes(1);
+    expect(decryptMessageManagerMock.setResult).toHaveBeenCalledWith(
       messageMock.metamaskId,
       'decryptedMessage',
     );
@@ -281,8 +278,8 @@ describe('DecryptMessageController', () => {
       messageIdMock,
     );
 
-    expect(decryptMessageManagerMock.rejectMessage).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.rejectMessage).toBeCalledWith(
+    expect(decryptMessageManagerMock.rejectMessage).toHaveBeenCalledTimes(1);
+    expect(decryptMessageManagerMock.rejectMessage).toHaveBeenCalledWith(
       messageIdMock,
     );
     expect(result).toBe(mockExtState);
@@ -297,12 +294,12 @@ describe('DecryptMessageController', () => {
 
     await decryptMessageController.rejectUnapproved('reason to cancel');
 
-    expect(decryptMessageManagerMock.rejectMessage).toBeCalledTimes(1);
-    expect(decryptMessageManagerMock.rejectMessage).toBeCalledWith(
+    expect(decryptMessageManagerMock.rejectMessage).toHaveBeenCalledTimes(1);
+    expect(decryptMessageManagerMock.rejectMessage).toHaveBeenCalledWith(
       messageIdMock,
     );
-    expect(metricsEventMock).toBeCalledTimes(1);
-    expect(metricsEventMock).toBeCalledWith({
+    expect(metricsEventMock).toHaveBeenCalledTimes(1);
+    expect(metricsEventMock).toHaveBeenCalledWith({
       event: 'reason to cancel',
       category: MetaMetricsEventCategory.Messages,
       properties: {

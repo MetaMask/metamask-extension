@@ -103,7 +103,7 @@ describe('formatMenuItemDate', () => {
 });
 
 describe('getNotificationData - formatAmount() tests', () => {
-  test('Should format large numbers', () => {
+  it('should format large numbers', () => {
     expect(formatAmount(1000)).toBe('1K');
     expect(formatAmount(1500)).toBe('1.5K');
     expect(formatAmount(1000000)).toBe('1M');
@@ -112,7 +112,7 @@ describe('getNotificationData - formatAmount() tests', () => {
     expect(formatAmount(1234567)).toBe('1.23M');
   });
 
-  test('Should format smaller numbers (<1000) with custom decimal place', () => {
+  it('should format smaller numbers (<1000) with custom decimal place', () => {
     const formatOptions = { decimalPlaces: 18 };
     expect(formatAmount(100.0012, formatOptions)).toBe('100.0012');
     expect(formatAmount(100.001200001, formatOptions)).toBe('100.001200001');
@@ -120,7 +120,7 @@ describe('getNotificationData - formatAmount() tests', () => {
     expect(formatAmount(1e-19, formatOptions)).toBe('0'); // number is smaller than decimals given, hence 0
   });
 
-  test('Should format small numbers (<1000) up to 4 decimals otherwise uses ellipses', () => {
+  it('should format small numbers (<1000) up to 4 decimals otherwise uses ellipses', () => {
     const formatOptions = { shouldEllipse: true };
     expect(formatAmount(100.1, formatOptions)).toBe('100.1');
     expect(formatAmount(100.01, formatOptions)).toBe('100.01');
@@ -130,7 +130,7 @@ describe('getNotificationData - formatAmount() tests', () => {
     expect(formatAmount(0.00001, formatOptions)).toBe('0.0000...'); // since number is has >4 decimals, it will be truncated
   });
 
-  test('Should format small numbers (<1000) to custom decimal places and ellipse', () => {
+  it('should format small numbers (<1000) to custom decimal places and ellipse', () => {
     const formatOptions = { decimalPlaces: 2, shouldEllipse: true };
     expect(formatAmount(100.1, formatOptions)).toBe('100.1');
     expect(formatAmount(100.01, formatOptions)).toBe('100.01');
@@ -142,7 +142,7 @@ describe('getNotificationData - formatAmount() tests', () => {
 });
 
 describe('getNotificationData - getLeadingZeroCount() tests', () => {
-  test('Should handle all test cases', () => {
+  it('should handle all test cases', () => {
     expect(getLeadingZeroCount(0)).toBe(0);
     expect(getLeadingZeroCount(-1)).toBe(0);
     expect(getLeadingZeroCount(1e-1)).toBe(0);

@@ -15,7 +15,7 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('Gracefully handles empty/undefined PreferencesController', async () => {
+  it('gracefully handles empty/undefined PreferencesController', async () => {
     for (const PreferencesController of [{}, undefined, null, 1, '', []]) {
       const oldStorage = {
         meta: { version: oldVersion },
@@ -27,7 +27,7 @@ describe(`migration #${version}`, () => {
     }
   });
 
-  it('Enables token autodetection when basic functionality is on', async () => {
+  it('enables token autodetection when basic functionality is on', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -46,7 +46,7 @@ describe(`migration #${version}`, () => {
     });
   });
 
-  it('Does not enable token autodetection when basic functionality is off', async () => {
+  it('does not enable token autodetection when basic functionality is off', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -64,7 +64,7 @@ describe(`migration #${version}`, () => {
     });
   });
 
-  it('Removes showTokenAutodetectModalOnUpgrade from the app metadata controller', async () => {
+  it('removes showTokenAutodetectModalOnUpgrade from the app metadata controller', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -85,7 +85,7 @@ describe(`migration #${version}`, () => {
     });
   });
 
-  it('Does nothing if showTokenAutodetectModalOnUpgrade is not in the app metadata controller', async () => {
+  it('does nothing if showTokenAutodetectModalOnUpgrade is not in the app metadata controller', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {

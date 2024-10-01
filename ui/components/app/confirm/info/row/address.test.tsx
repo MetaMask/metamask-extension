@@ -132,7 +132,7 @@ describe('ConfirmInfoRowAddress', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('with a name from the ENS resolution ', () => {
+    it('with a name from the ENS resolution', () => {
       const testENSName = 'Test ENS Name';
 
       const { container, getByTestId } = render({

@@ -22,7 +22,7 @@ const {
 const { processNotification } = NotificationServicesController.Processors;
 
 describe('notification-message tests', () => {
-  test('displays erc20 sent notification', () => {
+  it('displays erc20 sent notification', () => {
     const notification = processNotification(createMockNotificationERC20Sent());
     const result = createNotificationMessage(notification);
 
@@ -30,7 +30,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('You successfully sent 4.96K USDC');
   });
 
-  test('displays erc20 received notification', () => {
+  it('displays erc20 received notification', () => {
     const notification = processNotification(
       createMockNotificationERC20Received(),
     );
@@ -40,7 +40,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('You received 8.38B SHIB');
   });
 
-  test('displays eth/native sent notification', () => {
+  it('displays eth/native sent notification', () => {
     const notification = processNotification(createMockNotificationEthSent());
     const result = createNotificationMessage(notification);
 
@@ -48,7 +48,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('You successfully sent 0.005 ETH');
   });
 
-  test('displays eth/native received notification', () => {
+  it('displays eth/native received notification', () => {
     const notification = processNotification(
       createMockNotificationEthReceived(),
     );
@@ -58,7 +58,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('You received 808 ETH');
   });
 
-  test('displays metamask swap completed notification', () => {
+  it('displays metamask swap completed notification', () => {
     const notification = processNotification(
       createMockNotificationMetaMaskSwapsCompleted(),
     );
@@ -68,7 +68,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('Your MetaMask Swap was successful');
   });
 
-  test('displays erc721 sent notification', () => {
+  it('displays erc721 sent notification', () => {
     const notification = processNotification(
       createMockNotificationERC721Sent(),
     );
@@ -78,7 +78,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('You have successfully sent an NFT');
   });
 
-  test('displays erc721 received notification', () => {
+  it('displays erc721 received notification', () => {
     const notification = processNotification(
       createMockNotificationERC721Received(),
     );
@@ -88,7 +88,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('You received new NFTs');
   });
 
-  test('displays erc1155 sent notification', () => {
+  it('displays erc1155 sent notification', () => {
     const notification = processNotification(
       createMockNotificationERC1155Sent(),
     );
@@ -98,7 +98,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('You have successfully sent an NFT');
   });
 
-  test('displays erc1155 received notification', () => {
+  it('displays erc1155 received notification', () => {
     const notification = processNotification(
       createMockNotificationERC1155Received(),
     );
@@ -108,7 +108,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('You received new NFTs');
   });
 
-  test('displays rocketpool stake completed notification', () => {
+  it('displays rocketpool stake completed notification', () => {
     const notification = processNotification(
       createMockNotificationRocketPoolStakeCompleted(),
     );
@@ -120,7 +120,7 @@ describe('notification-message tests', () => {
     );
   });
 
-  test('displays rocketpool unstake completed notification', () => {
+  it('displays rocketpool unstake completed notification', () => {
     const notification = processNotification(
       createMockNotificationRocketPoolUnStakeCompleted(),
     );
@@ -132,7 +132,7 @@ describe('notification-message tests', () => {
     );
   });
 
-  test('displays lido stake completed notification', () => {
+  it('displays lido stake completed notification', () => {
     const notification = processNotification(
       createMockNotificationLidoStakeCompleted(),
     );
@@ -142,7 +142,7 @@ describe('notification-message tests', () => {
     expect(result?.description).toContain('Your Lido stake was successful');
   });
 
-  test('displays lido stake ready to be withdrawn notification', () => {
+  it('displays lido stake ready to be withdrawn notification', () => {
     const notification = processNotification(
       createMockNotificationLidoReadyToBeWithdrawn(),
     );
@@ -154,7 +154,7 @@ describe('notification-message tests', () => {
     );
   });
 
-  test('displays lido withdrawal requested notification', () => {
+  it('displays lido withdrawal requested notification', () => {
     const notification = processNotification(
       createMockNotificationLidoWithdrawalRequested(),
     );
@@ -166,7 +166,7 @@ describe('notification-message tests', () => {
     );
   });
 
-  test('displays lido withdrawal completed notification', () => {
+  it('displays lido withdrawal completed notification', () => {
     const notification = processNotification(
       createMockNotificationLidoWithdrawalCompleted(),
     );

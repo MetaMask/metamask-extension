@@ -234,7 +234,7 @@ describe('EncryptionPublicKeyController', () => {
             addressMock,
             requestMock,
           ),
-        ).rejects.toThrowError(
+        ).rejects.toThrow(
           `${keyringName} does not support eth_getEncryptionPublicKey.`,
         );
       },

@@ -39,7 +39,7 @@ describe('useTranslatedNetworkName', () => {
 
     const { result } = renderHook(() => useTranslatedNetworkName());
 
-    expect(translationMock).toBeCalledTimes(1);
+    expect(translationMock).toHaveBeenCalledTimes(1);
     expect(result.current).toBe('networkNameEthereum');
   });
 
@@ -48,7 +48,7 @@ describe('useTranslatedNetworkName', () => {
 
     const { result } = renderHook(() => useTranslatedNetworkName());
 
-    expect(translationMock).toBeCalledTimes(0);
+    expect(translationMock).toHaveBeenCalledTimes(0);
     expect(result.current).toBeUndefined();
   });
 });

@@ -21,7 +21,7 @@ describe('useProcessNewDecimalValue', () => {
     jest.clearAllMocks();
   });
 
-  it('Fiat is primary', () => {
+  it('fiat is primary', () => {
     const {
       result: { current: processingFunction },
     } = renderUseProcessNewDecimalValue(6, false, new Numeric(0.5, 10));
@@ -45,7 +45,7 @@ describe('useProcessNewDecimalValue', () => {
     });
   });
 
-  it('Token is primary', () => {
+  it('token is primary', () => {
     const {
       result: { current: processingFunction },
     } = renderUseProcessNewDecimalValue(6, true, new Numeric(0.5, 10));
@@ -68,7 +68,7 @@ describe('useProcessNewDecimalValue', () => {
     });
   });
 
-  it('Fiat is primary; conversion is zero', () => {
+  it('fiat is primary; conversion is zero', () => {
     const {
       result: { current: processingFunction },
     } = renderUseProcessNewDecimalValue(6, false, new Numeric(0, 10));
@@ -92,7 +92,7 @@ describe('useProcessNewDecimalValue', () => {
     });
   });
 
-  it('Token is primary; conversion is zero', () => {
+  it('token is primary; conversion is zero', () => {
     const {
       result: { current: processingFunction },
     } = renderUseProcessNewDecimalValue(6, true, new Numeric(0, 10));
@@ -115,7 +115,7 @@ describe('useProcessNewDecimalValue', () => {
     });
   });
 
-  it('Fiat is primary; decimals are 0', () => {
+  it('fiat is primary; decimals are 0', () => {
     const {
       result: { current: processingFunction },
     } = renderUseProcessNewDecimalValue(0, false, new Numeric(0.5, 10));
@@ -139,7 +139,7 @@ describe('useProcessNewDecimalValue', () => {
     });
   });
 
-  it('Token is primary; decimals are 0', () => {
+  it('token is primary; decimals are 0', () => {
     const {
       result: { current: processingFunction },
     } = renderUseProcessNewDecimalValue(0, true, new Numeric(0.5, 10));

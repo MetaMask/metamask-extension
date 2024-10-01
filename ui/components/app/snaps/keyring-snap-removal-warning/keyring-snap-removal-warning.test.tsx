@@ -102,7 +102,7 @@ describe('Keyring Snap Remove Warning', () => {
       const removeSnapButton = getAllByText('Remove Snap')[1];
       expect(removeSnapButton).not.toBeDisabled();
       fireEvent.click(removeSnapButton);
-      expect(mockOnSubmit).toBeCalled();
+      expect(mockOnSubmit).toHaveBeenCalled();
     });
   });
 
@@ -134,7 +134,7 @@ describe('Keyring Snap Remove Warning', () => {
     );
 
     const getAccountsToBeRemoved = getAllByTestId('keyring-account-list-item');
-    expect(getAccountsToBeRemoved.length).toBe(2);
+    expect(getAccountsToBeRemoved).toHaveLength(2);
 
     expect(getByText(defaultArgs.keyringAccounts[0].name)).toBeInTheDocument();
     expect(getByText(defaultArgs.keyringAccounts[1].name)).toBeInTheDocument();
@@ -163,7 +163,7 @@ describe('Keyring Snap Remove Warning', () => {
       });
     });
 
-    it('it will return to account list if modal is showing confirmation', async () => {
+    it('will return to account list if modal is showing confirmation', async () => {
       const { getByText, getByLabelText } = renderWithProvider(
         <KeyringSnapRemovalWarning {...defaultArgs} />,
         store,

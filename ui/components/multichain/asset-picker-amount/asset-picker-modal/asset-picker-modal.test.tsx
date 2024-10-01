@@ -201,8 +201,8 @@ describe('AssetPickerModal', () => {
     });
 
     expect(
-      (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList.length,
-    ).toBe(2);
+      (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList,
+    ).toHaveLength(2);
 
     fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
       target: { value: 'UNAVAILABLE TOKEN' },
@@ -266,8 +266,8 @@ describe('AssetPickerModal', () => {
     });
 
     expect(
-      (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList.length,
-    ).toBe(2);
+      (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList,
+    ).toHaveLength(2);
 
     fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
       target: { value: 'TOKEN1' },
@@ -285,8 +285,8 @@ describe('AssetPickerModal', () => {
     );
 
     expect(
-      (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList.length,
-    ).toBe(1);
+      (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList,
+    ).toHaveLength(1);
 
     expect(
       (AssetList as jest.Mock).mock.calls[2][0].isTokenDisabled({

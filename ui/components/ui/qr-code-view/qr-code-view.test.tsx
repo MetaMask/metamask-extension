@@ -63,7 +63,7 @@ describe('QRCodeView', () => {
       message: '',
     },
   ])(
-    'it renders the $test',
+    'renders the $test',
     async ({
       data,
       message,

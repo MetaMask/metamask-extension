@@ -246,11 +246,11 @@ describe('submitSmartTransactionHook', () => {
 
   it('throws an error if there is no uuid', async () => {
     withRequest(async ({ request }) => {
-      request.smartTransactionsController.submitSignedTransactions = jest.fn(
-        async (_) => {
+      jest
+        .spyOn(request.smartTransactionsController, 'submitSignedTransactions')
+        .mockImplementation(async (_) => {
           return { uuid: undefined };
-        },
-      );
+        });
       await expect(submitSmartTransactionHook(request)).rejects.toThrow(
         'No smart transaction UUID',
       );

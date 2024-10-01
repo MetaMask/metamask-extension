@@ -182,7 +182,7 @@ describe('Popover', () => {
     expect(arrowElement).toHaveClass('mm-popover__arrow');
   });
 
-  test('should render Popover with isPortal set to false', () => {
+  it('should render Popover with isPortal set to false', () => {
     const { getByTestId } = render(
       <div>
         <Popover
@@ -199,7 +199,7 @@ describe('Popover', () => {
     expect(getByTestId('popover')).toBeInTheDocument();
   });
 
-  test('should render Popover with isPortal set to true', () => {
+  it('should render Popover with isPortal set to true', () => {
     const { getByTestId } = render(
       <div>
         <Popover data-testid="popover" isOpen={true} isPortal={true}>
@@ -211,7 +211,7 @@ describe('Popover', () => {
     expect(getByTestId('popover')).toBeTruthy();
   });
 
-  test('should add reference-hidden classname when referenceHidden prop is true', () => {
+  it('should add reference-hidden classname when referenceHidden prop is true', () => {
     const { getByTestId } = render(
       <div>
         <Popover data-testid="popover" isOpen={true} referenceHidden={true}>
@@ -237,7 +237,7 @@ describe('Popover', () => {
     );
   };
 
-  test('Press esc key to close fires', () => {
+  it('press esc key to close fires', () => {
     // Render the component
     const { getByText, queryByText } = render(<EscKeyTestComponent />);
 
@@ -272,7 +272,7 @@ describe('Popover', () => {
     );
   };
 
-  test('Close popover when clicking outside using onClickOutside prop', () => {
+  it('close popover when clicking outside using onClickOutside prop', () => {
     const { getByText, getByTestId, queryByText } = render(
       <ClickOutsideTestComponent />,
     );

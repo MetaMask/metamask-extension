@@ -97,7 +97,7 @@ describe('migration #121', () => {
     expect(transformedState.data).toEqual(oldState);
   });
 
-  it('Should return state if chainId is not linea-goerli', async () => {
+  it('should return state if chainId is not linea-goerli', async () => {
     const transformedState = await migrate({
       meta: { version: oldVersion },
       data: ethereumOldState,
@@ -106,7 +106,7 @@ describe('migration #121', () => {
     expect(transformedState.data).toEqual(ethereumOldState);
   });
 
-  it('Should return state if there is no NetworkController in state', async () => {
+  it('should return state if there is no NetworkController in state', async () => {
     const { NetworkController, ...state } = ethereumOldState;
     const transformedState = await migrate({
       meta: { version: oldVersion },
@@ -116,7 +116,7 @@ describe('migration #121', () => {
     expect(transformedState.data).toEqual(state);
   });
 
-  it('Should return state if there is no provider in NetworkController', async () => {
+  it('should return state if there is no provider in NetworkController', async () => {
     const state = {
       ...ethereumOldState,
       NetworkController: {},
@@ -129,7 +129,7 @@ describe('migration #121', () => {
     expect(transformedState.data).toEqual(state);
   });
 
-  it('Should return state if there is no chainId in provider in NetworkController', async () => {
+  it('should return state if there is no chainId in provider in NetworkController', async () => {
     const state = {
       ...ethereumOldState,
       NetworkController: {
@@ -144,7 +144,7 @@ describe('migration #121', () => {
     expect(transformedState.data).toEqual(state);
   });
 
-  it('Should return state if chainId is not linea-goerli', async () => {
+  it('should return state if chainId is not linea-goerli', async () => {
     const transformedState = await migrate({
       meta: { version: oldVersion },
       data: ethereumOldState,
@@ -153,7 +153,7 @@ describe('migration #121', () => {
     expect(transformedState.data).toEqual(ethereumOldState);
   });
 
-  it('Should update NetworkController to Linea Sepolia if chainId is on Linea Goerli', async () => {
+  it('should update NetworkController to Linea Sepolia if chainId is on Linea Goerli', async () => {
     const expectedNetworkControllerState = {
       networkConfigurations: {},
       networksMetadata: {

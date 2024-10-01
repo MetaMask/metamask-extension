@@ -103,7 +103,7 @@ describe('Connections Content', () => {
     expect(getByTestId('connections-page')).toBeInTheDocument();
   });
 
-  it('it should render Disconnect all Account button of the page', () => {
+  it('should render Disconnect all Account button of the page', () => {
     const history = createMemoryHistory();
     history.push('/connect/https%3A%2F%2Fmetamask.github.io');
 
@@ -118,7 +118,7 @@ describe('Connections Content', () => {
     expect(getByText('Disconnect all accounts')).toBeInTheDocument();
   });
 
-  it('it should trigger disconnect all accounts modal flow when disconnect all accounts button is clicked', async () => {
+  it('should trigger disconnect all accounts modal flow when disconnect all accounts button is clicked', async () => {
     const history = createMemoryHistory();
     history.push('/connect/https%3A%2F%2Fmetamask.github.io');
 

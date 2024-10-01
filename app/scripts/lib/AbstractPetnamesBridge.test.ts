@@ -308,9 +308,7 @@ describe('AbstractPetnamesBridge', () => {
         const petnamesListener = messenger.subscribe.mock
           .calls[0][1] as () => void;
         petnamesListener();
-      }).toThrowError(
-        'updateSourceEntry must be overridden for two-way bridges',
-      );
+      }).toThrow('updateSourceEntry must be overridden for two-way bridges');
     });
 
     it('calls updateSourceEntry with ADDED entry when Petnames entry is added', () => {
