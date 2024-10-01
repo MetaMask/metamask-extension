@@ -29,12 +29,14 @@ import {
   resetInputFields,
   setFromChain,
 } from '../../ducks/bridge/actions';
+import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
+  useSwapsFeatureFlags();
   useBridging();
 
   const history = useHistory();
