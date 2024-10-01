@@ -158,83 +158,84 @@ export type PreferencesControllerState = {
 /**
  * Function to get default state of the {@link PreferencesController}.
  */
-export const getDefaultPreferencesControllerState = (): PreferencesControllerState => ({
-  selectedAddress: '',
-  useBlockie: false,
-  useNonceField: false,
-  usePhishDetect: true,
-  dismissSeedBackUpReminder: false,
-  useMultiAccountBalanceChecker: true,
-  useSafeChainsListValidation: true,
-  // set to true means the dynamic list from the API is being used
-  // set to false will be using the static list from contract-metadata
-  useTokenDetection: true,
-  useNftDetection: true,
-  use4ByteResolution: true,
-  useCurrencyRateCheck: true,
-  useRequestQueue: true,
-  openSeaEnabled: true,
-  securityAlertsEnabled: true,
-  watchEthereumAccountEnabled: false,
-  bitcoinSupportEnabled: false,
-  bitcoinTestnetSupportEnabled: false,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  addSnapAccountEnabled: false,
-  ///: END:ONLY_INCLUDE_IF
-  advancedGasFee: {},
+export const getDefaultPreferencesControllerState =
+  (): PreferencesControllerState => ({
+    selectedAddress: '',
+    useBlockie: false,
+    useNonceField: false,
+    usePhishDetect: true,
+    dismissSeedBackUpReminder: false,
+    useMultiAccountBalanceChecker: true,
+    useSafeChainsListValidation: true,
+    // set to true means the dynamic list from the API is being used
+    // set to false will be using the static list from contract-metadata
+    useTokenDetection: true,
+    useNftDetection: true,
+    use4ByteResolution: true,
+    useCurrencyRateCheck: true,
+    useRequestQueue: true,
+    openSeaEnabled: true,
+    securityAlertsEnabled: true,
+    watchEthereumAccountEnabled: false,
+    bitcoinSupportEnabled: false,
+    bitcoinTestnetSupportEnabled: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    addSnapAccountEnabled: false,
+    ///: END:ONLY_INCLUDE_IF
+    advancedGasFee: {},
 
-  // WARNING: Do not use feature flags for security-sensitive things.
-  // Feature flag toggling is available in the global namespace
-  // for convenient testing of pre-release features, and should never
-  // perform sensitive operations.
-  featureFlags: {},
-  incomingTransactionsPreferences: {
-    ...mainNetworks,
-    ...testNetworks,
-  },
-  knownMethodData: {},
-  currentLocale: '',
-  identities: {},
-  lostIdentities: {},
-  forgottenPassword: false,
-  preferences: {
-    autoLockTimeLimit: undefined,
-    showExtensionInFullSizeView: false,
-    showFiatInTestnets: false,
-    showTestNetworks: false,
-    smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
-    useNativeCurrencyAsPrimaryCurrency: true,
-    hideZeroBalanceTokens: false,
-    petnamesEnabled: true,
-    redesignedConfirmationsEnabled: true,
-    redesignedTransactionsEnabled: true,
-    featureNotificationsEnabled: false,
-    isRedesignedConfirmationsDeveloperEnabled: false,
-    showConfirmationAdvancedDetails: false,
-    showMultiRpcModal: false,
-  },
-  // ENS decentralized website resolution
-  ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
-  isIpfsGatewayEnabled: true,
-  useAddressBarEnsResolution: true,
-  // Ledger transport type is deprecated. We currently only support webhid
-  // on chrome, and u2f on firefox.
-  ledgerTransportType: window.navigator.hid
-    ? LedgerTransportTypes.webhid
-    : LedgerTransportTypes.u2f,
-  snapRegistryList: {},
-  theme: ThemeType.os,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  snapsAddSnapAccountModalDismissed: false,
-  ///: END:ONLY_INCLUDE_IF
-  useExternalNameSources: true,
-  useTransactionSimulations: true,
-  enableMV3TimestampSave: true,
-  // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
-  // Whenever useExternalServices is false, certain features will be disabled.
-  // The flag is true by Default, meaning the toggle is ON by default.
-  useExternalServices: true,
-});
+    // WARNING: Do not use feature flags for security-sensitive things.
+    // Feature flag toggling is available in the global namespace
+    // for convenient testing of pre-release features, and should never
+    // perform sensitive operations.
+    featureFlags: {},
+    incomingTransactionsPreferences: {
+      ...mainNetworks,
+      ...testNetworks,
+    },
+    knownMethodData: {},
+    currentLocale: '',
+    identities: {},
+    lostIdentities: {},
+    forgottenPassword: false,
+    preferences: {
+      autoLockTimeLimit: undefined,
+      showExtensionInFullSizeView: false,
+      showFiatInTestnets: false,
+      showTestNetworks: false,
+      smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
+      useNativeCurrencyAsPrimaryCurrency: true,
+      hideZeroBalanceTokens: false,
+      petnamesEnabled: true,
+      redesignedConfirmationsEnabled: true,
+      redesignedTransactionsEnabled: true,
+      featureNotificationsEnabled: false,
+      isRedesignedConfirmationsDeveloperEnabled: false,
+      showConfirmationAdvancedDetails: false,
+      showMultiRpcModal: false,
+    },
+    // ENS decentralized website resolution
+    ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+    isIpfsGatewayEnabled: true,
+    useAddressBarEnsResolution: true,
+    // Ledger transport type is deprecated. We currently only support webhid
+    // on chrome, and u2f on firefox.
+    ledgerTransportType: window.navigator.hid
+      ? LedgerTransportTypes.webhid
+      : LedgerTransportTypes.u2f,
+    snapRegistryList: {},
+    theme: ThemeType.os,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    snapsAddSnapAccountModalDismissed: false,
+    ///: END:ONLY_INCLUDE_IF
+    useExternalNameSources: true,
+    useTransactionSimulations: true,
+    enableMV3TimestampSave: true,
+    // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
+    // Whenever useExternalServices is false, certain features will be disabled.
+    // The flag is true by Default, meaning the toggle is ON by default.
+    useExternalServices: true,
+  });
 
 /**
  * {@link PreferencesController}'s metadata.
