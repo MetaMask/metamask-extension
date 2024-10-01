@@ -4297,9 +4297,6 @@
   "quoteRate": {
     "message": "Quote rate"
   },
-  "quoteRateWithAsterisk": {
-    "message": "Quote rate*"
-  },
   "rank": {
     "message": "Rank"
   },
@@ -5690,7 +5687,7 @@
     "message": "Slippage amount is very high."
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "*Includes gas and a $1% MetaMask fee",
+    "message": "Includes gas and a $1% MetaMask fee",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {

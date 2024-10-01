@@ -1195,7 +1195,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               marginRight={1}
               color={TextColor.textDefault}
             >
-              {t('quoteRateWithAsterisk')}
+              {t('quoteRate')}*
             </Text>
             <ExchangeRateDisplay
               primaryTokenValue={calcTokenValue(
@@ -1425,7 +1425,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {t('swapIncludesGasAndMetaMaskFee', [metaMaskFee])}
+                *{t('swapIncludesGasAndMetaMaskFee', [metaMaskFee])}
               </Text>
               <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
                 <ViewAllQuotes
@@ -1447,6 +1447,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
+                *
                 {t('swapIncludesMetaMaskFeeViewAllQuotes', [
                   metaMaskFee,
                   <ViewAllQuotes
