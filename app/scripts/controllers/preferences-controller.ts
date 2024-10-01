@@ -143,8 +143,9 @@ export type PreferencesControllerState = {
   isIpfsGatewayEnabled: boolean;
   useAddressBarEnsResolution: boolean;
   ledgerTransportType: LedgerTransportTypes;
-  // TODO: replace never with proper type
-  snapRegistryList: Record<string, never>;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  snapRegistryList: Record<string, any>;
   theme: ThemeType;
   snapsAddSnapAccountModalDismissed: boolean;
   useExternalNameSources: boolean;
@@ -157,7 +158,7 @@ export type PreferencesControllerState = {
 /**
  * Function to get default state of the {@link PreferencesController}.
  */
-export const getDefaultPreferencesControllerState = () => ({
+export const getDefaultPreferencesControllerState = (): PreferencesControllerState => ({
   selectedAddress: '',
   useBlockie: false,
   useNonceField: false,
@@ -244,99 +245,99 @@ export const getDefaultPreferencesControllerState = () => ({
  */
 const controllerMetadata = {
   selectedAddress: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useBlockie: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useNonceField: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   usePhishDetect: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   dismissSeedBackUpReminder: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useMultiAccountBalanceChecker: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useSafeChainsListValidation: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useTokenDetection: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useNftDetection: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   use4ByteResolution: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useCurrencyRateCheck: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useRequestQueue: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   openSeaEnabled: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   securityAlertsEnabled: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   watchEthereumAccountEnabled: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   bitcoinSupportEnabled: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   bitcoinTestnetSupportEnabled: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   addSnapAccountEnabled: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   advancedGasFee: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   featureFlags: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   incomingTransactionsPreferences: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   knownMethodData: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   currentLocale: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   identities: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   lostIdentities: {
@@ -344,59 +345,59 @@ const controllerMetadata = {
     anonymous: false,
   },
   forgottenPassword: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   preferences: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   ipfsGateway: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   isIpfsGatewayEnabled: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useAddressBarEnsResolution: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   ledgerTransportType: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   snapRegistryList: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   theme: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   snapsAddSnapAccountModalDismissed: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useExternalNameSources: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useTransactionSimulations: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   enableMV3TimestampSave: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   useExternalServices: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
   textDirection: {
-    persist: false,
+    persist: true,
     anonymous: false,
   },
 };
