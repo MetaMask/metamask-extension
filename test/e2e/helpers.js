@@ -89,7 +89,6 @@ async function withFixtures(options, testSuite) {
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
   const secondaryGanacheServer = [];
-  const secondaryContractRegistry = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -131,21 +130,6 @@ async function withFixtures(options, testSuite) {
           vmErrorsOnRPCResponse: false,
           ...ganacheOptions2,
         });
-        if (smartContract && !disableGanache) {
-          const secondaryGanacheSeeder = new GanacheSeeder(
-            server.getProvider(),
-          );
-          const contracts =
-            smartContract instanceof Array ? smartContract : [smartContract];
-          await Promise.all(
-            contracts.map((contract) =>
-              secondaryGanacheSeeder.deploySmartContract(contract),
-            ),
-          );
-          secondaryContractRegistry.push(
-            secondaryGanacheSeeder.getContractRegistry(),
-          );
-        }
       });
     }
 
@@ -238,7 +222,6 @@ async function withFixtures(options, testSuite) {
       mockedEndpoint,
       bundlerServer,
       mockServer,
-      secondaryContractRegistry,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
