@@ -24,13 +24,16 @@ import {
 } from '../../../components/multichain/pages/page';
 import { SiteCell } from '../../../components/multichain/pages/review-permissions-page';
 import {
+  BackgroundColor,
   BlockSize,
   Display,
+  FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
+import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 
 export type ConnectPageRequest = {
   id: string;
@@ -97,14 +100,15 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   return (
     <Page
-      data-testid="connections-page"
-      className="main-container connections-page"
+      data-testid="connect-page"
+      className="main-container connect-page"
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <Header>
+      <Header paddingBottom={0}>
         <Text variant={TextVariant.headingLg}>{t('connectWithMetaMask')}</Text>
         <Text>{t('connectionDescription')}: </Text>
       </Header>
-      <Content padding={0}>
+      <Content paddingLeft={4} paddingRight={4}>
         <SiteCell
           nonTestNetworks={nonTestNetworks}
           testNetworks={testNetworks}
@@ -118,28 +122,36 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         />
       </Content>
       <Footer>
-        <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
-          <Button
-            block
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            data-testid="cancel-btn"
-            onClick={() => rejectPermissionsRequest(permissionsRequestId)}
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            block
-            data-testid="confirm-btn"
-            size={ButtonSize.Lg}
-            onClick={onConfirm}
-            disabled={
-              selectedAccountAddresses.length === 0 ||
-              selectedChainIds.length === 0
-            }
-          >
-            {t('confirm')}
-          </Button>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+          width={BlockSize.Full}
+        >
+          <PermissionsConnectFooter />
+          <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
+            <Button
+              block
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              data-testid="cancel-btn"
+              onClick={() => rejectPermissionsRequest(permissionsRequestId)}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              block
+              data-testid="confirm-btn"
+              size={ButtonSize.Lg}
+              onClick={onConfirm}
+              disabled={
+                selectedAccountAddresses.length === 0 ||
+                selectedChainIds.length === 0
+              }
+            >
+              {t('connect')}
+            </Button>
+          </Box>
         </Box>
       </Footer>
     </Page>
