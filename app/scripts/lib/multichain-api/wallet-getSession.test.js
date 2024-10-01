@@ -53,19 +53,6 @@ const createMockedHandler = () => {
 };
 
 describe('wallet_getSession', () => {
-  it('throws an error when sessionId param is specified', async () => {
-    const { handler, end } = createMockedHandler();
-    await handler({
-      ...baseRequest,
-      params: {
-        sessionId: '0xdeadbeef',
-      },
-    });
-    expect(end).toHaveBeenCalledWith(
-      new EthereumRpcError(5500, 'SessionId not recognized'),
-    );
-  });
-
   it('gets the authorized scopes from the CAIP-25 endowment permission', async () => {
     const { handler, getCaveat } = createMockedHandler();
 

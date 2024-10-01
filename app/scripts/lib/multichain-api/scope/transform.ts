@@ -1,4 +1,4 @@
-import { CaipChainId, isCaipChainId } from '@metamask/utils';
+import { CaipReference } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import {
   ExternalScopeObject,
@@ -6,6 +6,7 @@ import {
   ScopeString,
   ScopeObject,
   ScopesObject,
+  parseScopeString,
 } from './scope';
 
 // DRY THIS
@@ -15,9 +16,9 @@ function unique<T>(list: T[]): T[] {
 
 /**
  * Flattens a ScopeString and ScopeObject into a separate
- * ScopeString and ScopeObject for each scope in the `scopes` value
- * if defined. Returns the ScopeString and ScopeObject unmodified if
- * it cannot be flattened
+ * ScopeString and ScopeObject for each reference in the `references`
+ * value if defined. Returns the ScopeString and ScopeObject
+ * unmodified if it cannot be flattened
  *
  * @param scopeString - The string representing the scopeObject
  * @param scopeObject - The object that defines the scope
@@ -27,16 +28,17 @@ export const flattenScope = (
   scopeString: string,
   scopeObject: ExternalScopeObject,
 ): ScopesObject => {
-  const { scopes, ...restScopeObject } = scopeObject;
-  const isChainScoped = isCaipChainId(scopeString);
+  const { references, ...restScopeObject } = scopeObject;
+  const { namespace, reference } = parseScopeString(scopeString);
 
-  if (isChainScoped || !scopes) {
+  // Scope is already a CAIP-2 ID and has no references to flatten
+  if (reference || !references) {
     return { [scopeString]: scopeObject };
   }
 
   const scopeMap: ScopesObject = {};
-  scopes.forEach((nestedScopeString: CaipChainId) => {
-    scopeMap[nestedScopeString] = cloneDeep(restScopeObject);
+  references.forEach((nestedReference: CaipReference) => {
+    scopeMap[`${namespace}:${nestedReference}`] = cloneDeep(restScopeObject);
   });
   return scopeMap;
 };

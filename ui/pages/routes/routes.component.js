@@ -11,6 +11,7 @@ import Home from '../home';
 import {
   PermissionsPage,
   Connections,
+  ReviewPermissions,
 } from '../../components/multichain/pages';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
@@ -77,6 +78,7 @@ import {
   TOKEN_DETAILS,
   CONNECTIONS,
   PERMISSIONS,
+  REVIEW_PERMISSIONS,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -189,6 +191,8 @@ export default class Routes extends Component {
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
+    isPermittedNetworkToastOpen: PropTypes.bool.isRequired,
+    hidePermittedNetworkToast: PropTypes.func.isRequired,
     isIpfsModalOpen: PropTypes.bool.isRequired,
     isBasicConfigurationModalOpen: PropTypes.bool.isRequired,
     hideIpfsModal: PropTypes.func.isRequired,
@@ -199,6 +203,7 @@ export default class Routes extends Component {
     addPermittedAccount: PropTypes.func.isRequired,
     switchedNetworkDetails: PropTypes.object,
     useNftDetection: PropTypes.bool,
+    currentNetwork: PropTypes.object,
     showNftEnablementToast: PropTypes.bool,
     setHideNftEnablementToast: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
@@ -439,6 +444,11 @@ export default class Routes extends Component {
           component={Connections}
         />
         <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+        <Authenticated
+          path={`${REVIEW_PERMISSIONS}/:origin`}
+          component={ReviewPermissions}
+          exact
+        />
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
@@ -554,6 +564,17 @@ export default class Routes extends Component {
       return true;
     }
 
+    const isReviewPermissionsPgae = Boolean(
+      matchPath(location.pathname, {
+        path: REVIEW_PERMISSIONS,
+        exact: false,
+      }),
+    );
+
+    if (isReviewPermissionsPgae) {
+      return true;
+    }
+
     if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
       return true;
     }
@@ -635,14 +656,16 @@ export default class Routes extends Component {
       useNftDetection,
       showNftEnablementToast,
       setHideNftEnablementToast,
+      isPermittedNetworkToastOpen,
+      currentNetwork,
     } = this.props;
 
     const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
     const isEvmAccount = isEvmAccountType(account?.type);
-
     const autoHideToastDelay = 5 * SECOND;
+    const safeEncodedHost = encodeURIComponent(activeTabOrigin);
 
     const onAutoHideToast = () => {
       setHideNftEnablementToast(false);
@@ -735,7 +758,7 @@ export default class Routes extends Component {
               <AvatarNetwork
                 size={AvatarAccountSize.Md}
                 borderColor={BorderColor.transparent}
-                src={switchedNetworkDetails?.imageUrl}
+                src={switchedNetworkDetails?.imageUrl || ''}
                 name={switchedNetworkDetails?.nickname}
               />
             }
@@ -759,6 +782,32 @@ export default class Routes extends Component {
             textVariant={TextVariant.bodyMd}
             autoHideTime={autoHideToastDelay}
             onAutoHideToast={onAutoHideToast}
+          />
+        ) : null}
+
+        {process.env.CHAIN_PERMISSIONS && isPermittedNetworkToastOpen ? (
+          <Toast
+            key="switched-permitted-network-toast"
+            startAdornment={
+              <AvatarNetwork
+                size={AvatarAccountSize.Md}
+                borderColor={BorderColor.transparent}
+                src={currentNetwork?.rpcPrefs.imageUrl || ''}
+                name={currentNetwork?.nickname}
+              />
+            }
+            text={this.context.t('permittedChainToastUpdate', [
+              getURLHost(activeTabOrigin),
+              currentNetwork?.nickname,
+            ])}
+            actionText={this.context.t('editPermissions')}
+            onActionClick={() => {
+              this.props.hidePermittedNetworkToast();
+              this.props.history.push(
+                `${REVIEW_PERMISSIONS}/${safeEncodedHost}`,
+              );
+            }}
+            onClose={() => this.props.hidePermittedNetworkToast()}
           />
         ) : null}
       </ToastContainer>
@@ -929,6 +978,7 @@ export default class Routes extends Component {
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={() => hideImportNftsModal()} />
         ) : null}
+
         {isIpfsModalOpen ? (
           <ToggleIpfsModal onClose={() => hideIpfsModal()} />
         ) : null}

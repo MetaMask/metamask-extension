@@ -38,7 +38,7 @@ const baseRequest = {
   params: {
     requiredScopes: {
       eip155: {
-        scopes: ['eip155:1', 'eip155:137'],
+        references: ['1', '137'],
         methods: [
           'eth_sendTransaction',
           'eth_signTransaction',
@@ -719,7 +719,6 @@ describe('wallet_createSession', () => {
     await handler(baseRequest);
 
     expect(response.result).toStrictEqual({
-      sessionId: '0xdeadbeef',
       sessionProperties: {
         expiry: 'date',
         foo: 'bar',

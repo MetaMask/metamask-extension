@@ -12,12 +12,6 @@ export async function walletGetSessionHandler(
   end,
   hooks,
 ) {
-  if (request.params?.sessionId) {
-    return end(
-      new EthereumRpcError(5500, 'SessionId not recognized'), // we aren't currently storing a sessionId to check this against
-    );
-  }
-
   const caveat = hooks.getCaveat(
     request.origin,
     Caip25EndowmentPermissionName,

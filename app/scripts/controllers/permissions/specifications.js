@@ -2,7 +2,10 @@ import {
   caveatSpecifications as snapsCaveatsSpecifications,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import {
+  EndowmentTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatFactoryFn,
   Caip25CaveatType,
@@ -21,7 +24,7 @@ import {
  */
 export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
-  permittedChains: 'endowment:permitted-chains',
+  ...EndowmentTypes,
 });
 
 /**

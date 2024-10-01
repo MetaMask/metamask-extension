@@ -3,6 +3,7 @@ import { ErrorObject } from '@open-rpc/meta-schema';
 import { JsonRpcResponse } from 'json-rpc-engine';
 import { JsonRpcFailure } from '@metamask/utils';
 import { Driver } from '../webdriver/driver';
+import { ScopeString } from '../../../app/scripts/lib/multichain-api/scope';
 
 // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-explicit-any
 declare let window: any;
@@ -76,11 +77,15 @@ export const pollForResult = async (
   return pollForResult(driver, generatedKey);
 };
 
-export const createMultichainDriverTransport = (driver: Driver) => {
+export const createCaip27DriverTransport = (
+  driver: Driver,
+  scopeMap: Record<string, string>,
+  extensionId: string,
+) => {
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
   return async (
-    _: string,
+    __: string,
     method: string,
     params: unknown[] | Record<string, unknown>,
   ) => {
@@ -99,13 +104,98 @@ export const createMultichainDriverTransport = (driver: Driver) => {
         // will hang in selenium since it can only do one thing at a time.
         // the workaround is to put the response on window.asyncResult and poll for it.
         driver.executeScript(
-          ([m, p, g]: [
+          ([m, p, g, s, e]: [
             string,
             unknown[] | Record<string, unknown>,
             string,
+            ScopeString,
+            string,
           ]) => {
-            const EXTENSION_ID = 'famgliladofnadeldnodcgnjhafnbnhj';
-            const extensionPort = chrome.runtime.connect(EXTENSION_ID);
+            const extensionPort = chrome.runtime.connect(e);
+
+            const listener = ({
+              type,
+              data,
+            }: {
+              type: string;
+              data: JsonRpcResponse<unknown>;
+            }) => {
+              if (type !== 'caip-x') {
+                return;
+              }
+              if (data?.id !== g) {
+                return;
+              }
+
+              if (data.id || (data as JsonRpcFailure).error) {
+                window[g] = data;
+                extensionPort.onMessage.removeListener(listener);
+              }
+            };
+
+            extensionPort.onMessage.addListener(listener);
+            const msg = {
+              type: 'caip-x',
+              data: {
+                jsonrpc: '2.0',
+                method: 'wallet_invokeMethod',
+                params: {
+                  request: {
+                    method: m,
+                    params: p,
+                  },
+                  scope: s,
+                },
+                id: g,
+              },
+            };
+            extensionPort.postMessage(msg);
+          },
+          method,
+          params,
+          generatedKey,
+          scopeMap[method],
+          extensionId,
+        );
+      },
+    });
+    return pollForResult(driver, generatedKey);
+  };
+};
+
+export const createMultichainDriverTransport = (
+  driver: Driver,
+  extensionId: string,
+) => {
+  // use externally_connectable to communicate with the extension
+  // https://developer.chrome.com/docs/extensions/mv3/messaging/
+  return async (
+    __: string,
+    method: string,
+    params: unknown[] | Record<string, unknown>,
+  ) => {
+    const generatedKey = uuid();
+    addToQueue({
+      name: 'transport',
+      resolve: () => {
+        // noop
+      },
+      reject: () => {
+        // noop
+      },
+      task: async () => {
+        // don't wait for executeScript to finish window.ethereum promise
+        // we need this because if we wait for the promise to resolve it
+        // will hang in selenium since it can only do one thing at a time.
+        // the workaround is to put the response on window.asyncResult and poll for it.
+        driver.executeScript(
+          ([m, p, g, e]: [
+            string,
+            unknown[] | Record<string, unknown>,
+            string,
+            string,
+          ]) => {
+            const extensionPort = chrome.runtime.connect(e);
 
             const listener = ({
               type,
@@ -142,6 +232,7 @@ export const createMultichainDriverTransport = (driver: Driver) => {
           method,
           params,
           generatedKey,
+          extensionId,
         );
       },
     });
@@ -151,7 +242,7 @@ export const createMultichainDriverTransport = (driver: Driver) => {
 
 export const createDriverTransport = (driver: Driver) => {
   return async (
-    _: string,
+    __: string,
     method: string,
     params: unknown[] | Record<string, unknown>,
   ) => {

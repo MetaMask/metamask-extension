@@ -10,6 +10,9 @@ import {
 // TODO: move these into shared path
 // eslint-disable-next-line import/no-restricted-paths
 import { getEthAccounts } from '../../app/scripts/lib/multichain-api/adapters/caip-permission-adapter-eth-accounts';
+// TODO: move these into shared path
+// eslint-disable-next-line import/no-restricted-paths
+import { getPermittedEthChainIds } from '../../app/scripts/lib/multichain-api/adapters/caip-permission-adapter-permittedChains';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 import {
@@ -68,6 +71,12 @@ export function getPermittedAccounts(state, origin) {
   );
 }
 
+export function getPermittedChains(state, origin) {
+  return getChainsFromPermission(
+    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
+  );
+}
+
 /**
  * Selects the permitted accounts from the eth_accounts permission for the
  * origin of the current tab.
@@ -83,6 +92,14 @@ export function getPermittedAccountsForSelectedTab(state, activeTab) {
   return getPermittedAccounts(state, activeTab);
 }
 
+export function getPermittedChainsForCurrentTab(state) {
+  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+}
+
+export function getPermittedChainsForSelectedTab(state, activeTab) {
+  return getPermittedChains(state, activeTab);
+}
+
 /**
  * Returns a map of permitted accounts by origin for all origins.
  *
@@ -95,6 +112,17 @@ export function getPermittedAccountsByOrigin(state) {
     const accounts = getAccountsFromSubject(subjects[subjectKey]);
     if (accounts.length > 0) {
       acc[subjectKey] = accounts;
+    }
+    return acc;
+  }, {});
+}
+
+export function getPermittedChainsByOrigin(state) {
+  const subjects = getPermissionSubjects(state);
+  return Object.keys(subjects).reduce((acc, subjectKey) => {
+    const chains = getChainsFromSubject(subjects[subjectKey]);
+    if (chains.length > 0) {
+      acc[subjectKey] = chains;
     }
     return acc;
   }, {});
@@ -255,18 +283,16 @@ export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
 );
 
 // selector helpers
+function getCaip25PermissionFromSubject(subject = {}) {
+  return subject.permissions?.[Caip25EndowmentPermissionName] || {};
+}
 
 function getAccountsFromSubject(subject) {
   return getAccountsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getCaip25PermissionFromSubject(subject = {}) {
-  return subject.permissions?.[Caip25EndowmentPermissionName] || {};
-}
-
-function getAccountsFromPermission(caip25Permission) {
-  const caip25Caveat = getCaveatFromPermission(caip25Permission);
-  return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
+function getChainsFromSubject(subject) {
+  return getChainsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
 function getCaveatFromPermission(caip25Permission = {}) {
@@ -274,6 +300,16 @@ function getCaveatFromPermission(caip25Permission = {}) {
     Array.isArray(caip25Permission.caveats) &&
     caip25Permission.caveats.find((caveat) => caveat.type === Caip25CaveatType)
   );
+}
+
+function getAccountsFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
+}
+
+function getChainsFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
 }
 
 function subjectSelector(state, origin) {

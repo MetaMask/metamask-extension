@@ -4,6 +4,7 @@ import {
   Caip25EndowmentPermissionName,
 } from '../../lib/multichain-api/caip25permissions';
 import { getEthAccounts } from '../../lib/multichain-api/adapters/caip-permission-adapter-eth-accounts';
+import { getPermittedEthChainIds } from '../../lib/multichain-api/adapters/caip-permission-adapter-permittedChains';
 
 /**
  * This file contains selectors for PermissionController selector event
@@ -71,49 +72,72 @@ export const getAuthorizedScopesByOrigin = createSelector(
 );
 
 /**
- * Given the current and previous exposed accounts for each PermissionController
- * subject, returns a new map containing all accounts that have changed.
- * The values of each map must be immutable values directly from the
- * PermissionController state, or an empty array instantiated in this
- * function.
+ * Get the permitted chains for each subject, keyed by origin.
+ * The values of the returned map are immutable values from the
+ * PermissionController state.
  *
- * @param {Map<string, string[]>} newAccountsMap - The new origin:accounts[] map.
- * @param {Map<string, string[]>} [previousAccountsMap] - The previous origin:accounts[] map.
- * @returns {Map<string, string[]>} The origin:accounts[] map of changed accounts.
+ * @returns {Map<string, string[]>} The current origin:chainIds[] map.
  */
-export const getChangedAccounts = (newAccountsMap, previousAccountsMap) => {
-  if (previousAccountsMap === undefined) {
-    return newAccountsMap;
+export const getPermittedChainsByOrigin = createSelector(
+  getSubjects,
+  (subjects) => {
+    return Object.values(subjects).reduce((originToChainsMap, subject) => {
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+
+      if (caveat) {
+        const ethChainIds = getPermittedEthChainIds(caveat.value);
+        originToChainsMap.set(subject.origin, ethChainIds);
+      }
+      return originToChainsMap;
+    }, new Map());
+  },
+);
+
+/**
+ * Returns a map containing key/value pairs for those that have been
+ * added, changed, or removed between two string:string[] maps
+ *
+ * @param {Map<string, string[]>} currentMap - The new string:string[] map.
+ * @param {Map<string, string[]>} previousMap - The previous string:string[] map.
+ * @returns {Map<string, string[]>} The string:string[] map of changed key/values.
+ */
+export const diffMap = (currentMap, previousMap) => {
+  if (previousMap === undefined) {
+    return currentMap;
   }
 
-  const changedAccounts = new Map();
-  if (newAccountsMap === previousAccountsMap) {
-    return changedAccounts;
+  const changedMap = new Map();
+  if (currentMap === previousMap) {
+    return changedMap;
   }
 
-  const newOrigins = new Set([...newAccountsMap.keys()]);
+  const newKeys = new Set([...currentMap.keys()]);
 
-  for (const origin of previousAccountsMap.keys()) {
-    const newAccounts = newAccountsMap.get(origin) ?? [];
+  for (const key of previousMap.keys()) {
+    const currentValue = currentMap.get(key) ?? [];
+    const previousValue = previousMap.get(key);
 
     // The values of these maps are references to immutable values, which is why
     // a strict equality check is enough for diffing. The values are either from
     // PermissionController state, or an empty array initialized in the previous
-    // call to this function. `newAccountsMap` will never contain any empty
+    // call to this function. `currentMap` will never contain any empty
     // arrays.
-    if (previousAccountsMap.get(origin) !== newAccounts) {
-      changedAccounts.set(origin, newAccounts);
+    if (currentValue !== previousValue) {
+      changedMap.set(key, currentValue);
     }
 
-    newOrigins.delete(origin);
+    newKeys.delete(key);
   }
 
-  // By now, newOrigins is either empty or contains some number of previously
-  // unencountered origins, and all of their accounts have "changed".
-  for (const origin of newOrigins.keys()) {
-    changedAccounts.set(origin, newAccountsMap.get(origin));
+  // By now, newKeys is either empty or contains some number of previously
+  // unencountered origins, and all of their origins have "changed".
+  for (const origin of newKeys.keys()) {
+    changedMap.set(origin, currentMap.get(origin));
   }
-  return changedAccounts;
+  return changedMap;
 };
 
 /**

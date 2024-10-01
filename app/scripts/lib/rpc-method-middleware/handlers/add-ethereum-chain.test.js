@@ -138,6 +138,7 @@ describe('addEthereumChainHandler', () => {
       123,
       'approvalFlowId',
       {
+        isAddFlow: true,
         endApprovalFlow: mocks.endApprovalFlow,
         getCaveat: mocks.getCaveat,
         requestPermissionApprovalForOrigin:
@@ -187,6 +188,7 @@ describe('addEthereumChainHandler', () => {
           123,
           'approvalFlowId',
           {
+            isAddFlow: true,
             endApprovalFlow: mocks.endApprovalFlow,
             getCaveat: mocks.getCaveat,
             requestPermissionApprovalForOrigin:
@@ -237,6 +239,7 @@ describe('addEthereumChainHandler', () => {
         createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
         undefined,
         {
+          isAddFlow: true,
           endApprovalFlow: mocks.endApprovalFlow,
           getCaveat: mocks.getCaveat,
           requestPermissionApprovalForOrigin:
