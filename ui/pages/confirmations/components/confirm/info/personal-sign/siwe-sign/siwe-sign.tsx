@@ -15,9 +15,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 
 const SIWESignInfo: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
 
   const siweMessage = currentConfirmation?.msgParams?.siwe?.parsedMessage;
 
@@ -65,7 +63,9 @@ const SIWESignInfo: React.FC = () => {
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
         <ConfirmInfoRowDate
-          date={DateTime.fromISO(issuedAt).toJSDate().getTime()}
+          unixTimestamp={DateTime.fromISO(issuedAt, {
+            zone: 'utc',
+          }).toUnixInteger()}
         />
       </ConfirmInfoRow>
       {requestId && (

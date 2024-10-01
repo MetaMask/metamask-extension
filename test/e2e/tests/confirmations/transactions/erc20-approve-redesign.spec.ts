@@ -87,9 +87,10 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
   });
 });
 
-async function mocked4Bytes(mockServer: MockttpServer) {
+export async function mocked4BytesApprove(mockServer: MockttpServer) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .always()
     .withQuery({ hex_signature: '0x095ea7b3' })
     .thenCallback(() => ({
       statusCode: 200,
@@ -111,10 +112,10 @@ async function mocked4Bytes(mockServer: MockttpServer) {
 }
 
 async function mocks(server: MockttpServer) {
-  return [await mocked4Bytes(server)];
+  return [await mocked4BytesApprove(server)];
 }
 
-async function importTST(driver: Driver) {
+export async function importTST(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="import-token-button"]');
 
@@ -145,7 +146,7 @@ async function importTST(driver: Driver) {
   });
 }
 
-async function createERC20ApproveTransaction(driver: Driver) {
+export async function createERC20ApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#approveTokens');
 }
@@ -213,7 +214,8 @@ async function assertApproveDetails(driver: Driver) {
   });
 }
 
-async function confirmApproveTransaction(driver: Driver) {
+export async function confirmApproveTransaction(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await scrollAndConfirmAndAssertConfirm(driver);
 
   await driver.delay(veryLargeDelayMs);

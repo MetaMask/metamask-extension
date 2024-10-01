@@ -25,13 +25,14 @@ import {
   DecodedTransactionDataParam,
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 
 export const TransactionData = () => {
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const transactionData = currentConfirmation?.txParams?.data as Hex;
   const decodeResponse = useDecodedTransactionData();
@@ -42,7 +43,7 @@ export const TransactionData = () => {
     return <Container isLoading />;
   }
 
-  if (!transactionData?.length) {
+  if (!hasTransactionData(transactionData)) {
     return null;
   }
 

@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { withBtcAccountSnap } from './common-btc';
 
@@ -30,17 +29,13 @@ describe('BTC Account - Overview', function (this: Suite) {
           css: '[disabled]',
         });
 
-        const buySellButton = await driver.waitForSelector(
-          '[data-testid="coin-overview-buy"]',
-        );
-        // Ramps now support buyable chains dynamically (https://github.com/MetaMask/metamask-extension/pull/24041) and has now been
-        // enabled to fully support the v12.2.0 release
-        assert.equal(await buySellButton.isEnabled(), true);
+        // buy sell button
+        await driver.findClickableElement('[data-testid="coin-overview-buy"]');
 
-        const portfolioButton = await driver.waitForSelector(
+        // receive button
+        await driver.findClickableElement(
           '[data-testid="coin-overview-receive"]',
         );
-        assert.equal(await portfolioButton.isEnabled(), true);
       },
     );
   });

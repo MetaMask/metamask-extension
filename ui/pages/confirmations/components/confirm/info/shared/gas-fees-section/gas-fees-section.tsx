@@ -24,9 +24,8 @@ const LegacyTransactionGasModal = ({
 };
 
 export const GasFeesSection = () => {
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const [showCustomizeGasPopover, setShowCustomizeGasPopover] = useState(false);
   const closeCustomizeGasPopover = useCallback(

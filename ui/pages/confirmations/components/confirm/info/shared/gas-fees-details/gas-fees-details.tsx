@@ -1,10 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowVariant,
-} from '../../../../../../../components/app/confirm/info/row';
 import { Box } from '../../../../../../../components/component-library';
 import {
   AlignItems,
@@ -19,6 +15,8 @@ import { useFeeCalculations } from '../../hooks/useFeeCalculations';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { EditGasFeesRow } from '../edit-gas-fees-row/edit-gas-fees-row';
 import { GasFeesRow } from '../gas-fees-row/gas-fees-row';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 
 export const GasFeesDetails = ({
   setShowCustomizeGasPopover,
@@ -27,9 +25,8 @@ export const GasFeesDetails = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(transactionMeta);
@@ -83,10 +80,11 @@ export const GasFeesDetails = ({
         </>
       )}
       {supportsEIP1559 && (
-        <ConfirmInfoRow
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.Speed}
           data-testid="gas-fee-details-speed"
           label={t('speed')}
-          variant={ConfirmInfoRowVariant.Default}
+          ownerId={transactionMeta.id}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <GasTiming
@@ -94,7 +92,7 @@ export const GasFeesDetails = ({
               maxPriorityFeePerGas={maxPriorityFeePerGas}
             />
           </Box>
-        </ConfirmInfoRow>
+        </ConfirmInfoAlertRow>
       )}
       {showAdvancedDetails && (
         <GasFeesRow

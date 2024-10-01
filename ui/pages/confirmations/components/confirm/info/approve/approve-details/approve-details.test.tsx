@@ -17,4 +17,14 @@ describe('<ApproveDetails />', () => {
     );
     expect(container).toMatchSnapshot();
   });
+
+  it('renders component for approve details for setApprovalForAll', () => {
+    const state = mockState;
+    const mockStore = configureMockStore(middleware)(state);
+    const { container } = renderWithConfirmContextProvider(
+      <ApproveDetails isSetApprovalForAll />,
+      mockStore,
+    );
+    expect(container).toMatchSnapshot();
+  });
 });

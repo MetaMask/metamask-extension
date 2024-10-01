@@ -12,6 +12,9 @@ const getStyles = (diameter) => ({
   width: diameter,
   borderRadius: diameter / 2,
 });
+const getImage = async (image, ipfsGateway) => {
+  return await getAssetImageURL(image, ipfsGateway);
+};
 
 export default class Identicon extends Component {
   static propTypes = {
@@ -65,6 +68,7 @@ export default class Identicon extends Component {
 
   state = {
     imageLoadingError: false,
+    imageUrl: '',
   };
 
   static defaultProps = {
@@ -79,9 +83,25 @@ export default class Identicon extends Component {
     watchedNftContracts: {},
   };
 
+  loadImage = async () => {
+    const result = await getImage(this.props.image, this.props.ipfsGateway);
+    this.setState({ imageUrl: result });
+  };
+
+  async componentDidMount() {
+    this.loadImage();
+  }
+
+  async componentDidUpdate(prevProps) {
+    if (prevProps.image !== this.props.image) {
+      this.loadImage();
+    }
+  }
+
   renderImage() {
-    const { className, diameter, alt, imageBorder, ipfsGateway } = this.props;
+    const { className, diameter, alt, imageBorder } = this.props;
     let { image } = this.props;
+    const { imageUrl } = this.state;
 
     if (Array.isArray(image) && image.length) {
       image = image[0];
@@ -91,7 +111,7 @@ export default class Identicon extends Component {
       typeof image === 'string' &&
       image.toLowerCase().startsWith('ipfs://')
     ) {
-      image = getAssetImageURL(image, ipfsGateway);
+      image = imageUrl;
     }
 
     return (

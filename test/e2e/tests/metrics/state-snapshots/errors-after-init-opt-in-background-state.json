@@ -117,11 +117,16 @@
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
     "dataCollectionForMarketing": "boolean",
+    "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
+  },
+  "MetaMetricsDataDeletionController": {
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0
   },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
@@ -138,10 +143,10 @@
         "status": "available"
       }
     },
-    "networkConfigurations": "object"
+    "networkConfigurationsByChainId": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    "orderedNetworkList": { "0": "object", "1": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -181,7 +186,7 @@
     "dismissSeedBackUpReminder": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
-    "useTokenDetection": false,
+    "useTokenDetection": true,
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
@@ -210,7 +215,8 @@
       "petnamesEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean",
+      "showMultiRpcModal": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
