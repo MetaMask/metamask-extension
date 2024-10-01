@@ -140,9 +140,6 @@
   "invalidAddressRecipient": {
     "message": "Het adres van de ontvanger is ongeldig"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Ongeldige Block Explorer URI"
-  },
   "invalidRPC": {
     "message": "Ongeldige RPC-URI"
   },
