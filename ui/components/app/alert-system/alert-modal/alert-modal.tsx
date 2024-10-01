@@ -35,7 +35,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useAlerts from '../../../../hooks/useAlerts';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
-import { AlertProvider } from '../alert-provider';
 import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
 export type AlertModalProps = {
@@ -60,10 +59,6 @@ export type AlertModalProps = {
    */
   customTitle?: string;
   /**
-   * The flag to enable the provider. It's enabled by default.
-   */
-  enableProvider?: boolean;
-  /**
    * The start (left) content area of ModalHeader.
    * It overrides `startAccessory` of ModalHeaderDefault and by default no content is present.
    */
@@ -80,6 +75,10 @@ export type AlertModalProps = {
    * The owner ID of the relevant alert from the `confirmAlerts` reducer.
    */
   ownerId: string;
+  /**
+   * Whether to show the close icon in the modal header.
+   */
+  showCloseIcon?: boolean;
 };
 
 function getSeverityStyle(severity?: Severity) {
@@ -177,7 +176,7 @@ function AlertDetails({
               {t('alertModalDetails')}
             </Text>
           ) : null}
-          <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
+          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
             {selectedAlert.alertDetails?.map((detail, index) => (
               <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
                 <Text variant={TextVariant.bodyMd}>{detail}</Text>
@@ -219,11 +218,11 @@ export function AcknowledgeCheckboxBase({
     >
       <Checkbox
         label={label ?? t('alertModalAcknowledge')}
-        data-testid={'alert-modal-acknowledge-checkbox'}
+        data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
         onChange={onCheckboxClick}
         alignItems={AlignItems.flexStart}
-        className={'alert-modal__acknowledge-checkbox'}
+        className="alert-modal__acknowledge-checkbox"
       />
     </Box>
   );
@@ -242,10 +241,6 @@ function AcknowledgeButton({
 }) {
   const t = useI18nContext();
 
-  if (isBlocking) {
-    return null;
-  }
-
   return (
     <Button
       variant={hasActions ? ButtonVariant.Secondary : ButtonVariant.Primary}
@@ -253,7 +248,7 @@ function AcknowledgeButton({
       onClick={onAcknowledgeClick}
       size={ButtonSize.Lg}
       data-testid="alert-modal-button"
-      disabled={!isConfirmed}
+      disabled={!isBlocking && !isConfirmed}
     >
       {t('gotIt')}
     </Button>
@@ -287,9 +282,11 @@ function ActionButton({
   }
 
   const { key, label } = action;
+  const dataTestId = `alert-modal-action-${key}`;
 
   return (
     <Button
+      data-testid={dataTestId}
       key={key}
       variant={ButtonVariant.Primary}
       width={BlockSize.Full}
@@ -311,7 +308,7 @@ export function AlertModal({
   customDetails,
   customAcknowledgeCheckbox,
   customAcknowledgeButton,
-  enableProvider = true,
+  showCloseIcon = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
   const { trackAlertRender } = useAlertMetrics();
@@ -342,14 +339,18 @@ export function AlertModal({
   }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
-    <Modal isOpen onClose={handleClose}>
+    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
-          onClose={handleClose}
+          onClose={showCloseIcon ? handleClose : undefined}
           startAccessory={headerStartAccessory}
           paddingBottom={0}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
+          closeButtonProps={{
+            'data-testid': 'alert-modal-close-button',
+          }}
+          endAccessory={showCloseIcon ? undefined : null} // Override endAccessory to omit the close icon
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
@@ -368,13 +369,6 @@ export function AlertModal({
               onCheckboxClick={handleCheckboxClick}
             />
           )}
-          {enableProvider ? (
-            <AlertProvider
-              provider={selectedAlert.provider}
-              paddingTop={2}
-              textAlign={TextAlign.Center}
-            />
-          ) : null}
         </ModalBody>
         <ModalFooter>
           <Box

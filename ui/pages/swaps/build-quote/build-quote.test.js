@@ -13,6 +13,8 @@ import {
   setSwapToToken,
   setFromTokenInputValue,
 } from '../../../ducks/swaps/swaps';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import BuildQuote from '.';
 
 const middleware = [thunk];
@@ -130,35 +132,62 @@ describe('BuildQuote', () => {
   it('renders the block explorer link, only 1 verified source', () => {
     const mockStore = createSwapsMockStore();
     mockStore.swaps.toToken.occurances = 1;
-    const store = configureMockStore(middleware)(mockStore);
+    const store = configureMockStore(middleware)({
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        ...mockNetworkState({
+          chainId: CHAIN_IDS.MAINNET,
+          blockExplorerUrl: 'https://etherscan.io',
+        }),
+      },
+    });
     const props = createProps();
     const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
     expect(getByText('Swap from')).toBeInTheDocument();
     expect(getByText('Only verified on 1 source.')).toBeInTheDocument();
-    expect(getByText('Etherscan')).toBeInTheDocument();
+    expect(getByText('etherscan.io')).toBeInTheDocument();
   });
 
   it('renders the block explorer link, 0 verified sources', () => {
     const mockStore = createSwapsMockStore();
     mockStore.swaps.toToken.occurances = 0;
-    const store = configureMockStore(middleware)(mockStore);
+    const store = configureMockStore(middleware)({
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        ...mockNetworkState({
+          chainId: CHAIN_IDS.MAINNET,
+          blockExplorerUrl: 'https://etherscan.io',
+        }),
+      },
+    });
     const props = createProps();
     const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
     expect(getByText('Swap from')).toBeInTheDocument();
     expect(
       getByText('This token has been added manually.'),
     ).toBeInTheDocument();
-    expect(getByText('Etherscan')).toBeInTheDocument();
+    expect(getByText('etherscan.io')).toBeInTheDocument();
   });
 
   it('clicks on a block explorer link', () => {
     global.platform = { openTab: jest.fn() };
     const mockStore = createSwapsMockStore();
     mockStore.swaps.toToken.occurances = 1;
-    const store = configureMockStore(middleware)(mockStore);
+    const store = configureMockStore(middleware)({
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        ...mockNetworkState({
+          chainId: CHAIN_IDS.MAINNET,
+          blockExplorerUrl: 'https://etherscan.io',
+        }),
+      },
+    });
     const props = createProps();
     const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
-    const blockExplorer = getByText('Etherscan');
+    const blockExplorer = getByText('etherscan.io');
     expect(blockExplorer).toBeInTheDocument();
     fireEvent.click(blockExplorer);
     expect(global.platform.openTab).toHaveBeenCalledWith({
@@ -175,7 +204,16 @@ describe('BuildQuote', () => {
     setFromTokenInputValue.mockImplementation(setFromTokenInputValueMock);
     const mockStore = createSwapsMockStore();
     mockStore.swaps.fromToken = 'DAI';
-    const store = configureMockStore(middleware)(mockStore);
+    const store = configureMockStore(middleware)({
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        ...mockNetworkState({
+          chainId: CHAIN_IDS.MAINNET,
+          blockExplorerUrl: 'https://etherscan.io',
+        }),
+      },
+    });
     const props = createProps();
     const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
     const maxLink = getByText('Max');

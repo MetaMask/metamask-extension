@@ -1,5 +1,6 @@
 import { createSwapsMockStore } from '../../../test/jest';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../constants/network';
+import { CHAIN_IDS } from '../../constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
@@ -35,9 +36,6 @@ describe('Selectors', () => {
             balance: '0x15f6f0b9d4f8d000',
           },
         },
-        providerConfig: {
-          chainId: CHAIN_IDS.MAINNET,
-        },
         swapsState: {
           swapsFeatureFlags: {
             ethereum: {
@@ -58,13 +56,11 @@ describe('Selectors', () => {
         smartTransactionsState: {
           liveness: true,
         },
-        networkConfigurations: {
-          'network-configuration-id-1': {
-            chainId: CHAIN_IDS.MAINNET,
-            ticker: CURRENCY_SYMBOLS.ETH,
-            rpcUrl: 'https://mainnet.infura.io/v3/',
-          },
-        },
+        ...mockNetworkState({
+          id: 'network-configuration-id-1',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcUrl: 'https://mainnet.infura.io/v3/',
+        }),
       },
     };
   };
@@ -90,10 +86,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.POLYGON,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const result = getCurrentChainSupportsSmartTransactions(newState);
@@ -150,10 +143,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.POLYGON,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -165,10 +155,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.BSC,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.BSC }),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -180,10 +167,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.LINEA_MAINNET,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -277,10 +261,7 @@ describe('Selectors', () => {
             ...state.metamask.preferences,
             smartTransactionsOptInStatus: null,
           },
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.POLYGON,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
@@ -296,13 +277,10 @@ describe('Selectors', () => {
             ...state.metamask.preferences,
             smartTransactionsOptInStatus: null,
           },
-          networkConfigurations: {
-            'network-configuration-id-1': {
-              chainId: CHAIN_IDS.MAINNET,
-              ticker: CURRENCY_SYMBOLS.ETH,
-              rpcUrl: 'https://mainnet.quiknode.pro/',
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://mainnet.quiknode.pro/',
+          }),
         },
       };
       expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);

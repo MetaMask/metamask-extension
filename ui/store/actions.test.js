@@ -3,28 +3,46 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
-import { TRIGGER_TYPES } from '../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+} from '../../shared/constants/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    providerConfig: { chainId: '0x1' },
+    networkConfigurationsByChainId: {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        rpcEndpoints: [{}],
+      },
+    },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
       },
     },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -47,8 +65,6 @@ const defaultState = {
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
 
-const baseMockState = defaultState.metamask;
-
 describe('Actions', () => {
   let background;
 
@@ -56,7 +72,7 @@ describe('Actions', () => {
 
   beforeEach(async () => {
     background = sinon.createStubInstance(MetaMaskController, {
-      getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+      getState: sinon.stub().callsFake((cb) => cb(null, [])),
     });
 
     background.signMessage = sinon.stub();
@@ -64,6 +80,11 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.getStatePatches = sinon.stub().callsFake((cb) => cb(null, []));
+    background.removePermittedChain = sinon.stub();
+    background.requestAccountsAndChainPermissionsWithId = sinon.stub();
+    background.grantPermissions = sinon.stub();
+    background.grantPermissionsIncremental = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -84,10 +105,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'UNLOCK_IN_PROGRESS' },
         { type: 'UNLOCK_SUCCEEDED', value: undefined },
-        {
-          type: 'UPDATE_METAMASK_STATE',
-          value: baseMockState,
-        },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -151,10 +168,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        {
-          type: 'UPDATE_METAMASK_STATE',
-          value: baseMockState,
-        },
         { type: 'SHOW_ACCOUNTS_PAGE' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
@@ -242,48 +255,12 @@ describe('Actions', () => {
     it('calls removeAccount in background and expect actions to show account', async () => {
       const store = mockStore();
 
-      background.getState.callsFake((cb) =>
-        cb(null, {
-          currentLocale: 'test',
-          providerConfig: {
-            chainId: '0x1',
-          },
-          accounts: {
-            '0xAnotherAddress': {
-              balance: '0x0',
-            },
-          },
-          internalAccounts: {
-            accounts: {
-              '22497cc9-e791-42b8-adef-2f13ef216b86': {
-                address: '0xAnotherAddress',
-                id: '22497cc9-e791-42b8-adef-2f13ef216b86',
-                metadata: {
-                  name: 'Test Account 2',
-                  keyring: {
-                    type: 'HD Key Tree',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-              },
-            },
-            selectedAccount: '22497cc9-e791-42b8-adef-2f13ef216b86',
-          },
-        }),
-      );
-
       const removeAccount = background.removeAccount.callsFake((_, cb) => cb());
 
       setBackgroundConnection(background);
 
       const expectedActions = [
         'SHOW_LOADING_INDICATION',
-        'SELECTED_ADDRESS_CHANGED',
-        'ACCOUNT_CHANGED',
-        'SELECTED_ACCOUNT_CHANGED',
-        'UPDATE_METAMASK_STATE',
         'HIDE_LOADING_INDICATION',
         'SHOW_ACCOUNTS_PAGE',
       ];
@@ -700,7 +677,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         updateTransaction: updateTransactionStub,
-        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+        getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
       setBackgroundConnection(background.getApi());
@@ -723,11 +700,7 @@ describe('Actions', () => {
         updateTransaction: (_, callback) => {
           callback(new Error('error'));
         },
-        getState: sinon.stub().callsFake((cb) =>
-          cb(null, {
-            currentLocale: 'test',
-          }),
-        ),
+        getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
       setBackgroundConnection(background.getApi());
@@ -914,7 +887,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+        getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
       setBackgroundConnection(background.getApi());
@@ -945,17 +918,13 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+        getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
       setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        {
-          type: 'UPDATE_METAMASK_STATE',
-          value: baseMockState,
-        },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -984,7 +953,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: ignoreTokensStub,
-        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+        getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1000,7 +969,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
-        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+        getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1008,10 +977,6 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'DISPLAY_WARNING', payload: 'error' },
-        {
-          type: 'UPDATE_METAMASK_STATE',
-          value: baseMockState,
-        },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1019,49 +984,6 @@ describe('Actions', () => {
         actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
       );
 
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#setProviderType', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setProviderType', async () => {
-      const store = mockStore();
-
-      const setProviderTypeStub = sinon.stub().callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        setProviderType: setProviderTypeStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setProviderType());
-      expect(setProviderTypeStub.callCount).toStrictEqual(1);
-    });
-
-    it('displays warning when setProviderType throws', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        setProviderType: sinon
-          .stub()
-          .callsFake((_, cb) => cb(new Error('error'))),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'Had a problem changing networks!',
-        },
-      ];
-
-      await store.dispatch(actions.setProviderType());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1111,20 +1033,57 @@ describe('Actions', () => {
     });
   });
 
-  describe('#upsertNetworkConfiguration', () => {
+  describe('updateNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls upsertNetworkConfiguration in the background with the correct arguments', async () => {
+    it('calls updateNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
-      const upsertNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const updateNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+        updateNetwork: updateNetworkStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        nativeCurrency: 'ETH',
+        name: 'nickname',
+        rpcEndpoints: [{ blockExplorerUrl: 'etherscan.io' }],
+      };
+
+      await store.dispatch(
+        actions.updateNetwork(networkConfiguration, {
+          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+        }),
+      );
+
+      expect(
+        updateNetworkStub.calledOnceWith(
+          '0x',
+          {
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            nativeCurrency: 'ETH',
+            name: 'nickname',
+            rpcEndpoints: [{ blockExplorerUrl: 'etherscan.io' }],
+          },
+          { source: MetaMetricsNetworkEventSource.CustomNetworkForm },
+        ),
+      ).toBe(true);
+    });
+
+    it('updateNetwork has empty object for default options', async () => {
+      const store = mockStore();
+
+      const updateNetworkStub = sinon.stub().callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        updateNetwork: updateNetworkStub,
       });
       setBackgroundConnection(background.getApi());
 
@@ -1138,36 +1097,23 @@ describe('Actions', () => {
       };
 
       await store.dispatch(
-        actions.upsertNetworkConfiguration(networkConfiguration, {
-          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-        }),
+        actions.updateNetwork(networkConfiguration, undefined),
       );
 
       expect(
-        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
-          referrer: ORIGIN_METAMASK,
-          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-          setActive: undefined,
-        }),
-      ).toBe(true);
-    });
-
-    it('throws when no options object is passed as a second argument', async () => {
-      const store = mockStore();
-      await expect(() =>
-        store.dispatch(
-          actions.upsertNetworkConfiguration({
+        updateNetworkStub.calledOnceWith(
+          '0x',
+          {
             id: 'networkConfigurationId',
             rpcUrl: 'newRpc',
             chainId: '0x',
             ticker: 'ETH',
             nickname: 'nickname',
             rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-          }),
+          },
+          {},
         ),
-      ).toThrow(
-        "Cannot destructure property 'setActive' of 'undefined' as it is undefined.",
-      );
+      ).toBe(true);
     });
   });
 
@@ -1212,31 +1158,25 @@ describe('Actions', () => {
     });
   });
 
-  describe('#removeNetworkConfiguration', () => {
+  describe('removeNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls removeNetworkConfiguration in the background with the correct arguments', async () => {
+    it('calls removeNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
-      const removeNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const removeNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        removeNetwork: removeNetworkStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(
-        actions.removeNetworkConfiguration('testNetworkConfigurationId'),
-      );
+      await store.dispatch(actions.removeNetwork('testNetworkConfigurationId'));
 
       expect(
-        removeNetworkConfigurationStub.calledOnceWith(
-          'testNetworkConfigurationId',
-        ),
+        removeNetworkStub.calledOnceWith('testNetworkConfigurationId'),
       ).toBe(true);
     });
   });
@@ -1311,7 +1251,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
-        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+        getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1903,13 +1843,7 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'HIDE_LOADING_INDICATION' },
-        {
-          type: 'UPDATE_METAMASK_STATE',
-          value: baseMockState,
-        },
-      ];
+      const expectedActions = [{ type: 'HIDE_LOADING_INDICATION' }];
 
       await expect(
         store.dispatch(actions.markPasswordForgotten('test')),
@@ -1958,42 +1892,7 @@ describe('Actions', () => {
         rejectPendingApproval: sinon.stub().callsFake((_1, _2, cb) => {
           cb();
         }),
-        getState: sinon.stub().callsFake((cb) =>
-          cb(null, {
-            currentLocale: 'test',
-            providerConfig: {
-              chainId: '0x1',
-            },
-            accounts: {
-              '0xFirstAddress': {
-                balance: '0x0',
-              },
-            },
-            internalAccounts: {
-              accounts: {
-                '8e110453-2231-4e62-82de-29b913dfef4b': {
-                  address: '0xFirstAddress',
-                  id: '8e110453-2231-4e62-82de-29b913dfef4b',
-                  metadata: {
-                    name: 'Test Account 2',
-                    keyring: {
-                      type: 'HD Key Tree',
-                    },
-                  },
-                  options: {},
-                  methods: ETH_EOA_METHODS,
-                  type: EthAccountType.Eoa,
-                },
-              },
-              selectedAccount: '8e110453-2231-4e62-82de-29b913dfef4b',
-            },
-            cachedBalances: {
-              '0x1': {
-                '0xFirstAddress': '0x0',
-              },
-            },
-          }),
-        ),
+        getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2572,6 +2471,191 @@ describe('Actions', () => {
       ];
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#createMetaMetricsDataDeletionTask', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createMetaMetricsDataDeletionTask in background', async () => {
+      const createMetaMetricsDataDeletionTaskStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+      background.getApi.returns({
+        createMetaMetricsDataDeletionTask:
+          createMetaMetricsDataDeletionTaskStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await actions.createMetaMetricsDataDeletionTask();
+      expect(createMetaMetricsDataDeletionTaskStub.callCount).toStrictEqual(1);
+    });
+  });
+  describe('#updateDataDeletionTaskStatus', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls updateDataDeletionTaskStatus in background', async () => {
+      const updateDataDeletionTaskStatusStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+      background.getApi.returns({
+        updateDataDeletionTaskStatus: updateDataDeletionTaskStatusStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await actions.updateDataDeletionTaskStatus();
+      expect(updateDataDeletionTaskStatusStub.callCount).toStrictEqual(1);
+    });
+  });
+
+  describe('syncInternalAccountsWithUserStorage', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls syncInternalAccountsWithUserStorage in the background', async () => {
+      const store = mockStore();
+
+      const syncInternalAccountsWithUserStorageStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+
+      background.getApi.returns({
+        syncInternalAccountsWithUserStorage:
+          syncInternalAccountsWithUserStorageStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.syncInternalAccountsWithUserStorage());
+      expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
+        true,
+      );
+    });
+  });
+
+  describe('removePermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removePermittedChain in the background', async () => {
+      const store = mockStore();
+
+      background.removePermittedChain.callsFake((_, __, cb) => cb());
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.removePermittedChain('test.com', '0x1'));
+
+      expect(
+        background.removePermittedChain.calledWith(
+          'test.com',
+          '0x1',
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('requestAccountsAndChainPermissionsWithId', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls requestAccountsAndChainPermissionsWithId in the background', async () => {
+      const store = mockStore();
+
+      background.requestAccountsAndChainPermissionsWithId.callsFake((_, cb) =>
+        cb(),
+      );
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.requestAccountsAndChainPermissionsWithId('test.com'),
+      );
+
+      expect(
+        background.requestAccountsAndChainPermissionsWithId.calledWith(
+          'test.com',
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls grantPermissionsIncremental in the background', async () => {
+      const store = mockStore();
+
+      background.grantPermissionsIncremental.callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChain('test.com', '0x1');
+      expect(
+        background.grantPermissionsIncremental.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [EndowmentTypes.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x1'],
+                  },
+                ],
+              },
+            },
+          },
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChains', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls grantPermissions in the background', async () => {
+      const store = mockStore();
+
+      background.grantPermissions.callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChains('test.com', ['0x1', '0x2']);
+      expect(
+        background.grantPermissions.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [EndowmentTypes.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x1', '0x2'],
+                  },
+                ],
+              },
+            },
+          },
+          sinon.match.func,
+        ),
+      ).toBe(true);
+
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 });

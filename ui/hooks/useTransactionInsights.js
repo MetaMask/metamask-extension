@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TransactionType } from '@metamask/transaction-controller';
-import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
 import { SnapInsight } from '../components/app/snaps/snap-insight/snap-insight';
@@ -13,7 +12,7 @@ import {
 } from '../selectors';
 import { deleteInterface } from '../store/actions';
 import { getSnapName } from '../helpers/utils/util';
-import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
+import { useInsightSnaps } from './snaps/useInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
   transactionType === TransactionType.contractInteraction ||
@@ -27,8 +26,6 @@ const isAllowedTransactionTypes = (transactionType) =>
 // Thus it is not possible to use React Component here
 const useTransactionInsights = ({ txData }) => {
   const dispatch = useDispatch();
-  const { txParams, chainId, origin } = txData;
-  const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
   const insightSnapIds = useSelector(getInsightSnapIds);
   const snapsMetadata = useSelector(getSnapsMetadata);
@@ -39,15 +36,7 @@ const useTransactionInsights = ({ txData }) => {
     insightSnaps[0]?.id,
   );
 
-  const insightHookParams = {
-    transaction: txParams,
-    chainId: caip2ChainId,
-    origin,
-    insightSnaps: insightSnapIds,
-  };
-
-  const { data, loading, warnings } =
-    useTransactionInsightSnaps(insightHookParams);
+  const { data, warnings } = useInsightSnaps(txData.id);
 
   useEffect(() => {
     if (insightSnapIds.length > 0 && !selectedInsightSnapId) {
@@ -82,11 +71,7 @@ const useTransactionInsights = ({ txData }) => {
         className="confirm-page-container-content__tab"
         name={snapsNameGetter(selectedSnap.id)}
       >
-        <SnapInsight
-          snapId={selectedInsightSnapId}
-          data={data?.[0]}
-          loading={loading}
-        />
+        <SnapInsight snapId={selectedInsightSnapId} data={data?.[0]} />
       </Tab>
     );
   } else if (insightSnaps.length > 1) {
@@ -99,7 +84,7 @@ const useTransactionInsights = ({ txData }) => {
     });
 
     const selectedSnapData = data?.find(
-      (promise) => promise?.snapId === selectedInsightSnapId,
+      (result) => result?.snapId === selectedInsightSnapId,
     );
 
     insightComponent = (
@@ -109,11 +94,7 @@ const useTransactionInsights = ({ txData }) => {
         selectedOption={selectedInsightSnapId}
         onChange={(snapId) => setSelectedInsightSnapId(snapId)}
       >
-        <SnapInsight
-          snapId={selectedInsightSnapId}
-          loading={loading}
-          data={selectedSnapData}
-        />
+        <SnapInsight snapId={selectedInsightSnapId} data={selectedSnapData} />
       </DropdownTab>
     );
   }

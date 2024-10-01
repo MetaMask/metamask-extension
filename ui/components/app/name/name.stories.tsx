@@ -4,6 +4,7 @@ import { NameType } from '@metamask/name-controller';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import Name from './name';
+import { mockNetworkState } from '../../../../test/stub/networks';
 
 const addressNoSavedNameMock = '0xc0ffee254729296a45a3885639ac7e10f9d54978';
 const addressSavedNameMock = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
@@ -13,9 +14,7 @@ const chainIdMock = '0x1';
 
 const storeMock = configureStore({
   metamask: {
-    providerConfig: {
-      chainId: chainIdMock,
-    },
+    ...mockNetworkState({chainId: chainIdMock}),
     useTokenDetection: true,
     tokenList: {
       '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { useDispatch } from 'react-redux';
+import { AddNetworkFields } from '@metamask/network-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
@@ -26,6 +27,8 @@ import {
   requestUserApproval,
   toggleNetworkMenu,
 } from '../../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
   AlignItems,
@@ -35,14 +38,15 @@ import {
   TextColor,
   IconColor,
   TextVariant,
+  BorderColor,
 } from '../../../../helpers/constants/design-system';
-import { RPCDefinition } from '../../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
 }: {
-  searchAddNetworkResults: RPCDefinition[];
+  searchAddNetworkResults: AddNetworkFields[];
 }) => {
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
@@ -64,6 +68,64 @@ const PopularNetworkList = ({
     setReferenceElement(ref);
   };
 
+  // Memoize the popover content so it only updates when searchAddNetworkResults changes
+  const popoverContent = useMemo(() => {
+    if (Object.keys(searchAddNetworkResults).length === 0) {
+      return null;
+    }
+
+    return (
+      <Box
+        marginTop={4}
+        marginBottom={4}
+        display={Display.Flex}
+        justifyContent={JustifyContent.spaceBetween}
+      >
+        <Box display={Display.InlineFlex}>
+          <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
+            {t('additionalNetworks')}
+          </Text>
+
+          <Box onMouseEnter={handleMouseEnter} marginTop={1}>
+            <Icon
+              className="add-network__warning-icon"
+              name={IconName.Info}
+              color={IconColor.iconMuted}
+              size={IconSize.Sm}
+              marginLeft={2}
+            />
+            <Popover
+              referenceElement={referenceElement}
+              position={PopoverPosition.Top}
+              isOpen={isOpen}
+              matchWidth
+              flip
+              hasArrow
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              onMouseLeave={handleMouseLeave}
+            >
+              {t('popularNetworkAddToolTip', [
+                <Box key="learn-more-link">
+                  <ButtonLink
+                    size={ButtonLinkSize.Inherit}
+                    externalLink
+                    onClick={() => {
+                      global.platform.openTab({
+                        url: ZENDESK_URLS.UNKNOWN_NETWORK,
+                      });
+                    }}
+                  >
+                    {t('learnMoreUpperCase')}
+                  </ButtonLink>
+                </Box>,
+              ])}
+            </Popover>
+          </Box>
+        </Box>
+      </Box>
+    );
+  }, [searchAddNetworkResults, referenceElement, isOpen]);
+
   return (
     <Box className="new-network-list__networks-container">
       <Box
@@ -73,74 +135,29 @@ const PopularNetworkList = ({
         paddingRight={4}
         ref={setBoxRef}
       >
-        {Object.keys(searchAddNetworkResults).length === 0 ? null : (
+        {popoverContent}
+        {searchAddNetworkResults.map((network) => (
           <Box
-            marginTop={4}
-            marginBottom={4}
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <Text
-              display={Display.InlineFlex}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-            >
-              {t('additionalNetworks')}
-              <Box onMouseEnter={handleMouseEnter} style={{ marginTop: 2 }}>
-                <Icon
-                  className="add-network__warning-icon"
-                  name={IconName.Info}
-                  color={IconColor.iconMuted}
-                  size={IconSize.Sm}
-                  marginLeft={2}
-                />
-                <Popover
-                  referenceElement={referenceElement}
-                  position={PopoverPosition.Top}
-                  isOpen={isOpen}
-                  matchWidth
-                  flip
-                  hasArrow
-                  backgroundColor={BackgroundColor.backgroundAlternative}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  {t('popularNetworkAddToolTip', [
-                    <Box>
-                      <ButtonLink
-                        key="security-provider-button-supporturl"
-                        size={ButtonLinkSize.Inherit}
-                        externalLink
-                        onClick={() => {
-                          global.platform.openTab({
-                            url: ZENDESK_URLS.UNKNOWN_NETWORK,
-                          });
-                        }}
-                      >
-                        {t('learnMoreUpperCase')}
-                      </ButtonLink>
-                    </Box>,
-                  ])}
-                </Popover>
-              </Box>
-            </Text>
-          </Box>
-        )}
-        {searchAddNetworkResults.map((item: RPCDefinition, index: number) => (
-          <Box
-            key={index}
+            key={network.chainId}
             display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
             paddingBottom={4}
             paddingTop={4}
             className="new-network-list__list-of-networks"
+            data-testid={`popular-network-${network.chainId}`}
             onMouseEnter={handleMouseLeave}
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
+                borderColor={BorderColor.backgroundDefault}
                 size={AvatarNetworkSize.Sm}
-                src={item.rpcPrefs?.imageUrl}
-                name={item.nickname}
+                src={
+                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                    network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                  ]
+                }
+                name={network.name}
               />
               <Box marginLeft={4}>
                 <Text
@@ -148,7 +165,7 @@ const PopularNetworkList = ({
                   backgroundColor={BackgroundColor.transparent}
                   ellipsis
                 >
-                  {item.nickname}
+                  {network.name}
                 </Text>
               </Box>
             </Box>
@@ -169,12 +186,24 @@ const PopularNetworkList = ({
                       origin: ORIGIN_METAMASK,
                       type: ApprovalType.AddEthereumChain,
                       requestData: {
-                        chainId: item.chainId,
-                        rpcUrl: item.rpcUrl,
-                        ticker: item.ticker,
-                        rpcPrefs: item.rpcPrefs,
-                        imageUrl: item.rpcPrefs?.imageUrl,
-                        chainName: item.nickname,
+                        chainId: network.chainId,
+                        rpcUrl:
+                          network.rpcEndpoints[network.defaultRpcEndpointIndex]
+                            .url,
+                        ticker: network.nativeCurrency,
+                        rpcPrefs: {
+                          blockExplorerUrl:
+                            network.defaultBlockExplorerUrlIndex === undefined
+                              ? undefined
+                              : network.blockExplorerUrls[
+                                  network.defaultBlockExplorerUrlIndex
+                                ],
+                        },
+                        imageUrl:
+                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                            network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                          ],
+                        chainName: network.name,
                         referrer: ORIGIN_METAMASK,
                         source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
                       },

@@ -1,11 +1,14 @@
 const { strict: assert } = require('assert');
 const {
+  createInternalTransaction,
+} = require('../../page-objects/flows/transaction');
+
+const {
   withFixtures,
   openDapp,
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
-  createInternalTransaction,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 

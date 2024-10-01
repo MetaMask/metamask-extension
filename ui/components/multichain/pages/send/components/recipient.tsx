@@ -11,7 +11,6 @@ import {
 import {
   getDomainError,
   getDomainResolutions,
-  getDomainType,
   getDomainWarning,
 } from '../../../../../ducks/domains';
 import {
@@ -24,7 +23,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { DomainInputResolutionCell } from './domain-input-resolution-cell';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
@@ -43,7 +41,6 @@ export const SendPageRecipient = () => {
   const domainResolutions = useSelector(getDomainResolutions) || [];
   const domainError = useSelector(getDomainError);
   const domainWarning = useSelector(getDomainWarning);
-  const domainType = useSelector(getDomainType);
 
   const showErrorBanner =
     domainError || (recipient.error && recipient.error !== 'required');
@@ -87,7 +84,6 @@ export const SendPageRecipient = () => {
   if (recipient.address) {
     contents = (
       <DomainInputResolutionCell
-        domainType={domainType}
         address={recipient.address}
         domainName={recipient.nickname}
         onClick={() => onClick(recipient.address, recipient.nickname)}
@@ -105,7 +101,6 @@ export const SendPageRecipient = () => {
       return (
         <DomainInputResolutionCell
           key={`${resolvedAddress}${resolvingSnap}${protocol}`}
-          domainType={domainType}
           address={resolvedAddress}
           domainName={addressBookEntryName ?? domainName}
           onClick={() =>

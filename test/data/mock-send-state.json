@@ -12,6 +12,7 @@
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
+    "showPermittedNetworkToastOpen": false,
     "gasIsLoading": false,
     "isLoading": false,
     "importTokensModalOpen": false,
@@ -144,16 +145,23 @@
       "0x539": true
     },
     "showTestnetMessageInDropdown": true,
-    "networkConfigurations": {},
     "alertEnabledness": {
       "unconnectedAccount": true
     },
     "featureFlags": {},
     "network": "5",
-    "providerConfig": {
-      "type": "rpc",
-      "chainId": "0x5",
-      "ticker": "ETH"
+
+    "networkConfigurationsByChainId": {
+      "0x5": {
+        "nativeCurrency": "ETH",
+        "chainId": "0x5",
+        "defaultRpcEndpointIndex": 0,
+        "rpcEndpoints": [
+          {
+            "networkClientId": "goerli"
+          }
+        ]
+      }
     },
     "internalAccounts": {
       "accounts": {

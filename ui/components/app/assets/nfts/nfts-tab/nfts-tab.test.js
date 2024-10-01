@@ -6,11 +6,9 @@ import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
-import {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-} from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import NftsTab from '.';
 
 jest.mock('react-router-dom', () => ({
@@ -183,7 +181,8 @@ const render = ({
         [CHAIN_IDS.MAINNET]: {},
         [CHAIN_IDS.GOERLI]: {},
       },
-      providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
+      ...mockNetworkState({ chainId }),
+      currencyRates: {},
       accounts: {
         [selectedAddress]: {
           address: selectedAddress,

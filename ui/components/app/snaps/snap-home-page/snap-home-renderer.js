@@ -12,6 +12,7 @@ import {
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import {
+  BackgroundColor,
   BlockSize,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -64,14 +65,23 @@ export const SnapHomeRenderer = ({ snapId }) => {
   }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
 
   return (
-    <Box height={BlockSize.Full}>
+    <Box
+      height={BlockSize.Full}
+      width={BlockSize.Full}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      style={{
+        overflowY: 'auto',
+      }}
+    >
       {error && (
-        <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
-          <Text variant={TextVariant.bodySm} marginBottom={4}>
-            {t('snapsUIError', [<b key="0">{snapName}</b>])}
-          </Text>
-          <Copyable text={error.message} />
-        </SnapDelineator>
+        <Box height={BlockSize.Full} padding={4}>
+          <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
+            <Text variant={TextVariant.bodySm} marginBottom={4}>
+              {t('snapsUIError', [<b key="0">{snapName}</b>])}
+            </Text>
+            <Copyable text={error.message} />
+          </SnapDelineator>
+        </Box>
       )}
       {(interfaceId || loading) && (
         <SnapUIRenderer
@@ -79,6 +89,8 @@ export const SnapHomeRenderer = ({ snapId }) => {
           interfaceId={interfaceId}
           isLoading={loading}
           useDelineator={false}
+          useFooter
+          contentBackgroundColor={BackgroundColor.backgroundAlternative}
         />
       )}
     </Box>

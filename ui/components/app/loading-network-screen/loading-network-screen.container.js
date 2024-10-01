@@ -30,11 +30,9 @@ const mapStateToProps = (state) => {
   let networkName = nickname;
   if (networkName === undefined) {
     const networks = getAllEnabledNetworks(state);
-    const desiredNetwork = networks.find(
-      (network) => network.chainId === chainId,
-    );
+    const desiredNetwork = networks[chainId];
     if (desiredNetwork) {
-      networkName = desiredNetwork.nickname;
+      networkName = desiredNetwork.name;
     }
   }
 
@@ -53,8 +51,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setProviderType: (type) => {
-      dispatch(actions.setProviderType(type));
+    setActiveNetwork: (type) => {
+      dispatch(actions.setActiveNetwork(type));
     },
     rollbackToPreviousProvider: () =>
       dispatch(actions.rollbackToPreviousProvider()),

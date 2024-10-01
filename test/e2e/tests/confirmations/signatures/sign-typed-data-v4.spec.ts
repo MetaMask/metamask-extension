@@ -1,16 +1,13 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import {
-  DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
-  openDapp,
-  switchToNotificationWindow,
-  unlockWallet,
-} from '../../../helpers';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureApproved,
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -19,15 +16,19 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureMetrics,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -36,33 +37,39 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedDataV4');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(
+          driver,
+          SignatureType.SignTypedDataV4,
+        );
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
+
+        await assertInfoValues(driver);
+        await scrollAndConfirmAndAssertConfirm(driver);
+        await driver.delay(1000);
+
         await assertAccountDetailsMetrics(
           driver,
           mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
         );
 
-        await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
-
-        await assertSignatureMetrics(
+        await assertSignatureConfirmedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Mail',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Mail',
+          withAnonEvents: true,
+        });
+
         await assertVerifiedResults(driver, publicAddress);
+      },
+      async (mockServer) => {
+        return await mockSignatureApproved(mockServer, true);
       },
     );
   });
@@ -70,26 +77,28 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedDataV4');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(
+          driver,
+          SignatureType.SignTypedDataV4,
+        );
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
         );
         await driver.delay(1000);
 
-        await assertSignatureMetrics(
+        await assertSignatureRejectedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Mail',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Mail',
+          location: 'confirmation',
+        });
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -99,6 +108,9 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
           text: 'Error: User rejected the request.',
         });
         assert.ok(rejectionResult);
+      },
+      async (mockServer) => {
+        return await mockSignatureRejected(mockServer, true);
       },
     );
   });

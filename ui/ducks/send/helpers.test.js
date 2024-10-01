@@ -61,8 +61,10 @@ jest.mock('../../store/actions', () => ({
 }));
 
 jest.mock('../metamask/metamask', () => ({
+  ...jest.requireActual('../metamask/metamask'),
   getGasFeeEstimates: jest.fn(),
   getNativeCurrency: jest.fn(),
+  getProviderConfig: jest.fn(),
 }));
 
 jest.mock('../swaps/swaps', () => ({

@@ -1,8 +1,6 @@
 import React from 'react';
 import { act, screen } from '@testing-library/react';
 
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -11,6 +9,8 @@ import configureStore from '../../../../store/store';
 
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmGasDisplay from './confirm-gas-display';
 
 jest.mock('../../../../store/actions', () => ({
@@ -101,15 +101,10 @@ describe('ConfirmGasDisplay', () => {
     await render({
       contextProps: {
         metamask: {
-          selectedNetworkClientId: NetworkType.goerli,
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: {
-                1559: false,
-              },
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.GOERLI,
+            metadata: { EIPS: { 1559: false } },
+          }),
         },
         confirmTransaction: {
           txData: {
