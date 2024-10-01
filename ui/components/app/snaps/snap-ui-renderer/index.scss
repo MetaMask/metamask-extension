@@ -5,6 +5,7 @@
 
   &__container {
     & > *:first-child {
+      gap: 16px;
       padding: 16px;
     }
   }
@@ -40,7 +41,7 @@
   }
 
   &__panel {
-    gap: 16px;
+    gap: 8px;
 
     .mm-icon--size-inherit {
       top: 0;

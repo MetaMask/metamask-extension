@@ -7,6 +7,7 @@ import {
 } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
+import * as URI from 'uri-js';
 import {
   NetworkConfiguration,
   RpcEndpointType,
@@ -23,6 +24,8 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
   setEditedNetwork,
+  grantPermittedChain,
+  showPermittedNetworkToast,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -43,6 +46,8 @@ import {
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getAllDomains,
+  getPermittedChainsForSelectedTab,
+  getPermittedAccountsForSelectedTab,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -119,11 +124,17 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
+  const permittedChainIds = useSelector((state) =>
+    getPermittedChainsForSelectedTab(state, selectedTabOrigin),
+  );
+
+  const permittedAccountAddresses = useSelector((state) =>
+    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
+  );
 
   const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
     currentChainId,
   );
-
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
       Object.entries(networkConfigurations).reduce(
@@ -267,6 +278,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           dispatch(setActiveNetwork(networkClientId));
           dispatch(toggleNetworkMenu());
 
+          if (
+            process.env.CHAIN_PERMISSIONS &&
+            permittedAccountAddresses.length > 0
+          ) {
+            grantPermittedChain(selectedTabOrigin, network.chainId);
+            if (!permittedChainIds.includes(network.chainId)) {
+              dispatch(showPermittedNetworkToast());
+            }
+          }
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
           // network has changed due to user action
@@ -494,7 +514,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         <AddRpcUrlModal
           onAdded={(url, name) => {
             // Note: We could choose to rename the URL if it already exists with a different name
-            if (rpcUrls.rpcEndpoints?.every((e) => e.url !== url)) {
+            if (rpcUrls.rpcEndpoints?.every((e) => !URI.equal(e.url, url))) {
               setRpcUrls({
                 rpcEndpoints: [
                   ...rpcUrls.rpcEndpoints,

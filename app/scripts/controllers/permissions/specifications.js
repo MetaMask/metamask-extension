@@ -1,7 +1,6 @@
 import {
   constructPermission,
   PermissionType,
-  SubjectType,
 } from '@metamask/permission-controller';
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
@@ -10,6 +9,7 @@ import {
 import { isValidHexAddress } from '@metamask/utils';
 import {
   CaveatTypes,
+  EndowmentTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 
@@ -25,7 +25,7 @@ import {
  */
 export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
-  permittedChains: 'endowment:permitted-chains',
+  ...EndowmentTypes,
 });
 
 /**
@@ -209,9 +209,13 @@ export const getPermissionSpecifications = ({
       permissionType: PermissionType.Endowment,
       targetName: PermissionNames.permittedChains,
       allowedCaveats: [CaveatTypes.restrictNetworkSwitching],
-      subjectTypes: [SubjectType.Website],
 
       factory: (permissionOptions, requestData) => {
+        if (requestData === undefined) {
+          return constructPermission({
+            ...permissionOptions,
+          });
+        }
         if (!requestData.approvedChainIds) {
           throw new Error(
             `${PermissionNames.permittedChains}: No approved networks specified.`,
