@@ -107,7 +107,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mockOptimismOracle,
         },
-        async ({ driver }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await unlockWallet(driver);
           await createLayer2Transaction(driver);
 

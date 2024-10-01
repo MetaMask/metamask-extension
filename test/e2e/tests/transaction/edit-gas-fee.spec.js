@@ -9,7 +9,6 @@ const {
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
-  createInternalTransaction,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
