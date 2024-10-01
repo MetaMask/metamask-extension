@@ -385,10 +385,12 @@ export const SmartTransactionStatusPage = ({
           />
         </Box>
         {canShowSimulationDetails && (
-          <SimulationDetails
-            simulationData={fullTxData.simulationData}
-            transactionId={fullTxData.id}
-          />
+          <Box width={BlockSize.Full}>
+            <SimulationDetails
+              simulationData={fullTxData.simulationData}
+              transactionId={fullTxData.id}
+            />
+          </Box>
         )}
       </Box>
       <SmartTransactionsStatusPageFooter
