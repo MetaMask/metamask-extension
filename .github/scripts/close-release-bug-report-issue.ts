@@ -93,8 +93,8 @@ async function retrieveOpenBugReportIssue(
   | undefined
 > {
   const retrieveOpenBugReportIssueQuery = `
-  query RetrieveOpenBugReportIssue {
-    search(query: "repo:${repoOwner}/${repoName} type:issue is:open in:title v${releaseVersionNumber} Bug Report", type: ISSUE, first: 1) {
+  query RetrieveOpenBugReportIssue($releaseVersionNumber: String!) {
+    search(query: "repo:${repoOwner}/${repoName} type:issue is:open in:title v$releaseVersionNumber Bug Report", type: ISSUE, first: 1) {
       nodes {
         ... on Issue {
           id
@@ -112,7 +112,9 @@ async function retrieveOpenBugReportIssue(
         title: string;
       }[];
     };
-  } = await octokit.graphql(retrieveOpenBugReportIssueQuery);
+  } = await octokit.graphql(retrieveOpenBugReportIssueQuery, {
+    releaseVersionNumber,
+  });
 
   const bugReportIssues = retrieveOpenBugReportIssueQueryResult?.search?.nodes;
 
