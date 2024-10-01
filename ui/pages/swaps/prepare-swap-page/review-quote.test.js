@@ -120,7 +120,7 @@ describe('ReviewQuote', () => {
     ).toBeInTheDocument();
     expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Gas fee')).toBeInTheDocument();
-    expect(getByText('$3.41')).toBeInTheDocument();
+    expect(getByText('$6.82')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });
 });

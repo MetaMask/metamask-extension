@@ -1104,7 +1104,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       gasTokenAmountDec,
       symbol,
       true,
-      false,
+      true,
     );
   }, [
     isGasIncludedTrade,

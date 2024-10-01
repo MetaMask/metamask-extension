@@ -220,6 +220,11 @@ export const createSwapsMockStore = () => {
       },
       marketData: {
         '0x1': {
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F': {
+            price: 2,
+            contractPercentChange1d: 0.004,
+            priceChange1d: 0.00004,
+          },
           '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
             price: 2,
             contractPercentChange1d: 0.004,
@@ -537,7 +542,16 @@ export const createSwapsMockStore = () => {
                 {
                   maxFeePerGas: 2310003200,
                   maxPriorityFeePerGas: 513154852,
-                  tokenFees: [{ balanceNeededToken: '0x426dc933c2e5a' }],
+                  tokenFees: [
+                    {
+                      token: {
+                        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+                        symbol: 'DAI',
+                        decimals: 18,
+                      },
+                      balanceNeededToken: '0x426dc933c2e5a',
+                    },
+                  ],
                 },
               ],
               gasLimit: 21000,
