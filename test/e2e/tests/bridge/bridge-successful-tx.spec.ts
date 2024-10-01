@@ -25,13 +25,13 @@ describe('Submit bridge transaction successfully @no-mmi', function (this: Suite
       async ({
         driver,
         ganacheServer,
-        secondaryContractRegistry,
-        contractRegistry,
-      }: {
+      }: // secondaryContractRegistry,
+      //contractRegistry,
+      {
         driver: Driver;
-        ganacheServer: Ganache;
-        contractRegistry: GanacheContractAddressRegistry;
-        secondaryContractRegistry: GanacheContractAddressRegistry[];
+        ganacheServer: any; // : Ganache;
+        // contractRegistry: GanacheContractAddressRegistry;
+        // secondaryContractRegistry: GanacheContractAddressRegistry[];
       }) => {
         const bridgePage = new BridgePage(driver);
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -40,10 +40,7 @@ describe('Submit bridge transaction successfully @no-mmi', function (this: Suite
         await bridgePage.addNetwork();
 
         // Import TST token to primary network
-        await bridgePage.navigateToAssetPage(
-          contractRegistry,
-          TOKEN_ON_ETHEREUM_MAINNET,
-        );
+        await bridgePage.navigateToAssetPage(TOKEN_ON_ETHEREUM_MAINNET);
         await bridgePage.navigateToBridgePage('token-overview');
         await bridgePage.verifySwapPage(1);
         await bridgePage.verifySelectedInputs(
@@ -56,10 +53,7 @@ describe('Submit bridge transaction successfully @no-mmi', function (this: Suite
         await bridgePage.reloadHome();
 
         // Import HST token to secondary network
-        await bridgePage.navigateToAssetPage(
-          secondaryContractRegistry[0],
-          TOKEN_ON_ARBITRUM_ONE,
-        );
+        await bridgePage.navigateToAssetPage(TOKEN_ON_ARBITRUM_ONE);
         await bridgePage.navigateToBridgePage('token-overview');
         await bridgePage.verifySelectedInputs(
           ARBITRUM_ONE,

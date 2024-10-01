@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Browser, Key } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
-import { generateGanacheOptions } from '../../helpers';
+import { clickNestedButton, generateGanacheOptions } from '../../helpers';
 import {
   BRIDGE_CLIENT_ID,
   BRIDGE_DEV_API_BASE_URL,
@@ -16,6 +16,7 @@ import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
+  LOCATOR,
   MOCK_CURRENCY_RATES,
 } from './constants';
 
