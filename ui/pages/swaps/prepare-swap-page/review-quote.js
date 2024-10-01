@@ -23,7 +23,6 @@ import { useGasFeeInputs } from '../../confirmations/hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getQuotes,
-  getSelectedQuote,
   getApproveTxParams,
   getFetchParams,
   setBalanceError,
@@ -36,6 +35,7 @@ import {
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
+  getUsedQuote,
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
@@ -238,9 +238,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams, isEqual);
   const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
-  const selectedQuote = useSelector(getSelectedQuote, isEqual);
   const topQuote = useSelector(getTopQuote, isEqual);
-  const usedQuote = selectedQuote || topQuote;
+  const usedQuote = useSelector(getUsedQuote, isEqual);
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);

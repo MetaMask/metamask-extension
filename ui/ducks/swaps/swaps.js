@@ -435,9 +435,7 @@ export const getPendingSmartTransactions = (state) => {
 };
 
 export const getSmartTransactionFees = (state) => {
-  const selectedQuote = getSelectedQuote(state);
-  const topQuote = getTopQuote(state);
-  const usedQuote = selectedQuote || topQuote;
+  const usedQuote = getUsedQuote(state);
   if (!usedQuote?.isGasIncludedTrade) {
     return state.metamask.smartTransactionsState?.fees;
   }
