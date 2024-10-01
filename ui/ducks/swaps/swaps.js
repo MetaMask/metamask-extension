@@ -28,6 +28,7 @@ import {
   fetchSmartTransactionFees,
   cancelSmartTransaction,
   getTransactions,
+  fetchAndSetQuotesV2,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -112,12 +113,14 @@ const initialState = {
   fromToken: null,
   fromTokenInputValue: '',
   fromTokenError: null,
+  toToken: null,
+  toTokenInputValue: '',
+  toTokenError: null,
   isFeatureFlagLoaded: false,
   maxSlippage: Slippage.default,
   quotesFetchStartTime: null,
   reviewSwapClickedTimestamp: null,
   topAssets: {},
-  toToken: null,
   customGas: {
     price: null,
     limit: null,
@@ -188,6 +191,12 @@ const slice = createSlice({
     setToToken: (state, action) => {
       state.toToken = action.payload;
     },
+    setToTokenInputValue: (state, action) => {
+      state.toTokenInputValue = action.payload;
+    },
+    setToTokenError: (state, action) => {
+      state.toTokenError = action.payload;
+    },
     swapCustomGasModalClosed: (state) => {
       state.customGas.price = null;
       state.customGas.limit = null;
@@ -239,12 +248,16 @@ export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata;
 
 export const getBalanceError = (state) => state.swaps.balanceError;
 
+// From token
 export const getFromToken = (state) => state.swaps.fromToken;
-
 export const getFromTokenError = (state) => state.swaps.fromTokenError;
-
 export const getFromTokenInputValue = (state) =>
   state.swaps.fromTokenInputValue;
+
+// To token
+export const getToToken = (state) => state.swaps.toToken;
+export const getToTokenError = (state) => state.swaps.toTokenError;
+export const getToTokenInputValue = (state) => state.swaps.toTokenInputValue;
 
 export const getIsFeatureFlagLoaded = (state) =>
   state.swaps.isFeatureFlagLoaded;
@@ -254,8 +267,6 @@ export const getSwapsSTXLoading = (state) => state.swaps.swapsSTXLoading;
 export const getMaxSlippage = (state) => state.swaps.maxSlippage;
 
 export const getTopAssets = (state) => state.swaps.topAssets;
-
-export const getToToken = (state) => state.swaps.toToken;
 
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes;
 
@@ -483,6 +494,8 @@ const {
   setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken,
+  setToTokenError,
+  setToTokenInputValue,
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   retrievedFallbackSwapsGasPrice,
@@ -507,6 +520,9 @@ export {
   setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken as setSwapToToken,
+  setToToken,
+  setToTokenInputValue,
+  setToTokenError,
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   swapCustomGasModalClosed,
@@ -839,6 +855,267 @@ export const fetchQuotesAndSetQuoteState = (
           sensitiveProperties: {
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
+            token_to: toTokenSymbol,
+            token_to_amount: tokenToAmountToString,
+            request_type: balanceError ? 'Quote' : 'Order',
+            slippage: maxSlippage,
+            custom_slippage: maxSlippage !== Slippage.default,
+            response_time: Date.now() - fetchStartTime,
+            best_quote_source: newSelectedQuote.aggregator,
+            available_quotes: Object.values(fetchedQuotes)?.length,
+            is_hardware_wallet: hardwareWalletUsed,
+            hardware_wallet_type: hardwareWalletType,
+            stx_enabled: smartTransactionsEnabled,
+            current_stx_enabled: currentSmartTransactionsEnabled,
+            stx_user_opt_in: smartTransactionsOptInStatus,
+            anonymizedData: true,
+          },
+        });
+
+        dispatch(setInitialGasEstimate(selectedAggId));
+      }
+    } catch (e) {
+      // A newer swap request is running, so simply bail and let the newer request respond
+      if (e.message === SWAPS_FETCH_ORDER_CONFLICT) {
+        log.debug(`Swap fetch order conflict detected; ignoring older request`);
+        return;
+      }
+      // TODO: Check for any errors we should expect to occur in production, and report others to Sentry
+      log.error(`Error fetching quotes: `, e);
+
+      dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES));
+    }
+
+    dispatch(setFetchingQuotes(false));
+  };
+};
+
+export const fetchQuotesAndSetQuoteStateV2 = ({
+  history,
+  fromTokenInputValue,
+  toTokenInputValue,
+  maxSlippage,
+  trackEvent,
+  pageRedirectionDisabled,
+}) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const chainId = getCurrentChainId(state);
+    let swapsLivenessForNetwork = {
+      swapsFeatureIsLive: false,
+    };
+    try {
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+        chainId,
+        swapsFeatureFlags,
+      );
+    } catch (error) {
+      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+    }
+    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
+
+    if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
+      await history.push(SWAPS_MAINTENANCE_ROUTE);
+      return;
+    }
+
+    const fetchParams = getFetchParams(state);
+    const selectedAccount = getSelectedAccount(state);
+    const networkClientId = getSelectedNetworkClientId(state);
+    const balanceError = getBalanceError(state);
+    const swapsDefaultToken = getSwapsDefaultToken(state);
+    const fetchParamsFromToken =
+      fetchParams?.metaData?.sourceTokenInfo?.symbol ===
+      swapsDefaultToken.symbol
+        ? swapsDefaultToken
+        : fetchParams?.metaData?.sourceTokenInfo;
+    const selectedFromToken = getFromToken(state) || fetchParamsFromToken || {};
+    const selectedToToken =
+      getToToken(state) || fetchParams?.metaData?.destinationTokenInfo || {};
+    const {
+      address: fromTokenAddress,
+      symbol: fromTokenSymbol,
+      decimals: fromTokenDecimals,
+      iconUrl: fromTokenIconUrl,
+      balance: fromTokenBalance,
+    } = selectedFromToken;
+    const {
+      address: toTokenAddress,
+      symbol: toTokenSymbol,
+      decimals: toTokenDecimals,
+      iconUrl: toTokenIconUrl,
+    } = selectedToToken;
+    // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
+    // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
+    if (!pageRedirectionDisabled) {
+      await dispatch(setBackgroundSwapRouteState('loading'));
+      history.push(LOADING_QUOTES_ROUTE);
+    }
+    dispatch(setFetchingQuotes(true));
+
+    const contractExchangeRates = getTokenExchangeRates(state);
+
+    if (
+      toTokenAddress &&
+      toTokenSymbol !== swapsDefaultToken.symbol &&
+      contractExchangeRates[toTokenAddress] === undefined &&
+      !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
+    ) {
+      await dispatch(
+        addToken(
+          {
+            address: toTokenAddress,
+            symbol: toTokenSymbol,
+            decimals: toTokenDecimals,
+            image: toTokenIconUrl,
+            networkClientId,
+          },
+          true,
+        ),
+      );
+      await dispatch(setLatestAddedTokenTo(toTokenAddress));
+    } else {
+      const latestAddedTokenTo = getLatestAddedTokenTo(state);
+      // Only reset the latest added Token To if it's a different token.
+      if (latestAddedTokenTo !== toTokenAddress) {
+        await dispatch(setLatestAddedTokenTo(''));
+      }
+    }
+
+    if (
+      fromTokenAddress &&
+      fromTokenSymbol !== swapsDefaultToken.symbol &&
+      !contractExchangeRates[fromTokenAddress] &&
+      fromTokenBalance &&
+      new BigNumber(fromTokenBalance, 16).gt(0)
+    ) {
+      dispatch(
+        addToken(
+          {
+            address: fromTokenAddress,
+            symbol: fromTokenSymbol,
+            decimals: fromTokenDecimals,
+            image: fromTokenIconUrl,
+            networkClientId,
+          },
+          true,
+        ),
+      );
+    }
+
+    const swapsTokens = getSwapsTokens(state);
+
+    const sourceTokenInfo =
+      swapsTokens?.find(({ address }) => address === fromTokenAddress) ||
+      selectedFromToken;
+    const destinationTokenInfo =
+      swapsTokens?.find(({ address }) => address === toTokenAddress) ||
+      selectedToToken;
+
+    dispatch(setFromToken(selectedFromToken));
+
+    const hardwareWalletUsed = isHardwareWallet(state);
+    const hardwareWalletType = getHardwareWalletType(state);
+    const networkAndAccountSupports1559 =
+      checkNetworkAndAccountSupports1559(state);
+    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+    const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+    const currentSmartTransactionsEnabled =
+      getCurrentSmartTransactionsEnabled(state);
+    trackEvent({
+      event: 'Quotes Requested',
+      category: MetaMetricsEventCategory.Swaps,
+      sensitiveProperties: {
+        token_from: fromTokenSymbol,
+        token_from_amount: String(fromTokenInputValue),
+        token_to: toTokenSymbol,
+        request_type: balanceError ? 'Quote' : 'Order',
+        slippage: maxSlippage,
+        custom_slippage: maxSlippage !== Slippage.default,
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+        anonymizedData: true,
+      },
+    });
+
+    try {
+      const fetchStartTime = Date.now();
+      dispatch(setQuotesFetchStartTime(fetchStartTime));
+
+      const fetchAndSetQuotesPromise = dispatch(
+        fetchAndSetQuotesV2(
+          {
+            slippage: maxSlippage,
+            sourceToken: fromTokenAddress,
+            destinationToken: toTokenAddress,
+            fromTokenInputValue,
+            toTokenInputValue,
+            fromAddress: selectedAccount.address,
+            balanceError,
+            sourceDecimals: fromTokenDecimals,
+          },
+          {
+            sourceTokenInfo,
+            destinationTokenInfo,
+            accountBalance: selectedAccount.balance,
+            chainId,
+          },
+        ),
+      );
+
+      const gasPriceFetchPromise = networkAndAccountSupports1559
+        ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
+        : dispatch(fetchAndSetSwapsGasPriceInfo());
+
+      const [[fetchedQuotes, selectedAggId]] = await Promise.all([
+        fetchAndSetQuotesPromise,
+        gasPriceFetchPromise,
+      ]);
+
+      if (Object.values(fetchedQuotes)?.length === 0) {
+        trackEvent({
+          event: 'No Quotes Available',
+          category: MetaMetricsEventCategory.Swaps,
+          sensitiveProperties: {
+            token_from: fromTokenSymbol,
+            token_from_amount: String(fromTokenInputValue),
+            token_to: toTokenSymbol,
+            request_type: balanceError ? 'Quote' : 'Order',
+            slippage: maxSlippage,
+            custom_slippage: maxSlippage !== Slippage.default,
+            is_hardware_wallet: hardwareWalletUsed,
+            hardware_wallet_type: hardwareWalletType,
+            stx_enabled: smartTransactionsEnabled,
+            current_stx_enabled: currentSmartTransactionsEnabled,
+            stx_user_opt_in: smartTransactionsOptInStatus,
+          },
+        });
+        dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
+      } else {
+        const newSelectedQuote = fetchedQuotes[selectedAggId];
+
+        const tokenToAmountBN = calcTokenAmount(
+          newSelectedQuote.destinationAmount,
+          newSelectedQuote.decimals || 18,
+        );
+
+        // Firefox and Chrome have different implementations of the APIs
+        // that we rely on for communication accross the app. On Chrome big
+        // numbers are converted into number strings, on firefox they remain
+        // Big Number objects. As such, we convert them here for both
+        // browsers.
+        const tokenToAmountToString = tokenToAmountBN.toString(10);
+
+        trackEvent({
+          event: 'Quotes Received',
+          category: MetaMetricsEventCategory.Swaps,
+          sensitiveProperties: {
+            token_from: fromTokenSymbol,
+            token_from_amount: String(fromTokenInputValue),
             token_to: toTokenSymbol,
             token_to_amount: tokenToAmountToString,
             request_type: balanceError ? 'Quote' : 'Order',

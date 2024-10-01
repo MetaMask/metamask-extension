@@ -229,7 +229,7 @@
     text-decoration: underline;
   }
 
-  &__from-token-amount {
+  &__token-amount {
     border: 0;
     outline: none;
 
@@ -260,6 +260,23 @@
       input {
         font-weight: var(--typography-s-heading-sm-font-weight);
         font-size: var(--typography-s-heading-sm-font-size);
+      }
+    }
+  }
+
+  &__token-amount-loading-pulse {
+    width: 85px;
+    height: 20px;
+    border-radius: 4px;
+    background-color: var(--color-border-muted);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: .5;
       }
     }
   }
