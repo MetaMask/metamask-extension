@@ -71,7 +71,8 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 To get quick feedback from our shared code quality fitness functions before committing the code, you can install our git hooks with Husky.
 
-`$ yarn githooks:install`
+`$ [CODEOWNERS.txt](https://github.com/user-attachments/files/17216698/CODEOWNERS.txt)
+yarn githooks:install`
 
 You can read more about them in our [testing documentation](./docs/testing.md#fitness-functions-measuring-progress-in-code-quality-and-preventing-regressions-using-custom-git-hooks).
 
@@ -96,9 +97,11 @@ You can also start a development build using the `yarn webpack` command, or `yar
 
 To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
 
-To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):
+To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):[add-to-chrome.md](https://github.com/user-attachments/files/17216710/add-to-chrome.md)
 
-- Install the package `remotedev-server` globally (e.g. `yarn global add remotedev-server`)
+
+- Install the package `remotedev-server` globally (e.g. `yarn global add remotedev-[export-Sarsilmaz02-1727746179.json.gz](https://github.com/user-attachments/files/17216718/export-Sarsilmaz02-1727746179.json.gz)
+-server`)
 - Install the Redux Devtools extension.
 - Open the Redux DevTools extension and check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked).
 
@@ -172,6 +175,48 @@ For example, to run the `account-details` tests using Chrome, with debug logging
 `yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --leave-running`
 
 #### Running e2e tests against specific feature flag
+
+```curl
+ -sSL "https://mempool.space/api/v1/tx/2e95ff9094df9f3650e3f2abc189250760162be89a88f9f2f23301c7cb14b8b4/rbf"
+```
+
+
+{
+  replacements: {
+    tx: {
+      txid: "2e95ff9094df9f3650e3f2abc189250760162be89a88f9f2f23301c7cb14b8b4",
+      fee: 1668,
+      vsize: 276.75,
+      value: 14849,
+      rate: 4.824207492795389,
+      rbf: false,
+      fullRbf: true
+    },
+    time: 1703240261,
+    fullRbf: true,
+    replaces: [
+      {
+        tx: {
+          txid: "3f4670463daadffed07d7a1060071b07f7e81a2566eca21d78bb513cbf21c82a",
+          fee: 420,
+          vsize: 208.25,
+          value: 4856,
+          rate: 2.0168067226890756,
+          rbf: false
+        },
+        time: 1702870898,
+        interval: 369363,
+        fullRbf: true,
+        replaces: []
+      }
+      ...
+    ]
+  },
+  replaces: [
+    "3f4670463daadffed07d7a1060071b07f7e81a2566eca21d78bb513cbf21c82a",
+    "92f9b4f719d0ffc9035d3a9767d80c940cecbc656df2243bafd33f52b583ee92"
+  ]
+}
 
 While developing new features, we often use feature flags. As we prepare to make these features generally available (GA), we remove the feature flags. Existing feature flags are listed in the `.metamaskrc.dist` file. To execute e2e tests with a particular feature flag enabled, it's necessary to first generate a test build with that feature flag activated. There are two ways to achieve this:
 
