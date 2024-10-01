@@ -86,7 +86,9 @@ describe('CaipPermissionAdapterMiddleware', () => {
 
   it('allows the request when there is no CAIP-25 endowment permission', async () => {
     const { handler, getCaveat, next } = createMockedHandler();
-    getCaveat.mockReturnValue(null);
+    getCaveat.mockImplementation(() => {
+      throw new Error('permission not found');
+    });
     await handler(baseRequest);
     expect(next).toHaveBeenCalled();
   });

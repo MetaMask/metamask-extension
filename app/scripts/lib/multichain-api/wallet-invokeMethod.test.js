@@ -86,7 +86,9 @@ describe('wallet_invokeMethod', () => {
   it('throws an unauthorized error when there is no CAIP-25 endowment permission', async () => {
     const request = createMockedRequest();
     const { handler, getCaveat, end } = createMockedHandler();
-    getCaveat.mockReturnValue(null);
+    getCaveat.mockImplementation(() => {
+      throw new Error('permission not found');
+    });
     await handler(request);
     expect(end).toHaveBeenCalledWith(providerErrors.unauthorized());
   });
