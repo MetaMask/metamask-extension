@@ -1,0 +1,82 @@
+curl -sSL "https://mempool.space/api/v1/lightning/channels/txids?txId[]=c3173549f502ede6440d5c48ea74af5607d88484c7a912bbef73d430049f8af4&txId[]=d78f0b41a263af3df91fa4171cc2f60c40196aaf8f4bde5d1c8ff4474cfe753b"
+
+[
+  {
+    "inputs": {},
+    "outputs": {
+      "1": {
+        "id": "819296691409584129",
+        "short_id": "745146x287x1",
+        "capacity": 300000000,
+        "transaction_id": "c3173549f502ede6440d5c48ea74af5607d88484c7a912bbef73d430049f8af4",
+        "transaction_vout": 1,
+        "closing_transaction_id": null,
+        "closing_reason": null,
+        "updated_at": "2022-08-25T18:44:07.000Z",
+        "created": "2022-07-16T00:11:33.000Z",
+        "status": 1,
+        "node_left": {
+          "alias": "River Financial 1",
+          "public_key": "03037dc08e9ac63b82581f79b662a4d0ceca8a8ca162b1af3551595b8f2d97b70a",
+          "base_fee_mtokens": 0,
+          "cltv_delta": 0,
+          "fee_rate": 500,
+          "is_disabled": 0,
+          "max_htlc_mtokens": 297000000000,
+          "min_htlc_mtokens": 1000,
+          "updated_at": "2022-08-23T17:53:43.000Z"
+        },
+        "node_right": {
+          "alias": "0204a91bb5802ad0a799",
+          "public_key": "0204a91bb5802ad0a799acfd86ef566da03d80cc9e13acb01e680634bf64188a0d",
+          "base_fee_mtokens": 0,
+          "cltv_delta": 0,
+          "fee_rate": 152,
+          "is_disabled": 0,
+          "max_htlc_mtokens": 297000000000,
+          "min_htlc_mtokens": 1000,
+          "updated_at": "2022-08-25T18:44:07.000Z"
+        }
+      }
+    }
+  },
+  {
+    "inputs": {},
+    "outputs": {
+      "1": {
+        "id": "814662250034036737",
+        "short_id": "740931x2355x1",
+        "capacity": 300000000,
+        "transaction_id": "d78f0b41a263af3df91fa4171cc2f60c40196aaf8f4bde5d1c8ff4474cfe753b",
+        "transaction_vout": 1,
+        "closing_transaction_id": null,
+        "closing_reason": null,
+        "updated_at": "2022-08-28T18:54:40.000Z",
+        "created": "2022-06-15T16:18:33.000Z",
+        "status": 1,
+        "node_left": {
+          "alias": "bfx-lnd0",
+          "public_key": "033d8656219478701227199cbd6f670335c8d408a92ae88b962c49d4dc0e83e025",
+          "base_fee_mtokens": 1000,
+          "cltv_delta": 0,
+          "fee_rate": 1,
+          "is_disabled": 0,
+          "max_htlc_mtokens": 297000000000,
+          "min_htlc_mtokens": 1000,
+          "updated_at": "2022-08-25T18:44:03.000Z"
+        },
+        "node_right": {
+          "alias": "River Financial 1",
+          "public_key": "03037dc08e9ac63b82581f79b662a4d0ceca8a8ca162b1af3551595b8f2d97b70a",
+          "base_fee_mtokens": 0,
+          "cltv_delta": 0,
+          "fee_rate": 750,
+          "is_disabled": 0,
+          "max_htlc_mtokens": 297000000000,
+          "min_htlc_mtokens": 1000,
+          "updated_at": "2022-08-28T18:54:40.000Z"
+        }
+      }
+    }
+  }
+]
