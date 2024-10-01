@@ -230,7 +230,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
       ? (initialState[form] as FormState)?.[name]
       : (initialState as FormState)?.[name];
 
-    if (value) {
+    if (value !== undefined && value !== null) {
       return value;
     }
 
