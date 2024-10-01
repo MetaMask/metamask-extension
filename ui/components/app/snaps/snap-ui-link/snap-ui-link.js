@@ -29,30 +29,7 @@ export const SnapUILink = ({ href, children }) => {
     setIsOpen(false);
   };
 
-  const ExternalLink = () => {
-    return (
-      <>
-        <SnapLinkWarning
-          isOpen={isOpen}
-          onClose={handleModalClose}
-          url={href}
-        />
-        <ButtonLink
-          as="a"
-          onClick={handleLinkClick}
-          externalLink
-          size={ButtonLinkSize.Inherit}
-          display={Display.Inline}
-          className="snap-ui-link"
-        >
-          {children}
-          <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
-        </ButtonLink>
-      </>
-    );
-  };
-
-  const DeepLink = () => {
+  if (isMetaMaskUrl) {
     return (
       <>
         <ButtonLink
@@ -65,9 +42,24 @@ export const SnapUILink = ({ href, children }) => {
         </ButtonLink>
       </>
     );
-  };
+  }
 
-  return isMetaMaskUrl ? <DeepLink /> : <ExternalLink />;
+  return (
+    <>
+      <SnapLinkWarning isOpen={isOpen} onClose={handleModalClose} url={href} />
+      <ButtonLink
+        as="a"
+        onClick={handleLinkClick}
+        externalLink
+        size={ButtonLinkSize.Inherit}
+        display={Display.Inline}
+        className="snap-ui-link"
+      >
+        {children}
+        <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
+      </ButtonLink>
+    </>
+  );
 };
 
 SnapUILink.propTypes = {
