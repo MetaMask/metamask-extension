@@ -74,7 +74,7 @@ describe('ConnectPage', () => {
 
   it('should render confirm and cancel button', () => {
     const { getByText } = render();
-    const confirmButton = getByText('Confirm');
+    const confirmButton = getByText('Connect');
     const cancelButton = getByText('Cancel');
     expect(confirmButton).toBeDefined();
     expect(cancelButton).toBeDefined();
