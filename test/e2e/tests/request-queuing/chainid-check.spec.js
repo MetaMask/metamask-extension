@@ -115,11 +115,11 @@ describe('Request Queueing chainId proxy sync', function () {
 
           await switchToNotificationWindow(driver);
           await driver.findClickableElements({
-            text: 'Switch network',
+            text: 'Confirm',
             tag: 'button',
           });
 
-          await driver.clickElement({ text: 'Switch network', tag: 'button' });
+          await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -265,11 +265,11 @@ describe('Request Queueing chainId proxy sync', function () {
 
           await switchToNotificationWindow(driver);
           await driver.findClickableElements({
-            text: 'Switch network',
+            text: 'Confirm',
             tag: 'button',
           });
 
-          await driver.clickElement({ text: 'Switch network', tag: 'button' });
+          await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
