@@ -131,7 +131,7 @@ jobs:
             echo "::error::Quality gate failed for test coverage. Current test coverage is $coverage%, please increase coverage to at least $DEVELOP_COVERAGE%."
             exit 1
           else
-            echo "Test coverage is $coverage%. Quality gate passed."
+            echo "Current test coverage is $coverage%, develop test coverage is $DEVELOP_COVERAGE%. Quality gate passed."
           fi
 
       - name: SonarCloud Scan
