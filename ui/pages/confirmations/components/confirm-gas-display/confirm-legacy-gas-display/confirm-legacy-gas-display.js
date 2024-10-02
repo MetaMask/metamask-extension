@@ -31,12 +31,6 @@ const renderHeartBeatIfNotInTest = () =>
 const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
   const t = useI18nContext();
 
-  // NOTE: When display currencies, we need the actual account to detect whether we're in a
-  // multichain world or EVM-only world. Here, we expect to be EVM-only, thus, we keep the
-  // original behavior before the introduction of other non-EVM currencies and defaults to
-  // the currently select EVM account:
-  const evmAccount = useSelector(getSelectedEvmInternalAccount);
-
   // state selectors
   const isMainnet = useSelector(getIsMainnet);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
@@ -111,7 +105,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
           <div>
             {renderHeartBeatIfNotInTest()}
             <UserPreferencedCurrencyDisplay
-              account={evmAccount}
               type={SECONDARY}
               value={estimatedHexMinFeeTotal}
               hideLabel
@@ -123,7 +116,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
         <div>
           {renderHeartBeatIfNotInTest()}
           <UserPreferencedCurrencyDisplay
-            account={evmAccount}
             type={PRIMARY}
             value={estimatedHexMinFeeTotal}
             suffixProps={{
@@ -146,7 +138,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
           <div key="editGasSubTextFeeValue">
             {renderHeartBeatIfNotInTest()}
             <UserPreferencedCurrencyDisplay
-              account={evmAccount}
               key="editGasSubTextFeeAmount"
               type={PRIMARY}
               value={estimatedHexMaxFeeTotal}
