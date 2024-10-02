@@ -131,10 +131,10 @@
         "smartTransactionsOptInStatus": false,
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "showMultiRpcModal": "boolean",
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
+        "showMultiRpcModal": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",

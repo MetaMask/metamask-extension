@@ -33,11 +33,11 @@
       "smartTransactionsOptInStatus": false,
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
-      "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
+      "showMultiRpcModal": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
