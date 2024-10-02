@@ -123,7 +123,7 @@ function getTracesSampleRate(sentryTarget) {
 
   if (flags.circleci) {
     // Report very frequently on develop branch, and never on other branches
-    // (Unless you use a `flags = {"sentry": {"tracesSampleRate": 0.1}}` override)
+    // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
     if (flags.circleci.branch === 'develop') {
       return 0.03;
     }

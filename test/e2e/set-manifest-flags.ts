@@ -10,21 +10,18 @@ function parseIntOrUndefined(value: string | undefined): number | undefined {
 }
 
 /**
- * Grab flags from the Git message if they are set
+ * Search a string for `flags = {...}` and return ManifestFlags if it exists
  *
- * To use this feature, add a line to your commit message like:
- * `flags = {"sentry": {"tracesSampleRate": 0.1}}`
- * (must be valid JSON)
- *
- * @returns flags object if found, undefined otherwise
+ * @param str - The string to search
+ * @param errorType - The type of error to log if parsing fails
+ * @returns The ManifestFlags object if valid, otherwise undefined
  */
-function getFlagsFromGitMessage(): object | undefined {
-  const gitMessage = execSync(
-    `git show --format='%B' --no-patch "HEAD"`,
-  ).toString();
-
-  // Search gitMessage for `flags = {...}`
-  const flagsMatch = gitMessage.match(/flags\s*=\s*(\{.*\})/u);
+function regexSearchForFlags(
+  str: string,
+  errorType: string,
+): ManifestFlags | undefined {
+  // Search str for `flags = {...}`
+  const flagsMatch = str.match(/flags\s*=\s*(\{.*\})/u);
 
   if (flagsMatch) {
     try {
@@ -32,13 +29,62 @@ function getFlagsFromGitMessage(): object | undefined {
       return JSON.parse(flagsMatch[1]);
     } catch (error) {
       console.error(
-        'Error parsing flags from git message, ignoring flags\n',
+        `Error parsing flags from ${errorType}, ignoring flags\n`,
         error,
       );
     }
   }
 
   return undefined;
+}
+
+/**
+ * Add flags from the GitHub PR body if they are set
+ *
+ * To use this feature, add a line to your PR body like:
+ * `flags = {"sentry": {"tracesSampleRate": 0.1}}`
+ * (must be valid JSON)
+ *
+ * @param flags - The flags object to add to
+ */
+function addFlagsFromPrBody(flags: ManifestFlags) {
+  let body;
+
+  try {
+    body = fs.readFileSync('changed-files/pr-body.txt', 'utf8');
+  } catch (error) {
+    console.debug('No pr-body.txt, ignoring flags');
+    return;
+  }
+
+  const newFlags = regexSearchForFlags(body, 'PR body');
+
+  if (newFlags) {
+    // Use lodash merge to do a deep merge (spread operator is shallow)
+    merge(flags, newFlags);
+  }
+}
+
+/**
+ * Add flags from the Git message if they are set
+ *
+ * To use this feature, add a line to your commit message like:
+ * `flags = {"sentry": {"tracesSampleRate": 0.1}}`
+ * (must be valid JSON)
+ *
+ * @param flags - The flags object to add to
+ */
+function addFlagsFromGitMessage(flags: ManifestFlags) {
+  const gitMessage = execSync(
+    `git show --format='%B' --no-patch "HEAD"`,
+  ).toString();
+
+  const newFlags = regexSearchForFlags(gitMessage, 'git message');
+
+  if (newFlags) {
+    // Use lodash merge to do a deep merge (spread operator is shallow)
+    merge(flags, newFlags);
+  }
 }
 
 // Alter the manifest with CircleCI environment variables and custom flags
@@ -55,12 +101,8 @@ export function setManifestFlags(flags: ManifestFlags = {}) {
       ),
     };
 
-    const gitMessageFlags = getFlagsFromGitMessage();
-
-    if (gitMessageFlags) {
-      // Use lodash merge to do a deep merge (spread operator is shallow)
-      flags = merge(flags, gitMessageFlags);
-    }
+    addFlagsFromPrBody(flags);
+    addFlagsFromGitMessage(flags);
   }
 
   const manifest = JSON.parse(

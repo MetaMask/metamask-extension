@@ -104,12 +104,18 @@ async function gitDiff(): Promise<string> {
   return diffResult;
 }
 
+function writePrBodyToFile(prBody: string) {
+  const prBodyPath = path.resolve(CHANGED_FILES_DIR, 'pr-body.txt');
+  fs.writeFileSync(prBodyPath, prBody.trim());
+  console.log(`PR body saved to ${prBodyPath}`);
+}
+
 /**
  * Stores the output of git diff to a file.
  *
  * @returns Returns a promise that resolves when the git diff output is successfully stored.
  */
-async function storeGitDiffOutput() {
+async function storeGitDiffOutputAndPrBody() {
   try {
     // Create the directory
     // This is done first because our CirleCI config requires that this directory is present,
@@ -132,6 +138,7 @@ async function storeGitDiffOutput() {
       return;
     } else if (baseRef !== MAIN_BRANCH) {
       console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
+      writePrBodyToFile(prInfo.body);
       return;
     }
 
@@ -142,8 +149,10 @@ async function storeGitDiffOutput() {
     // Store the output of git diff
     const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.txt');
     fs.writeFileSync(outputPath, diffOutput.trim());
-
     console.log(`Git diff results saved to ${outputPath}`);
+
+    writePrBodyToFile(prInfo.body);
+
     process.exit(0);
   } catch (error: any) {
     console.error('An error occurred:', error.message);
@@ -151,4 +160,4 @@ async function storeGitDiffOutput() {
   }
 }
 
-storeGitDiffOutput();
+storeGitDiffOutputAndPrBody();
