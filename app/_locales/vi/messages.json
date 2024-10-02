@@ -1864,10 +1864,6 @@
   "feeDetails": {
     "message": "Chi tiết phí"
   },
-  "fiat": {
-    "message": "Pháp định",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Tính năng nhập tập tin không hoạt động? Nhấp vào đây!",
     "description": "Helps user import their account from a JSON file"
@@ -3080,9 +3076,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
   },
-  "noConversionDateAvailable": {
-    "message": "Hiện không có ngày quy đổi tiền tệ nào"
-  },
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
   },
@@ -3898,12 +3891,6 @@
   },
   "priceUnavailable": {
     "message": "giá không khả dụng"
-  },
-  "primaryCurrencySetting": {
-    "message": "Tiền tệ chính"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Chọn Gốc để ưu tiên hiển thị giá trị bằng đơn vị tiền tệ gốc của chuỗi (ví dụ: ETH). Chọn Pháp định để ưu tiên hiển thị giá trị bằng đơn vị tiền pháp định mà bạn chọn."
   },
   "primaryType": {
     "message": "Loại chính"
@@ -6062,9 +6049,6 @@
   },
   "updateRequest": {
     "message": "Yêu cầu cập nhật"
-  },
-  "updatedWithDate": {
-    "message": "Đã cập nhật $1"
   },
   "uploadDropFile": {
     "message": "Thả tập tin của bạn vào đây"

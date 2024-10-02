@@ -31,10 +31,10 @@ const getBackupJson = async () => {
 
   try {
     const backup = `${downloadsFolder}/${userDataFileName}`;
-    await fs.access(backup);
     const contents = await fs.readFile(backup);
     return JSON.parse(contents.toString());
   } catch (e) {
+    console.log('Error reading the backup file', e);
     return null;
   }
 };

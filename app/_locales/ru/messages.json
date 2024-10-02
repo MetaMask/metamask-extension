@@ -1864,10 +1864,6 @@
   "feeDetails": {
     "message": "Сведения о комиссии"
   },
-  "fiat": {
-    "message": "Фиатная",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
     "description": "Helps user import their account from a JSON file"
@@ -3080,9 +3076,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
   },
-  "noConversionDateAvailable": {
-    "message": "Дата обмена валюты недоступна"
-  },
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
   },
@@ -3898,12 +3891,6 @@
   },
   "priceUnavailable": {
     "message": "цена недоступна"
-  },
-  "primaryCurrencySetting": {
-    "message": "Основная валюта"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Выберите «собственная», чтобы установить приоритет отображения значений в собственной валюте блокчейна (например, ETH). Выберите «Фиатная», чтобы установить приоритет отображения значений в выбранной фиатной валюте."
   },
   "primaryType": {
     "message": "Основной тип"
@@ -6062,9 +6049,6 @@
   },
   "updateRequest": {
     "message": "Запрос обновления"
-  },
-  "updatedWithDate": {
-    "message": "Обновлено $1"
   },
   "uploadDropFile": {
     "message": "Переместите свой файл сюда"

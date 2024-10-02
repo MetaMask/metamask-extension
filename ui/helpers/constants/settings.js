@@ -34,9 +34,9 @@ const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('general'),
-    sectionMessage: (t) => t('primaryCurrencySetting'),
-    descriptionMessage: (t) => t('primaryCurrencySettingDescription'),
-    route: `${GENERAL_ROUTE}#primary-currency`,
+    sectionMessage: (t) => t('showNativeTokenAsMainBalance'),
+    descriptionMessage: (t) => t('showNativeTokenAsMainBalance'),
+    route: `${GENERAL_ROUTE}#show-native-token-as-main-balance`,
     iconName: IconName.Setting,
   },
   {
