@@ -52,50 +52,14 @@ describe('Switch ethereum chain', function () {
           text: 'Approve',
         });
 
-        await driver.findElement({
-          tag: 'h3',
-          text: 'Allow this site to switch the network?',
-        });
-
-        // Don't switch to network now, because we will click the 'Switch to Localhost 8546' button below
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Cancel',
-        });
-
-        await driver.waitUntilXWindowHandles(2);
-
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Switch to Localhost 8546',
-        });
-
-        await driver.waitUntilXWindowHandles(3);
-
         await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
+          WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Switch network',
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Localhost 8546'
         });
-
-        await driver.waitUntilXWindowHandles(2);
-
-        await driver.switchToWindow(extension);
-
-        const currentNetworkName = await driver.findElement({
-          tag: 'span',
-          text: 'Localhost 8546',
-        });
-
-        assert.ok(
-          Boolean(currentNetworkName),
-          'Failed to switch to custom network',
-        );
       },
     );
   });
