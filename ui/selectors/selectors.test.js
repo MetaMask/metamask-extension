@@ -1,6 +1,10 @@
 import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  EthAccountType,
+  EthMethod,
+} from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -34,6 +38,21 @@ const modifyStateWithHWKeyring = (keyring) => {
   ].metadata.keyring.type = keyring;
 
   return modifiedState;
+};
+
+const mockAccountsState = (accounts) => {
+  const accountsMap = accounts.reduce((accountsMap, account) => {
+    accountsMap[account.id] = account;
+    return accountsMap;
+  }, {});
+
+  return {
+    metamask: {
+      internalAccounts: {
+        accounts: accountsMap,
+      },
+    },
+  };
 };
 
 describe('Selectors', () => {
@@ -2078,6 +2097,87 @@ describe('#getConnectedSitesList', () => {
           },
         }),
       ).toStrictEqual('INITIALIZED');
+    });
+  });
+
+  describe('getEvmInternalAccounts', () => {
+    const account1 = createMockInternalAccount({
+      keyringType: KeyringType.hd,
+    });
+    const account2 = createMockInternalAccount({
+      type: EthAccountType.Erc4337,
+      keyringType: KeyringType.snap,
+    });
+    const account3 = createMockInternalAccount({
+      keyringType: KeyringType.imported,
+    });
+    const account4 = createMockInternalAccount({
+      keyringType: KeyringType.ledger,
+    });
+    const account5 = createMockInternalAccount({
+      keyringType: KeyringType.trezor,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+
+    const evmAccounts = [account1, account2, account3, account4, account5];
+
+    it('only returns EVM accounts with only EVM accounts', () => {
+      const state = mockAccountsState(evmAccounts);
+      expect(selectors.getEvmInternalAccounts(state)).toEqual(evmAccounts);
+    });
+
+    it('only returns EVM accounts when there is non-EVM accounts', () => {
+      const state = mockAccountsState([...evmAccounts, nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getEvmInternalAccounts(state)).toEqual(evmAccounts);
+    });
+
+    it('returns an empty array when there is no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getEvmInternalAccounts(state)).toEqual([]);
+    });
+  });
+
+  describe('getSelectedEvmInternalAccount', () => {
+    const account1 = createMockInternalAccount({
+      lastSelected: 1,
+    });
+    const account2 = createMockInternalAccount({
+      lastSelected: 2,
+    });
+    const account3 = createMockInternalAccount({
+      lastSelected: 3,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 4,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 5,
+    });
+
+    it('returns the last selected EVM account', () => {
+      const state = mockAccountsState([account1, account2, account3]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns the last selected EVM account even with non-EVM accounts', () => {
+      const state = mockAccountsState([account1, account2, account3, nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns `undefined` if there is no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
     });
   });
 });
