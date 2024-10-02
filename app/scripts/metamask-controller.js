@@ -5752,8 +5752,11 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             {
-              ...(requestedPermissions[RestrictedMethods.eth_accounts] && {
+              ...(requestedPermissions[PermissionNames.eth_accounts] && {
                 [PermissionNames.permittedChains]: {},
+              }),
+              ...(requestedPermissions[PermissionNames.permittedChains] && {
+                [PermissionNames.eth_accounts]: {},
               }),
               ...requestedPermissions,
             },
