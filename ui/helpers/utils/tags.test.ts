@@ -13,7 +13,7 @@ const STATE_EMPTY_MOCK = {
     internalAccounts: {
       accounts: {},
     },
-    notifications: {},
+    metamaskNotificationsList: [],
   },
 };
 
@@ -161,11 +161,7 @@ describe('Tags Utils', () => {
       const state = {
         metamask: {
           ...STATE_EMPTY_MOCK.metamask,
-          notifications: {
-            1: {},
-            2: {},
-            3: {},
-          },
+          metamaskNotificationsList: [{}, {}, {}],
         },
       };
 

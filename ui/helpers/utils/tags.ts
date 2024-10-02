@@ -3,11 +3,11 @@ import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
   ApprovalsMetaMaskState,
   getInternalAccounts,
-  getNotifications,
   getPendingApprovals,
   getTransactions,
   selectAllTokensFlat,
 } from '../../selectors';
+import { getMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
 import { NftState, selectAllNftsFlat } from '../../selectors/nft';
 
 export function getStartupTraceTags(state: any) {
@@ -15,7 +15,7 @@ export function getStartupTraceTags(state: any) {
   const unlocked = getIsUnlocked(state) as boolean;
   const accountCount = getInternalAccounts(state).length;
   const nftCount = selectAllNftsFlat(state as unknown as NftState).length;
-  const notificationCount = getNotifications(state).length;
+  const notificationCount = getMetamaskNotifications(state).length;
   const tokenCount = selectAllTokensFlat(state).length as number;
   const transactionCount = getTransactions(state).length;
 
@@ -24,8 +24,6 @@ export function getStartupTraceTags(state: any) {
   );
 
   const firstApprovalType = pendingApprovals?.[0]?.type;
-
-  globalThis.sentry.setMeasurement('wallet.token_count_test', accountCount, 'none');
 
   return {
     'wallet.account_count': accountCount,
