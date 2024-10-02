@@ -35,15 +35,9 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
   await driver.clickElementAndWaitForWindowToClose({
     text: 'Confirm',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
 
   // Switch back to the dapp
