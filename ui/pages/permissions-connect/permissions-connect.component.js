@@ -19,6 +19,8 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
+import { isSnapId } from '../../helpers/utils/snaps';
+import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
@@ -73,7 +75,11 @@ export default class PermissionConnect extends Component {
     ).isRequired,
     currentAddress: PropTypes.string.isRequired,
     origin: PropTypes.string,
+    showNewAccountModal: PropTypes.func.isRequired,
+    newAccountNumber: PropTypes.number.isRequired,
+    nativeCurrency: PropTypes.string,
     permissionsRequest: PropTypes.object,
+    addressLastConnectedMap: PropTypes.object.isRequired,
     lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
     history: PropTypes.object.isRequired,
@@ -102,6 +108,7 @@ export default class PermissionConnect extends Component {
 
   static defaultProps = {
     origin: '',
+    nativeCurrency: '',
     permissionsRequest: undefined,
     permissionsRequestId: '',
   };
@@ -295,7 +302,11 @@ export default class PermissionConnect extends Component {
   render() {
     const {
       accounts,
+      showNewAccountModal,
+      newAccountNumber,
+      nativeCurrency,
       permissionsRequest,
+      addressLastConnectedMap,
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
@@ -318,6 +329,8 @@ export default class PermissionConnect extends Component {
       snapsInstallPrivacyWarningShown,
     } = this.state;
 
+    const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
+
     return (
       <div className="permissions-connect">
         {!hideTopBar && this.renderTopBar(permissionsRequestId)}
@@ -328,17 +341,41 @@ export default class PermissionConnect extends Component {
             <Route
               path={connectPath}
               exact
-              render={() => (
-                <ConnectPage
-                  rejectPermissionsRequest={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
-                  }
-                  activeTabOrigin={this.state.origin}
-                  request={permissionsRequest}
-                  permissionsRequestId={permissionsRequestId}
-                  approveConnection={this.approveConnection}
-                />
-              )}
+              render={() =>
+                isRequestingSnap ? (
+                  <ChooseAccount
+                    accounts={accounts}
+                    nativeCurrency={nativeCurrency}
+                    selectAccounts={(addresses) =>
+                      this.selectAccounts(addresses)
+                    }
+                    selectNewAccountViaModal={(handleAccountClick) => {
+                      showNewAccountModal({
+                        onCreateNewAccount: (address) =>
+                          handleAccountClick(address),
+                        newAccountNumber,
+                      });
+                    }}
+                    addressLastConnectedMap={addressLastConnectedMap}
+                    cancelPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    permissionsRequestId={permissionsRequestId}
+                    selectedAccountAddresses={selectedAccountAddresses}
+                    targetSubjectMetadata={targetSubjectMetadata}
+                  />
+                ) : (
+                  <ConnectPage
+                    rejectPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    activeTabOrigin={this.state.origin}
+                    request={permissionsRequest}
+                    permissionsRequestId={permissionsRequestId}
+                    approveConnection={this.approveConnection}
+                  />
+                )
+              }
             />
             <Route
               path={confirmPermissionPath}
