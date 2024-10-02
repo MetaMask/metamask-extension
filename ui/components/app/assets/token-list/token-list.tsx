@@ -23,22 +23,17 @@ export default function TokenList({
   loading = false,
 }: TokenListProps) {
   const t = useI18nContext();
-
-  if (loading) {
-    return (
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        padding={7}
-        data-testid="token-list-loading-message"
-      >
-        {t('loadingTokens')}
-      </Box>
-    );
-  }
-
-  return (
+  return loading ? (
+    <Box
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      padding={7}
+      data-testid="token-list-loading-message"
+    >
+      {t('loadingTokens')}
+    </Box>
+  ) : (
     <div>
       {tokens.map((tokenData, index) => {
         if (tokenData?.isNative) {

@@ -63,7 +63,7 @@ const AssetListControlBar = ({
   );
   const conversionRate = useSelector(getConversionRate);
 
-  const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
+  const { tokensWithBalances } = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,
   ) as {
@@ -96,17 +96,13 @@ const AssetListControlBar = ({
       [nativeTokenWithBalance, ...tokensWithBalances],
       tokenSortConfig,
     );
-
-    if (tokensHaveMarketData && tokenSortConfig.key === 'tokenFiatAmount') {
-      setTokenList(sortedTokenList);
-    } else {
-      setTokenList(sortedTokenList);
-    }
+    setTokenList(sortedTokenList);
   }, [
     tokenSortConfig,
     tokensHaveMarketData,
     tokensWithBalances,
     conversionRate,
+    contractExchangeRates,
   ]);
 
   const handleOpenPopover = () => {
