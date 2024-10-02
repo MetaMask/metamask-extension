@@ -8,6 +8,8 @@ import {
   AlignItems,
   Display,
   FlexWrap,
+  FontWeight,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -45,6 +47,11 @@ export default function CurrencyDisplay({
     suffix,
   });
 
+  const secondaryCurrencyColor =
+    (className.includes('-overview__primary-balance') &&
+      TextColor.textDefault) ||
+    TextColor.textAlternative;
+
   return (
     <Box
       className={classnames('currency-display-component', className)}
@@ -71,6 +78,8 @@ export default function CurrencyDisplay({
         className="currency-display-component__text"
         ellipsis
         variant={TextVariant.inherit}
+        fontWeight={FontWeight.Medium}
+        color={secondaryCurrencyColor}
         {...textProps}
       >
         {parts.prefix}
@@ -82,6 +91,8 @@ export default function CurrencyDisplay({
           className="currency-display-component__suffix"
           marginInlineStart={1}
           variant={TextVariant.inherit}
+          fontWeight={FontWeight.Medium}
+          color={secondaryCurrencyColor}
           {...suffixProps}
         >
           {parts.suffix}
