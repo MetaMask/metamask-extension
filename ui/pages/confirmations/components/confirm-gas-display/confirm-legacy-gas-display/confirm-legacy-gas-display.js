@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getIsMainnet,
-  getSelectedEvmInternalAccount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
   transactionFeeSelector,

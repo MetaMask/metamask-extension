@@ -306,7 +306,7 @@ export function getAccountByAddress(accounts = [], targetAddress) {
 /**
  * Sort the given list of account their selecting order (descending). Meaning the
  * first account of the sorted list will be the last selected account.
-
+ *
  * @param {import('@metamask/keyring-api').InternalAccount[]} accounts - The internal accounts list.
  * @returns {import('@metamask/keyring-api').InternalAccount[]} The sorted internal account list.
  */

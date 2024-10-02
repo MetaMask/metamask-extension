@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../ui/currency-display';
@@ -10,7 +11,6 @@ import {
   getMultichainCurrentNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { useSelector } from 'react-redux';
 import { getSelectedEvmInternalAccount } from '../../../selectors';
 
 /* eslint-disable jsdoc/require-param-name */

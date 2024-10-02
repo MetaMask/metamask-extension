@@ -231,7 +231,10 @@ export function getMultichainProviderConfig(
   return getMultichainNetwork(state, account).network;
 }
 
-export function getMultichainCurrentNetwork(state: MultichainState, account?: InternalAccount) {
+export function getMultichainCurrentNetwork(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
   return getMultichainProviderConfig(state, account);
 }
 
