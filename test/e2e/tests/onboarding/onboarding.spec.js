@@ -278,7 +278,10 @@ describe('MetaMask onboarding @no-mmi', function () {
         );
 
         // Add custom network localhost 8546 during onboarding
-        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement({
+          text: 'Manage default settings',
+          tag: 'a',
+        });
         await driver.clickElement({ text: 'Add a network' });
         await driver.waitForSelector(
           '.multichain-network-list-menu-content-wrapper__dialog',
@@ -339,7 +342,7 @@ describe('MetaMask onboarding @no-mmi', function () {
     );
   });
 
-  it('User can turn off basic functionality in advanced configurations', async function () {
+  it('User can turn off basic functionality in default settings', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
