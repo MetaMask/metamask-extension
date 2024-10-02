@@ -198,17 +198,10 @@ async function addEthereumChainHandler(
     const { networkClientId } =
       updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
-    const requestData = {
-      toNetworkConfiguration: updatedNetwork,
-      fromNetworkConfiguration: currentNetworkConfiguration,
-    };
-
     return switchChain(
       res,
       end,
-      origin,
       chainId,
-      requestData,
       networkClientId,
       approvalFlowId,
       {
