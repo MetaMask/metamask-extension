@@ -37,7 +37,9 @@ describe('Import flow', function () {
   it('allows importing multiple tokens from search', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockPriceFetch,
@@ -45,21 +47,7 @@ describe('Import flow', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Token list is only on mainnet
-        await driver.clickElement('[data-testid="network-display"]');
-        const networkSelectionModal = await driver.findVisibleElement(
-          '.mm-modal',
-        );
         await driver.assertElementNotPresent('.loading-overlay');
-
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
-
-        // Wait for network to change and token list to load from state
-        await networkSelectionModal.waitForElementState('hidden');
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
-        });
 
         await driver.clickElement('[data-testid="import-token-button"]');
 
