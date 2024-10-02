@@ -283,6 +283,7 @@ export const signBridgeTransaction = (
           },
         },
       });
+      await forceUpdateMetamaskState(dispatch);
 
       console.log('Bridge', { approvalTxId: txMeta.id });
       return txMeta.id;
@@ -335,6 +336,7 @@ export const signBridgeTransaction = (
           },
         },
       });
+      await forceUpdateMetamaskState(dispatch);
 
       console.log('Bridge', { bridgeTxId: txMeta.id });
       return txMeta.id;
@@ -375,41 +377,15 @@ export const signBridgeTransaction = (
     };
 
     const addDestToken = async () => {
+      // Look up the destination chain
       const hexDestChainId = new Numeric(quoteMeta.quote.destChainId, 10)
         .toPrefixedHexString()
         .toLowerCase() as `0x${string}`;
       const networkConfigurations = getNetworkConfigurationsByChainId(state);
       const destNetworkConfig = networkConfigurations[hexDestChainId];
 
-      // If destNetworkConfig exists, means the user has added the network in MetaMask
-      if (destNetworkConfig) {
-        const rpcEndpointIndex = destNetworkConfig.defaultRpcEndpointIndex;
-        const destNetworkClientId =
-          destNetworkConfig.rpcEndpoints[rpcEndpointIndex].networkClientId;
-        if (!destNetworkClientId) {
-          throw new Error(
-            `No network client ID found for destination chain ${hexDestChainId}`,
-          );
-        }
-
-        const {
-          address,
-          decimals,
-          symbol,
-          icon: image,
-        } = quoteMeta.quote.destAsset;
-
-        dispatch(
-          addToken({
-            address,
-            decimals,
-            symbol,
-            image,
-            networkClientId: destNetworkClientId,
-          }),
-        );
-      } else {
-        // If user has not added the network in MetaMask, add it for them silently
+      // If user has not added the network in MetaMask, add it for them silently
+      if (!destNetworkConfig) {
         const featuredRpc = FEATURED_RPCS.find(
           (rpc) => rpc.chainId === hexDestChainId,
         );
@@ -417,9 +393,27 @@ export const signBridgeTransaction = (
           throw new Error('No featured RPC found');
         }
         await dispatch(addNetwork(featuredRpc));
-
-        addDestToken();
       }
+
+      // Add the token after network is guaranteed to exist
+      const rpcEndpointIndex = destNetworkConfig.defaultRpcEndpointIndex;
+      const destNetworkClientId =
+        destNetworkConfig.rpcEndpoints[rpcEndpointIndex].networkClientId;
+      const {
+        address,
+        decimals,
+        symbol,
+        icon: image,
+      } = quoteMeta.quote.destAsset;
+      await dispatch(
+        addToken({
+          address,
+          decimals,
+          symbol,
+          image,
+          networkClientId: destNetworkClientId,
+        }),
+      );
     };
 
     const execute = async () => {
