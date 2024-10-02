@@ -129,12 +129,13 @@
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
-        "useNativeCurrencyAsPrimaryCurrency": true,
+        "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
         "showMultiRpcModal": "boolean",
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
-        "tokenSortConfig": "object"
+        "tokenSortConfig": "object",
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",

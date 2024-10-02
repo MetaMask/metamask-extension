@@ -1,9 +1,6 @@
 import currencyFormatter from 'currency-formatter';
 import { useSelector } from 'react-redux';
-import {
-  showPrimaryCurrency,
-  showSecondaryCurrency,
-} from '../../../../../../shared/modules/currency-display.utils';
+
 import {
   getMultichainCurrencyImage,
   getMultichainCurrentNetwork,
@@ -20,7 +17,7 @@ import { TokenWithBalance } from '../asset-list';
 export const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
   const { chainId, ticker, type, rpcUrl } = useSelector(
     getMultichainCurrentNetwork,
   );
@@ -35,11 +32,17 @@ export const useNativeTokenBalance = () => {
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
+  } = useUserPreferencedCurrency(PRIMARY, {
+    ethNumberOfDecimals: 4,
+    shouldCheckShowNativeToken: true,
+  });
   const {
     currency: secondaryCurrency,
     numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
+  } = useUserPreferencedCurrency(SECONDARY, {
+    ethNumberOfDecimals: 4,
+    shouldCheckShowNativeToken: true,
+  });
 
   const [primaryCurrencyDisplay, primaryCurrencyProperties] =
     useCurrencyDisplay(balance, {
@@ -53,27 +56,18 @@ export const useNativeTokenBalance = () => {
       currency: secondaryCurrency,
     });
 
-  const primaryBalance = showSecondaryCurrency(
-    isOriginalNativeSymbol,
-    useNativeCurrencyAsPrimaryCurrency,
-  )
+  const primaryBalance = isOriginalNativeSymbol
     ? secondaryCurrencyDisplay
     : undefined;
 
   const secondaryBalance =
-    showFiat &&
-    showPrimaryCurrency(
-      isOriginalNativeSymbol,
-      useNativeCurrencyAsPrimaryCurrency,
-    )
-      ? primaryCurrencyDisplay
-      : undefined;
+    showFiat && isOriginalNativeSymbol ? primaryCurrencyDisplay : undefined;
 
-  const tokenSymbol = useNativeCurrencyAsPrimaryCurrency
+  const tokenSymbol = showNativeTokenAsMainBalance
     ? primaryCurrencyProperties.suffix
     : secondaryCurrencyProperties.suffix;
 
-  const unformattedTokenFiatAmount = useNativeCurrencyAsPrimaryCurrency
+  const unformattedTokenFiatAmount = showNativeTokenAsMainBalance
     ? secondaryCurrencyDisplay.toString()
     : primaryCurrencyDisplay.toString();
 

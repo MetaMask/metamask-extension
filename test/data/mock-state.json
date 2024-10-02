@@ -367,12 +367,12 @@
     "preferences": {
       "hideZeroBalanceTokens": false,
       "isRedesignedConfirmationsDeveloperEnabled": false,
+      "petnamesEnabled": false,
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
+      "showNativeTokenAsMainBalance": true,
       "showTestNetworks": true,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": false,
       "tokenSortConfig": {
         "key": "tokenFiatAmount",
         "order": "dsc",

@@ -74,17 +74,19 @@ const AssetListControlBar = ({
     windowType !== ENVIRONMENT_TYPE_POPUP;
 
   useEffect(() => {
+    console.log('SORT');
+    console.log(
+      [nativeTokenWithBalance, ...tokensWithBalances],
+      tokenSortConfig,
+    );
+    console.log(selectedAccount);
     const sortedTokenList = sortAssets(
       [nativeTokenWithBalance, ...tokensWithBalances],
-      tokenSortConfig || {
-        key: 'tokenFiatAmount',
-        order: 'dsc',
-        sortCallback: 'stringNumeric',
-      },
+      tokenSortConfig,
     );
 
     setTokenList(sortedTokenList);
-  }, [tokenSortConfig?.key, loading, tokensWithBalances.length]);
+  }, [tokenSortConfig, tokensWithBalances]);
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);

@@ -69,7 +69,10 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
+  } = useUserPreferencedCurrency(PRIMARY, {
+    ethNumberOfDecimals: 4,
+    shouldCheckShowNativeToken: true,
+  });
 
   const [, primaryCurrencyProperties] = useCurrencyDisplay(balance, {
     numberOfDecimals: primaryNumberOfDecimals,

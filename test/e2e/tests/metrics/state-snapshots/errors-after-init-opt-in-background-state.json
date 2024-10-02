@@ -204,13 +204,14 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
+      "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "tokenSortConfig": "object"
+      "tokenSortConfig": "object",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",

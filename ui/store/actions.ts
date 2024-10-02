@@ -3037,10 +3037,8 @@ export function setDefaultHomeActiveTabName(
   };
 }
 
-export function setUseNativeCurrencyAsPrimaryCurrencyPreference(
-  value: boolean,
-) {
-  return setPreference('useNativeCurrencyAsPrimaryCurrency', value);
+export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
+  return setPreference('showNativeTokenAsMainBalance', value);
 }
 
 export function setHideZeroBalanceTokens(value: boolean) {
@@ -3049,6 +3047,14 @@ export function setHideZeroBalanceTokens(value: boolean) {
 
 export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
   return setPreference('showFiatInTestnets', value);
+}
+
+/**
+ * Sets shouldShowAggregatedBalancePopover to false once the user toggles
+ * the setting to show native token as main balance.
+ */
+export function setAggregatedBalancePopoverShown() {
+  return setPreference('shouldShowAggregatedBalancePopover', false);
 }
 
 export function setShowTestNetworks(value: boolean) {
