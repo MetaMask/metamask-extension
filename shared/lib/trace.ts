@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { Primitive, StartSpanOptions } from '@sentry/types';
+import { MeasurementUnit, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -101,6 +101,10 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
     const start = Date.now();
     let error: unknown;
 
+    if (span) {
+      initSpan(span, request);
+    }
+
     return tryCatchMaybePromise<T>(
       () => fn(span),
       (currentError) => {
@@ -131,6 +135,10 @@ function startTrace(request: TraceRequest): TraceContext {
       span?.end(timestamp);
     };
 
+    if (span) {
+      initSpan(span, request);
+    }
+
     const pendingTrace = { end, request, startTime };
     const key = getTraceKey(request);
     tracesByKey.set(key, pendingTrace);
@@ -149,7 +157,7 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, tags } = request;
+  const { data: attributes, name, parentContext, startTime } = request;
   const parentSpan = (parentContext ?? null) as Sentry.Span | null;
 
   const spanOptions: StartSpanOptions = {
@@ -161,8 +169,7 @@ function startSpan<T>(
   };
 
   return sentryWithIsolationScope((scope: Sentry.Scope) => {
-    scope.setTags(tags as Record<string, Primitive>);
-
+    initScope(scope, request);
     return callback(spanOptions);
   });
 }
@@ -180,6 +187,26 @@ function getTraceKey(request: TraceRequest) {
 
 function getPerformanceTimestamp(): number {
   return performance.timeOrigin + performance.now();
+}
+
+function initScope(scope: Sentry.Scope, request: TraceRequest) {
+  const tags = request.tags ?? {};
+
+  for (const [key, value] of Object.entries(tags)) {
+    if (typeof value !== 'number') {
+      scope.setTag(key, value);
+    }
+  }
+}
+
+function initSpan(_span: Sentry.Span, request: TraceRequest) {
+  const tags = request.tags ?? {};
+
+  for (const [key, value] of Object.entries(tags)) {
+    if (typeof value === 'number') {
+      sentrySetMeasurement(key, value, 'none');
+    }
+  }
 }
 
 function tryCatchMaybePromise<T>(
@@ -250,4 +277,18 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
   }
 
   return actual(callback);
+}
+
+function sentrySetMeasurement(
+  key: string,
+  value: number,
+  unit: MeasurementUnit,
+) {
+  const actual = globalThis.sentry?.setMeasurement;
+
+  if (!actual) {
+    return;
+  }
+
+  actual(key, value, unit);
 }

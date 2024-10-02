@@ -2,7 +2,7 @@ import { Nft, NftContract } from '@metamask/assets-controllers';
 import { createSelector } from 'reselect';
 import { getMemoizedCurrentChainId } from './selectors';
 
-type NftState = {
+export type NftState = {
   metamask: {
     allNftContracts: {
       [account: string]: {
