@@ -1630,14 +1630,6 @@
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
-  "disconnectAllText": {
-    "message": "If you disconnect your $1 from $2, you'll need to reconnect to use them again.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Disconnect all $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectMessage": {
     "message": "This will disconnect you from $1",
     "description": "$1 is the name of the dapp"
@@ -3029,10 +3021,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 is asking for your approval to:",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "Do you want this site to do the following?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees. ",

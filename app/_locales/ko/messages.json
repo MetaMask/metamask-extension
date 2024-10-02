@@ -1513,14 +1513,6 @@
   "disconnectAllSnapsText": {
     "message": "Snap"
   },
-  "disconnectAllText": {
-    "message": "$2에서 $1의 연결을 끊은 경우, 다시 사용하려면 다시 연결해야 합니다.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "모든 $1 연결 해제",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "$1 연결 해제"
   },
@@ -2840,10 +2832,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1에서 다음 승인을 요청합니다:",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "이 사이트가 다음을 수행하기 원하십니까?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "이 네트워크의 네이티브 토큰은 $1입니다. 이는 가스비 지불에 사용하는 토큰입니다. ",

@@ -1513,14 +1513,6 @@
   "disconnectAllSnapsText": {
     "message": "Snap"
   },
-  "disconnectAllText": {
-    "message": "如果您将 $1 与 $2 断开连接，则需要重新连接才能再次使用。",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "断开连接所有 $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "断开连接 $1"
   },
@@ -2840,10 +2832,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 请求您的批准，以便：",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "您希望此网站执行以下操作吗？",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "此网络上的原生代币为 $1。它是用于燃料费的代币。 ",
