@@ -1,5 +1,4 @@
 import { Contract } from '@ethersproject/contracts';
-import { Web3Provider } from '@ethersproject/providers';
 import { Hex, add0x } from '@metamask/utils';
 import { TransactionParams } from '@metamask/transaction-controller';
 import {
@@ -38,7 +37,6 @@ import {
   FeatureFlagResponse,
   FeeData,
   FeeType,
-  GasMultiplierByChainId,
   Quote,
   QuoteRequest,
   QuoteResponse,
@@ -58,6 +56,9 @@ import { ETHEREUM_USDT_APPROVALS_ABI } from './EthUsdtApprovalsAbi';
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
 
+type DecChainId = string;
+type GasMultiplierByDecChainId = Record<DecChainId, number>;
+
 export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
   const url = `${BRIDGE_API_BASE_URL}/getAllFeatureFlags`;
   const rawFeatureFlags = await fetchWithCache({
@@ -74,6 +75,24 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
       url,
     )
   ) {
+    const approvalGasMultiplier = Object.keys(
+      rawFeatureFlags[BridgeFlag.APPROVAL_GAS_MULTIPLIER],
+    ).reduce<GasMultiplierByDecChainId>((acc, decChainId) => {
+      const hexChainId = add0x(decimalToHex(decChainId));
+      acc[hexChainId] =
+        rawFeatureFlags[BridgeFlag.APPROVAL_GAS_MULTIPLIER][decChainId];
+      return acc;
+    }, {});
+
+    const bridgeGasMultiplier = Object.keys(
+      rawFeatureFlags[BridgeFlag.BRIDGE_GAS_MULTIPLIER],
+    ).reduce<GasMultiplierByDecChainId>((acc, decChainId) => {
+      const hexChainId = add0x(decimalToHex(decChainId));
+      acc[hexChainId] =
+        rawFeatureFlags[BridgeFlag.BRIDGE_GAS_MULTIPLIER][decChainId];
+      return acc;
+    }, {});
+
     return {
       [BridgeFeatureFlagsKey.EXTENSION_CONFIG]:
         rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG],
@@ -85,10 +104,8 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
       [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: rawFeatureFlags[
         BridgeFlag.NETWORK_DEST_ALLOWLIST
       ].map((chainIdDec) => add0x(decimalToHex(chainIdDec))),
-      [BridgeFeatureFlagsKey.APPROVAL_GAS_MULTIPLIER]:
-        rawFeatureFlags[BridgeFlag.APPROVAL_GAS_MULTIPLIER],
-      [BridgeFeatureFlagsKey.BRIDGE_GAS_MULTIPLIER]:
-        rawFeatureFlags[BridgeFlag.BRIDGE_GAS_MULTIPLIER],
+      [BridgeFeatureFlagsKey.APPROVAL_GAS_MULTIPLIER]: approvalGasMultiplier,
+      [BridgeFeatureFlagsKey.BRIDGE_GAS_MULTIPLIER]: bridgeGasMultiplier,
     };
   }
 
