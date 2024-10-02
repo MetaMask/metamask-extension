@@ -78,10 +78,10 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
       await driver.findClickableElement(
-        '[data-testid="confirmation-submit-button"]',
+        '[data-testid="page-container-footer-next"]',
       );
-      await driver.clickElementAndWaitForWindowToClose(
-        '[data-testid="confirmation-submit-button"]',
+      await driver.clickElement(
+        '[data-testid="page-container-footer-next"]',
       );
 
       // Switch back to the dapp
@@ -197,7 +197,6 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -219,7 +218,7 @@ describe('Request-queue UI changes', function () {
         await driver.navigate(PAGES.HOME);
 
         // Open the first dapp
-        await openDappAndSwitchChain(driver, DAPP_URL);
+        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x53a');
@@ -263,7 +262,6 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleGanache()
           .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -292,7 +290,7 @@ describe('Request-queue UI changes', function () {
         await driver.navigate(PAGES.HOME);
 
         // Open the first dapp
-        await openDappAndSwitchChain(driver, DAPP_URL);
+        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x53a');
@@ -391,7 +389,6 @@ describe('Request-queue UI changes', function () {
             preferences: { showTestNetworks: true },
           })
           .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -413,7 +410,7 @@ describe('Request-queue UI changes', function () {
         await driver.navigate(PAGES.HOME);
 
         // Open the first dapp
-        await openDappAndSwitchChain(driver, DAPP_URL);
+        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
@@ -465,7 +462,6 @@ describe('Request-queue UI changes', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
@@ -476,7 +472,7 @@ describe('Request-queue UI changes', function () {
         await unlockWallet(driver);
 
         // Open the first dapp which starts on chain '0x539
-        await openDappAndSwitchChain(driver, DAPP_URL);
+        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Ensure the dapp starts on the correct network
         await driver.wait(
@@ -515,7 +511,6 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -535,7 +530,7 @@ describe('Request-queue UI changes', function () {
         await unlockWallet(driver);
 
         // Open the first dapp which starts on chain '0x539
-        await openDappAndSwitchChain(driver, DAPP_URL);
+        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Open tab 2, switch to Ethereum Mainnet
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
@@ -568,7 +563,6 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -588,7 +582,7 @@ describe('Request-queue UI changes', function () {
         await unlockWallet(driver);
 
         // Open the first dapp which starts on chain '0x539
-        await openDappAndSwitchChain(driver, DAPP_URL);
+        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Open tab 2, switch to Ethereum Mainnet
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
@@ -640,7 +634,6 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -666,7 +659,7 @@ describe('Request-queue UI changes', function () {
         await driver.navigate(PAGES.HOME);
 
         // Open the first dapp
-        await openDappAndSwitchChain(driver, DAPP_URL);
+        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
@@ -711,7 +704,6 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -736,7 +728,7 @@ describe('Request-queue UI changes', function () {
         await driver.navigate(PAGES.HOME);
 
         // Open the first dapp
-        await openDappAndSwitchChain(driver, DAPP_URL);
+        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
