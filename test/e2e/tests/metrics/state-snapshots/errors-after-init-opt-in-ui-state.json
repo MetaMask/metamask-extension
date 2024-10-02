@@ -32,12 +32,13 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
+      "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "showMultiRpcModal": "boolean"
+      "showMultiRpcModal": "boolean",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,

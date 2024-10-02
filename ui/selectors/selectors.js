@@ -1490,6 +1490,11 @@ export const getConnectedSitesList = createDeepEqualSelector(
   },
 );
 
+export function getShouldShowAggregatedBalancePopover(state) {
+  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
+  return shouldShowAggregatedBalancePopover;
+}
+
 export const getConnectedSnapsList = createDeepEqualSelector(
   getSnapsList,
   (snapsData) => {
