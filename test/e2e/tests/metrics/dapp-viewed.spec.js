@@ -277,6 +277,10 @@ describe('Dapp viewed Event @no-mmi', function () {
           text: '127.0.0.1:8080',
           tag: 'p',
         });
+        await driver.clickElement({
+          text: 'Disconnect',
+          tag: 'button',
+        });
         await driver.clickElement('[data-testid ="disconnect-all"]');
         // validate dapp is not connected
         await driver.clickElement(
