@@ -5,6 +5,7 @@ const {
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
+  openMenuSafe,
   unlockWallet,
 } = require('../../helpers');
 const { shortenAddress } = require('../../../../ui/helpers/utils/util');
@@ -92,17 +93,7 @@ describe('Address Book', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        // fix race condition with mmi build
-        if (process.env.MMI) {
-          await driver.waitForSelector(
-            '[data-testid="global-menu-mmi-portfolio"]',
-          );
-        }
+        await openMenuSafe(driver);
 
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
@@ -167,16 +158,7 @@ describe('Address Book', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        // fix race condition with mmi build
-        if (process.env.MMI) {
-          await driver.waitForSelector(
-            '[data-testid="global-menu-mmi-portfolio"]',
-          );
-        }
+        await openMenuSafe(driver);
 
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });

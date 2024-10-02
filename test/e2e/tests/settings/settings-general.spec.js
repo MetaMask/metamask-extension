@@ -1,8 +1,9 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  openMenuSafe,
   unlockWallet,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -18,16 +19,7 @@ describe('Settings', function () {
         await unlockWallet(driver);
 
         // goes to the settings screen
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        // fix race condition with mmi build
-        if (process.env.MMI) {
-          await driver.waitForSelector(
-            '[data-testid="global-menu-mmi-portfolio"]',
-          );
-        }
+        await openMenuSafe(driver);
 
         await driver.clickElement({ text: 'Settings', tag: 'div' });
 
