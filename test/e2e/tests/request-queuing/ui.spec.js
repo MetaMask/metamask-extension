@@ -1,3 +1,6 @@
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import { CaveatTypes } from '../../../../shared/constants/permissions';
+
 const { strict: assert } = require('assert');
 const { Browser, until } = require('selenium-webdriver');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
@@ -46,6 +49,21 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   // Switch chains if necessary
   if (chainId) {
     await driver.delay(veryLargeDelayMs);
+    const getPermissionsRequest = JSON.stringify({
+      "method": "wallet_getPermissions",
+    })
+    const getPermissionsResult = await driver.executeScript(
+      `return window.ethereum.request(${getPermissionsRequest})`,
+    );
+
+    const permittedChains = getPermissionsResult?.find((permission) =>
+      permission.parentCapability === PermissionNames.permittedChains
+    )?.caveats.find((caveat) =>
+      caveat.type === CaveatTypes.restrictNetworkSwitching
+    )?.value || []
+
+    const isAlreadyPermitted = permittedChains.includes(chainId)
+
     const switchChainRequest = JSON.stringify({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }],
@@ -55,18 +73,20 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
       `window.ethereum.request(${switchChainRequest})`,
     );
 
-    await driver.delay(veryLargeDelayMs);
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    if (!isAlreadyPermitted) {
+      await driver.delay(veryLargeDelayMs);
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-    await driver.findClickableElement(
-      '[data-testid="confirmation-submit-button"]',
-    );
-    await driver.clickElementAndWaitForWindowToClose(
-      '[data-testid="confirmation-submit-button"]',
-    );
+      await driver.findClickableElement(
+        '[data-testid="confirmation-submit-button"]',
+      );
+      await driver.clickElementAndWaitForWindowToClose(
+        '[data-testid="confirmation-submit-button"]',
+      );
 
-    // Switch back to the dapp
-    await driver.switchToWindowWithUrl(dappUrl);
+      // Switch back to the dapp
+      await driver.switchToWindowWithUrl(dappUrl);
+    }
   }
 }
 
