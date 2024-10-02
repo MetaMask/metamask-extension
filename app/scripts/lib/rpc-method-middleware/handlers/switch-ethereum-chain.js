@@ -14,7 +14,6 @@ const switchEthereumChain = {
     getCaveat: true,
     requestPermittedChainsPermission: true,
     getCurrentChainIdForDomain: true,
-    getChainPermissionsFeatureFlag: true,
     grantPermittedChainsPermissionIncremental: true,
   },
 };
@@ -32,7 +31,6 @@ async function switchEthereumChainHandler(
     requestPermittedChainsPermission,
     getCaveat,
     getCurrentChainIdForDomain,
-    getChainPermissionsFeatureFlag,
     grantPermittedChainsPermissionIncremental
   },
 ) {
@@ -73,7 +71,6 @@ async function switchEthereumChainHandler(
     networkClientIdToSwitchTo,
     null,
     {
-      getChainPermissionsFeatureFlag,
       setActiveNetwork,
       getCaveat,
       requestPermittedChainsPermission,
