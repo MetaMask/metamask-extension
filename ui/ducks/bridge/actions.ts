@@ -212,8 +212,8 @@ export const signBridgeTransaction = (
       maxPriorityFeePerGas,
     }: {
       hexChainId: Hex;
-      maxFeePerGas: string;
-      maxPriorityFeePerGas: string;
+      maxFeePerGas: string | undefined;
+      maxPriorityFeePerGas: string | undefined;
     }) => {
       const allowance = new BigNumber(
         await getBridgeERC20Allowance(
