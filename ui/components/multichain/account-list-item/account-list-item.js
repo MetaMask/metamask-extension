@@ -47,15 +47,15 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   isAccountConnectedToCurrentTab,
-  getShowFiatInTestnets,
   getUseBlockie,
+  getPreferences,
+  getShouldHideZeroBalanceTokens,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
   getMultichainNetwork,
-  getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status/connected-status';
@@ -67,6 +67,7 @@ import { useTheme } from '../../../hooks/useTheme';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -98,24 +99,33 @@ const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
   const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
-  const isMainnet = !isTestnet;
-  const shouldShowFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
-    account,
-  );
-  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
-  const showFiat =
-    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
+
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
+  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const { totalFiatBalance } = useAccountTotalFiatBalance(
+    account,
+    shouldHideZeroBalanceTokens,
+  );
+
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
     (item) => ({
       avatarValue: item.iconUrl,
     }),
   );
-  const balanceToTranslate = isEvmNetwork
-    ? account.balance
-    : accountTotalFiatBalances.totalBalance;
+
+  let balanceToTranslate;
+  if (isEvmNetwork) {
+    balanceToTranslate =
+      showNativeTokenAsMainBalance || isTestnet // balance in crypto
+        ? account.balance
+        : totalFiatBalance;
+  } else {
+    balanceToTranslate = accountTotalFiatBalances.totalBalance;
+  }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const custodianIcon = useSelector((state) =>
@@ -310,8 +320,11 @@ const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
-                showFiat={showFiat}
                 data-testid="first-currency-display"
+                shouldCheckShowNativeToken
+                isAggregatedFiatOverviewBalance={
+                  !showNativeTokenAsMainBalance && !isTestnet
+                }
               />
             </Text>
           </Box>
@@ -357,7 +370,7 @@ const AccountListItem = ({
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                   value={account.balance}
                   type={SECONDARY}
-                  showNative
+                  showNative={!showNativeTokenAsMainBalance}
                   data-testid="second-currency-display"
                 />
               </Text>
