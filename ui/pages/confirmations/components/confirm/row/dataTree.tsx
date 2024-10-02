@@ -72,6 +72,12 @@ const FIELD_DATE_PRIMARY_TYPES: Record<string, string[]> = {
  */
 const NONE_DATE_VALUE = -1;
 
+/**
+ * If a token contract is found within the dataTree, fetch the token decimal of this contract
+ * to be utilized for displaying token amounts of the dataTree.
+ *
+ * @param dataTreeData
+ */
 const getTokenDecimalsOfDataTree = async (
   dataTreeData: Record<string, TreeData> | TreeData[],
 ): Promise<void | number> => {
@@ -91,7 +97,7 @@ const getTokenDecimalsOfDataTree = async (
 export const DataTree = ({
   data,
   primaryType,
-  tokenDecimals = 0,
+  tokenDecimals: tokenDecimalsProp,
 }: {
   data: Record<string, TreeData> | TreeData[];
   primaryType?: PrimaryType;
@@ -102,8 +108,8 @@ export const DataTree = ({
     [data],
   );
 
-  const tokenContractDecimals =
-    typeof decimalsResponse === 'number' ? decimalsResponse : undefined;
+  const tokenDecimals =
+    typeof decimalsResponse === 'number' ? decimalsResponse : tokenDecimalsProp;
 
   return (
     <Box width={BlockSize.Full}>
@@ -122,7 +128,7 @@ export const DataTree = ({
               primaryType={primaryType}
               value={value}
               type={type}
-              tokenDecimals={tokenContractDecimals ?? tokenDecimals}
+              tokenDecimals={tokenDecimals}
             />
           }
         </ConfirmInfoRow>
@@ -153,7 +159,7 @@ const DataField = memo(
     primaryType?: PrimaryType;
     type: string;
     value: ValueType;
-    tokenDecimals: number;
+    tokenDecimals?: number;
   }) => {
     const t = useI18nContext();
 
