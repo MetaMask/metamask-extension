@@ -59,7 +59,7 @@ export function SurveyToast() {
             signal: controller.signal,
           },
           functionName: 'fetchSurveys',
-          cacheOptions: { cacheRefreshTime: DAY * 7 },
+          cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY * 7 },
         });
 
         const _survey: Survey = response?.surveys;
