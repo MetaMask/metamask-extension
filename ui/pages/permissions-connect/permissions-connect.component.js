@@ -19,7 +19,6 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
-import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
@@ -74,11 +73,7 @@ export default class PermissionConnect extends Component {
     ).isRequired,
     currentAddress: PropTypes.string.isRequired,
     origin: PropTypes.string,
-    showNewAccountModal: PropTypes.func.isRequired,
-    newAccountNumber: PropTypes.number.isRequired,
-    nativeCurrency: PropTypes.string,
     permissionsRequest: PropTypes.object,
-    addressLastConnectedMap: PropTypes.object.isRequired,
     lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
     history: PropTypes.object.isRequired,
@@ -107,7 +102,6 @@ export default class PermissionConnect extends Component {
 
   static defaultProps = {
     origin: '',
-    nativeCurrency: '',
     permissionsRequest: undefined,
     permissionsRequestId: '',
   };
@@ -148,8 +142,6 @@ export default class PermissionConnect extends Component {
       history.replace(DEFAULT_ROUTE);
       return;
     }
-    history.replace(confirmPermissionPath);
-
     // if this is an incremental permission request for permitted chains, skip the account selection
     if (
       permissionsRequest?.diff?.permissionDiffMap?.[
@@ -304,7 +296,6 @@ export default class PermissionConnect extends Component {
     const {
       accounts,
       permissionsRequest,
-      addressLastConnectedMap,
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
@@ -338,58 +329,16 @@ export default class PermissionConnect extends Component {
               path={connectPath}
               exact
               render={() => (
-                <ChooseAccount
-                  accounts={accounts}
-                  nativeCurrency={nativeCurrency}
-                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
-                  selectNewAccountViaModal={(handleAccountClick) => {
-                    showNewAccountModal({
-                      onCreateNewAccount: (address) =>
-                        handleAccountClick(address),
-                      newAccountNumber,
-                    });
-                  }}
-                  addressLastConnectedMap={addressLastConnectedMap}
-                  cancelPermissionsRequest={(requestId) =>
+                <ConnectPage
+                  rejectPermissionsRequest={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
                   }
+                  activeTabOrigin={this.state.origin}
+                  request={permissionsRequest}
                   permissionsRequestId={permissionsRequestId}
-                  selectedAccountAddresses={selectedAccountAddresses}
-                  targetSubjectMetadata={targetSubjectMetadata}
+                  approveConnection={this.approveConnection}
                 />
               )}
-            />
-            <Route
-              path={confirmPermissionPath}
-              exact
-              render={() =>
-                permissionsRequest?.diff ? (
-                  <PermissionPageContainer
-                    request={permissionsRequest || {}}
-                    approvePermissionsRequest={(...args) => {
-                      approvePermissionsRequest(...args);
-                      this.redirect(true);
-                    }}
-                    addressLastConnectedMap={addressLastConnectedMap}
-                    cancelPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    permissionsRequestId={permissionsRequestId}
-                    selectedAccountAddresses={selectedAccountAddresses}
-                    targetSubjectMetadata={targetSubjectMetadata}
-                  />
-                ) : (
-                  <ConnectPage
-                    rejectPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    activeTabOrigin={this.state.origin}
-                    request={permissionsRequest}
-                    permissionsRequestId={permissionsRequestId}
-                    approveConnection={this.approveConnection}
-                  />
-                )
-              }
             />
             <Route
               path={confirmPermissionPath}
