@@ -1187,15 +1187,12 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-<<<<<<< HEAD
         useNativeCurrencyAsPrimaryCurrency: true,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
-=======
->>>>>>> develop
         showNativeTokenAsMainBalance: true,
       });
 
@@ -1223,15 +1220,12 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-<<<<<<< HEAD
         useNativeCurrencyAsPrimaryCurrency: false,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
-=======
->>>>>>> develop
         showNativeTokenAsMainBalance: false,
       });
 
@@ -1269,15 +1263,12 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-<<<<<<< HEAD
         useNativeCurrencyAsPrimaryCurrency: true,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
-=======
->>>>>>> develop
         showNativeTokenAsMainBalance: true,
       });
 
@@ -1300,15 +1291,12 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-<<<<<<< HEAD
         useNativeCurrencyAsPrimaryCurrency: true,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
-=======
->>>>>>> develop
         showNativeTokenAsMainBalance: true,
       });
       expect(updatedTraits).toStrictEqual(null);
