@@ -64,15 +64,7 @@ describe('Test Snap TxInsights-v2', function () {
         // switch back to MetaMask window and deal with dialogs
         await switchToNotificationWindow(driver);
         await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.waitForSelector({
-          text: 'Confirm',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
         });
 
