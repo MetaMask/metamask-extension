@@ -32,6 +32,18 @@ describe('BridgeController', function () {
         'extension-support': true,
         'src-network-allowlist': [10, 534352],
         'dest-network-allowlist': [137, 42161],
+        'approval-gas-multiplier': {
+          '137': 1.1,
+          '42161': 1.2,
+          '10': 1.3,
+          '534352': 1.4,
+        },
+        'bridge-gas-multiplier': {
+          '137': 2.1,
+          '42161': 2.2,
+          '10': 2.3,
+          '534352': 2.4,
+        },
       });
     nock(BRIDGE_API_BASE_URL)
       .get('/getTokens?chainId=10')
@@ -66,6 +78,18 @@ describe('BridgeController', function () {
       extensionSupport: true,
       destNetworkAllowlist: [CHAIN_IDS.POLYGON, CHAIN_IDS.ARBITRUM],
       srcNetworkAllowlist: [CHAIN_IDS.OPTIMISM, CHAIN_IDS.SCROLL],
+      approvalGasMultiplier: {
+        [CHAIN_IDS.POLYGON]: 1.1,
+        [CHAIN_IDS.ARBITRUM]: 1.2,
+        [CHAIN_IDS.OPTIMISM]: 1.3,
+        [CHAIN_IDS.SCROLL]: 1.4,
+      },
+      bridgeGasMultiplier: {
+        [CHAIN_IDS.POLYGON]: 2.1,
+        [CHAIN_IDS.ARBITRUM]: 2.2,
+        [CHAIN_IDS.OPTIMISM]: 2.3,
+        [CHAIN_IDS.SCROLL]: 2.4,
+      },
     };
     expect(bridgeController.state).toStrictEqual(EMPTY_INIT_STATE);
 
