@@ -43,7 +43,10 @@ import {
 export type ConnectPageRequest = {
   id: string;
   origin: string;
-  permissions?: unknown;
+  permissions?: Record<
+    string,
+    { caveats?: { type: string; value: string[] }[] }[]
+  >;
 };
 
 type ConnectPageProps = {
