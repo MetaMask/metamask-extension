@@ -148,6 +148,8 @@ export default class PermissionConnect extends Component {
       history.replace(DEFAULT_ROUTE);
       return;
     }
+    history.replace(confirmPermissionPath);
+
     // if this is an incremental permission request for permitted chains, skip the account selection
     if (
       permissionsRequest?.diff?.permissionDiffMap?.[
@@ -332,6 +334,31 @@ export default class PermissionConnect extends Component {
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (
           <Switch>
+            <Route
+              path={connectPath}
+              exact
+              render={() => (
+                <ChooseAccount
+                  accounts={accounts}
+                  nativeCurrency={nativeCurrency}
+                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
+                  selectNewAccountViaModal={(handleAccountClick) => {
+                    showNewAccountModal({
+                      onCreateNewAccount: (address) =>
+                        handleAccountClick(address),
+                      newAccountNumber,
+                    });
+                  }}
+                  addressLastConnectedMap={addressLastConnectedMap}
+                  cancelPermissionsRequest={(requestId) =>
+                    this.cancelPermissionsRequest(requestId)
+                  }
+                  permissionsRequestId={permissionsRequestId}
+                  selectedAccountAddresses={selectedAccountAddresses}
+                  targetSubjectMetadata={targetSubjectMetadata}
+                />
+              )}
+            />
             <Route
               path={confirmPermissionPath}
               exact
