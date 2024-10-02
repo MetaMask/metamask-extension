@@ -2039,12 +2039,10 @@
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
-        "clearInterval": true,
         "console.error": true,
         "dispatchEvent": true,
         "fetch": true,
         "removeEventListener": true,
-        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
