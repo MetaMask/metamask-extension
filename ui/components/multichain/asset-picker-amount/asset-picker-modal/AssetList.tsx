@@ -46,12 +46,13 @@ export default function AssetList({
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    currency: nativeCurrency,
+  const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
+    currency: currentCurrency,
+    hideLabel: true,
   });
 
-  const [, secondaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    currency: currentCurrency,
+  const [secondaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
+    currency: nativeCurrency,
   });
 
   return (
@@ -102,11 +103,12 @@ export default function AssetList({
                 {token.type === AssetType.native ? (
                   <TokenListItem
                     title={token.symbol}
-                    primary={primaryCurrencyProperties.value}
+                    primary={primaryCurrencyValue}
                     tokenSymbol={token.symbol}
-                    secondary={secondaryCurrencyProperties.value}
+                    secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
                     isOriginalTokenSymbol={token.symbol === nativeCurrency}
+                    isPrimaryTokenSymbolHidden
                   />
                 ) : (
                   <AssetComponent
