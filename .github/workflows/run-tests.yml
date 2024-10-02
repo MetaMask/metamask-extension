@@ -109,27 +109,24 @@ jobs:
           name: lcov.info
           path: coverage/lcov.info
 
-      - name: Get Sonar coverage
-        id: get-sonar-coverage
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Get coverage from develop
+        id: get-coverage-from-develop
         run: |
-          projectKey=$(grep 'sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
-          sonar_coverage=$(curl --silent --header "Authorization: Bearer $SONAR_TOKEN" "https://sonarcloud.io/api/measures/component?component=$projectKey&metricKeys=coverage" | jq -r '.component.measures[0].value // 0')
-          echo "The Sonar coverage of $projectKey is $sonar_coverage%."
-          echo 'SONAR_COVERAGE='"$sonar_coverage" >> "$GITHUB_OUTPUT"
+          develop_coverage=$(gh api -H 'Accept: application/vnd.github.raw' 'repos/metamask/metamask-extension/contents/coverage.txt' || echo '0')
+          echo "The coverage on develop for metamask-extension is $develop_coverage%."
+          echo 'DEVELOP_COVERAGE='"$develop_coverage" >> "$GITHUB_OUTPUT"
 
       - name: Validate test coverage
         env:
-            SONAR_COVERAGE: ${{ steps.get-sonar-coverage.outputs.SONAR_COVERAGE }}
+            DEVELOP_COVERAGE: ${{ steps.get-coverage-from-develop.outputs.DEVELOP_COVERAGE }}
         run: |
           coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print $3}')
           if [ -z "$coverage" ]; then
             echo "::error::Could not retrieve test coverage."
             exit 1
           fi
-          if (( $(echo "$coverage < $SONAR_COVERAGE" | bc -l) )); then
-            echo "::error::Quality gate failed for test coverage. Current test coverage is $coverage%, please increase coverage to at least $SONAR_COVERAGE%."
+          if (( $(echo "$coverage < $DEVELOP_COVERAGE" | bc -l) )); then
+            echo "::error::Quality gate failed for test coverage. Current test coverage is $coverage%, please increase coverage to at least $DEVELOP_COVERAGE%."
             exit 1
           else
             echo "Test coverage is $coverage%. Quality gate passed."
