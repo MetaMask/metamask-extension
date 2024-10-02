@@ -33,10 +33,6 @@ class HeaderNavbar {
 
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
-    // fix race condition with mmi build
-    if (process.env.MMI) {
-      await this.driver.waitForSelector(this.mmiPortfolioButton);
-    }
   }
 
   async openSettingsPage(): Promise<void> {
