@@ -56,7 +56,6 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
 
         await switchToNotificationWindow(driver);
 
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',

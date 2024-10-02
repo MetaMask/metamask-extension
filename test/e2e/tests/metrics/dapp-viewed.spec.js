@@ -40,22 +40,6 @@ async function mockPermissionApprovedEndpoint(mockServer) {
     });
 }
 
-async function createTwoAccounts(driver) {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '[data-testid="multichain-account-menu-popover-action-button"]',
-  );
-  await driver.clickElement(
-    '[data-testid="multichain-account-menu-popover-add-account"]',
-  );
-  await driver.fill('[placeholder="Account 2"]', '2nd account');
-  await driver.clickElement({ text: 'Add account', tag: 'button' });
-  await driver.findElement({
-    css: '[data-testid="account-menu-icon"]',
-    text: '2nd account',
-  });
-}
-
 const waitForDappConnected = async (driver) => {
   await driver.waitForSelector({
     css: '#accounts',
@@ -285,10 +269,10 @@ describe('Dapp viewed Event @no-mmi', function () {
           text: 'All Permissions',
           tag: 'div',
         });
-                await driver.clickElementAndWaitToDisappear({
-                  text: 'Got it',
-                  tag: 'button',
-                });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: '127.0.0.1:8080',
           tag: 'p',
