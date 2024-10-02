@@ -353,7 +353,7 @@ describe('AppStateController', () => {
 
   describe('setFirstTimeUsedNetwork', () => {
     it('updates the array of the first time used networks', () => {
-      const chainId: string = '0x1';
+      const chainId = '0x1';
 
       appStateController.setFirstTimeUsedNetwork(chainId);
       expect(appStateController.store.getState().usedNetworks[chainId]).toBe(
@@ -364,11 +364,7 @@ describe('AppStateController', () => {
 
   describe('setLastInteractedConfirmationInfo', () => {
     it('sets information about last confirmation user has interacted with', () => {
-      const lastInteractedConfirmationInfo: {
-        id: string;
-        chainId: string;
-        timestamp: number;
-      } = {
+      const lastInteractedConfirmationInfo = {
         id: '123',
         chainId: '0x1',
         timestamp: new Date().getTime(),
@@ -414,7 +410,7 @@ describe('AppStateController', () => {
         'updateState',
       );
 
-      const mockParams: { url: string; oldRefreshToken: string } = {
+      const mockParams = {
         url: 'https://example.com',
         oldRefreshToken: 'old',
       };
@@ -436,7 +432,7 @@ describe('AppStateController', () => {
         'updateState',
       );
 
-      const mockParams: { fromAddress: string; custodyId: string } = {
+      const mockParams = {
         fromAddress: '0x',
         custodyId: 'custodyId',
       };
@@ -458,7 +454,7 @@ describe('AppStateController', () => {
         'updateState',
       );
 
-      const mockParams: string = 'some message';
+      const mockParams = 'some message';
 
       appStateController.setNoteToTraderMessage(mockParams);
 

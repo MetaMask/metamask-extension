@@ -25,9 +25,8 @@ import {
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
 import { SecurityAlertSource } from '../../../shared/constants/security-provider';
-import PreferencesController, {
+import type {
   Preferences,
-  PreferencesControllerState,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 
@@ -143,7 +142,9 @@ type AppStateControllerOptions = {
   isUnlocked: () => boolean;
   initState?: Partial<AppStateControllerState>;
   onInactiveTimeout?: () => void;
-  preferencesStore: ObservableStore<PreferencesControllerState>;
+  // TODO: Remove this as soon as PreferencesController upgrade to BaseControllerV2 merges with develop
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  preferencesStore: any;
   messenger: AppStateControllerMessenger;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
