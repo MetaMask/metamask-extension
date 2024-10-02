@@ -1387,10 +1387,6 @@
     "message": "Devi avere $1 $2 in più per completare lo scambio",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Non ci sono token disponibile con questo nome $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapCustom": {
     "message": "personalizza"
   },
@@ -1418,9 +1414,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Errore recuperando le quotazioni"
-  },
-  "swapFetchingTokens": {
-    "message": "Recuperando i token..."
   },
   "swapLowSlippageError": {
     "message": "La transazione può fallire, il massimo slippage è troppo basso."

@@ -6,8 +6,6 @@
 @import 'prepare-swap-page/index';
 @import 'notification-page/index';
 @import 'countdown-timer/index';
-@import 'dropdown-input-pair/index';
-@import 'dropdown-search-list/index';
 @import 'exchange-rate-display/index';
 @import 'fee-card/index';
 @import 'loading-swaps-quotes/index';
@@ -21,6 +19,7 @@
 @import 'list-with-search/index';
 @import 'popover-custom-background/index';
 @import 'mascot-background-animation/index';
+@import 'selected-token/index';
 
 .swaps {
   display: flex;

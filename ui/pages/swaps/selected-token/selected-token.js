@@ -29,37 +29,38 @@ export default function SelectedToken({
   };
 
   return (
+    <div className="selected-token">
     <div
       className={classnames(
-        'dropdown-search-list',
-        'dropdown-search-list__selector-closed-container',
-        'dropdown-input-pair__selector--closed',
+        'selected-token-list',
+        'selected-token-list__selector-closed-container',
+        'selected-token-input-pair__selector--closed',
       )}
-      data-testid="dropdown-search-list"
+      data-testid="selected-token-list"
       tabIndex="0"
       onClick={onClick}
       onKeyUp={onKeyUp}
     >
-      <div className="dropdown-search-list__selector-closed">
+      <div className="selected-token-list__selector-closed">
         {hasIcon && (
           <UrlIcon
             url={selectedToken.iconUrl}
-            className="dropdown-search-list__selector-closed-icon"
+            className="selected-token-list__selector-closed-icon"
             name={selectedToken?.symbol}
           />
         )}
         <div
-          className={classnames('dropdown-search-list__labels', {
-            'dropdown-search-list__labels--with-icon': hasIcon,
+          className={classnames('selected-token-list__labels', {
+            'selected-token-list__labels--with-icon': hasIcon,
           })}
         >
-          <div className="dropdown-search-list__item-labels">
+          <div className="selected-token-list__item-labels">
             <span
               data-testid={testId}
               className={classnames(
-                'dropdown-search-list__closed-primary-label',
+                'selected-token-list__closed-primary-label',
                 {
-                  'dropdown-search-list__select-default':
+                  'selected-token-list__select-default':
                     !selectedToken?.symbol,
                 },
               )}
@@ -75,6 +76,7 @@ export default function SelectedToken({
         marginRight={3}
         color={IconColor.iconAlternative}
       />
+    </div>
     </div>
   );
 }

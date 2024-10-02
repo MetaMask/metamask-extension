@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Devam etmek istediğinizde size en yeni kotaları göstermeye hazırız"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "$1 ile eşleşen token yok",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Donanım cüzdanınızla onaylayın"
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Teklifler alınırken hata"
-  },
-  "swapFetchingTokens": {
-    "message": "Tokenler alınıyor..."
   },
   "swapFromTo": {
     "message": "$1 ile $2 swap işlemi",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "Teklif talebi"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "İsmi arayın veya adresi yapıştırın"
   },
   "swapSelect": {
     "message": "Seç"

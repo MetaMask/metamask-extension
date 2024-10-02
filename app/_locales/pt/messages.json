@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Estamos prontos para exibir as últimas cotações quando quiser continuar"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Nenhum token disponível correspondente a $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirme com sua carteira de hardware"
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Erro ao obter cotações"
-  },
-  "swapFetchingTokens": {
-    "message": "Obtendo tokens..."
   },
   "swapFromTo": {
     "message": "A troca de $1 por $2",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "Solicitação de cotação"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Pesquise o nome ou cole o endereço"
   },
   "swapSelect": {
     "message": "Selecione"

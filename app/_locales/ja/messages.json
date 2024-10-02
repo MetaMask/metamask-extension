@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "続ける際には、最新のクォートを表示する準備ができています"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "$1と一致するトークンがありません",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "ハードウェアウォレットで確定"
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "見積もり取得エラー"
-  },
-  "swapFetchingTokens": {
-    "message": "トークンを取得中..."
   },
   "swapFromTo": {
     "message": "$1から$2へのスワップ",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "見積もりのリクエスト"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "名前を検索するかアドレスを貼り付けてください"
   },
   "swapSelect": {
     "message": "選択"

@@ -5593,10 +5593,6 @@
   "swapAreYouStillThereDescription": {
     "message": "We’re ready to show you the latest quotes when you want to continue"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "No tokens available matching $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
   },
@@ -5660,9 +5656,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Error fetching quotes"
-  },
-  "swapFetchingTokens": {
-    "message": "Fetching tokens..."
   },
   "swapFromTo": {
     "message": "The swap of $1 to $2",
@@ -5808,9 +5801,6 @@
   },
   "swapRequestForQuotation": {
     "message": "Request for quotation"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Search name or paste address"
   },
   "swapSelect": {
     "message": "Select"

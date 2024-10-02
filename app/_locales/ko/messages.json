@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "계속하기 원하시면 최신 견적을 보여드리겠습니다"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "$1와(과) 일치하는 토큰이 없습니다.",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 컨펌합니다."
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "견적을 가져오는 중 오류 발생"
-  },
-  "swapFetchingTokens": {
-    "message": "토큰 가져오는 중..."
   },
   "swapFromTo": {
     "message": "$1을(를) $2(으)로 스왑",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "견적 요청"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "이름 검색 또는 주소 붙여넣기"
   },
   "swapSelect": {
     "message": "선택"

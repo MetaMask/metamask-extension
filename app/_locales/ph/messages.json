@@ -1268,10 +1268,6 @@
     "message": "Kailangan mo ng $1 pa $2 para makumpleto ang pag-swap na ito",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Walang available na token na tumutugma sa $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Kumpirmahin ang iyong hardware wallet"
   },
@@ -1312,9 +1308,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Nagka-error sa pagkuha ng mga quote"
-  },
-  "swapFetchingTokens": {
-    "message": "Kinukuha ang mga token..."
   },
   "swapFromTo": {
     "message": "Ang pag-swap ng $1 sa $2",

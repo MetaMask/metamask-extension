@@ -1211,9 +1211,6 @@
   "supportCenter": {
     "message": "造訪我們的協助中心"
   },
-  "swapSearchNameOrAddress": {
-    "message": "用名稱搜尋或貼上地址"
-  },
   "switchEthereumChainConfirmationDescription": {
     "message": "這將在 MetaMask 中將目前選擇的網路切換到剛才新增的網路："
   },

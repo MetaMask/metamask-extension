@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "जब आप जारी रखना चाहते हैं तो हम आपको लेटेस्ट उद्धरण दिखाने के लिए तैयार हैं"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "$1 के मिलान वाले कोई भी टोकन उपलब्ध नहीं हैं",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "अपने hardware wallet से कन्फर्म करें"
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "उद्धरण प्राप्त करने में गड़बड़ी"
-  },
-  "swapFetchingTokens": {
-    "message": "टोकन प्राप्त किए जा रहे हैं..."
   },
   "swapFromTo": {
     "message": "$1 से $2 का स्वैप",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "उद्धरण के लिए अनुरोध"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "नाम खोजें या ऐड्रेस पेस्ट करें"
   },
   "swapSelect": {
     "message": "चयन करें"

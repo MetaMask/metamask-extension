@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Si vous le souhaitez, nous sommes prêts à vous présenter les dernières cotations"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Aucun jeton disponible correspondant à $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirmez avec votre portefeuille matériel"
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Erreur lors de la récupération des cotations"
-  },
-  "swapFetchingTokens": {
-    "message": "Récupération des jetons…"
   },
   "swapFromTo": {
     "message": "Le swap de $1 vers $2",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "Demande de cotation"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Rechercher le nom ou coller l’adresse"
   },
   "swapSelect": {
     "message": "Sélectionner"

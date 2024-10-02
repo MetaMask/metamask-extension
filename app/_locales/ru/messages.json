@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Мы готовы показать вам последние котировки, когда вы захотите продолжить"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Нет доступных токенов, соответствующих $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Подтвердите с помощью аппаратного кошелька"
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Ошибка при получении котировок"
-  },
-  "swapFetchingTokens": {
-    "message": "Получение токенов..."
   },
   "swapFromTo": {
     "message": "Своп $1 на $2",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "Запрос котировки"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Выполните поиск по имени или вставьте адрес"
   },
   "swapSelect": {
     "message": "Выбрать"

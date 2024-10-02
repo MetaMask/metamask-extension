@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Kami siap menampilkan kuotasi terbaru jika Anda ingin melanjutkan"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Tidak ada token yang cocok yang tersedia $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Konfirmasikan dengan dompet perangkat keras Anda"
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Terjadi kesalahan saat mengambil kuota"
-  },
-  "swapFetchingTokens": {
-    "message": "Mengambil token..."
   },
   "swapFromTo": {
     "message": "Pertukaran dari $1 ke $2",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "Minta kuotasi"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Cari nama atau tempel alamat"
   },
   "swapSelect": {
     "message": "Pilih"

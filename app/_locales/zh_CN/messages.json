@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "如果您想继续，我们准备好为您显示最新报价"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "没有与 $1 匹配的代币",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "获取报价出错"
-  },
-  "swapFetchingTokens": {
-    "message": "获取代币中……"
   },
   "swapFromTo": {
     "message": "$1 到 $2 的交换",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "请求报价"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "搜索名称或粘贴地址"
   },
   "swapSelect": {
     "message": "选择"

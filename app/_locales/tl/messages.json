@@ -5195,10 +5195,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Handa kaming ipakita sa iyo ang mga pinakabagong quote kapag gusto mo ng magpatuloy"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Walang available na token na tumutugma sa $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Kumpirmahin gamit ang iyong wallet na hardware"
   },
@@ -5262,9 +5258,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Nagka-error sa pagkuha ng mga quote"
-  },
-  "swapFetchingTokens": {
-    "message": "Kinukuha ang mga token..."
   },
   "swapFromTo": {
     "message": "Ang pag-swap ng $1 sa $2",
@@ -5392,9 +5385,6 @@
   },
   "swapRequestForQuotation": {
     "message": "Humiling ng quotation"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Hanapin ang pangalan o i-paste ang address"
   },
   "swapSelect": {
     "message": "Piliin"

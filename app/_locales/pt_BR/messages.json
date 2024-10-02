@@ -1894,10 +1894,6 @@
     "message": "Você precisa de mais $1 $2 para concluir essa troca",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Nenhum token disponível correspondente a $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirme com sua carteira de hardware"
   },
@@ -1948,9 +1944,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Erro ao obter cotações"
-  },
-  "swapFetchingTokens": {
-    "message": "Obtendo tokens..."
   },
   "swapFromTo": {
     "message": "A troca de $1 para $2",
