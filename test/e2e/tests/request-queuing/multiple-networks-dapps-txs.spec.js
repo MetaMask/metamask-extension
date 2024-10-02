@@ -56,15 +56,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await switchToNotificationWindow(driver);
 
         await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithTitle(
@@ -96,15 +89,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await switchToNotificationWindow(driver, 4);
 
         await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         // Dapp one send tx

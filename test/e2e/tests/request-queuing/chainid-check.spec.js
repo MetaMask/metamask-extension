@@ -90,15 +90,8 @@ describe('Request Queueing chainId proxy sync', function () {
           await switchToNotificationWindow(driver);
 
           await driver.clickElement({
-            text: 'Next',
-            tag: 'button',
-            css: '[data-testid="page-container-footer-next"]',
-          });
-
-          await driver.clickElement({
             text: 'Confirm',
             tag: 'button',
-            css: '[data-testid="page-container-footer-next"]',
           });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -246,17 +239,9 @@ describe('Request Queueing chainId proxy sync', function () {
           await driver.delay(regularDelayMs);
 
           await switchToNotificationWindow(driver);
-
-          await driver.clickElement({
-            text: 'Next',
-            tag: 'button',
-            css: '[data-testid="page-container-footer-next"]',
-          });
-
           await driver.clickElement({
             text: 'Confirm',
             tag: 'button',
-            css: '[data-testid="page-container-footer-next"]',
           });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
