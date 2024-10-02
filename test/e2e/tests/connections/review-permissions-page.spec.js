@@ -8,7 +8,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-describe('Connections page', function () {
+describe('Review Permissions page', function () {
   it('should show connections page', async function () {
     await withFixtures(
       {
@@ -44,16 +44,22 @@ describe('Connections page', function () {
           text: '127.0.0.1:8080',
           tag: 'p',
         });
-        const connectionsPageAccountInfo = await driver.isElementPresent({
+        const reviewPermissionsAccountInfo = await driver.isElementPresent({
           text: 'See your accounts and suggest transactions',
           tag: 'p',
         });
-        assert.ok(connectionsPageAccountInfo, 'Connections Page is defined');
-        const connectionsPageNetworkInfo = await driver.isElementPresent({
+        assert.ok(
+          reviewPermissionsAccountInfo,
+          'Review Permissions Page is defined',
+        );
+        const reviewPermissionsNetworkInfo = await driver.isElementPresent({
           text: 'Use your enabled networks',
           tag: 'p',
         });
-        assert.ok(connectionsPageNetworkInfo, 'Connections Page is defined');
+        assert.ok(
+          reviewPermissionsNetworkInfo,
+          'Review Permissions Page is defined',
+        );
       },
     );
   });
@@ -92,16 +98,22 @@ describe('Connections page', function () {
           text: '127.0.0.1:8080',
           tag: 'p',
         });
-        const connectionsPageAccountInfo = await driver.isElementPresent({
+        const reviewPermissionsAccountInfo = await driver.isElementPresent({
           text: 'See your accounts and suggest transactions',
           tag: 'p',
         });
-        assert.ok(connectionsPageAccountInfo, 'Connections Page is defined');
-        const connectionsPageNetworkInfo = await driver.isElementPresent({
+        assert.ok(
+          reviewPermissionsAccountInfo,
+          'Accounts are defined for Review Permissions Page',
+        );
+        const reviewPermissionsNetworkInfo = await driver.isElementPresent({
           text: 'Use your enabled networks',
           tag: 'p',
         });
-        assert.ok(connectionsPageNetworkInfo, 'Connections Page is defined');
+        assert.ok(
+          reviewPermissionsNetworkInfo,
+          'Networks are defined for Review Permissions Page',
+        );
         await driver.clickElement({ text: 'Disconnect', tag: 'button' });
         await driver.clickElement('[data-testid ="disconnect-all"]');
         const noAccountConnected = await driver.isElementPresent({
