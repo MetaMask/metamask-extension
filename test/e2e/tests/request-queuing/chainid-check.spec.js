@@ -90,7 +90,7 @@ describe('Request Queueing chainId proxy sync', function () {
           await switchToNotificationWindow(driver);
 
           await driver.clickElement({
-            text: 'Confirm',
+            text: 'Connect',
             tag: 'button',
           });
 
@@ -240,7 +240,7 @@ describe('Request Queueing chainId proxy sync', function () {
 
           await switchToNotificationWindow(driver);
           await driver.clickElement({
-            text: 'Confirm',
+            text: 'Connect',
             tag: 'button',
           });
 
