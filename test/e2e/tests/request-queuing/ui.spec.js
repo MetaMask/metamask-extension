@@ -16,7 +16,9 @@ const {
   DAPP_TWO_URL,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
-const { PermissionNames } = require('../../../../app/scripts/controllers/permissions');
+const {
+  PermissionNames,
+} = require('../../../../app/scripts/controllers/permissions');
 const { CaveatTypes } = require('../../../../shared/constants/permissions');
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
@@ -49,19 +51,23 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   if (chainId) {
     await driver.delay(veryLargeDelayMs);
     const getPermissionsRequest = JSON.stringify({
-      "method": "wallet_getPermissions",
-    })
+      method: 'wallet_getPermissions',
+    });
     const getPermissionsResult = await driver.executeScript(
       `return window.ethereum.request(${getPermissionsRequest})`,
     );
 
-    const permittedChains = getPermissionsResult?.find((permission) =>
-      permission.parentCapability === PermissionNames.permittedChains
-    )?.caveats.find((caveat) =>
-      caveat.type === CaveatTypes.restrictNetworkSwitching
-    )?.value || []
+    const permittedChains =
+      getPermissionsResult
+        ?.find(
+          (permission) =>
+            permission.parentCapability === PermissionNames.permittedChains,
+        )
+        ?.caveats.find(
+          (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+        )?.value || [];
 
-    const isAlreadyPermitted = permittedChains.includes(chainId)
+    const isAlreadyPermitted = permittedChains.includes(chainId);
 
     const switchChainRequest = JSON.stringify({
       method: 'wallet_switchEthereumChain',
@@ -79,9 +85,7 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
       await driver.findClickableElement(
         '[data-testid="page-container-footer-next"]',
       );
-      await driver.clickElement(
-        '[data-testid="page-container-footer-next"]',
-      );
+      await driver.clickElement('[data-testid="page-container-footer-next"]');
 
       // Switch back to the dapp
       await driver.switchToWindowWithUrl(dappUrl);

@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -31,7 +30,6 @@ describe('Switch ethereum chain', function () {
         await unlockWallet(driver);
 
         const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
 
         await openDapp(driver);
 
