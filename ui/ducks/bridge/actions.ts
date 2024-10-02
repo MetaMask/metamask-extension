@@ -4,7 +4,7 @@ import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'bignumber.js';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -56,6 +56,7 @@ import {
   DUMMY_QUOTES_APPROVAL,
   DUMMY_QUOTES_NO_APPROVAL,
 } from './dummy-quotes';
+import { getBridgeGasMultipliers } from './selectors';
 
 const {
   setToChainId,
@@ -162,31 +163,54 @@ export const signBridgeTransaction = (
 
     // Track event TODO
 
-    // Calc gas
-    let maxFeePerGas: undefined | string;
-    let maxPriorityFeePerGas: undefined | string;
-    // let baseAndPriorityFeePerGas;
-    // let decEstimatedBaseFee;
+    const calcFeePerGas = () => {
+      let maxFeePerGas: undefined | string;
+      let maxPriorityFeePerGas: undefined | string;
+      // let baseAndPriorityFeePerGas;
+      // let decEstimatedBaseFee;
 
-    const networkAndAccountSupports1559 =
-      checkNetworkAndAccountSupports1559(state);
+      const networkAndAccountSupports1559 =
+        checkNetworkAndAccountSupports1559(state);
 
-    if (networkAndAccountSupports1559) {
-      const {
-        high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
-        // estimatedBaseFee = '0',
-      } = getGasFeeEstimates(state);
-      // decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
-      maxFeePerGas = decGWEIToHexWEI(suggestedMaxFeePerGas);
-      maxPriorityFeePerGas = decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
-      // baseAndPriorityFeePerGas = addHexes(
-      //   decEstimatedBaseFee,
-      //   maxPriorityFeePerGas,
-      // );
-    }
+      if (networkAndAccountSupports1559) {
+        const {
+          high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
+          // estimatedBaseFee = '0',
+        } = getGasFeeEstimates(state);
+        // decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
+        maxFeePerGas = decGWEIToHexWEI(suggestedMaxFeePerGas);
+        maxPriorityFeePerGas = decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+        // baseAndPriorityFeePerGas = addHexes(
+        //   decEstimatedBaseFee,
+        //   maxPriorityFeePerGas,
+        // );
+      }
 
-    const handleEthUsdtAllowanceReset = async (hexChainId: Hex) => {
-      const allowance = BigNumber.from(
+      return {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      };
+    };
+
+    const calcMaxGasLimit = (gasLimit: number) => {
+      // @ts-expect-error BridgeState is contained in state
+      const gasMultiplier = getBridgeGasMultipliers(state)[chainId];
+      return new Numeric(
+        new BigNumber(gasLimit).times(gasMultiplier).round(0).toString(),
+        10,
+      ).toPrefixedHexString();
+    };
+
+    const handleEthUsdtAllowanceReset = async ({
+      hexChainId,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+    }: {
+      hexChainId: Hex;
+      maxFeePerGas: string;
+      maxPriorityFeePerGas: string;
+    }) => {
+      const allowance = new BigNumber(
         await getBridgeERC20Allowance(
           ETH_USDT_ADDRESS,
           quoteMeta.approval.from,
@@ -196,22 +220,19 @@ export const signBridgeTransaction = (
 
       // quote.srcTokenAmount is actually after the fees
       // so we need to add fees back in for total allowance to give
-      const sentAmount = BigNumber.from(quoteMeta.quote.srcTokenAmount)
-        .add(quoteMeta.quote.feeData[FeeType.METABRIDGE].amount)
+      const sentAmount = new BigNumber(quoteMeta.quote.srcTokenAmount)
+        .plus(quoteMeta.quote.feeData[FeeType.METABRIDGE].amount)
         .toString();
 
       const shouldResetApproval = allowance.lt(sentAmount) && allowance.gt(0);
 
       if (shouldResetApproval) {
-        const gasLimit = new Numeric(
-          quoteMeta.approval.gasLimit,
-          10,
-        ).toPrefixedHexString();
+        const maxGasLimit = calcMaxGasLimit(quoteMeta.approval.gasLimit);
         const txParams = getEthUsdtApproveResetTxParams({
           ...quoteMeta.approval,
           chainId: hexChainId,
-          gasLimit,
-          gas: gasLimit, // must set this field
+          gasLimit: maxGasLimit,
+          gas: maxGasLimit, // must set this field
           maxFeePerGas,
           maxPriorityFeePerGas,
         });
@@ -234,11 +255,18 @@ export const signBridgeTransaction = (
       }
     };
 
-    const handleApprovalTx = async () => {
+    const handleApprovalTx = async ({
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+    }: {
+      maxFeePerGas: string;
+      maxPriorityFeePerGas: string;
+    }) => {
       console.log('Bridge', 'handleApprovalTx');
 
+      const { chainId } = quoteMeta.approval;
       const hexChainId = new Numeric(
-        quoteMeta.approval.chainId,
+        chainId,
         10,
       ).toPrefixedHexString() as `0x${string}`;
       if (!hexChainId) {
@@ -248,18 +276,19 @@ export const signBridgeTransaction = (
       // On Ethereum, we need to reset the allowance to 0 for USDT first if we need to set a new allowance
       // https://www.google.com/url?q=https://docs.unizen.io/trade-api/before-you-get-started/token-allowance-management-for-non-updatable-allowance-tokens&sa=D&source=docs&ust=1727386175513609&usg=AOvVaw3Opm6BSJeu7qO0Ve5iLTOh
       if (isEthUsdt(hexChainId, quoteMeta.quote.srcAsset.address)) {
-        await handleEthUsdtAllowanceReset(hexChainId);
+        await handleEthUsdtAllowanceReset({
+          hexChainId,
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+        });
       }
 
-      const gasLimit = new Numeric(
-        quoteMeta.approval.gasLimit,
-        10,
-      ).toPrefixedHexString();
+      const maxGasLimit = calcMaxGasLimit(quoteMeta.approval.gasLimit);
       const txParams = {
         ...quoteMeta.approval,
         chainId: hexChainId,
-        gasLimit,
-        gas: gasLimit, // must set this field
+        gasLimit: maxGasLimit,
+        gas: maxGasLimit, // must set this field
         maxFeePerGas,
         maxPriorityFeePerGas,
       };
@@ -284,7 +313,15 @@ export const signBridgeTransaction = (
       return txMeta.id;
     };
 
-    const handleBridgeTx = async (approvalTxId: string | undefined) => {
+    const handleBridgeTx = async ({
+      approvalTxId,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+    }: {
+      approvalTxId: string | undefined;
+      maxFeePerGas: string;
+      maxPriorityFeePerGas: string;
+    }) => {
       console.log('Bridge', 'handleBridgeTx');
       const hexChainId = new Numeric(
         quoteMeta.trade.chainId,
@@ -294,15 +331,12 @@ export const signBridgeTransaction = (
         throw new Error('Invalid chain ID');
       }
 
-      const gasLimit = new Numeric(
-        quoteMeta.trade.gasLimit,
-        10,
-      ).toPrefixedHexString();
+      const maxGasLimit = calcMaxGasLimit(quoteMeta.trade.gasLimit);
       const txParams = {
         ...quoteMeta.trade,
         chainId: hexChainId,
-        gasLimit,
-        gas: gasLimit, // must set this field
+        gasLimit: maxGasLimit,
+        gas: maxGasLimit, // must set this field
         maxFeePerGas,
         maxPriorityFeePerGas,
       };
@@ -412,12 +446,21 @@ export const signBridgeTransaction = (
     };
 
     const execute = async () => {
+      const { maxFeePerGas, maxPriorityFeePerGas } = calcFeePerGas();
+
       // Execute transaction(s)
       let approvalTxId: string | undefined;
       if (quoteMeta?.approval) {
-        approvalTxId = await handleApprovalTx();
+        approvalTxId = await handleApprovalTx({
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+        });
       }
-      await handleBridgeTx(approvalTxId);
+      await handleBridgeTx({
+        approvalTxId,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      });
 
       // Add tokens if not the native gas token
       if (quoteMeta.quote.srcAsset.address !== DEFAULT_TOKEN_ADDRESS) {
