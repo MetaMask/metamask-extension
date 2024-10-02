@@ -242,14 +242,11 @@ export default class PreferencesController {
         showMultiRpcModal: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
-<<<<<<< HEAD
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
-=======
->>>>>>> develop
         shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       },
       // ENS decentralized website resolution
