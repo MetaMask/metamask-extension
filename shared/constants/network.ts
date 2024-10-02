@@ -151,7 +151,6 @@ export const CHAIN_IDS = {
   NEAR: '0x18d',
   NEAR_TESTNET: '0x18e',
   MINT: '0xb9',
-  MINT_GOERLI: '0x697',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
