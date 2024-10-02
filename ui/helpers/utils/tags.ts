@@ -1,3 +1,5 @@
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
@@ -10,6 +12,7 @@ import {
 import { getMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
 import { NftState, selectAllNftsFlat } from '../../selectors/nft';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getStartupTraceTags(state: any) {
   const uiType = getEnvironmentType();
   const unlocked = getIsUnlocked(state) as boolean;
