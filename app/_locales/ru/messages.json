@@ -1094,9 +1094,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask подключен к этому сайту, но счета пока не подключены"
   },
-  "connectedWith": {
-    "message": "Подключен(-а) к"
-  },
   "connecting": {
     "message": "Подключение..."
   },

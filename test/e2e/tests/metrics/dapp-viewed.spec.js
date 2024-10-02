@@ -283,13 +283,14 @@ describe('Dapp viewed Event @no-mmi', function () {
         });
         await driver.clickElement('[data-testid ="disconnect-all"]');
         // validate dapp is not connected
-        await driver.clickElement(
-          '[data-testid ="account-options-menu-button"]',
-        );
-        await driver.clickElement({
-          text: 'All Permissions',
-          tag: 'div',
+        const noAccountConnected = await driver.isElementPresent({
+          text: 'MetaMask isn’t connected to this site',
+          tag: 'p',
         });
+        assert.ok(
+          noAccountConnected,
+          'Account disconected from connections page',
+        );
         // reconnect again
         await connectToDapp(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);

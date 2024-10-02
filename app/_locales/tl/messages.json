@@ -1094,9 +1094,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "Konektado ang MetaMask sa site na ito, ngunit wala pang mga account ang konektado"
   },
-  "connectedWith": {
-    "message": "Nakakonekta sa"
-  },
   "connecting": {
     "message": "Kumokonekta"
   },

@@ -1094,9 +1094,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "Το MetaMask είναι συνδεδεμένο σε αυτόν τον ιστότοπο, αλλά δεν έχουν συνδεθεί ακόμα λογαριασμοί"
   },
-  "connectedWith": {
-    "message": "Συνδέεται με"
-  },
   "connecting": {
     "message": "Σύνδεση"
   },

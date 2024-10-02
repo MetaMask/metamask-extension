@@ -1094,9 +1094,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "A MetaMask está conectada a este site, mas nenhuma conta está conectada ainda"
   },
-  "connectedWith": {
-    "message": "Conectado com"
-  },
   "connecting": {
     "message": "Conectando"
   },

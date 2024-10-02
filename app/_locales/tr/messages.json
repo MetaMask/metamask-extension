@@ -1094,9 +1094,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask bu siteye bağlı ancak henüz bağlı hesap yok"
   },
-  "connectedWith": {
-    "message": "Şununla bağlanıldı:"
-  },
   "connecting": {
     "message": "Bağlanıyor"
   },

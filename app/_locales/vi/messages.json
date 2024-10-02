@@ -1094,9 +1094,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask được kết nối với trang web này, nhưng chưa có tài khoản nào được kết nối"
   },
-  "connectedWith": {
-    "message": "Đã kết nối với"
-  },
   "connecting": {
     "message": "Đang kết nối"
   },

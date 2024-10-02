@@ -1094,9 +1094,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask 已连接到此网站，但尚未连接任何账户"
   },
-  "connectedWith": {
-    "message": "已连接"
-  },
   "connecting": {
     "message": "连接中……"
   },

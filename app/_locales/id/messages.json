@@ -1094,9 +1094,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask terhubung ke situs ini, tetapi belum ada akun yang terhubung"
   },
-  "connectedWith": {
-    "message": "Terhubung dengan"
-  },
   "connecting": {
     "message": "Menghubungkan"
   },

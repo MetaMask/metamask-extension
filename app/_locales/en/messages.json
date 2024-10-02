@@ -1186,9 +1186,6 @@
   "connectedSnaps": {
     "message": "Connected Snaps"
   },
-  "connectedWith": {
-    "message": "Connected with"
-  },
   "connectedWithAccount": {
     "message": "$1 accounts connected",
     "description": "$1 represents account length"
