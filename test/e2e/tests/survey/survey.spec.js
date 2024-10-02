@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const {
   withFixtures,
   unlockWallet,
@@ -21,19 +22,41 @@ describe('Test Survey', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        async function checkForToast(surveyId) {
+          await driver.findElement('[data-testid="survey-toast"]');
+          const surveyElement = await driver.findElement(
+            '[data-testid="survey-toast-banner-base"] p',
+          );
+          const surveyText = await surveyElement.getText();
+          assert.equal(
+            surveyText,
+            `Test survey ${surveyId}`,
+            `Survey text should be "Test survey ${surveyId}"`,
+          );
+          await driver.clickElement(
+            '[data-testid="survey-toast-banner-base"] [aria-label="Close"]',
+          );
+        }
+
+        async function checkForNoToast() {
+          const surveyToastAfterRefresh =
+            await driver.isElementPresentAndVisible(
+              '[data-testid="survey-toast"]',
+            );
+          assert.equal(
+            surveyToastAfterRefresh,
+            false,
+            'Survey should not be visible after refresh',
+          );
+        }
+
         await unlockWallet(driver);
-        await driver.findElement('[data-testid="survey-toast"]');
-        await driver.clickElement(
-          '[data-testid="survey-toast-banner-base"] [aria-label="Close"]',
-        );
+        await checkForToast(1);
+        await driver.refresh();
+        await checkForToast(2);
+        await driver.refresh();
+        await checkForNoToast();
       },
     );
   });
 });
-
-/*
-TODO:
-Refresh, see no survey
-Update a counter to make the mock show a second survey
-(ensure the survey toast displays again)
- */
