@@ -42,9 +42,9 @@ const setEthAccountsForScopesObject = (
   const updatedScopesObject: ScopesObject = {};
 
   Object.entries(scopesObject).forEach(([scopeString, scopeObject]) => {
-    const { namespace } = parseScopeString(scopeString);
+    const { namespace, reference } = parseScopeString(scopeString);
 
-    if (namespace !== KnownCaipNamespace.Eip155) {
+    if (namespace !== KnownCaipNamespace.Eip155 || !reference) {
       updatedScopesObject[scopeString as ScopeString] = scopeObject;
       return;
     }

@@ -32,6 +32,7 @@ export const isSupportedScopeString = (
       case KnownCaipNamespace.Wallet:
         return true;
       case KnownCaipNamespace.Eip155:
+        // return false;
         return true;
       default:
         return false;
