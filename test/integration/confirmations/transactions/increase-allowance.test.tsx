@@ -9,7 +9,7 @@ import { integrationTestRender } from '../../../lib/render-helpers';
 import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
-import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
+import { getUnapprovedIncreaseAllowanceTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -25,7 +25,7 @@ const backgroundConnectionMocked = {
 export const pendingTransactionId = '48a75190-45ca-11ef-9001-f3886ec2397c';
 export const pendingTransactionTime = new Date().getTime();
 
-const getMetaMaskStateWithUnapprovedApproveTransaction = (opts?: {
+const getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction = (opts?: {
   showAdvanceDetails: boolean;
 }) => {
   const account =
@@ -56,8 +56,8 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (opts?: {
     },
     pendingApprovalCount: 1,
     knownMethodData: {
-      '0x095ea7b3': {
-        name: 'Approve',
+      '0x39509351': {
+        name: 'increaseAllowance',
         params: [
           {
             type: 'address',
@@ -69,7 +69,7 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (opts?: {
       },
     },
     transactions: [
-      getUnapprovedApproveTransaction(
+      getUnapprovedIncreaseAllowanceTransaction(
         account.address,
         pendingTransactionId,
         pendingTransactionTime,
@@ -87,7 +87,7 @@ const advancedDetailsMockedRequests = {
   decodeTransactionData: {
     data: [
       {
-        name: 'Approve',
+        name: 'increaseAllowance',
         params: [
           {
             type: 'address',
@@ -119,7 +119,7 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
-describe('ERC20 Approve Confirmation', () => {
+describe('ERC20 increaseAllowance Confirmation', () => {
   beforeAll(() => {
     const { provider } = createTestProviderTools({
       networkId: 'sepolia',
@@ -137,9 +137,13 @@ describe('ERC20 Approve Confirmation', () => {
         standard: TokenStandard.ERC20,
       },
     });
-    const APPROVE_ERC20_HEX_SIG = '0x095ea7b3';
-    const APPROVE_ERC20_TEXT_SIG = 'approve(address,uint256)';
-    mock4byte(APPROVE_ERC20_HEX_SIG, APPROVE_ERC20_TEXT_SIG);
+    const INCREASE_ALLOWANCE_ERC20_HEX_SIG = '0x39509351';
+    const INCREASE_ALLOWANCE_ERC20_TEXT_SIG =
+      'increaseAllowance(address,uint256)';
+    mock4byte(
+      INCREASE_ALLOWANCE_ERC20_HEX_SIG,
+      INCREASE_ALLOWANCE_ERC20_TEXT_SIG,
+    );
   });
 
   afterEach(() => {
@@ -153,7 +157,7 @@ describe('ERC20 Approve Confirmation', () => {
 
   it('displays spending cap request title', async () => {
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction();
+      getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction();
 
     await act(async () => {
       await integrationTestRender({
@@ -166,15 +170,13 @@ describe('ERC20 Approve Confirmation', () => {
       screen.getByText(tEn('confirmTitlePermitTokens') as string),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        tEn('confirmTitleDescERC20ApproveTransaction') as string,
-      ),
+      screen.getByText(tEn('confirmTitleDescPermitSignature') as string),
     ).toBeInTheDocument();
   });
 
-  it('displays approve simulation section', async () => {
+  it('displays increase allowance simulation section', async () => {
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction();
+      getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction();
 
     await act(async () => {
       await integrationTestRender({
@@ -202,7 +204,7 @@ describe('ERC20 Approve Confirmation', () => {
     const testUser = userEvent.setup();
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction();
+      getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction();
 
     await act(async () => {
       await integrationTestRender({
@@ -257,7 +259,7 @@ describe('ERC20 Approve Confirmation', () => {
     const testUser = userEvent.setup();
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction();
+      getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction();
 
     await act(async () => {
       await integrationTestRender({
@@ -297,7 +299,7 @@ describe('ERC20 Approve Confirmation', () => {
     const testUser = userEvent.setup();
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction({
+      getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction({
         showAdvanceDetails: true,
       });
 
@@ -337,7 +339,7 @@ describe('ERC20 Approve Confirmation', () => {
     );
     expect(approveDetails).toContainElement(approveMethodData);
     expect(approveMethodData).toHaveTextContent(tEn('methodData') as string);
-    expect(approveMethodData).toHaveTextContent('Approve');
+    expect(approveMethodData).toHaveTextContent('increaseAllowance');
     const approveMethodDataTooltip = screen.getByTestId(
       'transaction-details-method-data-row-tooltip',
     );
@@ -363,7 +365,7 @@ describe('ERC20 Approve Confirmation', () => {
     expect(dataSectionFunction).toHaveTextContent(
       tEn('transactionDataFunction') as string,
     );
-    expect(dataSectionFunction).toHaveTextContent('Approve');
+    expect(dataSectionFunction).toHaveTextContent('increaseAllowance');
 
     const approveDataParams1 = screen.getByTestId(
       'advanced-details-data-param-0',

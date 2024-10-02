@@ -18,10 +18,7 @@ import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
-import {
-  getMaliciousUnapprovedTransaction,
-  getUnapprovedContractInteractionTransaction,
-} from './transactionDataHelpers';
+import { getUnapprovedContractDeploymentTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -37,7 +34,7 @@ const backgroundConnectionMocked = {
 export const pendingTransactionId = '48a75190-45ca-11ef-9001-f3886ec2397c';
 export const pendingTransactionTime = new Date().getTime();
 
-const getMetaMaskStateWithUnapprovedContractInteraction = ({
+const getMetaMaskStateWithUnapprovedContractDeployment = ({
   accountAddress,
   showConfirmationAdvancedDetails = false,
 }: {
@@ -80,8 +77,8 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
     },
     pendingApprovalCount: 1,
     knownMethodData: {
-      '0x3b4b1381': {
-        name: 'Mint NFTs',
+      '0xd0e30db0': {
+        name: 'Deposit',
         params: [
           {
             type: 'uint256',
@@ -90,7 +87,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
       },
     },
     transactions: [
-      getUnapprovedContractInteractionTransaction(
+      getUnapprovedContractDeploymentTransaction(
         accountAddress,
         pendingTransactionId,
         pendingTransactionTime,
@@ -108,7 +105,7 @@ const advancedDetailsMockedRequests = {
   decodeTransactionData: {
     data: [
       {
-        name: 'mintNFTs',
+        name: 'Deposit',
         params: [
           {
             name: 'numberOfTokens',
@@ -133,27 +130,12 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
-const getMetaMaskStateWithMaliciousUnapprovedContractInteraction = (
-  accountAddress: string,
-) => {
-  return {
-    ...getMetaMaskStateWithUnapprovedContractInteraction({ accountAddress }),
-    transactions: [
-      getMaliciousUnapprovedTransaction(
-        accountAddress,
-        pendingTransactionId,
-        pendingTransactionTime,
-      ),
-    ],
-  };
-};
-
-describe('Contract Interaction Confirmation', () => {
+describe('Contract Deployment Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
-    const MINT_NFT_HEX_SIG = '0x3b4b1381';
-    mock4byte(MINT_NFT_HEX_SIG);
+    const DEPOSIT_HEX_SIG = '0xd0e30db0';
+    mock4byte(DEPOSIT_HEX_SIG);
   });
 
   afterEach(() => {
@@ -169,7 +151,7 @@ describe('Contract Interaction Confirmation', () => {
 
     const accountName = account.metadata.name;
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteraction({
+      getMetaMaskStateWithUnapprovedContractDeployment({
         accountAddress: account.address,
       });
 
@@ -224,7 +206,7 @@ describe('Contract Interaction Confirmation', () => {
           properties: {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.Transaction,
-            transaction_type: TransactionType.contractInteraction,
+            transaction_type: TransactionType.deployContract,
           },
         }),
       ]),
@@ -251,7 +233,7 @@ describe('Contract Interaction Confirmation', () => {
       ];
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteraction({
+      getMetaMaskStateWithUnapprovedContractDeployment({
         accountAddress: account.address,
       });
 
@@ -263,7 +245,7 @@ describe('Contract Interaction Confirmation', () => {
     });
 
     expect(
-      screen.getByText(tEn('confirmTitleTransaction') as string),
+      screen.getByText(tEn('confirmTitleDeployContract') as string),
     ).toBeInTheDocument();
 
     const simulationSection = screen.getByTestId('simulation-details-layout');
@@ -330,7 +312,7 @@ describe('Contract Interaction Confirmation', () => {
       ];
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteraction({
+      getMetaMaskStateWithUnapprovedContractDeployment({
         accountAddress: account.address,
         showConfirmationAdvancedDetails: false,
       });
@@ -367,7 +349,7 @@ describe('Contract Interaction Confirmation', () => {
       ];
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteraction({
+      getMetaMaskStateWithUnapprovedContractDeployment({
         accountAddress: account.address,
         showConfirmationAdvancedDetails: true,
       });
@@ -383,19 +365,6 @@ describe('Contract Interaction Confirmation', () => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
       ).toHaveBeenCalledWith('getNextNonce', expect.anything());
-    });
-
-    await waitFor(() => {
-      expect(
-        mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('decodeTransactionData', [
-        {
-          transactionData:
-            '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
-          contractAddress: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-          chainId: '0xaa36a7',
-        },
-      ]);
     });
 
     const gasFeesSection = screen.getByTestId('gas-fee-section');
@@ -427,7 +396,7 @@ describe('Contract Interaction Confirmation', () => {
     expect(dataSectionFunction).toHaveTextContent(
       tEn('transactionDataFunction') as string,
     );
-    expect(dataSectionFunction).toHaveTextContent('mintNFTs');
+    expect(dataSectionFunction).toHaveTextContent('Deposit');
 
     const transactionDataParams = screen.getByTestId(
       'advanced-details-data-param-0',
@@ -435,30 +404,5 @@ describe('Contract Interaction Confirmation', () => {
     expect(dataSection).toContainElement(transactionDataParams);
     expect(transactionDataParams).toHaveTextContent('Number Of Tokens');
     expect(transactionDataParams).toHaveTextContent('1');
-  });
-
-  it('displays the warning for malicious request', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const mockedMetaMaskState =
-      getMetaMaskStateWithMaliciousUnapprovedContractInteraction(
-        account.address,
-      );
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    const headingText = tEn('blockaidTitleDeceptive') as string;
-    const bodyText = tEn('blockaidDescriptionTransferFarming') as string;
-    expect(screen.getByText(headingText)).toBeInTheDocument();
-    expect(screen.getByText(bodyText)).toBeInTheDocument();
   });
 });
