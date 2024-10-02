@@ -137,7 +137,6 @@ export default class Home extends PureComponent {
     hasWatchTokenPendingApprovals: PropTypes.bool,
     hasWatchNftPendingApprovals: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
-    firstTimeFlowType: PropTypes.string,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -154,6 +153,7 @@ export default class Home extends PureComponent {
         );
       }
     },
+    firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
@@ -930,16 +930,16 @@ export default class Home extends PureComponent {
       forgottenPassword,
       participateInMetaMetrics,
       dataCollectionForMarketing,
-      completedOnboarding,
-      onboardedInThisUISession,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      hideWhatsNewPopup,
       connectedStatusPopoverHasBeenShown,
       isPopup,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
       showWhatsNewPopup,
+      hideWhatsNewPopup,
+      completedOnboarding,
+      onboardedInThisUISession,
       announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
@@ -961,6 +961,7 @@ export default class Home extends PureComponent {
         firstTimeFlowType === FirstTimeFlowType.import) &&
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
+
     const showSmartTransactionsOptInModal =
       canSeeModals && isSmartTransactionsOptInModalAvailable;
 
