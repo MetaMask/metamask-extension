@@ -99,9 +99,7 @@ exports[`PrepareBridgePage should render the component 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            Balance
-            : 
-            "0"
+             
           </p>
           <div
             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -184,9 +182,7 @@ exports[`PrepareBridgePage should render the component 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            Balance
-            : 
-            "0"
+             
           </p>
           <div
             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"

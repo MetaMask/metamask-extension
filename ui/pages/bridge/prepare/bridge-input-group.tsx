@@ -26,6 +26,7 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/network';
+import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -91,7 +92,10 @@ export const BridgeInputGroup = ({
     true,
   );
 
-  const latestBalance = '0';
+  const { formattedBalance } = useLatestBalance(
+    token,
+    networkProps?.network?.chainId,
+  );
 
   return (
     <Box className={className}>
@@ -132,7 +136,7 @@ export const BridgeInputGroup = ({
       </Box>
       <Box className="prepare-bridge-page__amounts-row">
         <Text>
-          {t('balance')}: {JSON.stringify(latestBalance)}
+          {formattedBalance ? `${t('balance')}: ${formattedBalance}` : ' '}
         </Text>
         <CurrencyDisplay
           currency="usd"
