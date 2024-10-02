@@ -156,11 +156,11 @@ export default class Home extends PureComponent {
     },
     completedOnboarding: PropTypes.bool,
     showWhatsNewPopup: PropTypes.bool.isRequired,
+    hideWhatsNewPopup: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
     showMultiRpcModal: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
