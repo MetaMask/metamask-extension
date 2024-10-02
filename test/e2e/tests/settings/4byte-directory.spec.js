@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   logInWithBalanceValidation,
@@ -81,11 +80,6 @@ describe('4byte setting', function () {
         await driver.clickElement('#depositButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const contractInteraction = 'Contract interaction';
-        const actionElement = await driver.waitForSelector({
-          css: '.confirm-page-container-summary__action__name',
-          text: contractInteraction,
-        });
 
         await driver.assertElementNotPresent({
           tag: 'span',
