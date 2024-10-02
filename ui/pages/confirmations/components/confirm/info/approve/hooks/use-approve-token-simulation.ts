@@ -39,7 +39,7 @@ export const useApproveTokenSimulation = (
       return 0;
     }
 
-    return new BigNumber(value.data[0].params[paramIndex].value)
+    return new BigNumber(value.data[0].params[paramIndex].value.toString())
       .dividedBy(new BigNumber(10).pow(Number(decimals)))
       .toNumber();
   }, [value, decimals]);
