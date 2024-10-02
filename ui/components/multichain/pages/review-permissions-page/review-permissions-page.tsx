@@ -259,6 +259,7 @@ export const ReviewPermissions = () => {
                   startIconName={IconName.Logout}
                   danger
                   onClick={() => setShowDisconnectAllModal(true)}
+                  data-test-id="disconnect-all"
                 >
                   {t('disconnect')}
                 </Button>

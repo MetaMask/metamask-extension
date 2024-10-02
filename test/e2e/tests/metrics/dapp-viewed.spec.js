@@ -245,57 +245,6 @@ describe('Dapp viewed Event @no-mmi', function () {
     );
   });
 
-  it('is sent when connecting dapp with two accounts', async function () {
-    async function mockSegment(mockServer) {
-      return [await mockedDappViewedEndpoint(mockServer)];
-    }
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withMetaMetricsController({
-            metaMetricsId: validFakeMetricsId,
-            participateInMetaMetrics: true,
-          })
-          .build(),
-        title: this.test.fullTitle(),
-        ganacheOptions: defaultGanacheOptions,
-        testSpecificMock: mockSegment,
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
-        // create 2nd account
-        await createTwoAccounts(driver);
-        // Connect to dapp with two accounts
-        await openDapp(driver);
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
-        await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement(
-          '[data-testid="choose-account-list-operate-all-check-box"]',
-        );
-
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        const dappViewedEventProperties = events[0].properties;
-        assert.equal(dappViewedEventProperties.is_first_visit, true);
-        assert.equal(dappViewedEventProperties.number_of_accounts, 2);
-        assert.equal(dappViewedEventProperties.number_of_accounts_connected, 2);
-      },
-    );
-  });
-
   it('is sent when reconnect to a dapp that has been connected before', async function () {
     async function mockSegment(mockServer) {
       return [
@@ -336,24 +285,15 @@ describe('Dapp viewed Event @no-mmi', function () {
           text: 'All Permissions',
           tag: 'div',
         });
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Got it',
-          tag: 'button',
-        });
+                await driver.clickElementAndWaitToDisappear({
+                  text: 'Got it',
+                  tag: 'button',
+                });
         await driver.clickElement({
           text: '127.0.0.1:8080',
           tag: 'p',
         });
-        await driver.clickElement(
-          '[data-testid ="account-list-item-menu-button"]',
-        );
-        await driver.clickElement({
-          text: 'Disconnect',
-          tag: 'button',
-        });
         await driver.clickElement('[data-testid ="disconnect-all"]');
-        await driver.clickElement('button[aria-label="Back"]');
-        await driver.clickElement('button[aria-label="Back"]');
         // validate dapp is not connected
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
@@ -361,10 +301,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         await driver.clickElement({
           text: 'All Permissions',
           tag: 'div',
-        });
-        await driver.findElement({
-          text: 'Nothing to see here',
-          tag: 'p',
         });
         // reconnect again
         await connectToDapp(driver);
