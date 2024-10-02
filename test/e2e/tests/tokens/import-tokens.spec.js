@@ -37,9 +37,7 @@ describe('Import flow', function () {
   it('allows importing multiple tokens from search', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .build(),
+        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockPriceFetch,
