@@ -54,6 +54,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
+  getSelectedAccount,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -117,6 +118,7 @@ export const CoinOverview = ({
 
   ///: END:ONLY_INCLUDE_IF
 
+  const account = useSelector(getSelectedAccount);
   const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
     t,
     t('general'),
@@ -254,6 +256,7 @@ export const CoinOverview = ({
               {balanceToDisplay ? (
                 <UserPreferencedCurrencyDisplay
                   style={{ display: 'contents' }}
+                  account={account}
                   className={classnames(
                     `${classPrefix}-overview__primary-balance`,
                     {
