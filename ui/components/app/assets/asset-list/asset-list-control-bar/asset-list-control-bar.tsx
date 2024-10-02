@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 import {
   Box,
   ButtonBase,
@@ -13,6 +13,7 @@ import {
   getPreferences,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
+  getTokenExchangeRates,
 } from '../../../../../selectors';
 import SortControl from '../sort-control';
 import {
@@ -35,6 +36,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../../shared/constants/app';
+import { getConversionRate } from '../../../../../ducks/metamask/metamask';
 
 type AssetListControlBarProps = {
   setTokenList: (arg: TokenWithBalance[]) => void;
@@ -55,6 +57,11 @@ const AssetListControlBar = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+  const contractExchangeRates = useSelector(
+    getTokenExchangeRates,
+    shallowEqual,
+  );
+  const conversionRate = useSelector(getConversionRate);
 
   const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
     selectedAccount,
@@ -73,20 +80,34 @@ const AssetListControlBar = ({
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP;
 
+  // Memoized check to determine if we can sort tokens market data. helps to address race condition:
+  // After switching accounts, there is a state when we don't yet have all exchange rates, but we have tokens
+  // this results in not all tokenBalances being updated correctly at the time when we need to render sort by declining fiatBalance
+  const tokensHaveMarketData = useMemo(() => {
+    return tokensWithBalances
+      .map((token) => token.address)
+      .every((contract) =>
+        Object.keys(contractExchangeRates).includes(contract),
+      );
+  }, [tokensWithBalances, contractExchangeRates]);
+
   useEffect(() => {
-    console.log('SORT');
-    console.log(
-      [nativeTokenWithBalance, ...tokensWithBalances],
-      tokenSortConfig,
-    );
-    console.log(selectedAccount);
     const sortedTokenList = sortAssets(
       [nativeTokenWithBalance, ...tokensWithBalances],
       tokenSortConfig,
     );
 
-    setTokenList(sortedTokenList);
-  }, [tokenSortConfig, tokensWithBalances]);
+    if (tokensHaveMarketData && tokenSortConfig.key === 'tokenFiatAmount') {
+      setTokenList(sortedTokenList);
+    } else {
+      setTokenList(sortedTokenList);
+    }
+  }, [
+    tokenSortConfig,
+    tokensHaveMarketData,
+    tokensWithBalances,
+    conversionRate,
+  ]);
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
