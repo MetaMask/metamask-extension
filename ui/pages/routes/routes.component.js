@@ -564,6 +564,17 @@ export default class Routes extends Component {
       return true;
     }
 
+    const isReviewPermissionsPgae = Boolean(
+      matchPath(location.pathname, {
+        path: REVIEW_PERMISSIONS,
+        exact: false,
+      }),
+    );
+
+    if (isReviewPermissionsPgae) {
+      return true;
+    }
+
     if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
       return true;
     }
