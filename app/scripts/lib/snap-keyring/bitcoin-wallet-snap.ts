@@ -9,6 +9,7 @@ import BitcoinWalletSnap from '@metamask/bitcoin-wallet-snap/dist/preinstalled-s
 // eslint-disable-next-line import/no-restricted-paths
 import { handleSnapRequest } from '../../../../ui/store/actions';
 
+// export const BITCOIN_WALLET_SNAP_ID: SnapId = 'local:http://localhost:8080';
 export const BITCOIN_WALLET_SNAP_ID: SnapId =
   BitcoinWalletSnap.snapId as SnapId;
 
