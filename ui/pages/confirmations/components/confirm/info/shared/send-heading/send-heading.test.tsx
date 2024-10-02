@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
-import { SendHeading } from './send-heading';
+import SendHeading from './send-heading';
 
 describe('<SendHeading />', () => {
   const middleware = [thunk];
