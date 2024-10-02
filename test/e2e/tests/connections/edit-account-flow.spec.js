@@ -11,8 +11,8 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const accountLabel2 = '2nd custom name';
 const accountLabel3 = '3rd custom name';
-describe('Connections page', function () {
-  it('should disconnect when click on Disconnect button in connections page', async function () {
+describe('Edit Accounts Flow', function () {
+  it('should be able to edit accounts', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -58,6 +58,10 @@ describe('Connections page', function () {
           '[data-testid ="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: '127.0.0.1:8080',
           tag: 'p',
@@ -67,23 +71,30 @@ describe('Connections page', function () {
           tag: 'p',
         });
         assert.ok(connectionsPageAccountInfo, 'Connections Page is defined');
-        const connectionsPageNetworkInfo = await driver.isElementPresent({
-          text: 'Use your enabled networks',
-          tag: 'p',
-        });
-        assert.ok(connectionsPageNetworkInfo, 'Connections Page is defined');
-        await driver.clickElement('[data-testid="site-cell-edit-button"]');
+        const editButtons = await driver.findElements('[data-testid="edit"]');
+
+        // Ensure there are edit buttons
+        assert.ok(editButtons.length > 0, 'Edit buttons are available');
+
+        // Click the first (0th) edit button
+        await editButtons[0].click();
+
         await driver.clickElement({
-          text: 'Account 2',
+          text: '2nd custom name',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: '3rd custom name',
           tag: 'button',
         });
         await driver.clickElement(
           '[data-testid="connect-more-accounts-button"]',
         );
-        assert.ok(
-          connectionsPageNetworkInfo,
-          'Connections Page Accounts is updated',
-        );
+        const updatedAccountInfo = await driver.isElementPresent({
+          text: '3 accounts connected',
+          tag: 'span',
+        });
+        assert.ok(updatedAccountInfo, 'Accounts List Updated');
       },
     );
   });
