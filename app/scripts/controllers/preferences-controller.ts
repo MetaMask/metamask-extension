@@ -132,6 +132,10 @@ export type PreferencesControllerState = {
   bitcoinTestnetSupportEnabled: boolean;
   addSnapAccountEnabled: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
+  // WARNING: Do not use feature flags for security-sensitive things.
+  // Feature flag toggling is available in the global namespace
+  // for convenient testing of pre-release features, and should never
+  // perform sensitive operations.
   featureFlags: Record<string, boolean>;
   incomingTransactionsPreferences: Record<number, boolean>;
   knownMethodData: Record<string, string>;
@@ -183,11 +187,6 @@ export const getDefaultPreferencesControllerState =
     addSnapAccountEnabled: false,
     ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
-
-    // WARNING: Do not use feature flags for security-sensitive things.
-    // Feature flag toggling is available in the global namespace
-    // for convenient testing of pre-release features, and should never
-    // perform sensitive operations.
     featureFlags: {},
     incomingTransactionsPreferences: {
       ...mainNetworks,
