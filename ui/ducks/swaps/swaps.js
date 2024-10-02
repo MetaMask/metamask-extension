@@ -334,15 +334,6 @@ export const getCurrentSmartTransactionsEnabled = (state) => {
   return smartTransactionsEnabled && !currentSmartTransactionsError;
 };
 
-export const getSwapRedesignEnabled = (state) => {
-  const swapRedesign =
-    state.metamask.swapsState?.swapsFeatureFlags?.swapRedesign;
-  if (swapRedesign === undefined) {
-    return true; // By default show the redesign if we don't have feature flags returned yet.
-  }
-  return swapRedesign.extensionActive;
-};
-
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
 

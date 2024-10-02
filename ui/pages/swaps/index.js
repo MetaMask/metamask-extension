@@ -14,7 +14,6 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { shuffle, isEqual } from 'lodash';
-import classnames from 'classnames';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
 
@@ -42,7 +41,6 @@ import {
   getReviewSwapClickedTimestamp,
   getCurrentSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
-  getSwapRedesignEnabled,
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
@@ -141,7 +139,6 @@ export default function Swap() {
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
-  const swapRedesignEnabled = useSelector(getSwapRedesignEnabled);
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
@@ -376,54 +373,34 @@ export default function Swap() {
               )}
           </Box>
           <div className="swaps__title">{t('swap')}</div>
-          {!swapRedesignEnabled && (
-            <div
-              className="swaps__header-cancel"
-              onClick={async () => {
-                clearTemporaryTokenRef.current();
-                dispatch(clearSwapsState());
-                await dispatch(resetBackgroundSwapsState());
-                history.push(DEFAULT_ROUTE);
-              }}
-            >
-              {!isAwaitingSwapRoute &&
-                !isAwaitingSignaturesRoute &&
-                !isSmartTransactionStatusRoute &&
-                t('cancel')}
-            </div>
-          )}
-          {swapRedesignEnabled && (
-            <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JustifyContent.center}
-              marginRight={4}
-              width={FRACTIONS.ONE_TWELFTH}
-              tabIndex="0"
-              onKeyUp={(e) => {
-                if (e.key === 'Enter') {
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.center}
+            marginRight={4}
+            width={FRACTIONS.ONE_TWELFTH}
+            tabIndex="0"
+            onKeyUp={(e) => {
+              if (e.key === 'Enter') {
+                dispatch(setTransactionSettingsOpened(true));
+              }
+            }}
+          >
+            {isPrepareSwapRoute && (
+              <Icon
+                name={IconName.Setting}
+                size={IconSize.Lg}
+                color={IconColor.iconAlternative}
+                onClick={() => {
                   dispatch(setTransactionSettingsOpened(true));
-                }
-              }}
-            >
-              {isPrepareSwapRoute && (
-                <Icon
-                  name={IconName.Setting}
-                  size={IconSize.Lg}
-                  color={IconColor.iconAlternative}
-                  onClick={() => {
-                    dispatch(setTransactionSettingsOpened(true));
-                  }}
-                  style={{ cursor: 'pointer' }}
-                  title={t('transactionSettings')}
-                />
-              )}
-            </Box>
-          )}
+                }}
+                style={{ cursor: 'pointer' }}
+                title={t('transactionSettings')}
+              />
+            )}
+          </Box>
         </div>
         <div
-          className={classnames('swaps__content', {
-            'swaps__content--redesign-enabled': swapRedesignEnabled,
-          })}
+          className="swaps__content"
         >
           <Switch>
             <FeatureToggledRoute

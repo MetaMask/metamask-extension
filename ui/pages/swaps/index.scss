@@ -75,13 +75,7 @@
     }
 
     @include design-system.screen-sm-min {
-      width: 348px;
-    }
-
-    &--redesign-enabled {
-      @include design-system.screen-sm-min {
-        width: 100%;
-      }
+      width: 100%;
     }
   }
 
@@ -114,16 +108,6 @@
       padding-bottom: 12px;
       height: 66px;
     }
-  }
-
-  &__header-cancel {
-    @include design-system.H7;
-
-    color: var(--color-primary-default);
-    cursor: pointer;
-    padding-right: 24px;
-    flex: 1;
-    text-align: right;
   }
 
   .actionable-message__message &__notification-close-button {
