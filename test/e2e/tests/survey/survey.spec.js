@@ -7,7 +7,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Test Survey', function () {
-  it('should show survey, and close it', async function () {
+  it('should show 2 surveys, and then none', async function () {
     await withFixtures(
       {
         dapp: true,
