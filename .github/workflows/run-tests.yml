@@ -111,6 +111,8 @@ jobs:
 
       - name: Get coverage from develop
         id: get-coverage-from-develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           develop_coverage=$(gh api -H 'Accept: application/vnd.github.raw' 'repos/metamask/metamask-extension/contents/coverage.txt' || echo '0')
           echo "The coverage on develop for metamask-extension is $develop_coverage%."
