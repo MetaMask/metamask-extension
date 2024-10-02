@@ -8,7 +8,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
@@ -161,9 +160,8 @@ export default class Home extends PureComponent {
     onboardedInThisUISession: PropTypes.bool,
     isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
     showMultiRpcModal: PropTypes.bool.isRequired,
-    ///: END:ONLY_INCLUDE_IF
-    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
@@ -934,11 +932,8 @@ export default class Home extends PureComponent {
       dataCollectionForMarketing,
       completedOnboarding,
       onboardedInThisUISession,
-      firstTimeFlowType,
-      newNetworkAddedConfigurationId,
-      hideWhatsNewPopup,
-      isSmartTransactionsOptInModalAvailable,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      hideWhatsNewPopup,
       connectedStatusPopoverHasBeenShown,
       isPopup,
       seedPhraseBackedUp,
@@ -959,20 +954,13 @@ export default class Home extends PureComponent {
       return null;
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     const canSeeModals =
       completedOnboarding &&
       (!onboardedInThisUISession ||
         firstTimeFlowType === FirstTimeFlowType.import) &&
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const showInstitutionalNotificationsModal =
-      canSeeModals && isSmartTransactionsOptInModalAvailable;
-    ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-
     const showSmartTransactionsOptInModal =
       canSeeModals && isSmartTransactionsOptInModalAvailable;
 
@@ -1008,10 +996,7 @@ export default class Home extends PureComponent {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           }
-          <InstitutionalNotificationsModal
-            isOpen={showInstitutionalNotificationsModal}
-            hideWhatsNewPopup={hideWhatsNewPopup}
-          />
+          <InstitutionalNotificationsModal />
           {
             ///: END:ONLY_INCLUDE_IF
           }

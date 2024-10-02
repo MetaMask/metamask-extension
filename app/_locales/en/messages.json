@@ -2488,6 +2488,27 @@
     "message": "Installed on $1",
     "description": "$1 is the date when the snap has been installed"
   },
+  "institutionalNotificationsModalDescription": {
+    "message": "MetaMask Institutional has partnered with MHC Digital Group to offer our clients a cost-effective on/off-ramp solution."
+  },
+  "institutionalNotificationsModalDescription2": {
+    "message": "Transactions above $5M - 0.15%"
+  },
+  "institutionalNotificationsModalDescription3": {
+    "message": "Transactions under $5M - 0.20%"
+  },
+  "institutionalNotificationsModalDismiss": {
+    "message": "Dismiss"
+  },
+  "institutionalNotificationsModalFindOutMore": {
+    "message": "Find out more"
+  },
+  "institutionalNotificationsModalSubtitle": {
+    "message": "Fees"
+  },
+  "institutionalNotificationsModalTitle": {
+    "message": "Institutional on/off ramps"
+  },
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
