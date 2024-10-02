@@ -80,7 +80,7 @@ export type AccountTrackerControllerState = {
 const controllerMetadata = {
   accounts: {
     persist: true,
-    anonymous: true,
+    anonymous: false,
   },
   currentBlockGasLimit: {
     persist: true,
@@ -88,7 +88,7 @@ const controllerMetadata = {
   },
   accountsByChainId: {
     persist: true,
-    anonymous: true,
+    anonymous: false,
   },
   currentBlockGasLimitByChainId: {
     persist: true,
