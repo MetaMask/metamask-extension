@@ -105,7 +105,7 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
 };
 
-type AppSliceState = {
+export type AppSliceState = {
   appState: AppState;
 };
 
