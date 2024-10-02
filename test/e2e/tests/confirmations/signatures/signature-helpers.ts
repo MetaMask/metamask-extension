@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
+import { Key } from 'selenium-webdriver/lib/input';
 import {
   WINDOW_TITLES,
   getEventPayloads,
@@ -209,9 +210,11 @@ function assertEventPropertiesMatch(
 
 export async function clickHeaderInfoBtn(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement(
-    'button[data-testid="header-info__account-details-button"]',
+
+  const accountDetailsButton = await driver.findElement(
+    '[data-testid="header-info__account-details-button"]',
   );
+  await accountDetailsButton.sendKeys(Key.RETURN);
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
