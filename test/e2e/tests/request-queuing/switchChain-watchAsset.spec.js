@@ -1,5 +1,3 @@
-import { DAPP_URL } from '../../constants';
-
 const FixtureBuilder = require('../../fixture-builder');
 const {
   defaultGanacheOptions,
@@ -10,6 +8,7 @@ const {
   withFixtures,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { DAPP_URL } = require('../../constants');
 
 describe('Request Queue SwitchChain -> WatchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;

@@ -1,6 +1,3 @@
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
-
 const { strict: assert } = require('assert');
 const { Browser, until } = require('selenium-webdriver');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
@@ -19,6 +16,8 @@ const {
   DAPP_TWO_URL,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
+const { PermissionNames } = require('../../../../app/scripts/controllers/permissions');
+const { CaveatTypes } = require('../../../../shared/constants/permissions');
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs

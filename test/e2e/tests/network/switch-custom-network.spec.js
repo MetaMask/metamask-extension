@@ -58,7 +58,7 @@ describe('Switch ethereum chain', function () {
 
         await driver.findElement({
           css: '[data-testid="network-display"]',
-          text: 'Localhost 8546'
+          text: 'Localhost 8546',
         });
       },
     );
