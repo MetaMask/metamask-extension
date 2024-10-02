@@ -5788,7 +5788,6 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
-        getChainPermissionsFeatureFlag: () => true,
         // network configuration-related
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);
