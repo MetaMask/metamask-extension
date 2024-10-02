@@ -67,6 +67,14 @@ describe('Settings', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+
+        // fix race condition with mmi build
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 
