@@ -31,7 +31,7 @@ async function switchEthereumChainHandler(
     requestPermittedChainsPermission,
     getCaveat,
     getCurrentChainIdForDomain,
-    grantPermittedChainsPermissionIncremental
+    grantPermittedChainsPermissionIncremental,
   },
 ) {
   let chainId;
@@ -64,17 +64,10 @@ async function switchEthereumChainHandler(
     );
   }
 
-  return switchChain(
-    res,
-    end,
-    chainId,
-    networkClientIdToSwitchTo,
-    null,
-    {
-      setActiveNetwork,
-      getCaveat,
-      requestPermittedChainsPermission,
-      grantPermittedChainsPermissionIncremental,
-    },
-  );
+  return switchChain(res, end, chainId, networkClientIdToSwitchTo, null, {
+    setActiveNetwork,
+    getCaveat,
+    requestPermittedChainsPermission,
+    grantPermittedChainsPermissionIncremental,
+  });
 }
