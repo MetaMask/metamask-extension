@@ -785,7 +785,7 @@ export default class Routes extends Component {
           />
         ) : null}
 
-        {process.env.CHAIN_PERMISSIONS && isPermittedNetworkToastOpen ? (
+        {isPermittedNetworkToastOpen ? (
           <Toast
             key="switched-permitted-network-toast"
             startAdornment={

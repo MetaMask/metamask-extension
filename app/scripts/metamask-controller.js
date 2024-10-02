@@ -5715,9 +5715,9 @@ export default class MetamaskController extends EventEmitter {
             { origin },
             {
               eth_accounts: {},
-              ...(process.env.CHAIN_PERMISSIONS && {
+              ...{
                 [PermissionNames.permittedChains]: {},
-              }),
+              },
             },
           ),
         requestPermittedChainsPermission: (chainIds) =>
@@ -5750,10 +5750,9 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             {
-              ...(process.env.CHAIN_PERMISSIONS &&
-                requestedPermissions[RestrictedMethods.eth_accounts] && {
-                  [PermissionNames.permittedChains]: {},
-                }),
+              ...(requestedPermissions[RestrictedMethods.eth_accounts] && {
+                [PermissionNames.permittedChains]: {},
+              }),
               ...requestedPermissions,
             },
           ),
@@ -5789,8 +5788,7 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
-        getChainPermissionsFeatureFlag: () =>
-          Boolean(process.env.CHAIN_PERMISSIONS),
+        getChainPermissionsFeatureFlag: () => true,
         // network configuration-related
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);

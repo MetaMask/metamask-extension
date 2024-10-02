@@ -23,7 +23,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
-  CONNECTIONS,
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
@@ -54,11 +53,8 @@ export const PermissionsPage = () => {
   const handleConnectionClick = (connection) => {
     const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
-    if (process.env.CHAIN_PERMISSIONS) {
-      history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
-    } else {
-      history.push(`${CONNECTIONS}/${safeEncodedHost}`);
-    }
+
+    history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
   };
 
   const renderConnectionsList = (connectionList) =>

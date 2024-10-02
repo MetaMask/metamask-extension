@@ -33,7 +33,6 @@ const createMockLineaMainnetConfiguration = () => ({
 describe('switchEthereumChainHandler', () => {
   const makeMocks = ({
     permissionedChainIds = [],
-    permissionsFeatureFlagIsActive = false,
     overrides = {},
     mockedGetNetworkConfigurationByChainIdReturnValue = createMockMainnetConfiguration(),
     mockedGetCurrentChainIdForDomainReturnValue = NON_INFURA_CHAIN_ID,
@@ -42,7 +41,6 @@ describe('switchEthereumChainHandler', () => {
     mockGetCaveat.mockReturnValue({ value: permissionedChainIds });
 
     return {
-      getChainPermissionsFeatureFlag: () => permissionsFeatureFlagIsActive,
       getCurrentChainIdForDomain: jest
         .fn()
         .mockReturnValue(mockedGetCurrentChainIdForDomainReturnValue),
@@ -65,11 +63,8 @@ describe('switchEthereumChainHandler', () => {
   });
 
   describe('with permittedChains permissioning inactive', () => {
-    const permissionsFeatureFlagIsActive = false;
-
     it('should call setActiveNetwork when switching to a built-in infura network', async () => {
       const mocks = makeMocks({
-        permissionsFeatureFlagIsActive,
         overrides: {
           getNetworkConfigurationByChainId: jest
             .fn()
@@ -95,7 +90,6 @@ describe('switchEthereumChainHandler', () => {
 
     it('should call setActiveNetwork when switching to a built-in infura network, when chainId from request is lower case', async () => {
       const mocks = makeMocks({
-        permissionsFeatureFlagIsActive,
         overrides: {
           getNetworkConfigurationByChainId: jest
             .fn()
@@ -121,7 +115,6 @@ describe('switchEthereumChainHandler', () => {
 
     it('should call setActiveNetwork when switching to a built-in infura network, when chainId from request is upper case', async () => {
       const mocks = makeMocks({
-        permissionsFeatureFlagIsActive,
         overrides: {
           getNetworkConfigurationByChainId: jest
             .fn()
@@ -147,7 +140,6 @@ describe('switchEthereumChainHandler', () => {
 
     it('should call setActiveNetwork when switching to a custom network', async () => {
       const mocks = makeMocks({
-        permissionsFeatureFlagIsActive,
         overrides: {
           getCurrentChainIdForDomain: jest
             .fn()
@@ -209,14 +201,11 @@ describe('switchEthereumChainHandler', () => {
   });
 
   describe('with permittedChains permissioning active', () => {
-    const permissionsFeatureFlagIsActive = true;
-
     it('should call requestPermittedChainsPermission and setActiveNetwork when chainId is not in `endowment:permitted-chains`', async () => {
       const mockrequestPermittedChainsPermission = jest
         .fn()
         .mockResolvedValue();
       const mocks = makeMocks({
-        permissionsFeatureFlagIsActive,
         overrides: {
           requestPermittedChainsPermission:
             mockrequestPermittedChainsPermission,
@@ -246,7 +235,6 @@ describe('switchEthereumChainHandler', () => {
 
     it('should call setActiveNetwork without calling requestPermittedChainsPermission when requested chainId is in `endowment:permitted-chains`', async () => {
       const mocks = makeMocks({
-        permissionsFeatureFlagIsActive,
         permissionedChainIds: [CHAIN_IDS.MAINNET],
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
@@ -274,7 +262,6 @@ describe('switchEthereumChainHandler', () => {
         .fn()
         .mockRejectedValue(mockError);
       const mocks = makeMocks({
-        permissionsFeatureFlagIsActive,
         overrides: {
           requestPermittedChainsPermission:
             mockrequestPermittedChainsPermission,

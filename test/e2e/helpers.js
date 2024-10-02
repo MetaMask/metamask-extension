@@ -755,10 +755,6 @@ const connectToDapp = async (driver) => {
   });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
-  });
   await driver.clickElementAndWaitForWindowToClose({
     text: 'Confirm',
     tag: 'button',

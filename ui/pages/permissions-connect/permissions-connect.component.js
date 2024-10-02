@@ -301,9 +301,6 @@ export default class PermissionConnect extends Component {
   render() {
     const {
       accounts,
-      showNewAccountModal,
-      newAccountNumber,
-      nativeCurrency,
       permissionsRequest,
       addressLastConnectedMap,
       permissionsRequestId,
@@ -336,32 +333,15 @@ export default class PermissionConnect extends Component {
         ) : (
           <Switch>
             <Route
-              path={connectPath}
+              path={confirmPermissionPath}
               exact
               render={() =>
-                process.env.CHAIN_PERMISSIONS ? (
-                  <ConnectPage
-                    rejectPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    activeTabOrigin={this.state.origin}
-                    request={permissionsRequest}
-                    permissionsRequestId={permissionsRequestId}
-                    approveConnection={this.approveConnection}
-                  />
-                ) : (
-                  <ChooseAccount
-                    accounts={accounts}
-                    nativeCurrency={nativeCurrency}
-                    selectAccounts={(addresses) =>
-                      this.selectAccounts(addresses)
-                    }
-                    selectNewAccountViaModal={(handleAccountClick) => {
-                      showNewAccountModal({
-                        onCreateNewAccount: (address) =>
-                          handleAccountClick(address),
-                        newAccountNumber,
-                      });
+                permissionsRequest?.diff ? (
+                  <PermissionPageContainer
+                    request={permissionsRequest || {}}
+                    approvePermissionsRequest={(...args) => {
+                      approvePermissionsRequest(...args);
+                      this.redirect(true);
                     }}
                     addressLastConnectedMap={addressLastConnectedMap}
                     cancelPermissionsRequest={(requestId) =>
@@ -370,6 +350,16 @@ export default class PermissionConnect extends Component {
                     permissionsRequestId={permissionsRequestId}
                     selectedAccountAddresses={selectedAccountAddresses}
                     targetSubjectMetadata={targetSubjectMetadata}
+                  />
+                ) : (
+                  <ConnectPage
+                    rejectPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    activeTabOrigin={this.state.origin}
+                    request={permissionsRequest}
+                    permissionsRequestId={permissionsRequestId}
+                    approveConnection={this.approveConnection}
                   />
                 )
               }

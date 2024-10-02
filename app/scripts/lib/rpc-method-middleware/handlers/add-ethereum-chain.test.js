@@ -54,7 +54,6 @@ const createMockNonInfuraConfiguration = () => ({
 
 describe('addEthereumChainHandler', () => {
   const addEthereumChainHandler = addEthereumChain.implementation;
-
   const makeMocks = ({
     permissionedChainIds = [],
     permissionsFeatureFlagIsActive,
