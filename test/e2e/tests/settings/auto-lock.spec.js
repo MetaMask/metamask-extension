@@ -17,8 +17,8 @@ describe('Auto-Lock Timer', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        // Set Auto Lock Timer
         await openMenuSafe(driver);
-
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         const sixSecsInMins = '0.1';
