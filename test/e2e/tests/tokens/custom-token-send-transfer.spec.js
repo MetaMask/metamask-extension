@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const {
   withFixtures,
   defaultGanacheOptions,
-  switchToNotificationWindow,
   openDapp,
   unlockWallet,
   editGasFeeForm,
@@ -118,7 +117,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         // transfer token from dapp
         await openDapp(driver, contractAddress);
         await driver.clickElement({ text: 'Transfer Tokens', tag: 'button' });
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: '1.5 TST', tag: 'h1' });
 
         // edit gas fee
@@ -174,7 +173,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           text: 'Transfer Tokens Without Gas',
           tag: 'button',
         });
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: '1.5 TST', tag: 'h1' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
