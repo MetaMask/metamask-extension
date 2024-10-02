@@ -70,11 +70,11 @@ export default function OnboardingPinExtension() {
       setSelectedIndex(1);
     } else {
       dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
-      dispatch(setCompletedOnboarding());
+      await dispatch(setCompletedOnboarding());
 
       if (externalServicesOnboardingToggleState) {
         if (!isProfileSyncingEnabled || participateInMetaMetrics) {
-          dispatch(performSignIn());
+          await dispatch(performSignIn());
         }
       }
 
