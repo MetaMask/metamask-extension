@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import { createDappTransaction, unlockWallet } from '../../../helpers';
+import { openDapp, unlockWallet } from '../../../helpers';
+import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import {
   assertAdvancedGasDetails,
   confirmDepositTransaction,
@@ -106,9 +107,15 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mockOptimismOracle,
         },
-        async ({ driver }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await unlockWallet(driver);
           await createLayer2Transaction(driver);
+
+          const contractAddress = await (
+            contractRegistry as GanacheContractAddressRegistry
+          ).getContractAddress(smartContract);
+
+          await openDapp(driver, contractAddress);
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -281,11 +288,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 async function createLayer2Transaction(driver: Driver) {
   await createDappTransaction(driver, {
     data: '0x1234',
-    from: DEFAULT_FIXTURE_ACCOUNT,
     to: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-    gas: '0x31f10',
-    maxFeePerGas: '0x3b014b3',
-    maxPriorityFeePerGas: '0x3b014b3',
   });
 }
 
