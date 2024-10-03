@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { mockNetworkStateOld } = require('../../../stub/networks');
 
 const {
@@ -38,19 +37,17 @@ describe('Block Explorer', function () {
         await driver.clickElement({ text: 'View on explorer', tag: 'p' });
 
         // Switch to block explorer
-        await driver.waitUntilXWindowHandles(2);
-        const windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('E2E Test Page', windowHandles);
-        const body = await driver.findElement(
-          '[data-testid="empty-page-body"]',
-        );
+        await driver.switchToWindowWithTitle('E2E Test Page');
 
         // Verify block explorer
-        assert.equal(await body.getText(), 'Empty page by MetaMask');
-        assert.equal(
-          await driver.getCurrentUrl(),
-          'https://etherscan.io/address/0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-        );
+        await driver.waitForUrl({
+          url: 'https://etherscan.io/address/0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+        });
+
+        await driver.findElement({
+          text: 'Empty page by MetaMask',
+          tag: 'body',
+        });
       },
     );
   });
@@ -82,10 +79,12 @@ describe('Block Explorer', function () {
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
-        const [, tst] = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        await tst.click();
+
+        await driver.clickElement({
+          text: 'TST',
+          tag: 'span',
+        });
+
         await driver.clickElement('[data-testid="asset-options__button"]');
         await driver.clickElement({
           text: 'View Asset in explorer',
@@ -93,19 +92,17 @@ describe('Block Explorer', function () {
         });
 
         // Switch to block explorer
-        await driver.waitUntilXWindowHandles(2);
-        const windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('E2E Test Page', windowHandles);
-        const body = await driver.findElement(
-          '[data-testid="empty-page-body"]',
-        );
+        await driver.switchToWindowWithTitle('E2E Test Page');
 
         // Verify block explorer
-        assert.equal(await body.getText(), 'Empty page by MetaMask');
-        assert.equal(
-          await driver.getCurrentUrl(),
-          'https://etherscan.io/token/0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-        );
+        await driver.waitForUrl({
+          url: 'https://etherscan.io/token/0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+        });
+
+        await driver.findElement({
+          text: 'Empty page by MetaMask',
+          tag: 'body',
+        });
       },
     );
   });
@@ -143,19 +140,17 @@ describe('Block Explorer', function () {
         });
 
         // Switch to block explorer
-        await driver.waitUntilXWindowHandles(2);
-        const windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('E2E Test Page', windowHandles);
-        const body = await driver.findElement(
-          '[data-testid="empty-page-body"]',
-        );
+        await driver.switchToWindowWithTitle('E2E Test Page');
 
         // Verify block explorer
-        assert.equal(await body.getText(), 'Empty page by MetaMask');
-        assert.equal(
-          await driver.getCurrentUrl(),
-          'https://etherscan.io/tx/0xe5e7b95690f584b8f66b33e31acc6184fea553fa6722d42486a59990d13d5fa2',
-        );
+        await driver.waitForUrl({
+          url: 'https://etherscan.io/tx/0xe5e7b95690f584b8f66b33e31acc6184fea553fa6722d42486a59990d13d5fa2',
+        });
+
+        await driver.findElement({
+          text: 'Empty page by MetaMask',
+          tag: 'body',
+        });
       },
     );
   });
