@@ -77,6 +77,7 @@ export function assertObjectMaxSize(data, maxSize = 0) {
         countValueSize(value);
       }
     } else {
+      // Iterate through keys first because they're faster to count, minimizing the number of object references we need to track before stopping
       for (const key of Object.keys(object)) {
         countValueSize(key);
       }
