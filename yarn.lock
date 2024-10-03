@@ -6053,9 +6053,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^0.9.3":
-  version: 0.9.3
-  resolution: "@metamask/profile-sync-controller@npm:0.9.3"
+"@metamask/profile-sync-controller@npm:^0.9.4":
+  version: 0.9.4
+  resolution: "@metamask/profile-sync-controller@npm:0.9.4"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.1"
     "@metamask/keyring-api": "npm:^8.1.3"
@@ -6071,7 +6071,7 @@ __metadata:
     "@metamask/accounts-controller": ^18.1.1
     "@metamask/keyring-controller": ^17.2.0
     "@metamask/snaps-controllers": ^9.7.0
-  checksum: 10/31efea63cac0b5f01024163fb6911f971aeb6f7e7a7d71fa4a43b8e31e0fc60033e99bcfec19283f9410e7258bcd0ce3bf751bed374e6b3d09ea4a9782731320
+  checksum: 10/86079da552eed316f2754bd899047de1d8d9d15d390c9cdee0aef66b95bea708b5c7929a8d8d946210cc0e4c52347fee971a5cf5130149d0ca60abdc85f47774
   languageName: node
   linkType: hard
 
@@ -7827,6 +7827,13 @@ __metadata:
     react-redux:
       optional: true
   checksum: 10/db3654e71efcaae421122507cd95e5f724e7de7a4215296dfdb1e6d8758682c69807aab52c2ea85f24052cdb1b223186150dab6ce7f7a8566b73a9d43337b9b7
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.19.2":
+  version: 1.19.2
+  resolution: "@remix-run/router@npm:1.19.2"
+  checksum: 10/31b62b66ea68bd62018189047de7b262700113438f62407df019f81a9856a08a705b2b77454be9293518e2f5f3bbf3f8b858ac19f48cb7d89f8ab56b7b630c19
   languageName: node
   linkType: hard
 
@@ -14385,9 +14392,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001587, caniuse-lite@npm:^1.0.30001599":
-  version: 1.0.30001600
-  resolution: "caniuse-lite@npm:1.0.30001600"
-  checksum: 10/4c52f83ed71bc5f6e443bd17923460f1c77915adc2c2aa79ddaedceccc690b5917054b0c41b79e9138cbbd9abcdc0db9e224e79e3e734e581dfec06505f3a2b4
+  version: 1.0.30001660
+  resolution: "caniuse-lite@npm:1.0.30001660"
+  checksum: 10/5d83f0b7e2075b7e31f114f739155dc6c21b0afe8cb61180f625a4903b0ccd3d7591a5f81c930f14efddfa57040203ba0890850b8a3738f6c7f17c7dd83b9de8
   languageName: node
   linkType: hard
 
@@ -20804,13 +20811,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gud@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "gud@npm:1.0.0"
-  checksum: 10/3e2eb37cf794364077c18f036d6aa259c821c7fd188f2b7935cb00d589d82a41e0ebb1be809e1a93679417f62f1ad0513e745c3cf5329596e489aef8c5e5feae
-  languageName: node
-  linkType: hard
-
 "gulp-autoprefixer@npm:^8.0.0":
   version: 8.0.0
   resolution: "gulp-autoprefixer@npm:8.0.0"
@@ -21301,12 +21301,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"history@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "history@npm:5.0.0"
+"history@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "history@npm:5.3.0"
   dependencies:
     "@babel/runtime": "npm:^7.7.6"
-  checksum: 10/d0b744c2028a163aebcee8df89400d6ed7eadc5ea877b0324040d1127a88d6b39395ea5a5f28a1912c75473953e3782c6fb682d363efb98e87a0cc49de95a2c9
+  checksum: 10/52ba685b842ca6438ff11ef459951eb13d413ae715866a8dc5f7c3b1ea0cdeb8db6aabf7254551b85f56abc205e6e2d7e1d5afb36b711b401cdaff4f2cf187e9
   languageName: node
   linkType: hard
 
@@ -26138,7 +26138,7 @@ __metadata:
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
     "@metamask/preinstalled-example-snap": "npm:^0.1.0"
-    "@metamask/profile-sync-controller": "npm:^0.9.3"
+    "@metamask/profile-sync-controller": "npm:^0.9.4"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
@@ -26320,7 +26320,7 @@ __metadata:
     gulp-watch: "npm:^5.0.1"
     gulp-zip: "npm:^5.1.0"
     he: "npm:^1.2.0"
-    history: "npm:^5.0.0"
+    history: "npm:^5.3.0"
     html-bundler-webpack-plugin: "npm:^3.17.3"
     https-browserify: "npm:^1.0.0"
     human-standard-token-abi: "npm:^2.0.0"
@@ -26383,7 +26383,8 @@ __metadata:
     react-popper: "npm:^2.2.3"
     react-redux: "npm:^7.2.9"
     react-responsive-carousel: "npm:^3.2.21"
-    react-router-dom: "npm:^5.1.2"
+    react-router-dom: "npm:^5.3.4"
+    react-router-dom-v5-compat: "npm:^6.26.2"
     react-simple-file-input: "npm:^2.0.0"
     react-syntax-highlighter: "npm:^15.5.0"
     react-tippy: "npm:^1.2.2"
@@ -26958,20 +26959,6 @@ __metadata:
   version: 1.0.1
   resolution: "min-indent@npm:1.0.1"
   checksum: 10/bfc6dd03c5eaf623a4963ebd94d087f6f4bbbfd8c41329a7f09706b0cb66969c4ddd336abeb587bc44bc6f08e13bf90f0b374f9d71f9f01e04adc2cd6f083ef1
-  languageName: node
-  linkType: hard
-
-"mini-create-react-context@npm:^0.3.0":
-  version: 0.3.2
-  resolution: "mini-create-react-context@npm:0.3.2"
-  dependencies:
-    "@babel/runtime": "npm:^7.4.0"
-    gud: "npm:^1.0.0"
-    tiny-warning: "npm:^1.0.2"
-  peerDependencies:
-    prop-types: ^15.0.0
-    react: ^0.14.0 || ^15.0.0 || ^16.0.0
-  checksum: 10/507e36241965e2dad99ffe191809b0b9dc5e949df03b68000a91a845e12ea3bda8fd4cd35a1f033f3781a72942c7b0208fc1876f37656c7fc7be7d4472f45589
   languageName: node
   linkType: hard
 
@@ -30683,32 +30670,46 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^5.1.2":
-  version: 5.1.2
-  resolution: "react-router-dom@npm:5.1.2"
+"react-router-dom-v5-compat@npm:^6.26.2":
+  version: 6.26.2
+  resolution: "react-router-dom-v5-compat@npm:6.26.2"
   dependencies:
-    "@babel/runtime": "npm:^7.1.2"
+    "@remix-run/router": "npm:1.19.2"
+    history: "npm:^5.3.0"
+    react-router: "npm:6.26.2"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+    react-router-dom: 4 || 5
+  checksum: 10/0662c16f8fbed2d89b79d7977c94961c331f576bf1c638ba9782656d72a57ab49f081940effc796913870f34a3ebac01287b1bdcb67750b2b04d35e6b59f8180
+  languageName: node
+  linkType: hard
+
+"react-router-dom@npm:^5.3.4":
+  version: 5.3.4
+  resolution: "react-router-dom@npm:5.3.4"
+  dependencies:
+    "@babel/runtime": "npm:^7.12.13"
     history: "npm:^4.9.0"
     loose-envify: "npm:^1.3.1"
     prop-types: "npm:^15.6.2"
-    react-router: "npm:5.1.2"
+    react-router: "npm:5.3.4"
     tiny-invariant: "npm:^1.0.2"
     tiny-warning: "npm:^1.0.0"
   peerDependencies:
     react: ">=15"
-  checksum: 10/a6225fc454780db6afa5da97ac862abe8514f373a6c81d59a8c4d15c6c42eac0ccce76a468ec0ca216d327e84640561fc12af9759de4e12be09ed7fe1db08bb2
+  checksum: 10/5e0696ae2d86f466ff700944758a227e1dcd79b48797d567776506e4e3b4a08b81336155feb86a33be9f38c17c4d3d94212b5c60c8ee9a086022e4fd3961db29
   languageName: node
   linkType: hard
 
-"react-router@npm:5.1.2":
-  version: 5.1.2
-  resolution: "react-router@npm:5.1.2"
+"react-router@npm:5.3.4":
+  version: 5.3.4
+  resolution: "react-router@npm:5.3.4"
   dependencies:
-    "@babel/runtime": "npm:^7.1.2"
+    "@babel/runtime": "npm:^7.12.13"
     history: "npm:^4.9.0"
     hoist-non-react-statics: "npm:^3.1.0"
     loose-envify: "npm:^1.3.1"
-    mini-create-react-context: "npm:^0.3.0"
     path-to-regexp: "npm:^1.7.0"
     prop-types: "npm:^15.6.2"
     react-is: "npm:^16.6.0"
@@ -30716,7 +30717,18 @@ __metadata:
     tiny-warning: "npm:^1.0.0"
   peerDependencies:
     react: ">=15"
-  checksum: 10/bba4a23090fa02364e21e03ad7b2ff4136ff262871be197b3031e4a03180e36bc9f03fc91c060ebbca58e00d4b59d3a99281a6ef26b6dea37479a5097b8ca2e2
+  checksum: 10/99d54a99af6bc6d7cad2e5ea7eee9485b62a8b8e16a1182b18daa7fad7dafa5e526850eaeebff629848b297ae055a9cb5b4aba8760e81af8b903efc049d48f5c
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.26.2":
+  version: 6.26.2
+  resolution: "react-router@npm:6.26.2"
+  dependencies:
+    "@remix-run/router": "npm:1.19.2"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10/496e855b53e61066c1791e354f5d79eab56a128d9722fdc6486c3ecd3b3a0bf9968e927028f429893b157f3cc10fc09e890a055847723ee242663e7995fedc9d
   languageName: node
   linkType: hard
 

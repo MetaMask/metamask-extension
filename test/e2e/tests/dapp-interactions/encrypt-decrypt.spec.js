@@ -195,7 +195,9 @@ describe('Encrypt Decrypt', function () {
     );
   });
 
-  it('should show balance correctly as Fiat', async function () {
+  it('should show balance correctly in native tokens', async function () {
+    // In component ui/pages/confirm-encryption-public-key/confirm-encryption-public-key.container.js, after removing useNativeCurrencyAsPrimaryCurrency;
+    // We will display native balance in the confirm-encryption-public-key.component.js
     await withFixtures(
       {
         dapp: true,
@@ -203,7 +205,7 @@ describe('Encrypt Decrypt', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
-              useNativeCurrencyAsPrimaryCurrency: false,
+              showNativeTokenAsMainBalance: false,
             },
           })
           .build(),
@@ -231,7 +233,7 @@ describe('Encrypt Decrypt', function () {
         const accountBalanceLabel = await driver.findElement(
           '.request-encryption-public-key__balance-value',
         );
-        assert.equal(await accountBalanceLabel.getText(), '$42,500.00 USD');
+        assert.equal(await accountBalanceLabel.getText(), '25 ETH');
       },
     );
   });
