@@ -89,7 +89,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
         });
 

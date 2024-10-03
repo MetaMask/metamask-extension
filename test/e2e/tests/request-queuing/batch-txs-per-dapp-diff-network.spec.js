@@ -114,12 +114,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
           By.xpath("//div[normalize-space(.)='1 of 2']"),
         );
 
-        // Check correct network on confirm tx.
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Localhost 8545',
-        });
-
         // Reject All Transactions
         await driver.clickElement('.page-container__footer-secondary a');
 

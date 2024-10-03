@@ -53,9 +53,6 @@ describe('Request Queueing', function () {
           tag: 'button',
         });
 
-        // Wait for Connecting notification to close.
-        await driver.waitUntilXWindowHandles(2);
-
         // Navigate to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
