@@ -28,9 +28,9 @@ import {
 } from '../../../components/component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
-import SelectHardware from './select-hardware';
-import AccountList from './account-list';
 import { getHardwareDeviceName } from '../../../store/actions';
+import AccountList from './account-list';
+import SelectHardware from './select-hardware';
 
 const U2F_ERROR = 'U2F';
 const LEDGER_ERRORS_CODES = {
