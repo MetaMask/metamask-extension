@@ -390,7 +390,94 @@ export const DUMMY_QUOTES_NO_APPROVAL = [
 // Eth 11 USDC > Arb
 const eth11UsdcToArb = [
   {
-    quote: {},
+    quote: {
+      requestId: '50e9abd7-e744-4810-9bac-a70ba182efc9',
+      srcChainId: 1,
+      srcTokenAmount: '10903750',
+      srcAsset: {
+        address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        chainId: 1,
+        symbol: 'USDC',
+        decimals: 6,
+        name: 'USD Coin',
+        coinKey: 'USDC',
+        logoURI:
+          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+        priceUSD: '1.0002000400080016',
+        icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+      },
+      destChainId: 42161,
+      destTokenAmount: '10866058',
+      destAsset: {
+        address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+        chainId: 42161,
+        symbol: 'USDC',
+        decimals: 6,
+        name: 'USD Coin',
+        coinKey: 'USDC',
+        logoURI:
+          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+        priceUSD: '1.0002000400080016',
+        icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+      },
+      feeData: {
+        metabridge: {
+          amount: '96250',
+          asset: {
+            address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            chainId: 1,
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USD Coin',
+            coinKey: 'USDC',
+            logoURI:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+            priceUSD: '1.0002000400080016',
+            icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+          },
+        },
+      },
+      bridgeId: 'lifi',
+      bridges: ['across'],
+      steps: [
+        {
+          action: 'bridge',
+          srcChainId: 1,
+          destChainId: 42161,
+          protocol: {
+            name: 'across',
+            displayName: 'Across',
+            icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png',
+          },
+          srcAsset: {
+            address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            chainId: 1,
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USD Coin',
+            coinKey: 'USDC',
+            logoURI:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+            priceUSD: '1.0002000400080016',
+            icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+          },
+          destAsset: {
+            address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 42161,
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USD Coin',
+            coinKey: 'USDC',
+            logoURI:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+            priceUSD: '1.0002000400080016',
+            icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+          },
+          srcAmount: '10903750',
+          destAmount: '10866058',
+        },
+      ],
+    },
     approval: {},
     trade: {},
     estimatedProcessingTimeInSeconds: 15,
@@ -707,7 +794,6 @@ const eth11UsdcToArb = [
     estimatedProcessingTimeInSeconds: 1020,
   },
 ];
-
 // Arb 11 USDC > ETH
 const arb11UsdcEth = [
   {
