@@ -1787,6 +1787,9 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
+  "editInPortfolio": {
+    "message": "Edit in Portfolio"
+  },
   "editNetworkLink": {
     "message": "edit the original network"
   },
@@ -5290,6 +5293,12 @@
   "spendingCap": {
     "message": "Spending cap"
   },
+  "spendingCaps": {
+    "message": "Spending caps"
+  },  
+  "spendingCapsUppercase": {
+    "message": "Spending Caps"
+  }, 
   "spendingCapError": {
     "message": "Error: Enter numbers only"
   },

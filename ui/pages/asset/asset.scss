@@ -1,4 +1,4 @@
-@use "design-system";
+@use 'design-system';
 
 .asset {
   &__container {
@@ -42,5 +42,19 @@
   }
 }
 
-.chart-up { stroke: var(--color-success-default); }
-.chart-down { stroke: var(--color-error-default); }
+.chart-up {
+  stroke: var(--color-success-default);
+}
+.chart-down {
+  stroke: var(--color-error-default);
+}
+
+.asset-page__spending-caps {
+  color: var(--color-primary-default);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary-alternative);
+    text-decoration: underline;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
@@ -6,8 +6,11 @@ import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
 import {
   getCurrentCurrency,
+  getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsSwapsChain,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
   getSelectedInternalAccount,
   getSwapsDefaultToken,
   getTokensMarketData,
@@ -44,6 +47,7 @@ import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 
 /** Information about a native or token asset */
 export type Asset = (
@@ -110,6 +114,10 @@ const AssetPage = ({
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
 
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const metaMetricsId = useSelector(getMetaMetricsId);
+
   const { chainId, type, symbol, name, image, balance } = asset;
 
   const address =
@@ -123,6 +131,20 @@ const AssetPage = ({
     conversionRate !== undefined && marketData?.price !== undefined
       ? conversionRate * marketData.price
       : undefined;
+
+  const portfolioSpendingCapsUrl = useMemo(
+    () =>
+      getPortfolioUrl(
+        '',
+        'asset_page',
+        metaMetricsId,
+        isMetaMetricsEnabled,
+        isMarketingEnabled,
+        account.address,
+        'spending-caps',
+      ),
+    [account.address, isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId],
+  );
 
   return (
     <Box
@@ -211,7 +233,7 @@ const AssetPage = ({
           flexDirection={FlexDirection.Column}
           gap={7}
         >
-          {type === AssetType.token && (
+          {[AssetType.token, AssetType.native].includes(type) && (
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
@@ -221,29 +243,47 @@ const AssetPage = ({
               <Text variant={TextVariant.headingMd} paddingBottom={4}>
                 {t('tokenDetails')}
               </Text>
-              {renderRow(
-                t('contractAddress'),
-                <AddressCopyButton address={address} shorten />,
-              )}
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={2}
-              >
-                {asset.decimals !== undefined &&
-                  renderRow(t('tokenDecimal'), <Text>{asset.decimals}</Text>)}
-                {asset.aggregators && asset.aggregators?.length > 0 && (
-                  <Box>
-                    <Text
-                      color={TextColor.textAlternative}
-                      variant={TextVariant.bodyMdMedium}
-                    >
-                      {t('tokenList')}
-                    </Text>
-                    <Text>{asset.aggregators?.join(', ')}</Text>
+              {type === AssetType.token && (
+                <>
+                  {renderRow(
+                    t('contractAddress'),
+                    <AddressCopyButton address={address} shorten />,
+                  )}
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Column}
+                    gap={2}
+                  >
+                    {asset.decimals !== undefined &&
+                      renderRow(
+                        t('tokenDecimal'),
+                        <Text>{asset.decimals}</Text>,
+                      )}
+                    {asset.aggregators && asset.aggregators?.length > 0 && (
+                      <Box>
+                        <Text
+                          color={TextColor.textAlternative}
+                          variant={TextVariant.bodyMdMedium}
+                        >
+                          {t('tokenList')}
+                        </Text>
+                        <Text>{asset.aggregators?.join(', ')}</Text>
+                      </Box>
+                    )}
                   </Box>
-                )}
-              </Box>
+                </>
+              )}
+              {renderRow(
+                t('spendingCaps'),
+                <a
+                  className="asset-page__spending-caps mm-text--body-md-medium"
+                  href={portfolioSpendingCapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('editInPortfolio')}
+                </a>,
+              )}
             </Box>
           )}
           {conversionRate > 0 &&
