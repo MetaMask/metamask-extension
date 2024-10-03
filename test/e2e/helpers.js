@@ -755,6 +755,17 @@ const connectToDapp = async (driver) => {
   });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[1].click();
+
+  await driver.clickElement({
+    text: 'Localhost 8545',
+    tag: 'p',
+  });
+
+  await driver.clickElement('[data-testid="connect-more-chains-button"]');
+
   await driver.clickElementAndWaitForWindowToClose({
     text: 'Connect',
     tag: 'button',
