@@ -1,6 +1,10 @@
 import { BigNumber } from 'bignumber.js';
-import { Json } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  FeeMarketGasFeeEstimates,
+  TransactionParams,
+} from '@metamask/transaction-controller';
 import {
   ALLOWED_CONTRACT_ADDRESSES,
   ARBITRUM,
@@ -39,11 +43,14 @@ import {
   validateData,
 } from '../../../shared/lib/swaps-utils';
 import {
+  addHexes,
+  decGWEIToHexWEI,
   decimalToHex,
   getValueFromWeiHex,
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { estimateGasFee } from '../../store/actions';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
@@ -350,7 +357,8 @@ export const getFeeForSmartTransaction = ({
 export function getRenderableNetworkFeesForQuote({
   tradeGas,
   approveGas,
-  gasPrice,
+  gasPriceTrade,
+  gasPriceApprove,
   currentCurrency,
   conversionRate,
   USDConversionRate,
@@ -363,7 +371,8 @@ export function getRenderableNetworkFeesForQuote({
 }: {
   tradeGas: string;
   approveGas: string;
-  gasPrice: string;
+  gasPriceTrade: string;
+  gasPriceApprove: string;
   currentCurrency: string;
   conversionRate: number;
   USDConversionRate?: number;
@@ -381,16 +390,14 @@ export function getRenderableNetworkFeesForQuote({
   feeInEth: string;
   nonGasFee: string;
 } {
-  const totalGasLimitForCalculation = new BigNumber(tradeGas || '0x0', 16)
-    .plus(approveGas || '0x0', 16)
-    .toString(16);
-  let gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice);
-  if (multiLayerL1FeeTotal !== null) {
-    gasTotalInWeiHex = sumHexes(
-      gasTotalInWeiHex || '0x0',
-      multiLayerL1FeeTotal || '0x0',
-    );
-  }
+  const tradeGasFeeTotalHex = calcGasTotal(tradeGas, gasPriceTrade);
+  const approveGasFeeTotalHex = calcGasTotal(approveGas, gasPriceApprove);
+
+  const gasTotalInWeiHex = sumHexes(
+    tradeGasFeeTotalHex,
+    approveGasFeeTotalHex,
+    multiLayerL1FeeTotal || '0x0',
+  );
 
   const nonGasFee = new BigNumber(tradeValue, 16)
     .minus(
@@ -442,7 +449,8 @@ export function getRenderableNetworkFeesForQuote({
 
 export function quotesToRenderableData({
   quotes,
-  gasPrice,
+  gasPriceTrade,
+  gasPriceApprove,
   conversionRate,
   currentCurrency,
   approveGas,
@@ -453,7 +461,8 @@ export function quotesToRenderableData({
   multiLayerL1ApprovalFeeTotal,
 }: {
   quotes: object;
-  gasPrice: string;
+  gasPriceTrade: string;
+  gasPriceApprove: string;
   conversionRate: number;
   currentCurrency: string;
   approveGas: string;
@@ -512,7 +521,8 @@ export function quotesToRenderableData({
       getRenderableNetworkFeesForQuote({
         tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
         approveGas,
-        gasPrice,
+        gasPriceTrade,
+        gasPriceApprove,
         currentCurrency,
         conversionRate,
         tradeValue: trade.value,
@@ -775,3 +785,60 @@ export const parseSmartTransactionsError = (errorMessage: string): string => {
   const errorJson = errorMessage.slice(12);
   return JSON.parse(errorJson.trim());
 };
+
+export const getSwaps1559GasFeeEstimates = async (
+  tradeTxParams: TransactionParams,
+  approveTxParams: TransactionParams | undefined,
+  estimatedBaseFeeGwei: string,
+  chainId: Hex,
+) => {
+  const estimatedBaseFee = decGWEIToHexWEI(estimatedBaseFeeGwei) as Hex;
+
+  const tradeGasFeeEstimates = await getSwapTransaction1559GasFeeEstimates(
+    tradeTxParams,
+    estimatedBaseFee,
+    chainId,
+  );
+
+  const approveGasFeeEstimates = approveTxParams
+    ? await getSwapTransaction1559GasFeeEstimates(
+        approveTxParams,
+        estimatedBaseFee,
+        chainId,
+      )
+    : undefined;
+
+  return {
+    tradeGasFeeEstimates,
+    approveGasFeeEstimates,
+    estimatedBaseFee,
+  };
+};
+
+async function getSwapTransaction1559GasFeeEstimates(
+  transactionParams: TransactionParams,
+  estimatedBaseFee: Hex,
+  chainId: Hex,
+) {
+  const transactionGasFeeResponse = await estimateGasFee({
+    transactionParams,
+    chainId,
+  });
+
+  const transactionGasFeeEstimates =
+    transactionGasFeeResponse?.estimates as FeeMarketGasFeeEstimates;
+
+  const { maxFeePerGas } = transactionGasFeeEstimates.high;
+  const { maxPriorityFeePerGas } = transactionGasFeeEstimates.high;
+
+  const baseAndPriorityFeePerGas = addHexes(
+    estimatedBaseFee,
+    maxPriorityFeePerGas,
+  );
+
+  return {
+    baseAndPriorityFeePerGas,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  };
+}
