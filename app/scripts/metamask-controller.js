@@ -3734,7 +3734,6 @@ export default class MetamaskController extends EventEmitter {
       ...getPermissionBackgroundApiMethods({
         permissionController,
         approvalController,
-        networkController,
       }),
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -5988,10 +5987,6 @@ export default class MetamaskController extends EventEmitter {
         grantPermissions: this.permissionController.grantPermissions.bind(
           this.permissionController,
         ),
-        getNetworkConfigurationByNetworkClientId:
-          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-            this.networkController,
-          ),
         updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
         ),
@@ -6164,6 +6159,9 @@ export default class MetamaskController extends EventEmitter {
               this.networkController.findNetworkClientIdByChainId.bind(
                 this.networkController,
               ),
+            listAccounts: this.accountsController.listAccounts.bind(
+              this.accountsController,
+            ),
             addNetwork: this.networkController.addNetwork.bind(
               this.networkController,
             ),
