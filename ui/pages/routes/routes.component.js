@@ -38,7 +38,6 @@ import {
   ToastContainer,
   Toast,
 } from '../../components/multichain';
-import { SurveyToast } from '../../components/ui/survey-toast';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
@@ -137,14 +136,14 @@ import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/mu
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
 import CrossChainSwap from '../bridge';
-
-const isConfirmTransactionRoute = (pathname) =>
-  Boolean(
-    matchPath(pathname, {
-      path: CONFIRM_TRANSACTION_ROUTE,
-      exact: false,
-    }),
-  );
+import {
+  getShowAutoNetworkSwitchTest,
+  hideAppHeader,
+  isConfirmTransactionRoute,
+  setTheme,
+  showOnboardingHeader,
+} from './isolated';
+import { updateNewPrivacyPolicyToastDate } from './toasts';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -235,24 +234,8 @@ export default class Routes extends Component {
     hideConnectAccountToast: false,
   };
 
-  getTheme() {
-    const { theme } = this.props;
-    if (theme === ThemeType.os) {
-      if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
-        return ThemeType.dark;
-      }
-      return ThemeType.light;
-    }
-    return theme;
-  }
-
-  setTheme() {
-    const theme = this.getTheme();
-    document.documentElement.setAttribute('data-theme', theme);
-  }
-
   componentDidMount() {
-    this.updateNewPrivacyPolicyToastDate();
+    updateNewPrivacyPolicyToastDate(this.props);
   }
 
   componentDidUpdate(prevProps) {
@@ -267,7 +250,7 @@ export default class Routes extends Component {
       currentExtensionPopupId,
     } = this.props;
     if (theme !== prevProps.theme) {
-      this.setTheme();
+      setTheme(theme);
     }
 
     if (prevProps.account?.address !== account?.address) {
@@ -326,7 +309,7 @@ export default class Routes extends Component {
       }
     });
 
-    this.setTheme();
+    setTheme(this.props.theme);
   }
 
   renderRoutes() {
@@ -457,394 +440,6 @@ export default class Routes extends Component {
     return routes;
   }
 
-  onInitializationUnlockPage() {
-    const { location } = this.props;
-    return Boolean(
-      matchPath(location.pathname, {
-        path: ONBOARDING_UNLOCK_ROUTE,
-        exact: true,
-      }),
-    );
-  }
-
-  onConfirmPage() {
-    const { location } = this.props;
-    return Boolean(
-      matchPath(location.pathname, {
-        path: CONFIRM_TRANSACTION_ROUTE,
-        exact: false,
-      }),
-    );
-  }
-
-  onEditTransactionPage() {
-    return (
-      this.props.sendStage === SEND_STAGES.EDIT ||
-      this.props.sendStage === SEND_STAGES.DRAFT ||
-      this.props.sendStage === SEND_STAGES.ADD_RECIPIENT
-    );
-  }
-
-  onSwapsPage() {
-    const { location } = this.props;
-    return Boolean(
-      matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
-    );
-  }
-
-  onHomeScreen() {
-    const { location } = this.props;
-    return location.pathname === DEFAULT_ROUTE;
-  }
-
-  hideAppHeader() {
-    const { location } = this.props;
-
-    const isCrossChainSwapsPage = Boolean(
-      matchPath(location.pathname, {
-        path: `${CROSS_CHAIN_SWAP_ROUTE}`,
-        exact: false,
-      }),
-    );
-
-    if (isCrossChainSwapsPage) {
-      return true;
-    }
-
-    const isNotificationsPage = Boolean(
-      matchPath(location.pathname, {
-        path: `${NOTIFICATIONS_ROUTE}`,
-        exact: false,
-      }),
-    );
-
-    if (isNotificationsPage) {
-      return true;
-    }
-
-    const isInitializing = Boolean(
-      matchPath(location.pathname, {
-        path: ONBOARDING_ROUTE,
-        exact: false,
-      }),
-    );
-
-    if (isInitializing && !this.onInitializationUnlockPage()) {
-      return true;
-    }
-
-    const windowType = getEnvironmentType();
-
-    if (windowType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      return true;
-    }
-
-    const isPermissionsPage = Boolean(
-      matchPath(location.pathname, {
-        path: PERMISSIONS,
-        exact: false,
-      }),
-    );
-
-    if (isPermissionsPage) {
-      return true;
-    }
-
-    const isConnectionsPage = Boolean(
-      matchPath(location.pathname, {
-        path: CONNECTIONS,
-        exact: false,
-      }),
-    );
-
-    if (isConnectionsPage) {
-      return true;
-    }
-
-    const isReviewPermissionsPgae = Boolean(
-      matchPath(location.pathname, {
-        path: REVIEW_PERMISSIONS,
-        exact: false,
-      }),
-    );
-
-    if (isReviewPermissionsPgae) {
-      return true;
-    }
-
-    if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
-      return true;
-    }
-
-    const isHandlingPermissionsRequest = Boolean(
-      matchPath(location.pathname, {
-        path: CONNECT_ROUTE,
-        exact: false,
-      }),
-    );
-
-    const isMultichainSend = Boolean(
-      matchPath(location.pathname, {
-        path: SEND_ROUTE,
-        exact: false,
-      }),
-    );
-    if (isMultichainSend) {
-      return true;
-    }
-
-    const isSnapsHome = Boolean(
-      matchPath(location.pathname, {
-        path: SNAPS_VIEW_ROUTE,
-        exact: false,
-      }),
-    );
-    if (isSnapsHome) {
-      return true;
-    }
-
-    const isHandlingAddEthereumChainRequest = Boolean(
-      matchPath(location.pathname, {
-        path: CONFIRMATION_V_NEXT_ROUTE,
-        exact: false,
-      }),
-    );
-
-    return (
-      isHandlingPermissionsRequest ||
-      isHandlingAddEthereumChainRequest ||
-      isConfirmTransactionRoute(this.pathname)
-    );
-  }
-
-  showOnboardingHeader() {
-    const { location } = this.props;
-
-    return Boolean(
-      matchPath(location.pathname, {
-        path: ONBOARDING_ROUTE,
-        exact: false,
-      }),
-    );
-  }
-
-  onAppHeaderClick = async () => {
-    const { prepareToLeaveSwaps } = this.props;
-    if (this.onSwapsPage()) {
-      await prepareToLeaveSwaps();
-    }
-  };
-
-  renderToasts() {
-    const { t } = this.context;
-    const {
-      account,
-      activeTabOrigin,
-      addPermittedAccount,
-      showSurveyToast,
-      showConnectAccountToast,
-      showPrivacyPolicyToast,
-      newPrivacyPolicyToastShownDate,
-      clearSwitchedNetworkDetails,
-      setSurveyLinkLastClickedOrClosed,
-      setNewPrivacyPolicyToastClickedOrClosed,
-      setSwitchedNetworkNeverShowMessage,
-      switchedNetworkDetails,
-      useNftDetection,
-      showNftEnablementToast,
-      setHideNftEnablementToast,
-      isPermittedNetworkToastOpen,
-      currentNetwork,
-    } = this.props;
-
-    const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
-    const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
-    const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
-    const isEvmAccount = isEvmAccountType(account?.type);
-    const autoHideToastDelay = 5 * SECOND;
-    const safeEncodedHost = encodeURIComponent(activeTabOrigin);
-
-    const onAutoHideToast = () => {
-      setHideNftEnablementToast(false);
-    };
-    if (!this.onHomeScreen()) {
-      return null;
-    }
-
-    return (
-      <ToastContainer>
-        <SurveyToast />
-        {showConnectAccountToast &&
-        !this.state.hideConnectAccountToast &&
-        isEvmAccount ? (
-          <Toast
-            dataTestId="connect-account-toast"
-            key="connect-account-toast"
-            startAdornment={
-              <AvatarAccount
-                address={account.address}
-                size={AvatarAccountSize.Md}
-                borderColor={BorderColor.transparent}
-              />
-            }
-            text={this.context.t('accountIsntConnectedToastText', [
-              account?.metadata?.name,
-              getURLHost(activeTabOrigin),
-            ])}
-            actionText={this.context.t('connectAccount')}
-            onActionClick={() => {
-              // Connect this account
-              addPermittedAccount(activeTabOrigin, account.address);
-              // Use setTimeout to prevent React re-render from
-              // hiding the tooltip
-              setTimeout(() => {
-                // Trigger a mouseenter on the header's connection icon
-                // to display the informative connection tooltip
-                document
-                  .querySelector(
-                    '[data-testid="connection-menu"] [data-tooltipped]',
-                  )
-                  ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-              }, 250 * MILLISECOND);
-            }}
-            onClose={() => this.setState({ hideConnectAccountToast: true })}
-          />
-        ) : null}
-        {showSurveyToast && (
-          <Toast
-            key="survey-toast"
-            startAdornment={
-              <Icon name={IconName.Heart} color={IconColor.errorDefault} />
-            }
-            text={t('surveyTitle')}
-            actionText={t('surveyConversion')}
-            onActionClick={() => {
-              global.platform.openTab({
-                url: SURVEY_LINK,
-              });
-              setSurveyLinkLastClickedOrClosed(Date.now());
-            }}
-            onClose={() => {
-              setSurveyLinkLastClickedOrClosed(Date.now());
-            }}
-          />
-        )}
-        {showPrivacyPolicyToast &&
-          (isPrivacyToastRecent || isPrivacyToastNotShown) && (
-            <Toast
-              key="privacy-policy-toast"
-              startAdornment={
-                <Icon name={IconName.Info} color={IconColor.iconDefault} />
-              }
-              text={t('newPrivacyPolicyTitle')}
-              actionText={t('newPrivacyPolicyActionButton')}
-              onActionClick={() => {
-                global.platform.openTab({
-                  url: PRIVACY_POLICY_LINK,
-                });
-                setNewPrivacyPolicyToastClickedOrClosed();
-              }}
-              onClose={() => {
-                setNewPrivacyPolicyToastClickedOrClosed();
-              }}
-            />
-          )}
-        {showAutoNetworkSwitchToast ? (
-          <Toast
-            key="switched-network-toast"
-            startAdornment={
-              <AvatarNetwork
-                size={AvatarAccountSize.Md}
-                borderColor={BorderColor.transparent}
-                src={switchedNetworkDetails?.imageUrl || ''}
-                name={switchedNetworkDetails?.nickname}
-              />
-            }
-            text={this.context.t('switchedNetworkToastMessage', [
-              switchedNetworkDetails.nickname,
-              getURLHost(switchedNetworkDetails.origin),
-            ])}
-            actionText={this.context.t('switchedNetworkToastDecline')}
-            onActionClick={() => setSwitchedNetworkNeverShowMessage()}
-            onClose={() => clearSwitchedNetworkDetails()}
-          />
-        ) : null}
-        {showNftEnablementToast && useNftDetection ? (
-          <Toast
-            key="enabled-nft-auto-detection"
-            startAdornment={
-              <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-            }
-            text={this.context.t('nftAutoDetectionEnabled')}
-            borderRadius={BorderRadius.LG}
-            textVariant={TextVariant.bodyMd}
-            autoHideTime={autoHideToastDelay}
-            onAutoHideToast={onAutoHideToast}
-          />
-        ) : null}
-
-        {isPermittedNetworkToastOpen ? (
-          <Toast
-            key="switched-permitted-network-toast"
-            startAdornment={
-              <AvatarNetwork
-                size={AvatarAccountSize.Md}
-                borderColor={BorderColor.transparent}
-                src={currentNetwork?.rpcPrefs.imageUrl || ''}
-                name={currentNetwork?.nickname}
-              />
-            }
-            text={this.context.t('permittedChainToastUpdate', [
-              getURLHost(activeTabOrigin),
-              currentNetwork?.nickname,
-            ])}
-            actionText={this.context.t('editPermissions')}
-            onActionClick={() => {
-              this.props.hidePermittedNetworkToast();
-              this.props.history.push(
-                `${REVIEW_PERMISSIONS}/${safeEncodedHost}`,
-              );
-            }}
-            onClose={() => this.props.hidePermittedNetworkToast()}
-          />
-        ) : null}
-      </ToastContainer>
-    );
-  }
-
-  updateNewPrivacyPolicyToastDate() {
-    const {
-      showPrivacyPolicyToast,
-      newPrivacyPolicyToastShownDate,
-      setNewPrivacyPolicyToastShownDate,
-    } = this.props;
-
-    if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
-      setNewPrivacyPolicyToastShownDate(Date.now());
-    }
-  }
-
-  getIsPrivacyToastRecent() {
-    const { newPrivacyPolicyToastShownDate } = this.props;
-
-    const currentDate = new Date();
-    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-    const newPrivacyPolicyToastShownDateObj = new Date(
-      newPrivacyPolicyToastShownDate,
-    );
-    const toastWasShownLessThanADayAgo =
-      currentDate - newPrivacyPolicyToastShownDateObj < oneDayInMilliseconds;
-
-    return toastWasShownLessThanADayAgo;
-  }
-
-  getShowAutoNetworkSwitchTest() {
-    return (
-      this.props.switchedNetworkDetails &&
-      !this.props.neverShowSwitchedNetworkMessage
-    );
-  }
-
   render() {
     const {
       isLoading,
@@ -928,7 +523,7 @@ export default class Routes extends Component {
       );
     ///: END:ONLY_INCLUDE_IF
 
-    const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
+    const showAutoNetworkSwitchToast = getShowAutoNetworkSwitchTest(this.props);
 
     return (
       <div
@@ -950,9 +545,9 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!this.hideAppHeader() && <AppHeader location={location} />}
+        {!hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
-        {this.showOnboardingHeader() && <OnboardingAppHeader />}
+        {showOnboardingHeader(location) && <OnboardingAppHeader />}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           isUnlocked ? <InteractiveReplacementTokenNotification /> : null
@@ -1007,47 +602,8 @@ export default class Routes extends Component {
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
-        {this.renderToasts()}
+        {/* TODO: put back {this.renderToasts()} */}
       </div>
     );
-  }
-
-  toggleMetamaskActive() {
-    if (this.props.isUnlocked) {
-      // currently active: deactivate
-      this.props.lockMetaMask();
-    } else {
-      // currently inactive: redirect to password box
-      const passwordBox = document.querySelector('input[type=password]');
-      if (!passwordBox) {
-        return;
-      }
-      passwordBox.focus();
-    }
-  }
-
-  getConnectingLabel(loadingMessage) {
-    if (loadingMessage) {
-      return loadingMessage;
-    }
-    const { providerType, providerId } = this.props;
-    const { t } = this.context;
-
-    switch (providerType) {
-      case NETWORK_TYPES.MAINNET:
-        return t('connectingToMainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('connectingToGoerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('connectingToSepolia');
-      case NETWORK_TYPES.LINEA_GOERLI:
-        return t('connectingToLineaGoerli');
-      case NETWORK_TYPES.LINEA_SEPOLIA:
-        return t('connectingToLineaSepolia');
-      case NETWORK_TYPES.LINEA_MAINNET:
-        return t('connectingToLineaMainnet');
-      default:
-        return t('connectingTo', [providerId]);
-    }
   }
 }
