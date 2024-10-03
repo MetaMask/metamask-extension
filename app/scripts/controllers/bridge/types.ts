@@ -48,6 +48,7 @@ export enum BridgeUserAction {
 }
 export enum BridgeBackgroundAction {
   SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
+  RESET_STATE = 'resetState',
 }
 
 type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
@@ -58,6 +59,7 @@ type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
 // Maps to BridgeController function names
 type BridgeControllerActions =
   | BridgeControllerAction<BridgeBackgroundAction.SET_FEATURE_FLAGS>
+  | BridgeControllerAction<BridgeBackgroundAction.RESET_STATE>
   | BridgeControllerAction<BridgeUserAction.SELECT_SRC_NETWORK>
   | BridgeControllerAction<BridgeUserAction.SELECT_DEST_NETWORK>
   | BridgeControllerAction<BridgeUserAction.UPDATE_QUOTE_PARAMS>;
