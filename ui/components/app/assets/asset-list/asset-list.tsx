@@ -39,10 +39,6 @@ import {
 import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  showPrimaryCurrency,
-  showSecondaryCurrency,
-} from '../../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
 import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -70,7 +66,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const isMainnet = useSelector(getMultichainIsMainnet);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
   const { chainId, ticker, type, rpcUrl } = useSelector(
     getMultichainCurrentNetwork,
   );
@@ -92,11 +88,17 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
+  } = useUserPreferencedCurrency(PRIMARY, {
+    ethNumberOfDecimals: 4,
+    shouldCheckShowNativeToken: true,
+  });
   const {
     currency: secondaryCurrency,
     numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
+  } = useUserPreferencedCurrency(SECONDARY, {
+    ethNumberOfDecimals: 4,
+    shouldCheckShowNativeToken: true,
+  });
 
   const [primaryCurrencyDisplay, primaryCurrencyProperties] =
     useCurrencyDisplay(balance, {
@@ -195,25 +197,14 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         title={nativeCurrency}
         // The primary and secondary currencies are subject to change based on the user's settings
         // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
-        primary={
-          showSecondaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? secondaryCurrencyDisplay
-            : undefined
-        }
+        primary={isOriginalNativeSymbol ? secondaryCurrencyDisplay : undefined}
         tokenSymbol={
-          useNativeCurrencyAsPrimaryCurrency
+          showNativeTokenAsMainBalance
             ? primaryCurrencyProperties.suffix
             : secondaryCurrencyProperties.suffix
         }
         secondary={
-          showFiat &&
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
+          showFiat && isOriginalNativeSymbol
             ? primaryCurrencyDisplay
             : undefined
         }

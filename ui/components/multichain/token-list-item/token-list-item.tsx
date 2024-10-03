@@ -396,7 +396,7 @@ export const TokenListItem = ({
                 <Text
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
-                  variant={TextVariant.bodyMd}
+                  variant={TextVariant.bodySmMedium}
                   textAlign={TextAlign.End}
                 >
                   {primary} {isNativeCurrency ? '' : tokenSymbol}
