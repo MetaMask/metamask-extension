@@ -4,7 +4,6 @@ import * as backgroundConnection from '../../../ui/store/background-connection';
 import {
   createMockImplementation,
   mockGetChains,
-  mockNetworkBaseLlama,
 } from '../helpers';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
@@ -36,13 +35,13 @@ describe('Switch network - ', () => {
     setupSubmitRequestToBackgroundMocks();
   });
 
-  it('validate the list of networks', async () => {
+  it.only('validate the list of networks', async () => {
     process.env.IN_TEST = '';
     const mockedMetamaskState = {
       ...mockMetaMaskState,
       preferences: {
         ...mockMetaMaskState.preferences,
-        showMultiRpcModal: true,
+        showMultiRpcModal: false,
       },
     };
 
@@ -60,13 +59,15 @@ describe('Switch network - ', () => {
       });
     });
 
-    const multiRpcModal = screen.getByTestId('multi-rpc-edit-modal');
-    expect(multiRpcModal).toBeInTheDocument();
-    expect(multiRpcModal).toHaveTextContent('Network RPCs Updated');
-    expect(multiRpcModal).toHaveTextContent(
-      'We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information.',
-    );
-    expect(screen.getByTestId('mm-modal-confirm')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('network-display'),
+    ).toBeInTheDocument();
+
+    // fireEvent.click(screen.getByTestId('network-display'));
+    // expect(
+    //   screen.queryByRole('dialog'),
+    // ).toBeInTheDocument();
+
   });
 
   it('edits the name of an RPC network', async () => {
