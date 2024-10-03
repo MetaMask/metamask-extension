@@ -219,7 +219,6 @@ export async function disconnectFromTestDapp(driver: Driver) {
     text: '127.0.0.1:8080',
     tag: 'p',
   });
-  await driver.clickElement('[data-testid="account-list-item-menu-button"]');
   await driver.clickElement({ text: 'Disconnect', tag: 'button' });
   await driver.clickElement('[data-testid ="disconnect-all"]');
 }
