@@ -89,9 +89,11 @@ export class ConfirmationsRejectRule implements Rule {
               const switchEthereumChainRequest = JSON.stringify({
                 jsonrpc: '2.0',
                 method: 'wallet_switchEthereumChain',
-                params: [{
-                  chainId: "0x539" // 1337
-                }],
+                params: [
+                  {
+                    chainId: '0x539', // 1337
+                  },
+                ],
               });
 
               await this.driver.executeScript(
