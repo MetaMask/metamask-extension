@@ -1,16 +1,15 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   SmartTransactionStatuses,
   SmartTransaction,
 } from '@metamask/smart-transactions-controller/dist/types';
+import lottie from 'lottie-web';
 
 import {
   Box,
   Text,
-  Icon,
   IconName,
-  IconSize,
   Button,
   ButtonVariant,
   ButtonSecondary,
@@ -34,6 +33,16 @@ import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
 import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
+
+const ANIMATION_DIRECTORY = './images/animations/smart-transaction-status';
+
+enum SmartTransactionAnimations {
+  Failed = `${ANIMATION_DIRECTORY}/smart-transaction-failed.lottie`,
+  Confirmed = `${ANIMATION_DIRECTORY}/smart-transaction-confirmed.lottie`,
+  SubmittingLoop = `${ANIMATION_DIRECTORY}/smart-transaction-submitting-loop.lottie`,
+  SubmittingIntro = `${ANIMATION_DIRECTORY}/smart-transaction-submitting-intro.lottie`,
+  Processing = `${ANIMATION_DIRECTORY}/smart-transaction-processing.json`,
+}
 
 export type RequestState = {
   smartTransaction?: SmartTransaction;
@@ -279,20 +288,67 @@ const Title = ({ title }: { title: string }) => {
 };
 
 const SmartTransactionsStatusIcon = ({
-  iconName,
-  iconColor,
+  status,
 }: {
-  iconName: IconName;
-  iconColor: IconColor;
+  status: SmartTransactionStatuses;
 }) => {
+  const animationContainer = useRef<HTMLDivElement>(null);
+  const [isIntro, setIsIntro] = useState(true);
+
+  useEffect(() => {
+    if (!animationContainer.current) {
+      return undefined;
+    }
+    let animationPath: string;
+    let shouldLoop = true;
+
+    if (status === SmartTransactionStatuses.PENDING) {
+      // Handle dual animations for the submitting (pending) status
+      animationPath = isIntro
+        ? SmartTransactionAnimations.SubmittingIntro
+        : SmartTransactionAnimations.SubmittingLoop;
+      shouldLoop = !isIntro;
+    } else {
+      switch (status) {
+        case SmartTransactionStatuses.SUCCESS:
+          animationPath = SmartTransactionAnimations.Confirmed;
+          shouldLoop = false;
+          break;
+        case SmartTransactionStatuses.REVERTED:
+        case SmartTransactionStatuses.UNKNOWN:
+          animationPath = SmartTransactionAnimations.Failed;
+          shouldLoop = false;
+          break;
+        default:
+          animationPath = SmartTransactionAnimations.Processing;
+          shouldLoop = true;
+      }
+    }
+
+    const animation = lottie.loadAnimation({
+      container: animationContainer.current,
+      renderer: 'svg',
+      loop: shouldLoop,
+      autoplay: true,
+      path: animationPath, // Use the animation path from the enum
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid meet',
+      },
+    });
+
+    if (status === SmartTransactionStatuses.PENDING && isIntro) {
+      animation.addEventListener('complete', () => {
+        setIsIntro(false); // Switch to loop animation after intro completes
+      });
+    }
+
+    // Cleanup on unmount
+    return () => animation.destroy();
+  }, [status, isIntro]);
+
   return (
-    <Box display={Display.Flex} style={{ fontSize: '48px' }}>
-      <Icon
-        name={iconName}
-        color={iconColor}
-        size={IconSize.Inherit}
-        marginBottom={4}
-      />
+    <Box display={Display.Flex} style={{ width: '48px', height: '48px' }}>
+      <div ref={animationContainer} />
     </Box>
   );
 };
@@ -319,7 +375,7 @@ export const SmartTransactionStatusPage = ({
   // @ts-ignore: This same selector is used in the awaiting-swap component.
   const fullTxData = useSelector((state) => getFullTxData(state, txId)) || {};
 
-  const { title, description, iconName, iconColor } = getDisplayValues({
+  const { title, description } = getDisplayValues({
     t,
     isSmartTransactionPending,
     isSmartTransactionSuccess,
@@ -371,8 +427,7 @@ export const SmartTransactionStatusPage = ({
           width={BlockSize.Full}
         >
           <SmartTransactionsStatusIcon
-            iconName={iconName}
-            iconColor={iconColor}
+            status={smartTransaction?.status as SmartTransactionStatuses}
           />
           <Title title={title} />
           <Description description={description} />

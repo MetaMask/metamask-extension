@@ -212,7 +212,7 @@ const config = {
     symlinks: false,
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.lottie'],
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
@@ -323,7 +323,7 @@ const config = {
       },
       // images, fonts, wasm, etc.
       {
-        test: /\.(?:png|jpe?g|ico|webp|svg|gif|ttf|eot|woff2?|wasm)$/u,
+        test: /\.(?:png|jpe?g|ico|webp|svg|gif|ttf|lottie|eot|woff2?|wasm)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
       },
