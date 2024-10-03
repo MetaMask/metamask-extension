@@ -44,4 +44,4 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases." --base develop --head update-coverage
+          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases.\nCoverage increased from 71% to 72%." --base develop --head update-coverage
