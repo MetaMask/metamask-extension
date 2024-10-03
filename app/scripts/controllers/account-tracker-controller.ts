@@ -314,6 +314,9 @@ export default class AccountTrackerController extends BaseController<
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
   }
 
+  /**
+   * Gets the current chain ID.
+   */
   #getCurrentChainId(): Hex {
     const { selectedNetworkClientId } = this.messagingSystem.call(
       'NetworkController:getState',
