@@ -751,20 +751,8 @@
   "openSeaEnabled": false,
   "orderedNetworkList": [],
   "participateInMetaMetrics": false,
-  "pendingApprovalCount": 1,
+  "pendingApprovalCount": 0,
   "pendingApprovals": {
-    "testApprovalId": {
-      "id": "testApprovalId",
-      "time": 1528133319641,
-      "origin": "metamask",
-      "type": "transaction",
-      "requestData": {
-        "txId": "testTransactionId"
-      },
-      "requestState": {
-        "test": "value"
-      }
-    }
   },
   "permissionHistory": {
     "https://metamask.github.io": {
@@ -783,7 +771,9 @@
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": false,
     "petnamesEnabled": false,
-    "showConfirmationAdvancedDetails": false
+    "showConfirmationAdvancedDetails": false,
+    "showMultiRpcModal": false,
+    "useNativeCurrencyAsPrimaryCurrency": true
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
