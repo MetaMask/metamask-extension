@@ -115,6 +115,9 @@ export default class BridgeController extends StaticIntervalPollingController<
         quoteRequest: {
           ...updatedQuoteRequest,
         },
+        quotes,
+        quotesLastFetched,
+        quotesLoadingStatus,
       };
     });
 

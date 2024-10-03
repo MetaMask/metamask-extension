@@ -52,15 +52,10 @@ const CrossChainSwap = () => {
   }, [isBridgeChain, isBridgeEnabled, providerConfig]);
 
   useEffect(() => {
-    // Reset controller before unloading the page
-    const onBeforeUnload = () => {
+    // Reset controller and inputs before unloading the page
+    return () => {
       dispatch(resetInputFields());
       dispatch(resetBridgeState());
-    };
-
-    window.addEventListener('beforeunload', onBeforeUnload);
-    return () => {
-      window.removeEventListener('beforeunload', onBeforeUnload);
     };
   }, []);
 
