@@ -13,7 +13,7 @@ import {
   regularDelayMs,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
+import { DAPP_URL, TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 import { retry } from '../../../development/lib/retry';
 
 /**
@@ -201,10 +201,12 @@ export async function connectAccountToTestDapp(driver: Driver) {
 
   await driver.delay(regularDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'Connect',
     tag: 'button',
   });
+
+  await driver.switchToWindowWithUrl(DAPP_URL);
 }
 
 export async function disconnectFromTestDapp(driver: Driver) {
