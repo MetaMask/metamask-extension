@@ -1873,10 +1873,6 @@
   "feeDetails": {
     "message": "Détails des frais"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
     "description": "Helps user import their account from a JSON file"
@@ -3092,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask n’est pas connecté à ce site"
   },
-  "noConversionDateAvailable": {
-    "message": "Aucune date de conversion des devises n’est disponible"
-  },
   "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
   },
@@ -3914,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "prix non disponible"
-  },
-  "primaryCurrencySetting": {
-    "message": "Devise principale"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Sélectionnez « natif » pour donner la priorité à l’affichage des valeurs dans la devise native de la chaîne (par ex. ETH). Sélectionnez « fiduciaire » pour donner la priorité à l’affichage des valeurs dans la devise de votre choix."
   },
   "primaryType": {
     "message": "Type principal"
@@ -6084,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "Demande de mise à jour"
-  },
-  "updatedWithDate": {
-    "message": "Mis à jour $1"
   },
   "uploadDropFile": {
     "message": "Déposez votre fichier ici"
