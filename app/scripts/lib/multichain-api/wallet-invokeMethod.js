@@ -15,12 +15,17 @@ export async function walletInvokeMethodHandler(
 ) {
   const { scope, request: wrappedRequest } = request.params;
 
-  const caveat = hooks.getCaveat(
-    request.origin,
-    Caip25EndowmentPermissionName,
-    Caip25CaveatType,
-  );
-  if (!caveat?.value.isMultichainOrigin) {
+  let caveat;
+  try {
+    caveat = hooks.getCaveat(
+      request.origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+    );
+  } catch (e) {
+    // noop
+  }
+  if (!caveat?.value?.isMultichainOrigin) {
     return end(providerErrors.unauthorized());
   }
 
