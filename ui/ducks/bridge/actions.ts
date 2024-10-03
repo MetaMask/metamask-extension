@@ -176,10 +176,11 @@ export const signBridgeTransaction = (
         checkNetworkAndAccountSupports1559(state);
 
       if (networkAndAccountSupports1559) {
+        const gasFeeEstimates = getGasFeeEstimates(state);
         const {
           high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
           // estimatedBaseFee = '0',
-        } = getGasFeeEstimates(state);
+        } = gasFeeEstimates;
         // decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
         maxFeePerGas = decGWEIToHexWEI(suggestedMaxFeePerGas);
         maxPriorityFeePerGas = decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
