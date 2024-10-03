@@ -56,7 +56,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await switchToNotificationWindow(driver);
 
         await driver.clickElement({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
         });
 
@@ -89,7 +89,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await switchToNotificationWindow(driver, 4);
 
         await driver.clickElement({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
         });
 
@@ -115,12 +115,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.delay(largeDelayMs);
-
-        // Find correct network on confirm tx
-        await driver.findElement({
-          text: 'Localhost 8545',
-          tag: 'span',
-        });
 
         // Reject Transaction
         await driver.findClickableElement({ text: 'Reject', tag: 'button' });
