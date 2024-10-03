@@ -56,7 +56,10 @@ import {
   DUMMY_QUOTES_APPROVAL,
   DUMMY_QUOTES_NO_APPROVAL,
 } from './dummy-quotes';
-import { getBridgeGasMultipliers } from './selectors';
+import {
+  getApprovalGasMultipliers,
+  getBridgeGasMultipliers,
+} from './selectors';
 
 const {
   setToChainId,
@@ -197,9 +200,7 @@ export const signBridgeTransaction = (
       };
     };
 
-    const calcMaxGasLimit = (gasLimit: number) => {
-      // @ts-expect-error BridgeState is contained in state
-      const gasMultiplier = getBridgeGasMultipliers(state)[chainId];
+    const calcMaxGasLimit = (gasLimit: number, gasMultiplier: number) => {
       return new Numeric(
         new BigNumber(gasLimit).times(gasMultiplier).round(0).toString(),
         10,
@@ -232,7 +233,10 @@ export const signBridgeTransaction = (
       const shouldResetApproval = allowance.lt(sentAmount) && allowance.gt(0);
 
       if (shouldResetApproval) {
-        const maxGasLimit = calcMaxGasLimit(quoteMeta.approval.gasLimit);
+        const maxGasLimit = calcMaxGasLimit(
+          quoteMeta.approval.gasLimit,
+          getApprovalGasMultipliers(state)[hexChainId],
+        );
         const txParams = getEthUsdtApproveResetTxParams({
           ...quoteMeta.approval,
           chainId: hexChainId,
@@ -288,7 +292,10 @@ export const signBridgeTransaction = (
         });
       }
 
-      const maxGasLimit = calcMaxGasLimit(quoteMeta.approval.gasLimit);
+      const maxGasLimit = calcMaxGasLimit(
+        quoteMeta.approval.gasLimit,
+        getApprovalGasMultipliers(state)[hexChainId],
+      );
       const txParams = {
         ...quoteMeta.approval,
         chainId: hexChainId,
@@ -336,7 +343,10 @@ export const signBridgeTransaction = (
         throw new Error('Invalid chain ID');
       }
 
-      const maxGasLimit = calcMaxGasLimit(quoteMeta.trade.gasLimit);
+      const maxGasLimit = calcMaxGasLimit(
+        quoteMeta.trade.gasLimit,
+        getBridgeGasMultipliers(state)[hexChainId],
+      );
       const txParams = {
         ...quoteMeta.trade,
         chainId: hexChainId,
