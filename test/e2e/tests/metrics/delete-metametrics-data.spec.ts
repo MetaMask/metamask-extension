@@ -125,11 +125,6 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         await (
           deleteMetaMetricsDataButton as WebElementWithWaitForElementState
         ).waitForElementState('disabled');
-        assert.equal(
-          await deleteMetaMetricsDataButton.isEnabled(),
-          false,
-          'Delete MetaMetrics data button is disabled',
-        );
 
         const events = await getEventPayloads(
           driver,
@@ -198,11 +193,6 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         await (
           deleteMetaMetricsDataButton as WebElementWithWaitForElementState
         ).waitForElementState('disabled');
-        assert.equal(
-          await deleteMetaMetricsDataButton.isEnabled(),
-          false,
-          'Delete MetaMetrics data button is disabled',
-        );
 
         const events = await getEventPayloads(
           driver,
@@ -223,11 +213,6 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         await (
           deleteMetaMetricsDataButtonRefreshed as WebElementWithWaitForElementState
         ).waitForElementState('disabled');
-        assert.equal(
-          await deleteMetaMetricsDataButtonRefreshed.isEnabled(),
-          false,
-          'Delete MetaMetrics data button is disabled',
-        );
       },
     );
   });
