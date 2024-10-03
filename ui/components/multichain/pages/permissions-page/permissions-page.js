@@ -33,6 +33,7 @@ import {
 } from '../../../../selectors';
 import { ProductTour } from '../../product-tour-popover';
 import { hidePermissionsTour } from '../../../../store/actions';
+import { isSnapId } from '../../../../helpers/utils/snaps';
 import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {
@@ -59,7 +60,8 @@ export const PermissionsPage = () => {
 
   const renderConnectionsList = (connectionList) =>
     Object.entries(connectionList).map(([itemKey, connection]) => {
-      return (
+      const isSnap = isSnapId(connection.origin);
+      return isSnap ? null : (
         <ConnectionListItem
           data-testid="connection-list-item"
           key={itemKey}
