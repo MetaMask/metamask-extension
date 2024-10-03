@@ -45,9 +45,9 @@ import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 
 /** Information about a native or token asset */
 export type Asset = (

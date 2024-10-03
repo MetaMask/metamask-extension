@@ -255,6 +255,32 @@ exports[`AssetPage should render a native asset 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
       >
         <div
+          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-4 mm-box--color-text-default"
+          >
+            Token details
+          </h3>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Spending caps
+            </p>
+            <a
+              class="asset-page__spending-caps mm-text--body-md-medium"
+              href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Edit in Portfolio
+            </a>
+          </div>
+        </div>
+        <div
           class="mm-box mm-box--margin-bottom-8"
         >
           <h3
@@ -609,6 +635,23 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 18
               </p>
             </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Spending caps
+            </p>
+            <a
+              class="asset-page__spending-caps mm-text--body-md-medium"
+              href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Edit in Portfolio
+            </a>
           </div>
         </div>
         <div
@@ -1092,6 +1135,23 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 18
               </p>
             </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Spending caps
+            </p>
+            <a
+              class="asset-page__spending-caps mm-text--body-md-medium"
+              href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Edit in Portfolio
+            </a>
           </div>
         </div>
         <div
