@@ -6,6 +6,28 @@ import {
 import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 
 /**
+ * Returns whether the offscreen document already exists or not.
+ *
+ * See https://developer.chrome.com/docs/extensions/reference/api/offscreen#before_chrome_116_check_if_an_offscreen_document_is_open
+ *
+ * @returns True if the offscreen document already is has been opened, otherwise false.
+ */
+async function hasOffscreenDocument() {
+  // getContexts is only available in Chrome 116+
+  if ('getContexts' in chrome.runtime) {
+    const contexts = await chrome.runtime.getContexts({
+      contextTypes: ['OFFSCREEN_DOCUMENT'],
+    });
+    return contexts.length > 0;
+  } else {
+    const matchedClients = await clients.matchAll();
+    return await matchedClients.some(client => {
+      client.url.includes(chrome.runtime.id);
+    });
+  }
+}
+
+/**
  * Creates an offscreen document that can be used to load additional scripts
  * and iframes that can communicate with the extension through the chrome
  * runtime API. Only one offscreen document may exist, so any iframes required
@@ -41,6 +63,14 @@ export async function createOffscreen() {
   });
 
   try {
+    const offscreenExists = await hasOffscreenDocument();
+
+    // In certain cases the offscreen document may already exist during boot, if it does, we close it and recreate it.
+    if (offscreenExists) {
+      console.debug("Found existing offscreen document, closing.");
+      await chrome.offscreen.closeDocument();
+    }
+
     await chrome.offscreen.createDocument({
       url: './offscreen.html',
       reasons: ['IFRAME_SCRIPTING'],
@@ -51,18 +81,10 @@ export async function createOffscreen() {
     if (offscreenDocumentLoadedListener) {
       chrome.runtime.onMessage.removeListener(offscreenDocumentLoadedListener);
     }
-    if (
-      error?.message?.startsWith(
-        'Only a single offscreen document may be created',
-      )
-    ) {
-      console.debug('Offscreen document already exists; skipping creation');
-    } else {
-      // Report unrecongized errors without halting wallet initialization
-      // Failures to create the offscreen document does not compromise wallet data integrity or
-      // core functionality, it's just needed for specific features.
-      captureException(error);
-    }
+    // Report unrecongized errors without halting wallet initialization
+    // Failures to create the offscreen document does not compromise wallet data integrity or
+    // core functionality, it's just needed for specific features.
+    captureException(error);
     return;
   }
 
