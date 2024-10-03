@@ -143,7 +143,9 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await changeLanguage(driver, languageIndex);
-        await driver.navigate();
+        await driver.clickElementAndWaitToDisappear(
+          '.settings-page__header__title-container__close-button',
+        );
         await driver.clickElement(selectors.ethOverviewSend);
         await driver.pasteIntoField(
           selectors.ensInput,
@@ -176,7 +178,9 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await changeLanguage(driver, languageIndex);
-        await driver.navigate();
+        await driver.clickElementAndWaitToDisappear(
+          '.settings-page__header__title-container__close-button',
+        );
 
         // Validate the account tooltip
         const isAccountTooltipChanged = await driver.isElementPresent(
@@ -214,7 +218,9 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         // selects "Magyar" language
         await changeLanguage(driver, languageIndex);
-        await driver.navigate();
+        await driver.clickElementAndWaitToDisappear(
+          '.settings-page__header__title-container__close-button',
+        );
         await driver.clickElement(selectors.nftsTab);
 
         // Validate the hypertext
