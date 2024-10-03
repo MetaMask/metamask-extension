@@ -96,6 +96,7 @@ export type Preferences = {
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
   smartTransactionsOptInStatus: boolean | null;
+  showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
@@ -105,6 +106,7 @@ export type Preferences = {
   showMultiRpcModal: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
+  shouldShowAggregatedBalancePopover: boolean;
 };
 
 export type PreferencesControllerState = {
@@ -122,7 +124,9 @@ export type PreferencesControllerState = {
   useRequestQueue: boolean;
   openSeaEnabled: boolean;
   securityAlertsEnabled: boolean;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
   addSnapAccountEnabled: boolean;
@@ -223,6 +227,7 @@ export default class PreferencesController {
         showFiatInTestnets: false,
         showTestNetworks: false,
         smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
+        showNativeTokenAsMainBalance: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
@@ -232,6 +237,7 @@ export default class PreferencesController {
         showMultiRpcModal: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
+        shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -425,6 +431,7 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
@@ -436,6 +443,7 @@ export default class PreferencesController {
       watchEthereumAccountEnabled,
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `bitcoinSupportEnabled` property.
