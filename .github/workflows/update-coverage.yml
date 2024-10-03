@@ -31,8 +31,8 @@ jobs:
     # needs:
     #  - run-tests
     env:
-      ACTIVE_BRANCH_COVERAGE: 73 #${{ needs.run-tests.outputs.active-branch-coverage }}
-      DEFAULT_BRANCH_COVERAGE: 72 #${{ needs.run-tests.outputs.default-branch-coverage }}
+      ACTIVE_BRANCH_COVERAGE: 73 # ${{ needs.run-tests.outputs.active-branch-coverage }}
+      DEFAULT_BRANCH_COVERAGE: 72 # ${{ needs.run-tests.outputs.default-branch-coverage }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -54,4 +54,4 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $DEFAULT_BRANCH_COVERAGE% to $ACTIVE_BRANCH_COVERAGE%." --base develop --head update-coverage || gh pr edit --body 'This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $DEFAULT_BRANCH_COVERAGE% to $ACTIVE_BRANCH_COVERAGE%.'
+          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $DEFAULT_BRANCH_COVERAGE% to $ACTIVE_BRANCH_COVERAGE%." --base develop --head update-coverage || gh pr edit --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $DEFAULT_BRANCH_COVERAGE% to $ACTIVE_BRANCH_COVERAGE%."
