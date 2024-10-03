@@ -2,10 +2,11 @@ const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
 
 const {
-  defaultGanacheOptions,
-  withFixtures,
   createDownloadFolder,
+  defaultGanacheOptions,
+  openMenuSafe,
   unlockWallet,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -56,9 +57,8 @@ describe('Backup and Restore', function () {
         await unlockWallet(driver);
 
         // Download user settings
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement('[data-testid="export-data-button"]');
