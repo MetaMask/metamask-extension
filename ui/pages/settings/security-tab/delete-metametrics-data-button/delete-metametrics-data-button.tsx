@@ -43,8 +43,8 @@ type DeleteMetaMetricsDataButtonComponent = <
 const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
   React.forwardRef(
     <C extends React.ElementType = 'div'>(
-      // eslint-disable-next-line no-empty-pattern
-      {}: DeleteMetaMetricsDataButtonProps<C>,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      { ...props }: DeleteMetaMetricsDataButtonProps<C>,
       ref: PolymorphicRef<C>,
     ) => {
       const t = useI18nContext();
