@@ -321,6 +321,7 @@ const AccountListItem = ({
                 value={balanceToTranslate}
                 type={PRIMARY}
                 data-testid="first-currency-display"
+                showFiat={!isEvmNetwork}
                 shouldCheckShowNativeToken
                 isAggregatedFiatOverviewBalance={
                   !showNativeTokenAsMainBalance && !isTestnet
