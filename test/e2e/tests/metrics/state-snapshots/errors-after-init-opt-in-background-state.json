@@ -38,6 +38,7 @@
     "showAccountBanner": true,
     "trezorModel": null,
     "onboardingDate": null,
+    "lastViewedUserSurvey": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -62,16 +63,8 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionSupport": "boolean",
-        "srcNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        },
-        "destNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        }
+        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
+        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       }
     }
   },
@@ -180,6 +173,7 @@
     "permissionActivityLog": "object"
   },
   "PreferencesController": {
+    "selectedAddress": "string",
     "useBlockie": false,
     "useNonceField": false,
     "usePhishDetect": true,
@@ -211,12 +205,13 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
+      "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "showMultiRpcModal": "boolean"
+      "showMultiRpcModal": "boolean",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -228,8 +223,7 @@
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
-    "useExternalServices": "boolean",
-    "selectedAddress": "string"
+    "useExternalServices": "boolean"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
