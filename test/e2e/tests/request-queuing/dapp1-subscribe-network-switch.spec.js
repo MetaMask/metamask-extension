@@ -49,7 +49,7 @@ describe('Request Queueing', function () {
         await switchToNotificationWindow(driver);
 
         await driver.clickElement({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
         });
 
