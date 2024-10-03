@@ -80,11 +80,6 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
     });
-    // We assert if the unsupportable scopes are supported in order
-    // to have an appropriate error thrown for the response
-    assertScopesSupported(unsupportableRequiredScopes, {
-      isChainIdSupported: existsNetworkClientForChainId,
-    });
 
     const {
       supportedScopes: supportedOptionalScopes,
