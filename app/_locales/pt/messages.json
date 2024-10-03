@@ -1873,10 +1873,6 @@
   "feeDetails": {
     "message": "Detalhes da taxa"
   },
-  "fiat": {
-    "message": "Fiduciária",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
     "description": "Helps user import their account from a JSON file"
@@ -3092,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "A MetaMask não está conectada a este site"
   },
-  "noConversionDateAvailable": {
-    "message": "Não há uma data de conversão de moeda disponível"
-  },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
   },
@@ -3914,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "preço não disponível"
-  },
-  "primaryCurrencySetting": {
-    "message": "Moeda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selecione Nativa para priorizar a exibição de valores na moeda nativa da cadeia (por ex., ETH). Selecione Fiduciária para priorizar a exibição de valores na moeda fiduciária selecionada."
   },
   "primaryType": {
     "message": "Tipo primário"
@@ -6084,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "Solicitação de atualização"
-  },
-  "updatedWithDate": {
-    "message": "Atualizado em $1"
   },
   "uploadDropFile": {
     "message": "Solte seu arquivo aqui"
