@@ -141,6 +141,8 @@ import NetworkConfirmationPopover from '../../components/multichain/network-list
 import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
 import CrossChainSwap from '../bridge';
 
+const RPC_TIMEOUT = 10000;
+
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
     matchPath(pathname, {
@@ -270,6 +272,8 @@ export default class Routes extends Component {
       isUnlocked,
       useRequestQueue,
       currentExtensionPopupId,
+      isNetworkLoading,
+      setShowRPCTimeoutToast,
     } = this.props;
     if (theme !== prevProps.theme) {
       this.setTheme();
@@ -304,6 +308,19 @@ export default class Routes extends Component {
       currentExtensionPopupId !== global.metamask.id
     ) {
       window.close();
+    }
+
+    // Check if the network loading state has changed
+    if (isNetworkLoading && !prevProps.isNetworkLoading) {
+      // Start the timeout if the network starts loading
+      this.networkLoadingTimeout = setTimeout(() => {
+        if (this.props.isNetworkLoading) {
+          setShowRPCTimeoutToast(true);
+        }
+      }, RPC_TIMEOUT);
+    } else if (!isNetworkLoading && prevProps.isNetworkLoading) {
+      // Clear the timeout if the network stops loading
+      clearTimeout(this.networkLoadingTimeout);
     }
   }
 
