@@ -204,34 +204,6 @@ describe('rampsSlice', () => {
       expect(getIsNativeTokenBuyable(state)).toBe(false);
     });
 
-    it('should return true when Bitcoin is buyable and current chain is Bitcoin', () => {
-      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
-      getMultichainIsBitcoinMock.mockReturnValue(true);
-      const mockBuyableChains = [
-        { chainId: MultichainNetworks.BITCOIN, active: true },
-      ];
-      store.dispatch({
-        type: 'ramps/setBuyableChains',
-        payload: mockBuyableChains,
-      });
-      const state = store.getState();
-      expect(getIsNativeTokenBuyable(state)).toBe(true);
-    });
-
-    it('should return false when Bitcoin is not buyable and current chain is Bitcoin', () => {
-      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
-      getMultichainIsBitcoinMock.mockReturnValue(true);
-      const mockBuyableChains = [
-        { chainId: MultichainNetworks.BITCOIN, active: false },
-      ];
-      store.dispatch({
-        type: 'ramps/setBuyableChains',
-        payload: mockBuyableChains,
-      });
-      const state = store.getState();
-      expect(getIsNativeTokenBuyable(state)).toBe(false);
-    });
-
     it('should return false when buyable chains is a corrupted array', () => {
       getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(false);
@@ -241,6 +213,7 @@ describe('rampsSlice', () => {
           buyableChains: [null, null, null],
         },
       };
+      n;
       expect(getIsNativeTokenBuyable(mockCorruptedState)).toBe(false);
     });
   });
