@@ -84,7 +84,7 @@ export function assertObjectMaxSize(data, maxSize = 0) {
         countValueSize(value);
       }
     }
-    // Allow object to be garbage collected after it has been counted
+    // Delete object reference after it has been counted, to prevent objects array from growing unbounded
     objects.shift();
   }
 }
