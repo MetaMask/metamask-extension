@@ -61,23 +61,28 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
           tag: 'button',
         });
 
+        await driver.switchToWindowWithUrl(DAPP_URL);
+
+        const switchEthereumChainRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x53a' }],
+        });
+
+        // Ensure Dapp One is on Localhost 8546
+        await driver.executeScript(
+          `window.ethereum.request(${switchEthereumChainRequest})`,
+        );
+
+        // Should auto switch without prompt since already approved via connect
+
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
-
         // Wait for the first dapp's connect confirmation to disappear
         await driver.waitUntilXWindowHandles(2);
 
-        // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
@@ -110,7 +115,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         await driver.delay(largeDelayMs);
 
-        // Dapp 1 send  1 tx
+        // Dapp 1 send 1 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
         await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
@@ -132,7 +137,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         // Wait for confirmations to close and transactions from the second dapp to open
         // Large delays to wait for confirmation spam opening/closing bug.
-        await driver.delay(5000);
+        await driver.delay(largeDelayMs);
 
         // Wait for new confirmations queued from second dapp to open
         await switchToNotificationWindow(driver, 4);
@@ -155,6 +160,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.clickElement('.page-container__footer-secondary a');
 
         await driver.clickElement({ text: 'Reject all', tag: 'button' });
+
+        await driver.delay(largeDelayMs);
 
         // Wait for new confirmations queued from second dapp to open
         await switchToNotificationWindow(driver, 4);
