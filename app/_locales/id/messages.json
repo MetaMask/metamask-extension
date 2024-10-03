@@ -1873,10 +1873,6 @@
   "feeDetails": {
     "message": "Detail biaya"
   },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
@@ -3092,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask tidak terhubung ke situs ini"
   },
-  "noConversionDateAvailable": {
-    "message": "Tanggal konversi mata uang tidak tersedia"
-  },
   "noConversionRateAvailable": {
     "message": "Nilai konversi tidak tersedia"
   },
@@ -3914,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "harga tidak tersedia"
-  },
-  "primaryCurrencySetting": {
-    "message": "Mata uang primer"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Pilih asal untuk memprioritaskan nilai yang ditampilkan dalam mata uang asal chain (contoh, ETH). Pilih Fiat untuk memprioritaskan nilai yang ditampilkan dalam mata uang fiat yang Anda pilih."
   },
   "primaryType": {
     "message": "Tipe primer"
@@ -6073,9 +6060,6 @@
   },
   "updateRequest": {
     "message": "Permintaan pembaruan"
-  },
-  "updatedWithDate": {
-    "message": "Diperbarui $1"
   },
   "uploadDropFile": {
     "message": "Letakkan fail di sini"
