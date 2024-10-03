@@ -77,7 +77,8 @@ export function assertObjectMaxSize(data, maxSize = 0) {
         countValueSize(value);
       }
     } else {
-      // Iterate through keys first because they're faster to count, minimizing the number of object references we need to track before stopping
+      // Iterate through keys first because they're faster to count, minimizing the number of
+      // object references we need to track before stopping
       for (const key of Object.keys(object)) {
         countValueSize(key);
       }
@@ -85,7 +86,8 @@ export function assertObjectMaxSize(data, maxSize = 0) {
         countValueSize(value);
       }
     }
-    // Delete object reference after it has been counted, to prevent objects array from growing unbounded
+    // Delete object reference after it has been counted, to prevent objects array from growing
+    // unbounded
     objects.shift();
   }
 }
