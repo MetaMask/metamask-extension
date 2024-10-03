@@ -45,7 +45,7 @@ import {
   getSwapsLivenessForNetwork,
   parseSmartTransactionsError,
   StxErrorTypes,
-  getSwaps1559GasFeeEstimates,
+  getSwap1559GasFeeEstimates,
 } from '../../pages/swaps/swaps.util';
 import {
   addHexes,
@@ -1110,7 +1110,7 @@ export const signAndSendTransactions = (
       const networkGasFeeEstimates = getGasFeeEstimates(state);
       const { estimatedBaseFee = '0' } = networkGasFeeEstimates;
 
-      transactionGasFeeEstimates = await getSwaps1559GasFeeEstimates(
+      transactionGasFeeEstimates = await getSwap1559GasFeeEstimates(
         usedQuote.trade,
         approveTxParams,
         estimatedBaseFee,

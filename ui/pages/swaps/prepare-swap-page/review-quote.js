@@ -86,7 +86,7 @@ import {
   getRenderableNetworkFeesForQuote,
   getFeeForSmartTransaction,
   formatSwapsValueForDisplay,
-  getSwaps1559GasFeeEstimates,
+  getSwap1559GasFeeEstimates,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
@@ -255,16 +255,24 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const { estimatedBaseFee = '0' } = useGasFeeEstimates();
 
-  const gasFeeEstimates = useAsyncResult(
-    () =>
-      getSwaps1559GasFeeEstimates(
-        usedQuote.trade,
-        approveTxParams,
-        estimatedBaseFee,
-        chainId,
-      ),
-    [usedQuote.trade, approveTxParams, estimatedBaseFee, chainId],
-  );
+  const gasFeeEstimates = useAsyncResult(async () => {
+    if (!networkAndAccountSupports1559) {
+      return undefined;
+    }
+
+    return await getSwap1559GasFeeEstimates(
+      usedQuote.trade,
+      approveTxParams,
+      estimatedBaseFee,
+      chainId,
+    );
+  }, [
+    usedQuote.trade,
+    approveTxParams,
+    estimatedBaseFee,
+    chainId,
+    networkAndAccountSupports1559,
+  ]);
 
   const gasFeeEstimatesTrade = gasFeeEstimates.value?.tradeGasFeeEstimates;
   const gasFeeEstimatesApprove = gasFeeEstimates.value?.approveGasFeeEstimates;

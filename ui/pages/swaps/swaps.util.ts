@@ -786,7 +786,7 @@ export const parseSmartTransactionsError = (errorMessage: string): string => {
   return JSON.parse(errorJson.trim());
 };
 
-export const getSwaps1559GasFeeEstimates = async (
+export const getSwap1559GasFeeEstimates = async (
   tradeTxParams: TransactionParams,
   approveTxParams: TransactionParams | undefined,
   estimatedBaseFeeGwei: string,
@@ -794,14 +794,14 @@ export const getSwaps1559GasFeeEstimates = async (
 ) => {
   const estimatedBaseFee = decGWEIToHexWEI(estimatedBaseFeeGwei) as Hex;
 
-  const tradeGasFeeEstimates = await getSwapTransaction1559GasFeeEstimates(
+  const tradeGasFeeEstimates = await getTransaction1559GasFeeEstimates(
     tradeTxParams,
     estimatedBaseFee,
     chainId,
   );
 
   const approveGasFeeEstimates = approveTxParams
-    ? await getSwapTransaction1559GasFeeEstimates(
+    ? await getTransaction1559GasFeeEstimates(
         approveTxParams,
         estimatedBaseFee,
         chainId,
@@ -815,7 +815,7 @@ export const getSwaps1559GasFeeEstimates = async (
   };
 };
 
-async function getSwapTransaction1559GasFeeEstimates(
+async function getTransaction1559GasFeeEstimates(
   transactionParams: TransactionParams,
   estimatedBaseFee: Hex,
   chainId: Hex,
@@ -825,16 +825,16 @@ async function getSwapTransaction1559GasFeeEstimates(
     chainId,
   });
 
-  const transactionGasFeeEstimates =
-    transactionGasFeeResponse?.estimates as FeeMarketGasFeeEstimates;
+  const transactionGasFeeEstimates = transactionGasFeeResponse?.estimates as
+    | FeeMarketGasFeeEstimates
+    | undefined;
 
-  const { maxFeePerGas } = transactionGasFeeEstimates.high;
-  const { maxPriorityFeePerGas } = transactionGasFeeEstimates.high;
+  const { maxFeePerGas } = transactionGasFeeEstimates?.high ?? {};
+  const { maxPriorityFeePerGas } = transactionGasFeeEstimates?.high ?? {};
 
-  const baseAndPriorityFeePerGas = addHexes(
-    estimatedBaseFee,
-    maxPriorityFeePerGas,
-  );
+  const baseAndPriorityFeePerGas = maxPriorityFeePerGas
+    ? (addHexes(estimatedBaseFee, maxPriorityFeePerGas) as Hex)
+    : undefined;
 
   return {
     baseAndPriorityFeePerGas,
