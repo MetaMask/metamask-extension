@@ -4,115 +4,9 @@ import { Provider } from 'react-redux';
 
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
-
-const tests = [
-  {
-    state: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-      nativeCurrency: 'ETH',
-      showFiat: true,
-      currentCurrency: 'usd',
-    },
-    params: {
-      type: 'PRIMARY',
-    },
-    result: {
-      currency: 'ETH',
-      numberOfDecimals: 8,
-    },
-  },
-  {
-    state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-      nativeCurrency: 'ETH',
-      showFiat: true,
-      currentCurrency: 'usd',
-    },
-    params: {
-      type: 'PRIMARY',
-    },
-    result: {
-      currency: 'usd',
-      numberOfDecimals: 2,
-    },
-  },
-  {
-    state: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-      nativeCurrency: 'ETH',
-      showFiat: true,
-    },
-    params: {
-      type: 'SECONDARY',
-      fiatNumberOfDecimals: 4,
-      fiatPrefix: '-',
-    },
-    result: {
-      currency: undefined,
-      numberOfDecimals: 4,
-    },
-  },
-  {
-    state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-      nativeCurrency: 'ETH',
-      showFiat: true,
-    },
-    params: {
-      type: 'SECONDARY',
-      fiatNumberOfDecimals: 4,
-      numberOfDecimals: 3,
-      fiatPrefix: 'a',
-    },
-    result: {
-      currency: 'ETH',
-      numberOfDecimals: 3,
-    },
-  },
-  {
-    state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-      nativeCurrency: 'ETH',
-      showFiat: false,
-    },
-    params: {
-      type: 'PRIMARY',
-    },
-    result: {
-      currency: 'ETH',
-      numberOfDecimals: 8,
-    },
-  },
-  {
-    state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-      nativeCurrency: 'ETH',
-      showFiat: true,
-    },
-    params: {
-      type: 'PRIMARY',
-    },
-    result: {
-      currency: undefined,
-      numberOfDecimals: 2,
-    },
-  },
-  {
-    state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-      nativeCurrency: 'ETH',
-      showFiat: true,
-    },
-    params: {
-      type: 'PRIMARY',
-    },
-    result: {
-      currency: undefined,
-      numberOfDecimals: 2,
-    },
-  },
-];
 
 const renderUseUserPreferencedCurrency = (state, value, restProps) => {
   const defaultState = {
@@ -120,16 +14,15 @@ const renderUseUserPreferencedCurrency = (state, value, restProps) => {
     metamask: {
       ...mockState.metamask,
       completedOnboarding: true,
-      currentCurrency: state.currentCurrency,
-      providerConfig: {
-        chainId: state.showFiat ? '0x1' : '0x539',
+      ...mockNetworkState({
+        chainId: state.showFiat ? CHAIN_IDS.MAINNET : CHAIN_IDS.SEPOLIA,
         ticker: state?.nativeCurrency,
-      },
+      }),
+      currentCurrency: state.currentCurrency,
       currencyRates: { ETH: { conversionRate: 280.45 } },
       preferences: {
-        useNativeCurrencyAsPrimaryCurrency:
-          state.useNativeCurrencyAsPrimaryCurrency,
         showFiatInTestnets: state.showFiat,
+        showNativeTokenAsMainBalance: state.showNativeTokenAsMainBalance,
       },
     },
   };
@@ -142,10 +35,148 @@ const renderUseUserPreferencedCurrency = (state, value, restProps) => {
     wrapper,
   });
 };
-
+const tests = [
+  {
+    state: {
+      showNativeTokenAsMainBalance: true,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      showNativeOverride: true,
+    },
+    result: {
+      currency: 'ETH',
+      numberOfDecimals: 8,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: true,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      showFiatOverride: true,
+    },
+    result: {
+      currency: 'usd',
+      numberOfDecimals: 2,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: true,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'PRIMARY',
+      shouldCheckShowNativeToken: true,
+    },
+    result: {
+      currency: 'ETH',
+      numberOfDecimals: 8,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: false,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'PRIMARY',
+    },
+    result: {
+      currency: 'ETH',
+      numberOfDecimals: 8,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: false,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'SECONDARY',
+    },
+    result: {
+      currency: 'usd',
+      numberOfDecimals: 2,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: false,
+      nativeCurrency: 'ETH',
+      showFiat: false,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'SECONDARY',
+    },
+    result: {
+      currency: 'ETH',
+      numberOfDecimals: 8,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: true,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'PRIMARY',
+    },
+    result: {
+      currency: 'ETH',
+      numberOfDecimals: 8,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: true,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'SECONDARY',
+    },
+    result: {
+      currency: 'usd',
+      numberOfDecimals: 2,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: true,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'SECONDARY',
+      shouldCheckShowNativeToken: true,
+    },
+    result: {
+      currency: 'usd',
+      numberOfDecimals: 2,
+    },
+  },
+];
 describe('useUserPreferencedCurrency', () => {
   tests.forEach(({ params: { type, ...otherParams }, state, result }) => {
-    describe(`when showFiat is ${state.showFiat}, useNativeCurrencyAsPrimary is ${state.useNativeCurrencyAsPrimaryCurrency} and type is ${type}`, () => {
+    describe(`when showFiat is ${state.showFiat}, shouldCheckShowNativeToken is ${otherParams.shouldCheckShowNativeToken}, showNativeTokenAsMainBalance is ${state.showNativeTokenAsMainBalance} and type is ${type}`, () => {
       const { result: hookResult } = renderUseUserPreferencedCurrency(
         state,
         type,

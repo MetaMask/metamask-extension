@@ -23,17 +23,12 @@ export class ConfirmationsRejectRule implements Rule {
 
   private only: string[];
 
-  private rejectButtonInsteadOfCancel: string[];
-
   private requiresEthAccountsPermission: string[];
 
   constructor(options: ConfirmationsRejectRuleOptions) {
     this.driver = options.driver;
     this.only = options.only;
-    this.rejectButtonInsteadOfCancel = [
-      'personal_sign',
-      'eth_signTypedData_v4',
-    ];
+
     this.requiresEthAccountsPermission = [
       'personal_sign',
       'eth_signTypedData_v4',
@@ -112,22 +107,15 @@ export class ConfirmationsRejectRule implements Rule {
         reject,
         task: async () => {
           try {
-            await this.driver.waitUntilXWindowHandles(3);
             await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            let text = 'Cancel';
-            if (this.rejectButtonInsteadOfCancel.includes(call.methodName)) {
-              await this.driver.findClickableElements({
-                text: 'Reject',
-                tag: 'button',
-              });
-              text = 'Reject';
-            } else {
-              await this.driver.findClickableElements({
-                text: 'Cancel',
-                tag: 'button',
-              });
-            }
+            const text = 'Cancel';
+
+            await this.driver.findClickableElements({
+              text: 'Cancel',
+              tag: 'button',
+            });
+
             const screenshot = await this.driver.driver.takeScreenshot();
             call.attachments = call.attachments || [];
             call.attachments.push({

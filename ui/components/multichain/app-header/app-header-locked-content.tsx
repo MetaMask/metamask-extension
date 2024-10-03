@@ -6,13 +6,10 @@ import MetafoxLogo from '../../ui/metafox-logo';
 import { PickerNetwork } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getTestNetworkBackgroundColor } from '../../../selectors';
-import {
-  MultichainProviderConfig,
-  ProviderConfigWithImageUrl,
-} from '../../../../shared/constants/multichain/networks';
+import { MultichainNetwork } from '../../../selectors/multichain';
 
 type AppHeaderLockedContentProps = {
-  currentNetwork: ProviderConfigWithImageUrl | MultichainProviderConfig;
+  currentNetwork: MultichainNetwork;
   networkOpenCallback: () => void;
 };
 
@@ -36,7 +33,7 @@ export const AppHeaderLockedContent = ({
           }}
           aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
           label={currentNetwork?.nickname ?? ''}
-          src={currentNetwork?.rpcPrefs?.imageUrl}
+          src={currentNetwork?.network?.rpcPrefs?.imageUrl}
           onClick={(e: React.MouseEvent<HTMLElement>) => {
             e.stopPropagation();
             e.preventDefault();

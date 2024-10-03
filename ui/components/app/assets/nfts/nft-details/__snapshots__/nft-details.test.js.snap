@@ -1,0 +1,364 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NFT Details should match minimal props and state snapshot 1`] = `
+<div>
+  <div
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+  >
+    <div
+      class="mm-box multichain-page__inner-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    >
+      <div
+        class="mm-box multichain-page-content nft-details__content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+        >
+          <button
+            aria-label="Back"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+            data-testid="nft__back"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-left.svg');"
+            />
+          </button>
+          <div>
+            <button
+              aria-label="NFT Options"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
+              data-testid="nft-options__button"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/more-vertical.svg');"
+              />
+            </button>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-top-1 mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
+        >
+          <div
+            class="mm-box nft-details__nft-item"
+          >
+            <button
+              class="mm-box nft-item__container"
+              data-testid="nft-item"
+            >
+              <div
+                class="mm-box mm-badge-wrapper nft-item__badge-wrapper nft-item__badge-wrapper__clickable mm-box--display-block"
+              >
+                <div
+                  class="mm-box nft-item__default-image nft-default nft-default--clickable mm-box--display-flex mm-box--rounded-lg"
+                  data-testid="nft-default-image"
+                  tabindex="0"
+                >
+                  <button
+                    class="mm-box mm-text mm-button-base mm-button-base--block nft-default__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  >
+                    Show
+                  </button>
+                </div>
+                <div
+                  class="mm-box mm-badge-wrapper__badge-container"
+                  style="top: -4px; right: -4px;"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                    data-testid="nft-network-badge"
+                  >
+                    G
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="mm-box"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
+          >
+            <h3
+              class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-text--font-style-normal mm-box--color-text-default"
+              data-testid="nft-details__name"
+              style="font-size: 24px;"
+            >
+              MUNK #1
+            </h3>
+          </div>
+          <div
+            class="mm-box nft-details__show-more mm-box--margin-top-2"
+            style="position: relative; overflow: hidden;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-text-alternative"
+              data-testid="nft-details__description"
+            />
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap"
+          />
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Contract address
+            </p>
+            <div
+              class="mm-box mm-box--display-flex"
+            >
+              <button
+                class="nft-details__addressButton"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--font-style-normal mm-box--color-primary-default"
+                >
+                  0xDc738...06414
+                </p>
+              </button>
+              <button
+                aria-label="copy"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="nft-address-copy"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/copy.svg');"
+                />
+              </button>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Token ID
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              1
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Token standard
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              ERC721
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap"
+          >
+             
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-4"
+          >
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted.
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`NFT Details should match minimal props and state snapshot 2`] = `
+<div>
+  <div
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+  >
+    <div
+      class="mm-box multichain-page__inner-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    >
+      <div
+        class="mm-box multichain-page-content nft-details__content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+        >
+          <button
+            aria-label="Back"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+            data-testid="nft__back"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-left.svg');"
+            />
+          </button>
+          <div>
+            <button
+              aria-label="NFT Options"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
+              data-testid="nft-options__button"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/more-vertical.svg');"
+              />
+            </button>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-top-1 mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
+        >
+          <div
+            class="mm-box nft-details__nft-item"
+          >
+            <button
+              class="mm-box nft-item__container"
+              data-testid="nft-item"
+            >
+              <div
+                class="mm-box mm-badge-wrapper nft-item__badge-wrapper nft-item__badge-wrapper__clickable mm-box--display-block"
+              >
+                <img
+                  alt="MUNK #1 1"
+                  class="mm-box nft-item__item nft-item__item-image mm-box--display-block mm-box--justify-content-center"
+                  data-testid="nft-image"
+                  src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
+                />
+                <div
+                  class="mm-box mm-badge-wrapper__badge-container"
+                  style="top: -4px; right: -4px;"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                    data-testid="nft-network-badge"
+                  >
+                    G
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="mm-box"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
+          >
+            <h3
+              class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-text--font-style-normal mm-box--color-text-default"
+              data-testid="nft-details__name"
+              style="font-size: 24px;"
+            >
+              MUNK #1
+            </h3>
+          </div>
+          <div
+            class="mm-box nft-details__show-more mm-box--margin-top-2"
+            style="position: relative; overflow: hidden;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-text-alternative"
+              data-testid="nft-details__description"
+            />
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap"
+          />
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Contract address
+            </p>
+            <div
+              class="mm-box mm-box--display-flex"
+            >
+              <button
+                class="nft-details__addressButton"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--font-style-normal mm-box--color-primary-default"
+                >
+                  0xDc738...06414
+                </p>
+              </button>
+              <button
+                aria-label="copy"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="nft-address-copy"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/copy.svg');"
+                />
+              </button>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Token ID
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              1
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              Token standard
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            >
+              ERC721
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap"
+          >
+             
+          </div>
+          <div
+            class="mm-box mm-box--margin-top-4"
+          >
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted.
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`NFT Details should match minimal props and state snapshot 3`] = `<div />`;

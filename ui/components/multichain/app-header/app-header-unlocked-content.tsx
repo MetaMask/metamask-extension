@@ -43,7 +43,11 @@ import {
   getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
 } from '../../../selectors';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -52,15 +56,15 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
-  MultichainProviderConfig,
-  ProviderConfigWithImageUrl,
-} from '../../../../shared/constants/multichain/networks';
-import { CONNECTIONS } from '../../../helpers/constants/routes';
+  CONNECTIONS,
+  REVIEW_PERMISSIONS,
+} from '../../../helpers/constants/routes';
+import { MultichainNetwork } from '../../../selectors/multichain';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
   isEvmNetwork: boolean;
-  currentNetwork: ProviderConfigWithImageUrl | MultichainProviderConfig;
+  currentNetwork: MultichainNetwork;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
@@ -118,7 +122,11 @@ export const AppHeaderUnlockedContent = ({
   };
 
   const handleConnectionsRoute = () => {
-    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+    if (process.env.CHAIN_PERMISSIONS) {
+      history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
+    } else {
+      history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+    }
   };
 
   return (
@@ -135,7 +143,7 @@ export const AppHeaderUnlockedContent = ({
               className="multichain-app-header__contents--avatar-network"
               ref={menuRef}
               as="button"
-              src={currentNetwork?.rpcPrefs?.imageUrl ?? ''}
+              src={currentNetwork?.network?.rpcPrefs?.imageUrl ?? ''}
               label={currentNetwork?.nickname ?? ''}
               aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
               labelProps={{
@@ -162,7 +170,7 @@ export const AppHeaderUnlockedContent = ({
             margin={2}
             aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
             label={currentNetwork?.nickname ?? ''}
-            src={currentNetwork?.rpcPrefs?.imageUrl}
+            src={currentNetwork?.network?.rpcPrefs?.imageUrl}
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               e.stopPropagation();
               e.preventDefault();

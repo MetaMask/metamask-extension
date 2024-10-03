@@ -367,9 +367,6 @@
   "delete": {
     "message": "刪除"
   },
-  "deleteNetwork": {
-    "message": "刪除網路？"
-  },
   "details": {
     "message": "詳情"
   },
@@ -444,12 +441,6 @@
     "message": "這個 RPC 端點回傳了一個不同的鏈 ID：$1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensIllegalCharacter": {
-    "message": "Illegal Character for ENS."
-  },
-  "ensRegistrationError": {
-    "message": "ENS 名稱註冊錯誤"
-  },
   "ensUnknownError": {
     "message": "ENS Lookup failed."
   },
@@ -520,10 +511,6 @@
   },
   "feeAssociatedRequest": {
     "message": "這個請求會附帶一筆手續費。"
-  },
-  "fiat": {
-    "message": "法定貨幣",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "檔案匯入失敗？點擊這裡！",
@@ -675,12 +662,6 @@
   "invalidAddressRecipient": {
     "message": "接收位址錯誤"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 網路，請設定至小寫"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "無效的區塊鏈瀏覽器 URL"
-  },
   "invalidChainIdTooBig": {
     "message": "無效的鏈 ID。鏈 ID 數值過大。"
   },
@@ -831,9 +812,6 @@
   "networkNameTestnet": {
     "message": "測試網路"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "鏈 ID 用來簽署交易。它必須和該網路回傳的鏈 ID 一致。您可以輸入一個十進位數值或 0x 開頭的十六進位數值，但我們會顯示成十進位。"
-  },
   "networkURL": {
     "message": "網路 URL"
   },
@@ -874,9 +852,6 @@
   },
   "noAccountsFound": {
     "message": "指定的搜尋條件找不到帳戶"
-  },
-  "noAddressForName": {
-    "message": "此 ENS 尚未指定位址。"
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
@@ -919,9 +894,6 @@
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full Access"
-  },
-  "onlyAddTrustedNetworks": {
-    "message": "惡意的網路提供者可以欺騙您區塊鏈上的狀態或記錄您的網路活動。請只新增您信任的自訂網路。"
   },
   "onlyConnectTrust": {
     "message": "記住，只連線到您信任的網站。",
@@ -968,12 +940,6 @@
   "prev": {
     "message": "前一頁"
   },
-  "primaryCurrencySetting": {
-    "message": "主要貨幣"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "選擇原生來優先使用鏈上原生貨幣 (例如 ETH) 顯示金額。選擇法定貨幣來優先使用您選擇的法定貨幣顯示金額。"
-  },
   "privacyMsg": {
     "message": "隱私政策"
   },
@@ -1004,9 +970,6 @@
   },
   "receive": {
     "message": "接收"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "搜尋、公開位址 (0x)、或 ENS"
   },
   "reject": {
     "message": "拒絕"
@@ -1084,13 +1047,10 @@
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "寫下來並且存放在不同的秘密地點。"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "儲存在密碼管理器裡"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "存在安全保管箱裡。"
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -1410,14 +1370,8 @@
     "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "updatedWithDate": {
-    "message": "更新時間 $1"
-  },
   "urlErrorMsg": {
     "message": "URL 需要以適當的 HTTP/HTTPS 作為開頭"
-  },
-  "urlExistsErrorMsg": {
-    "message": "URL 已經在既有的網路列表裡了"
   },
   "usePhishingDetection": {
     "message": "使用網路釣魚偵測"

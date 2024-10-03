@@ -25,7 +25,6 @@ import {
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
-  INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   RECIPIENT_TYPES,
   SWAPS_NO_QUOTES,
@@ -95,11 +94,8 @@ import {
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
-  IS_FLASK,
   checkExistingAddresses,
-  isDefaultMetaMaskChain,
   isOriginContractAddress,
-  isValidDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -111,6 +107,7 @@ import {
 import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
+  isPossibleAddress,
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
@@ -989,6 +986,10 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
+      if (!draftTransaction) {
+        return;
+      }
+
       // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
       // otherwise use gasPrice
       if (
@@ -1080,7 +1081,7 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
       let amount = '0x0';
-      if (draftTransaction.sendAsset.type === AssetType.token) {
+      if (draftTransaction?.sendAsset.type === AssetType.token) {
         const decimals = draftTransaction.sendAsset.details?.decimals ?? 0;
 
         const multiplier = Math.pow(10, Number(decimals));
@@ -1292,7 +1293,7 @@ const slice = createSlice({
       state.gasTotalForLayer1 = action.payload;
       if (
         state.amountMode === AMOUNT_MODES.MAX &&
-        draftTransaction.sendAsset.type === AssetType.native
+        draftTransaction?.sendAsset.type === AssetType.native
       ) {
         slice.caseReducers.updateAmountToMax(state);
       }
@@ -1456,6 +1457,10 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
+      if (!draftTransaction) {
+        return;
+      }
+
       const amountValue = new Numeric(draftTransaction.amount.value, 16);
 
       switch (true) {
@@ -1557,6 +1562,11 @@ const slice = createSlice({
     validateGasField: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+
+      if (!draftTransaction) {
+        return;
+      }
+
       const insufficientFunds = !isBalanceSufficient({
         amount:
           draftTransaction.sendAsset.type === AssetType.native
@@ -1585,24 +1595,17 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const {
-            chainId,
-            tokens,
-            tokenAddressList,
-            isProbablyAnAssetContract,
-          } = action.payload;
+          const { tokens, tokenAddressList, isProbablyAnAssetContract } =
+            action.payload;
 
           if (
             isBurnAddress(state.recipientInput) ||
-            (!isValidHexAddress(state.recipientInput, {
-              mixedCaseUseChecksum: true,
-            }) &&
-              !IS_FLASK &&
-              !isValidDomainName(state.recipientInput))
+            (isPossibleAddress(state.recipientInput) &&
+              !isValidHexAddress(state.recipientInput, {
+                mixedCaseUseChecksum: true,
+              }))
           ) {
-            draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
-              ? INVALID_RECIPIENT_ADDRESS_ERROR
-              : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
+            draftTransaction.recipient.error = INVALID_RECIPIENT_ADDRESS_ERROR;
           } else if (
             isOriginContractAddress(
               state.recipientInput,
@@ -2666,7 +2669,7 @@ export function updateSendAsset(
 
       if (details.standard === TokenStandard.ERC20) {
         asset.balance =
-          details.balance && details.decimals
+          details.balance && typeof details.decimals === 'number'
             ? addHexPrefix(
                 calcTokenAmount(details.balance, details.decimals).toString(16),
               )
@@ -3535,15 +3538,15 @@ export function getSwapsBlockedTokens(state) {
 }
 
 export const getIsSwapAndSendDisabledForNetwork = createSelector(
-  (state) => state.metamask.providerConfig,
+  (state) => getCurrentChainId(state),
   (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
-  ({ chainId }, disabledSwapAndSendNetworks) => {
+  (chainId, disabledSwapAndSendNetworks) => {
     return disabledSwapAndSendNetworks.includes(chainId);
   },
 );
 
 export const getSendAnalyticProperties = createSelector(
-  (state) => state.metamask.providerConfig,
+  (state) => getProviderConfig(state),
   getCurrentDraftTransaction,
   getBestQuote,
   ({ chainId, ticker: nativeCurrencySymbol }, draftTransaction, bestQuote) => {

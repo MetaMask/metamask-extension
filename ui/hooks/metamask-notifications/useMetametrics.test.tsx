@@ -40,7 +40,15 @@ describe('useMetametrics', () => {
     jest.clearAllMocks();
   });
 
-  it('should enable MetaMetrics when user is not signed in', async () => {
+  it('should enable MetaMetrics when user is not signed in and profile syncing enabled', async () => {
+    store.getState = () => ({
+      metamask: {
+        participateInMetaMetrics: true,
+        isProfileSyncingEnabled: true,
+        isSignedIn: false,
+      },
+    });
+
     const { result, waitForNextUpdate } = renderHook(
       () => useEnableMetametrics(),
       {
@@ -62,11 +70,11 @@ describe('useMetametrics', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  it('should disable MetaMetrics and sign out if profile syncing is disabled', async () => {
+  it('should disable MetaMetrics and sign out if profile syncing is enabled', async () => {
     store.getState = () => ({
       metamask: {
         participateInMetaMetrics: true,
-        isProfileSyncingEnabled: false,
+        isProfileSyncingEnabled: true,
         isSignedIn: true,
       },
     });

@@ -6,12 +6,20 @@ import React, {
   useRef,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { TokenListMap } from '@metamask/assets-controllers';
+///: END:ONLY_INCLUDE_IF
 import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
 } from '../../../../component-library';
-import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getNativeCurrency,
+  ///: END:ONLY_INCLUDE_IF
+  getSendHexDataFeatureFlagState,
+} from '../../../../../ducks/metamask/metamask';
 import {
   Asset,
   acknowledgeRecipientWarning,
@@ -31,21 +39,29 @@ import { AssetPickerAmount } from '../../..';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
+  getIpfsGateway,
   getIsSwapsChain,
+  getNativeCurrencyImage,
+  getTokenList,
   getUseExternalServices,
 } from '../../../../../selectors';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 ///: END:ONLY_INCLUDE_IF
 
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
+import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
   onAssetChange,
+  onClick,
 }: {
   requireContractAddressAcknowledgement: boolean;
   onAssetChange: (newAsset: Asset, isReceived: boolean) => void;
+  onClick: () => React.ComponentProps<typeof AssetPicker>['onClick'];
 }) => {
   const t = useI18nContext();
 
@@ -72,6 +88,16 @@ export const SendPageRecipientContent = ({
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
+
+  const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
+  const tokenList = useSelector(getTokenList) as TokenListMap;
+  const ipfsGateway = useSelector(getIpfsGateway);
+
+  const nftImageURL = useGetAssetImageUrl(
+    sendAsset.details?.image ?? null,
+    ipfsGateway,
+  );
 
   isSwapAllowed =
     isSwapsChain &&
@@ -138,8 +164,22 @@ export const SendPageRecipientContent = ({
       ) : null}
       <SendPageRow>
         <AssetPickerAmount
+          header={t('sendSelectReceiveAsset')}
           asset={isSwapAllowed ? receiveAsset : sendAsset}
-          sendingAsset={isSwapAllowed ? sendAsset : undefined}
+          sendingAsset={
+            isSwapAllowed &&
+            sendAsset && {
+              image:
+                sendAsset.type === AssetType.native
+                  ? nativeCurrencyImageUrl
+                  : tokenList &&
+                    sendAsset.details &&
+                    (nftImageURL ||
+                      tokenList[sendAsset.details.address?.toLowerCase()]
+                        ?.iconUrl),
+              symbol: sendAsset?.details?.symbol || nativeCurrencySymbol,
+            }
+          }
           onAssetChange={useCallback(
             (newAsset) => onAssetChange(newAsset, isSwapAllowed),
             [onAssetChange, isSwapAllowed],
@@ -147,6 +187,8 @@ export const SendPageRecipientContent = ({
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount}
           isDisabled={!isSwapAllowed}
+          onClick={onClick}
+          visibleTabs={[TabName.TOKENS]}
         />
       </SendPageRow>
       <QuoteCard scrollRef={scrollRef} />

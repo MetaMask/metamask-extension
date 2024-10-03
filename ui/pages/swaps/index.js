@@ -94,7 +94,7 @@ import {
   IconColor,
   FRACTIONS,
 } from '../../helpers/constants/design-system';
-import useUpdateSwapsState from '../../hooks/useUpdateSwapsState';
+import useUpdateSwapsState from './hooks/useUpdateSwapsState';
 import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';

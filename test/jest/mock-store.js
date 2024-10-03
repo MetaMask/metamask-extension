@@ -1,9 +1,8 @@
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../stub/networks';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -136,23 +135,10 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
-      selectedNetworkClientId: NetworkType.mainnet,
-      networksMetadata: {
-        [NetworkType.mainnet]: {
-          EIPS: {
-            1559: false,
-          },
-          status: NetworkStatus.Available,
-        },
-      },
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        ticker: 'ETH',
-      },
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
-        showTokenAutodetectModal: false,
+        showMultiRpcModal: false,
       },
       transactions: [
         {
@@ -224,7 +210,7 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      currentCurrency: 'ETH',
+      currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 1,
@@ -374,13 +360,14 @@ export const createSwapsMockStore = () => {
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
-      networkConfigurations: {
-        'network-configuration-id-1': {
-          chainId: CHAIN_IDS.MAINNET,
-          ticker: CURRENCY_SYMBOLS.ETH,
-          rpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-      },
+      ...mockNetworkState({
+        chainId: CHAIN_IDS.MAINNET,
+        ticker: CURRENCY_SYMBOLS.ETH,
+        rpcUrl: 'https://mainnet.infura.io/v3/',
+        blockExplorerUrl: 'https://etherscan.io',
+        id: 'mainnet',
+      }),
+      selectedNetworkClientId: 'mainnet',
       tokens: [
         {
           erc20: true,
@@ -482,6 +469,23 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
           TEST_AGG_2: {
             trade: {
@@ -516,6 +520,36 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                {
+                  maxFeePerGas: 2310003200,
+                  maxPriorityFeePerGas: 513154852,
+                  tokenFees: [
+                    {
+                      token: {
+                        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+                        symbol: 'DAI',
+                        decimals: 18,
+                      },
+                      balanceNeededToken: '0x426dc933c2e5a',
+                    },
+                  ],
+                },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
         },
         fetchParams: {
@@ -668,12 +702,16 @@ export const createSwapsMockStore = () => {
   };
 };
 
-export const createBridgeMockStore = () => {
+export const createBridgeMockStore = (
+  featureFlagOverrides = {},
+  bridgeSliceOverrides = {},
+) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
     bridge: {
       toChain: null,
+      ...bridgeSliceOverrides,
     },
     metamask: {
       ...swapsStore.metamask,
@@ -681,8 +719,15 @@ export const createBridgeMockStore = () => {
         ...(swapsStore.metamask.bridgeState ?? {}),
         bridgeFeatureFlags: {
           extensionSupport: false,
+          srcNetworkAllowlist: [],
+          destNetworkAllowlist: [],
+          ...featureFlagOverrides,
         },
       },
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+      ),
     },
   };
 };

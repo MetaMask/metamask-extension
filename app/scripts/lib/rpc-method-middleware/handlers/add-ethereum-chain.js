@@ -1,9 +1,10 @@
-import { ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
-
+import * as URI from 'uri-js';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { ethErrors } from 'eth-rpc-errors';
+import { cloneDeep } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  findExistingNetwork,
   validateAddEthereumChainParams,
   switchChain,
 } from './ethereum-chain-utils';
@@ -12,9 +13,9 @@ const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
   implementation: addEthereumChainHandler,
   hookNames: {
-    upsertNetworkConfiguration: true,
-    getCurrentRpcUrl: true,
-    findNetworkConfigurationBy: true,
+    addNetwork: true,
+    updateNetwork: true,
+    getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
     requestUserApproval: true,
     startApprovalFlow: true,
@@ -23,6 +24,7 @@ const addEthereumChain = {
     getCaveat: true,
     requestPermittedChainsPermission: true,
     getChainPermissionsFeatureFlag: true,
+    grantPermittedChainsPermissionIncremental: true,
   },
 };
 
@@ -34,9 +36,9 @@ async function addEthereumChainHandler(
   _next,
   end,
   {
-    upsertNetworkConfiguration,
-    getCurrentRpcUrl,
-    findNetworkConfigurationBy,
+    addNetwork,
+    updateNetwork,
+    getNetworkConfigurationByChainId,
     setActiveNetwork,
     requestUserApproval,
     startApprovalFlow,
@@ -45,6 +47,7 @@ async function addEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermission,
     getChainPermissionsFeatureFlag,
+    grantPermittedChainsPermissionIncremental,
   },
 ) {
   let validParams;
@@ -64,20 +67,15 @@ async function addEthereumChainHandler(
   const { origin } = req;
 
   const currentChainIdForDomain = getCurrentChainIdForDomain(origin);
-  const currentNetworkConfiguration = findExistingNetwork(
+  const currentNetworkConfiguration = getNetworkConfigurationByChainId(
     currentChainIdForDomain,
-    findNetworkConfigurationBy,
   );
-
-  const existingNetwork = findExistingNetwork(
-    chainId,
-    findNetworkConfigurationBy,
-  );
+  const existingNetwork = getNetworkConfigurationByChainId(chainId);
 
   if (
     existingNetwork &&
     existingNetwork.chainId === chainId &&
-    existingNetwork.ticker !== ticker
+    existingNetwork.nativeCurrency !== ticker
   ) {
     return end(
       ethErrors.rpc.invalidParams({
@@ -86,11 +84,26 @@ async function addEthereumChainHandler(
     );
   }
 
-  let networkClientId;
-  let requestData;
   let approvalFlowId;
+  let updatedNetwork = existingNetwork;
 
-  if (!existingNetwork || existingNetwork.rpcUrl !== firstValidRPCUrl) {
+  let rpcIndex = existingNetwork?.rpcEndpoints.findIndex(({ url }) =>
+    URI.equal(url, firstValidRPCUrl),
+  );
+
+  let blockExplorerIndex = firstValidBlockExplorerUrl
+    ? existingNetwork?.blockExplorerUrls.findIndex((url) =>
+        URI.equal(url, firstValidBlockExplorerUrl),
+      )
+    : undefined;
+
+  // If there's something to add or update
+  if (
+    !existingNetwork ||
+    rpcIndex !== existingNetwork.defaultRpcEndpointIndex ||
+    (firstValidBlockExplorerUrl &&
+      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex)
+  ) {
     ({ id: approvalFlowId } = await startApprovalFlow());
 
     try {
@@ -106,63 +119,113 @@ async function addEthereumChainHandler(
         },
       });
 
-      networkClientId = await upsertNetworkConfiguration(
-        {
+      if (existingNetwork) {
+        // A network for this chain id already exists.
+        // Update it with any new information.
+
+        const clonedNetwork = cloneDeep(existingNetwork);
+
+        // If the RPC endpoint doesn't exist, add a new one
+        if (rpcIndex === -1) {
+          clonedNetwork.rpcEndpoints = [
+            ...clonedNetwork.rpcEndpoints,
+            {
+              url: firstValidRPCUrl,
+              type: RpcEndpointType.Custom,
+              name: chainName,
+            },
+          ];
+          rpcIndex = clonedNetwork.rpcEndpoints.length - 1;
+        }
+
+        // The provided rpc endpoint becomes the default
+        clonedNetwork.defaultRpcEndpointIndex = rpcIndex;
+
+        if (firstValidBlockExplorerUrl) {
+          // If a block explorer was provided and it doesn't exist, add a new one
+          if (blockExplorerIndex === -1) {
+            clonedNetwork.blockExplorerUrls = [
+              ...clonedNetwork.blockExplorerUrls,
+              firstValidBlockExplorerUrl,
+            ];
+            blockExplorerIndex = clonedNetwork.blockExplorerUrls.length - 1;
+          }
+
+          // The provided block explorer becomes the default
+          clonedNetwork.defaultBlockExplorerUrlIndex = blockExplorerIndex;
+        }
+
+        updatedNetwork = await updateNetwork(
+          clonedNetwork.chainId,
+          clonedNetwork,
+          currentChainIdForDomain === chainId
+            ? {
+                replacementSelectedRpcEndpointIndex:
+                  clonedNetwork.defaultRpcEndpointIndex,
+              }
+            : undefined,
+        );
+      } else {
+        // A network for this chain id does not exist, so add a new network
+        updatedNetwork = await addNetwork({
+          blockExplorerUrls: firstValidBlockExplorerUrl
+            ? [firstValidBlockExplorerUrl]
+            : [],
+          defaultBlockExplorerUrlIndex: firstValidBlockExplorerUrl
+            ? 0
+            : undefined,
           chainId,
-          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-          nickname: chainName,
-          rpcUrl: firstValidRPCUrl,
-          ticker,
-        },
-        { source: 'dapp', referrer: origin },
-      );
+          defaultRpcEndpointIndex: 0,
+          name: chainName,
+          nativeCurrency: ticker,
+          rpcEndpoints: [
+            {
+              url: firstValidRPCUrl,
+              name: chainName,
+              type: RpcEndpointType.Custom,
+            },
+          ],
+        });
+      }
     } catch (error) {
       endApprovalFlow({ id: approvalFlowId });
       return end(error);
     }
-
-    requestData = {
-      toNetworkConfiguration: {
-        rpcUrl: firstValidRPCUrl,
-        chainId,
-        nickname: chainName,
-        ticker,
-        networkClientId,
-      },
-      fromNetworkConfiguration: currentNetworkConfiguration,
-    };
-  } else {
-    networkClientId = existingNetwork.id ?? existingNetwork.type;
-    const currentRpcUrl = getCurrentRpcUrl();
-
-    if (
-      currentChainIdForDomain === chainId &&
-      currentRpcUrl === firstValidRPCUrl
-    ) {
-      return end();
-    }
-
-    requestData = {
-      toNetworkConfiguration: existingNetwork,
-      fromNetworkConfiguration: currentNetworkConfiguration,
-    };
   }
 
-  return switchChain(
-    res,
-    end,
-    origin,
-    chainId,
-    requestData,
-    networkClientId,
-    approvalFlowId,
-    {
-      getChainPermissionsFeatureFlag,
-      setActiveNetwork,
-      requestUserApproval,
-      getCaveat,
-      requestPermittedChainsPermission,
-      endApprovalFlow,
-    },
-  );
+  // If the added or updated network is not the current chain, prompt the user to switch
+  if (chainId !== currentChainIdForDomain) {
+    const { networkClientId } =
+      updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
+
+    const requestData = {
+      toNetworkConfiguration: updatedNetwork,
+      fromNetworkConfiguration: currentNetworkConfiguration,
+    };
+
+    return switchChain(
+      res,
+      end,
+      origin,
+      chainId,
+      requestData,
+      networkClientId,
+      approvalFlowId,
+      {
+        isAddFlow: true,
+        getChainPermissionsFeatureFlag,
+        setActiveNetwork,
+        requestUserApproval,
+        getCaveat,
+        requestPermittedChainsPermission,
+        endApprovalFlow,
+        grantPermittedChainsPermissionIncremental,
+      },
+    );
+  } else if (approvalFlowId) {
+    endApprovalFlow({ id: approvalFlowId });
+  }
+
+  res.result = null;
+  return end();
 }

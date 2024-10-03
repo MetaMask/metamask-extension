@@ -10,25 +10,9 @@ export const methodsRequiringNetworkSwitch = [
   'eth_sendTransaction',
   'eth_sendRawTransaction',
   'wallet_switchEthereumChain',
-  'wallet_addEthereumChain',
   'wallet_watchAsset',
   'eth_signTypedData',
   'eth_signTypedData_v3',
   'eth_signTypedData_v4',
   'personal_sign',
 ] as const;
-
-/**
- * This is a list of methods that can cause a confirmation to be
- * presented to the user. Note that some of these methods may
- * only sometimes cause a confirmation to appear.
- */
-export const methodsWithConfirmation = [
-  ...methodsRequiringNetworkSwitch,
-  'wallet_requestPermissions',
-  'wallet_requestSnaps',
-  'eth_decrypt',
-  'eth_sign',
-  'eth_requestAccounts',
-  'eth_getEncryptionPublicKey',
-];

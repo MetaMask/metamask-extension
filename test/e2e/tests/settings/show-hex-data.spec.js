@@ -8,7 +8,8 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const selectors = {
   accountOptionsMenu: '[data-testid="account-options-menu-button"]',
-  settingsDiv: { text: 'Settings', tag: 'div' },
+  settingsDiv: '[data-testid="global-menu-settings"]',
+  portfolioMenuOption: '[data-testid="global-menu-mmi-portfolio"]',
   advancedDiv: { text: 'Advanced', tag: 'div' },
   hexDataToggle: '[data-testid="advanced-setting-hex-data"] .toggle-button',
   appHeaderLogo: '[data-testid="app-header-logo"]',
@@ -31,7 +32,11 @@ const inputData = {
 // Function to click elements in sequence
 async function clickElementsInSequence(driver, clickSelectors) {
   for (const selector of clickSelectors) {
-    await driver.waitForSelector(selector);
+    if (process.env.MMI && selector === selectors.settingsDiv) {
+      await driver.waitForSelector(selectors.portfolioMenuOption);
+    } else {
+      await driver.waitForSelector(selector);
+    }
     await driver.clickElement(selector);
   }
 }

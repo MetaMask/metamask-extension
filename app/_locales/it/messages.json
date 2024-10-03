@@ -42,7 +42,7 @@
     "message": "Portafoglio HW basato su QR"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (in arrivo)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "L'indirizzo nella richiesta di accesso non corrisponde all'indirizzo dell'account che stai utilizzando per accedere."
@@ -137,9 +137,6 @@
   "addANetwork": {
     "message": "Aggiungi una rete"
   },
-  "addANetworkManually": {
-    "message": "Aggungi manualmente una rete"
-  },
   "addANickname": {
     "message": "Aggiungo un nickname"
   },
@@ -175,21 +172,11 @@
   "addFriendsAndAddresses": {
     "message": "Aggiungi amici e indirizzi di cui ti fidi"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "Aggiungi da un elenco di reti popolari o aggiungi una rete manualmente. Interagisci solo con le entità di cui ti fidi."
-  },
   "addMemo": {
     "message": "Aggiungi memo"
   },
-  "addMoreNetworks": {
-    "message": "aggiungi più reti manualmente"
-  },
   "addNetwork": {
     "message": "Aggiungi Rete"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "Questarete si basa su terze parti. La connessione potrebbe essere meno affidabile o consentire a terzi di tracciare le tue attività. $1",
-    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "Aggiungi Token Suggeriti"
@@ -588,9 +575,6 @@
   "custom": {
     "message": "Avanzate"
   },
-  "customContentSearch": {
-    "message": "Cerca una rete aggiunta in precedenza"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Usa $1 per personalizzare il prezzo del gas. Questo può creare confusione se non hai familiarità. Interagisci a tuo rischio.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -633,9 +617,6 @@
   "darkTheme": {
     "message": "Scuro"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Impossibile ripristinare i tuoi dati. Il file sembra essere corrotto."
-  },
   "decimal": {
     "message": "Precisione Decimali"
   },
@@ -664,9 +645,6 @@
   },
   "delete": {
     "message": "Elimina"
-  },
-  "deleteNetwork": {
-    "message": "Cancella la rete?"
   },
   "description": {
     "message": "Descrizione"
@@ -777,9 +755,6 @@
     "message": "L'endpoint ha restituito un chain ID diverso: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensRegistrationError": {
-    "message": "Errore nella registrazione del nome ENS"
-  },
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
   },
@@ -832,10 +807,6 @@
   },
   "feeAssociatedRequest": {
     "message": "Una tassa è associata a questa richiesta."
-  },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Importazione file non funziona? Clicca qui!",
@@ -958,12 +929,6 @@
   "invalidAddressRecipient": {
     "message": "Indirizzo destinatario invalido"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Rete non ETH, inserisci caratteri minuscoli"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URI Block Explorer invalido"
-  },
   "invalidChainIdTooBig": {
     "message": "Chain ID non valido. Il chain ID è troppo grande."
   },
@@ -1085,9 +1050,6 @@
   "networkName": {
     "message": "Nome Rete"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "Il chain ID è usato per firmare le transazioni. Deve essere uguale al chain ID restituito dalla rete. Puoi inserire un numero intero o un numero esadecimale con prefisso '0x', ma mostreremo sempre un numero intero."
-  },
   "networks": {
     "message": "Reti"
   },
@@ -1123,9 +1085,6 @@
   "noAccountsFound": {
     "message": "Nessun account trovato per la ricerca effettuata"
   },
-  "noAddressForName": {
-    "message": "Nessun indirizzo è stato impostato per questo nome."
-  },
   "noConversionRateAvailable": {
     "message": "Tasso di conversione non disponibile"
   },
@@ -1155,9 +1114,6 @@
   },
   "offlineForMaintenance": {
     "message": "Offline per manutenzione"
-  },
-  "onlyAddTrustedNetworks": {
-    "message": "Una rete malevola può mentire sullo stato della blockchain e registrare le tue azioni. Aggiungi solo reti fidate."
   },
   "onlyConnectTrust": {
     "message": "Connettiti solo con siti di cui ti fidi.",
@@ -1205,12 +1161,6 @@
   "prev": {
     "message": "Precedente"
   },
-  "primaryCurrencySetting": {
-    "message": "Moneta Primaria"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Seleziona ETH per privilegiare la visualizzazione dei valori nella moneta nativa della blockhain. Seleziona Fiat per privilegiare la visualizzazione dei valori nella moneta selezionata."
-  },
   "privacyMsg": {
     "message": "Politica sulla Privacy"
   },
@@ -1238,9 +1188,6 @@
   },
   "receive": {
     "message": "Ricevi"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Ricerca, indirizzo pubblico (0x) o ENS"
   },
   "reject": {
     "message": "Annulla"
@@ -1741,14 +1688,8 @@
   "unlockMessage": {
     "message": "Il web decentralizzato ti attende"
   },
-  "updatedWithDate": {
-    "message": "Aggiornata $1"
-  },
   "urlErrorMsg": {
     "message": "Gli URI richiedono un prefisso HTTP/HTTPS."
-  },
-  "urlExistsErrorMsg": {
-    "message": "L'URL è già presente nella lista di reti"
   },
   "usePhishingDetection": {
     "message": "Rilevamento del Phishing"

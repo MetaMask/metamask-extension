@@ -202,9 +202,6 @@
   "delete": {
     "message": "Избриши"
   },
-  "deleteNetwork": {
-    "message": "Da li želite da obrišete mrežu?"
-  },
   "details": {
     "message": "Детаљи"
   },
@@ -226,9 +223,6 @@
   "editContact": {
     "message": "Izmeni kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Greška u registraciji ENS imena."
-  },
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
   },
@@ -246,10 +240,6 @@
   },
   "fast": {
     "message": "Брзо"
-  },
-  "fiat": {
-    "message": "Dekret",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Uvoz datoteke ne radi? Kliknite ovde!",
@@ -351,12 +341,6 @@
   "invalidAddressRecipient": {
     "message": "Adresa primaoca nije važeća"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nije ETH mreža, podešeno na mala slova"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nevažeći Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Nevažeći RPC URL"
   },
@@ -450,9 +434,6 @@
   "next": {
     "message": "Даље"
   },
-  "noAddressForName": {
-    "message": "Za ovo ime nije podešena adresa."
-  },
   "noConversionRateAvailable": {
     "message": "Nije dostupan kurs za konverziju"
   },
@@ -514,12 +495,6 @@
   "prev": {
     "message": "Prethodno"
   },
-  "primaryCurrencySetting": {
-    "message": "Primarna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Izaberite primarnu da biste postavili prioritete u prikazivanju vrednosti u primarnoj valuti lanca (npr. ETH). Izaberite Fiat da biste postavili prioritete u prikazivanju vrednosti u vašoj izabranoj fiat valuti."
-  },
   "privacyMsg": {
     "message": "Smernice za privatnost"
   },
@@ -535,9 +510,6 @@
   },
   "readdToken": {
     "message": "U budućnosti možete vratiti ovaj token tako što ćete otvoriti „Dodaj token“ u meniju opcija vašeg naloga."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Pretraga, javna adresa (0x) ili ENS"
   },
   "reject": {
     "message": "Одбиј"
@@ -770,9 +742,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizovani veb čeka"
-  },
-  "updatedWithDate": {
-    "message": "Ažuriran $1"
   },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."

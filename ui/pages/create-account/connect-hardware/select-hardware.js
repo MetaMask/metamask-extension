@@ -36,6 +36,17 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+// Not all browsers have usb support. In particular, Firefox does
+// not support usb. More information on that can be found here:
+// https://mozilla.github.io/standards-positions/#webusb
+//
+// The below `&& window.navigator.usb` condition ensures that we
+// only attempt to connect Trezor via usb if we are in a browser
+// that supports usb. If not, the connection of the hardware wallet
+// to the browser will be handled by the Trezor connect screen. In
+// the case of Firefox, this will depend on the Trezor bridge software
+const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
+
 export default class SelectHardware extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -56,16 +67,7 @@ export default class SelectHardware extends Component {
 
   connect = async () => {
     if (this.state.selectedDevice) {
-      // Not all browsers have usb support. In particular, Firefox does
-      // not support usb. More information on that can be found here:
-      // https://mozilla.github.io/standards-positions/#webusb
-      //
-      // The below `&& window.navigator.usb` condition ensures that we
-      // only attempt to connect Trezor via usb if we are in a browser
-      // that supports usb. If not, the connection of the hardware wallet
-      // to the browser will be handled by the Trezor connect screen. In
-      // the case of Firefox, this will depend on the Trezor bridge software
-      if (this.state.selectedDevice === 'trezor' && window.navigator.usb) {
+      if (this.state.selectedDevice === 'trezor' && isUSBSupported) {
         this.setState({ trezorRequestDevicePending: true });
         try {
           await window.navigator.usb.requestDevice({
@@ -788,11 +790,41 @@ export default class SelectHardware extends Component {
         ),
       },
       {
-        message: this.context.t('QRHardwareWalletSteps2Description'),
-      },
-      {
-        asset: 'qrcode-wallet-demo',
-        dimensions: { width: '225px', height: '75px' },
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('QRHardwareWalletSteps2Description')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked Ngrave Buy Now',
+                });
+                openWindow(HardwareAffiliateLinks.ngrave);
+              }}
+              data-testid="ngrave-brand-buy-now-btn"
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked Ngrave Learn more',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.ngrave);
+              }}
+              data-testid="ngrave-brand-learn-more-btn"
+            >
+              {this.context.t('learnMoreUpperCase')}
+            </Button>
+          </>
+        ),
       },
     );
     return (

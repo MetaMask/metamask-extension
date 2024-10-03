@@ -25,6 +25,8 @@ import { Box } from '../../component-library';
 import { getUnapprovedTransactions } from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
@@ -40,13 +42,8 @@ export const AppHeader = ({ location }) => {
   const menuRef = useRef(null);
   const isUnlocked = useSelector(getIsUnlocked);
 
-  const {
-    chainId,
-    // Used for network icon / dropdown
-    network: currentNetwork,
-    // Used for network icon / dropdown
-    isEvmNetwork,
-  } = useSelector(getMultichainNetwork);
+  const multichainNetwork = useSelector(getMultichainNetwork);
+  const { chainId, isEvmNetwork } = multichainNetwork;
 
   const dispatch = useDispatch();
 
@@ -149,7 +146,7 @@ export const AppHeader = ({ location }) => {
               <AppHeaderUnlockedContent
                 popupStatus={popupStatus}
                 isEvmNetwork={isEvmNetwork}
-                currentNetwork={currentNetwork}
+                currentNetwork={multichainNetwork}
                 networkOpenCallback={networkOpenCallback}
                 disableNetworkPicker={disableNetworkPicker}
                 disableAccountPicker={disableAccountPicker}
@@ -157,7 +154,7 @@ export const AppHeader = ({ location }) => {
               />
             ) : (
               <AppHeaderLockedContent
-                currentNetwork={currentNetwork}
+                currentNetwork={multichainNetwork}
                 networkOpenCallback={networkOpenCallback}
               />
             )}

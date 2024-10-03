@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -14,18 +16,22 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../shared/constants/permissions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
+import { ConnectPage } from './connect-page/connect-page';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
   const permission =
-    permissionsRequest.permissions?.[RestrictedMethods.eth_accounts];
+    permissionsRequest?.permissions?.[RestrictedMethods.eth_accounts];
   const requestedAccounts = permission?.caveats?.find(
     (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
   )?.value;
@@ -142,7 +148,14 @@ export default class PermissionConnect extends Component {
       history.replace(DEFAULT_ROUTE);
       return;
     }
-
+    // if this is an incremental permission request for permitted chains, skip the account selection
+    if (
+      permissionsRequest?.diff?.permissionDiffMap?.[
+        PermissionNames.permittedChains
+      ]
+    ) {
+      history.replace(confirmPermissionPath);
+    }
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       switch (requestType) {
         case 'wallet_installSnap':
@@ -250,8 +263,11 @@ export default class PermissionConnect extends Component {
     history.push(connectPath);
   }
 
-  renderTopBar() {
+  renderTopBar(permissionsRequestId) {
     const { targetSubjectMetadata } = this.state;
+    const handleCancelFromHeader = () => {
+      this.cancelPermissionsRequest(permissionsRequestId);
+    };
     return (
       <Box
         style={{
@@ -264,6 +280,7 @@ export default class PermissionConnect extends Component {
           <SnapAuthorshipHeader
             snapId={targetSubjectMetadata.origin}
             boxShadow="none"
+            onCancel={handleCancelFromHeader}
           />
         ) : (
           <PermissionConnectHeader
@@ -275,9 +292,14 @@ export default class PermissionConnect extends Component {
     );
   }
 
+  approveConnection = (...args) => {
+    const { approvePermissionsRequest } = this.props;
+    approvePermissionsRequest(...args);
+    this.redirect(true);
+  };
+
   render() {
     const {
-      approvePermissionsRequest,
       accounts,
       showNewAccountModal,
       newAccountNumber,
@@ -297,6 +319,7 @@ export default class PermissionConnect extends Component {
       approvePendingApproval,
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
+      approvePermissionsRequest,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -307,7 +330,7 @@ export default class PermissionConnect extends Component {
 
     return (
       <div className="permissions-connect">
-        {!hideTopBar && this.renderTopBar()}
+        {!hideTopBar && this.renderTopBar(permissionsRequestId)}
         {redirecting && permissionsApproved ? (
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (
@@ -315,27 +338,41 @@ export default class PermissionConnect extends Component {
             <Route
               path={connectPath}
               exact
-              render={() => (
-                <ChooseAccount
-                  accounts={accounts}
-                  nativeCurrency={nativeCurrency}
-                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
-                  selectNewAccountViaModal={(handleAccountClick) => {
-                    showNewAccountModal({
-                      onCreateNewAccount: (address) =>
-                        handleAccountClick(address),
-                      newAccountNumber,
-                    });
-                  }}
-                  addressLastConnectedMap={addressLastConnectedMap}
-                  cancelPermissionsRequest={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
-                  }
-                  permissionsRequestId={permissionsRequestId}
-                  selectedAccountAddresses={selectedAccountAddresses}
-                  targetSubjectMetadata={targetSubjectMetadata}
-                />
-              )}
+              render={() =>
+                process.env.CHAIN_PERMISSIONS ? (
+                  <ConnectPage
+                    rejectPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    activeTabOrigin={this.state.origin}
+                    request={permissionsRequest}
+                    permissionsRequestId={permissionsRequestId}
+                    approveConnection={this.approveConnection}
+                  />
+                ) : (
+                  <ChooseAccount
+                    accounts={accounts}
+                    nativeCurrency={nativeCurrency}
+                    selectAccounts={(addresses) =>
+                      this.selectAccounts(addresses)
+                    }
+                    selectNewAccountViaModal={(handleAccountClick) => {
+                      showNewAccountModal({
+                        onCreateNewAccount: (address) =>
+                          handleAccountClick(address),
+                        newAccountNumber,
+                      });
+                    }}
+                    addressLastConnectedMap={addressLastConnectedMap}
+                    cancelPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    permissionsRequestId={permissionsRequestId}
+                    selectedAccountAddresses={selectedAccountAddresses}
+                    targetSubjectMetadata={targetSubjectMetadata}
+                  />
+                )
+              }
             />
             <Route
               path={confirmPermissionPath}
@@ -371,10 +408,7 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapsConnect
                   request={permissionsRequest || {}}
-                  approveConnection={(...args) => {
-                    approvePermissionsRequest(...args);
-                    this.redirect(true);
-                  }}
+                  approveConnection={this.approveConnection}
                   rejectConnection={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
                   }

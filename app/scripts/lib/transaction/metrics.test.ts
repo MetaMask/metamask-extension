@@ -72,8 +72,10 @@ const mockTransactionMetricsRequest = {
   trackEvent: jest.fn(),
   getIsSmartTransaction: jest.fn(),
   getSmartTransactionByMinedTxHash: jest.fn(),
-  getRedesignedConfirmationsEnabled: jest.fn(),
+  getRedesignedTransactionsEnabled: jest.fn(),
   getMethodData: jest.fn(),
+  getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
+  getIsConfirmationAdvancedDetailsOpen: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -154,6 +156,7 @@ describe('Transaction metrics', () => {
       transaction_speed_up: false,
       transaction_type: TransactionType.simpleSend,
       ui_customizations: null,
+      transaction_advanced_view: null,
     };
 
     expectedSensitiveProperties = {

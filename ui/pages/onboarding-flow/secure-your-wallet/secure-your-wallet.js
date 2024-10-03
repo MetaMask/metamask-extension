@@ -183,8 +183,7 @@ export default function SecureYourWallet() {
         </Text>
         <Box as="ul" className="secure-your-wallet__list" marginBottom={4}>
           <Text as="li">{t('seedPhraseIntroSidebarBulletOne')}</Text>
-          <Text as="li">{t('seedPhraseIntroSidebarBulletThree')}</Text>
-          <Text as="li">{t('seedPhraseIntroSidebarBulletFour')}</Text>
+          <Text as="li">{t('seedPhraseIntroSidebarBulletTwo')}</Text>
         </Box>
         <Text as="h3" variant={TextVariant.headingSm}>
           {t('seedPhraseIntroSidebarTitleThree')}

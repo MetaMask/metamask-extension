@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  switchToNotificationWindow,
   unlockWallet,
   getEventPayloads,
   WINDOW_TITLES,
@@ -199,16 +198,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask popup and click connect
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -243,7 +234,7 @@ describe('Test Snap Metrics', function () {
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
           origin: 'https://metamask.github.io',
-          version: '2.1.3',
+          version: '2.1.4',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
@@ -292,16 +283,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask popup and click connect
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -378,16 +361,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask popup and click connect
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -455,16 +430,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask popup and click connect
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -485,8 +452,9 @@ describe('Test Snap Metrics', function () {
         });
 
         // switch to the original MM tab
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // click on the global action menu
         await driver.waitForSelector(
@@ -533,7 +501,7 @@ describe('Test Snap Metrics', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
-          version: '2.1.3',
+          version: '2.1.4',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
@@ -580,8 +548,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask popup and click connect
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -620,12 +588,7 @@ describe('Test Snap Metrics', function () {
         });
 
         // navigate to test snap page
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          1,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -639,8 +602,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
 
-        // switch to metamask extension and update
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask popup and update
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector({ text: 'Confirm' });
 
@@ -659,7 +622,7 @@ describe('Test Snap Metrics', function () {
         });
 
         // navigate to test snap page
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // look for the correct version text
         await driver.waitForSelector({
@@ -711,6 +674,9 @@ describe('Test Snap Metrics', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ignoredConsoleErrors: [
+          'MetaMask - RPC Error: User rejected the request.',
+        ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
@@ -730,8 +696,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask popup and click connect
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -770,12 +736,7 @@ describe('Test Snap Metrics', function () {
         });
 
         // navigate to test snap page
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          1,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -789,8 +750,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
 
-        // switch to metamask extension and update
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask popup and update
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector({ text: 'Confirm' });
 
@@ -801,7 +762,10 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindow(windowHandles[0]);
+        // It is necessary to use switchToWindowIfKnown because there is an alert open.
+        // Trying to use switchToWindowWithTitle (the new Socket version) or even
+        // closeAlertPopup will cause an error.
+        await driver.switchToWindowIfKnown(WINDOW_TITLES.TestSnaps);
 
         // check that snap updated event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -846,7 +810,9 @@ describe('Test Snap Metrics', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ignoredConsoleErrors: ['Object'],
+        ignoredConsoleErrors: [
+          'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/bip32-example-snap": Failed to fetch tarball for package "@metamask/bip32-example-snap"..',
+        ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
@@ -866,8 +832,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask popup and click connect
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -906,12 +872,7 @@ describe('Test Snap Metrics', function () {
         });
 
         // navigate to test snap page
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          1,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -928,8 +889,8 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.closeAlertPopup();
 
-        // switch to metamask extension and update
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask popup and update
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector({ text: 'Update failed' });
 

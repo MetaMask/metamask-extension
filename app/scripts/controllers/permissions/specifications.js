@@ -1,7 +1,6 @@
 import {
   constructPermission,
   PermissionType,
-  SubjectType,
 } from '@metamask/permission-controller';
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
@@ -10,6 +9,7 @@ import {
 import { isValidHexAddress } from '@metamask/utils';
 import {
   CaveatTypes,
+  EndowmentTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 
@@ -25,7 +25,7 @@ import {
  */
 export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
-  permittedChains: 'permittedChains',
+  ...EndowmentTypes,
 });
 
 /**
@@ -78,6 +78,11 @@ export const getCaveatSpecifications = ({
       type: CaveatTypes.restrictNetworkSwitching,
       validator: (caveat, _origin, _target) =>
         validateCaveatNetworks(caveat.value, findNetworkClientIdByChainId),
+      merger: (leftValue, rightValue) => {
+        const newValue = Array.from(new Set([...leftValue, ...rightValue]));
+        const diff = newValue.filter((value) => !leftValue.includes(value));
+        return [newValue, diff];
+      },
     },
 
     ...snapsCaveatsSpecifications,
@@ -204,9 +209,13 @@ export const getPermissionSpecifications = ({
       permissionType: PermissionType.Endowment,
       targetName: PermissionNames.permittedChains,
       allowedCaveats: [CaveatTypes.restrictNetworkSwitching],
-      subjectTypes: [SubjectType.Website],
 
       factory: (permissionOptions, requestData) => {
+        if (requestData === undefined) {
+          return constructPermission({
+            ...permissionOptions,
+          });
+        }
         if (!requestData.approvedChainIds) {
           throw new Error(
             `${PermissionNames.permittedChains}: No approved networks specified.`,
@@ -312,7 +321,6 @@ function validateCaveatNetworks(
 export const unrestrictedEthSigningMethods = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
-  'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
@@ -366,7 +374,6 @@ export const unrestrictedMethods = Object.freeze([
   'eth_requestAccounts',
   'eth_sendRawTransaction',
   'eth_sendTransaction',
-  'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
@@ -405,6 +412,7 @@ export const unrestrictedMethods = Object.freeze([
   'snap_createInterface',
   'snap_updateInterface',
   'snap_getInterfaceState',
+  'snap_resolveInterface',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   'metamaskinstitutional_authenticate',
   'metamaskinstitutional_reauthenticate',

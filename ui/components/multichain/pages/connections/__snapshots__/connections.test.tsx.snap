@@ -6,7 +6,7 @@ exports[`Connections Content should render correctly 1`] = `
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
   >
     <div
-      class="mm-box multichain-page__inner-container connections-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box multichain-page__inner-container main-container connections-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
       data-testid="connections-page"
     >
       <div
@@ -293,17 +293,17 @@ exports[`Connections Content should render correctly 1`] = `
                     <div
                       class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                       data-testid="first-currency-display"
-                      title="$880.18 USD"
+                      title="966.988 ETH"
                     >
                       <span
                         class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                       >
-                        $880.18
+                        966.988
                       </span>
                       <span
                         class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                       >
-                        USD
+                        ETH
                       </span>
                     </div>
                   </div>

@@ -14,10 +14,18 @@ import {
   BlockaidReason,
 } from '../../../shared/constants/security-provider';
 import {
-  EIP712_PRIMARY_TYPE_PERMIT,
-  SIGNING_METHODS,
-} from '../../../shared/constants/transaction';
-import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
+  PRIMARY_TYPES_ORDER,
+  PRIMARY_TYPES_PERMIT,
+} from '../../../shared/constants/signatures';
+import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import {
+  generateSignatureUniqueId,
+  getBlockaidMetricsProps,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../ui/helpers/utils/metrics';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -37,7 +45,6 @@ const RATE_LIMIT_TYPES = {
  * default is RANDOM_SAMPLE
  */
 const RATE_LIMIT_MAP = {
-  [MESSAGE_TYPE.ETH_SIGN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
@@ -56,7 +63,6 @@ const RATE_LIMIT_MAP = {
 
 const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
   [MESSAGE_TYPE.PERSONAL_SIGN]: ApprovalType.PersonalSign,
-  [MESSAGE_TYPE.ETH_SIGN]: ApprovalType.Sign,
   [MESSAGE_TYPE.SIGN]: ApprovalType.SignTransaction,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: ApprovalType.EthSignTypedData,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1]: ApprovalType.EthSignTypedData,
@@ -70,12 +76,6 @@ const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
  * appropriate event names.
  */
 const EVENT_NAME_MAP = {
-  [MESSAGE_TYPE.ETH_SIGN]: {
-    APPROVED: MetaMetricsEventName.SignatureApproved,
-    FAILED: MetaMetricsEventName.SignatureFailed,
-    REJECTED: MetaMetricsEventName.SignatureRejected,
-    REQUESTED: MetaMetricsEventName.SignatureRequested,
-  },
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: {
     APPROVED: MetaMetricsEventName.SignatureApproved,
     REJECTED: MetaMetricsEventName.SignatureRejected,
@@ -131,13 +131,59 @@ const rateLimitTimeoutsByMethod = {};
 let globalRateLimitCount = 0;
 
 /**
+ * Create signature request event fragment with an assigned unique identifier
+ *
+ * @param {MetaMetricsController} metaMetricsController
+ * @param {OriginalRequest} req
+ * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ */
+function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
+  metaMetricsController.createEventFragment({
+    category: MetaMetricsEventCategory.InpageProvider,
+
+    initialEvent: MetaMetricsEventName.SignatureRequested,
+    successEvent: MetaMetricsEventName.SignatureApproved,
+    failureEvent: MetaMetricsEventName.SignatureRejected,
+
+    uniqueIdentifier: generateSignatureUniqueId(req.id),
+    persist: true,
+    referrer: {
+      url: req.origin,
+    },
+    ...fragmentPayload,
+  });
+}
+
+/**
+ * Updates and finalizes event fragment for signature requests
+ *
+ * @param {MetaMetricsController} metaMetricsController
+ * @param {OriginalRequest} req
+ * @param {MetaMetricsFinalizeEventFragmentOptions}  finalizeEventOptions
+ * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ */
+function finalizeSignatureFragment(
+  metaMetricsController,
+  req,
+  finalizeEventOptions,
+  fragmentPayload,
+) {
+  const signatureUniqueId = generateSignatureUniqueId(req.id);
+
+  metaMetricsController.updateEventFragment(signatureUniqueId, fragmentPayload);
+
+  metaMetricsController.finalizeEventFragment(
+    signatureUniqueId,
+    finalizeEventOptions,
+  );
+}
+
+/**
  * Returns a middleware that tracks inpage_provider usage using sampling for
  * each type of event except those that require user interaction, such as
  * signature requests
  *
  * @param {object} opts - options for the rpc method tracking middleware
- * @param {Function} opts.trackEvent - trackEvent method from
- *  MetaMetricsController
  * @param {Function} opts.getMetricsState - get the state of
  *  MetaMetricsController
  * @param {number} [opts.rateLimitTimeout] - time, in milliseconds, to wait before
@@ -148,16 +194,16 @@ let globalRateLimitCount = 0;
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.isConfirmationRedesignEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
- * @param {AppStateController} opts.appStateController
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
  * tracked within the globalRateLimitTimeout time window.
+ * @param {AppStateController} [opts.appStateController]
+ * @param {MetaMetricsController} [opts.metaMetricsController]
  * @returns {Function}
  */
 
 export default function createRPCMethodTrackingMiddleware({
-  trackEvent,
   getMetricsState,
   rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
   rateLimitSamplePercent = 0.001, // 0.1%
@@ -168,6 +214,7 @@ export default function createRPCMethodTrackingMiddleware({
   isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
   appStateController,
+  metaMetricsController,
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -176,8 +223,7 @@ export default function createRPCMethodTrackingMiddleware({
   ) {
     const { origin, method, params } = req;
 
-    const rateLimitType =
-      RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RANDOM_SAMPLE;
+    const rateLimitType = RATE_LIMIT_MAP[method];
 
     let isRateLimited;
     switch (rateLimitType) {
@@ -212,6 +258,7 @@ export default function createRPCMethodTrackingMiddleware({
     const eventType = EVENT_NAME_MAP[method];
 
     const eventProperties = {};
+    let sensitiveEventProperties;
 
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
@@ -298,12 +345,28 @@ export default function createRPCMethodTrackingMiddleware({
               ];
             }
           } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
-            const { primaryType } = parseTypedDataMessage(data);
-            eventProperties.eip712_primary_type = primaryType;
-            if (primaryType === EIP712_PRIMARY_TYPE_PERMIT) {
+            const parsedMessageData = parseTypedDataMessage(data);
+            sensitiveEventProperties = {};
+
+            eventProperties.eip712_primary_type = parsedMessageData.primaryType;
+            sensitiveEventProperties.eip712_verifyingContract =
+              parsedMessageData.domain.verifyingContract;
+            sensitiveEventProperties.eip712_domain_version =
+              parsedMessageData.domain.version;
+            sensitiveEventProperties.eip712_domain_name =
+              parsedMessageData.domain.name;
+
+            if (PRIMARY_TYPES_PERMIT.includes(parsedMessageData.primaryType)) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Permit,
+              ];
+            } else if (
+              PRIMARY_TYPES_ORDER.includes(parsedMessageData.primaryType)
+            ) {
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Order,
               ];
             }
           }
@@ -319,14 +382,23 @@ export default function createRPCMethodTrackingMiddleware({
         eventProperties.params = transformParams(params);
       }
 
-      trackEvent({
-        event,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties: eventProperties,
-      });
+      if (event === MetaMetricsEventName.SignatureRequested) {
+        const fragmentPayload = {
+          properties: eventProperties,
+          sensitiveProperties: sensitiveEventProperties,
+        };
+
+        createSignatureFragment(metaMetricsController, req, fragmentPayload);
+      } else {
+        metaMetricsController.trackEvent({
+          event,
+          category: MetaMetricsEventCategory.InpageProvider,
+          referrer: {
+            url: origin,
+          },
+          properties: eventProperties,
+        });
+      }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
         rateLimitTimeoutsByMethod[method] = setTimeout(() => {
@@ -344,19 +416,10 @@ export default function createRPCMethodTrackingMiddleware({
       if (shouldTrackEvent === false || typeof eventType === 'undefined') {
         return callback();
       }
-
-      // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
-      const isDisabledEthSignAdvancedSetting =
-        method === MESSAGE_TYPE.ETH_SIGN &&
-        res.error?.code === errorCodes.rpc.methodNotFound;
-
-      const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
+      const location = res.error?.data?.location;
 
       let event;
-      if (isDisabledRPCMethod) {
-        event = eventType.FAILED;
-        eventProperties.error = res.error;
-      } else if (res.error?.code === errorCodes.provider.userRejectedRequest) {
+      if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
@@ -370,39 +433,50 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       let blockaidMetricProps = {};
-      if (!isDisabledRPCMethod) {
-        if (SIGNING_METHODS.includes(method)) {
-          const securityAlertResponse =
-            appStateController.getSignatureSecurityAlertResponse(
-              req.securityAlertResponse?.securityAlertId,
-            );
+      if (SIGNING_METHODS.includes(method)) {
+        const securityAlertResponse =
+          appStateController.getSignatureSecurityAlertResponse(
+            req.securityAlertResponse?.securityAlertId,
+          );
 
-          blockaidMetricProps = getBlockaidMetricsProps({
-            securityAlertResponse,
-          });
-        }
+        blockaidMetricProps = getBlockaidMetricsProps({
+          securityAlertResponse,
+        });
       }
-
       const properties = {
         ...eventProperties,
         ...blockaidMetricProps,
-        // if security_alert_response from blockaidMetricProps is Benign, force set security_alert_reason to empty string
-        security_alert_reason:
-          blockaidMetricProps.security_alert_response ===
-          BlockaidResultType.Benign
-            ? ''
-            : blockaidMetricProps.security_alert_reason,
+        location,
       };
 
-      trackEvent({
-        event,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties,
-      });
+      if (
+        event === MetaMetricsEventName.SignatureRejected ||
+        event === MetaMetricsEventName.SignatureApproved
+      ) {
+        const finalizeOptions = {
+          abandoned: event === eventType.REJECTED,
+        };
+        const fragmentPayload = {
+          properties,
+          sensitiveProperties: sensitiveEventProperties,
+        };
 
+        finalizeSignatureFragment(
+          metaMetricsController,
+          req,
+          finalizeOptions,
+          fragmentPayload,
+        );
+      } else {
+        metaMetricsController.trackEvent({
+          event,
+          category: MetaMetricsEventCategory.InpageProvider,
+          referrer: {
+            url: origin,
+          },
+          properties,
+        });
+      }
       return callback();
     });
   };

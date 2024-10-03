@@ -51,17 +51,20 @@ import {
   getUseBlockie,
 } from '../../../selectors';
 import {
+  getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
   getMultichainNetwork,
+  getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
-import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 import { useTheme } from '../../../hooks/useTheme';
 ///: END:ONLY_INCLUDE_IF
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AccountListItemMenuTypes } from './account-list-item.types';
@@ -69,9 +72,9 @@ import { AccountListItemMenuTypes } from './account-list-item.types';
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
-export const AccountListItem = ({
+const AccountListItem = ({
   account,
-  selected = false,
+  selected,
   onClick,
   closeMenu,
   accountsCount,
@@ -90,17 +93,19 @@ export const AccountListItem = ({
     useState();
 
   const useBlockie = useSelector(getUseBlockie);
-  const { network: currentNetwork, isEvmNetwork } = useMultichainSelector(
-    getMultichainNetwork,
-    account,
-  );
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
+  const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
+  const isMainnet = !isTestnet;
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    account,
+  );
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
-    !isEvmNetwork ||
-    (TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets);
+    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
@@ -108,12 +113,9 @@ export const AccountListItem = ({
       avatarValue: item.iconUrl,
     }),
   );
-  let balanceToTranslate = isEvmNetwork
-    ? accountTotalFiatBalances.totalWeiBalance
+  const balanceToTranslate = isEvmNetwork
+    ? account.balance
     : accountTotalFiatBalances.totalBalance;
-  if (showFiat && isEvmNetwork) {
-    balanceToTranslate = account.balance;
-  }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const custodianIcon = useSelector((state) =>
@@ -255,6 +257,7 @@ export const AccountListItem = ({
                   name={IconName.Pin}
                   size={IconSize.Xs}
                   className="account-pinned-icon"
+                  data-testid="account-pinned-icon"
                 />
               ) : null}
               {isHidden ? (
@@ -307,9 +310,7 @@ export const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
-                showFiat={
-                  !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname)
-                }
+                showFiat={showFiat}
                 data-testid="first-currency-display"
               />
             </Text>
@@ -419,8 +420,7 @@ export const AccountListItem = ({
           anchorElement={accountListItemMenuElement}
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
-          closeMenu={closeMenu}
-          disableAccountSwitcher={isSingleAccount}
+          disableAccountSwitcher={isSingleAccount && selected}
           isOpen={accountOptionsMenuOpen}
           onActionClick={onActionClick}
           activeTabOrigin={currentTabOrigin}
@@ -457,7 +457,7 @@ AccountListItem.propTypes = {
   /**
    * Represents if this account is currently selected
    */
-  selected: PropTypes.bool,
+  selected: PropTypes.bool.isRequired,
   /**
    * Function to execute when the item is clicked
    */
@@ -505,3 +505,5 @@ AccountListItem.propTypes = {
 };
 
 AccountListItem.displayName = 'AccountListItem';
+
+export default React.memo(AccountListItem);

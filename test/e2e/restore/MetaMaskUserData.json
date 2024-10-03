@@ -36,9 +36,7 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
-      "showTokenAutodetectModal": "boolean"
+      "smartTransactionsOptInStatus": false
     },
     "theme": "light",
     "useBlockie": false,

@@ -25,6 +25,7 @@ import {
 import {
   CONNECTIONS,
   DEFAULT_ROUTE,
+  REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import {
   getOnboardedInThisUISession,
@@ -53,7 +54,11 @@ export const PermissionsPage = () => {
   const handleConnectionClick = (connection) => {
     const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
-    history.push(`${CONNECTIONS}/${safeEncodedHost}`);
+    if (process.env.CHAIN_PERMISSIONS) {
+      history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+    } else {
+      history.push(`${CONNECTIONS}/${safeEncodedHost}`);
+    }
   };
 
   const renderConnectionsList = (connectionList) =>
@@ -69,7 +74,7 @@ export const PermissionsPage = () => {
     });
 
   return (
-    <Page data-testid="permissions-page">
+    <Page className="main-container" data-testid="permissions-page">
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={

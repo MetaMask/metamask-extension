@@ -3,6 +3,7 @@ const {
   withFixtures,
   defaultGanacheOptions,
   logInWithBalanceValidation,
+  unlockWallet,
 } = require('../../helpers');
 
 const FixtureBuilder = require('../../fixture-builder');
@@ -11,7 +12,7 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
@@ -41,26 +42,18 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for fiat conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withConversionRateEnabled()
+          .withShowFiatTestnetEnabled()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({
-          text: 'General',
-          tag: 'div',
-        });
-        await driver.clickElement({ text: 'Fiat', tag: 'label' });
-
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
+        await driver.clickElement('[data-testid="popover-close"]');
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
@@ -68,7 +61,8 @@ describe('Settings', function () {
         const tokenListAmount = await driver.findElement(
           '.eth-overview__primary-container',
         );
-        assert.equal(await tokenListAmount.getText(), '25\nETH');
+        await driver.delay(1000);
+        assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
           '.multichain-account-list-item .multichain-account-list-item__asset',

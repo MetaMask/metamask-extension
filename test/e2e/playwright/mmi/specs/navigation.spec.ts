@@ -7,19 +7,13 @@ import {
   getPageAndCloseRepeated,
 } from '../helpers/utils';
 import { MMIMainMenuPage } from '../pageObjects/mmi-mainMenu-page';
-import { Auth0Page } from '../pageObjects/mmi-auth0-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
 
-const portfolio = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/portfolio`;
-const stake = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/stake`;
-const support = 'https://mmi-support.metamask.io/hc/en-us';
-const supportContactUs =
-  'https://mmi-support.metamask.io/hc/en-us/requests/new';
+const support = 'https://support.metamask-institutional.io';
+const supportContactUs = 'https://support.metamask-institutional.io';
 const mmiHomePage = 'https://metamask.io/institutions/';
 const privacyAndNotice = 'https://consensys.io/privacy-notice';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
-const metamaskAttributions =
-  'https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/attribution.txt';
 const termsOfUse = 'https://consensys.io/terms-of-use';
 const learnMoreArticles = 'https://support.metamask.io/';
 
@@ -53,28 +47,11 @@ test.describe('MMI Navigation', () => {
     // await mainMenuPage.showIncomingTransactionsOff()
     await mainMenuPage.closeSettings();
 
-    // This is removed to improve test performance
-    // Signin auth0
-    const auth0 = new Auth0Page(await context.newPage());
-    await auth0.signIn();
-    await auth0.page.close();
-
     // // Close pages not used to remove data from logs
     await closePages(context, ['metamask-institutional.io']);
     const mainPage = new MMIMainPage(
       await getPageAndCloseRepeated(context, 'home.html'),
     );
-
-    // Check main page links
-    await checkLinkURL(
-      context,
-      mainPage.page,
-      'Portfolio',
-      portfolio,
-      'button',
-    );
-
-    await checkLinkURL(context, mainPage.page, 'Stake', stake, 'button');
 
     await checkLinkURL(
       context,
@@ -106,15 +83,6 @@ test.describe('MMI Navigation', () => {
       mainMenuPage.page,
       'Support',
       support,
-      'button',
-    );
-
-    await mainMenuPage.openMenu();
-    await checkLinkURL(
-      context,
-      mainMenuPage.page,
-      'Portfolio Dashboard',
-      portfolio,
       'button',
     );
 
@@ -159,12 +127,6 @@ test.describe('MMI Navigation', () => {
       privacyAndNotice,
     );
     await checkLinkURL(context, mainMenuPage.page, 'Terms of use', termsOfUse);
-    await checkLinkURL(
-      context,
-      mainMenuPage.page,
-      'Attributions',
-      metamaskAttributions,
-    );
     await checkLinkURL(
       context,
       mainMenuPage.page,

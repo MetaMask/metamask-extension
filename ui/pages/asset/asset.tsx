@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import NftDetails from '../../components/app/nft-details/nft-details';
+import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import {
   getNativeCurrency,
   getNfts,
@@ -21,11 +21,13 @@ const Asset = () => {
   const { asset, id } = useParams<{ asset: string; id: string }>();
 
   const token = tokens.find(({ address }: { address: string }) =>
+    // @ts-expect-error TODO: Fix this type error by handling undefined parameters
     isEqualCaseInsensitive(address, asset),
   );
 
   const nft = nfts.find(
     ({ address, tokenId }: { address: string; tokenId: string }) =>
+      // @ts-expect-error TODO: Fix this type error by handling undefined parameters
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 

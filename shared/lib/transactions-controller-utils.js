@@ -36,11 +36,11 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
 
 /**
  * @param {number|string|BigNumber} value
- * @param {number} decimals
+ * @param {number=} decimals
  * @returns {BigNumber}
  */
-export function calcTokenAmount(value, decimals = 0) {
-  const divisor = new BigNumber(10).pow(decimals);
+export function calcTokenAmount(value, decimals) {
+  const divisor = new BigNumber(10).pow(decimals ?? 0);
   return new BigNumber(String(value)).div(divisor);
 }
 
@@ -52,6 +52,7 @@ export function getSwapsTokensReceivedFromTxMeta(
   tokenDecimals,
   approvalTxMeta,
   chainId,
+  precision = 6,
 ) {
   const accountAddress = txMeta?.swapAndSendRecipient ?? senderAddress;
 
@@ -106,9 +107,11 @@ export function getSwapsTokensReceivedFromTxMeta(
     )
       .minus(preTxBalanceLessGasCost)
       .toDenomination(EtherDenomination.ETH)
-      .toBase(10)
-      .round(6);
-    return ethReceived.toString();
+      .toBase(10);
+
+    return (
+      precision === null ? ethReceived : ethReceived.round(precision)
+    ).toFixed();
   }
   const txReceiptLogs = txReceipt?.logs;
   if (txReceiptLogs && txReceipt?.status !== '0x0') {
@@ -127,12 +130,14 @@ export function getSwapsTokensReceivedFromTxMeta(
         isTransferFromGivenAddress
       );
     });
-    return tokenTransferLog
-      ? toPrecisionWithoutTrailingZeros(
-          calcTokenAmount(tokenTransferLog.data, tokenDecimals).toString(10),
-          6,
-        )
-      : '';
+
+    if (tokenTransferLog) {
+      const tokenAmount = calcTokenAmount(tokenTransferLog.data, tokenDecimals);
+      return precision === null
+        ? tokenAmount.toFixed()
+        : toPrecisionWithoutTrailingZeros(tokenAmount, precision);
+    }
+    return '';
   }
   return null;
 }

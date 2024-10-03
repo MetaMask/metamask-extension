@@ -35,7 +35,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const sourceTokenAmount =
     rawSourceTokenAmount && sourceTokenDecimals
-      ? calcTokenAmount(rawSourceTokenAmount, sourceTokenDecimals)
+      ? calcTokenAmount(rawSourceTokenAmount, sourceTokenDecimals).toFixed()
       : undefined;
   let destinationTokenAmount;
 
@@ -54,6 +54,9 @@ const mapStateToProps = (state, ownProps) => {
         destinationTokenAddress,
         undefined,
         destinationTokenDecimals,
+        undefined,
+        undefined,
+        null,
       );
 
       // if no amount is found, throw
@@ -67,7 +70,7 @@ const mapStateToProps = (state, ownProps) => {
           ? calcTokenAmount(
               rawDestinationTokenAmountEstimate,
               destinationTokenDecimals,
-            )
+            ).toFixed()
           : undefined;
     }
   }

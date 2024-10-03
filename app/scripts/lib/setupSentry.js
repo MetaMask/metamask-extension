@@ -1,20 +1,35 @@
+import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import { Dedupe, ExtraErrorData } from '@sentry/integrations';
-
-import { AllProperties } from '../../../shared/modules/object.utils';
-import { FilterEvents } from './sentry-filter-events';
+import { logger } from '@sentry/utils';
+import browser from 'webextension-polyfill';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
+import { getManifestFlags } from './manifestFlags';
+import { filterEvents } from './sentry-filter-events';
+
+const projectLogger = createProjectLogger('sentry');
+let installType = 'unknown';
+
+export const log = createModuleLogger(
+  projectLogger,
+  globalThis.document ? 'ui' : 'background',
+);
+
+const internalLog = createModuleLogger(log, 'internal');
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
+const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
-const SENTRY_DSN_DEV =
-  process.env.SENTRY_DSN_DEV ||
-  'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496';
-const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
-const IN_TEST = process.env.IN_TEST;
+const RELEASE = process.env.METAMASK_VERSION;
+const SENTRY_DSN = process.env.SENTRY_DSN;
+const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
+const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
+
+// This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
+const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
 
 export const ERROR_URL_ALLOWLIST = {
   CRYPTOCOMPARE: 'cryptocompare.com',
@@ -24,420 +39,120 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export const MMI_SENTRY_BACKGROUND_STATE = {
-  MMIController: {
-    opts: true,
-  },
-  CustodyController: {
-    store: true,
-  },
-  MmiConfigurationController: {
-    store: true,
-    configurationClient: true,
-  },
-};
+export default function setupSentry() {
+  if (!RELEASE) {
+    throw new Error('Missing release');
+  }
 
-// This describes the subset of background controller state attached to errors
-// sent to Sentry These properties have some potential to be useful for
-// debugging, and they do not contain any identifiable information.
-export const SENTRY_BACKGROUND_STATE = {
-  AccountsController: {
-    internalAccounts: {
-      accounts: false,
-      selectedAccount: false,
-    },
-  },
-  AccountTracker: {
-    accounts: false,
-    accountsByChainId: false,
-    currentBlockGasLimit: true,
-    currentBlockGasLimitByChainId: true,
-  },
-  AddressBookController: {
-    addressBook: false,
-  },
-  AlertController: {
-    alertEnabledness: true,
-    unconnectedAccountAlertShownOrigins: false,
-    web3ShimUsageOrigins: false,
-  },
-  AnnouncementController: {
-    announcements: false,
-  },
-  AuthenticationController: {
-    isSignedIn: false,
-  },
-  NetworkOrderController: {
-    orderedNetworkList: [],
-  },
-  AccountOrderController: {
-    pinnedAccountList: [],
-    hiddenAccountList: [],
-  },
-  AppMetadataController: {
-    currentAppVersion: true,
-    currentMigrationVersion: true,
-    previousAppVersion: true,
-    previousMigrationVersion: true,
-    showTokenAutodetectModalOnUpgrade: false,
-  },
-  ApprovalController: {
-    approvalFlows: false,
-    pendingApprovals: false,
-    pendingApprovalCount: false,
-  },
-  AppStateController: {
-    browserEnvironment: true,
-    connectedStatusPopoverHasBeenShown: true,
-    currentPopupId: false,
-    onboardingDate: false,
-    currentExtensionPopupId: false,
-    defaultHomeActiveTabName: true,
-    fullScreenGasPollTokens: true,
-    hadAdvancedGasFeesSetPriorToMigration92_3: true,
-    nftsDetectionNoticeDismissed: true,
-    nftsDropdownState: true,
-    notificationGasPollTokens: true,
-    outdatedBrowserWarningLastShown: true,
-    popupGasPollTokens: true,
-    qrHardware: true,
-    recoveryPhraseReminderHasBeenShown: true,
-    recoveryPhraseReminderLastShown: true,
-    showBetaHeader: true,
-    showPermissionsTour: true,
-    showNetworkBanner: true,
-    showAccountBanner: true,
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
-    showTestnetMessageInDropdown: true,
-    surveyLinkLastClickedOrClosed: true,
-    snapsInstallPrivacyWarningShown: true,
-    termsOfUseLastAgreed: true,
-    timeoutMinutes: true,
-    trezorModel: true,
-    usedNetworks: true,
-  },
-  MultichainBalancesController: {
-    balances: false,
-  },
-  BridgeController: {
-    bridgeState: {
-      bridgeFeatureFlags: {
-        extensionSupport: false,
-      },
-    },
-  },
-  CronjobController: {
-    jobs: false,
-  },
-  CurrencyController: {
-    currentCurrency: true,
-    currencyRates: true,
-  },
-  DecryptMessageController: {
-    unapprovedDecryptMsgs: false,
-    unapprovedDecryptMsgCount: true,
-  },
-  EncryptionPublicKeyController: {
-    unapprovedEncryptionPublicKeyMsgs: false,
-    unapprovedEncryptionPublicKeyMsgCount: true,
-  },
-  EnsController: {
-    ensResolutionsByAddress: false,
-    ensEntries: false,
-  },
-  GasFeeController: {
-    estimatedGasFeeTimeBounds: true,
-    gasEstimateType: true,
-    gasFeeEstimates: true,
-    gasFeeEstimatesByChainId: true,
-    nonRPCGasFeeApisDisabled: false,
-  },
-  KeyringController: {
-    isUnlocked: true,
-    keyrings: false,
-  },
-  LoggingController: {
-    logs: false,
-  },
-  MetamaskNotificationsController: {
-    subscriptionAccountsSeen: false,
-    isMetamaskNotificationsFeatureSeen: false,
-    isMetamaskNotificationsEnabled: false,
-    isFeatureAnnouncementsEnabled: false,
-    metamaskNotificationsList: false,
-    metamaskNotificationsReadList: false,
-    isCheckingAccountsPresence: false,
-    isFetchingMetamaskNotifications: false,
-    isUpdatingMetamaskNotifications: false,
-    isUpdatingMetamaskNotificationsAccount: false,
-  },
-  MetaMetricsController: {
-    eventsBeforeMetricsOptIn: false,
-    fragments: false,
-    metaMetricsId: true,
-    participateInMetaMetrics: true,
-    previousUserTraits: false,
-    segmentApiCalls: false,
-    traits: false,
-    dataCollectionForMarketing: false,
-  },
-  NameController: {
-    names: false,
-    nameSources: false,
-    useExternalNameSources: false,
-  },
-  NetworkController: {
-    networkConfigurations: false,
-    networksMetadata: true,
-    providerConfig: {
-      chainId: true,
-      id: true,
-      nickname: true,
-      rpcPrefs: false,
-      rpcUrl: false,
-      ticker: true,
-      type: true,
-    },
-    selectedNetworkClientId: false,
-  },
-  NftController: {
-    allNftContracts: false,
-    allNfts: false,
-    ignoredNfts: false,
-  },
-  NotificationController: {
-    notifications: false,
-  },
-  OnboardingController: {
-    completedOnboarding: true,
-    firstTimeFlowType: true,
-    onboardingTabs: false,
-    seedPhraseBackedUp: true,
-  },
-  PPOMController: {
-    securityAlertsEnabled: false,
-    storageMetadata: [],
-    versionInfo: [],
-  },
-  PermissionController: {
-    subjects: false,
-  },
-  PermissionLogController: {
-    permissionActivityLog: false,
-    permissionHistory: false,
-  },
-  PhishingController: {},
-  PreferencesController: {
-    advancedGasFee: true,
-    currentLocale: true,
-    disabledRpcMethodPreferences: true,
-    dismissSeedBackUpReminder: true,
-    featureFlags: true,
-    forgottenPassword: true,
-    identities: false,
-    incomingTransactionsPreferences: true,
-    isIpfsGatewayEnabled: false,
-    ipfsGateway: false,
-    knownMethodData: false,
-    ledgerTransportType: true,
-    lostIdentities: false,
-    openSeaEnabled: true,
-    preferences: {
-      autoLockTimeLimit: true,
-      hideZeroBalanceTokens: true,
-      showExtensionInFullSizeView: true,
-      showFiatInTestnets: true,
-      showTestNetworks: true,
-      smartTransactionsOptInStatus: true,
-      useNativeCurrencyAsPrimaryCurrency: true,
-      petnamesEnabled: true,
-      showTokenAutodetectModal: false,
-      showConfirmationAdvancedDetails: true,
-    },
-    useExternalServices: false,
-    selectedAddress: false,
-    snapRegistryList: false,
-    theme: true,
-    signatureSecurityAlertResponses: false,
-    use4ByteResolution: true,
-    useAddressBarEnsResolution: true,
-    useBlockie: true,
-    useCurrencyRateCheck: true,
-    useMultiAccountBalanceChecker: true,
-    useNftDetection: true,
-    useNonceField: true,
-    usePhishDetect: true,
-    useTokenDetection: true,
-    useRequestQueue: true,
-    useTransactionSimulations: true,
-    enableMV3TimestampSave: true,
-  },
-  PushPlatformNotificationsController: {
-    fcmToken: false,
-  },
-  MultichainRatesController: {
-    fiatCurrency: true,
-    rates: true,
-    cryptocurrencies: true,
-  },
-  QueuedRequestController: {
-    queuedRequestCount: true,
-  },
-  SelectedNetworkController: { domains: false },
-  SignatureController: {
-    unapprovedMsgCount: true,
-    unapprovedMsgs: false,
-    unapprovedPersonalMsgCount: true,
-    unapprovedPersonalMsgs: false,
-    unapprovedTypedMessages: false,
-    unapprovedTypedMessagesCount: true,
-  },
-  SmartTransactionsController: {
-    smartTransactionsState: {
-      fees: {
-        approvalTxFees: true,
-        tradeTxFees: true,
-      },
-      liveness: true,
-      smartTransactions: false,
-      userOptIn: true,
-      userOptInV2: true,
-    },
-  },
-  SnapController: {
-    unencryptedSnapStates: false,
-    snapStates: false,
-    snaps: false,
-  },
-  SnapInterface: {
-    interfaces: false,
-  },
-  SnapsRegistry: {
-    database: false,
-    lastUpdated: false,
-    databaseUnavailable: false,
-  },
-  SubjectMetadataController: {
-    subjectMetadata: false,
-  },
-  SwapsController: {
-    swapsState: {
-      approveTxId: false,
-      customApproveTxData: false,
-      customGasPrice: true,
-      customMaxFeePerGas: true,
-      customMaxGas: true,
-      customMaxPriorityFeePerGas: true,
-      errorKey: true,
-      fetchParams: true,
-      quotes: false,
-      quotesLastFetched: true,
-      quotesPollingLimitEnabled: true,
-      routeState: true,
-      saveFetchedQuotes: true,
-      selectedAggId: true,
-      swapsFeatureFlags: true,
-      swapsFeatureIsLive: true,
-      swapsQuotePrefetchingRefreshTime: true,
-      swapsQuoteRefreshTime: true,
-      swapsStxBatchStatusRefreshTime: true,
-      swapsStxGetTransactionsRefreshTime: true,
-      swapsStxMaxFeeMultiplier: true,
-      swapsUserFeeLevel: true,
-      tokens: false,
-      topAggId: false,
-      tradeTxId: false,
-    },
-  },
-  TokenDetectionController: {
-    [AllProperties]: false,
-  },
-  TokenListController: {
-    preventPollingOnNetworkRestart: true,
-    tokenList: false,
-    tokensChainsCache: {
-      [AllProperties]: false,
-    },
-  },
-  TokenRatesController: {
-    marketData: false,
-  },
-  TokensController: {
-    allDetectedTokens: {
-      [AllProperties]: false,
-    },
-    allIgnoredTokens: {
-      [AllProperties]: false,
-    },
-    allTokens: {
-      [AllProperties]: false,
-    },
-    detectedTokens: false,
-    ignoredTokens: false,
-    tokens: false,
-  },
-  TransactionController: {
-    transactions: false,
-    lastFetchedBlockNumbers: false,
-    methodData: false,
-  },
-  TxController: {
-    transactions: false,
-  },
-  UserOperationController: {
-    userOperations: false,
-  },
-  UserStorageController: {
-    isProfileSyncingEnabled: true,
-    isProfileSyncingUpdateLoading: false,
-  },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ...MMI_SENTRY_BACKGROUND_STATE,
-  ///: END:ONLY_INCLUDE_IF
-};
+  if (!getSentryTarget()) {
+    log('Skipped initialization');
+    return undefined;
+  }
 
-const flattenedBackgroundStateMask = Object.values(
-  SENTRY_BACKGROUND_STATE,
-).reduce((partialBackgroundState, controllerState) => {
+  log('Initializing');
+
+  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
+  // If it's not, we still get the extensionId, but the installType will default to "unknown"
+  browser.management
+    .getSelf()
+    .then((extensionInfo) => {
+      if (extensionInfo.installType) {
+        installType = extensionInfo.installType;
+      }
+    })
+    .catch((error) => {
+      log('Error getting extension installType', error);
+    });
+  integrateLogging();
+  setSentryClient();
+
   return {
-    ...partialBackgroundState,
-    ...controllerState,
+    ...Sentry,
+    getMetaMetricsEnabled,
   };
-}, {});
+}
 
-// This describes the subset of Redux state attached to errors sent to Sentry
-// These properties have some potential to be useful for debugging, and they do
-// not contain any identifiable information.
-export const SENTRY_UI_STATE = {
-  gas: true,
-  history: true,
-  metamask: {
-    ...flattenedBackgroundStateMask,
-    // This property comes from the background but isn't in controller state
-    isInitialized: true,
-    // These properties are in the `metamask` slice but not in the background state
-    customNonceValue: true,
-    isAccountMenuOpen: true,
-    isNetworkMenuOpen: true,
-    nextNonce: true,
-    pendingTokens: false,
-    welcomeScreenSeen: true,
-    confirmationExchangeRates: true,
-    useSafeChainsListValidation: true,
-    bitcoinSupportEnabled: false,
-    bitcoinTestnetSupportEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    addSnapAccountEnabled: false,
-    snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
-    newPrivacyPolicyToastClickedOrClosed: false,
-    newPrivacyPolicyToastShownDate: false,
-  },
-  unconnectedAccount: true,
-};
+function getClientOptions() {
+  const environment = getSentryEnvironment();
+  const sentryTarget = getSentryTarget();
+
+  return {
+    beforeBreadcrumb: beforeBreadcrumb(),
+    beforeSend: (report) => rewriteReport(report),
+    debug: METAMASK_DEBUG,
+    dist: isManifestV3 ? 'mv3' : 'mv2',
+    dsn: sentryTarget,
+    environment,
+    integrations: [
+      Sentry.dedupeIntegration(),
+      Sentry.extraErrorDataIntegration(),
+      Sentry.browserTracingIntegration(),
+      filterEvents({ getMetaMetricsEnabled, log }),
+    ],
+    release: RELEASE,
+    // Client reports are automatically sent when a page's visibility changes to
+    // "hidden", but cancelled (with an Error) that gets logged to the console.
+    // Our test infra sometimes reports these errors as unexpected failures,
+    // which results in test flakiness. We don't use these client reports, so
+    // we can safely turn them off by setting the `sendClientReports` option to
+    // `false`.
+    sendClientReports: false,
+    tracesSampleRate: getTracesSampleRate(sentryTarget),
+    transport: makeTransport,
+  };
+}
+
+/**
+ * Compute the tracesSampleRate depending on testing condition.
+ *
+ * @param {string} sentryTarget
+ * @returns tracesSampleRate to setup Sentry
+ */
+function getTracesSampleRate(sentryTarget) {
+  if (sentryTarget === SENTRY_DSN_FAKE) {
+    return 1.0;
+  }
+
+  const flags = getManifestFlags();
+
+  // Grab the tracesSampleRate that may have come in from a git message
+  // 0 is a valid value, so must explicitly check for undefined
+  if (flags.sentry?.tracesSampleRate !== undefined) {
+    return flags.sentry.tracesSampleRate;
+  }
+
+  if (flags.circleci) {
+    // Report very frequently on develop branch, and never on other branches
+    // (Unless you do a [flags.sentry.tracesSampleRate: x.xx] override)
+    if (flags.circleci.branch === 'develop') {
+      return 0.03;
+    }
+    return 0;
+  }
+
+  if (METAMASK_DEBUG) {
+    return 1.0;
+  }
+
+  return 0.02;
+}
+
+/**
+ * Get CircleCI tags passed from the test environment, through manifest.json,
+ * and give them to the Sentry client.
+ */
+function setCircleCiTags() {
+  const { circleci } = getManifestFlags();
+
+  if (circleci?.enabled) {
+    Sentry.setTag('circleci.enabled', circleci.enabled);
+    Sentry.setTag('circleci.branch', circleci.branch);
+    Sentry.setTag('circleci.buildNum', circleci.buildNum);
+    Sentry.setTag('circleci.job', circleci.job);
+    Sentry.setTag('circleci.nodeIndex', circleci.nodeIndex);
+    Sentry.setTag('circleci.prNumber', circleci.prNumber);
+  }
+}
 
 /**
  * Returns whether MetaMetrics is enabled, given the application state.
@@ -482,15 +197,12 @@ function getMetaMetricsEnabledFromPersistedState(persistedState) {
  * Returns whether onboarding has completed, given the application state.
  *
  * @param {Record<string, unknown>} appState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
+ * @returns `true` if onboarding has completed, `false` otherwise.
  */
 function getOnboardingCompleteFromAppState(appState) {
   // during initialization after loading persisted state
   if (appState.persistedState) {
-    return Boolean(
-      appState.persistedState.data?.OnboardingController?.completedOnboarding,
-    );
+    return getOnboardingCompleteFromPersistedState(appState.persistedState);
     // After initialization
   } else if (appState.state) {
     // UI
@@ -504,215 +216,122 @@ function getOnboardingCompleteFromAppState(appState) {
   return false;
 }
 
-export default function setupSentry({ release, getState }) {
-  if (!release) {
-    throw new Error('Missing release');
-  } else if (METAMASK_DEBUG && !IN_TEST) {
-    /**
-     * Workaround until the following issue is resolved
-     * https://github.com/MetaMask/metamask-extension/issues/15691
-     * The IN_TEST condition allows the e2e tests to run with both
-     * yarn start:test and yarn build:test
-     */
-    return undefined;
+/**
+ * Returns whether onboarding has completed, given the persisted state.
+ *
+ * @param {Record<string, unknown>} persistedState - Persisted state
+ * @returns `true` if onboarding has completed, `false` otherwise.
+ */
+function getOnboardingCompleteFromPersistedState(persistedState) {
+  return Boolean(
+    persistedState.data?.OnboardingController?.completedOnboarding,
+  );
+}
+
+function getSentryEnvironment() {
+  if (METAMASK_BUILD_TYPE === 'main') {
+    return METAMASK_ENVIRONMENT;
   }
 
-  const environment =
-    METAMASK_BUILD_TYPE === 'main'
-      ? METAMASK_ENVIRONMENT
-      : `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
+  return `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
+}
 
-  let sentryTarget;
-  if (METAMASK_ENVIRONMENT === 'production') {
-    if (!process.env.SENTRY_DSN) {
-      throw new Error(
-        `Missing SENTRY_DSN environment variable in production environment`,
-      );
-    }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    sentryTarget = process.env.SENTRY_MMI_DSN;
-    ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    sentryTarget = process.env.SENTRY_DSN;
-    ///: END:ONLY_INCLUDE_IF
-
-    console.log(
-      `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
-    );
-  } else {
-    console.log(
-      `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN_DEV`,
-    );
-    sentryTarget = SENTRY_DSN_DEV;
+function getSentryTarget() {
+  if (
+    getManifestFlags().sentry?.doNotForceSentryForThisTest ||
+    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+  ) {
+    return SENTRY_DSN_FAKE;
   }
+
+  if (METAMASK_ENVIRONMENT !== 'production') {
+    return SENTRY_DSN_DEV;
+  }
+
+  if (METAMASK_BUILD_TYPE === 'mmi') {
+    return SENTRY_DSN_MMI;
+  }
+
+  if (!SENTRY_DSN) {
+    throw new Error(
+      `Missing SENTRY_DSN environment variable in production environment`,
+    );
+  }
+
+  return SENTRY_DSN;
+}
+
+/**
+ * Returns whether MetaMetrics is enabled. If the application hasn't yet
+ * been initialized, the persisted state will be used (if any).
+ *
+ * @returns `true` if MetaMetrics is enabled, `false` otherwise.
+ */
+async function getMetaMetricsEnabled() {
+  const flags = getManifestFlags();
+
+  if (
+    METAMASK_BUILD_TYPE === 'mmi' ||
+    (flags.circleci && !flags.sentry?.doNotForceSentryForThisTest)
+  ) {
+    return true;
+  }
+
+  const appState = getState();
+
+  if (appState.state || appState.persistedState) {
+    return (
+      getMetaMetricsEnabledFromAppState(appState) &&
+      getOnboardingCompleteFromAppState(appState)
+    );
+  }
+
+  // If we reach here, it means the error was thrown before initialization
+  // completed, and before we loaded the persisted state for the first time.
+  try {
+    const persistedState = await globalThis.stateHooks.getPersistedState();
+    return (
+      getMetaMetricsEnabledFromPersistedState(persistedState) &&
+      getOnboardingCompleteFromPersistedState(persistedState)
+    );
+  } catch (error) {
+    log('Error retrieving persisted state', error);
+    return false;
+  }
+}
+
+function setSentryClient() {
+  const clientOptions = getClientOptions();
+  const { dsn, environment, release } = clientOptions;
 
   /**
-   * Returns whether MetaMetrics is enabled. If the application hasn't yet
-   * been initialized, the persisted state will be used (if any).
-   *
-   * @returns `true` if MetaMetrics is enabled, `false` otherwise.
+   * Sentry throws on initialization as it wants to avoid polluting the global namespace and
+   * potentially clashing with a website also using Sentry, but this could only happen in the content script.
+   * This emulates NW.js which disables these validations.
+   * https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
    */
-  async function getMetaMetricsEnabled() {
-    if (METAMASK_BUILD_TYPE === 'mmi') {
-      return true;
-    }
-
-    const appState = getState();
-    if (appState.state || appState.persistedState) {
-      return getMetaMetricsEnabledFromAppState(appState);
-    }
-    // If we reach here, it means the error was thrown before initialization
-    // completed, and before we loaded the persisted state for the first time.
-    try {
-      const persistedState = await globalThis.stateHooks.getPersistedState();
-      return getMetaMetricsEnabledFromPersistedState(persistedState);
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  }
+  globalThis.nw = {};
 
   /**
-   * Returns whether Sentry should be enabled or not. If the build type is mmi
-   * it will always be enabled, if it's main it will first check for MetaMetrics
-   * value before returning true or false
-   *
-   * @returns `true` if Sentry should be enabled, depends on the build type and
-   * whether MetaMetrics is on or off for all build types except mmi
+   * Sentry checks session tracking support by looking for global history object and functions inside it.
+   * Scuttling sets this property to undefined which breaks Sentry logic and crashes background.
    */
-  async function getSentryEnabled() {
-    // For MMI we want Sentry always logging, doesn't depend on MetaMetrics being on or off
-    if (METAMASK_BUILD_TYPE === 'mmi') {
-      return true;
-    }
-    return getMetaMetricsEnabled();
-  }
+  globalThis.history ??= {};
 
-  Sentry.init({
-    dsn: sentryTarget,
-    debug: METAMASK_DEBUG,
-    /**
-     * autoSessionTracking defaults to true and operates by sending a session
-     * packet to sentry. This session packet does not appear to be filtered out
-     * via our beforeSend or FilterEvents integration. To avoid sending a
-     * request before we have the state tree and can validate the users
-     * preferences, we initiate this to false. Later, in startSession and
-     * endSession we modify this option and start the session or end the
-     * session manually.
-     *
-     * In sentry-install we call toggleSession after the page loads and state
-     * is available, this handles initiating the session for a user who has
-     * opted into MetaMetrics. This script is ran in both the background and UI
-     * so it should be effective at starting the session in both places.
-     *
-     * In the MetaMetricsController the session is manually started or stopped
-     * when the user opts in or out of MetaMetrics. This occurs in the
-     * setParticipateInMetaMetrics function which is exposed to the UI via the
-     * MetaMaskController.
-     *
-     * In actions.ts, after sending the updated participateInMetaMetrics flag
-     * to the background, we call toggleSession to ensure sentry is kept in
-     * sync with the user's preference.
-     *
-     * Types for the global Sentry object, and the new methods added as part of
-     * this effort were added to global.d.ts in the types folder.
-     */
-    autoSessionTracking: false,
+  log('Updating client', {
     environment,
-    integrations: [
-      /**
-       * Filtering of events must happen in this FilterEvents custom
-       * integration instead of in the beforeSend handler because the Dedupe
-       * integration is unaware of the beforeSend functionality. If an event is
-       * queued in the sentry context, additional events of the same name will
-       * be filtered out by Dedupe even if the original event was not sent due
-       * to the beforeSend method returning null.
-       *
-       * @see https://github.com/MetaMask/metamask-extension/pull/15677
-       */
-      new FilterEvents({ getMetaMetricsEnabled }),
-      new Dedupe(),
-      new ExtraErrorData(),
-      new Sentry.BrowserProfilingIntegration(),
-    ],
+    dsn,
     release,
-    /**
-     * Setting a value for `tracesSampleRate` enables performance monitoring in Sentry.
-     * Once performance monitoring is enabled, transactions are sent to Sentry every time
-     * a user loads a page or navigates within the app.
-     * Since the amount of traffic the app gets is important, this means a lot of
-     * transactions are sent. By setting `tracesSampleRate` to a value lower than 1.0, we
-     * reduce the volume of transactions to a more reasonable amount.
-     */
-    tracesSampleRate: 0.01,
-    beforeSend: (report) => rewriteReport(report, getState),
-    beforeBreadcrumb: beforeBreadcrumb(getState),
-    // Client reports are automatically sent when a page's visibility changes to
-    // "hidden", but cancelled (with an Error) that gets logged to the console.
-    // Our test infra sometimes reports these errors as unexpected failures,
-    // which results in test flakiness. We don't use these client reports, so
-    // we can safely turn them off by setting the `sendClientReports` option to
-    // `false`.
-    sendClientReports: false,
   });
 
-  /**
-   * As long as a reference to the Sentry Hub can be found, and the user has
-   * opted into MetaMetrics, change the autoSessionTracking option and start
-   * a new sentry session.
-   */
-  const startSession = async () => {
-    const hub = Sentry.getCurrentHub?.();
-    const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getSentryEnabled()) === true) {
-      options.autoSessionTracking = true;
-      hub.startSession();
-    }
-  };
+  Sentry.registerSpanErrorInstrumentation();
+  Sentry.init(clientOptions);
 
-  /**
-   * As long as a reference to the Sentry Hub can be found, and the user has
-   * opted out of MetaMetrics, change the autoSessionTracking option and end
-   * the current sentry session.
-   */
-  const endSession = async () => {
-    const hub = Sentry.getCurrentHub?.();
-    const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getSentryEnabled()) === false) {
-      options.autoSessionTracking = false;
-      hub.endSession();
-    }
-  };
+  setCircleCiTags();
 
-  /**
-   * Call the appropriate method (either startSession or endSession) depending
-   * on the state of metaMetrics optin and the state of autoSessionTracking on
-   * the Sentry client.
-   */
-  const toggleSession = async () => {
-    const hub = Sentry.getCurrentHub?.();
-    const options = hub.getClient?.().getOptions?.() ?? {
-      autoSessionTracking: false,
-    };
-    const isSentryEnabled = await getSentryEnabled();
-    if (isSentryEnabled === true && options.autoSessionTracking === false) {
-      await startSession();
-    } else if (
-      isSentryEnabled === false &&
-      options.autoSessionTracking === true
-    ) {
-      await endSession();
-    }
-  };
+  addDebugListeners();
 
-  return {
-    ...Sentry,
-    startSession,
-    endSession,
-    toggleSession,
-  };
+  return true;
 }
 
 /**
@@ -734,10 +353,9 @@ function hideUrlIfNotInternal(url) {
 /**
  * Returns a method that handles the Sentry breadcrumb using a specific method to get the extension state
  *
- * @param {Function} getState - A method that returns the state of the extension
  * @returns {(breadcrumb: object) => object} A method that modifies a Sentry breadcrumb object
  */
-export function beforeBreadcrumb(getState) {
+export function beforeBreadcrumb() {
   return (breadcrumb) => {
     if (!getState) {
       return null;
@@ -783,11 +401,9 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
  * return value of the second parameter passed to the function.
  *
  * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
- * @param {Function} getState - A function that should return an object representing some amount
- * of app state that we wish to submit with our error reports
  * @returns {object} A modified Sentry event object.
  */
-export function rewriteReport(report, getState) {
+export function rewriteReport(report) {
   try {
     // simplify certain complex error messages (e.g. Ethjs)
     simplifyErrorMessages(report);
@@ -800,16 +416,21 @@ export function rewriteReport(report, getState) {
     sanitizeAddressesFromErrorMessages(report);
     // modify report urls
     rewriteReportUrls(report);
+
     // append app state
-    if (getState) {
-      const appState = getState();
-      if (!report.extra) {
-        report.extra = {};
-      }
-      report.extra.appState = appState;
+    const appState = getState();
+
+    if (!report.extra) {
+      report.extra = {};
     }
+
+    report.extra.appState = appState;
+    if (browser.runtime && browser.runtime.id) {
+      report.extra.extensionId = browser.runtime.id;
+    }
+    report.extra.installType = installType;
   } catch (err) {
-    console.warn(err);
+    log('Error rewriting report', err);
   }
   return report;
 }
@@ -920,4 +541,75 @@ function toMetamaskUrl(origUrl) {
   }
   const metamaskUrl = `/metamask${filePath}`;
   return metamaskUrl;
+}
+
+function getState() {
+  return globalThis.stateHooks?.getSentryState?.() || {};
+}
+
+function integrateLogging() {
+  if (!METAMASK_DEBUG) {
+    return;
+  }
+
+  for (const loggerType of ['log', 'error']) {
+    logger[loggerType] = (...args) => {
+      const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
+      internalLog(message, ...args.slice(1));
+    };
+  }
+
+  log('Integrated logging');
+}
+
+function addDebugListeners() {
+  if (!METAMASK_DEBUG) {
+    return;
+  }
+
+  const client = Sentry.getClient();
+
+  client?.on('beforeEnvelope', (event) => {
+    if (isCompletedSessionEnvelope(event)) {
+      log('Completed session', event);
+    }
+  });
+
+  client?.on('afterSendEvent', (event) => {
+    const type = getEventType(event);
+    log(type, event);
+  });
+
+  log('Added debug listeners');
+}
+
+function makeTransport(options) {
+  return Sentry.makeFetchTransport(options, async (...args) => {
+    const metricsEnabled = await getMetaMetricsEnabled();
+
+    if (!metricsEnabled) {
+      throw new Error('Network request skipped as metrics disabled');
+    }
+
+    return await fetch(...args);
+  });
+}
+
+function isCompletedSessionEnvelope(envelope) {
+  const type = envelope?.[1]?.[0]?.[0]?.type;
+  const data = envelope?.[1]?.[0]?.[1] ?? {};
+
+  return type === 'session' && data.status === 'exited';
+}
+
+function getEventType(event) {
+  if (event.type === 'transaction') {
+    return 'Trace';
+  }
+
+  if (event.level === 'error') {
+    return 'Error';
+  }
+
+  return 'Event';
 }

@@ -37,8 +37,6 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.CANCELLED,
 ];
 
-export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
-
 export const getTransactions = createDeepEqualSelector(
   (state) => {
     const { transactions } = state.metamask ?? {};
@@ -47,7 +45,7 @@ export const getTransactions = createDeepEqualSelector(
       return [];
     }
 
-    return transactions.sort((a, b) => a.time - b.time); // Ascending
+    return [...transactions].sort((a, b) => a.time - b.time); // Ascending
   },
   (transactions) => transactions,
 );
@@ -86,7 +84,10 @@ export const getAllUnapprovedTransactions = createDeepEqualSelector(
       return [];
     }
 
-    const sortedTransactions = transactions.sort((a, b) => a.time - b.time);
+    const sortedTransactions = [...transactions].sort(
+      (a, b) => a.time - b.time,
+    );
+
     return filterAndShapeUnapprovedTransactions(sortedTransactions);
   },
   (transactions) => transactions,
@@ -186,14 +187,12 @@ export const selectedAddressTxListSelector = createSelector(
 );
 
 export const unapprovedMessagesSelector = createSelector(
-  unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
   getCurrentChainId,
   (
-    unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
@@ -202,7 +201,6 @@ export const unapprovedMessagesSelector = createSelector(
   ) =>
     txHelper(
       {},
-      unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
@@ -225,7 +223,7 @@ export const transactionsSelector = createSelector(
   (subSelectorTxList = [], selectedAddressTxList = []) => {
     const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
 
-    return txsToRender.sort((a, b) => b.time - a.time);
+    return [...txsToRender].sort((a, b) => b.time - a.time);
   },
 );
 
@@ -646,7 +644,6 @@ export const submittedPendingTransactionsSelector = createSelector(
 const TRANSACTION_APPROVAL_TYPES = [
   ApprovalType.EthDecrypt,
   ApprovalType.EthGetEncryptionPublicKey,
-  ApprovalType.EthSign,
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
 ];

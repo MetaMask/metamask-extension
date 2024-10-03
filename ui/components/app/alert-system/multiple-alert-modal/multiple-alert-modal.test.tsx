@@ -9,6 +9,14 @@ import {
   MultipleAlertModalProps,
 } from './multiple-alert-modal';
 
+jest.mock('../contexts/alertMetricsContext', () => ({
+  useAlertMetrics: jest.fn(() => ({
+    trackInlineAlertClicked: jest.fn(),
+    trackAlertRender: jest.fn(),
+    trackAlertActionClicked: jest.fn(),
+  })),
+}));
+
 describe('MultipleAlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
@@ -52,14 +60,6 @@ describe('MultipleAlertModal', () => {
         },
       },
     },
-    confirm: {
-      currentConfirmation: {
-        id: OWNER_ID_MOCK,
-        status: 'unapproved',
-        time: new Date().getTime(),
-        type: 'personal_sign',
-      },
-    },
   };
   const mockStore = configureMockStore([])(STATE_MOCK);
 
@@ -69,6 +69,20 @@ describe('MultipleAlertModal', () => {
     alertKey: FROM_ALERT_KEY_MOCK,
     onClose: onCloseMock,
   };
+
+  const mockStoreAcknowledgeAlerts = configureMockStore([])({
+    ...STATE_MOCK,
+    confirmAlerts: {
+      alerts: { [OWNER_ID_MOCK]: alertsMock },
+      confirmed: {
+        [OWNER_ID_MOCK]: {
+          [FROM_ALERT_KEY_MOCK]: true,
+          [DATA_ALERT_KEY_MOCK]: true,
+          [CONTRACT_ALERT_KEY_MOCK]: false,
+        },
+      },
+    },
+  });
 
   it('renders the multiple alert modal', () => {
     const { getByTestId } = renderWithProvider(
@@ -80,19 +94,6 @@ describe('MultipleAlertModal', () => {
   });
 
   it('invokes the onFinalAcknowledgeClick when the button is clicked', () => {
-    const mockStoreAcknowledgeAlerts = configureMockStore([])({
-      ...STATE_MOCK,
-      confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: alertsMock },
-        confirmed: {
-          [OWNER_ID_MOCK]: {
-            [FROM_ALERT_KEY_MOCK]: true,
-            [DATA_ALERT_KEY_MOCK]: true,
-            [CONTRACT_ALERT_KEY_MOCK]: true,
-          },
-        },
-      },
-    });
     const { getByTestId } = renderWithProvider(
       <MultipleAlertModal
         {...defaultProps}
@@ -107,19 +108,6 @@ describe('MultipleAlertModal', () => {
   });
 
   it('render the next alert when the "Got it" button is clicked', () => {
-    const mockStoreAcknowledgeAlerts = configureMockStore([])({
-      ...STATE_MOCK,
-      confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: alertsMock },
-        confirmed: {
-          [OWNER_ID_MOCK]: {
-            [FROM_ALERT_KEY_MOCK]: true,
-            [DATA_ALERT_KEY_MOCK]: true,
-            [CONTRACT_ALERT_KEY_MOCK]: false,
-          },
-        },
-      },
-    });
     const { getByTestId, getByText } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
       mockStoreAcknowledgeAlerts,
@@ -127,7 +115,23 @@ describe('MultipleAlertModal', () => {
 
     fireEvent.click(getByTestId('alert-modal-button'));
 
-    expect(getByText(alertsMock[2].message)).toBeInTheDocument();
+    expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+  });
+
+  it('closes modal when the "Got it" button is clicked', () => {
+    onAcknowledgeClickMock.mockReset();
+    const { getByTestId } = renderWithProvider(
+      <MultipleAlertModal
+        {...defaultProps}
+        alertKey={DATA_ALERT_KEY_MOCK}
+        skipAlertNavigation={true}
+      />,
+      mockStoreAcknowledgeAlerts,
+    );
+
+    fireEvent.click(getByTestId('alert-modal-button'));
+
+    expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
   });
 
   describe('Navigation', () => {
@@ -139,11 +143,14 @@ describe('MultipleAlertModal', () => {
 
       fireEvent.click(getByTestId('alert-modal-next-button'));
 
-      expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+      expect(getByText(alertsMock[2].message)).toBeInTheDocument();
     });
 
     it('calls previous alert when the previous button is clicked', () => {
-      const selectSecondAlertMock = { ...defaultProps, alertKey: 'data' };
+      const selectSecondAlertMock = {
+        ...defaultProps,
+        alertKey: CONTRACT_ALERT_KEY_MOCK,
+      };
       const { getByTestId, getByText } = renderWithProvider(
         <MultipleAlertModal {...selectSecondAlertMock} />,
         mockStore,
@@ -151,7 +158,7 @@ describe('MultipleAlertModal', () => {
 
       fireEvent.click(getByTestId('alert-modal-back-button'));
 
-      expect(getByText(alertsMock[0].message)).toBeInTheDocument();
+      expect(getByText(alertsMock[1].message)).toBeInTheDocument();
     });
   });
 });
