@@ -21,7 +21,7 @@ jobs:
 
       - name: Update coverage
         run: |
-          echo "{ "coverage": ${{ needs.run-tests.outputs.active-branch-coverage }} }" > coverage.json
+          echo "{ \"coverage\": ${{ needs.run-tests.outputs.active-branch-coverage }} }" > coverage.json
 
       - name: Create branch, commit, and push
         run: |
