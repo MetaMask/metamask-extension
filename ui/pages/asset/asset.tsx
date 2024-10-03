@@ -21,11 +21,13 @@ const Asset = () => {
   const { asset, id } = useParams<{ asset: string; id: string }>();
 
   const token = tokens.find(({ address }: { address: string }) =>
+    // @ts-expect-error TODO: Fix this type error by handling undefined parameters
     isEqualCaseInsensitive(address, asset),
   );
 
   const nft = nfts.find(
     ({ address, tokenId }: { address: string; tokenId: string }) =>
+      // @ts-expect-error TODO: Fix this type error by handling undefined parameters
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 

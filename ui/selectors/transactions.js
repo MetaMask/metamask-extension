@@ -45,7 +45,7 @@ export const getTransactions = createDeepEqualSelector(
       return [];
     }
 
-    return transactions.sort((a, b) => a.time - b.time); // Ascending
+    return [...transactions].sort((a, b) => a.time - b.time); // Ascending
   },
   (transactions) => transactions,
 );
@@ -84,7 +84,10 @@ export const getAllUnapprovedTransactions = createDeepEqualSelector(
       return [];
     }
 
-    const sortedTransactions = transactions.sort((a, b) => a.time - b.time);
+    const sortedTransactions = [...transactions].sort(
+      (a, b) => a.time - b.time,
+    );
+
     return filterAndShapeUnapprovedTransactions(sortedTransactions);
   },
   (transactions) => transactions,
@@ -220,7 +223,7 @@ export const transactionsSelector = createSelector(
   (subSelectorTxList = [], selectedAddressTxList = []) => {
     const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
 
-    return txsToRender.sort((a, b) => b.time - a.time);
+    return [...txsToRender].sort((a, b) => b.time - a.time);
   },
 );
 

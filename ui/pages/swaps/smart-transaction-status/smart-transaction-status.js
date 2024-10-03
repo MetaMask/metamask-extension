@@ -8,11 +8,10 @@ import {
   getFetchParams,
   prepareToLeaveSwaps,
   getCurrentSmartTransactions,
-  getSelectedQuote,
-  getTopQuote,
   getCurrentSmartTransactionsEnabled,
   getSwapsNetworkConfig,
   cancelSwapsSmartTransaction,
+  getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -74,9 +73,7 @@ export default function SmartTransactionStatusPage() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
-  const selectedQuote = useSelector(getSelectedQuote, isEqual);
-  const topQuote = useSelector(getTopQuote, isEqual);
-  const usedQuote = selectedQuote || topQuote;
+  const usedQuote = useSelector(getUsedQuote, isEqual);
   const currentSmartTransactions = useSelector(
     getCurrentSmartTransactions,
     isEqual,
@@ -368,7 +365,7 @@ export default function SmartTransactionStatusPage() {
         </Box>
         <Box
           marginTop={3}
-          className="smart-transaction-status__background-animation smart-transaction-status__background-animation--top"
+          className="smart-transaction-status__spacer-box--top"
         />
         {icon && (
           <Box marginTop={3} marginBottom={2}>
@@ -443,7 +440,7 @@ export default function SmartTransactionStatusPage() {
         )}
         <Box
           marginTop={3}
-          className="smart-transaction-status__background-animation smart-transaction-status__background-animation--bottom"
+          className="smart-transaction-status__spacer-box--bottom"
         />
         {subDescription && (
           <Text

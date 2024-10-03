@@ -39,6 +39,7 @@ const SnapUIRendererComponent = ({
   useDelineator = true,
   useFooter = false,
   onCancel,
+  contentBackgroundColor,
 }) => {
   const t = useI18nContext();
 
@@ -106,6 +107,7 @@ const SnapUIRendererComponent = ({
       isCollapsed={isCollapsed}
       onClick={onClick}
       boxProps={boxProps}
+      disablePadding
     >
       <Box className="snap-ui-renderer__content">
         <SnapInterfaceContextProvider
@@ -125,7 +127,11 @@ const SnapUIRendererComponent = ({
       initialState={initialState}
       context={context}
     >
-      <Box className="snap-ui-renderer__content" height={BlockSize.Full}>
+      <Box
+        className="snap-ui-renderer__content"
+        height={BlockSize.Full}
+        backgroundColor={contentBackgroundColor}
+      >
         <MetaMaskTemplateRenderer sections={sections} />
       </Box>
     </SnapInterfaceContextProvider>
@@ -154,4 +160,5 @@ SnapUIRendererComponent.propTypes = {
   useDelineator: PropTypes.bool,
   useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
+  contentBackgroundColor: PropTypes.string,
 };

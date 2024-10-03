@@ -1,12 +1,14 @@
 const { strict: assert } = require('assert');
 const { createServer } = require('node:http');
 const { createDeferredPromise } = require('@metamask/utils');
+const { until } = require('selenium-webdriver');
 
 const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -59,8 +61,7 @@ describe('Phishing Detection', function () {
         await driver.clickElement({
           text: 'continue to the site.',
         });
-        const header = await driver.findElement('h1');
-        assert.equal(await header.getText(), 'E2E Test Dapp');
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       },
     );
   });
@@ -105,8 +106,8 @@ describe('Phishing Detection', function () {
         await driver.clickElement({
           text: 'continue to the site.',
         });
-        const header = await driver.findElement('h1');
-        assert.equal(await header.getText(), 'E2E Test Dapp');
+
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       };
     }
 
@@ -248,39 +249,6 @@ describe('Phishing Detection', function () {
           `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20${encodeURIComponent(
             phishingSite.hostname,
           )}&body=${encodeURIComponent(`${phishingSite.origin}/`)}`,
-        );
-      },
-    );
-  });
-
-  it('should navigate the user to PhishFort to dispute a Phishfort Block', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
-          return setupPhishingDetectionMocks(mockServer, {
-            blockProvider: BlockProvider.PhishFort,
-            blocklist: ['127.0.0.1'],
-          });
-        },
-        dapp: true,
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage('http://127.0.0.1:8080');
-
-        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-        await driver.clickElement({ text: 'report a detection problem.' });
-
-        // wait for page to load before checking URL.
-        await driver.findElement({
-          text: `Empty page by ${BlockProvider.PhishFort}`,
-        });
-        assert.equal(
-          await driver.getCurrentUrl(),
-          `https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
         );
       },
     );

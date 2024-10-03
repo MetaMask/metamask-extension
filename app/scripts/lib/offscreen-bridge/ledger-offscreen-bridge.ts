@@ -6,6 +6,12 @@ import {
 } from '../../../../shared/constants/offscreen-communication';
 
 /**
+ * The options for the LedgerOffscreenBridge are empty because the bridge
+ * doesn't require any options to be passed in.
+ */
+type LedgerOffscreenBridgeOptions = Record<never, never>;
+
+/**
  * This class is used as a custom bridge for the Ledger connection. Every
  * hardware wallet keyring also requires a bridge that has a known interface
  * that the keyring can call into for specific functions. The bridge then makes
@@ -16,7 +22,9 @@ import {
  * ledger device via the ledger keyring iframe. The ledger keyring iframe is
  * added to the offscreen.html file directly.
  */
-export class LedgerOffscreenBridge implements LedgerBridge {
+export class LedgerOffscreenBridge
+  implements LedgerBridge<LedgerOffscreenBridgeOptions>
+{
   isDeviceConnected = false;
 
   init() {
@@ -34,6 +42,14 @@ export class LedgerOffscreenBridge implements LedgerBridge {
 
   destroy() {
     // TODO: remove listener
+    return Promise.resolve();
+  }
+
+  getOptions() {
+    return Promise.resolve({});
+  }
+
+  setOptions() {
     return Promise.resolve();
   }
 

@@ -17,13 +17,18 @@ import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
 } from '../../../../../store/actions';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../../../shared/constants/network';
+  getAssetImageURL,
+  shortenAddress,
+} from '../../../../../helpers/utils/util';
 import NftDetails from './nft-details';
+
+jest.mock('../../../../../helpers/utils/util', () => ({
+  getAssetImageURL: jest.fn(),
+  shortenAddress: jest.fn(),
+}));
 
 jest.mock('copy-to-clipboard');
 
@@ -66,13 +71,20 @@ describe('NFT Details', () => {
     jest.clearAllMocks();
   });
 
-  it('should match minimal props and state snapshot', () => {
+  it('should match minimal props and state snapshot', async () => {
+    getAssetImageURL.mockResolvedValue(
+      'https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link',
+    );
+    shortenAddress.mockReturnValue('0xDc738...06414');
+
     const { container } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    await waitFor(() => {
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it(`should route to '/' route when the back button is clicked`, () => {
@@ -225,12 +237,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-            type: NETWORK_TYPES.MAINNET,
-            ticker: CURRENCY_SYMBOLS.ETH,
-            nickname: MAINNET_DISPLAY_NAME,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       };
       const mainnetMockStore = configureMockStore([thunk])(mainnetState);
@@ -258,20 +265,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const polygonMockStore = configureMockStore([thunk])(polygonState);
@@ -299,10 +293,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.SEPOLIA,
-            type: NETWORK_TYPES.SEPOLIA,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       };
       const sepoliaMockStore = configureMockStore([thunk])(sepoliaState);
@@ -330,16 +321,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: '0x99',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x99',
-              nickname: 'Custom Mainnet RPC',
-            },
-          },
+          ...mockNetworkState({ chainId: '0x99' }),
         },
       };
       const randomNetworkMockStore = configureMockStore([thunk])(

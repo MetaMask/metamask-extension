@@ -29,6 +29,7 @@ import {
   updateEditableParams,
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
+  setNextNonce,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -44,7 +45,6 @@ import {
   getIsEthGasPriceFetched,
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
-  getPreferences,
   doesAddressRequireLedgerHidConnection,
   getTokenList,
   getEnsResolutionByAddress,
@@ -80,6 +80,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getEnvironmentType,
   ///: END:ONLY_INCLUDE_IF
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
 
 import {
@@ -263,7 +265,6 @@ const mapStateToProps = (state, ownProps) => {
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPriceFetched = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
-  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
@@ -344,7 +345,6 @@ const mapStateToProps = (state, ownProps) => {
     noGasPrice,
     supportsEIP1559,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
-    useNativeCurrencyAsPrimaryCurrency,
     maxFeePerGas: gasEstimationObject.maxFeePerGas,
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
@@ -429,6 +429,7 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(fetchSmartTransactionsLiveness());
     },
     getNextNonce: () => dispatch(getNextNonce()),
+    setNextNonce: (val) => dispatch(setNextNonce(val)),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {

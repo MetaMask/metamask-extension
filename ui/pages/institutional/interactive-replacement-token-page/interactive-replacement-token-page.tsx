@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Location as HistoryLocation } from 'history';
 import {
   Box,
   Button,
@@ -246,11 +247,17 @@ const InteractiveReplacementTokenPage: React.FC = () => {
 
       onRemoveAddTokenConnectRequest(connectRequest);
 
-      history.push(INSTITUTIONAL_FEATURES_DONE_ROUTE, {
+      const state = {
         imgSrc: custodian?.iconUrl,
         title: t('custodianReplaceRefreshTokenChangedTitle'),
         description: t('custodianReplaceRefreshTokenChangedSubtitle'),
-      });
+      };
+      const newLocation: Partial<HistoryLocation> = {
+        pathname: INSTITUTIONAL_FEATURES_DONE_ROUTE,
+        state,
+      };
+
+      history.push(newLocation);
 
       if (isMountedRef.current) {
         setIsLoading(false);

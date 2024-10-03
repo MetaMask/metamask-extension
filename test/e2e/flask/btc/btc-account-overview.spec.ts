@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { withBtcAccountSnap } from './common-btc';
 
@@ -30,15 +29,13 @@ describe('BTC Account - Overview', function (this: Suite) {
           css: '[disabled]',
         });
 
-        const buySellButton = await driver.waitForSelector(
-          '[data-testid="coin-overview-buy"]',
-        );
-        assert.equal(await buySellButton.isEnabled(), true);
+        // buy sell button
+        await driver.findClickableElement('[data-testid="coin-overview-buy"]');
 
-        const portfolioButton = await driver.waitForSelector(
-          '[data-testid="coin-overview-portfolio"]',
+        // receive button
+        await driver.findClickableElement(
+          '[data-testid="coin-overview-receive"]',
         );
-        assert.equal(await portfolioButton.isEnabled(), true);
       },
     );
   });

@@ -1,7 +1,10 @@
+import {
+  AddNetworkFields,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
 /**
- * A type representing any valid value for 'type' for setProviderType and other
- * methods that add or manipulate networks in MetaMask state.
+ * A type representing built-in network types, used as an identifier.
  */
 export type NetworkType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
 
@@ -144,6 +147,9 @@ export const CHAIN_IDS = {
   SEI: '0x531',
   BERACHAIN: '0x138d5',
   METACHAIN_ONE: '0x1b6e6',
+  ARBITRUM_SEPOLIA: '0x66eee',
+  NEAR: '0x18d',
+  NEAR_TESTNET: '0x18e',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -174,6 +180,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   FLARE_MAINNET: '0xe',
   FUSE_GOLD_MAINNET: '0x7a',
   HAQQ_NETWORK: '0x2be3',
+  IOTEX_MAINNET: '0x1251',
   KCC_MAINNET: '0x141',
   KLAYTN_MAINNET_CYPRESS: '0x2019',
   KROMA_MAINNET: '0xff',
@@ -354,19 +361,19 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SONGBIRD_CANARY_NETWORK: 'SGB',
   STEP_NETWORK: 'FITFI',
   VELAS_EVM_MAINNET: 'VLX',
-  Q_MAINNET: 'Q',
+  Q_MAINNET: 'QGOV',
   TELOS_EVM_MAINNET: 'TLOS',
   TENET: 'TENET',
   DOGECHAIN_MAINNET: 'DOGE',
   OASYS_MAINNET: 'OAS',
   HUOBI_ECO_CHAIN_MAINNET: 'HT',
   ACALA_NETWORK: 'ACA',
+  IOTEX_MAINNET: 'IOTX',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
   WETHIO: 'ZYN',
   CHZ: 'CHZ',
-  MATIC: 'POL',
 };
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -405,6 +412,8 @@ export const EVMOS_IMAGE_URL = './images/evmos.svg';
 export const FLARE_MAINNET_IMAGE_URL = './images/flare-mainnet.svg';
 export const FUSE_GOLD_MAINNET_IMAGE_URL = './images/fuse-mainnet.jpg';
 export const HAQQ_NETWORK_IMAGE_URL = './images/haqq.svg';
+export const IOTEX_MAINNET_IMAGE_URL = './images/iotex.svg';
+export const IOTEX_TOKEN_IMAGE_URL = './images/iotex-token.svg';
 export const KCC_MAINNET_IMAGE_URL = './images/kcc-mainnet.svg';
 export const KLAYTN_MAINNET_IMAGE_URL = './images/klaytn.svg';
 export const KROMA_MAINNET_IMAGE_URL = './images/kroma.svg';
@@ -413,6 +422,8 @@ export const MANTA_PACIFIC_MAINNET_IMAGE_URL = './images/manta.svg';
 export const MANTLE_MAINNET_IMAGE_URL = './images/mantle.svg';
 export const MOONBEAM_IMAGE_URL = './images/moonbeam.svg';
 export const MOONRIVER_IMAGE_URL = './images/moonriver.svg';
+export const MOONBEAM_TOKEN_IMAGE_URL = './images/moonbeam-token.svg';
+export const MOONRIVER_TOKEN_IMAGE_URL = './images/moonriver-token.svg';
 export const NEAR_AURORA_MAINNET_IMAGE_URL = './images/near-aurora.svg';
 export const NEBULA_MAINNET_IMAGE_URL = './images/nebula.svg';
 export const OASYS_MAINNET_IMAGE_URL = './images/oasys.svg';
@@ -435,6 +446,7 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
+export const NEAR_IMAGE_URL = './images/near.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -490,10 +502,12 @@ export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.MAINNET]: {
     chainId: CHAIN_IDS.MAINNET,
     blockExplorerUrl: `https://etherscan.io`,
+    ticker: CURRENCY_SYMBOLS.ETH,
   },
   [NETWORK_TYPES.LINEA_MAINNET]: {
     chainId: CHAIN_IDS.LINEA_MAINNET,
     blockExplorerUrl: 'https://lineascan.build',
+    ticker: CURRENCY_SYMBOLS.ETH,
   },
   [NETWORK_TYPES.LOCALHOST]: {
     chainId: CHAIN_IDS.LOCALHOST,
@@ -657,6 +671,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.HUOBI_ECO_CHAIN_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
+  [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.IOTEX_MAINNET,
 } as const;
 
 /**
@@ -711,6 +727,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]: ACALA_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ARBITRUM_NOVA]: ARBITRUM_NOVA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ASTAR]: ASTAR_IMAGE_URL,
@@ -731,6 +750,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.EVMOS]: EVMOS_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FLARE_MAINNET]: FLARE_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FUSE_GOLD_MAINNET]: FUSE_GOLD_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]: IOTEX_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.HAQQ_NETWORK]: HAQQ_NETWORK_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.KCC_MAINNET]: KCC_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.KLAYTN_MAINNET_CYPRESS]: KLAYTN_MAINNET_IMAGE_URL,
@@ -788,6 +808,11 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
+  [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.MOONRIVER]: MOONRIVER_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.MOONBEAM]: MOONBEAM_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]: IOTEX_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -902,76 +927,104 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
 
-export const FEATURED_RPCS: RPCDefinition[] = [
+export const FEATURED_RPCS: AddNetworkFields[] = [
   {
     chainId: CHAIN_IDS.ARBITRUM,
-    nickname: ARBITRUM_DISPLAY_NAME,
-    rpcUrl: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.ARBITRUM,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://explorer.arbitrum.io',
-      imageUrl: AETH_TOKEN_IMAGE_URL,
-    },
+    name: ARBITRUM_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
+    rpcEndpoints: [
+      {
+        url: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explorer.arbitrum.io'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.AVALANCHE,
-    nickname: AVALANCHE_DISPLAY_NAME,
-    rpcUrl: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.AVALANCHE,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://snowtrace.io/',
-      imageUrl: AVAX_TOKEN_IMAGE_URL,
-    },
+    name: AVALANCHE_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.AVALANCHE,
+    rpcEndpoints: [
+      {
+        url: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://snowtrace.io/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.BSC,
-    nickname: BNB_DISPLAY_NAME,
-    rpcUrl: 'https://bsc-dataseed.binance.org/',
-    ticker: CURRENCY_SYMBOLS.BNB,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://bscscan.com/',
-      imageUrl: BNB_TOKEN_IMAGE_URL,
-    },
+    name: BSC_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.BNB,
+    rpcEndpoints: [
+      {
+        url: 'https://bsc-dataseed.binance.org/',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://bscscan.com/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.OPTIMISM,
-    nickname: OPTIMISM_DISPLAY_NAME,
-    rpcUrl: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://optimistic.etherscan.io/',
-      imageUrl: OPTIMISM_TOKEN_IMAGE_URL,
-    },
+    name: OPTIMISM_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://optimistic.etherscan.io/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.POLYGON,
-    nickname: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
-    rpcUrl: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.POL,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://polygonscan.com/',
-      imageUrl: POL_TOKEN_IMAGE_URL,
-    },
+    name: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
+    nativeCurrency: CURRENCY_SYMBOLS.POL,
+    rpcEndpoints: [
+      {
+        url: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://polygonscan.com/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.ZKSYNC_ERA,
-    nickname: ZK_SYNC_ERA_DISPLAY_NAME,
-    rpcUrl: `https://mainnet.era.zksync.io`,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://explorer.zksync.io/',
-      imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
-    },
+    name: ZK_SYNC_ERA_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://mainnet.era.zksync.io`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explorer.zksync.io/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.BASE,
-    nickname: BASE_DISPLAY_NAME,
-    rpcUrl: `https://mainnet.base.org`,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://basescan.org',
-      imageUrl: BASE_TOKEN_IMAGE_URL,
-    },
+    name: BASE_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://mainnet.base.org`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
   },
 ];
 
@@ -1014,4 +1067,5 @@ export const TEST_NETWORK_IDS = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LINEA_SEPOLIA,
+  CHAIN_IDS.ARBITRUM_SEPOLIA,
 ];

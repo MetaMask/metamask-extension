@@ -9,11 +9,15 @@ exports[`ConfirmInfoRow should match snapshot 1`] = `
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        some label
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          some label
+        </p>
+      </div>
     </div>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -37,11 +41,15 @@ exports[`ConfirmInfoRow should match snapshot when copy is enabled 1`] = `
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        some label
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          some label
+        </p>
+      </div>
     </div>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-text-default"

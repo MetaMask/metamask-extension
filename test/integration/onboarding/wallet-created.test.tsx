@@ -87,36 +87,5 @@ describe('Wallet Created Events', () => {
 
       expect(completeOnboardingBackgroundRequest).toBeTruthy();
     });
-
-    await waitFor(() => {
-      const OnboardingWalletSetupCompleteEvent =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => {
-            if (call[0] === 'trackMetaMetricsEvent') {
-              const callArgs = call[1] as unknown as Record<string, unknown>[];
-
-              return (
-                callArgs[0].event ===
-                MetaMetricsEventName.OnboardingWalletSetupComplete
-              );
-            }
-
-            return false;
-          },
-        );
-
-      expect(OnboardingWalletSetupCompleteEvent?.[1]).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            category: MetaMetricsEventCategory.Onboarding,
-            event: MetaMetricsEventName.OnboardingWalletSetupComplete,
-            properties: {
-              wallet_setup_type: 'new',
-              new_wallet: true,
-            },
-          }),
-        ]),
-      );
-    });
   });
 });

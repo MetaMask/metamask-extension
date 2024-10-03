@@ -50,7 +50,7 @@ describe('Test Snap Name Lookup', function () {
 
         await driver.waitForSelector({ text: 'OK' });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -71,12 +71,18 @@ describe('Test Snap Name Lookup', function () {
           tag: 'p',
         });
 
+        // ensure we are on Mainnet
+        await driver.waitForSelector('[data-testid="staking-entrypoint-0x1"]');
+
         // click send
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // wait for input field and enter name to lookup
         await driver.waitForSelector('[data-testid="ens-input"]');
-        await driver.fill('[data-testid="ens-input"]', 'metamask.domain');
+        await driver.pasteIntoField(
+          '[data-testid="ens-input"]',
+          'metamask.domain',
+        );
 
         // verify name output from snap
         await driver.waitForSelector({

@@ -1,10 +1,12 @@
 import React from 'react';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import mockState from '../../../../test/data/mock-state.json';
 import { NotificationDetailBlockExplorerButton } from './notification-detail-block-explorer-button';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 const mockStore = configureStore();
 const store = mockStore({

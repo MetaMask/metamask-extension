@@ -1,4 +1,4 @@
-import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-api';
 import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
 import {
   TransactionController,
@@ -18,6 +18,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { SecurityAlertResponse } from '../ppom/types';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -40,24 +41,9 @@ jest.mock('uuid', () => {
 const SECURITY_ALERT_ID_MOCK = '123';
 
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
-
-const mockAccount = {
-  type: EthAccountType.Eoa,
-  id: '3afa663e-0600-4d93-868a-61c2e553013b',
+const INTERNAL_ACCOUNT = createMockInternalAccount({
   address: INTERNAL_ACCOUNT_ADDRESS,
-  methods: [],
-  options: {},
-};
-const mockInternalAccount = {
-  ...mockAccount,
-  metadata: {
-    name: `Account 1`,
-    importTime: Date.now(),
-    keyring: {
-      type: '',
-    },
-  },
-};
+});
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
@@ -490,7 +476,7 @@ describe('Transaction Utils', () => {
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
-      it('send to users own acccount', async () => {
+      it('send to users own account', async () => {
         const sendRequest = {
           ...request,
           transactionParams: {
@@ -502,7 +488,7 @@ describe('Transaction Utils', () => {
           ...sendRequest,
           securityAlertsEnabled: false,
           chainId: '0x1',
-          internalAccounts: [mockInternalAccount],
+          internalAccounts: [INTERNAL_ACCOUNT],
         });
 
         expect(

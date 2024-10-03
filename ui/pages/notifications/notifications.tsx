@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
@@ -23,12 +24,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { deleteExpiredNotifications } from '../../store/actions';
-import {
-  TRIGGER_TYPES,
-  TRIGGER_TYPES_WALLET_SET,
-} from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import {
   AlignItems,
   Display,
@@ -38,6 +34,11 @@ import { NotificationsList } from './notifications-list';
 import { processSnapNotifications } from './snap/utils/utils';
 import { SnapNotification } from './snap/types/types';
 import { NewFeatureTag } from './NewFeatureTag';
+
+type Notification = NotificationServicesController.Types.INotification;
+
+const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
+  NotificationServicesController.Constants;
 
 export type NotificationType = Notification | SnapNotification;
 

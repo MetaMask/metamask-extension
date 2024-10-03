@@ -85,6 +85,8 @@ export const ConfirmInfoAlertRow = ({
           ownerId={ownerId}
           onFinalAcknowledgeClick={handleModalClose}
           onClose={handleModalClose}
+          showCloseIcon={false}
+          skipAlertNavigation={true}
         />
       )}
       <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />

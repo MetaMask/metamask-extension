@@ -1,10 +1,9 @@
 import { Suite } from 'mocha';
 import {
-  withFixtures,
-  openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
+  withFixtures,
 } from '../../helpers';
-import type { Ganache } from '../../seeder/ganache';
 import {
   NATIVE_TOKEN_SYMBOL,
   SwapSendPage,
@@ -18,15 +17,7 @@ describe('Swap-Send ETH @no-mmi', function () {
     it('submits a transaction successfully', async function () {
       await withFixtures(
         getSwapSendFixtures(this.test?.fullTitle()),
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          // TODO: Replace `any` with type
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          driver: any;
-          ganacheServer: Ganache;
-        }) => {
+        async ({ driver, ganacheServer }) => {
           const swapSendPage = new SwapSendPage(driver);
           await logInWithBalanceValidation(driver, ganacheServer);
 
@@ -90,15 +81,7 @@ describe('Swap-Send ETH @no-mmi', function () {
   it('sets max amount', async function () {
     await withFixtures(
       getSwapSendFixtures(this.test?.fullTitle()),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        driver: any;
-        ganacheServer: Ganache;
-      }) => {
+      async ({ driver, ganacheServer }) => {
         const swapSendPage = new SwapSendPage(driver);
         await logInWithBalanceValidation(driver, ganacheServer);
 

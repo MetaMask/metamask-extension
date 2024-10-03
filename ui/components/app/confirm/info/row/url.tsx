@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Icon,
@@ -16,6 +16,9 @@ import {
   TextVariant,
   BackgroundColor,
 } from '../../../../../helpers/constants/design-system';
+import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
+import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
+import { isSnapId } from '../../../../../helpers/utils/snaps';
 
 export type ConfirmInfoRowUrlProps = {
   url: string;
@@ -23,6 +26,28 @@ export type ConfirmInfoRowUrlProps = {
 
 export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
   let urlObject;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handlePillClick = useCallback(
+    () => setIsModalOpen(true),
+    [setIsModalOpen],
+  );
+  const handleModalClose = useCallback(
+    () => setIsModalOpen(false),
+    [setIsModalOpen],
+  );
+
+  if (isSnapId(url)) {
+    return (
+      <>
+        <SnapAuthorshipPill snapId={url} onClick={handlePillClick} />
+        <SnapMetadataModal
+          snapId={url}
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+        />
+      </>
+    );
+  }
 
   try {
     urlObject = new URL(url);

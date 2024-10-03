@@ -52,7 +52,8 @@ export const container: UIComponentFactory<BoxElement> = ({
   }
 
   // Injects the default footer if the dialog uses default footer but none was provided.
-  if (useFooter && !children[1]) {
+  // If onCancel is omitted by the caller we assume that it is safe to not display the default footer.
+  if (useFooter && onCancel && !children[1]) {
     templateChildren.push({
       ...DEFAULT_FOOTER,
       props: {
@@ -60,7 +61,7 @@ export const container: UIComponentFactory<BoxElement> = ({
         className: 'snap-ui-renderer__footer-centered',
       },
       children: {
-        element: 'SnapFooterButton',
+        element: 'SnapUIFooterButton',
         key: 'default-button',
         props: {
           onCancel,
@@ -79,6 +80,10 @@ export const container: UIComponentFactory<BoxElement> = ({
       flexDirection: FlexDirection.Column,
       height: BlockSize.Full,
       className: 'snap-ui-renderer__container',
+      style: {
+        overflowY: 'auto',
+        paddingBottom: useFooter ? '80px' : 'initial',
+      },
     },
   };
 };

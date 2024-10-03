@@ -25,6 +25,15 @@ function getFilteredSettingsRoutes(t, tabMessage) {
   });
 }
 
+export function getSpecificSettingsRoute(t, tabMessage, sectionMessage) {
+  return getSettingsRoutes().find((routeObject) => {
+    return (
+      routeObject.tabMessage(t) === tabMessage &&
+      routeObject.sectionMessage(t) === sectionMessage
+    );
+  });
+}
+
 /**
  * @param {Function} t - context.t function
  * @param {string} tabMessage
@@ -59,7 +68,7 @@ export function handleSettingsRefs(t, tabMessage, settingsRefs) {
   }
 }
 
-function colorText(menuElement, regex) {
+export function colorText(menuElement, regex) {
   if (menuElement !== null) {
     let elemText = menuElement.innerHTML;
     elemText = elemText.replace('&amp;', '&');
@@ -74,9 +83,20 @@ function colorText(menuElement, regex) {
   }
 }
 
+/**
+ * Replaces any special characters in the input string that have a meaning in regular expressions
+ * (such as \, *, +, ?, etc.) with their escaped versions (e.g., \ becomes \\).
+ *
+ * @param input - The input string to be escaped for use in a regular expression.
+ * @returns The escaped string safe for use in a regular expression.
+ */
+export const escapeRegExp = (input) => {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escapes special characters
+};
+
 export function highlightSearchedText() {
   const searchElem = document.getElementById('search-settings');
-  const searchRegex = new RegExp(searchElem.value, 'gi');
+  const searchRegex = new RegExp(escapeRegExp(searchElem.value), 'gi');
   const results = document.querySelectorAll(
     '.settings-page__header__search__list__item',
   );

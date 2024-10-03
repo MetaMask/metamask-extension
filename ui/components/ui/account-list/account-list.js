@@ -56,15 +56,8 @@ const AccountList = ({
   };
 
   const Header = () => {
-    let checked = false;
-    let isIndeterminate = false;
-    if (allAreSelected()) {
-      checked = true;
-    } else if (selectedAccounts.size === 0) {
-      checked = false;
-    } else {
-      isIndeterminate = true;
-    }
+    const checked = allAreSelected();
+    const isIndeterminate = !checked && selectedAccounts.size !== 0;
 
     return (
       <div

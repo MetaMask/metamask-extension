@@ -15,11 +15,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('Successful Onboarding View', () => {
   const mockStore = {
-    metamask: {
-      providerConfig: {
-        type: 'test',
-      },
-    },
+    metamask: {},
   };
   const store = configureMockStore([thunk])(mockStore);
 

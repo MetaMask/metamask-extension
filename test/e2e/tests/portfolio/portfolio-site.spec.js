@@ -36,7 +36,7 @@ describe('Portfolio site', function () {
         await unlockWallet(driver);
 
         // Click Portfolio site
-        await driver.clickElement('[data-testid="eth-overview-portfolio"]');
+        await driver.clickElement('[data-testid="portfolio-link"]');
         await driver.waitUntilXWindowHandles(2);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('E2E Test Page', windowHandles);

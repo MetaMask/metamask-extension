@@ -8,18 +8,13 @@ const customData = {
   ...testData,
   metamask: {
     ...testData.metamask,
-    providerConfig: {
-      type: 'test',
-    },
     isUnlocked: true,
     interactiveReplacementToken: {
       oldRefreshToken:
         '81f96a88b6cbc5f50d3864122349fa9a9755833ee82a7e3cf6f268c78aab51ab',
       url: 'url',
     },
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-    },
+    preferences: {},
     keyrings: [
       {
         type: 'Custody - Saturn',

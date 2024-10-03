@@ -26,6 +26,8 @@ import {
   TextColor,
   TextVariant,
 } from '../constants/design-system';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { getURLHost } from './util';
 
@@ -507,14 +509,12 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     weight: PermissionWeight.endowment_keyring,
   }),
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   [EndowmentPermissions['endowment:name-lookup']]: ({ t }) => ({
     label: t('permission_nameLookup'),
     description: t('permission_nameLookupDescription'),
     leftIcon: IconName.Search,
     weight: PermissionWeight.endowment_nameLookup,
   }),
-  ///: END:ONLY_INCLUDE_IF
   [EndowmentPermissions['endowment:signature-insight']]: ({
     t,
     permissionValue,

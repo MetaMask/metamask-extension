@@ -97,7 +97,7 @@ describe('Token List', function () {
     );
   });
 
-  it.only('shows percentage increase for an ERC20 token with prices available', async function () {
+  it('shows percentage increase for an ERC20 token with prices available', async function () {
     const ethConversionInUsd = 10000;
 
     // Prices are in ETH

@@ -149,9 +149,6 @@ export default class AddContact extends PureComponent {
                 return (
                   <DomainInputResolutionCell
                     key={`${resolvedAddress}${resolvingSnap}${protocol}`}
-                    domainType={
-                      protocol === 'Ethereum Name Service' ? 'ENS' : 'Other'
-                    }
                     address={resolvedAddress}
                     domainName={addressBookEntryName ?? domainName}
                     onClick={() => {

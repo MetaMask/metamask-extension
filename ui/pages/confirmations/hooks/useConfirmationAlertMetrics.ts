@@ -1,12 +1,12 @@
-import { TransactionType } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { validate as isUuid } from 'uuid';
+
 import useAlerts from '../../../hooks/useAlerts';
-import { REDESIGN_TRANSACTION_TYPES } from '../utils';
+import { isSignatureTransactionType } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
-import { confirmSelector } from '../../../selectors';
+import { useConfirmContext } from '../context/confirm';
 import { AlertsName } from './alerts/constants';
+import { useSignatureEventFragment } from './useSignatureEventFragment';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
 export type AlertMetricsProperties = {
@@ -43,9 +43,10 @@ function getAlertName(alertKey: string): string {
 }
 
 export function useConfirmationAlertMetrics() {
-  const { currentConfirmation } = useSelector(confirmSelector);
+  const { currentConfirmation } = useConfirmContext();
   const ownerId = currentConfirmation?.id ?? '';
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
+  const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const [metricsProperties, setMetricsProperties] =
@@ -56,13 +57,8 @@ export function useConfirmationAlertMetrics() {
       alert_action_clicked: [],
     });
 
-  // Temporary measure to track metrics only for redesign transaction types
-  const isValidType = REDESIGN_TRANSACTION_TYPES.includes(
-    currentConfirmation?.type as TransactionType,
-  );
-
   const properties =
-    isValidType && alerts.length > 0
+    alerts.length > 0
       ? {
           alert_triggered_count: alerts.length,
           alert_triggered: getAlertNames(alerts),
@@ -117,7 +113,12 @@ export function useConfirmationAlertMetrics() {
     if (!properties) {
       return;
     }
-    updateTransactionEventFragment({ properties }, ownerId);
+
+    if (isSignatureTransactionType(currentConfirmation)) {
+      updateSignatureEventFragment({ properties });
+    } else {
+      updateTransactionEventFragment({ properties }, ownerId);
+    }
   }, [JSON.stringify(properties), updateTransactionEventFragment, ownerId]);
 
   useEffect(() => {

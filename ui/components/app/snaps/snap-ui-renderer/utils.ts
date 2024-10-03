@@ -98,7 +98,7 @@ export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
   const { type, key } = params.element;
   const elementKey = key ?? generateKey(params.map, params.element);
   const mapped = COMPONENT_MAPPING[
-    type as Exclude<JSXElement['type'], 'Option' | 'Radio'>
+    type as Exclude<JSXElement['type'], 'Option' | 'Radio' | 'SelectorOption'>
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ](params as any);
@@ -118,3 +118,25 @@ export const mapTextToTemplate = (
 
     return mapToTemplate({ ...params, element });
   }) as NonEmptyArray<UIComponent | string>;
+
+/**
+ * Registry of element types that are used within Field element.
+ */
+export const FIELD_ELEMENT_TYPES = [
+  'FileInput',
+  'Input',
+  'Dropdown',
+  'RadioGroup',
+  'Checkbox',
+  'Selector',
+];
+
+/**
+ * Search for the element that is considered to be primary child element of a Field.
+ *
+ * @param children - Children elements specified within Field element.
+ * @returns Number, representing index of a primary field in the array of children elements.
+ */
+export const getPrimaryChildElementIndex = (children: JSXElement[]) => {
+  return children.findIndex((c) => FIELD_ELEMENT_TYPES.includes(c.type));
+};

@@ -5,6 +5,7 @@ import { toHex } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import WrongNetworkNotification from '.';
 
 jest.mock('../../../../shared/modules/hash.utils');
@@ -14,10 +15,7 @@ describe('Wrong Network Notification', function () {
     ...testData,
     metamask: {
       ...testData.metamask,
-      providerConfig: {
-        type: 'test',
-        chainId: toHex(3),
-      },
+      ...mockNetworkState({ chainId: toHex(3) }),
       accountsByChainId: {
         [toHex(1)]: {
           '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },
@@ -76,10 +74,6 @@ describe('Wrong Network Notification', function () {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        providerConfig: {
-          type: 'test',
-          chainId: toHex(3),
-        },
         accountsByChainId: {
           [toHex(1)]: {
             '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },
@@ -102,10 +96,6 @@ describe('Wrong Network Notification', function () {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        providerConfig: {
-          type: 'test',
-          chainId: toHex(3),
-        },
         accountsByChainId: {
           [toHex(3)]: {
             '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },

@@ -17,11 +17,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
@@ -34,11 +38,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex"
@@ -83,24 +91,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Recipient
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-4"
-                  class=""
-                  data-original-title="address - The recipient of the WETH"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Recipient
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-4"
+                    class=""
+                    data-original-title="address - The recipient of the WETH"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -134,24 +147,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Amount Min
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-5"
-                  class=""
-                  data-original-title="uint256 - The amount of ETH to wrap"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Amount Min
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-5"
+                    class=""
+                    data-original-title="uint256 - The amount of ETH to wrap"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -179,11 +197,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex"
@@ -228,24 +250,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Recipient
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-6"
-                  class=""
-                  data-original-title="address - The recipient of the output of the trade"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Recipient
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-6"
+                    class=""
+                    data-original-title="address - The recipient of the output of the trade"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -279,24 +306,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Amount In
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-7"
-                  class=""
-                  data-original-title="uint256 - The amount of input tokens for the trade"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Amount In
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-7"
+                    class=""
+                    data-original-title="uint256 - The amount of input tokens for the trade"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -319,24 +351,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Amount Out Min
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-8"
-                  class=""
-                  data-original-title="uint256 - The minimum amount of output tokens the user wants"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Amount Out Min
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-8"
+                    class=""
+                    data-original-title="uint256 - The minimum amount of output tokens the user wants"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -359,24 +396,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Path
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-9"
-                  class=""
-                  data-original-title="bytes - The UniswapV3 encoded path to trade along"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Path
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-9"
+                    class=""
+                    data-original-title="bytes - The UniswapV3 encoded path to trade along"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-3-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -476,24 +518,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Payer Is User
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-10"
-                  class=""
-                  data-original-title="bool - A flag for whether the input tokens should come from the msg.sender (through Permit2) or whether the funds are already in the UniversalRouter"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Payer Is User
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-10"
+                    class=""
+                    data-original-title="bool - A flag for whether the input tokens should come from the msg.sender (through Permit2) or whether the funds are already in the UniversalRouter"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-4-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -521,11 +568,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex"
@@ -570,24 +621,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Token
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-11"
-                  class=""
-                  data-original-title="address - The ERC20 token to transfer (or Constants.ETH for ETH)"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Token
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-11"
+                    class=""
+                    data-original-title="address - The ERC20 token to transfer (or Constants.ETH for ETH)"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -621,24 +677,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Recipient
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-12"
-                  class=""
-                  data-original-title="address - The recipient of the transfer"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Recipient
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-12"
+                    class=""
+                    data-original-title="address - The recipient of the transfer"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -672,24 +733,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Bips
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-13"
-                  class=""
-                  data-original-title="uint256 - In basis points, the percentage of the contract’s balance to transfer"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Bips
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-13"
+                    class=""
+                    data-original-title="uint256 - In basis points, the percentage of the contract’s balance to transfer"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -717,11 +783,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex"
@@ -766,24 +836,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Token
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-14"
-                  class=""
-                  data-original-title="address - The ERC20 token to sweep (or Constants.ETH for ETH)"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Token
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-14"
+                    class=""
+                    data-original-title="address - The ERC20 token to sweep (or Constants.ETH for ETH)"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -817,24 +892,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Recipient
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-15"
-                  class=""
-                  data-original-title="address - The recipient of the sweep"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Recipient
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-15"
+                    class=""
+                    data-original-title="address - The recipient of the sweep"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -868,24 +948,29 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Amount Min
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-16"
-                  class=""
-                  data-original-title="uint256 - The minimum required tokens to receive from the sweep"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Amount Min
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-16"
+                    class=""
+                    data-original-title="uint256 - The minimum required tokens to receive from the sweep"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -924,11 +1009,15 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
@@ -942,11 +1031,15 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -970,24 +1063,29 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Param #1
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class=""
-              data-original-title="uint256"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Param #1
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="uint256"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-0-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1010,24 +1108,29 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Param #2
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-2"
-              class=""
-              data-original-title="address"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Param #2
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class=""
+                data-original-title="address"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-1-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1061,24 +1164,29 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Param #3
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-3"
-              class=""
-              data-original-title="bytes"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Param #3
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-3"
+                class=""
+                data-original-title="bytes"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-2-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1115,11 +1223,15 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
@@ -1133,24 +1245,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-17"
-            class=""
-            data-original-title="Permit a spender to the signed amounts of the owners tokens via the owner's EIP-712 signature"
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Function
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-17"
+              class=""
+              data-original-title="Permit a spender to the signed amounts of the owners tokens via the owner's EIP-712 signature"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-function-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -1176,24 +1293,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Owner
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-18"
-              class=""
-              data-original-title="address - The owner of the tokens being approved"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Owner
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-18"
+                class=""
+                data-original-title="address - The owner of the tokens being approved"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-0-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1227,24 +1349,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Permit Batch
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-19"
-              class=""
-              data-original-title="tuple - Data signed over by the owner specifying the terms of approval"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Permit Batch
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-19"
+                class=""
+                data-original-title="tuple - Data signed over by the owner specifying the terms of approval"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-1-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1260,24 +1387,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              Details
-            </p>
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-20"
-                class=""
-                data-original-title="tuple[]"
-                data-tooltipped=""
-                style="display: flex;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
+                Details
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-20"
+                  class=""
+                  data-original-title="tuple[]"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -1293,24 +1425,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Item 1
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-21"
-                  class=""
-                  data-original-title="tuple"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Item 1
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-21"
+                    class=""
+                    data-original-title="tuple"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1326,24 +1463,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Token
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-22"
-                    class=""
-                    data-original-title="address"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Token
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-22"
+                      class=""
+                      data-original-title="address"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-0-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1377,24 +1519,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Amount
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-23"
-                    class=""
-                    data-original-title="uint160"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Amount
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-23"
+                      class=""
+                      data-original-title="uint160"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-1-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1417,24 +1564,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Expiration
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-24"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Expiration
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-24"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-2-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1457,24 +1609,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Nonce
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-25"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Nonce
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-25"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-3-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1498,24 +1655,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Item 2
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-26"
-                  class=""
-                  data-original-title="tuple"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Item 2
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-26"
+                    class=""
+                    data-original-title="tuple"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1531,24 +1693,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Token
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-27"
-                    class=""
-                    data-original-title="address"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Token
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-27"
+                      class=""
+                      data-original-title="address"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-0-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1582,24 +1749,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Amount
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-28"
-                    class=""
-                    data-original-title="uint160"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Amount
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-28"
+                      class=""
+                      data-original-title="uint160"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-1-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1622,24 +1794,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Expiration
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-29"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Expiration
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-29"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-2-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1662,24 +1839,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Nonce
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-30"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Nonce
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-30"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-3-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1703,24 +1885,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Item 3
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-31"
-                  class=""
-                  data-original-title="tuple"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Item 3
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-31"
+                    class=""
+                    data-original-title="tuple"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1736,24 +1923,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Token
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-32"
-                    class=""
-                    data-original-title="address"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Token
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-32"
+                      class=""
+                      data-original-title="address"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-0-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1787,24 +1979,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Amount
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-33"
-                    class=""
-                    data-original-title="uint160"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Amount
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-33"
+                      class=""
+                      data-original-title="uint160"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-1-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1827,24 +2024,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Expiration
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-34"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Expiration
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-34"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-2-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1867,24 +2069,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Nonce
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-35"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Nonce
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-35"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-3-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1909,24 +2116,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              Spender
-            </p>
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-36"
-                class=""
-                data-original-title="address"
-                data-tooltipped=""
-                style="display: flex;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
+                Spender
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-36"
+                  class=""
+                  data-original-title="address"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -1960,24 +2172,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              Sig Deadline
-            </p>
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-37"
-                class=""
-                data-original-title="uint256"
-                data-tooltipped=""
-                style="display: flex;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
+                Sig Deadline
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-37"
+                  class=""
+                  data-original-title="uint256"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -2001,24 +2218,29 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Signature
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-38"
-              class=""
-              data-original-title="bytes - The owner's signature over the permit data"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Signature
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-38"
+                class=""
+                data-original-title="bytes - The owner's signature over the permit data"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-2-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -2057,11 +2279,15 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
@@ -2074,11 +2300,15 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Hex
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Hex
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"

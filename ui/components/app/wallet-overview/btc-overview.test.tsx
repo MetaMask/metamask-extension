@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
@@ -17,13 +17,14 @@ const PORTOFOLIO_URL = 'https://portfolio.test';
 
 const BTC_OVERVIEW_BUY = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
-const BTC_OVERVIEW_PORTFOLIO = 'coin-overview-portfolio';
+const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
 const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
 const mockMetaMetricsId = 'deadbeef';
 const mockNonEvmBalance = '1';
+const mockNonEvmBalanceUsd = '1.00';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
@@ -112,7 +113,7 @@ describe('BtcOverview', () => {
     setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
   });
 
-  it('shows the primary balance', async () => {
+  it('shows the primary balance as BTC when showNativeTokenAsMainBalance if true', async () => {
     const { queryByTestId, queryByText } = renderWithProvider(
       <BtcOverview />,
       getStore(),
@@ -121,6 +122,27 @@ describe('BtcOverview', () => {
     const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
     expect(primaryBalance).toBeInTheDocument();
     expect(primaryBalance).toHaveTextContent(`${mockNonEvmBalance}BTC`);
+    // For now we consider balance to be always cached
+    expect(queryByText('*')).toBeInTheDocument();
+  });
+
+  it('shows the primary balance as fiat when showNativeTokenAsMainBalance if false', async () => {
+    const { queryByTestId, queryByText } = renderWithProvider(
+      <BtcOverview />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          // The balances won't be available
+          preferences: {
+            showNativeTokenAsMainBalance: false,
+          },
+        },
+      }),
+    );
+
+    const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
+    expect(primaryBalance).toBeInTheDocument();
+    expect(primaryBalance).toHaveTextContent(`$${mockNonEvmBalanceUsd}USD`);
     // For now we consider balance to be always cached
     expect(queryByText('*')).toBeInTheDocument();
   });
@@ -218,27 +240,9 @@ describe('BtcOverview', () => {
     });
   });
 
-  it('always show the Portfolio button', () => {
+  it('always show the Receive button', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
-    const portfolioButton = queryByTestId(BTC_OVERVIEW_PORTFOLIO);
-    expect(portfolioButton).toBeInTheDocument();
-  });
-
-  it('open the Portfolio URI when clicking on Portfolio button', async () => {
-    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
-    const openTabSpy = jest.spyOn(global.platform, 'openTab');
-
-    const portfolioButton = queryByTestId(BTC_OVERVIEW_PORTFOLIO);
-    expect(portfolioButton).toBeInTheDocument();
-    fireEvent.click(portfolioButton as HTMLElement);
-
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
-    await waitFor(() =>
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringContaining(
-          `?metamaskEntry=ext_portfolio_button&metametricsId=${mockMetaMetricsId}`,
-        ),
-      }),
-    );
+    const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
+    expect(receiveButton).toBeInTheDocument();
   });
 });

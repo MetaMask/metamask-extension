@@ -1,3 +1,4 @@
+import { Hex } from '@metamask/utils';
 import React, { memo } from 'react';
 
 import {
@@ -6,9 +7,8 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../../../../shared/constants/signatures';
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
-import { sanitizeString } from '../../../../../helpers/utils/util';
-import { getTokenStandardAndDetails } from '../../../../../store/actions';
 
+import { sanitizeString } from '../../../../../helpers/utils/util';
 import { Box } from '../../../../../components/component-library';
 import { BlockSize } from '../../../../../helpers/constants/design-system';
 import { useAsyncResult } from '../../../../../hooks/useAsyncResult';
@@ -20,6 +20,7 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
+import { fetchErc20Decimals } from '../../../utils/token';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -71,6 +72,12 @@ const FIELD_DATE_PRIMARY_TYPES: Record<string, string[]> = {
  */
 const NONE_DATE_VALUE = -1;
 
+/**
+ * If a token contract is found within the dataTree, fetch the token decimal of this contract
+ * to be utilized for displaying token amounts of the dataTree.
+ *
+ * @param dataTreeData
+ */
 const getTokenDecimalsOfDataTree = async (
   dataTreeData: Record<string, TreeData> | TreeData[],
 ): Promise<void | number> => {
@@ -79,21 +86,18 @@ const getTokenDecimalsOfDataTree = async (
   }
 
   const tokenContract = (dataTreeData as Record<string, TreeData>).token
-    ?.value as string;
-  if (!tokenContract) {
+    ?.value as Hex;
+  if (!tokenContract || !isValidHexAddress(tokenContract)) {
     return undefined;
   }
 
-  const tokenDetails = await getTokenStandardAndDetails(tokenContract);
-  const tokenDecimals = tokenDetails?.decimals;
-
-  return parseInt(tokenDecimals ?? '0', 10);
+  return await fetchErc20Decimals(tokenContract);
 };
 
 export const DataTree = ({
   data,
   primaryType,
-  tokenDecimals = 0,
+  tokenDecimals: tokenDecimalsProp,
 }: {
   data: Record<string, TreeData> | TreeData[];
   primaryType?: PrimaryType;
@@ -104,8 +108,8 @@ export const DataTree = ({
     [data],
   );
 
-  const tokenContractDecimals =
-    typeof decimalsResponse === 'number' ? decimalsResponse : undefined;
+  const tokenDecimals =
+    typeof decimalsResponse === 'number' ? decimalsResponse : tokenDecimalsProp;
 
   return (
     <Box width={BlockSize.Full}>
@@ -124,7 +128,7 @@ export const DataTree = ({
               primaryType={primaryType}
               value={value}
               type={type}
-              tokenDecimals={tokenContractDecimals ?? tokenDecimals}
+              tokenDecimals={tokenDecimals}
             />
           }
         </ConfirmInfoRow>
@@ -155,7 +159,7 @@ const DataField = memo(
     primaryType?: PrimaryType;
     type: string;
     value: ValueType;
-    tokenDecimals: number;
+    tokenDecimals?: number;
   }) => {
     const t = useI18nContext();
 

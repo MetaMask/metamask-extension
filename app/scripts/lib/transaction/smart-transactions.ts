@@ -1,4 +1,6 @@
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import SmartTransactionsController, {
+  SmartTransactionsControllerSmartTransactionEvent,
+} from '@metamask/smart-transactions-controller';
 import {
   Fee,
   Fees,
@@ -13,10 +15,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
-import {
-  RestrictedControllerMessenger,
-  EventConstraint,
-} from '@metamask/base-controller';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import {
   AddApprovalRequest,
   UpdateRequestState,
@@ -33,20 +32,21 @@ import {
 
 const namespace = 'SmartTransactions';
 
-type AllowedActions =
+export type AllowedActions =
   | AddApprovalRequest
   | UpdateRequestState
   | StartFlow
   | EndFlow;
 
-export type SmartTransactionsControllerMessenger =
-  RestrictedControllerMessenger<
-    typeof namespace,
-    AllowedActions,
-    EventConstraint,
-    AllowedActions['type'],
-    never
-  >;
+export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
+
+export type SmartTransactionHookMessenger = RestrictedControllerMessenger<
+  typeof namespace,
+  AllowedActions,
+  AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
 
 export type FeatureFlags = {
   extensionActive: boolean;
@@ -60,11 +60,11 @@ export type FeatureFlags = {
 
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
+  signedTransactionInHex?: string;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
-  isHardwareWallet: boolean;
-  controllerMessenger: SmartTransactionsControllerMessenger;
+  controllerMessenger: SmartTransactionHookMessenger;
   featureFlags: FeatureFlags;
 };
 
@@ -75,7 +75,7 @@ class SmartTransactionHook {
 
   #chainId: Hex;
 
-  #controllerMessenger: SmartTransactionsControllerMessenger;
+  #controllerMessenger: SmartTransactionHookMessenger;
 
   #featureFlags: {
     extensionActive: boolean;
@@ -91,33 +91,33 @@ class SmartTransactionHook {
 
   #isSmartTransaction: boolean;
 
-  #isHardwareWallet: boolean;
-
   #smartTransactionsController: SmartTransactionsController;
 
   #transactionController: TransactionController;
 
   #transactionMeta: TransactionMeta;
 
+  #signedTransactionInHex?: string;
+
   #txParams: TransactionParams;
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
       transactionMeta,
+      signedTransactionInHex,
       smartTransactionsController,
       transactionController,
       isSmartTransaction,
-      isHardwareWallet,
       controllerMessenger,
       featureFlags,
     } = request;
     this.#approvalFlowId = '';
     this.#approvalFlowEnded = false;
     this.#transactionMeta = transactionMeta;
+    this.#signedTransactionInHex = signedTransactionInHex;
     this.#smartTransactionsController = smartTransactionsController;
     this.#transactionController = transactionController;
     this.#isSmartTransaction = isSmartTransaction;
-    this.#isHardwareWallet = isHardwareWallet;
     this.#controllerMessenger = controllerMessenger;
     this.#featureFlags = featureFlags;
     this.#isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
@@ -137,7 +137,6 @@ class SmartTransactionHook {
     const useRegularTransactionSubmit = { transactionHash: undefined };
     if (
       !this.#isSmartTransaction ||
-      this.#isHardwareWallet ||
       isUnsupportedTransactionTypeForSmartTransaction
     ) {
       return useRegularTransactionSubmit;
@@ -252,17 +251,19 @@ class SmartTransactionHook {
   }
 
   async #addListenerToUpdateStatusPage({ uuid }: { uuid: string }) {
-    this.#smartTransactionsController.eventEmitter.on(
-      `${uuid}:smartTransaction`,
+    this.#controllerMessenger.subscribe(
+      'SmartTransactionsController:smartTransaction',
       async (smartTransaction: SmartTransaction) => {
-        const { status } = smartTransaction;
-        if (!status || status === SmartTransactionStatuses.PENDING) {
-          return;
-        }
-        if (!this.#approvalFlowEnded) {
-          await this.#updateApprovalRequest({
-            smartTransaction,
-          });
+        if (smartTransaction.uuid === uuid) {
+          const { status } = smartTransaction;
+          if (!status || status === SmartTransactionStatuses.PENDING) {
+            return;
+          }
+          if (!this.#approvalFlowEnded) {
+            await this.#updateApprovalRequest({
+              smartTransaction,
+            });
+          }
         }
       },
     );
@@ -270,22 +271,24 @@ class SmartTransactionHook {
 
   #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string | null> {
     return new Promise((resolve) => {
-      this.#smartTransactionsController.eventEmitter.on(
-        `${uuid}:smartTransaction`,
+      this.#controllerMessenger.subscribe(
+        'SmartTransactionsController:smartTransaction',
         async (smartTransaction: SmartTransaction) => {
-          const { status, statusMetadata } = smartTransaction;
-          if (!status || status === SmartTransactionStatuses.PENDING) {
-            return;
-          }
-          log.debug('Smart Transaction: ', smartTransaction);
-          if (statusMetadata?.minedHash) {
-            log.debug(
-              'Smart Transaction - Received tx hash: ',
-              statusMetadata?.minedHash,
-            );
-            resolve(statusMetadata.minedHash);
-          } else {
-            resolve(null);
+          if (smartTransaction.uuid === uuid) {
+            const { status, statusMetadata } = smartTransaction;
+            if (!status || status === SmartTransactionStatuses.PENDING) {
+              return;
+            }
+            log.debug('Smart Transaction: ', smartTransaction);
+            if (statusMetadata?.minedHash) {
+              log.debug(
+                'Smart Transaction - Received tx hash: ',
+                statusMetadata?.minedHash,
+              );
+              resolve(statusMetadata.minedHash);
+            } else {
+              resolve(null);
+            }
           }
         },
       );
@@ -297,17 +300,18 @@ class SmartTransactionHook {
   }: {
     getFeesResponse: Fees;
   }) {
-    const signedTransactions = await this.#createSignedTransactions(
-      getFeesResponse.tradeTxFees?.fees ?? [],
-      false,
-    );
-    const signedCanceledTransactions = await this.#createSignedTransactions(
-      getFeesResponse.tradeTxFees?.cancelFees || [],
-      true,
-    );
+    let signedTransactions;
+    if (this.#signedTransactionInHex) {
+      signedTransactions = [this.#signedTransactionInHex];
+    } else {
+      signedTransactions = await this.#createSignedTransactions(
+        getFeesResponse.tradeTxFees?.fees ?? [],
+        false,
+      );
+    }
     return await this.#smartTransactionsController.submitSignedTransactions({
       signedTransactions,
-      signedCanceledTransactions,
+      signedCanceledTransactions: [],
       txParams: this.#txParams,
       transactionMeta: this.#transactionMeta,
     });

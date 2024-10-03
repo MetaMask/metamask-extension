@@ -28,8 +28,8 @@ import {
   getUseRequestQueue,
   getUseNftDetection,
   getNftDetectionEnablementToast,
+  getCurrentNetwork,
 } from '../../selectors';
-import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
 import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
 import {
   lockMetamask,
@@ -53,6 +53,7 @@ import {
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
   setEditedNetwork,
+  hidePermittedNetworkToast,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -78,6 +79,7 @@ function mapStateToProps(state) {
   const account = getSelectedAccount(state);
   const activeTabOrigin = activeTab?.origin;
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const currentNetwork = getCurrentNetwork(state);
   const showConnectAccountToast = Boolean(
     allowShowAccountSetting &&
       account &&
@@ -130,10 +132,12 @@ function mapStateToProps(state) {
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
+    isPermittedNetworkToastOpen: state.appState.showPermittedNetworkToastOpen,
     switchedNetworkDetails,
     useNftDetection,
     showNftEnablementToast,
     networkToAutomaticallySwitchTo,
+    currentNetwork,
     totalUnapprovedConfirmationCount:
       getNumberOfAllUnapprovedTransactionsAndMessages(state),
     neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
@@ -142,7 +146,6 @@ function mapStateToProps(state) {
     newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
     showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
     showSurveyToast: getShowSurveyToast(state),
-    networkMenuRedesign: getLocalNetworkMenuRedesignFeatureFlag(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
@@ -162,6 +165,7 @@ function mapDispatchToProps(dispatch) {
     toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
     hideImportNftsModal: () => dispatch(hideImportNftsModal()),
     hideIpfsModal: () => dispatch(hideIpfsModal()),
+    hidePermittedNetworkToast: () => dispatch(hidePermittedNetworkToast()),
     hideImportTokensModal: () => dispatch(hideImportTokensModal()),
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),
     addPermittedAccount: (activeTabOrigin, address) =>

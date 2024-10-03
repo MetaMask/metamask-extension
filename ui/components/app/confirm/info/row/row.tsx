@@ -112,24 +112,29 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         alignItems={AlignItems.flexStart}
         color={color}
       >
-        <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
-          {label}
-        </Text>
-        {labelChildren}
-        {tooltip && tooltip.length > 0 && (
-          <Tooltip
-            position="bottom"
-            title={tooltip}
-            style={{ display: 'flex' }}
-          >
-            <Icon
-              name={TOOLTIP_ICONS[variant]}
-              marginLeft={1}
-              color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
-              size={IconSize.Sm}
-            />
-          </Tooltip>
-        )}
+        <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
+            {label}
+          </Text>
+          {labelChildren}
+          {!labelChildren && tooltip?.length && (
+            <Tooltip
+              position="bottom"
+              title={tooltip}
+              style={{ display: 'flex' }}
+            >
+              <Icon
+                name={TOOLTIP_ICONS[variant]}
+                marginLeft={1}
+                color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+                size={IconSize.Sm}
+                {...(dataTestId
+                  ? { 'data-testid': `${dataTestId}-tooltip` }
+                  : {})}
+              />
+            </Tooltip>
+          )}
+        </Box>
       </Box>
       {typeof children === 'string' ? (
         <Text marginRight={copyEnabled ? 3 : 0} color={TextColor.inherit}>

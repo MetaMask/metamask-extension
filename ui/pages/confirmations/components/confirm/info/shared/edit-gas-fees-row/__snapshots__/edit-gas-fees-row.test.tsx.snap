@@ -10,24 +10,29 @@ exports[`<EditGasFeesRow /> renders component 1`] = `
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
-        Estimated fee
-      </p>
-      <div>
-        <div
-          aria-describedby="tippy-tooltip-1"
-          class=""
-          data-original-title="Amount paid to process the transaction on network."
-          data-tooltipped=""
-          style="display: flex;"
-          tabindex="0"
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-            style="mask-image: url('./images/icons/question.svg');"
-          />
+          Network fee
+        </p>
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="Amount paid to process the transaction on network."
+            data-tooltipped=""
+            style="display: flex;"
+            tabindex="0"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="edit-gas-fees-row-tooltip"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+          </div>
         </div>
       </div>
     </div>

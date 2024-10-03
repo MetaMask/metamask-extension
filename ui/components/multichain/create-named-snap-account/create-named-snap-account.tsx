@@ -73,7 +73,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   }, []);
 
   return (
-    <Box padding={4}>
+    <Box padding={4} className="name-snap-account-page">
       <ModalHeader padding={4} onClose={onClose}>
         {t('addAccountToMetaMask')}
       </ModalHeader>

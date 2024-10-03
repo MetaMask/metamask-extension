@@ -83,9 +83,6 @@ describe('Custody Confirm Link', () => {
           custodianName: mockedCustodianName,
         },
       },
-      providerConfig: {
-        type: 'test',
-      },
     },
   };
 

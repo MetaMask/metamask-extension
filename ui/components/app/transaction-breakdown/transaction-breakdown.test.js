@@ -3,11 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import { within } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
-import {
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-  CHAIN_IDS,
-} from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TransactionBreakdown from '.';
 
 function getActualDataFrom(transactionBreakdownRows) {
@@ -27,11 +24,8 @@ describe('TransactionBreakdown', () => {
     metamask: {
       currencyRates: {},
       preferences: {},
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: MAINNET_DISPLAY_NAME,
-        type: NETWORK_TYPES.MAINNET,
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
       internalAccounts: mockState.metamask.internalAccounts,
       completedOnboarding: true,
     },

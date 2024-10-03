@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import { createDappTransaction, unlockWallet } from '../../../helpers';
+import { openDapp, unlockWallet } from '../../../helpers';
+import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import {
   assertAdvancedGasDetails,
   confirmDepositTransaction,
@@ -22,6 +23,9 @@ const {
   WINDOW_TITLES,
   withFixtures,
 } = require('../../../helpers');
+const {
+  KNOWN_PUBLIC_KEY_ADDRESSES,
+} = require('../../../../stub/keyring-bridge');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
@@ -82,6 +86,53 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       );
     });
 
+    it(`Sends a contract interaction type 0 transaction (Legacy) with a Trezor account`, async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withTrezorAccount()
+            .withPermissionControllerConnectedToTestDapp({
+              account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            })
+            .withPreferencesController({
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract,
+          title: this.test?.fullTitle(),
+        },
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          // Seed the Trezor account with balance
+          await ganacheServer?.setAccountBalance(
+            KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            '0x100000000000000000000',
+          );
+          await openDAppWithContract(driver, contractRegistry, smartContract);
+
+          await createDepositTransaction(driver);
+          await confirmDepositTransaction(driver);
+
+          // Assert transaction is completed
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await driver.clickElement(
+            '[data-testid="account-overview__activity-tab"]',
+          );
+          await driver.waitForSelector('.transaction-status-label--confirmed');
+        },
+      );
+    });
+
     it(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
       await withFixtures(
         {
@@ -106,9 +157,15 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mockOptimismOracle,
         },
-        async ({ driver }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await unlockWallet(driver);
           await createLayer2Transaction(driver);
+
+          const contractAddress = await (
+            contractRegistry as GanacheContractAddressRegistry
+          ).getContractAddress(smartContract);
+
+          await openDapp(driver, contractAddress);
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -281,11 +338,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 async function createLayer2Transaction(driver: Driver) {
   await createDappTransaction(driver, {
     data: '0x1234',
-    from: DEFAULT_FIXTURE_ACCOUNT,
     to: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-    gas: '0x31f10',
-    maxFeePerGas: '0x3b014b3',
-    maxPriorityFeePerGas: '0x3b014b3',
   });
 }
 

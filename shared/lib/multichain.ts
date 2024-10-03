@@ -1,3 +1,5 @@
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../app/scripts/lib/multichain/address';
 
 /**

@@ -1,28 +1,27 @@
-import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  currentConfirmationSelector,
-  getApprovedAndSignedTransactions,
-} from '../../../../../selectors';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
+import { getApprovedAndSignedTransactions } from '../../../../../selectors';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
+import { useConfirmContext } from '../../../context/confirm';
 
 export function useSigningOrSubmittingAlerts(): Alert[] {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
   const { type } = (currentConfirmation ?? {}) as TransactionMeta;
 
   const signingOrSubmittingTransactions = useSelector(
     getApprovedAndSignedTransactions,
   );
 
-  const isValidType = REDESIGN_TRANSACTION_TYPES.includes(
+  const isValidType = REDESIGN_DEV_TRANSACTION_TYPES.includes(
     type as TransactionType,
   );
 

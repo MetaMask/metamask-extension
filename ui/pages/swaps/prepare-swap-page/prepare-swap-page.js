@@ -782,10 +782,17 @@ export default function PrepareSwapPage({
     );
   }
 
+  const isNonDefaultToken = !isSwapsDefaultTokenSymbol(
+    fromTokenSymbol,
+    chainId,
+  );
+  const hasPositiveFromTokenBalance = rawFromTokenBalance > 0;
+  const isTokenEligibleForMaxBalance =
+    isSmartTransaction || (!isSmartTransaction && isNonDefaultToken);
   const showMaxBalanceLink =
     fromTokenSymbol &&
-    !isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) &&
-    rawFromTokenBalance > 0;
+    isTokenEligibleForMaxBalance &&
+    hasPositiveFromTokenBalance;
 
   return (
     <div className="prepare-swap-page">

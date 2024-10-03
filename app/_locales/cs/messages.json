@@ -105,10 +105,6 @@
   "failed": {
     "message": "Neúspěšné"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Import souboru nefunguje? Klikněte sem!",
     "description": "Helps user import their account from a JSON file"
@@ -156,9 +152,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Adresa příjemce je neplatná"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Neplatné Block Explorer URI"
   },
   "invalidRPC": {
     "message": "Neplatné RPC URI"
@@ -219,9 +212,6 @@
   },
   "next": {
     "message": "Další"
-  },
-  "noAddressForName": {
-    "message": "Pro toto jméno nebyla nastavena žádná adresa."
   },
   "noTransactions": {
     "message": "Žádné transakce"

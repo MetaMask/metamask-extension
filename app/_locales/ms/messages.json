@@ -205,9 +205,6 @@
   "delete": {
     "message": "Padam"
   },
-  "deleteNetwork": {
-    "message": "Padamkan Rangkaian?"
-  },
   "details": {
     "message": "Butiran"
   },
@@ -225,9 +222,6 @@
   },
   "editContact": {
     "message": "Edit Kenalan"
-  },
-  "ensRegistrationError": {
-    "message": "Ralat dalam pendaftaran nama ENS"
   },
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
@@ -343,12 +337,6 @@
   "invalidAddressRecipient": {
     "message": "Alamat penerima tidak sah"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Bukan rangkaian ETH, tetapkan kepada huruf kecil"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer tidak sah"
-  },
   "invalidRPC": {
     "message": "URL RPC tidak sah"
   },
@@ -442,9 +430,6 @@
   "next": {
     "message": "Seterusnya"
   },
-  "noAddressForName": {
-    "message": "Tiada alamat yang ditetapkan untuk nama ini."
-  },
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
   },
@@ -503,12 +488,6 @@
   "prev": {
     "message": "Sebelumnya"
   },
-  "primaryCurrencySetting": {
-    "message": "Mata Wang Utama"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Pilih natif untuk mengutamakan nilai paparan dalam mata wang natif rantaian (cth. ETH). Pilih Fiat untuk mengutamakan nilai paparan dalam mata wang fiat yang anda pilih."
-  },
   "privacyMsg": {
     "message": "Dasar Privasi"
   },
@@ -524,9 +503,6 @@
   },
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Cari, alamat awam (0x), atau ENS"
   },
   "reject": {
     "message": "Tolak"
@@ -759,9 +735,6 @@
   },
   "unlockMessage": {
     "message": "Web ternyahpusat menanti"
-  },
-  "updatedWithDate": {
-    "message": "Dikemaskini $1"
   },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."

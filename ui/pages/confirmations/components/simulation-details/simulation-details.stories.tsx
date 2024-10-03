@@ -11,6 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,
@@ -28,12 +29,9 @@ const storeMock = configureStore({
     ...mockState.metamask,
     preferences: {
       ...mockState.metamask.preferences,
-      useNativeCurrencyAsPrimaryCurrency: false,
+      showNativeTokenAsMainBalance: false,
     },
-    providerConfig: {
-      ...mockState.metamask.providerConfig,
-      chainId: CHAIN_ID_MOCK,
-    },
+    ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
     useTokenDetection: true,
     tokenList: {
       [ERC20_TOKEN_1_MOCK]: {
@@ -76,22 +74,14 @@ const storeMock = configureStore({
 const storeMockPolygon = configureStore({
   metamask: {
     ...mockState.metamask,
-    providerConfig: {
-      ...mockState.metamask.providerConfig,
-      chainId: CHAIN_IDS.POLYGON,
-      ticker: 'MATIC',
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
   },
 });
 
 const storeMockArbitrum = configureStore({
   metamask: {
     ...mockState.metamask,
-    providerConfig: {
-      ...mockState.metamask.providerConfig,
-      chainId: CHAIN_IDS.ARBITRUM,
-      ticker: 'ETH',
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.ARBITRUM }),
   },
 });
 

@@ -181,9 +181,6 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteNetwork": {
-    "message": "I-delete ang Network?"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -204,9 +201,6 @@
   },
   "editContact": {
     "message": "I-edit ang Contact"
-  },
-  "ensRegistrationError": {
-    "message": "May error sa pagrerehistro ng ENS name"
   },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
@@ -311,12 +305,6 @@
   "invalidAddressRecipient": {
     "message": "Hindi valid ang address ng recipient"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Hindi ito isang ETH network, i-set sa lowercase"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Hindi valid ang Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Hindi valid ang RPC URL"
   },
@@ -393,9 +381,6 @@
   "next": {
     "message": "Susunod"
   },
-  "noAddressForName": {
-    "message": "Walang address na na-set para sa pangalang ito."
-  },
   "noConversionRateAvailable": {
     "message": "Walang Presyo ng Palitan na Available"
   },
@@ -451,12 +436,6 @@
   "prev": {
     "message": "Nakaraan"
   },
-  "primaryCurrencySetting": {
-    "message": "Pangunahing Currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Piliin ang native para bigyang priyoridad ang pagpapakita ng mga halaga sa native currency ng chain (hal. ETH). Piliin ang Fiat para bigyang priyoridad ang pagpapakita ng mga halaga sa napili mong fiat currency."
-  },
   "privacyMsg": {
     "message": "Patakaran sa Privacy"
   },
@@ -468,9 +447,6 @@
   },
   "readdToken": {
     "message": "Puwede mong idagdag ulit ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon ng iyong mga accounts."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Maghanap, pampublikong address (0x), o ENS"
   },
   "reject": {
     "message": "Tanggihan"
@@ -694,9 +670,6 @@
   },
   "unlockMessage": {
     "message": "Naghihintay ang decentralized web"
-  },
-  "updatedWithDate": {
-    "message": "Na-update ang $1"
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URI ang naaangkop na HTTP/HTTPS prefix."

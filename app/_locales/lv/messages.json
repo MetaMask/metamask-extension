@@ -205,9 +205,6 @@
   "delete": {
     "message": "Dzēst"
   },
-  "deleteNetwork": {
-    "message": "Dzēst tīklu?"
-  },
   "details": {
     "message": "Informācija"
   },
@@ -228,9 +225,6 @@
   },
   "editContact": {
     "message": "Rediģēt līgumu"
-  },
-  "ensRegistrationError": {
-    "message": "Kļūda ENS vārda reģistrācijā"
   },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
@@ -350,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "Nederīga saņēmēja adrese"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nav ETH tīkls, iestatīti mazie burti"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nederīgs Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Nederīgs RPC URL"
   },
@@ -455,9 +443,6 @@
   "next": {
     "message": "Nākamais"
   },
-  "noAddressForName": {
-    "message": "Šim vārdam nav iestatīta adrese."
-  },
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
   },
@@ -519,12 +504,6 @@
   "prev": {
     "message": "Iepr."
   },
-  "primaryCurrencySetting": {
-    "message": "Primārā valūta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Atlasīt vietējo, lai piešķirtu attēlotajām vērtībām prioritātes ķēdes vietējā vērtībā (piemēram, ETH). Atlasiet Fiat, lai piešķirtu augstāku prioritāti vērtībām jūsu atlasītajā fiat valūtā."
-  },
   "privacyMsg": {
     "message": "Privātuma politika"
   },
@@ -540,9 +519,6 @@
   },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Meklēšana, publiskā adrese (0x) vai ENS"
   },
   "reject": {
     "message": "Noraidīt"
@@ -778,9 +754,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizētais tīkls jau gaida"
-  },
-  "updatedWithDate": {
-    "message": "Atjaunināts $1"
   },
   "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."

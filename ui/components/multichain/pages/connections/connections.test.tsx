@@ -1,13 +1,12 @@
 import React from 'react';
-import { Router, Route } from 'react-router-dom'; // Import Router and Route
-import { createMemoryHistory } from 'history';
+import { MemoryRouter, Route } from 'react-router-dom';
+import mockState from '../../../../../test/data/mock-state.json';
 import {
   fireEvent,
   renderWithProvider,
   waitFor,
 } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-import mockState from '../../../../../test/data/mock-state.json';
 import { Connections } from './connections';
 
 describe('Connections Content', () => {
@@ -88,15 +87,14 @@ describe('Connections Content', () => {
   });
 
   it('should render correctly', () => {
-    const history = createMemoryHistory();
-    history.push('/connect/https%3A%2F%2Fmetamask.github.io');
-
     const { container, getByTestId } = renderWithProvider(
-      <Router history={history}>
+      <MemoryRouter
+        initialEntries={['/connect/https%3A%2F%2Fmetamask.github.io']}
+      >
         <Route path="/connect/:origin">
           <Connections />
         </Route>
-      </Router>,
+      </MemoryRouter>,
       connectedStore,
     );
     expect(container).toMatchSnapshot();
@@ -104,30 +102,28 @@ describe('Connections Content', () => {
   });
 
   it('it should render Disconnect all Account button of the page', () => {
-    const history = createMemoryHistory();
-    history.push('/connect/https%3A%2F%2Fmetamask.github.io');
-
     const { getByText } = renderWithProvider(
-      <Router history={history}>
+      <MemoryRouter
+        initialEntries={['/connect/https%3A%2F%2Fmetamask.github.io']}
+      >
         <Route path="/connect/:origin">
           <Connections />
         </Route>
-      </Router>,
+      </MemoryRouter>,
       connectedStore,
     );
     expect(getByText('Disconnect all accounts')).toBeInTheDocument();
   });
 
   it('it should trigger disconnect all accounts modal flow when disconnect all accounts button is clicked', async () => {
-    const history = createMemoryHistory();
-    history.push('/connect/https%3A%2F%2Fmetamask.github.io');
-
     const { getByText, getByTestId } = renderWithProvider(
-      <Router history={history}>
+      <MemoryRouter
+        initialEntries={['/connect/https%3A%2F%2Fmetamask.github.io']}
+      >
         <Route path="/connect/:origin">
           <Connections />
         </Route>
-      </Router>,
+      </MemoryRouter>,
       connectedStore,
     );
 

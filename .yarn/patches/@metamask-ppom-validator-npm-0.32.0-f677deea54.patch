@@ -1,0 +1,15 @@
+diff --git a/dist/ppom-controller.js b/dist/ppom-controller.js
+index 9cf1502efabec00b25ad381bf2001200ccc9f34f..bfe55b6e68989f794deab069e8b80fc8d719ec25 100644
+--- a/dist/ppom-controller.js
++++ b/dist/ppom-controller.js
+@@ -203,7 +203,9 @@ async function _PPOMController_initialisePPOM() {
+         console.error(`Error in deleting files: ${error.message}`);
+     });
+ }, _PPOMController_onNetworkChange = function _PPOMController_onNetworkChange(networkControllerState) {
+-    const id = (0, util_1.addHexPrefix)(networkControllerState.providerConfig.chainId);
++    const selectedNetworkClient = this.messagingSystem.call('NetworkController:getNetworkClientById', networkControllerState.selectedNetworkClientId);
++    const { chainId } = selectedNetworkClient.configuration;
++    const id = (0, util_1.addHexPrefix)(chainId);
+     if (id === __classPrivateFieldGet(this, _PPOMController_chainId, "f")) {
+         return;
+     }

@@ -20,6 +20,8 @@ import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -51,6 +53,9 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getCurrentChainId } from '../../ui/selectors';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -74,12 +79,11 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { generateSkipOnboardingState } from './skip-onboarding';
+import { generateWalletState } from './fixtures/generate-wallet-state';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
 
-import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
@@ -226,8 +230,8 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      const onboardState = theController.onboardingController.store.getState();
-      if (!onboardState.completedOnboarding) {
+      const { completedOnboarding } = theController.onboardingController.state;
+      if (!completedOnboarding) {
         return {};
       }
 
@@ -262,10 +266,26 @@ function maybeDetectPhishing(theController) {
       }
 
       theController.phishingController.maybeUpdateState();
-      const phishingTestResponse =
-        theController.phishingController.test(hostname);
-      if (!phishingTestResponse?.result) {
+      const phishingTestResponse = theController.phishingController.test(
+        details.url,
+      );
+
+      const blockedRequestResponse =
+        theController.phishingController.isBlockedRequest(details.url);
+
+      // if the request is not blocked, and the phishing test is not blocked, return and don't show the phishing screen
+      if (!phishingTestResponse?.result && !blockedRequestResponse.result) {
         return {};
+      }
+
+      // Determine the block reason based on the type
+      let blockReason;
+      if (phishingTestResponse?.result && blockedRequestResponse.result) {
+        blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
+      } else if (phishingTestResponse?.result) {
+        blockReason = phishingTestResponse.type;
+      } else {
+        blockReason = blockedRequestResponse.type;
       }
 
       theController.metaMetricsController.trackEvent({
@@ -274,6 +294,7 @@ function maybeDetectPhishing(theController) {
         category: MetaMetricsEventCategory.Phishing,
         properties: {
           url: hostname,
+          reason: blockReason,
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
@@ -298,7 +319,10 @@ function maybeDetectPhishing(theController) {
       redirectTab(details.tabId, redirectHref);
       return {};
     },
-    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    {
+      types: ['main_frame', 'sub_frame', 'xmlhttprequest'],
+      urls: ['http://*/*', 'https://*/*'],
+    },
     isManifestV2 ? ['blocking'] : [],
   );
 }
@@ -356,9 +380,6 @@ function saveTimestamp() {
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
- * @property {object} providerConfig - The current selected network provider.
- * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
- * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {object} accountsByChainId - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values keyed by chain id.
@@ -540,15 +561,15 @@ export async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({
     migrations,
-    defaultVersion: process.env.SKIP_ONBOARDING
+    defaultVersion: process.env.WITH_STATE
       ? FIXTURE_STATE_METADATA_VERSION
       : null,
   });
   migrator.on('error', console.warn);
 
-  if (process.env.SKIP_ONBOARDING) {
-    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
-    firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  if (process.env.WITH_STATE) {
+    const stateOverrides = await generateWalletState();
+    firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
   // read from disk
@@ -732,7 +753,7 @@ export function setupController(
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      controller.networkController.state.providerConfig.chainId,
+      getCurrentChainId({ metamask: controller.networkController.state }),
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
@@ -1050,26 +1071,30 @@ export function setupController(
 
   function getUnreadNotificationsCount() {
     try {
-      const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
-        controller.metamaskNotificationsController.state;
+      const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
+        controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
         controller.notificationController.state.notifications,
       ).filter((notification) => notification.readDate === null).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type ===
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
-      const walletNotificationCount = isMetamaskNotificationsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+      const walletNotificationCount = isNotificationServicesEnabled
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 

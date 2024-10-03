@@ -17,6 +17,7 @@ import {
 } from '../../../../component-library';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import Name from '../../../name/name';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 import { useFallbackDisplayName } from './hook';
 
 export type ConfirmInfoRowAddressProps = {
@@ -50,7 +51,7 @@ export const ConfirmInfoRowAddress = memo(
                 display={Display.Flex}
                 flexDirection={FlexDirection.Row}
                 alignItems={AlignItems.center}
-                onClick={handleDisplayNameClick}
+                onClick={isSnapUsingThis ? () => null : handleDisplayNameClick}
               >
                 <AvatarAccount
                   address={address}
@@ -62,7 +63,7 @@ export const ConfirmInfoRowAddress = memo(
                   color={TextColor.inherit}
                   data-testid="confirm-info-row-display-name"
                 >
-                  {displayName}
+                  {isSnapUsingThis ? shortenAddress(address) : displayName}
                 </Text>
               </Box>
               {isNicknamePopoverShown ? (

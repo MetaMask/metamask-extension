@@ -3,10 +3,13 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
+  regularDelayMs,
+  tinyDelayMs,
   unlockWallet,
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { Mockttp } from '../../mock-e2e';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -42,9 +45,11 @@ const inputData = {
 };
 
 async function navigateToEditNetwork(driver: Driver) {
-  await driver.clickElement(selectors.accountOptionsMenuButton);
-  await driver.clickElement(selectors.settingsOption);
-  await driver.clickElement(selectors.networkOption);
+  await driver.clickElement('.mm-picker-network');
+  await driver.clickElement(
+    '[data-testid="network-list-item-options-button-0x539"]',
+  );
+  await driver.clickElement('[data-testid="network-list-item-options-edit"]');
 }
 
 describe('Update Network:', function (this: Suite) {
@@ -59,21 +64,25 @@ describe('Update Network:', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await navigateToEditNetwork(driver);
+
+        // Verify chain id is not editable when updating a network
+        const chainIdInput = await driver.findElement(
+          selectors.chainIdInputField,
+        );
+        assert.equal(
+          await chainIdInput.isEnabled(),
+          false,
+          'chain id input should be disabled',
+        );
+
+        // Update the network name
         await driver.fill(
           selectors.networkNameInputField,
           inputData.networkName,
         );
 
-        // We fill in the chain ID in two steps, allowing the error message time to disappear once the field is correctly completed.
-        await driver.fill(selectors.chainIdInputField, inputData.chainId_part1);
-        const chainIdInputField = await driver.findElement(
-          selectors.chainIdInputField,
-        );
-        await chainIdInputField.sendKeys(inputData.chainId_part2);
-
+        // Save, and verify the new network name is visible
         await driver.clickElement(selectors.saveButton);
-
-        // Validate the network name is updated
         const updatedNetworkNamePresent = await driver.isElementPresent(
           selectors.updatedNetworkDropDown,
         );
@@ -83,8 +92,23 @@ describe('Update Network:', function (this: Suite) {
           'Network name is not updated',
         );
 
+        // Start another edit
         await navigateToEditNetwork(driver);
-        await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
+
+        // Edit the RPC URL to something invalid
+        const rpcUrlInputDropDown = await driver.waitForSelector(
+          '[data-testid="test-add-rpc-drop-down"]',
+        );
+        await rpcUrlInputDropDown.click();
+        await driver.delay(tinyDelayMs);
+        await driver.clickElement({
+          text: 'Add RPC URL',
+          tag: 'button',
+        });
+        const rpcUrlInput = await driver.waitForSelector(
+          '[data-testid="rpc-url-input-test"]',
+        );
+        await rpcUrlInput.sendKeys(inputData.rpcUrl);
 
         // Validate the error message that appears for the invalid url format
         const errorMessage = await driver.isElementPresent(
@@ -97,34 +121,260 @@ describe('Update Network:', function (this: Suite) {
         );
 
         // Validate the Save button is disabled for the invalid url format
-        const saveButton = await driver.findElement(selectors.saveButton);
-        const saveButtonEnabled = await saveButton.isEnabled();
-        assert.equal(saveButtonEnabled, false, 'Save button is enabled');
-
-        // Validate the information symbol appears for chain id
-        const informationSymbolAppears = await driver.isElementPresent(
-          selectors.informationSymbol,
-        );
-        assert.equal(
-          informationSymbolAppears,
-          true,
-          'Information symbol did not appear for chain id',
-        );
-
-        await driver.clickElement(selectors.ethereumNetwork);
-
-        // Validate the Save, Cancel, and Delete buttons are not present for the default network
-        await driver.assertElementNotPresent(selectors.deleteButton, {
-          findElementGuard: selectors.networkNameInputFieldSetToEthereumMainnet, // Wait for the network selection to complete
+        const addUrlButton = await driver.findElement({
+          text: 'Add URL',
+          tag: 'button',
         });
-        // The findElementGuard above is sufficient for the next two assertions
-        await driver.assertElementNotPresent(selectors.cancelButton);
-        await driver.assertElementNotPresent(selectors.saveButton);
+        assert.equal(
+          await addUrlButton.isEnabled(),
+          false,
+          'Add url button should not be enabled',
+        );
+      },
+    );
+  });
 
-        // Validate the error does not appear on the General tab
-        await driver.clickElement(selectors.generalOption);
-        await driver.assertElementNotPresent(selectors.errorContainer, {
-          findElementGuard: selectors.generalTabHeader, // Wait for the General tab to load
+  it('should delete added rpc url for existing network', async function () {
+    async function mockRPCURLAndChainId(mockServer: Mockttp) {
+      return [
+        await mockServer
+          .forPost('https://responsive-rpc.test/')
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              id: '1694444405781',
+              jsonrpc: '2.0',
+              result: '0xa4b1',
+            },
+          })),
+        await mockServer
+          .forPost('https://arbitrum-mainnet.infura.io/')
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              id: '1694444405781',
+              jsonrpc: '2.0',
+              result: '0xa4b1',
+            },
+          })),
+      ];
+    }
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withNetworkController({
+            providerConfig: {
+              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+            },
+            networkConfigurations: {
+              networkConfigurationId: {
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETH',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                nickname: 'Arbitrum mainnet',
+                rpcPrefs: {},
+                rpcUrl: 'https://arbitrum-mainnet.infura.io',
+                ticker: 'ETH',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb1': {
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
+                nickname: 'Arbitrum mainnet 2',
+                rpcPrefs: {},
+                rpcUrl: 'https://responsive-rpc.test/',
+                ticker: 'ETH',
+              },
+            },
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockRPCURLAndChainId,
+      },
+
+      async ({ driver }: { driver: Driver }) => {
+        await unlockWallet(driver);
+
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Go to Edit Menu
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-0xa4b1"]',
+        );
+
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
+        await driver.delay(regularDelayMs);
+
+        // Assert the endpoint is in the list
+        await driver.findElement({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
+
+        // Delete it
+        await driver.clickElement('[data-testid="delete-item-1"]');
+
+        // Verify it went away
+        await driver.assertElementNotPresent({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
+
+        // Save the network
+        await driver.clickElement(selectors.saveButton);
+
+        //  Re-open the network menu
+        await driver.delay(regularDelayMs);
+        await driver.clickElementSafe({ text: 'Got it', tag: 'h6' });
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Go back to edit the network
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-0xa4b1"]',
+        );
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+
+        // Verify the rpc endpoint is still deleted
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
+        await driver.assertElementNotPresent({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
+      },
+    );
+  });
+
+  it('should update added rpc url for existing network', async function () {
+    async function mockRPCURLAndChainId(mockServer: Mockttp) {
+      return [
+        await mockServer
+          .forPost('https://responsive-rpc.test/')
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              id: '1694444405781',
+              jsonrpc: '2.0',
+              result: '0xa4b1',
+            },
+          })),
+      ];
+    }
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withNetworkController({
+            providerConfig: {
+              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+            },
+            networkConfigurations: {
+              networkConfigurationId: {
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETH',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                nickname: 'Arbitrum mainnet',
+                rpcPrefs: {},
+                rpcUrl: 'https://arbitrum-mainnet.infura.io',
+                ticker: 'ETH',
+              },
+            },
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockRPCURLAndChainId,
+      },
+
+      async ({ driver }: { driver: Driver }) => {
+        await unlockWallet(driver);
+
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Go to edit the network
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-0xa4b1"]',
+        );
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+
+        // Add a new rpc url
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
+        await driver.delay(regularDelayMs);
+        await driver.clickElement({
+          text: 'Add RPC URL',
+          tag: 'button',
+        });
+        const rpcUrlInput = await driver.waitForSelector(
+          '[data-testid="rpc-url-input-test"]',
+        );
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys('https://responsive-rpc.test');
+
+        const rpcNameInput = await driver.waitForSelector(
+          '[data-testid="rpc-name-input-test"]',
+        );
+        await rpcNameInput.sendKeys('testName');
+        await driver.clickElement({
+          text: 'Add URL',
+          tag: 'button',
+        });
+        await driver.delay(regularDelayMs);
+
+        // Verify it appears in the dropdown
+        await driver.findElement({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
+
+        // Save the network
+        await driver.clickElement(selectors.saveButton);
+
+        //  Re-open the network menu
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Go back to edit the network
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-0xa4b1"]',
+        );
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+
+        // Verify the new endpoint is still there
+        await driver.findElement({
+          text: 'responsive-rpc.test',
+          tag: 'p',
         });
       },
     );

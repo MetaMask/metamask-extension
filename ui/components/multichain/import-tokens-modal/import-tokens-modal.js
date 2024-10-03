@@ -73,6 +73,8 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../shared/modules/hexstring-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {

@@ -40,7 +40,6 @@ const CrossChainSwap = () => {
   const redirectToDefaultRoute = async () => {
     history.push({
       pathname: DEFAULT_ROUTE,
-      // @ts-expect-error - property 'state' does not exist on type PartialPath.
       state: { stayOnHomePage: true },
     });
     dispatch(clearSwapsState());

@@ -6,6 +6,8 @@ import { renderWithProvider } from '../../../test/lib/render-helpers';
 import Identicon from '../../components/ui/identicon';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import TokenDetailsPage from './token-details-page';
 
 const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
@@ -228,10 +230,7 @@ const state = {
         symbol: 'UMA',
       },
     },
-    providerConfig: {
-      type: 'mainnet',
-      nickname: '',
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     currencyRates: {},
     preferences: {
       showFiatInTestnets: true,

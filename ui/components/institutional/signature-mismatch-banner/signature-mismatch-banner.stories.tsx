@@ -6,6 +6,9 @@ import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
 import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
+import { getMockPersonalSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
+import { SignatureRequestType } from '../../../pages/confirmations/types/confirm';
+import { ConfirmContextProvider } from '../../../pages/confirmations/context/confirm';
 import { MMISignatureMismatchBanner } from './';
 
 const mockStore = configureMockStore();
@@ -35,18 +38,17 @@ const internalAccounts = {
 };
 
 const createStore = (chainId) => {
-  const initialState = {
-    metamask: {
-      ...mockState.metamask,
-      internalAccounts,
-    },
-    confirm: {
-      currentConfirmation: {
-        ...unapprovedPersonalSignMsg,
-        msgParams: { ...unapprovedPersonalSignMsg.msgParams, from: address },
+  const initialState = getMockPersonalSignConfirmStateForRequest(
+    {
+      ...unapprovedPersonalSignMsg,
+      msgParams: { ...unapprovedPersonalSignMsg.msgParams, from: address },
+    } as SignatureRequestType,
+    {
+      metamask: {
+        internalAccounts,
       },
     },
-  };
+  );
 
   return mockStore(initialState);
 };
@@ -55,7 +57,9 @@ const meta: Meta<typeof MMISignatureMismatchBanner> = {
   title: 'Components/Institutional/MMISignatureMismatchBanner',
   decorators: [
     (storyFn) => (
-      <Provider store={createStore(CHAIN_IDS.MAINNET)}>{storyFn()}</Provider>
+      <Provider store={createStore(CHAIN_IDS.MAINNET)}>
+        <ConfirmContextProvider>{storyFn()}</ConfirmContextProvider>
+      </Provider>
     ),
   ],
   component: MMISignatureMismatchBanner,

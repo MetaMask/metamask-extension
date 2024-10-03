@@ -202,6 +202,10 @@ describe('Interactive Replacement Token Page', function () {
       imgSrc: 'iconUrl',
       title: 'Your custodian token has been refreshed',
     };
+    const fullData = {
+      pathname: mostRecentOverviewPage,
+      state: mostRecentOverviewPageState,
+    };
 
     await act(async () => {
       const { getByText } = await render();
@@ -216,10 +220,7 @@ describe('Interactive Replacement Token Page', function () {
       token: connectRequests[0].token,
     });
     expect(history.push).toHaveBeenCalled();
-    expect(history.push).toHaveBeenCalledWith(
-      mostRecentOverviewPage,
-      mostRecentOverviewPageState,
-    );
+    expect(history.push).toHaveBeenCalledWith(fullData);
   });
 
   it('should reject if there are errors', async () => {

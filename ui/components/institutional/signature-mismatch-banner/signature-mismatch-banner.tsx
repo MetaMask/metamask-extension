@@ -4,22 +4,20 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   accountsWithSendEtherInfoSelector,
-  currentConfirmationSelector,
   getSelectedInternalAccount,
 } from '../../../selectors';
 import {
   getAccountByAddress,
   shortenAddress,
 } from '../../../helpers/utils/util';
-import { BannerAlert } from '../../component-library';
+import { useConfirmContext } from '../../../pages/confirmations/context/confirm';
 import { SignatureRequestType } from '../../../pages/confirmations/types/confirm';
 import { isSIWESignatureRequest } from '../../../pages/confirmations/utils/confirm';
+import { BannerAlert } from '../../component-library';
 
 const MMISignatureMismatchBanner: React.FC = memo(() => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 

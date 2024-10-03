@@ -25,6 +25,7 @@ import { AvatarGroup } from '../../multichain';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatDate } from '../../../helpers/utils/util';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 /**
  * Renders status of the given permission. Used by PermissionCell component.
@@ -57,7 +58,7 @@ export const PermissionCellStatus = ({
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             {networks?.map((network, index) => (
               <Box
-                key={`${network.nickname}_${index}`}
+                key={`${network.name}_${index}`}
                 display={Display.Flex}
                 justifyContent={JustifyContent.flexStart}
                 alignItems={AlignItems.center}
@@ -65,11 +66,11 @@ export const PermissionCellStatus = ({
               >
                 <AvatarNetwork
                   size={AvatarNetworkSize.Xs}
-                  src={network.rpcPrefs?.imageUrl}
-                  name={network.nickname}
+                  src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+                  name={network.name}
                 />
                 <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                  {network.avatarName}
+                  {network.name}
                 </Text>
               </Box>
             ))}

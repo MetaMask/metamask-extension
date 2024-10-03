@@ -27,7 +27,7 @@ import {
   getMemoizedCurrentChainId,
   getMemoizedTxId,
 } from '../../../selectors';
-import { useSignatureInsights } from '../../../hooks/snaps/useSignatureInsights';
+import { useInsightSnaps } from '../../../hooks/snaps/useInsightSnaps';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { getSendTo } from '../../../ducks/send';
 
@@ -194,7 +194,7 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedTypedMessages,
   ]);
 
-  const { warnings } = useSignatureInsights({ txData });
+  const { warnings } = useInsightSnaps(txData.id);
   const resolvedSecurityAlertResponse =
     signatureSecurityAlertResponses?.[
       txData.securityAlertResponse?.securityAlertId

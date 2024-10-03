@@ -3,35 +3,35 @@ import {
   TransactionParams,
 } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
+
+import { MIN_GAS_LIMIT_HEX } from '../../../../../../shared/constants/gas';
+import {
+  getMockConfirmState,
+  getMockConfirmStateForTransaction,
+} from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import mockState from '../../../../../../test/data/mock-state.json';
 import { MIN_GAS_LIMIT_DEC } from '../../../send/send.constants';
-import { MIN_GAS_LIMIT_HEX } from '../../../../../../shared/constants/gas';
+import { Confirmation } from '../../../types/confirm';
 import { useGasTooLowAlerts } from './useGasTooLowAlerts';
 
-const TRANSACTION_ID_MOCK = '123-456';
+const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
+  chainId: '0x5',
+}) as TransactionMeta;
 
-function buildState({
-  currentConfirmation,
-}: {
-  currentConfirmation?: Partial<TransactionMeta>;
-} = {}) {
-  return {
-    ...mockState,
-    confirm: {
-      currentConfirmation,
-    },
-  };
-}
-
-function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
-  const state = buildState(stateOptions);
-  const response = renderHookWithProvider(useGasTooLowAlerts, state);
+function runHook(confirmation?: Confirmation) {
+  const state = confirmation
+    ? getMockConfirmStateForTransaction(confirmation)
+    : getMockConfirmState();
+  const response = renderHookWithConfirmContextProvider(
+    useGasTooLowAlerts,
+    state,
+  );
 
   return response.result.current;
 }
@@ -48,10 +48,8 @@ describe('useGasTooLowAlerts', () => {
   it('returns no alerts if no gas', () => {
     expect(
       runHook({
-        currentConfirmation: {
-          id: TRANSACTION_ID_MOCK,
-          txParams: { gas: undefined } as TransactionParams,
-        },
+        ...CONFIRMATION_MOCK,
+        txParams: { gas: undefined } as TransactionParams,
       }),
     ).toEqual([]);
   });
@@ -59,22 +57,18 @@ describe('useGasTooLowAlerts', () => {
   it('returns no alerts if sufficient gas', () => {
     expect(
       runHook({
-        currentConfirmation: {
-          id: TRANSACTION_ID_MOCK,
-          txParams: { gas: MIN_GAS_LIMIT_HEX } as TransactionParams,
-        },
+        ...CONFIRMATION_MOCK,
+        txParams: { gas: MIN_GAS_LIMIT_HEX } as TransactionParams,
       }),
     ).toEqual([]);
   });
 
   it('returns alert if insufficient gas', () => {
     const alerts = runHook({
-      currentConfirmation: {
-        id: TRANSACTION_ID_MOCK,
-        txParams: {
-          gas: toHex(MIN_GAS_LIMIT_DEC.toNumber() - 1),
-        } as TransactionParams,
-      },
+      ...CONFIRMATION_MOCK,
+      txParams: {
+        gas: toHex(MIN_GAS_LIMIT_DEC.toNumber() - 1),
+      } as TransactionParams,
     });
 
     expect(alerts).toEqual([

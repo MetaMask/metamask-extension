@@ -1,0 +1,13 @@
+.snap-ui-renderer__input {
+  & .mm-text-field > .snap-ui-renderer__panel {
+    gap: 8px;
+  }
+
+
+
+  & .snap-ui-renderer__image {
+    vertical-align: middle;
+    max-height: 20px;
+    max-width: 20px;
+  }
+}

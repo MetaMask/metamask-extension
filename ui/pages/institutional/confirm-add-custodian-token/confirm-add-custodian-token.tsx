@@ -19,7 +19,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { setProviderType } from '../../../store/actions';
+import { setActiveNetwork } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import {
@@ -100,7 +100,7 @@ const ConfirmAddCustodianToken: React.FC = () => {
             ) as NetworkType | undefined;
 
             if (networkType) {
-              await dispatch(setProviderType(networkType));
+              await dispatch(setActiveNetwork(networkType));
             }
           }
         }

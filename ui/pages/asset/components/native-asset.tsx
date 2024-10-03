@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 import {
+  getCurrentChainId,
   getCurrentCurrency,
   getNativeCurrencyImage,
   getRpcPrefsForCurrentProvider,
@@ -29,7 +30,8 @@ const NativeAsset = () => {
   const image = useSelector(getNativeCurrencyImage);
   const showFiat = useSelector(getShouldShowFiat);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const { chainId, ticker, type } = useSelector(getProviderConfig);
+  const chainId = useSelector(getCurrentChainId);
+  const { ticker, type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 

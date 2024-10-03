@@ -14,6 +14,8 @@ import {
   isSignatureApprovalRequest,
   isSignatureTransactionType,
   parseSanitizeTypedDataMessage,
+  isValidASCIIURL,
+  toPunycodeURL,
 } from './confirm';
 
 const typedDataMsg =
@@ -95,6 +97,35 @@ describe('confirm util', () => {
         unapprovedTypedSignMsgV4 as SignatureRequestType,
       );
       expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('isValidASCIIURL', () => {
+    it('returns true for URL containing only ASCII characters', () => {
+      expect(isValidASCIIURL('https://www.google.com')).toEqual(true);
+    });
+
+    it('returns false for URL containing special character', () => {
+      expect(isValidASCIIURL('https://iոfura.io/gnosis')).toStrictEqual(false);
+    });
+  });
+
+  describe('toPunycodeURL', () => {
+    it('returns punycode version of URL', () => {
+      expect(toPunycodeURL('https://iոfura.io/gnosis')).toStrictEqual(
+        'https://xn--ifura-dig.io/gnosis',
+      );
+      expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
+        'https://www.google.com/',
+      );
+      expect(
+        toPunycodeURL('https://iոfura.io/gnosis:5050?test=iոfura&foo=bar'),
+      ).toStrictEqual(
+        'https://xn--ifura-dig.io/gnosis:5050?test=i%D5%B8fura&foo=bar',
+      );
+      expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
+        'https://www.google.com/',
+      );
     });
   });
 });

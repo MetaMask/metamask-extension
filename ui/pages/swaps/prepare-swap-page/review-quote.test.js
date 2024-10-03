@@ -9,6 +9,7 @@ import {
   createSwapsMockStore,
   MOCKS,
 } from '../../../../test/jest';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ReviewQuote from './review-quote';
 
 jest.mock(
@@ -51,7 +52,7 @@ describe('ReviewQuote', () => {
     const props = createProps();
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
     expect(getByText('New quotes in')).toBeInTheDocument();
-    expect(getByText('Quote rate')).toBeInTheDocument();
+    expect(getByText('Quote rate*')).toBeInTheDocument();
     expect(getByText('Includes a 1% MetaMask fee –')).toBeInTheDocument();
     expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
@@ -73,7 +74,7 @@ describe('ReviewQuote', () => {
     const props = createProps();
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
     expect(getByText('New quotes in')).toBeInTheDocument();
-    expect(getByText('Quote rate')).toBeInTheDocument();
+    expect(getByText('Quote rate*')).toBeInTheDocument();
     expect(getByText('Includes a 1% MetaMask fee –')).toBeInTheDocument();
     expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
@@ -96,7 +97,7 @@ describe('ReviewQuote', () => {
     const props = createProps();
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
     expect(getByText('New quotes in')).toBeInTheDocument();
-    expect(getByText('Quote rate')).toBeInTheDocument();
+    expect(getByText('Quote rate*')).toBeInTheDocument();
     expect(getByText('Includes a 1% MetaMask fee –')).toBeInTheDocument();
     expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
@@ -104,6 +105,36 @@ describe('ReviewQuote', () => {
     expect(getByText('Max fee:')).toBeInTheDocument();
     expect(getByText('enable DAI')).toBeInTheDocument();
     expect(getByText('Edit limit')).toBeInTheDocument();
+    expect(getByText('Swap')).toBeInTheDocument();
+  });
+
+  it('renders the component with gas included quotes', () => {
+    const state = createSwapsMockStore();
+    state.metamask.swapsState.quotes.TEST_AGG_2.isGasIncludedTrade = true;
+    state.metamask.marketData[CHAIN_IDS.MAINNET][
+      '0x6B175474E89094C44Da98b954EedeAC495271d0F' // DAI token contract address.
+    ] = {
+      price: 2,
+      contractPercentChange1d: 0.004,
+      priceChange1d: 0.00004,
+    };
+    state.metamask.currencyRates.ETH = {
+      conversionDate: 1708532473.416,
+      conversionRate: 2918.02,
+      usdConversionRate: 2918.02,
+    };
+    const store = configureMockStore(middleware)(state);
+    const props = createProps();
+    const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
+    expect(getByText('New quotes in')).toBeInTheDocument();
+    expect(getByText('Quote rate*')).toBeInTheDocument();
+    expect(
+      getByText('* Includes gas and a 1% MetaMask fee'),
+    ).toBeInTheDocument();
+    expect(getByText('view all quotes')).toBeInTheDocument();
+    expect(getByText('Gas fee')).toBeInTheDocument();
+    // $6.82 gas fee is calculated based on params set in the the beginning of the test.
+    expect(getByText('$6.82')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });
 });

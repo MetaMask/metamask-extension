@@ -1,8 +1,12 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import MetaMaskController from '../../../app/scripts/metamask-controller';
 import { setBackgroundConnection } from '../background-connection';
+import { mockNetworkState } from '../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   showInteractiveReplacementTokenModal,
   showCustodyConfirmLink,
@@ -14,7 +18,8 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    providerConfig: { chainId: '0x1' },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
@@ -195,10 +200,8 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      providerConfig: {
-        nickname: 'mainnet',
-        chainId: '0x1',
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
       featureFlags: {},
     };
 
@@ -218,10 +221,8 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      providerConfig: {
-        nickname: 'mainnet',
-        chainId: '0x1',
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
       featureFlags: {},
       transactions: [
         {
@@ -272,10 +273,8 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      providerConfig: {
-        nickname: 'mainnet',
-        chainId: '0x1',
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
       featureFlags: {},
       transactions: [
         {

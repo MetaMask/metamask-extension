@@ -1,16 +1,18 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
   openDapp,
-  switchToNotificationWindow,
   unlockWallet,
+  WINDOW_TITLES,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureApproved,
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -19,15 +21,19 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureMetrics,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -36,43 +42,43 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signPermit');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.Permit);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
+
+        await copyAddressAndPasteWalletAddress(driver);
+        await assertPastedAddress(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await assertInfoValues(driver);
+        await scrollAndConfirmAndAssertConfirm(driver);
+        await driver.delay(1000);
+
         await assertAccountDetailsMetrics(
           driver,
           mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
         );
 
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
-        await switchToNotificationWindow(driver);
-
-        await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
-
-        await assertSignatureMetrics(
+        await assertSignatureConfirmedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Permit',
-          ['redesigned_confirmation', 'permit'],
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Permit',
+          uiCustomizations: ['redesigned_confirmation', 'permit'],
+        });
 
         await assertVerifiedResults(driver, publicAddress);
       },
+      mockSignatureApproved,
     );
   });
 
   it('initiates and rejects and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -80,14 +86,12 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
-        await driver.delay(1000);
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.findElement('#signPermitResult');
@@ -96,14 +100,16 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           'Error: User rejected the request.',
         );
 
-        await assertSignatureMetrics(
+        await assertSignatureRejectedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Permit',
-          ['redesigned_confirmation', 'permit'],
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Permit',
+          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          location: 'confirmation',
+        });
       },
+      mockSignatureRejected,
     );
   });
 });
@@ -121,7 +127,7 @@ async function assertInfoValues(driver: Driver) {
     css: '.name__value',
     text: '0x5B38D...eddC4',
   });
-  const value = driver.findElement({ text: '3,000' });
+  const value = driver.findElement({ text: '<0.000001' });
   const nonce = driver.findElement({ text: '0' });
   const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
 

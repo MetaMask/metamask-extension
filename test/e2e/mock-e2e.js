@@ -1,11 +1,21 @@
 const fs = require('fs');
 
-const { BRIDGE_API_BASE_URL } = require('../../shared/constants/bridge');
+const {
+  BRIDGE_DEV_API_BASE_URL,
+  BRIDGE_PROD_API_BASE_URL,
+} = require('../../shared/constants/bridge');
+const {
+  ACCOUNTS_DEV_API_BASE_URL,
+  ACCOUNTS_PROD_API_BASE_URL,
+} = require('../../shared/constants/accounts');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
+const {
+  DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
+} = require('./tests/bridge/constants');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -71,7 +81,7 @@ const browserAPIRequestDomains =
  * Setup E2E network mocks.
  *
  * @param {Mockttp} server - The mock server used for network mocks.
- * @param {(server: Mockttp) => MockedEndpoint} testSpecificMock - A function for setting up test-specific network mocks
+ * @param {(server: Mockttp) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
@@ -294,16 +304,64 @@ async function setupMocking(
       };
     });
 
-  await server
-    .forGet(`${BRIDGE_API_BASE_URL}/getAllFeatureFlags`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'extension-support': false,
-        },
-      };
-    });
+  [
+    `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
+    `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
+        };
+      }),
+  );
+
+  [
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            userId: '0x123',
+            surveys: {},
+          },
+        };
+      }),
+  );
+
+  let surveyCallCount = 0;
+  [
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        const surveyId = surveyCallCount > 2 ? 2 : surveyCallCount;
+        surveyCallCount += 1;
+        return {
+          statusCode: 200,
+          json: {
+            userId: '0x123',
+            surveys: {
+              url: 'https://example.com',
+              description: `Test survey ${surveyId}`,
+              cta: 'Take survey',
+              id: surveyId,
+            },
+          },
+        };
+      }),
+  );
 
   await server
     .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
@@ -629,7 +687,7 @@ async function setupMocking(
     });
 
   // Notification APIs
-  mockNotificationServices(server);
+  await mockNotificationServices(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {

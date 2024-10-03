@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -29,23 +28,27 @@ describe('Test Snap Interactive UI', function () {
         await driver.clickElement('#connectinteractive-ui');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+        // We need a bigger timeout as the Connect action takes some time
+        await driver.clickElementSafe(
+          '[data-testid="snap-install-scroll"]',
+          3000,
+        );
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for anc click OK
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElement({
           text: 'OK',
           tag: 'button',
@@ -62,7 +65,7 @@ describe('Test Snap Interactive UI', function () {
         await driver.delay(500);
 
         // switch to dialog popup
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.delay(500);
 
         // fill in thr example input
@@ -75,12 +78,20 @@ describe('Test Snap Interactive UI', function () {
         // try to select option 2 from the list
         await driver.clickElement({ text: 'Option 2', tag: 'option' });
 
+        // click on option 3 radio button
+        await driver.clickElement({ text: 'Option 3', tag: 'label' });
+
+        // click on checkbox
+        await driver.clickElement({ tag: 'span', text: 'Checkbox' });
+
         // try to click approve
         await driver.clickElement('#submit');
 
         // check for returned values
         await driver.waitForSelector({ text: 'foo bar', tag: 'p' });
         await driver.waitForSelector({ text: 'option2', tag: 'p' });
+        await driver.waitForSelector({ text: 'option3', tag: 'p' });
+        await driver.waitForSelector({ text: 'true', tag: 'p' });
 
         // try to click on approve
         await driver.clickElement('[data-testid="confirmation-submit-button"]');

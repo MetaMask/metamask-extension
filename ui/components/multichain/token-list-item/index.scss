@@ -10,5 +10,9 @@
 
   &__badge {
     align-self: center;
+
+    &__avatar-network {
+      box-sizing: content-box;
+    }
   }
 }

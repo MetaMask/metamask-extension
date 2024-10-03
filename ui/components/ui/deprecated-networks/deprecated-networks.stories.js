@@ -4,6 +4,7 @@ import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import DeprecatedNetworks from './deprecated-networks';
 
 const store = (chainId, rpcUrl) =>
@@ -12,8 +13,7 @@ const store = (chainId, rpcUrl) =>
     metamask: {
       ...testData.metamask,
       completedOnboarding: true,
-      providerConfig: { chainId },
-      networkConfigurations: { id: { chainId, rpcUrl } },
+      ...mockNetworkState({ chainId, rpcUrl }),
     },
   });
 

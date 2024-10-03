@@ -39,7 +39,7 @@ const mockGetSelectedAccountCachedBalance =
   getSelectedAccountCachedBalance as jest.Mock;
 const mockGetConversionRate = getConversionRate as jest.Mock;
 const mockGetNativeCurrency = getNativeCurrency as jest.Mock;
-const mockGetTOkensMarketData = getTokensMarketData as jest.Mock;
+const mockGetTokensMarketData = getTokensMarketData as jest.Mock;
 
 describe('PercentageChange Component', () => {
   beforeEach(() => {
@@ -48,7 +48,7 @@ describe('PercentageChange Component', () => {
     mockGetSelectedAccountCachedBalance.mockReturnValue('0x02e8ac1ede6ade83');
     mockGetConversionRate.mockReturnValue(2913.15);
     mockGetNativeCurrency.mockReturnValue('ETH');
-    mockGetTOkensMarketData.mockReturnValue({
+    mockGetTokensMarketData.mockReturnValue({
       [zeroAddress()]: {
         pricePercentChange1d: 2,
       },
@@ -95,6 +95,16 @@ describe('PercentageChange Component', () => {
     render(<PercentageAndAmountChange value={-1.234} />);
     const percentageElement = screen.getByText('(+0.00%)');
     const numberElement = screen.getByText('+$0.00');
+    expect(percentageElement).toBeInTheDocument();
+    expect(numberElement).toBeInTheDocument();
+  });
+
+  it('should not error with non standard currency code', () => {
+    mockGetSelectedAccountCachedBalance.mockReturnValue('0x0');
+    mockGetCurrentCurrency.mockReturnValue('DASH');
+    render(<PercentageAndAmountChange value={-1.234} />);
+    const percentageElement = screen.getByText('(+0.00%)');
+    const numberElement = screen.getByText('+0.00');
     expect(percentageElement).toBeInTheDocument();
     expect(numberElement).toBeInTheDocument();
   });

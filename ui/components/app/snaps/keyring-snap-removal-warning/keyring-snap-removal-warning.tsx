@@ -25,7 +25,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import InfoTooltip from '../../../ui/info-tooltip';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { getCurrentChainId } from '../../../../selectors';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 
 export default function KeyringRemovalSnapWarning({
@@ -50,7 +50,7 @@ export default function KeyringRemovalSnapWarning({
   const [confirmedRemoval, setConfirmedRemoval] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
   const [error, setError] = useState(false);
-  const { chainId } = useSelector(getProviderConfig);
+  const chainId = useSelector(getCurrentChainId);
 
   useEffect(() => {
     setShowConfirmation(keyringAccounts.length === 0);

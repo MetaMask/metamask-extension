@@ -42,17 +42,12 @@ const customData = {
         custodianName: 'saturn-dev',
       },
     },
-    providerConfig: {
-      type: 'test',
-    },
     isUnlocked: true,
     interactiveReplacementToken: {
       oldRefreshToken: 'abc',
       url: 'https://saturn-custody-ui.dev.metamask-institutional.io',
     },
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-    },
+    preferences: {},
   },
 };
 
