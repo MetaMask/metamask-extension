@@ -1,7 +1,19 @@
+import { isEvmAccountType } from '@metamask/keyring-api';
+import React from 'react';
+import { MILLISECOND, SECOND } from '../../../shared/constants/time';
+import { Toast, ToastContainer } from '../../components/multichain';
 import { SurveyToast } from '../../components/ui/survey-toast';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { getShowAutoNetworkSwitchTest } from './isolated';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '../../components/component-library';
+import { BorderColor } from '../../helpers/constants/design-system';
+import { getURLHost } from '../../helpers/utils/util';
 
-export function renderToasts() {
-  const { t } = this.context;
+export function renderToasts(props, context) {
+  const { t } = context;
   const {
     account,
     activeTabOrigin,
@@ -20,10 +32,12 @@ export function renderToasts() {
     setHideNftEnablementToast,
     isPermittedNetworkToastOpen,
     currentNetwork,
-  } = this.props;
+  } = props;
 
-  const showAutoNetworkSwitchToast = getShowAutoNetworkSwitchTest();
-  const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
+  const showAutoNetworkSwitchToast = getShowAutoNetworkSwitchTest(props);
+  const isPrivacyToastRecent = getIsPrivacyToastRecent(
+    props.newPrivacyPolicyToastShownDate,
+  );
   const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
   const isEvmAccount = isEvmAccountType(account?.type);
   const autoHideToastDelay = 5 * SECOND;
@@ -32,7 +46,7 @@ export function renderToasts() {
   const onAutoHideToast = () => {
     setHideNftEnablementToast(false);
   };
-  if (!this.onHomeScreen()) {
+  if (!onHomeScreen(props)) {
     return null;
   }
 
@@ -52,11 +66,11 @@ export function renderToasts() {
               borderColor={BorderColor.transparent}
             />
           }
-          text={this.context.t('accountIsntConnectedToastText', [
+          text={t('accountIsntConnectedToastText', [
             account?.metadata?.name,
             getURLHost(activeTabOrigin),
           ])}
-          actionText={this.context.t('connectAccount')}
+          actionText={t('connectAccount')}
           onActionClick={() => {
             // Connect this account
             addPermittedAccount(activeTabOrigin, account.address);
@@ -125,11 +139,11 @@ export function renderToasts() {
               name={switchedNetworkDetails?.nickname}
             />
           }
-          text={this.context.t('switchedNetworkToastMessage', [
+          text={t('switchedNetworkToastMessage', [
             switchedNetworkDetails.nickname,
             getURLHost(switchedNetworkDetails.origin),
           ])}
-          actionText={this.context.t('switchedNetworkToastDecline')}
+          actionText={t('switchedNetworkToastDecline')}
           onActionClick={() => setSwitchedNetworkNeverShowMessage()}
           onClose={() => clearSwitchedNetworkDetails()}
         />
@@ -140,7 +154,7 @@ export function renderToasts() {
           startAdornment={
             <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
           }
-          text={this.context.t('nftAutoDetectionEnabled')}
+          text={t('nftAutoDetectionEnabled')}
           borderRadius={BorderRadius.LG}
           textVariant={TextVariant.bodyMd}
           autoHideTime={autoHideToastDelay}
@@ -159,16 +173,16 @@ export function renderToasts() {
               name={currentNetwork?.nickname}
             />
           }
-          text={this.context.t('permittedChainToastUpdate', [
+          text={t('permittedChainToastUpdate', [
             getURLHost(activeTabOrigin),
             currentNetwork?.nickname,
           ])}
-          actionText={this.context.t('editPermissions')}
+          actionText={t('editPermissions')}
           onActionClick={() => {
-            this.props.hidePermittedNetworkToast();
-            this.props.history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+            props.hidePermittedNetworkToast();
+            props.history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
           }}
-          onClose={() => this.props.hidePermittedNetworkToast()}
+          onClose={() => props.hidePermittedNetworkToast()}
         />
       ) : null}
     </ToastContainer>
@@ -187,9 +201,7 @@ export function updateNewPrivacyPolicyToastDate(props) {
   }
 }
 
-export function getIsPrivacyToastRecent() {
-  const { newPrivacyPolicyToastShownDate } = this.props;
-
+export function getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate) {
   const currentDate = new Date();
   const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
   const newPrivacyPolicyToastShownDateObj = new Date(
@@ -199,4 +211,9 @@ export function getIsPrivacyToastRecent() {
     currentDate - newPrivacyPolicyToastShownDateObj < oneDayInMilliseconds;
 
   return toastWasShownLessThanADayAgo;
+}
+
+function onHomeScreen(props) {
+  const { location } = props;
+  return location.pathname === DEFAULT_ROUTE;
 }

@@ -1,15 +1,16 @@
 import { matchPath } from 'react-router-dom';
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../shared/constants/app';
+import { ThemeType } from '../../../shared/constants/preferences';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   CONNECTIONS,
-  DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
@@ -29,8 +30,7 @@ export function isConfirmTransactionRoute(pathname) {
   );
 }
 
-export function getTheme() {
-  const { theme } = this.props;
+export function getThemeFromRawTheme(theme) {
   if (theme === ThemeType.os) {
     if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
       return ThemeType.dark;
@@ -41,11 +41,10 @@ export function getTheme() {
 }
 
 export function setTheme(theme) {
-  // const theme = useSelector((state) => getThemeSelector(state));
-
-  console.log('theme', theme);
-
-  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute(
+    'data-theme',
+    getThemeFromRawTheme(theme),
+  );
 }
 
 export function onSwapsPage() {
@@ -53,11 +52,6 @@ export function onSwapsPage() {
   return Boolean(
     matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
   );
-}
-
-export function onHomeScreen() {
-  const { location } = this.props;
-  return location.pathname === DEFAULT_ROUTE;
 }
 
 export function onConfirmPage() {
