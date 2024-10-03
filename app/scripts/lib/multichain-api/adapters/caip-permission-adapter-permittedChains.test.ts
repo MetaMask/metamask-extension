@@ -1,4 +1,5 @@
 import { Caip25CaveatValue } from '../caip25permissions';
+import { KnownNotifications, KnownRpcMethods } from '../scope';
 import {
   addPermittedEthChainId,
   getPermittedEthChainIds,
@@ -89,8 +90,8 @@ describe('CAIP-25 permittedChains adapters', () => {
             accounts: ['eip155:100:0x100'],
           },
           'eip155:101': {
-            methods: [],
-            notifications: [],
+            methods: KnownRpcMethods.eip155,
+            notifications: KnownNotifications.eip155,
             accounts: [],
           },
         },
@@ -272,8 +273,8 @@ describe('CAIP-25 permittedChains adapters', () => {
             accounts: ['eip155:100:0x100'],
           },
           'eip155:101': {
-            methods: [],
-            notifications: [],
+            methods: KnownRpcMethods.eip155,
+            notifications: KnownNotifications.eip155,
             accounts: [],
           },
         },

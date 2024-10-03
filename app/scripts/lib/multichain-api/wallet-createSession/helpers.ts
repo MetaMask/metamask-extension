@@ -1,23 +1,9 @@
-import { CaipAccountId, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import {
   NetworkController,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { ScopesObject } from '../scope';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
-
-export const assignAccountsToScopes = (
-  scopes: ScopesObject,
-  accounts: Hex[],
-) => {
-  Object.entries(scopes).forEach(([scopeString, scopeObject]) => {
-    if (scopeString !== 'wallet') {
-      scopeObject.accounts = accounts.map(
-        (account) => `${scopeString}:${account}` as unknown as CaipAccountId, // do we need checks here?
-      );
-    }
-  });
-};
 
 export const validateAndAddEip3085 = async ({
   eip3085Params,

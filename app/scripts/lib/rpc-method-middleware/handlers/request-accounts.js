@@ -9,10 +9,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { setEthAccounts } from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
 import { PermissionNames } from '../../../controllers/permissions';
 import { setPermittedEthChainIds } from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
@@ -35,7 +32,6 @@ const requestEthereumAccounts = {
     sendMetrics: true,
     metamaskState: true,
     grantPermissions: true,
-    getNetworkConfigurationByNetworkClientId: true,
   },
 };
 export default requestEthereumAccounts;
@@ -75,7 +71,6 @@ async function requestEthereumAccountsHandler(
     sendMetrics,
     metamaskState,
     grantPermissions,
-    getNetworkConfigurationByNetworkClientId,
   },
 ) {
   const { origin } = req;
@@ -104,22 +99,11 @@ async function requestEthereumAccountsHandler(
     return undefined;
   }
 
-  const { chainId } = getNetworkConfigurationByNetworkClientId(
-    req.networkClientId,
-  );
-
   let legacyApproval;
   try {
     legacyApproval = await requestPermissionApprovalForOrigin({
       [RestrictedMethods.eth_accounts]: {},
-      [PermissionNames.permittedChains]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: [chainId],
-          },
-        ],
-      },
+      [PermissionNames.permittedChains]: {},
     });
   } catch (err) {
     res.error = err;

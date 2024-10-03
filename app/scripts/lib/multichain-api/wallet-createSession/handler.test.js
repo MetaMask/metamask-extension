@@ -1,18 +1,21 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { RestrictedMethods } from '../../../../../shared/constants/permissions';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import {
   validateAndFlattenScopes,
   processScopedProperties,
   bucketScopes,
   assertScopesSupported,
+  KnownRpcMethods,
+  KnownNotifications,
 } from '../scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../caip25permissions';
 import { shouldEmitDappViewedEvent } from '../../util';
+import { PermissionNames } from '../../../controllers/permissions';
 import { walletCreateSessionHandler } from './handler';
-import { assignAccountsToScopes, validateAndAddEip3085 } from './helpers';
+import { validateAndAddEip3085 } from './helpers';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -20,7 +23,13 @@ jest.mock('../../util', () => ({
 }));
 
 jest.mock('../scope', () => ({
-  ...jest.requireActual('../scope'),
+  ...jest.requireActual('../scope/assert'),
+  ...jest.requireActual('../scope/authorization'),
+  ...jest.requireActual('../scope/filter'),
+  ...jest.requireActual('../scope/scope'),
+  ...jest.requireActual('../scope/supported'),
+  ...jest.requireActual('../scope/transform'),
+  ...jest.requireActual('../scope/validation'),
   validateAndFlattenScopes: jest.fn(),
   processScopedProperties: jest.fn(),
   bucketScopes: jest.fn(),
@@ -29,7 +38,6 @@ jest.mock('../scope', () => ({
 
 jest.mock('./helpers', () => ({
   ...jest.requireActual('./helpers'),
-  assignAccountsToScopes: jest.fn(),
   validateAndAddEip3085: jest.fn(),
 }));
 
@@ -61,6 +69,7 @@ const createMockedHandler = () => {
   const end = jest.fn();
   const requestPermissionApprovalForOrigin = jest.fn().mockResolvedValue({
     approvedAccounts: ['0x1', '0x2', '0x3', '0x4'],
+    approvedChainIds: ['0x1', '0x5'],
   });
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
@@ -89,6 +98,7 @@ const createMockedHandler = () => {
       '0x3': {},
     },
   };
+  const listAccounts = jest.fn().mockReturnValue([]);
   const response = {};
   const handler = (request) =>
     walletCreateSessionHandler(request, response, next, end, {
@@ -101,6 +111,7 @@ const createMockedHandler = () => {
       multichainSubscriptionManager,
       metamaskState,
       sendMetrics,
+      listAccounts,
     });
 
   return {
@@ -116,6 +127,7 @@ const createMockedHandler = () => {
     multichainSubscriptionManager,
     metamaskState,
     sendMetrics,
+    listAccounts,
     handler,
   };
 };
@@ -131,7 +143,6 @@ describe('wallet_createSession', () => {
       supportableScopes: {},
       unsupportableScopes: {},
     });
-    assignAccountsToScopes.mockImplementation((value) => value);
   });
 
   afterEach(() => {
@@ -190,10 +201,10 @@ describe('wallet_createSession', () => {
         },
       },
       flattenedOptionalScopes: {
-        'eip155:64': {
+        'eip155:100': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
+          accounts: ['eip155:100:0x4'],
         },
       },
     });
@@ -216,10 +227,10 @@ describe('wallet_createSession', () => {
         },
       },
       {
-        'eip155:64': {
+        'eip155:100': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
+          accounts: ['eip155:100:0x4'],
         },
       },
       { foo: 'bar' },
@@ -279,10 +290,10 @@ describe('wallet_createSession', () => {
     validateAndFlattenScopes.mockReturnValue({
       flattenedRequiredScopes: {},
       flattenedOptionalScopes: {
-        'eip155:64': {
+        'eip155:100': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
+          accounts: ['eip155:100:0x4'],
         },
       },
     });
@@ -291,10 +302,10 @@ describe('wallet_createSession', () => {
     expect(bucketScopes).toHaveBeenNthCalledWith(
       2,
       {
-        'eip155:64': {
+        'eip155:100': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
+          accounts: ['eip155:100:0x4'],
         },
       },
       expect.objectContaining({
@@ -311,144 +322,64 @@ describe('wallet_createSession', () => {
     expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
-  it('requests approval for account permission with no args even if there is accounts in the scope', async () => {
-    const { handler, requestPermissionApprovalForOrigin } =
+  it('gets a list of evm accounts in the wallet', async () => {
+    const { handler, listAccounts } = createMockedHandler();
+    await handler(baseRequest);
+
+    expect(listAccounts).toHaveBeenCalled();
+  });
+
+  it('requests approval for account and permitted chains permission based on the supported eth accounts and eth chains from the supported scopes in the request', async () => {
+    const { handler, listAccounts, requestPermissionApprovalForOrigin } =
       createMockedHandler();
+    listAccounts.mockReturnValue([
+      { address: '0x1' },
+      { address: '0x3' },
+      { address: '0x4' },
+    ]);
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
-          'eip155:1': {
+          'eip155:1337': {
             methods: [],
             notifications: [],
             accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
           },
         },
-        supportableScopes: {
-          'eip155:5': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:5:0x2', 'eip155:5:0x3'],
-          },
-        },
-        unsupportableScopes: {
-          'eip155:64': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:64:0x4'],
-          },
-        },
+        supportableScopes: {},
+        unsupportableScopes: {},
       })
       .mockReturnValueOnce({
         supportedScopes: {
-          'eip155:2': {
+          'eip155:100': {
             methods: [],
             notifications: [],
-            accounts: ['eip155:2:0x1', 'eip155:1:0x2'],
+            accounts: ['eip155:2:0x1', 'eip155:2:0x3', 'eip155:2:0xdeadbeef'],
           },
         },
-        supportableScopes: {
-          'eip155:6': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:6:0x2', 'eip155:6:0x3'],
-          },
-        },
-        unsupportableScopes: {
-          'eip155:65': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:65:0x4'],
-          },
-        },
+        supportableScopes: {},
+        unsupportableScopes: {},
       });
     await handler(baseRequest);
 
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
-      [RestrictedMethods.eth_accounts]: {},
+      [PermissionNames.eth_accounts]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictReturnedAccounts,
+            value: ['0x1', '0x3'],
+          },
+        ],
+      },
+      [PermissionNames.permittedChains]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: ['0x539', '0x64'],
+          },
+        ],
+      },
     });
-  });
-
-  it('assigns the permitted accounts to the scopeObjects', async () => {
-    const { handler } = createMockedHandler();
-    bucketScopes
-      .mockReturnValueOnce({
-        supportedScopes: {
-          'eip155:1': {
-            methods: [],
-            notifications: [],
-          },
-        },
-        supportableScopes: {
-          'eip155:5': {
-            methods: [],
-            notifications: [],
-          },
-        },
-        unsupportableScopes: {
-          'eip155:64': {
-            methods: [],
-            notifications: [],
-          },
-        },
-      })
-      .mockReturnValueOnce({
-        supportedScopes: {
-          'eip155:2': {
-            methods: [],
-            notifications: [],
-          },
-        },
-        supportableScopes: {
-          'eip155:6': {
-            methods: [],
-            notifications: [],
-          },
-        },
-        unsupportableScopes: {
-          'eip155:65': {
-            methods: [],
-            notifications: [],
-          },
-        },
-      });
-    await handler(baseRequest);
-
-    expect(assignAccountsToScopes).toHaveBeenCalledWith(
-      {
-        'eip155:1': {
-          methods: [],
-          notifications: [],
-        },
-      },
-      ['0x1', '0x2', '0x3', '0x4'],
-    );
-    expect(assignAccountsToScopes).toHaveBeenCalledWith(
-      {
-        'eip155:5': {
-          methods: [],
-          notifications: [],
-        },
-      },
-      ['0x1', '0x2', '0x3', '0x4'],
-    );
-    expect(assignAccountsToScopes).toHaveBeenCalledWith(
-      {
-        'eip155:2': {
-          methods: [],
-          notifications: [],
-        },
-      },
-      ['0x1', '0x2', '0x3', '0x4'],
-    );
-    expect(assignAccountsToScopes).toHaveBeenCalledWith(
-      {
-        'eip155:6': {
-          methods: [],
-          notifications: [],
-        },
-      },
-      ['0x1', '0x2', '0x3', '0x4'],
-    );
   });
 
   it('throws an error when requesting account permission approval fails', async () => {
@@ -540,41 +471,36 @@ describe('wallet_createSession', () => {
     expect(validateAndAddEip3085).not.toHaveBeenCalled();
   });
 
-  it('grants the CAIP-25 permission for the supported and supportable scopes', async () => {
-    const { handler, grantPermissions } = createMockedHandler();
+  it('grants the CAIP-25 permission for the supported scopes and accounts that were approved', async () => {
+    const { handler, grantPermissions, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
-          'eip155:1': {
+          'eip155:5': {
             methods: ['eth_chainId'],
             notifications: ['accountsChanged'],
-            accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+            accounts: [],
           },
         },
-        supportableScopes: {
-          'eip155:2': {
-            methods: ['eth_chainId'],
-            notifications: [],
-          },
-        },
+        supportableScopes: {},
         unsupportableScopes: {},
       })
       .mockReturnValueOnce({
         supportedScopes: {
-          'eip155:1': {
+          'eip155:100': {
             methods: ['eth_sendTransaction'],
             notifications: ['chainChanged'],
-            accounts: ['eip155:1:0x1', 'eip155:1:0x3'],
+            accounts: ['eip155:1:0x3'],
           },
         },
-        supportableScopes: {
-          'eip155:64': {
-            methods: ['net_version'],
-            notifications: ['chainChanged'],
-          },
-        },
+        supportableScopes: {},
         unsupportableScopes: {},
       });
+    requestPermissionApprovalForOrigin.mockResolvedValue({
+      approvedAccounts: ['0x1', '0x2'],
+      approvedChainIds: ['0x5', '0x64', '0x539'], // 5, 100, 1337
+    });
     await handler(baseRequest);
 
     expect(grantPermissions).toHaveBeenCalledWith({
@@ -586,25 +512,22 @@ describe('wallet_createSession', () => {
               type: Caip25CaveatType,
               value: {
                 requiredScopes: {
-                  'eip155:1': {
+                  'eip155:5': {
                     methods: ['eth_chainId'],
                     notifications: ['accountsChanged'],
-                    accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-                  },
-                  'eip155:2': {
-                    methods: ['eth_chainId'],
-                    notifications: [],
+                    accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
                   },
                 },
                 optionalScopes: {
-                  'eip155:1': {
+                  'eip155:100': {
                     methods: ['eth_sendTransaction'],
                     notifications: ['chainChanged'],
-                    accounts: ['eip155:1:0x1', 'eip155:1:0x3'],
+                    accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
                   },
-                  'eip155:64': {
-                    methods: ['net_version'],
-                    notifications: ['chainChanged'],
+                  'eip155:1337': {
+                    methods: KnownRpcMethods.eip155,
+                    notifications: KnownNotifications.eip155,
+                    accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
                   },
                 },
                 isMultichainOrigin: true,
@@ -652,40 +575,40 @@ describe('wallet_createSession', () => {
   });
 
   it('returns the session ID, properties, and merged scopes', async () => {
-    const { handler, response } = createMockedHandler();
+    const { handler, requestPermissionApprovalForOrigin, response } =
+      createMockedHandler();
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
-          'eip155:1': {
+          'eip155:5': {
             methods: ['eth_chainId'],
             notifications: ['accountsChanged'],
-            accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+            accounts: ['eip155:5:0x1'],
           },
         },
-        supportableScopes: {
-          'eip155:2': {
-            methods: ['eth_chainId'],
-            notifications: [],
-          },
-        },
+        supportableScopes: {},
         unsupportableScopes: {},
       })
       .mockReturnValueOnce({
         supportedScopes: {
-          'eip155:1': {
+          'eip155:5': {
+            methods: ['net_version'],
+            notifications: ['chainChanged', 'accountsChanged'],
+            accounts: [],
+          },
+          'eip155:100': {
             methods: ['eth_sendTransaction'],
             notifications: ['chainChanged'],
-            accounts: ['eip155:1:0x1', 'eip155:1:0x3'],
+            accounts: ['eip155:1:0x3'],
           },
         },
-        supportableScopes: {
-          'eip155:64': {
-            methods: ['net_version'],
-            notifications: ['chainChanged'],
-          },
-        },
+        supportableScopes: {},
         unsupportableScopes: {},
       });
+    requestPermissionApprovalForOrigin.mockResolvedValue({
+      approvedAccounts: ['0x1', '0x2'],
+      approvedChainIds: ['0x5', '0x64'], // 5, 100
+    });
     await handler(baseRequest);
 
     expect(response.result).toStrictEqual({
@@ -694,18 +617,15 @@ describe('wallet_createSession', () => {
         foo: 'bar',
       },
       sessionScopes: {
-        'eip155:1': {
-          methods: ['eth_chainId', 'eth_sendTransaction'],
+        'eip155:5': {
+          methods: ['eth_chainId', 'net_version'],
           notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2', 'eip155:1:0x3'],
+          accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
         },
-        'eip155:2': {
-          methods: ['eth_chainId'],
-          notifications: [],
-        },
-        'eip155:64': {
-          methods: ['net_version'],
+        'eip155:100': {
+          methods: ['eth_sendTransaction'],
           notifications: ['chainChanged'],
+          accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
         },
       },
     });
