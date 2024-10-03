@@ -144,8 +144,8 @@ describe('Switch Ethereum Chain for two dapps', function () {
         );
 
         // open two dapps
-        const dappOne = await openDapp(driver, undefined, DAPP_URL);
-        const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
+        await openDapp(driver, undefined, DAPP_URL);
+        await openDapp(driver, undefined, DAPP_ONE_URL);
 
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
@@ -157,22 +157,24 @@ describe('Switch Ethereum Chain for two dapps', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindow(dappTwo);
-        assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL)
 
         // Initiate send transaction on Dapp two
         await driver.clickElement('#sendButton');
-        await driver.delay(2000);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.findClickableElements({
+          text: 'Confirm',
+          tag: 'button',
+        });
 
         // Switch to Dapp One
-        await driver.switchToWindow(dappOne);
-        assert.equal(await driver.getCurrentUrl(), `${DAPP_URL}/`);
+        await driver.switchToWindowWithUrl(DAPP_URL)
 
         // Switch Ethereum chain request
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x53a' }],
+          params: [{ chainId: '0x539' }],
         });
 
         // Initiate switchEthereumChain on Dapp One
@@ -263,6 +265,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         });
 
         // Switch and connect Dapp Two
+
         await driver.switchToWindow(dappTwo);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
 
