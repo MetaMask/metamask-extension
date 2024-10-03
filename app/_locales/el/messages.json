@@ -1720,10 +1720,6 @@
     "message": "Κωδικός: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Λεπτομέρειες σφάλματος",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Σφάλμα κατά τη λήψη της λίστας ασφαλών αλυσίδων, συνεχίστε με προσοχή."
   },
@@ -1734,14 +1730,6 @@
   "errorName": {
     "message": "Κωδικός: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Προσπαθήστε ξανά με επαναφόρτωση της σελίδας ή επικοινωνήστε με την υποστήριξη $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Προσπαθήστε ξανά κλείνοντας και ανοίγοντας ξανά το αναδυόμενο παράθυρο ή επικοινωνήστε με την υποστήριξη $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "Το MetaMask αντιμετώπισε ένα σφάλμα",

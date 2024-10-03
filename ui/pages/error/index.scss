@@ -2,46 +2,40 @@
 
 .error-page {
   display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  font-style: normal;
-  font-weight: normal;
-  padding: 35px 10px 10px 10px;
+  flex-flow: column;
+  padding: 16px;
   height: 100%;
 
-  &__header {
-    @include design-system.H1;
-
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
-    text-align: center;
-  }
-
-  &__subheader {
-    @include design-system.H4;
-
-    padding: 10px 0;
-    width: 100%;
-    max-width: 720px;
-    text-align: center;
-  }
-
-  &__details {
-    @include design-system.H4;
-
-    overflow-y: auto;
-    width: 100%;
-    max-width: 720px;
-    padding-top: 10px;
+  &__inner-wrapper {
+    @media screen and (min-width: design-system.$screen-md-min) {
+      width: 50%;
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 
   &__stack {
-    overflow-x: auto;
-    background-color: var(--color-background-alternative);
+    max-height: 120px;
+    overflow: auto;
+    font-family: var(--font-family-sans);
+    font-weight: var(--typography-l-body-xs-font-weight);
+    font-size: var(--typography-l-body-xs-font-size);
   }
 
   &__link-text {
     color: var(--color-primary-default);
   }
+}
+
+// override styles for sentry feedback form
+#sentry-feedback {
+  --font-family: var(--font-family-sans);
+  --inset: auto 20px 20px auto;
+  --input-font-size: 14px;
+  --button-color: var(--color-primary-default);
+  --button-primary-background: var(--color-primary-default);
+  --button-primary-border: var(--color-primary-default);
+  --button-primary-hover-background: var(--color-primary-default);
+  --success-color: var(--color-success-default);
+  --error-color: var(--color-error-default);
 }

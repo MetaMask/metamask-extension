@@ -9,6 +9,11 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly developerOptionsButton: object = {
+    text: 'Developer Options',
+    css: '.tab-bar__tab__content__title',
+  };
+
   private readonly settingsPageTitle: object = {
     text: 'Settings',
     css: 'h3',
@@ -31,6 +36,11 @@ class SettingsPage {
   async goToExperimentalSettings(): Promise<void> {
     console.log('Navigating to Experimental Settings page');
     await this.driver.clickElement(this.experimentalSettingsButton);
+  }
+
+  async goToDevelopOptionSettings(): Promise<void> {
+    console.log('Navigating to Develop options page');
+    await this.driver.clickElement(this.developerOptionsButton);
   }
 }
 
