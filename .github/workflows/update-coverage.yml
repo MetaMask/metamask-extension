@@ -1,0 +1,37 @@
+name: Update coverage
+
+on:
+  schedule:
+    - cron: 0 0 * * *
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    uses: ./.github/workflows/run-tests.yml
+
+  update-coverage:
+    if: ${{ needs.run-tests.outputs.active-branch-coverage > needs.run-tests.outputs.default-branch-coverage }}
+    name: Update coverage
+    runs-on: ubuntu-latest
+    needs:
+      - run-tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update coverage
+        run: |
+          echo "{ "coverage": ${{ needs.run-tests.outputs.active-branch-coverage }} }" > coverage.json
+
+      - name: Create branch, commit, and push
+        run: |
+          git checkout -b update-coverage
+          git add coverage.json
+          git commit -m "chore: Update coverage.json"
+          git push origin update-coverage
+
+      - name: Create pull request
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases." --base develop --head update-coverage

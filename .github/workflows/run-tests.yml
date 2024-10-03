@@ -1,16 +1,14 @@
 name: Run tests
 
 on:
-  push:
-    branches:
-      - develop
-      - master
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-  merge_group:
+  workflow_call:
+    outputs:
+      active-branch-coverage:
+        description: Active branch coverage
+        value: ${{ jobs.report-coverage.outputs.active-branch-coverage }}
+      default-branch-coverage:
+        description: Default branch coverage
+        value: ${{ jobs.report-coverage.outputs.default-branch-coverage }}
 
 jobs:
   test-unit:
@@ -79,18 +77,19 @@ jobs:
           name: coverage-integration
           path: coverage/integration/coverage-integration.json
 
-  sonarcloud:
-    name: SonarCloud
+  report-coverage:
+    name: Report coverage
     runs-on: ubuntu-latest
     needs:
       - test-unit
       - test-webpack
       - test-integration
+    outputs:
+      active-branch-coverage: ${{ steps.get-active-branch-coverage.outputs.ACTIVE_BRANCH_COVERAGE }}
+      default-branch-coverage: ${{ steps.get-default-branch-coverage.outputs.DEFAULT_BRANCH_COVERAGE }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
 
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
@@ -109,34 +108,32 @@ jobs:
           name: lcov.info
           path: coverage/lcov.info
 
-      - name: Get coverage from develop
-        id: get-coverage-from-develop
+      - name: Get active branch coverage
+        id: get-active-branch-coverage
+        run: |
+          active_branch_coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print int($3)}')
+          echo "The active branch coverage is $active_branch_coverage%."
+          echo 'ACTIVE_BRANCH_COVERAGE='"$active_branch_coverage" >> "$GITHUB_OUTPUT"
+
+      - name: Get default branch coverage
+        id: get-default-branch-coverage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.repository }}
         run: |
-          develop_coverage=$(gh api -H 'Accept: application/vnd.github.raw' 'repos/metamask/metamask-extension/contents/coverage.json' | jq -r ".coverage // 0")
-          echo "The coverage on develop for metamask-extension is $develop_coverage%."
-          echo 'DEVELOP_COVERAGE='"$develop_coverage" >> "$GITHUB_OUTPUT"
+          default_branch_coverage=$(gh api -H "Accept: application/vnd.github.raw" "repos/$REPOSITORY_OWNER/$REPOSITORY/contents/coverage.json" | jq -r ".coverage // 0")
+          echo "The default branch coverage is $default_branch_coverage%."
+          echo 'DEFAULT_BRANCH_COVERAGE='"$default_branch_coverage" >> "$GITHUB_OUTPUT"
 
       - name: Validate test coverage
         env:
-            DEVELOP_COVERAGE: ${{ steps.get-coverage-from-develop.outputs.DEVELOP_COVERAGE }}
+            ACTIVE_BRANCH_COVERAGE: ${{ steps.get-active-branch-coverage.outputs.ACTIVE_BRANCH_COVERAGE }}
+            DEFAULT_BRANCH_COVERAGE: ${{ steps.get-default-branch-coverage.outputs.DEFAULT_BRANCH_COVERAGE }}
         run: |
-          coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print $3}')
-          if [ -z "$coverage" ]; then
-            echo "::error::Could not retrieve test coverage."
-            exit 1
-          fi
-          if (( $(echo "$coverage < $DEVELOP_COVERAGE" | bc -l) )); then
-            echo "::error::Quality gate failed for test coverage. Current test coverage is $coverage%, please increase coverage to at least $DEVELOP_COVERAGE%."
+          if (( $(echo "$ACTIVE_BRANCH_COVERAGE < $DEFAULT_BRANCH_COVERAGE" | bc -l) )); then
+            echo "::error::Quality gate failed for test coverage. Active branch coverage is $ACTIVE_BRANCH_COVERAGE%, please increase coverage to at least $DEFAULT_BRANCH_COVERAGE%."
             exit 1
           else
-            echo "Current test coverage is $coverage%, develop test coverage is $DEVELOP_COVERAGE%. Quality gate passed."
+            echo "Active branch coverage is $ACTIVE_BRANCH_COVERAGE%, default branch coverage is $DEFAULT_BRANCH_COVERAGE%. Quality gate passed."
           fi
-
-      - name: SonarCloud Scan
-        # This is SonarSource/sonarcloud-github-action@v2.0.0
-        uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
