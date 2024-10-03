@@ -1415,9 +1415,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Errore recuperando le quotazioni"
   },
-  "swapLowSlippageError": {
-    "message": "La transazione può fallire, il massimo slippage è troppo basso."
-  },
   "swapMaxSlippage": {
     "message": "Slippage massimo"
   },
@@ -1514,12 +1511,6 @@
   },
   "swapUnknown": {
     "message": "Sconosciuto"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Impostazioni Avanzate"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "L'importo di slippage è troppo alto e risulterà in una tariffa sconveniente. Riduci la tolleranza allo slippage ad un valore minore di 15%."
   },
   "swapsMaxSlippage": {
     "message": "Tolleranza Slippage"

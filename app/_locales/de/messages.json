@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "Hohe Slippage"
   },
-  "swapHighSlippageWarning": {
-    "message": "Der Slippage-Betrag ist sehr hoch."
-  },
   "swapIncludesMMFee": {
     "message": "Enthält eine MetaMask-Gebühr von $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "Niedrige Slippage"
-  },
-  "swapLowSlippageError": {
-    "message": "Transaktion kann fehlschlagen, maximale Slippage zu niedrig."
   },
   "swapMaxSlippage": {
     "message": "Max. Slippage"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "0 % Slippage"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Erweiterte Optionen"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Der Slippage-Betrag ist zu hoch und wird zu einem schlechten Kurs führen. Bitte reduzieren Sie die Slippage-Toleranz auf einen Wert unter 15 %."
   },
   "swapsMaxSlippage": {
     "message": "Slippage-Toleranz"

@@ -1962,15 +1962,9 @@
     "message": "As taxas de gás são pagas aos mineradores de criptoativos que processam as transações na rede de $1. A MetaMask não lucra com taxas de gás.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
-  "swapHighSlippageWarning": {
-    "message": "O valor de slippage está muito alto."
-  },
   "swapIncludesMMFee": {
     "message": "Inclui uma taxa de $1% da MetaMask.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapLowSlippageError": {
-    "message": "A transação pode falhar; o slippage máximo está baixo demais."
   },
   "swapMaxSlippage": {
     "message": "Slippage máximo"
@@ -2104,12 +2098,6 @@
   },
   "swapZeroSlippage": {
     "message": "0% de slippage"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Opções avançadas"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "O valor de slippage está muito alto e resultará em uma taxa ruim. Reduza sua tolerância a slippage para um valor inferior a 15%."
   },
   "swapsMaxSlippage": {
     "message": "Tolerância a slippage"

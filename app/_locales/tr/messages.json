@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "Yüksek kayma"
   },
-  "swapHighSlippageWarning": {
-    "message": "Kayma tutarı çok yüksek."
-  },
   "swapIncludesMMFee": {
     "message": "%$1 MetaMask ücreti dahildir.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "Düşük kayma"
-  },
-  "swapLowSlippageError": {
-    "message": "İşlem başarısız olabilir, maks. kayma çok düşük."
   },
   "swapMaxSlippage": {
     "message": "Maks. kayma"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "%0 Kayma"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Gelişmiş seçenekler"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Kayma tutarı çok yüksek ve kötü bir orana neden olacak. Lütfen kayma toleransınızı %15'in altında bir değere düşürün."
   },
   "swapsMaxSlippage": {
     "message": "Kayma toleransı"

@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "Mataas na slippage"
   },
-  "swapHighSlippageWarning": {
-    "message": "Napakataas ng halaga ng slippage."
-  },
   "swapIncludesMMFee": {
     "message": "Kasama ang $1% MetaMask fee.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "Mababang slippage"
-  },
-  "swapLowSlippageError": {
-    "message": "Maaaring hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
   },
   "swapMaxSlippage": {
     "message": "Max na slippage"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "0% Slippage"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Mga Advanced na Opsyon"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Masyadong mataas ang halaga ng slippage at magreresulta sa masamang rate. Mangyaring bawasan ang iyong slippage tolerance sa halagang mas mababa sa 15%."
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"

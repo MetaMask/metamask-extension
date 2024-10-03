@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "Important effet de glissement"
   },
-  "swapHighSlippageWarning": {
-    "message": "Le montant du glissement est très élevé."
-  },
   "swapIncludesMMFee": {
     "message": "Comprend des frais MetaMask à hauteur de $1 %.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "Faible effet de glissement"
-  },
-  "swapLowSlippageError": {
-    "message": "La transaction peut échouer, car le glissement maximal est trop faible."
   },
   "swapMaxSlippage": {
     "message": "Glissement maximal"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "0 % de glissement"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Options avancées"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Le montant du glissement est trop élevé et donnera lieu à un mauvais taux. Veuillez réduire votre tolérance de glissement à une valeur inférieure à 15 %."
   },
   "swapsMaxSlippage": {
     "message": "Tolérance au slippage"

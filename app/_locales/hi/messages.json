@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "अधिक स्लिपेज"
   },
-  "swapHighSlippageWarning": {
-    "message": "स्लिपेज अमाउंट बहुत अधिक है।"
-  },
   "swapIncludesMMFee": {
     "message": "$1% MetaMask फ़ीस शामिल है।",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "कम स्लिपेज"
-  },
-  "swapLowSlippageError": {
-    "message": "ट्रांसेक्शन विफल हो सकता है, अधिकतम स्लिपेज बहुत कम है।"
   },
   "swapMaxSlippage": {
     "message": "अधिकतम स्लिपेज"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "0% स्लिपेज"
-  },
-  "swapsAdvancedOptions": {
-    "message": "एडवांस्ड विकल्प"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "स्लिपेज अमाउंट बहुत अधिक है और इस वजह से खराब दर होगी। कृपया अपने स्लिपेज टॉलरेंस को 15% से नीचे के वैल्यू तक कम करें।"
   },
   "swapsMaxSlippage": {
     "message": "स्लिपेज टॉलरेंस"

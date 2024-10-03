@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "高滑点"
   },
-  "swapHighSlippageWarning": {
-    "message": "滑点金额非常高。"
-  },
   "swapIncludesMMFee": {
     "message": "包括 $1% 的 MetaMask 费用。",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "低滑点"
-  },
-  "swapLowSlippageError": {
-    "message": "交易可能会失败，最大滑点过低。"
   },
   "swapMaxSlippage": {
     "message": "最大滑点"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "0%滑点"
-  },
-  "swapsAdvancedOptions": {
-    "message": "高级选项"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "滑点金额太高，会导致不良率。请将最大滑点降低到低于15%的值。"
   },
   "swapsMaxSlippage": {
     "message": "最大滑点"

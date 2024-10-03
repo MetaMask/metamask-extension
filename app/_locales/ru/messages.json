@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "Высокое проскальзывание"
   },
-  "swapHighSlippageWarning": {
-    "message": "Сумма проскальзывания очень велика."
-  },
   "swapIncludesMMFee": {
     "message": "Включает комиссию MetaMask в размере $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "Низкое проскальзывание"
-  },
-  "swapLowSlippageError": {
-    "message": "Возможно, не удастся выполнить транзакцию. Ммаксимальное проскальзывание слишком низкое."
   },
   "swapMaxSlippage": {
     "message": "Максимальное проскальзывание"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "0% проскальзывания"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Дополнительные параметры"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Величина проскальзывания очень велика. Сделка будет невыгодной. Снизьте допуск проскальзывания ниже 15%."
   },
   "swapsMaxSlippage": {
     "message": "Допуск проскальзывания"

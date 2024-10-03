@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "高スリッページ"
   },
-  "swapHighSlippageWarning": {
-    "message": "スリッページが非常に大きいです。"
-  },
   "swapIncludesMMFee": {
     "message": "$1%のMetaMask手数料が含まれています。",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "低スリッページ"
-  },
-  "swapLowSlippageError": {
-    "message": "トランザクションが失敗する可能性があります。最大スリッページが低すぎます。"
   },
   "swapMaxSlippage": {
     "message": "最大スリッページ"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "0%スリッページ"
-  },
-  "swapsAdvancedOptions": {
-    "message": "詳細オプション"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "スリッページ額が非常に大きいので、レートが不利になります。最大スリッページを15%未満の値に減らしてください。"
   },
   "swapsMaxSlippage": {
     "message": "最大スリッページ"

@@ -5276,9 +5276,6 @@
   "swapHighSlippage": {
     "message": "Deslizamiento alto"
   },
-  "swapHighSlippageWarning": {
-    "message": "El monto del deslizamiento es muy alto."
-  },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5299,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "Deslizamiento bajo"
-  },
-  "swapLowSlippageError": {
-    "message": "Es posible que la transacción tenga errores, el deslizamiento máximo es demasiado bajo."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -5508,12 +5502,6 @@
   },
   "swapZeroSlippage": {
     "message": "0 % de deslizamiento"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Opciones avanzadas"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "El monto del deslizamiento es muy alto, por lo que recibirá una tasa de conversión desfavorable. Disminuya su tolerancia de deslizamiento a un valor menor al 15 %."
   },
   "swapsMaxSlippage": {
     "message": "Tolerancia de deslizamiento"

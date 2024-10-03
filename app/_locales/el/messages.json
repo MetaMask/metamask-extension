@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "Υψηλή ολίσθηση"
   },
-  "swapHighSlippageWarning": {
-    "message": "Το ποσό ολίσθησης είναι πολύ υψηλό."
-  },
   "swapIncludesMMFee": {
     "message": "Περιλαμβάνει μια χρέωση $1% στο MetaMask.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "Χαμηλή ολίσθηση"
-  },
-  "swapLowSlippageError": {
-    "message": "Η συναλλαγή ενδέχεται να αποτύχει, η μέγιστη ολίσθηση είναι πολύ χαμηλή."
   },
   "swapMaxSlippage": {
     "message": "Μέγιστη ολίσθηση"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "0% Απόκλιση"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Προηγμένες επιλογές"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Το ποσοστό απόκλισης είναι πολύ υψηλό και θα οδηγήσει σε χαμηλή τιμή. Παρακαλούμε μειώστε την ανοχή απόκλισης σε τιμή κάτω του 15%."
   },
   "swapsMaxSlippage": {
     "message": "Ανοχή απόκλισης"

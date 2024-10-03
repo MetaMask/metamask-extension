@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "Selip tinggi"
   },
-  "swapHighSlippageWarning": {
-    "message": "Jumlah slippage sangat tinggi."
-  },
   "swapIncludesMMFee": {
     "message": "Termasuk $1% biaya MetaMask.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "Selip rendah"
-  },
-  "swapLowSlippageError": {
-    "message": "Transaksi berpotensi gagal, selip maks terlalu rendah."
   },
   "swapMaxSlippage": {
     "message": "Selipi maks"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "Selip 0%"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Opsi lanjutan"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Jumlah selip terlalu tinggi dan akan mengakibatkan tarif yang buruk. Kurangi toleransi selip Anda ke nilai di bawah 15%."
   },
   "swapsMaxSlippage": {
     "message": "Toleransi selip"

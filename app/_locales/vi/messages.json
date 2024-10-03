@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "Mức trượt giá cao"
   },
-  "swapHighSlippageWarning": {
-    "message": "Số tiền trượt giá rất cao."
-  },
   "swapIncludesMMFee": {
     "message": "Bao gồm $1% phí của MetaMask.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "Mức trượt giá thấp"
-  },
-  "swapLowSlippageError": {
-    "message": "Giao dịch có thể không thành công, mức trượt giá tối đa quá thấp."
   },
   "swapMaxSlippage": {
     "message": "Mức trượt giá tối đa"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "Mức trượt giá 0%"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Tùy chọn nâng cao"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Mức trượt giá quá cao và sẽ dẫn đến tỷ giá không sinh lời. Vui lòng giảm giới hạn trượt giá xuống một giá trị thấp hơn 15%."
   },
   "swapsMaxSlippage": {
     "message": "Giới hạn trượt giá"

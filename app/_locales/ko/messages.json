@@ -5279,9 +5279,6 @@
   "swapHighSlippage": {
     "message": "높은 슬리피지"
   },
-  "swapHighSlippageWarning": {
-    "message": "슬리패지 금액이 아주 큽니다."
-  },
   "swapIncludesMMFee": {
     "message": "$1%의 MetaMask 요금이 포함됩니다.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5302,9 +5299,6 @@
   },
   "swapLowSlippage": {
     "message": "낮은 슬리피지"
-  },
-  "swapLowSlippageError": {
-    "message": "트랜잭션이 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
   },
   "swapMaxSlippage": {
     "message": "최대 슬리패지"
@@ -5511,12 +5505,6 @@
   },
   "swapZeroSlippage": {
     "message": "0% 슬리패지"
-  },
-  "swapsAdvancedOptions": {
-    "message": "고급 옵션"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "슬리패지 금액이 너무 커서 전환율이 좋지 않습니다. 슬리패지 허용치를 15% 값 이하로 줄이세요."
   },
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"

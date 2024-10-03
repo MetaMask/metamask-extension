@@ -1962,15 +1962,9 @@
     "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
-  "swapHighSlippageWarning": {
-    "message": "El monto del desfase es muy alto."
-  },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapLowSlippageError": {
-    "message": "Es posible que la transacción tenga errores, el desfase máximo es demasiado bajo."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -2104,12 +2098,6 @@
   },
   "swapZeroSlippage": {
     "message": "0 % de desfase"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Opciones avanzadas"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "El monto del desfase es muy alto, por lo que recibirá una tasa de conversión desfavorable. Disminuya su tolerancia de desfase a un valor menor al 15 %."
   },
   "swapsMaxSlippage": {
     "message": "Tolerancia de desfase"

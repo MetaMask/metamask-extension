@@ -5691,9 +5691,6 @@
   "swapHighSlippage": {
     "message": "High slippage"
   },
-  "swapHighSlippageWarning": {
-    "message": "Slippage amount is very high."
-  },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Includes gas and a $1% MetaMask fee",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5718,9 +5715,6 @@
   },
   "swapLowSlippage": {
     "message": "Low slippage"
-  },
-  "swapLowSlippageError": {
-    "message": "Transaction may fail, max slippage too low."
   },
   "swapMaxSlippage": {
     "message": "Max slippage"
@@ -5927,12 +5921,6 @@
   },
   "swapZeroSlippage": {
     "message": "0% Slippage"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Advanced options"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%."
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
