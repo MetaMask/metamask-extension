@@ -73,6 +73,20 @@ export class ConfirmationsRejectRule implements Rule {
                 tag: 'button',
               });
 
+              const editButtons = await this.driver.findElements(
+                '[data-testid="edit"]',
+              );
+              await editButtons[1].click();
+
+              await this.driver.clickElement({
+                text: 'Localhost 8545',
+                tag: 'p',
+              });
+
+              await this.driver.clickElement(
+                '[data-testid="connect-more-chains-button"]',
+              );
+
               const screenshotTwo = await this.driver.driver.takeScreenshot();
               call.attachments.push({
                 type: 'image',
@@ -99,16 +113,6 @@ export class ConfirmationsRejectRule implements Rule {
               await this.driver.executeScript(
                 `window.ethereum.request(${switchEthereumChainRequest})`,
               );
-
-              await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-              await this.driver.findClickableElements({
-                text: 'Confirm',
-                tag: 'button',
-              });
-              await this.driver.clickElement({
-                text: 'Confirm',
-                tag: 'button',
-              });
 
               await switchToOrOpenDapp(this.driver);
             }
