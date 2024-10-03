@@ -61,17 +61,7 @@ export default class BridgeController extends BaseController<
         _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
       });
     } catch (error) {
-      console.error(
-        'Failed to fetch Bridge feature flags, using defaults.',
-        error,
-      );
-      this.update((_state) => {
-        _state.bridgeState = {
-          ...bridgeState,
-          bridgeFeatureFlags:
-            DEFAULT_BRIDGE_CONTROLLER_STATE.bridgeFeatureFlags,
-        };
-      });
+      console.error('Failed to fetch Bridge feature flags.', error);
     }
   };
 
