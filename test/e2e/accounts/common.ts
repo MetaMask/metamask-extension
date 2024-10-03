@@ -202,14 +202,8 @@ export async function connectAccountToTestDapp(driver: Driver) {
   await driver.delay(regularDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
-    text: 'Next',
+    text: 'Connect',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
 }
 
