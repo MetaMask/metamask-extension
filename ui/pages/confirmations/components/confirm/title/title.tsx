@@ -68,7 +68,12 @@ const getTitle = (
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
+  pending?: boolean,
 ) => {
+  if (pending) {
+    return '';
+  }
+
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
@@ -109,7 +114,12 @@ const getDescription = (
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
+  pending?: boolean,
 ) => {
+  if (pending) {
+    return '';
+  }
+
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return '';
@@ -151,7 +161,8 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
-  const { customSpendingCap } = useCurrentSpendingCap(currentConfirmation);
+  const { customSpendingCap, pending } =
+    useCurrentSpendingCap(currentConfirmation);
 
   let isRevokeSetApprovalForAll = false;
   if (
@@ -172,6 +183,7 @@ const ConfirmTitle: React.FC = memo(() => {
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
+        pending,
       ),
     [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],
   );
@@ -184,6 +196,7 @@ const ConfirmTitle: React.FC = memo(() => {
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
+        pending,
       ),
 
     [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],

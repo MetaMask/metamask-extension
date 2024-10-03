@@ -4,6 +4,13 @@ import {
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '../../../../../../components/component-library';
+import Preloader from '../../../../../../components/ui/icon/preloader';
+import {
+  AlignItems,
+  Display,
+  JustifyContent,
+} from '../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
@@ -38,7 +45,7 @@ const ApproveInfo = () => {
     transactionMeta.txParams.data,
   );
 
-  const { spendingCap } = useApproveTokenSimulation(
+  const { spendingCap, pending } = useApproveTokenSimulation(
     transactionMeta,
     decimals || '0',
   );
@@ -49,6 +56,18 @@ const ApproveInfo = () => {
 
   if (!transactionMeta?.txParams) {
     return null;
+  }
+
+  if (pending) {
+    return (
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+      >
+        <Preloader size={20} />
+      </Box>
+    );
   }
 
   return (
