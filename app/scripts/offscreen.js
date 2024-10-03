@@ -13,18 +13,20 @@ import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/soc
  * @returns True if the offscreen document already is has been opened, otherwise false.
  */
 async function hasOffscreenDocument() {
+  const { chrome, clients } = globalThis;
   // getContexts is only available in Chrome 116+
   if ('getContexts' in chrome.runtime) {
     const contexts = await chrome.runtime.getContexts({
       contextTypes: ['OFFSCREEN_DOCUMENT'],
     });
     return contexts.length > 0;
-  } else {
-    const matchedClients = await clients.matchAll();
-    return await matchedClients.some(client => {
-      client.url.includes(chrome.runtime.id);
-    });
   }
+  const matchedClients = await clients.matchAll();
+  return matchedClients.some(
+    (client) =>
+      client.url.includes(chrome.runtime.id) &&
+      client.url.endsWith('offscreen.html'),
+  );
 }
 
 /**
@@ -67,7 +69,7 @@ export async function createOffscreen() {
 
     // In certain cases the offscreen document may already exist during boot, if it does, we close it and recreate it.
     if (offscreenExists) {
-      console.debug("Found existing offscreen document, closing.");
+      console.debug('Found existing offscreen document, closing.');
       await chrome.offscreen.closeDocument();
     }
 
