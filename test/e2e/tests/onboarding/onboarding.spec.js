@@ -277,12 +277,17 @@ describe('MetaMask onboarding @no-mmi', function () {
           WALLET_PASSWORD,
         );
 
-        // Add custom network localhost 8546 during onboarding
         await driver.clickElement({
           text: 'Manage default settings',
-          tag: 'a',
+          tag: 'button',
         });
+
+        await driver.clickElement({
+          text: 'General',
+        });
+
         await driver.clickElement({ text: 'Add a network' });
+
         await driver.waitForSelector(
           '.multichain-network-list-menu-content-wrapper__dialog',
         );
@@ -321,6 +326,38 @@ describe('MetaMask onboarding @no-mmi', function () {
         });
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
+
+        await driver.delay(regularDelayMs);
+        await driver.waitForSelector('[data-testid="category-back-button"]');
+        const generalBackButton = await driver.waitForSelector(
+          '[data-testid="category-back-button"]',
+        );
+        await generalBackButton.click();
+
+        await driver.delay(regularDelayMs);
+
+        await driver.waitForSelector(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+        const defaultSettingsBackButton = await driver.findElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+        await defaultSettingsBackButton.click();
+
+        await driver.delay(regularDelayMs);
+
+        await driver.clickElement({
+          text: 'Done',
+          tag: 'button',
+        });
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+        });
+
+        await driver.delay(regularDelayMs);
+
         await driver.clickElement({
           text: 'Done',
           tag: 'button',
