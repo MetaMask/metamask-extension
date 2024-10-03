@@ -3,9 +3,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
-  DAPP_URL,
   WINDOW_TITLES,
-  switchToNotificationWindow,
   defaultGanacheOptions,
 } = require('../../helpers');
 
