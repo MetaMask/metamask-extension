@@ -72,6 +72,10 @@ export default class BridgeController extends StaticIntervalPollingController<
       `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
       this.updateBridgeQuoteRequestParams.bind(this),
     );
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:resetState`,
+      this.resetState.bind(this),
+    );
   }
 
   _executePoll = async (
