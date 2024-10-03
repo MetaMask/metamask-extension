@@ -22,11 +22,8 @@ async function hasOffscreenDocument() {
     return contexts.length > 0;
   }
   const matchedClients = await clients.matchAll();
-  return matchedClients.some(
-    (client) =>
-      client.url.includes(chrome.runtime.id) &&
-      client.url.endsWith('offscreen.html'),
-  );
+  const url = chrome.runtime.getURL('offscreen.html');
+  return matchedClients.some((client) => client.url === url);
 }
 
 /**
