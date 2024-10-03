@@ -45,10 +45,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await unlockWallet(driver);
         await tempToggleSettingRedesignedConfirmations(driver);
 
-        // Open Dapp One
+        // Open and connect Dapp One
         await openDapp(driver, undefined, DAPP_URL);
 
-        // Connect to dapp
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
@@ -58,17 +57,13 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        // Open Dapp Two
+        // Open and connect to Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
-        // Connect to dapp 2
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
@@ -78,17 +73,33 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
         });
 
+        // Switch Dapp Two to Localhost 8546
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+        let switchEthereumChainRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x53a' }],
+        });
+
+        // Initiate switchEthereumChain on Dapp one
+        await driver.executeScript(
+          `window.ethereum.request(${switchEthereumChainRequest})`,
+        );
+
+        // Should auto switch without prompt since already approved via connect
+
+        // Switch back to Dapp One
         await driver.switchToWindowWithUrl(DAPP_URL);
 
         // switch chain for Dapp One
-        const switchEthereumChainRequest = JSON.stringify({
+        switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x3e8' }],
+          params: [{ chainId: '0x539' }],
         });
 
         // Initiate switchEthereumChain on Dapp one
@@ -99,7 +110,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.switchToWindowWithUrl(DAPP_URL);
 
@@ -118,7 +129,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Check correct network on the send confirmation.
         await driver.findElement({
           css: '[data-testid="network-display"]',
-          text: 'Localhost 7777',
+          text: 'Localhost 8545',
         });
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -129,7 +140,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Check correct network on the signTypedData confirmation.
         await driver.findElement({
           css: '[data-testid="signature-request-network-display"]',
-          text: 'Localhost 8545',
+          text: 'Localhost 8546',
         });
       },
     );
