@@ -5293,12 +5293,6 @@
   "spendingCap": {
     "message": "Spending cap"
   },
-  "spendingCaps": {
-    "message": "Spending caps"
-  },  
-  "spendingCapsUppercase": {
-    "message": "Spending Caps"
-  }, 
   "spendingCapError": {
     "message": "Error: Enter numbers only"
   },
@@ -5311,6 +5305,12 @@
   },
   "spendingCapTooltipDesc": {
     "message": "This is the amount of tokens the spender will be able to access on your behalf."
+  },
+  "spendingCaps": {
+    "message": "Spending caps"
+  },
+  "spendingCapsUppercase": {
+    "message": "Spending Caps"
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
