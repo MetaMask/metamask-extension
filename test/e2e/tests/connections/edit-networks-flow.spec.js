@@ -67,14 +67,15 @@ describe('Edit Networks Flow', function () {
         // Click the first (0th) edit button
         await editButtons[1].click();
 
+        // Disconnect Mainnet
         await driver.clickElement({
-          text: 'Localhost 8545',
+          text: 'Ethereum Mainnet',
           tag: 'p',
         });
 
         await driver.clickElement('[data-testid="connect-more-chains-button"]');
         const updatedNetworkInfo = await driver.isElementPresent({
-          text: '3 networks connected',
+          text: '2 networks connected',
           tag: 'span',
         });
         assert.ok(updatedNetworkInfo, 'Networks List Updated');
