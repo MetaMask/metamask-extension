@@ -152,48 +152,5 @@ exports[`<TransactionDetails /> renders component for transaction details 1`] = 
       </div>
     </div>
   </div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      data-testid="transaction-details-amount-row"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Amount
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="4 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            4
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 `;

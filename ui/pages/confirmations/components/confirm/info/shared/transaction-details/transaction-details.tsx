@@ -94,7 +94,7 @@ export const AmountRow = () => {
   const value = currentConfirmation?.txParams?.value;
   const simulationData = currentConfirmation?.simulationData;
 
-  if (!value || value === '0x' || simulationData?.error) {
+  if (!value || value === '0x' || !simulationData?.error) {
     return null;
   }
 
