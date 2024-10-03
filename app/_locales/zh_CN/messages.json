@@ -1867,10 +1867,6 @@
   "feeDetails": {
     "message": "费用详情"
   },
-  "fiat": {
-    "message": "法币",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
@@ -3086,9 +3082,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask 未连接到此站点"
   },
-  "noConversionDateAvailable": {
-    "message": "没有可用的货币转换日期"
-  },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
   },
@@ -3908,12 +3901,6 @@
   },
   "priceUnavailable": {
     "message": "价格不可用"
-  },
-  "primaryCurrencySetting": {
-    "message": "主要货币"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "选择原生以优先显示链的原生货币（例如 ETH）的值。选择法币以优先显示以您所选法币显示的值。"
   },
   "primaryType": {
     "message": "主要类型"
@@ -6078,9 +6065,6 @@
   },
   "updateRequest": {
     "message": "更新请求"
-  },
-  "updatedWithDate": {
-    "message": "已于 $1 更新"
   },
   "uploadDropFile": {
     "message": "将您的文件放在此处"

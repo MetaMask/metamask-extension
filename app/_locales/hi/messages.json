@@ -1867,10 +1867,6 @@
   "feeDetails": {
     "message": "फ़ीस का ब्यौरा"
   },
-  "fiat": {
-    "message": "फिएट",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
@@ -3086,9 +3082,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask इस साइट से कनेक्टेड नहीं है।"
   },
-  "noConversionDateAvailable": {
-    "message": "कोई करेंसी कन्वर्शन तारीख उपलब्ध नहीं है"
-  },
   "noConversionRateAvailable": {
     "message": "कोई भी कन्वर्शन दर उपलब्ध नहीं है"
   },
@@ -3908,12 +3901,6 @@
   },
   "priceUnavailable": {
     "message": "प्राइस अनुपलब्ध है"
-  },
-  "primaryCurrencySetting": {
-    "message": "प्राथमिक मुद्रा"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "चेन की ओरिजिनल करेंसी (जैसे ETH) में प्रदर्शित वैल्यूज़ को प्राथमिकता देने के लिए ओरिजिनल को चुनें। अपनी चुना गया फिएट करेंसी में प्रदर्शित वैल्यूज़ को प्राथमिकता देने के लिए फिएट को चुनें।"
   },
   "primaryType": {
     "message": "प्राइमरी टाइप"
@@ -6078,9 +6065,6 @@
   },
   "updateRequest": {
     "message": "अपडेट का अनुरोध"
-  },
-  "updatedWithDate": {
-    "message": "अपडेट किया गया $1"
   },
   "uploadDropFile": {
     "message": "अपनी फ़ाइल यहां छोड़ें"

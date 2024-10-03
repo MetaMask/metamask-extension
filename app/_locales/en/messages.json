@@ -402,6 +402,10 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
+  "aggregatedBalancePopover": {
+    "message": "This reflects the value of all tokens you own on a given network. If you prefer seeing this value in ETH or other currencies, go to $1.",
+    "description": "$1 represents the settings page"
+  },
   "agreeTermsOfUse": {
     "message": "I agree to MetaMask's $1",
     "description": "$1 is the `terms` link"
@@ -1341,7 +1345,7 @@
     "message": "CryptoCompare"
   },
   "currencyConversion": {
-    "message": "Currency conversion"
+    "message": "Currency"
   },
   "currencyRateCheckToggle": {
     "message": "Show balance and token price checker"
@@ -2026,10 +2030,6 @@
   "feeDetails": {
     "message": "Fee details"
   },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
@@ -2114,6 +2114,9 @@
   "gasDisplayDappWarning": {
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
+  },
+  "gasFee": {
+    "message": "Gas fee"
   },
   "gasIsETH": {
     "message": "Gas is $1 "
@@ -2428,6 +2431,9 @@
   },
   "inYourSettings": {
     "message": "in your Settings"
+  },
+  "included": {
+    "message": "included"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
@@ -3290,9 +3296,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
-  "noConversionDateAvailable": {
-    "message": "No currency conversion date available"
-  },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
@@ -4133,12 +4136,6 @@
   "priceUnavailable": {
     "message": "price unavailable"
   },
-  "primaryCurrencySetting": {
-    "message": "Primary currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
-  },
   "primaryType": {
     "message": "Primary type"
   },
@@ -4872,6 +4869,9 @@
   },
   "showMore": {
     "message": "Show more"
+  },
+  "showNativeTokenAsMainBalance": {
+    "message": "Show native token as main balance"
   },
   "showNft": {
     "message": "Show NFT"
@@ -5662,11 +5662,21 @@
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
+  "swapGasIncludedTooltipExplanation": {
+    "message": "This quote incorporates gas fees by adjusting the token amount sent or received. You may receive ETH in a separate transaction on your activity list."
+  },
+  "swapGasIncludedTooltipExplanationLinkText": {
+    "message": "Learn more about gas fees"
+  },
   "swapHighSlippage": {
     "message": "High slippage"
   },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."
+  },
+  "swapIncludesGasAndMetaMaskFee": {
+    "message": "Includes gas and a $1% MetaMask fee",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",
@@ -6398,9 +6408,6 @@
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
   },
-  "updatedWithDate": {
-    "message": "Updated $1"
-  },
   "uploadDropFile": {
     "message": "Drop your file here"
   },
@@ -6656,6 +6663,9 @@
   },
   "yourBalance": {
     "message": "Your balance"
+  },
+  "yourBalanceIsAggregated": {
+    "message": "Your balance is aggregated"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
