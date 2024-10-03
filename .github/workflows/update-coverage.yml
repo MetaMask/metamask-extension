@@ -1,6 +1,16 @@
 name: Update coverage
 
 on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  merge_group:
   schedule:
     - cron: 0 0 * * *
   workflow_dispatch:
