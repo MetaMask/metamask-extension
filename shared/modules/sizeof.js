@@ -19,6 +19,9 @@ const ECMA_SIZES = {
 };
 
 function getPrimitiveSize(data, dataType) {
+  if (data === null || data === undefined) {
+    return 1;
+  }
   switch (dataType) {
     case 'string':
       // https://stackoverflow.com/questions/68789144/how-much-memory-do-v8-take-to-store-a-string/68791382#68791382
@@ -49,7 +52,7 @@ function getPrimitiveSize(data, dataType) {
 export function assertObjectMaxSize(data, maxSize = 0) {
   let size = 0;
   const topLevelType = typeof data;
-  if (topLevelType !== 'object') {
+  if (data === null || topLevelType !== 'object') {
     size = getPrimitiveSize(data, topLevelType);
     if (size > maxSize) {
       throw new Error('object exceeded max size');
@@ -61,7 +64,7 @@ export function assertObjectMaxSize(data, maxSize = 0) {
 
   function countValueSize(value) {
     const valueType = typeof value;
-    if (valueType === 'object') {
+    if (value !== null && valueType === 'object') {
       objects.push(value);
     } else {
       size += getPrimitiveSize(value, valueType);
