@@ -7,6 +7,8 @@ import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { isBeta } from '../../../ui/helpers/utils/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
@@ -14,6 +16,8 @@ import {
   ORIGIN_METAMASK,
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
+
+/** @typedef {import('../../../shared/types/confirm').LastInteractedConfirmationInfo} LastInteractedConfirmationInfo */
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -73,6 +77,7 @@ export default class AppStateController extends EventEmitter {
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage: false,
       currentExtensionPopupId: 0,
+      lastInteractedConfirmationInfo: undefined,
     });
     this.timer = null;
 
@@ -528,6 +533,12 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  setNoteToTraderMessage(message) {
+    this.store.updateState({
+      noteToTraderMessage: message,
+    });
+  }
+
   ///: END:ONLY_INCLUDE_IF
 
   getSignatureSecurityAlertResponse(securityAlertId) {
@@ -555,6 +566,26 @@ export default class AppStateController extends EventEmitter {
   setCurrentPopupId(currentPopupId) {
     this.store.updateState({
       currentPopupId,
+    });
+  }
+
+  /**
+   * The function returns information about the last confirmation user interacted with
+   *
+   * @type {LastInteractedConfirmationInfo}: Information about the last confirmation user interacted with.
+   */
+  getLastInteractedConfirmationInfo() {
+    return this.store.getState().lastInteractedConfirmationInfo;
+  }
+
+  /**
+   * Update the information about the last confirmation user interacted with
+   *
+   * @type {LastInteractedConfirmationInfo} - information about transaction user last interacted with.
+   */
+  setLastInteractedConfirmationInfo(lastInteractedConfirmationInfo) {
+    this.store.updateState({
+      lastInteractedConfirmationInfo,
     });
   }
 

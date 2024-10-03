@@ -3,27 +3,37 @@
 .wallet-overview {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   flex: 1;
-  min-height: 209px;
   min-width: 0;
-  padding-top: 10px;
   flex-direction: column;
   width: 100%;
 
   &__balance {
     flex: 1;
     display: flex;
+    gap: 4px;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     width: 100%;
+  }
+
+  &__icon_button {
+    margin-top: 0 !important;
   }
 
   &__buttons {
     display: flex;
     flex-direction: row;
-    height: 68px;
-    margin-bottom: 24px;
+    height: 100%;
+    margin-bottom: 16px;
+    padding: 0 16px;
+  }
+
+  &__currency-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
   }
 }
 
@@ -46,10 +56,14 @@
     flex-direction: column;
     min-width: 0;
     position: relative;
-    align-items: center;
+    align-items: start;
     margin: 16px 0;
     padding: 0 16px;
     max-width: 326px;
+  }
+
+  &__icon-button {
+    margin-top: 0 !important;
   }
 
   &__primary-container {
@@ -63,15 +77,11 @@
     @include design-system.H2;
 
     color: var(--color-text-default);
+    font-weight: 700;
   }
 
   &__cached-star {
     margin-left: 4px;
-  }
-
-  &__portfolio-button {
-    height: inherit;
-    padding-inline-start: 16px;
   }
 
   &__cached-balance,
@@ -141,12 +151,14 @@
     color: var(--color-text-alternative);
   }
 
-  &__portfolio-button {
-    height: inherit;
-    padding-inline-start: 16px;
-  }
-
   &__button:last-of-type {
     margin-right: 0;
+  }
+}
+
+.balance-popover {
+  &__container {
+    z-index: design-system.$modal-z-index;
+    margin-top: -4px;
   }
 }

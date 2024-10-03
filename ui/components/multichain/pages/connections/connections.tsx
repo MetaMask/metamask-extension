@@ -85,10 +85,10 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const urlParams: { origin: string } = useParams();
-  const securedOrigin = decodeURIComponent(urlParams.origin);
+  const urlParams = useParams<{ origin: string }>();
+  // @ts-expect-error TODO: Fix this type error by handling undefined parameters
+  const activeTabOrigin = decodeURIComponent(urlParams.origin);
 
-  const activeTabOrigin: string = securedOrigin;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -110,7 +110,10 @@ export const Connections = () => {
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
+  const mergedAccounts = mergeAccounts(
+    connectedAccounts,
+    internalAccounts,
+  ) as AccountType[];
 
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
@@ -174,16 +177,24 @@ export const Connections = () => {
         index ===
         mergedAccounts.reduce(
           (
-            acc: string | number,
-            cur: { metadata: { lastSelected: number } },
+            indexOfAccountWIthHighestLastSelected: number,
+            currentAccountToCompare: AccountType,
             // TODO: Replace `any` with type
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i: any,
-          ) =>
-            cur.metadata.lastSelected >
-            mergedAccounts[acc].metadata.lastSelected
+          ) => {
+            const currentLastSelected =
+              currentAccountToCompare.metadata.lastSelected ?? 0;
+            const accountAtIndexLastSelected = mergedAccounts[
+              indexOfAccountWIthHighestLastSelected
+            ].metadata.lastSelected
               ? i
-              : acc,
+              : indexOfAccountWIthHighestLastSelected;
+
+            return currentLastSelected > accountAtIndexLastSelected
+              ? i
+              : indexOfAccountWIthHighestLastSelected;
+          },
           0,
         )
       );
@@ -191,7 +202,10 @@ export const Connections = () => {
   );
 
   return (
-    <Page data-testid="connections-page" className="connections-page">
+    <Page
+      data-testid="connections-page"
+      className="main-container connections-page"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
@@ -232,7 +246,7 @@ export const Connections = () => {
             textAlign={TextAlign.Center}
             ellipsis
           >
-            {getURLHost(securedOrigin)}
+            {getURLHost(activeTabOrigin)}
           </Text>
         </Box>
       </Header>
@@ -249,12 +263,10 @@ export const Connections = () => {
               const isSelectedAccount =
                 selectedAccount.address === account.address;
               // Match the index of latestSelected Account with the index of all the accounts and set the active status
-              let mergedAccountsProps;
-              if (index === latestSelected) {
-                mergedAccountsProps = { ...account, isAccountActive: true };
-              } else {
-                mergedAccountsProps = { ...account };
-              }
+              const mergedAccountsProps = {
+                ...account,
+                isAccountActive: index === latestSelected,
+              };
               return (
                 <AccountListItem
                   account={mergedAccountsProps}

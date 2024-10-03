@@ -1,13 +1,16 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
-import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../shared/constants/network';
+import {
+  CHAIN_IDS,
+  LINEA_MAINNET_DISPLAY_NAME,
+} from '../shared/constants/network';
 import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
+import { mockNetworkState } from '../test/stub/networks';
 
 const state = {
   invalidCustomNetwork: {
@@ -179,15 +182,6 @@ const state = {
     networkDetails: {
       EIPS: {
         1559: true,
-      },
-    },
-    selectedNetworkClientId: NetworkType.mainnet,
-    networksMetadata: {
-      [NetworkType.mainnet]: {
-        EIPS: {
-          1559: true,
-        },
-        status: NetworkStatus.Available,
       },
     },
     gasFeeEstimates: '0x5208',
@@ -682,7 +676,7 @@ const state = {
     welcomeScreenSeen: false,
     currentLocale: 'en',
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: true,
     },
     incomingTransactionsPreferences: {
       [CHAIN_IDS.MAINNET]: true,
@@ -705,13 +699,6 @@ const state = {
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
-    providerConfig: {
-      type: 'sepolia',
-      ticker: 'ETH',
-      nickname: 'Sepolia',
-      rpcUrl: '',
-      chainId: '0xaa36a7',
-    },
     network: '5',
     accounts: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
@@ -1204,8 +1191,6 @@ const state = {
         v: '0x93',
       },
     ],
-    unapprovedMsgs: {},
-    unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
     unapprovedPersonalMsgCount: 0,
     unapprovedDecryptMsgs: {},
@@ -1236,21 +1221,37 @@ const state = {
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
       },
     ],
-    networkConfigurations: {
-      'test-networkConfigurationId-1': {
+    ...mockNetworkState(
+      {
+        id: 'test-networkConfigurationId-1',
         rpcUrl: 'https://testrpc.com',
         chainId: '0x1',
         nickname: 'mainnet',
-        rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+        name: 'mainnet',
+        blockExplorerUrl: 'https://etherscan.io',
+        metadata: {
+          EIPS: { 1559: true },
+          status: NetworkStatus.Available,
+        },
       },
-      'test-networkConfigurationId-2': {
+      {
+        id: 'test-networkConfigurationId-2',
+        rpcUrl: 'https://testrpc2.com',
+        chainId: '0xe708',
+        nickname: LINEA_MAINNET_DISPLAY_NAME,
+        name: LINEA_MAINNET_DISPLAY_NAME,
+        blockExplorerUrl: 'https://lineascan.build',
+        metadata: { EIPS: { 1559: true }, status: NetworkStatus.Available },
+      },
+      {
+        id: 'test-networkConfigurationId-3',
         rpcUrl: 'http://localhost:8545',
         chainId: '0x539',
+        name: 'test network',
         ticker: 'ETH',
         nickname: 'Localhost 8545',
-        rpcPrefs: {},
       },
-    },
+    ),
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [
@@ -1294,6 +1295,7 @@ const state = {
     ipfsGateway: 'dweb.link',
     migratedPrivacyMode: false,
     selectedAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+    selectedNetworkClientId: 'test-networkConfigurationId-1',
     metaMetricsId:
       '0xc2377d11fec1c3b7dd88c4854240ee5e3ed0d9f63b00456d98d80320337b827f',
     currentCurrency: 'usd',
@@ -1484,7 +1486,19 @@ const state = {
       },
     },
     ensResolutionsByAddress: {},
-    pendingApprovals: {},
+    pendingApprovals: {
+      '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+        id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        origin: 'http://127.0.0.1:8080',
+        type: 'transaction',
+        time: 1721383540624,
+        requestData: {
+          txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        },
+        requestState: null,
+        expectsResult: true,
+      },
+    },
     pendingApprovalCount: 0,
     subjectMetadata: {
       'http://localhost:8080': {

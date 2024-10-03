@@ -9,6 +9,7 @@ import {
   CaveatFactories,
   getCaveatSpecifications,
   getPermissionSpecifications,
+  PermissionNames,
   unrestrictedMethods,
 } from './specifications';
 
@@ -239,9 +240,9 @@ describe('PermissionController specifications', () => {
       expect(
         permissionSpecifications[RestrictedMethods.eth_accounts].targetName,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
-      expect(permissionSpecifications.permittedChains.targetName).toStrictEqual(
-        'permittedChains',
-      );
+      expect(
+        permissionSpecifications[PermissionNames.permittedChains].targetName,
+      ).toStrictEqual('endowment:permitted-chains');
     });
 
     describe('eth_accounts', () => {

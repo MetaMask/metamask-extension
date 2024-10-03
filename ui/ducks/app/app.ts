@@ -34,6 +34,7 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
+  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
@@ -84,9 +85,10 @@ type AppState = {
   newNetworkAddedName: string;
   editedNetwork:
     | {
-        networkConfigurationId: string;
-        nickname: string;
-        editCompleted: boolean;
+        chainId: string;
+        nickname?: string;
+        editCompleted?: boolean;
+        newNetwork?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;
@@ -99,9 +101,11 @@ type AppState = {
   txId: string | null;
   accountDetailsAddress: string;
   snapsInstallPrivacyWarningShown: boolean;
+  isAddingNewNetwork: boolean;
+  isMultiRpcOnboarding: boolean;
 };
 
-type AppSliceState = {
+export type AppSliceState = {
   appState: AppState;
 };
 
@@ -124,6 +128,7 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
+  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
@@ -181,6 +186,8 @@ const initialState: AppState = {
   txId: null,
   accountDetailsAddress: '',
   snapsInstallPrivacyWarningShown: false,
+  isAddingNewNetwork: false,
+  isMultiRpcOnboarding: false,
 };
 
 export default function reduceApp(
@@ -256,6 +263,18 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: true,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: false,
       };
 
     case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
@@ -582,6 +601,12 @@ export default function reduceApp(
       return {
         ...appState,
         customTokenAmount: action.payload,
+      };
+    case actionConstants.TOGGLE_NETWORK_MENU:
+      return {
+        ...appState,
+        isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
+        isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
       };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:

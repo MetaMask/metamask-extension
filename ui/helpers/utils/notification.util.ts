@@ -1,11 +1,11 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { TextVariant } from '../constants/design-system';
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  ETHERSCAN_SUPPORTED_NETWORKS,
   NETWORK_TO_NAME_MAP,
   FEATURED_RPCS,
   MAINNET_RPC_URL,
@@ -16,16 +16,30 @@ import {
   LINEA_MAINNET_RPC_URL,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
+import { SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import type {
-  OnChainRawNotification,
-  OnChainRawNotificationsWithNetworkFields,
-} from '../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
+import type { BlockExplorerConfig } from '../constants/metamask-notifications/metamask-notifications';
 import {
   hexWEIToDecGWEI,
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
+
+type OnChainRawNotification =
+  NotificationServicesController.Types.OnChainRawNotification;
+type OnChainRawNotificationsWithNetworkFields =
+  NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields;
+
+/**
+ * Type guard to ensure a key is present in an object.
+ *
+ * @param object - The object to check.
+ * @param key - The key to check for.
+ * @returns True if the key is present, false otherwise.
+ */
+function isKey<T extends object>(object: T, key: PropertyKey): key is keyof T {
+  return key in object;
+}
 
 /**
  * Checks if 2 date objects are on the same day
@@ -301,7 +315,7 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
   nativeCurrencySymbol: string;
   nativeCurrencyLogo: string;
   nativeCurrencyAddress: string;
-  nativeBlockExplorerUrl?: string;
+  blockExplorerConfig?: BlockExplorerConfig;
 } {
   const fullNativeCurrencyName =
     NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ?? '';
@@ -315,22 +329,16 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
       chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
   const nativeCurrencyAddress = '0x0000000000000000000000000000000000000000';
-
   const blockExplorerConfig =
-    ETHERSCAN_SUPPORTED_NETWORKS[
-      chainId as keyof typeof ETHERSCAN_SUPPORTED_NETWORKS
-    ];
-  let nativeBlockExplorerUrl;
-  if (blockExplorerConfig) {
-    nativeBlockExplorerUrl = `https://www.${blockExplorerConfig.domain}`;
-  }
-
+    chainId && isKey(SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS, chainId)
+      ? SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[chainId]
+      : undefined;
   return {
     nativeCurrencyName,
     nativeCurrencySymbol,
     nativeCurrencyLogo,
     nativeCurrencyAddress,
-    nativeBlockExplorerUrl,
+    blockExplorerConfig,
   };
 }
 
@@ -373,7 +381,7 @@ export function getRpcUrlByChainId(chainId: HexChainId): string {
 
   // If rpc is found, return its URL. Otherwise, return a default URL based on the chainId.
   if (rpc) {
-    return rpc.rpcUrl;
+    return rpc.rpcEndpoints[0].url;
   }
   // Fallback RPC URLs based on the chainId
   switch (chainId) {
@@ -423,9 +431,11 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
   }
 
   try {
-    const receipt = await provider.getTransactionReceipt(notification.tx_hash);
-    const transaction = await provider.getTransaction(notification.tx_hash);
-    const block = await provider.getBlock(notification.block_number);
+    const [receipt, transaction, block] = await Promise.all([
+      provider.getTransactionReceipt(notification.tx_hash),
+      provider.getTransaction(notification.tx_hash),
+      provider.getBlock(notification.block_number),
+    ]);
 
     const calculateUsdAmount = (value: string, decimalPlaces?: number) =>
       formatAmount(

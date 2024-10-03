@@ -7,8 +7,9 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../selectors';
+import { useConfirmContext } from '../../../../context/confirm';
 import {
   hexToText,
   sanitizeString,
@@ -17,15 +18,12 @@ import { SignatureRequestType } from '../../../../types/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { isSIWESignatureRequest } from '../../../../utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { SIWESignInfo } from './siwe-sign';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
@@ -51,7 +49,7 @@ const PersonalSignInfo: React.FC = () => {
       )}
       <ConfirmInfoSection>
         <ConfirmInfoAlertRow
-          alertKey="requestFrom"
+          alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
           tooltip={isSIWE ? undefined : t('requestFromInfo')}

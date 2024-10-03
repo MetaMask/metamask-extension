@@ -4,8 +4,11 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { AppHeader } from '.';
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
@@ -23,6 +26,7 @@ jest.mock('react-router-dom', () => ({
 
 const render = ({
   stateChanges = {},
+  network = { chainId: '0x5', nickname: 'Chain 5', ticker: 'ETH' },
   location = {},
   isUnlocked = true,
 } = {}) => {
@@ -30,12 +34,13 @@ const render = ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      isUnlocked,
+      ...mockNetworkState(network),
+      isUnlocked: isUnlocked ?? true,
     },
     activeTab: {
       origin: 'https://remix.ethereum.org',
     },
-    ...stateChanges,
+    ...(stateChanges ?? {}),
   });
   return renderWithProvider(<AppHeader location={location} />, store);
 };
@@ -173,6 +178,36 @@ describe('App Header', () => {
         '[data-testid="connection-menu"]',
       );
       expect(connectionPickerButton).not.toBeInTheDocument();
+    });
+  });
+
+  describe('network picker', () => {
+    it('shows custom rpc if it has the same chainId as a default network', () => {
+      const mockProviderConfig = {
+        chainId: '0x1',
+        rpcUrl: 'https://localhost:8545',
+        nickname: 'Localhost',
+      };
+
+      const { getByText } = render({
+        network: mockProviderConfig,
+        isUnlocked: true,
+      });
+      expect(getByText(mockProviderConfig.nickname)).toBeInTheDocument();
+    });
+
+    it("shows rpc url as nickname if there isn't a nickname set", () => {
+      const mockProviderConfig = {
+        chainId: '0x1',
+        rpcUrl: 'https://localhost:8545',
+        nickname: undefined,
+      };
+
+      const { getByText } = render({
+        network: mockProviderConfig,
+        isUnlocked: true,
+      });
+      expect(getByText(mockProviderConfig.rpcUrl)).toBeInTheDocument();
     });
   });
 });

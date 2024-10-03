@@ -1,6 +1,11 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-api';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+import { Hex } from '@metamask/utils';
+import { NetworkConfiguration } from '@metamask/network-controller';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -12,8 +17,13 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  ETH_TOKEN_IMAGE_URL,
+  MAINNET_DISPLAY_NAME,
+} from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import { mockNetworkState } from '../../test/stub/networks';
 import { AccountsState } from './accounts';
 import {
   MultichainState,
@@ -30,10 +40,10 @@ import {
   getMultichainShouldShowFiat,
   getMultichainIsBitcoin,
   getMultichainSelectedAccountCachedBalanceIsZero,
+  getMultichainIsTestnet,
 } from './multichain';
 import {
   getCurrentCurrency,
-  getCurrentNetwork,
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
 } from '.';
@@ -43,24 +53,21 @@ type TestState = MultichainState &
     metamask: {
       preferences: { showFiatInTestnets: boolean };
       accountsByChainId: Record<string, Record<string, { balance: string }>>;
-      providerConfig: { type: string; ticker: string; chainId: string };
+      networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
       currentCurrency: string;
       currencyRates: Record<string, { conversionRate: string }>;
       completedOnboarding: boolean;
+      selectedNetworkClientId?: string;
     };
   };
 
-function getEvmState(): TestState {
+function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
   return {
     metamask: {
       preferences: {
         showFiatInTestnets: false,
       },
-      providerConfig: {
-        type: 'mainnet',
-        ticker: 'ETH',
-        chainId: '0x1',
-      },
+      ...mockNetworkState({ chainId }),
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {
@@ -157,6 +164,42 @@ describe('Multichain Selectors', () => {
       const network = getMultichainNetwork(state);
       expect(network.isEvmNetwork).toBe(true);
     });
+
+    it('returns a EVM network with the correct network image', () => {
+      const state = getEvmState();
+
+      const network = getMultichainNetwork(state);
+      expect(network.network.rpcPrefs?.imageUrl).toBe(ETH_TOKEN_IMAGE_URL);
+    });
+
+    it('returns a nickname for default networks', () => {
+      const state = getEvmState();
+
+      const network = getMultichainNetwork(state);
+      expect(network.nickname).toBe(MAINNET_DISPLAY_NAME);
+    });
+
+    it('returns rpcUrl as its nickname if its not defined', () => {
+      const mockNetworkRpc = 'https://mock-rpc.com';
+      const mockNetwork = {
+        ticker: 'MOCK',
+        chainId: '0x123123123',
+        rpcUrl: mockNetworkRpc,
+        // `nickname` is undefined here
+      } as const;
+
+      const state = {
+        ...getEvmState(),
+        metamask: {
+          ...getEvmState().metamask,
+          ...mockNetworkState(mockNetwork),
+        },
+      };
+
+      const network = getMultichainNetwork(state);
+      expect(network.nickname).toBe(network.network.rpcUrl);
+      expect(network.nickname).toBe(mockNetworkRpc);
+    });
   });
 
   describe('getMultichainIsEvm', () => {
@@ -177,10 +220,10 @@ describe('Multichain Selectors', () => {
     it('returns a ProviderConfig if account is EVM', () => {
       const state = getEvmState();
 
-      // NOTE: We do fallback to `getCurrentNetwork` (using the "original" list
-      // of network) when using EVM context, so check against this value here
-      const evmMainnetNetwork = getCurrentNetwork(state);
-      expect(getMultichainProviderConfig(state)).toBe(evmMainnetNetwork);
+      const evmMainnetNetwork = getProviderConfig(state);
+      const multichainProviderConfig = getMultichainProviderConfig(state);
+      delete multichainProviderConfig?.rpcPrefs?.imageUrl;
+      expect(multichainProviderConfig).toStrictEqual(evmMainnetNetwork);
     });
 
     it('returns a MultichainProviderConfig if account is non-EVM (bip122:*)', () => {
@@ -281,9 +324,7 @@ describe('Multichain Selectors', () => {
     });
 
     it('returns current chain ID if account is EVM (other)', () => {
-      const state = getEvmState();
-
-      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      const state = getEvmState(CHAIN_IDS.SEPOLIA);
       expect(getMultichainCurrentChainId(state)).toEqual(CHAIN_IDS.SEPOLIA);
     });
 
@@ -306,9 +347,7 @@ describe('Multichain Selectors', () => {
     });
 
     it('returns false if account is EVM (testnet)', () => {
-      const state = getEvmState();
-
-      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      const state = getEvmState(CHAIN_IDS.SEPOLIA);
       expect(getMultichainIsMainnet(state)).toBe(false);
     });
 
@@ -328,6 +367,42 @@ describe('Multichain Selectors', () => {
         const state = getNonEvmState(account);
 
         expect(getMultichainIsMainnet(state)).toBe(isMainnet);
+      },
+    );
+  });
+
+  describe('getMultichainIsTestnet', () => {
+    it('returns false if account is EVM (mainnet)', () => {
+      const state = getEvmState();
+
+      expect(getMultichainIsTestnet(state)).toBe(false);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([CHAIN_IDS.SEPOLIA, CHAIN_IDS.LINEA_SEPOLIA])(
+      'returns true if account is EVM (testnet): %s',
+      (chainId: Hex) => {
+        const state = getEvmState(chainId);
+        expect(getMultichainIsTestnet(state)).toBe(true);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      { isTestnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH },
+      { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+    ])(
+      'returns $isTestnet if non-EVM account address "$account.address" is compatible with mainnet',
+      ({
+        isTestnet,
+        account,
+      }: {
+        isTestnet: boolean;
+        account: InternalAccount;
+      }) => {
+        const state = getNonEvmState(account);
+
+        expect(getMultichainIsTestnet(state)).toBe(isTestnet);
       },
     );
   });

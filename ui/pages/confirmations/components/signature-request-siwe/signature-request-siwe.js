@@ -44,6 +44,7 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import SignatureRequestHeader from '../signature-request-header';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -280,6 +281,7 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
           }}
         />
       )}
+      <NetworkChangeToastLegacy confirmation={txData} />
     </>
   );
 }

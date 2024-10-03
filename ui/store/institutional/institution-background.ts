@@ -19,8 +19,8 @@ export function showInteractiveReplacementTokenBanner({
   url,
   oldRefreshToken,
 }: {
-  url: string;
-  oldRefreshToken: string;
+  url?: string;
+  oldRefreshToken?: string;
 }) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -53,6 +53,21 @@ export function setCustodianDeepLink({
       { fromAddress, custodyId },
     ]);
     await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setNoteToTraderMessage(message: string) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setNoteToTraderMessage', [message]);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error) {
+        dispatch(displayWarning(error.message));
+        throw new Error(error.message);
+      }
+    }
   };
 }
 

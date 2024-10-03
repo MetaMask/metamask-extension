@@ -29,7 +29,13 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { SurveyUrl } from '../../../../shared/constants/urls';
+///: END:ONLY_INCLUDE_IF
+
 type ExperimentalTabProps = {
+  watchAccountEnabled: boolean;
+  setWatchAccountEnabled: (value: boolean) => void;
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
   bitcoinTestnetSupportEnabled: boolean;
@@ -46,6 +52,8 @@ type ExperimentalTabProps = {
   setFeatureNotificationsEnabled: (value: boolean) => void;
   redesignedConfirmationsEnabled: boolean;
   setRedesignedConfirmationsEnabled: (value: boolean) => void;
+  redesignedTransactionsEnabled: boolean;
+  setRedesignedTransactionsEnabled: (value: boolean) => void;
 };
 
 export default class ExperimentalTab extends PureComponent<ExperimentalTabProps> {
@@ -137,7 +145,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
-  renderToggleRedesignedConfirmations() {
+  renderToggleRedesignedSignatures() {
     const { t } = this.context;
     const {
       redesignedConfirmationsEnabled,
@@ -149,7 +157,24 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       description: t('redesignedConfirmationsToggleDescription'),
       toggleValue: redesignedConfirmationsEnabled,
       toggleCallback: (value) => setRedesignedConfirmationsEnabled(!value),
+      toggleContainerDataTestId: 'toggle-redesigned-confirmations-container',
       toggleDataTestId: 'toggle-redesigned-confirmations',
+      toggleOffLabel: t('off'),
+      toggleOnLabel: t('on'),
+    });
+  }
+
+  renderToggleRedesignedTransactions() {
+    const { t } = this.context;
+    const { redesignedTransactionsEnabled, setRedesignedTransactionsEnabled } =
+      this.props;
+
+    return this.renderToggleSection({
+      title: t('redesignedTransactionsEnabledToggle'),
+      description: t('redesignedTransactionsToggleDescription'),
+      toggleValue: redesignedTransactionsEnabled,
+      toggleCallback: (value) => setRedesignedTransactionsEnabled(!value),
+      toggleDataTestId: 'toggle-redesigned-transactions',
       toggleOffLabel: t('off'),
       toggleOnLabel: t('on'),
     });
@@ -239,6 +264,40 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  renderWatchAccountToggle() {
+    const { t, trackEvent } = this.context;
+    const { watchAccountEnabled, setWatchAccountEnabled } = this.props;
+
+    return this.renderToggleSection({
+      title: t('watchEthereumAccountsToggle'),
+      description: t('watchEthereumAccountsDescription', [
+        <a
+          key="watch-account-feedback-form__link-text"
+          href="https://www.getfeedback.com/r/7Je8ckkq"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('form')}
+        </a>,
+      ]),
+      toggleValue: watchAccountEnabled,
+      toggleCallback: (value) => {
+        trackEvent({
+          event: MetaMetricsEventName.WatchEthereumAccountsToggled,
+          category: MetaMetricsEventCategory.Settings,
+          properties: {
+            enabled: !value,
+          },
+        });
+        setWatchAccountEnabled(!value);
+      },
+      toggleContainerDataTestId: 'watch-account-toggle-div',
+      toggleDataTestId: 'watch-account-toggle',
+      toggleOffLabel: t('off'),
+      toggleOnLabel: t('on'),
+    });
+  }
+
   // We're only setting the code fences here since
   // we should remove it for the feature release
   renderBitcoinSupport() {
@@ -263,7 +322,16 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </Text>
         {this.renderToggleSection({
           title: t('bitcoinSupportToggleTitle'),
-          description: t('bitcoinSupportToggleDescription'),
+          description: t('bitcoinSupportToggleDescription', [
+            <a
+              key="btc-account-feedback-form__link-text"
+              href={SurveyUrl.BtcSupport}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('form')}
+            </a>,
+          ]),
           toggleValue: bitcoinSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({
@@ -307,7 +375,8 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
-        {this.renderToggleRedesignedConfirmations()}
+        {this.renderToggleRedesignedSignatures()}
+        {this.renderToggleRedesignedTransactions()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {this.renderToggleRequestQueue()}
         {/* Section: Account Management Snaps */}
@@ -318,9 +387,13 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         }
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          this.renderWatchAccountToggle()
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           // We're only setting the code fences here since
           // we should remove it for the feature release
-
           /* Section: Bitcoin Accounts */
           this.renderBitcoinSupport()
           ///: END:ONLY_INCLUDE_IF

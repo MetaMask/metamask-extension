@@ -1,11 +1,10 @@
-const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  logInWithBalanceValidation,
   openDapp,
+  openMenuSafe,
   unlockWallet,
-  largeDelayMs,
-  veryLargeDelayMs,
+  withFixtures,
   WINDOW_TITLES,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -26,27 +25,23 @@ describe('4byte setting', function () {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
 
         // deploy contract
         await openDapp(driver, contractAddress);
 
         // wait for deployed contract, calls and confirms a contract method where ETH is sent
-        await driver.delay(largeDelayMs);
         await driver.clickElement('#depositButton');
 
-        await driver.waitForSelector({
-          css: 'span',
-          text: 'Deposit initiated',
-        });
-
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const actionElement = await driver.waitForSelector({
-          css: '.confirm-page-container-summary__action__name',
+        await driver.waitForSelector({
+          tag: 'span',
           text: 'Deposit',
         });
-        assert.equal(await actionElement.getText(), 'DEPOSIT');
+        await driver.assertElementNotPresent({
+          tag: 'span',
+          text: 'Contract interaction',
+        });
       },
     );
   });
@@ -69,9 +64,7 @@ describe('4byte setting', function () {
         await unlockWallet(driver);
 
         // goes to the settings screen
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 
@@ -84,28 +77,18 @@ describe('4byte setting', function () {
         await openDapp(driver, contractAddress);
 
         // wait for deployed contract, calls and confirms a contract method where ETH is sent
-        await driver.findClickableElement('#depositButton');
         await driver.clickElement('#depositButton');
 
-        await driver.waitForSelector({
-          css: 'span',
-          text: 'Deposit initiated',
-        });
-
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const contractInteraction = 'Contract interaction';
-        const actionElement = await driver.waitForSelector({
-          css: '.confirm-page-container-summary__action__name',
-          text: contractInteraction,
+
+        await driver.assertElementNotPresent({
+          tag: 'span',
+          text: 'Deposit',
         });
-        // We add a delay here to wait for any potential UI changes
-        await driver.delay(veryLargeDelayMs);
-        // css text-transform: uppercase is applied to the text
-        assert.equal(
-          await actionElement.getText(),
-          contractInteraction.toUpperCase(),
-        );
+        await driver.waitForSelector({
+          tag: 'span',
+          text: 'Contract interaction',
+        });
       },
     );
   });

@@ -30,6 +30,8 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -39,13 +41,17 @@ export function formatDate(date, format = "M/d/y 'at' T") {
   return DateTime.fromMillis(date).toFormat(format);
 }
 
-export const formatUTCDate = (dateInMillis) => {
-  if (!dateInMillis) {
-    return dateInMillis;
+/**
+ * @param {number} unixTimestamp - timestamp as seconds since unix epoch
+ * @returns {string} formatted date string e.g. "14 July 2034, 22:22"
+ */
+export const formatUTCDateFromUnixTimestamp = (unixTimestamp) => {
+  if (!unixTimestamp) {
+    return unixTimestamp;
   }
 
-  return DateTime.fromMillis(dateInMillis)
-    .setZone('utc')
+  return DateTime.fromSeconds(unixTimestamp)
+    .toUTC()
     .toFormat('dd LLLL yyyy, HH:mm');
 };
 
@@ -247,24 +253,30 @@ export function getRandomFileName() {
  * @param {number} options.truncatedCharLimit - The maximum length of the string.
  * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
  * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
+ * @param {boolean} options.skipCharacterInEnd - Skip the character at the end.
  * @returns {string} The shortened string.
  */
 export function shortenString(
   stringToShorten = '',
-  { truncatedCharLimit, truncatedStartChars, truncatedEndChars } = {
+  {
+    truncatedCharLimit,
+    truncatedStartChars,
+    truncatedEndChars,
+    skipCharacterInEnd,
+  } = {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
   },
 ) {
   if (stringToShorten.length < truncatedCharLimit) {
     return stringToShorten;
   }
 
-  return `${stringToShorten.slice(
-    0,
-    truncatedStartChars,
-  )}...${stringToShorten.slice(-truncatedEndChars)}`;
+  return `${stringToShorten.slice(0, truncatedStartChars)}...${
+    skipCharacterInEnd ? '' : stringToShorten.slice(-truncatedEndChars)
+  }`;
 }
 
 /**
@@ -283,6 +295,7 @@ export function shortenAddress(address = '') {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
   });
 }
 
@@ -555,7 +568,7 @@ export const sanitizeMessage = (msg, primaryType, types) => {
   return { value: sanitizedStruct, type: primaryType };
 };
 
-export function getAssetImageURL(image, ipfsGateway) {
+export async function getAssetImageURL(image, ipfsGateway) {
   if (!image || typeof image !== 'string') {
     return '';
   }
@@ -586,7 +599,7 @@ export function getAssetImageURL(image, ipfsGateway) {
     // In the future, we can look into solving the root cause, which might require
     // no longer using multiform's CID.parse() method within the assets-controller
     try {
-      return getFormattedIpfsUrl(ipfsGateway, image, true);
+      return await getFormattedIpfsUrl(ipfsGateway, image, true);
     } catch (e) {
       logErrorWithMessage(e);
       return '';
@@ -773,4 +786,55 @@ export const hexToText = (hex) => {
  */
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+};
+
+/**
+ * Get abstracted Snap permissions filtered by weight.
+ *
+ * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
+ * @param weightThreshold - Number that represents weight threshold for filtering.
+ * @param minPermissionCount - Minimum number of permissions to show,
+ * if filtered permissions count are less than the value specified.
+ * @returns Subset of permissions passing weight criteria.
+ */
+export const getFilteredSnapPermissions = (
+  weightedPermissions,
+  weightThreshold = Infinity,
+  minPermissionCount = 3,
+) => {
+  const filteredPermissions = weightedPermissions.filter(
+    (permission) => permission.weight <= weightThreshold,
+  );
+
+  // If there are not enough permissions that fall into desired set filtered by weight,
+  // then fill the gap, no matter what the weight is
+  if (minPermissionCount && filteredPermissions.length < minPermissionCount) {
+    const remainingPermissions = weightedPermissions.filter(
+      (permission) => permission.weight > weightThreshold,
+    );
+    // Add permissions until desired count is reached
+    return filteredPermissions.concat(
+      remainingPermissions.slice(
+        0,
+        minPermissionCount - filteredPermissions.length,
+      ),
+    );
+  }
+
+  return filteredPermissions;
+};
+/**
+ * Helper function to calculate the token amount 1dAgo using price percentage a day ago.
+ *
+ * @param {*} tokenFiatBalance - current token fiat balance
+ * @param {*} tokenPricePercentChange1dAgo - price percentage 1day ago
+ * @returns token amount 1day ago
+ */
+export const getCalculatedTokenAmount1dAgo = (
+  tokenFiatBalance,
+  tokenPricePercentChange1dAgo,
+) => {
+  return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
+    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+    : tokenFiatBalance ?? 0;
 };

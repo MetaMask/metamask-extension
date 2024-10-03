@@ -101,7 +101,7 @@ describe('Accounts Selectors', () => {
           ...MOCK_STATE.metamask,
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_EOA.id,
-            accounts: [MOCK_ACCOUNT_EOA],
+            accounts: { mock_account_eoa: MOCK_ACCOUNT_EOA },
           },
         },
       };
@@ -118,10 +118,11 @@ describe('Accounts Selectors', () => {
           ...MOCK_STATE.metamask,
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-            accounts: [
-              MOCK_ACCOUNT_BIP122_P2WPKH,
-              MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
-            ],
+            accounts: {
+              mock_account_bip122_pwpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
+              mock_account_bip122_p2wpkh_testnet:
+                MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+            },
           },
         },
       };
@@ -136,7 +137,9 @@ describe('Accounts Selectors', () => {
           ...MOCK_STATE.metamask,
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-            accounts: [MOCK_ACCOUNT_BIP122_P2WPKH],
+            accounts: {
+              mock_account_bip122_p2wpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
+            },
           },
         },
       };

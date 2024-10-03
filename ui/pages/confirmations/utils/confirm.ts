@@ -2,11 +2,13 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-
-import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../shared/constants/transaction';
+import {
+  PRIMARY_TYPES_ORDER,
+  PRIMARY_TYPES_PERMIT,
+} from '../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
-import { SignatureRequestType } from '../types/confirm';
+import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
 
 export const REDESIGN_APPROVAL_TYPES = [
@@ -14,14 +16,20 @@ export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
-export const REDESIGN_TRANSACTION_TYPES = [
-  ...(process.env.ENABLE_CONFIRMATION_REDESIGN
-    ? [TransactionType.contractInteraction]
-    : []),
-] as const;
+export const REDESIGN_USER_TRANSACTION_TYPES = [
+  TransactionType.contractInteraction,
+  TransactionType.deployContract,
+  TransactionType.tokenMethodApprove,
+  TransactionType.tokenMethodIncreaseAllowance,
+  TransactionType.tokenMethodSetApprovalForAll,
+];
+
+export const REDESIGN_DEV_TRANSACTION_TYPES = [
+  ...REDESIGN_USER_TRANSACTION_TYPES,
+  TransactionType.tokenMethodTransfer,
+];
 
 const SIGNATURE_APPROVAL_TYPES = [
-  ApprovalType.EthSign,
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
 ];
@@ -45,10 +53,15 @@ export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
   return { sanitizedMessage, primaryType };
 };
 
-export const isSIWESignatureRequest = (request: SignatureRequestType) =>
-  Boolean(request?.msgParams?.siwe?.isSIWEMessage);
+/**
+ * Returns true if the request is a SIWE signature request
+ *
+ * @param request - The confirmation request to check
+ */
+export const isSIWESignatureRequest = (request?: Confirmation) =>
+  Boolean((request as SignatureRequestType)?.msgParams?.siwe?.isSIWEMessage);
 
-export const isPermitSignatureRequest = (request: SignatureRequestType) => {
+export const isOrderSignatureRequest = (request: SignatureRequestType) => {
   if (
     !request ||
     !isSignatureTransactionType(request) ||
@@ -60,5 +73,46 @@ export const isPermitSignatureRequest = (request: SignatureRequestType) => {
   const { primaryType } = parseTypedDataMessage(
     request.msgParams?.data as string,
   );
-  return primaryType === EIP712_PRIMARY_TYPE_PERMIT;
+
+  return PRIMARY_TYPES_ORDER.includes(primaryType);
+};
+
+/**
+ * Returns true if the request is a Permit Typed Sign signature request
+ *
+ * @param request - The confirmation request to check
+ */
+export const isPermitSignatureRequest = (request?: Confirmation) => {
+  if (
+    !request ||
+    !isSignatureTransactionType(request) ||
+    request.type !== 'eth_signTypedData' ||
+    (request as SignatureRequestType).msgParams?.version?.toUpperCase() ===
+      TYPED_SIGNATURE_VERSIONS.V1
+  ) {
+    return false;
+  }
+  const { primaryType } = parseTypedDataMessage(
+    (request as SignatureRequestType).msgParams?.data as string,
+  );
+
+  return PRIMARY_TYPES_PERMIT.includes(primaryType);
+};
+
+export const isValidASCIIURL = (urlString?: string) => {
+  try {
+    return urlString?.includes(new URL(urlString).host);
+  } catch (exp: unknown) {
+    console.error(exp);
+    return false;
+  }
+};
+
+export const toPunycodeURL = (urlString: string) => {
+  try {
+    return new URL(urlString).href;
+  } catch (err: unknown) {
+    console.error(`Failed to convert URL to Punycode: ${err}`);
+    return undefined;
+  }
 };

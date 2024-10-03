@@ -276,15 +276,13 @@ const PortfolioSmartTransactionStatusUrl = ({
 
 const CloseExtensionButton = ({
   isDapp,
-  isSmartTransactionPending,
   onCloseExtension,
 }: {
   isDapp: boolean;
-  isSmartTransactionPending: boolean;
   onCloseExtension: () => void;
 }) => {
   const t = useI18nContext();
-  if (!isDapp || isSmartTransactionPending) {
+  if (!isDapp) {
     return null;
   }
   return (
@@ -370,7 +368,6 @@ const SmartTransactionsStatusPageFooter = ({
       />
       <CloseExtensionButton
         isDapp={isDapp}
-        isSmartTransactionPending={isSmartTransactionPending}
         onCloseExtension={onCloseExtension}
       />
       <ViewActivityButton isDapp={isDapp} onViewActivity={onViewActivity} />

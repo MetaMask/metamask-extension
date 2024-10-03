@@ -7,12 +7,13 @@ export type UserPrefrencedCurrencyDisplayProps = OverridingUnion<
     type?: PRIMARY | SECONDARY;
     currency?: string;
     showEthLogo?: boolean;
-    ethLogoHeight?: number;
     ethNumberOfDecimals?: string | number;
     fiatNumberOfDecimals?: string | number;
     showFiat?: boolean;
     showNative?: boolean;
     showCurrencySuffix?: boolean;
+    shouldCheckShowNativeToken?: boolean;
+    isAggregatedFiatOverviewBalance?: boolean;
   }
 >;
 

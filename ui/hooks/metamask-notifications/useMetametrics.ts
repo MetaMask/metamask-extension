@@ -23,6 +23,7 @@ export function useEnableMetametrics(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const isUserSignedIn = useSelector(selectIsSignedIn);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -34,7 +35,7 @@ export function useEnableMetametrics(): {
     setError(null);
 
     try {
-      if (!isUserSignedIn) {
+      if (isProfileSyncingEnabled && !isUserSignedIn) {
         await dispatch(performSignIn());
       }
 
@@ -81,7 +82,7 @@ export function useDisableMetametrics(): {
     setError(null);
 
     try {
-      if (!isProfileSyncingEnabled) {
+      if (isProfileSyncingEnabled) {
         await dispatch(performSignOut());
       }
       await dispatch(setParticipateInMetaMetrics(false));

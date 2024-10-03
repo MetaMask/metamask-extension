@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -10,10 +12,13 @@ import {
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../selectors';
-import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { SignatureRequestType } from '../../../../types/confirm';
-import { isPermitSignatureRequest } from '../../../../utils';
+import {
+  isOrderSignatureRequest,
+  isPermitSignatureRequest,
+} from '../../../../utils';
+import { fetchErc20Decimals } from '../../../../utils/token';
+import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
@@ -21,9 +26,7 @@ import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
@@ -39,24 +42,21 @@ const TypedSignInfo: React.FC = () => {
   } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
+  const isOrder = isOrderSignatureRequest(currentConfirmation);
 
   useEffect(() => {
     (async () => {
-      if (!isPermit) {
+      if (!isPermit && !isOrder) {
         return;
       }
-      const { decimals: tokenDecimals } = await getTokenStandardAndDetails(
-        verifyingContract,
-      );
-      setDecimals(parseInt(tokenDecimals ?? '0', 10));
+      const tokenDecimals = await fetchErc20Decimals(verifyingContract);
+      setDecimals(tokenDecimals);
     })();
   }, [verifyingContract]);
 
   return (
     <>
-      {isPermit && useTransactionSimulations && (
-        <PermitSimulation tokenDecimals={decimals} />
-      )}
+      {isPermit && useTransactionSimulations && <PermitSimulation />}
       <ConfirmInfoSection>
         {isPermit && (
           <>
@@ -66,9 +66,14 @@ const TypedSignInfo: React.FC = () => {
             <ConfirmInfoRowDivider />
           </>
         )}
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.RequestFrom}
+          ownerId={currentConfirmation.id}
+          label={t('requestFrom')}
+          tooltip={t('requestFromInfo')}
+        >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
+        </ConfirmInfoAlertRow>
         {isValidAddress(verifyingContract) && (
           <ConfirmInfoRow label={t('interactingWith')}>
             <ConfirmInfoRowAddress address={verifyingContract} />
@@ -79,7 +84,6 @@ const TypedSignInfo: React.FC = () => {
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignData
             data={currentConfirmation.msgParams?.data as string}
-            isPermit={isPermit}
             tokenDecimals={decimals}
           />
         </ConfirmInfoRow>

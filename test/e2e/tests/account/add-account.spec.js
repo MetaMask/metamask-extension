@@ -42,7 +42,7 @@ describe('Add account', function () {
         );
 
         await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement({ text: 'Add account', tag: 'button' });
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: '2nd account',
@@ -74,6 +74,11 @@ describe('Add account', function () {
 
         // Create 2nd account
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        // Wait until account list is loaded to mitigate race condition
+        await driver.waitForSelector({
+          text: 'Account 1',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
@@ -81,7 +86,7 @@ describe('Add account', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement({ text: 'Add account', tag: 'button' });
 
         // Check address of 2nd account
         await locateAccountBalanceDOM(driver);
@@ -166,7 +171,7 @@ describe('Add account', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement({ text: 'Add account', tag: 'button' });
 
         // Wait for 2nd account to be created
         await locateAccountBalanceDOM(driver);

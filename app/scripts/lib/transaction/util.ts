@@ -16,14 +16,15 @@ import { PPOMController } from '@metamask/ppom-validator';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
 import { SecurityAlertResponse } from '../ppom/types';
 import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
 } from '../../../../shared/constants/security-provider';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -65,7 +66,7 @@ export async function addDappTransaction(
 ): Promise<string> {
   const { dappRequest } = request;
   const { id: actionId, method, origin } = dappRequest;
-  const { securityAlertResponse } = dappRequest;
+  const { securityAlertResponse, traceContext } = dappRequest;
 
   const transactionOptions: AddTransactionOptions = {
     actionId,
@@ -76,18 +77,27 @@ export async function addDappTransaction(
     securityAlertResponse,
   };
 
+  endTrace({ name: TraceName.Middleware, id: actionId });
+
   const { waitForHash } = await addTransactionOrUserOperation({
     ...request,
-    transactionOptions,
+    transactionOptions: {
+      ...transactionOptions,
+      traceContext,
+    },
   });
 
-  return (await waitForHash()) as string;
+  const hash = (await waitForHash()) as string;
+
+  endTrace({ name: TraceName.Transaction, id: actionId });
+
+  return hash;
 }
 
 export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
-  validateSecurity(request);
+  await validateSecurity(request);
 
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
@@ -216,7 +226,7 @@ function getTransactionByHash(
   );
 }
 
-function validateSecurity(request: AddTransactionRequest) {
+async function validateSecurity(request: AddTransactionRequest) {
   const {
     chainId,
     ppomController,
@@ -229,6 +239,8 @@ function validateSecurity(request: AddTransactionRequest) {
 
   const { type } = transactionOptions;
 
+  const isCurrentChainSupported = await isChainSupported(chainId);
+
   const typeIsExcludedFromPPOM =
     SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
       type as TransactionType,
@@ -236,7 +248,7 @@ function validateSecurity(request: AddTransactionRequest) {
 
   if (
     !securityAlertsEnabled ||
-    !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId) ||
+    !isCurrentChainSupported ||
     typeIsExcludedFromPPOM
   ) {
     return;
@@ -262,15 +274,17 @@ function validateSecurity(request: AddTransactionRequest) {
       params: [
         {
           from,
-          to,
-          value,
-          data,
+          to: to ?? '',
+          value: value ?? '',
+          data: data ?? '',
         },
       ],
+      jsonrpc: '2.0' as const,
     };
 
     const securityAlertId = generateSecurityAlertId();
 
+    // Intentionally not awaited to avoid blocking the confirmation process while the validation occurs.
     validateRequestWithPPOM({
       ppomController,
       request: ppomRequest,

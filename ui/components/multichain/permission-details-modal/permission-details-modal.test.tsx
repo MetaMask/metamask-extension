@@ -2,6 +2,9 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { PermissionDetailsModal } from '.';
 
 describe('PermissionDetailsModal', () => {
@@ -34,6 +37,8 @@ describe('PermissionDetailsModal', () => {
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             metadata: {
               name: 'Really Long Name That Should Be Truncated',
+              importTime: 1724252448,
+              lastSelected: 1724252448,
               keyring: {
                 type: 'HD Key Tree',
               },
@@ -48,6 +53,7 @@ describe('PermissionDetailsModal', () => {
             metadata: {
               name: 'Account 1',
               lastSelected: 1586359844192,
+              importTime: 1586359844192,
               lastActive: 1586359844192,
               keyring: {
                 type: 'HD Key Tree',
@@ -100,7 +106,10 @@ describe('PermissionDetailsModal', () => {
       },
     },
   };
-  const store = configureStore()(mockState);
+  const store = configureStore()({
+    ...mockState,
+    metamask: { ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }) },
+  });
   const onClick = jest.fn();
 
   const args = {
@@ -112,10 +121,14 @@ describe('PermissionDetailsModal', () => {
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {
         name: 'mockName',
+        importTime: 1724256979,
         keyring: {
           type: 'HD Key Tree',
         },
       },
+      options: {},
+      methods: ETH_EOA_METHODS,
+      type: EthAccountType.Eoa,
       label: '',
     },
     isOpen: true,

@@ -5,9 +5,11 @@ const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
+  openMenuSafe,
   regularDelayMs,
   unlockWallet,
   WINDOW_TITLES,
+  tinyDelayMs,
 } = require('../../helpers');
 
 const TEST_CHAIN_ID = toHex(100);
@@ -88,14 +90,14 @@ const selectors = {
   tickerWarning: '[data-testid="network-form-ticker-warning"]',
   suggestedTickerForXDAI: {
     css: '[data-testid="network-form-ticker-suggestion"]',
-    text: 'Suggested ticker symbol: XDAI',
+    text: 'Suggested currency symbol: XDAI',
   },
   tickerWarningTokenSymbol: {
     css: '[data-testid="network-form-ticker-warning"]',
-    text: "This token symbol doesn't match the network name or chain ID entered.",
+    text: "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue.",
   },
   tickerButton: { text: 'PETH', tag: 'button' },
-  networkAdded: { text: 'Network added successfully!', tag: 'h4' },
+  networkAdded: { text: 'Network added successfully!' },
 
   networkNameInputField: '[data-testid="network-form-network-name"]',
   networkNameInputFieldSetToEthereumMainnet: {
@@ -108,17 +110,6 @@ const selectors = {
   explorerInputField: '[data-testid="network-form-block-explorer-url"]',
   errorContainer: '.settings-tab__error',
 };
-
-async function navigateToAddNetwork(driver) {
-  await driver.clickElement(selectors.accountOptionsMenuButton);
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
-  await driver.clickElement(selectors.settingsOption);
-  await driver.clickElement(selectors.networkOption);
-  await driver.clickElement(selectors.addNetwork);
-  await driver.clickElement(selectors.addNetworkManually);
-}
 
 const inputData = {
   networkName: 'Collision network',
@@ -467,7 +458,6 @@ describe('Custom network', function () {
 
           await driver.clickElement('[data-testid="network-display"]');
 
-          await driver.clickElement({ tag: 'button', text: 'Add network' });
           await driver.clickElement({
             tag: 'button',
             text: 'Add',
@@ -475,7 +465,7 @@ describe('Custom network', function () {
 
           // verify network details
           const title = await driver.findElement({
-            tag: 'h6',
+            tag: 'span',
             text: 'Arbitrum One',
           });
 
@@ -520,64 +510,11 @@ describe('Custom network', function () {
 
           await driver.clickElement({ tag: 'button', text: 'Close' });
           await driver.clickElement({ tag: 'button', text: 'Approve' });
-          await driver.clickElement({
-            tag: 'h6',
-            text: 'Switch to Arbitrum One',
-          });
+
           // verify network switched
-          const networkDisplayed = await driver.findElement({
-            tag: 'span',
-            text: 'Arbitrum One',
-          });
-          assert.equal(
-            await networkDisplayed.getText(),
-            'Arbitrum One',
-            'You have not switched to Arbitrum Network',
+          await driver.waitForSelector(
+            'button[data-testid="network-display"][aria-label="Network Menu Arbitrum One"]',
           );
-        },
-      );
-    });
-
-    it('add custom network and not switch the network', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
-        },
-        async ({ driver }) => {
-          await unlockWallet(driver);
-
-          // Avoid a stale element error
-          await driver.delay(regularDelayMs);
-
-          await driver.clickElement('[data-testid="network-display"]');
-          await driver.clickElement({ tag: 'button', text: 'Add network' });
-
-          // had to put all Add elements in list since list is changing and networks are not always in same order
-          await driver.clickElement({
-            tag: 'button',
-            text: 'Add',
-          });
-
-          await driver.clickElement({ tag: 'button', text: 'Approve' });
-
-          await driver.clickElement({
-            tag: 'h6',
-            text: 'Dismiss',
-          });
-
-          // verify if added network is in list of networks
-          const networkDisplay = await driver.findElement(
-            '[data-testid="network-display"]',
-          );
-          await networkDisplay.click();
-
-          const arbitrumNetwork = await driver.findElements({
-            text: 'Arbitrum One',
-            tag: 'p',
-          });
-          assert.ok(arbitrumNetwork.length, 1);
         },
       );
     });
@@ -587,15 +524,27 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkController({
+              providerConfig: {
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+              },
               networkConfigurations: {
                 networkConfigurationId: {
-                  rpcUrl: networkURL,
-                  chainId: chainID,
-                  nickname: networkNAME,
-                  ticker: currencySYMBOL,
+                  chainId: '0x539',
+                  nickname: 'Localhost 8545',
+                  rpcUrl: 'http://localhost:8545',
+                  ticker: 'ETH',
+                  rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+                },
+                '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                  chainId: '0xa4b1',
+                  id: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                  nickname: 'Arbitrum mainnet',
                   rpcPrefs: {},
+                  rpcUrl: 'https://arbitrum-mainnet.infura.io',
+                  ticker: 'ETH',
                 },
               },
+              selectedNetworkClientId: 'networkConfigurationId',
             })
             .build(),
           ganacheOptions: defaultGanacheOptions,
@@ -603,34 +552,37 @@ describe('Custom network', function () {
         },
         async ({ driver }) => {
           await unlockWallet(driver);
+          // Avoid a stale element error
+          await driver.delay(regularDelayMs);
+          await driver.clickElement('[data-testid="network-display"]');
+          // ===========================================================>
 
-          await driver.clickElement(
-            '[data-testid="account-options-menu-button"]',
+          // Go to Edit Menu
+          const networkMenu = await driver.findElement(
+            '[data-testid="network-list-item-options-button-0xa4b1"]',
           );
 
-          if (process.env.MMI) {
-            await driver.waitForSelector(
-              '[data-testid="global-menu-mmi-portfolio"]',
-            );
-          }
+          await networkMenu.click();
 
-          await driver.clickElement('[data-testid="global-menu-settings"]');
-          await driver.clickElement({ text: 'Networks', tag: 'div' });
+          const deleteButton = await driver.findElement(
+            '[data-testid="network-list-item-options-delete"]',
+          );
+          deleteButton.click();
 
-          const arbitrumNetwork = await driver.clickElement({
-            text: 'Arbitrum One',
-            tag: 'div',
+          await driver.clickElement({
+            tag: 'button',
+            text: 'Delete',
           });
 
-          // Click first Delete button
-          await driver.clickElement('button.btn-danger');
+          await driver.clickElement('[data-testid="network-display"]');
 
-          // Click modal Delete button
-          await driver.clickElement('button.btn-danger-primary');
+          // check if arbitrum is on the list of popular network
+          const popularNetworkArbitrum = await driver.findElement(
+            '[data-testid="popular-network-0xa4b1"]',
+          );
 
-          // Checks if Arbitrum is deleted
-          const existNetwork = await driver.isElementPresent(arbitrumNetwork);
-          assert.equal(existNetwork, false, 'Network is not deleted');
+          const existNetwork = popularNetworkArbitrum !== undefined;
+          assert.equal(existNetwork, true, 'Network is not deleted');
         },
       );
     });
@@ -737,38 +689,88 @@ describe('Custom network', function () {
 
         async ({ driver }) => {
           await unlockWallet(driver);
-          await navigateToAddNetwork(driver);
-          await driver.fill(
-            selectors.networkNameInputField,
-            'Ethereum mainnet',
-          );
-          await driver.fill(
-            selectors.rpcUrlInputField,
-            'https://responsive-rpc.test',
-          );
+          await driver.clickElement('[data-testid="network-display"]');
+          await driver.clickElement({
+            text: 'Add a custom network',
+            tag: 'button',
+          });
+
+          await driver.fill(selectors.networkNameInputField, 'Gnosis');
           await driver.fill(selectors.chainIdInputField, TEST_CHAIN_ID);
           await driver.fill(selectors.tickerInputField, 'XDAI');
-          await driver.fill(selectors.explorerInputField, 'https://test.com');
+
+          // Add rpc url
+          const rpcUrlInputDropDown = await driver.waitForSelector(
+            '[data-testid="test-add-rpc-drop-down"]',
+          );
+          await rpcUrlInputDropDown.click();
+          await driver.delay(tinyDelayMs);
+          await driver.clickElement({
+            text: 'Add RPC URL',
+            tag: 'button',
+          });
+
+          const rpcUrlInput = await driver.waitForSelector(
+            '[data-testid="rpc-url-input-test"]',
+          );
+          await rpcUrlInput.clear();
+          await rpcUrlInput.sendKeys('https://responsive-rpc.test');
+
+          const rpcNameInput = await driver.waitForSelector(
+            '[data-testid="rpc-name-input-test"]',
+          );
+          await rpcNameInput.sendKeys('testName');
+
+          await driver.clickElement({
+            text: 'Add URL',
+            tag: 'button',
+          });
+
+          // Add explorer URL
+          const explorerUrlInputDropDown = await driver.waitForSelector(
+            '[data-testid="test-explorer-drop-down"]',
+          );
+
+          await driver.scrollToElement(explorerUrlInputDropDown);
+          await driver.delay(tinyDelayMs);
+
+          await explorerUrlInputDropDown.click();
+          await driver.delay(tinyDelayMs);
+
+          await driver.clickElement({
+            text: 'Add a block explorer URL',
+            tag: 'button',
+          });
+
+          const blockExplorerInput = await driver.waitForSelector(
+            '[data-testid="explorer-url-input"]',
+          );
+          await blockExplorerInput.clear();
+          await blockExplorerInput.sendKeys('https://test.com');
+
+          await driver.clickElement({
+            text: 'Add URL',
+            tag: 'button',
+          });
 
           const suggestedTicker = await driver.isElementPresent(
-            selectors.suggestedTickerForXDAI,
+            selectors.suggestedTickerForXDAI.css,
           );
 
           const tickerWarning = await driver.isElementPresent(
-            selectors.tickerWarningTokenSymbol,
+            selectors.tickerWarningTokenSymbol.css,
           );
 
           assert.equal(suggestedTicker, false);
           assert.equal(tickerWarning, false);
 
-          driver.clickElement(selectors.tickerButton);
-          driver.clickElement(selectors.saveButton);
+          await driver.clickElement(selectors.saveButton);
 
           // Validate the network was added
-          const networkAdded = await driver.isElementPresent(
-            selectors.networkAdded,
-          );
-          assert.equal(networkAdded, true, 'Network added successfully!');
+          const networkAdded = await driver.isElementPresent({
+            text: '“Gnosis” was successfully added!',
+          });
+          assert.equal(networkAdded, true, '“Gnosis” was successfully added!');
         },
       );
     });
@@ -799,32 +801,78 @@ describe('Custom network', function () {
 
         async ({ driver }) => {
           await unlockWallet(driver);
-          await navigateToAddNetwork(driver);
+
+          await driver.clickElement('[data-testid="network-display"]');
+          await driver.clickElement({
+            text: 'Add a custom network',
+            tag: 'button',
+          });
+
           await driver.fill(
             selectors.networkNameInputField,
             'Ethereum mainnet',
           );
-          await driver.fill(
-            selectors.rpcUrlInputField,
-            'https://responsive-rpc.test',
-          );
+
           await driver.fill(selectors.chainIdInputField, '1');
           await driver.fill(selectors.tickerInputField, 'TST');
-          // fix flaky test
-          await driver.delay(regularDelayMs);
-          await driver.fill(selectors.explorerInputField, 'https://test.com');
 
-          const suggestedTicker = await driver.isElementPresent(
-            selectors.suggestedTicker,
+          // Add rpc url
+          const rpcUrlInputDropDown = await driver.waitForSelector(
+            '[data-testid="test-add-rpc-drop-down"]',
           );
+          await rpcUrlInputDropDown.click();
+          await driver.delay(tinyDelayMs);
+          await driver.clickElement({
+            text: 'Add RPC URL',
+            tag: 'button',
+          });
 
-          const tickerWarning = await driver.isElementPresent(
-            selectors.tickerWarning,
+          const rpcUrlInput = await driver.waitForSelector(
+            '[data-testid="rpc-url-input-test"]',
           );
+          await rpcUrlInput.clear();
+          await rpcUrlInput.sendKeys('https://responsive-rpc.test');
+
+          const rpcNameInput = await driver.waitForSelector(
+            '[data-testid="rpc-name-input-test"]',
+          );
+          await rpcNameInput.sendKeys('testName');
+
+          await driver.clickElement({
+            text: 'Add URL',
+            tag: 'button',
+          });
 
           // suggestion and warning ticker should be displayed
-          assert.equal(suggestedTicker, true);
-          assert.equal(tickerWarning, true);
+          await driver.waitForSelector(selectors.suggestedTicker);
+          await driver.waitForSelector(selectors.tickerWarning);
+
+          // Add explorer URL
+          const explorerUrlInputDropDown = await driver.waitForSelector(
+            '[data-testid="test-explorer-drop-down"]',
+          );
+
+          await driver.scrollToElement(explorerUrlInputDropDown);
+          await driver.delay(tinyDelayMs);
+
+          await explorerUrlInputDropDown.click();
+          await driver.delay(tinyDelayMs);
+
+          await driver.clickElement({
+            text: 'Add a block explorer URL',
+            tag: 'button',
+          });
+
+          const blockExplorerInput = await driver.waitForSelector(
+            '[data-testid="explorer-url-input"]',
+          );
+          await blockExplorerInput.clear();
+          await blockExplorerInput.sendKeys('https://test.com');
+
+          await driver.clickElement({
+            text: 'Add URL',
+            tag: 'button',
+          });
         },
       );
     });
@@ -853,17 +901,47 @@ describe('Custom network', function () {
 
         async ({ driver }) => {
           await unlockWallet(driver);
-          await navigateToAddNetwork(driver);
+
+          await driver.clickElement('[data-testid="network-display"]');
+          await driver.clickElement({
+            text: 'Add a custom network',
+            tag: 'button',
+          });
+
           await driver.fill(
             selectors.networkNameInputField,
             inputData.networkName,
           );
-          await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
 
-          // fix flaky test
-          await driver.delay(regularDelayMs);
           await driver.fill(selectors.chainIdInputField, inputData.chainId);
           await driver.fill(selectors.tickerInputField, inputData.ticker);
+
+          // Add rpc url
+          const rpcUrlInputDropDown = await driver.waitForSelector(
+            '[data-testid="test-add-rpc-drop-down"]',
+          );
+          await rpcUrlInputDropDown.click();
+          await driver.delay(tinyDelayMs);
+          await driver.clickElement({
+            text: 'Add RPC URL',
+            tag: 'button',
+          });
+
+          const rpcUrlInput = await driver.waitForSelector(
+            '[data-testid="rpc-url-input-test"]',
+          );
+          await rpcUrlInput.clear();
+          await rpcUrlInput.sendKeys(inputData.rpcUrl);
+
+          const rpcNameInput = await driver.waitForSelector(
+            '[data-testid="rpc-name-input-test"]',
+          );
+          await rpcNameInput.sendKeys('testName');
+
+          await driver.clickElement({
+            text: 'Add URL',
+            tag: 'button',
+          });
 
           const suggestedTicker = await driver.isElementPresent(
             selectors.suggestedTicker,
@@ -880,10 +958,15 @@ describe('Custom network', function () {
           driver.clickElement(selectors.saveButton);
 
           // Validate the network was added
-          const networkAdded = await driver.isElementPresent(
-            selectors.networkAdded,
+          const networkAdded = await driver.isElementPresent({
+            text: `“${inputData.networkName}” was successfully added!`,
+          });
+
+          assert.equal(
+            networkAdded,
+            true,
+            `“${inputData.networkName}” was successfully added!`,
           );
-          assert.equal(networkAdded, true, 'Network added successfully!');
         },
       );
     });
@@ -894,11 +977,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   const accountOptionsMenuSelector =
     '[data-testid="account-options-menu-button"]';
   await driver.waitForSelector(accountOptionsMenuSelector);
-  await driver.clickElement(accountOptionsMenuSelector);
-
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
+  await openMenuSafe(driver);
 
   const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
   await driver.waitForSelector(globalMenuSettingsSelector);
@@ -936,35 +1015,76 @@ async function failCandidateNetworkValidation(driver) {
   await driver.waitForSelector(networkMenuSelector);
   await driver.clickElement(networkMenuSelector);
 
-  await driver.clickElement({ text: 'Add network', tag: 'button' });
-
-  const addNetworkManuallyButtonSelector =
-    '[data-testid="add-network-manually"]';
-  await driver.waitForSelector(addNetworkManuallyButtonSelector);
-
-  await driver.clickElement(`${addNetworkManuallyButtonSelector} > h6`);
+  await driver.clickElement({ text: 'Add a custom network', tag: 'button' });
 
   const [
-    ,
     // first element is the search input that we don't need to fill
     networkNameInputEl,
-    newRPCURLInputEl,
-    chainIDInputEl,
     ,
-    blockExplorerURLInputEl,
+    chainIDInputEl,
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
-  await newRPCURLInputEl.fill('https://unresponsive-rpc.test');
   await chainIDInputEl.fill(toHex(777));
   await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
-  await blockExplorerURLInputEl.fill('https://block-explorer.url');
+
+  // Add rpc URL
+  const rpcUrlInputDropDown = await driver.waitForSelector(
+    '[data-testid="test-add-rpc-drop-down"]',
+  );
+  await rpcUrlInputDropDown.click();
+  await driver.delay(tinyDelayMs);
+  await driver.clickElement({
+    text: 'Add RPC URL',
+    tag: 'button',
+  });
+
+  const rpcUrlInput = await driver.waitForSelector(
+    '[data-testid="rpc-url-input-test"]',
+  );
+  await rpcUrlInput.clear();
+  await rpcUrlInput.sendKeys('https://unresponsive-rpc.test');
+
+  const rpcNameInput = await driver.waitForSelector(
+    '[data-testid="rpc-name-input-test"]',
+  );
+  await rpcNameInput.sendKeys('testName');
+
+  await driver.clickElement({
+    text: 'Add URL',
+    tag: 'button',
+  });
+
+  // Add explorer URL
+  const explorerUrlInputDropDown = await driver.waitForSelector(
+    '[data-testid="test-explorer-drop-down"]',
+  );
+
+  await driver.scrollToElement(explorerUrlInputDropDown);
+  await explorerUrlInputDropDown.click();
+  await driver.delay(tinyDelayMs);
+
+  await driver.clickElement({
+    text: 'Add a block explorer URL',
+    tag: 'button',
+  });
+
+  const blockExplorerInput = await driver.waitForSelector(
+    '[data-testid="explorer-url-input"]',
+  );
+  blockExplorerInput.clear();
+  await blockExplorerInput.sendKeys('https://block-explorer.url');
+
+  await driver.clickElement({
+    text: 'Add URL',
+    tag: 'button',
+  });
 
   const chainIdValidationMessageRawLocator = {
     text: 'Could not fetch chain ID. Is your RPC URL correct?',
   };
+
   await driver.waitForSelector(chainIdValidationMessageRawLocator);
-  await driver.waitForSelector('[data-testid="network-form-ticker-warning"]');
 
   const saveButtonRawLocator = {
     text: 'Save',
@@ -1040,28 +1160,70 @@ async function candidateNetworkIsNotValidated(driver) {
   await driver.waitForSelector(networkMenuSelector);
   await driver.clickElement(networkMenuSelector);
 
-  await driver.clickElement({ text: 'Add network', tag: 'button' });
-
-  const addNetworkManuallyButtonSelector =
-    '[data-testid="add-network-manually"]';
-  await driver.waitForSelector(addNetworkManuallyButtonSelector);
-  await driver.clickElement(`${addNetworkManuallyButtonSelector} > h6`);
+  await driver.clickElement({ text: 'Add a custom network', tag: 'button' });
 
   const [
-    ,
     // first element is the search input that we don't need to fill
     networkNameInputEl,
-    newRPCURLInputEl,
-    chainIDInputEl,
     ,
-    blockExplorerURLInputEl,
+    chainIDInputEl,
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
-  await newRPCURLInputEl.fill('https://responsive-rpc.test/');
   await chainIDInputEl.fill(TEST_CHAIN_ID);
   await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
-  await blockExplorerURLInputEl.fill('https://block-explorer.url');
+
+  // Add rpc URL
+  const rpcUrlInputDropDown = await driver.waitForSelector(
+    '[data-testid="test-add-rpc-drop-down"]',
+  );
+  await rpcUrlInputDropDown.click();
+  await driver.delay(tinyDelayMs);
+  await driver.clickElement({
+    text: 'Add RPC URL',
+    tag: 'button',
+  });
+
+  const rpcUrlInput = await driver.waitForSelector(
+    '[data-testid="rpc-url-input-test"]',
+  );
+  await rpcUrlInput.clear();
+  await rpcUrlInput.sendKeys('https://responsive-rpc.test');
+
+  const rpcNameInput = await driver.waitForSelector(
+    '[data-testid="rpc-name-input-test"]',
+  );
+  await rpcNameInput.sendKeys('testName');
+
+  await driver.clickElement({
+    text: 'Add URL',
+    tag: 'button',
+  });
+
+  // Add explorer URL
+  const explorerUrlInputDropDown = await driver.waitForSelector(
+    '[data-testid="test-explorer-drop-down"]',
+  );
+
+  await driver.scrollToElement(explorerUrlInputDropDown);
+  await explorerUrlInputDropDown.click();
+  await driver.delay(tinyDelayMs);
+
+  await driver.clickElement({
+    text: 'Add a block explorer URL',
+    tag: 'button',
+  });
+
+  const blockExplorerInput = await driver.waitForSelector(
+    '[data-testid="explorer-url-input"]',
+  );
+  blockExplorerInput.clear();
+  await blockExplorerInput.sendKeys('https://block-explorer.url');
+
+  await driver.clickElement({
+    text: 'Add URL',
+    tag: 'button',
+  });
 
   // fix flaky test
   await driver.delay(regularDelayMs);

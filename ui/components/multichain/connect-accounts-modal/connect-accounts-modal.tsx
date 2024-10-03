@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
@@ -13,7 +14,11 @@ export const ConnectAccountsModal = ({
   activeTabOrigin: string;
 }) => {
   const accounts = useSelector((state) =>
-    getUnconnectedAccounts(state, activeTabOrigin),
+    // We only consider EVM accounts.
+    // Connections with non-EVM accounts (Bitcoin only for now) are used implicitly and handled by the Bitcoin Snap itself.
+    getUnconnectedAccounts(state, activeTabOrigin).filter(
+      (account: InternalAccount) => isEvmAccountType(account.type),
+    ),
   );
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
@@ -34,6 +39,10 @@ export const ConnectAccountsModal = ({
     setSelectedAccounts(newSelectedAccounts);
   };
 
+  const deselectAll = () => {
+    setSelectedAccounts([]);
+  };
+
   const selectAll = () => {
     const newSelectedAccounts = accounts.map(
       (account: { address: string }) => account.address,
@@ -41,22 +50,13 @@ export const ConnectAccountsModal = ({
     setSelectedAccounts(newSelectedAccounts);
   };
 
-  const deselectAll = () => {
-    setSelectedAccounts([]);
-  };
-
   const allAreSelected = () => {
     return accounts.length === selectedAccounts.length;
   };
-  let checked = false;
-  let isIndeterminate = false;
-  if (allAreSelected()) {
-    checked = true;
-    isIndeterminate = false;
-  } else if (selectedAccounts.length > 0 && !allAreSelected()) {
-    checked = false;
-    isIndeterminate = true;
-  }
+
+  const checked = allAreSelected();
+  const isIndeterminate = !checked && selectedAccounts.length > 0;
+
   return (
     <ConnectAccountsModalList
       accounts={accounts}

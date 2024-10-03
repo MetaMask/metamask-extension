@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   withFixtures,
   unlockWallet,
@@ -47,11 +46,11 @@ describe('Full-size View Setting @no-mmi', function () {
         const [newWindowHandle] = windowHandlesPostClick.filter(
           (handleId) => !windowHandlesPreClick.includes(handleId),
         );
-        const newWindowTitle = await driver.getWindowTitleByHandlerId(
-          newWindowHandle,
-        );
 
-        assert.equal(newWindowTitle, WINDOW_TITLES.Dialog);
+        await driver.switchToHandleAndWaitForTitleToBe(
+          newWindowHandle,
+          WINDOW_TITLES.Dialog,
+        );
       },
     );
   });

@@ -27,6 +27,7 @@ setBackgroundConnection({
   addKnownMethodData: jest.fn(),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
+  getLastInteractedConfirmationInfo: jest.fn(),
 });
 
 describe('Confirm Transaction', () => {

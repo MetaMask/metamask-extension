@@ -1,11 +1,12 @@
 const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
-const path = require('path');
+
 const {
-  defaultGanacheOptions,
-  withFixtures,
   createDownloadFolder,
+  defaultGanacheOptions,
+  openMenuSafe,
   unlockWallet,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -31,20 +32,13 @@ const getBackupJson = async () => {
 
   try {
     const backup = `${downloadsFolder}/${userDataFileName}`;
-    await fs.access(backup);
     const contents = await fs.readFile(backup);
     return JSON.parse(contents.toString());
   } catch (e) {
+    console.log('Error reading the backup file', e);
     return null;
   }
 };
-
-const restoreFile = path.join(
-  __dirname,
-  '../..',
-  'restore',
-  'MetaMaskUserData.json',
-);
 
 describe('Backup and Restore', function () {
   it('should backup the account settings', async function () {
@@ -63,15 +57,11 @@ describe('Backup and Restore', function () {
         await unlockWallet(driver);
 
         // Download user settings
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
-        await driver.clickElement({
-          text: 'Back up',
-          tag: 'button',
-        });
+        await driver.clickElement('[data-testid="export-data-button"]');
 
         // Verify download
         let info;
@@ -82,55 +72,9 @@ describe('Backup and Restore', function () {
         assert.notEqual(info, null);
         // Verify Json
         assert.equal(
-          Object.values(info?.network?.networkConfigurations)?.[0].chainId,
+          info?.network?.networkConfigurationsByChainId?.['0x539']?.chainId,
           '0x539',
         );
-      },
-    );
-  });
-
-  it('should restore the account settings', async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      // Chrome shows OS level download prompt which can't be dismissed by Selenium
-      this.skip();
-    }
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        // Restore
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Advanced', tag: 'div' });
-        const restore = await driver.findElement('#restore-file');
-        await restore.sendKeys(restoreFile);
-
-        // Dismiss success message
-        await driver.waitForSelector({
-          css: '[data-testid="restore-user-data-banner-alert-description"]',
-          text: 'Your data has been restored successfully',
-        });
-        await driver.clickElement({ text: 'Dismiss', tag: 'button' });
-
-        // Verify restore
-        await driver.clickElement({ text: 'Contacts', tag: 'div' });
-
-        const recipientLabel = await driver.findElement(
-          '[data-testid="address-list-item-label"]',
-        );
-        assert.equal('Test Account', await recipientLabel.getText());
-
-        const recipientAddress = await driver.findElement(
-          '[data-testid="address-list-item-address"]',
-        );
-        assert.equal('0x0c54F...7AaFb', await recipientAddress.getText());
       },
     );
   });

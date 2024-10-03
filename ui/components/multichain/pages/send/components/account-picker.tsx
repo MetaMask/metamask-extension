@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { EthAccountType } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
 import { Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
@@ -23,6 +24,10 @@ export const SendPageAccountPicker = () => {
 
   const sendStage = useSelector(getSendStage);
   const disabled = SEND_STAGES.EDIT === sendStage;
+  const accountListItemProps = { showOptions: false };
+  const onAccountListMenuClose = useCallback(() => {
+    setShowAccountPicker(false);
+  }, []);
 
   return (
     <SendPageRow>
@@ -59,9 +64,10 @@ export const SendPageAccountPicker = () => {
       />
       {showAccountPicker ? (
         <AccountListMenu
-          accountListItemProps={{ showOptions: false }}
+          accountListItemProps={accountListItemProps}
           showAccountCreation={false}
-          onClose={() => setShowAccountPicker(false)}
+          onClose={onAccountListMenuClose}
+          allowedAccountTypes={[EthAccountType.Eoa, EthAccountType.Erc4337]}
         />
       ) : null}
     </SendPageRow>

@@ -62,7 +62,7 @@ export default function setupEnsIpfsResolver({
 
     // We cannot show this if useAddressBarEnsResolution is off...
     if (useAddressBarEnsResolution && ipfsGateway) {
-      browser.tabs.update(tabId, { url: 'loading.html' });
+      await browser.tabs.update(tabId, { url: 'loading.html' });
     }
 
     let url = ensSiteUrl;
@@ -71,7 +71,7 @@ export default function setupEnsIpfsResolver({
     // we assume the ENS domains URL
     if (process.env.IN_TEST) {
       if (useAddressBarEnsResolution || ipfsGateway) {
-        browser.tabs.update(tabId, { url });
+        await browser.tabs.update(tabId, { url });
       }
       return;
     }
@@ -137,7 +137,7 @@ export default function setupEnsIpfsResolver({
         (useAddressBarEnsResolution ||
           (!useAddressBarEnsResolution && url !== ensSiteUrl))
       ) {
-        browser.tabs.update(tabId, { url });
+        await browser.tabs.update(tabId, { url });
       }
     }
   }

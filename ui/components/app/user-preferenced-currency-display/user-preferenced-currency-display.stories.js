@@ -35,9 +35,6 @@ export default {
     showEthLogo: {
       control: 'boolean',
     },
-    ethLogoHeight: {
-      control: 'number',
-    },
     type: {
       control: 'select',
       options: [PRIMARY, SECONDARY],

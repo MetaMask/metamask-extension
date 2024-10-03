@@ -1,28 +1,77 @@
 import { strict as assert } from 'assert';
-import { WINDOW_TITLES, getEventPayloads } from '../../../helpers';
+import { MockedEndpoint } from 'mockttp';
+import { Key } from 'selenium-webdriver/lib/input';
+import {
+  WINDOW_TITLES,
+  getEventPayloads,
+  openDapp,
+  unlockWallet,
+} from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { Mockttp } from '../../../mock-e2e';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
+export enum SignatureType {
+  PersonalSign = '#personalSign',
+  Permit = '#signPermit',
+  SignTypedDataV3 = '#signTypedDataV3',
+  SignTypedDataV4 = '#signTypedDataV4',
+  SignTypedData = '#signTypedData',
+  SIWE = '#siwe',
+  SIWE_BadDomain = '#siweBadDomain',
+}
 
-export async function assertSignatureMetrics(
-  driver: Driver,
-  mockedEndpoints: Mockttp,
-  type: string,
-  primaryType: string = '',
-  uiCustomizations = ['redesigned_confirmation'],
-) {
-  const events = await getEventPayloads(driver, mockedEndpoints);
+type AssertSignatureMetricsOptions = {
+  driver: Driver;
+  mockedEndpoints: MockedEndpoint[];
+  signatureType: string;
+  primaryType?: string;
+  uiCustomizations?: string[];
+  location?: string;
+  expectedProps?: Record<string, unknown>;
+  withAnonEvents?: boolean;
+};
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const signatureEventProperty: any = {
+type SignatureEventProperty = {
+  account_type: 'MetaMask';
+  category: 'inpage_provider';
+  chain_id: '0x539';
+  environment_type: 'background';
+  locale: 'en';
+  security_alert_reason: string;
+  security_alert_response: 'NotApplicable';
+  signature_type: string;
+  eip712_primary_type?: string;
+  ui_customizations?: string[];
+  location?: string;
+};
+
+const signatureAnonProperties = {
+  eip712_verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+  eip712_domain_version: '1',
+  eip712_domain_name: 'Ether Mail',
+};
+
+/**
+ * Generates expected signature metric properties
+ *
+ * @param signatureType
+ * @param primaryType
+ * @param uiCustomizations
+ */
+function getSignatureEventProperty(
+  signatureType: string,
+  primaryType: string,
+  uiCustomizations: string[],
+): SignatureEventProperty {
+  const signatureEventProperty: SignatureEventProperty = {
     account_type: 'MetaMask',
-    signature_type: type,
+    signature_type: signatureType,
     category: 'inpage_provider',
     chain_id: '0x539',
     environment_type: 'background',
     locale: 'en',
+    security_alert_reason: 'NotApplicable',
     security_alert_response: 'NotApplicable',
     ui_customizations: uiCustomizations,
   };
@@ -31,49 +80,141 @@ export async function assertSignatureMetrics(
     signatureEventProperty.eip712_primary_type = primaryType;
   }
 
-  assert.deepStrictEqual(
-    events[0].properties,
-    {
+  return signatureEventProperty;
+}
+
+function assertSignatureRequestedMetrics(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  events: any[],
+  signatureEventProperty: SignatureEventProperty,
+  withAnonEvents = false,
+) {
+  assertEventPropertiesMatch(events, 'Signature Requested', {
+    ...signatureEventProperty,
+    security_alert_reason: 'NotApplicable',
+  });
+
+  if (withAnonEvents) {
+    assertEventPropertiesMatch(events, 'Signature Requested Anon', {
       ...signatureEventProperty,
       security_alert_reason: 'NotApplicable',
-    },
-    'Signature request event details do not match',
+      ...signatureAnonProperties,
+    });
+  }
+}
+
+export async function assertSignatureConfirmedMetrics({
+  driver,
+  mockedEndpoints,
+  signatureType,
+  primaryType = '',
+  uiCustomizations = ['redesigned_confirmation'],
+  withAnonEvents = false,
+}: AssertSignatureMetricsOptions) {
+  const events = await getEventPayloads(driver, mockedEndpoints);
+  const signatureEventProperty = getSignatureEventProperty(
+    signatureType,
+    primaryType,
+    uiCustomizations,
   );
-  assert.deepStrictEqual(
-    events[1].properties,
+
+  assertSignatureRequestedMetrics(
+    events,
     signatureEventProperty,
-    'Signature Accepted/Rejected event properties do not match',
+    withAnonEvents,
   );
+
+  assertEventPropertiesMatch(
+    events,
+    'Signature Approved',
+    signatureEventProperty,
+  );
+
+  if (withAnonEvents) {
+    assertEventPropertiesMatch(events, 'Signature Approved Anon', {
+      ...signatureEventProperty,
+      ...signatureAnonProperties,
+    });
+  }
+}
+
+export async function assertSignatureRejectedMetrics({
+  driver,
+  mockedEndpoints,
+  signatureType,
+  primaryType = '',
+  uiCustomizations = ['redesigned_confirmation'],
+  location,
+  expectedProps = {},
+  withAnonEvents = false,
+}: AssertSignatureMetricsOptions) {
+  const events = await getEventPayloads(driver, mockedEndpoints);
+  const signatureEventProperty = getSignatureEventProperty(
+    signatureType,
+    primaryType,
+    uiCustomizations,
+  );
+
+  assertSignatureRequestedMetrics(
+    events,
+    signatureEventProperty,
+    withAnonEvents,
+  );
+
+  assertEventPropertiesMatch(events, 'Signature Rejected', {
+    ...signatureEventProperty,
+    location,
+    ...expectedProps,
+  });
+
+  if (withAnonEvents) {
+    assertEventPropertiesMatch(events, 'Signature Rejected Anon', {
+      ...signatureEventProperty,
+      ...signatureAnonProperties,
+    });
+  }
 }
 
 export async function assertAccountDetailsMetrics(
   driver: Driver,
-  mockedEndpoints: Mockttp,
+  mockedEndpoints: MockedEndpoint[],
   type: string,
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
 
-  assert.equal(events[1].event, 'Account Details Opened');
+  assertEventPropertiesMatch(events, 'Account Details Opened', {
+    action: 'Confirm Screen',
+    location: 'signature_confirmation',
+    signature_type: type,
+    category: 'Confirmations',
+    locale: 'en',
+    chain_id: '0x539',
+    environment_type: 'notification',
+  });
+}
+
+function assertEventPropertiesMatch(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  events: any[],
+  eventName: string,
+  expectedProperties: object,
+) {
+  const event = events.find((e) => e.event === eventName);
+  assert(event, `${eventName} event not found`);
   assert.deepStrictEqual(
-    events[1].properties,
-    {
-      action: 'Confirm Screen',
-      location: 'signature_confirmation',
-      signature_type: type,
-      category: 'Confirmations',
-      locale: 'en',
-      chain_id: '0x539',
-      environment_type: 'notification',
-    },
-    'Account Details Metrics do not match',
+    event.properties,
+    expectedProperties,
+    `${eventName} event properties do not match`,
   );
 }
 
 export async function clickHeaderInfoBtn(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement(
-    'button[data-testid="header-info__account-details-button"]',
+
+  const accountDetailsButton = await driver.findElement(
+    '[data-testid="header-info__account-details-button"]',
   );
+  await accountDetailsButton.sendKeys(Key.RETURN);
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
@@ -98,4 +239,14 @@ export async function copyAddressAndPasteWalletAddress(driver: Driver) {
 export async function assertPastedAddress(driver: Driver) {
   const formFieldEl = await driver.findElement('#eip747ContractAddress');
   assert.equal(await formFieldEl.getAttribute('value'), WALLET_ADDRESS);
+}
+
+export async function openDappAndTriggerSignature(
+  driver: Driver,
+  type: string,
+) {
+  await unlockWallet(driver);
+  await openDapp(driver);
+  await driver.clickElement(type);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }

@@ -34,7 +34,7 @@ import {
   TokenListItem,
 } from '../../../components/multichain';
 import { AssetType } from '../../../../shared/constants/transaction';
-import TokenCell from '../../../components/app/token-cell';
+import TokenCell from '../../../components/app/assets/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
 import { getPricePrecision, localizeLargeNumber } from '../util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -166,6 +166,7 @@ const AssetPage = ({
         {type === AssetType.native ? (
           <CoinButtons
             {...{
+              trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
               isSwapsChain,

@@ -2,7 +2,7 @@ import {
   ETH_TOKEN_IMAGE_URL,
   TEST_ETH_TOKEN_IMAGE_URL,
   BNB_TOKEN_IMAGE_URL,
-  MATIC_TOKEN_IMAGE_URL,
+  POL_TOKEN_IMAGE_URL,
   AVAX_TOKEN_IMAGE_URL,
   CURRENCY_SYMBOLS,
   CHAIN_IDS,
@@ -70,11 +70,11 @@ export const BNB_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
 } as const;
 
 export const MATIC_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
-  symbol: CURRENCY_SYMBOLS.MATIC,
-  name: 'Matic',
+  symbol: CURRENCY_SYMBOLS.POL,
+  name: 'Polygon',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: MATIC_TOKEN_IMAGE_URL,
+  iconUrl: POL_TOKEN_IMAGE_URL,
 } as const;
 
 export const AVAX_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
@@ -175,14 +175,14 @@ export const GAS_API_BASE_URL = 'https://gas.api.cx.metamask.io';
 export const GAS_DEV_API_BASE_URL = 'https://gas.uat-api.cx.metamask.io';
 
 const BSC_DEFAULT_BLOCK_EXPLORER_URL = 'https://bscscan.com/';
-const MAINNET_DEFAULT_BLOCK_EXPLORER_URL = 'https://etherscan.io/';
+export const MAINNET_DEFAULT_BLOCK_EXPLORER_URL = 'https://etherscan.io/';
 const GOERLI_DEFAULT_BLOCK_EXPLORER_URL = 'https://goerli.etherscan.io/';
 const POLYGON_DEFAULT_BLOCK_EXPLORER_URL = 'https://polygonscan.com/';
 const AVALANCHE_DEFAULT_BLOCK_EXPLORER_URL = 'https://snowtrace.io/';
 const OPTIMISM_DEFAULT_BLOCK_EXPLORER_URL = 'https://optimistic.etherscan.io/';
 const ARBITRUM_DEFAULT_BLOCK_EXPLORER_URL = 'https://arbiscan.io/';
 const ZKSYNC_DEFAULT_BLOCK_EXPLORER_URL = 'https://explorer.zksync.io/';
-const LINEA_DEFAULT_BLOCK_EXPLORER_URL = 'https://lineascan.build/';
+export const LINEA_DEFAULT_BLOCK_EXPLORER_URL = 'https://lineascan.build/';
 const BASE_DEFAULT_BLOCK_EXPLORER_URL = 'https://basescan.org/';
 
 export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
