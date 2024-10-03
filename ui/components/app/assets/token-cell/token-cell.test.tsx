@@ -9,6 +9,7 @@ import { getTokenList } from '../../../../selectors';
 import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {
@@ -99,6 +100,9 @@ describe('Token Cell', () => {
     }
     if (selector === getMultichainCurrentChainId) {
       return '0x89';
+    }
+    if (selector === getIntlLocale) {
+      return 'en-US';
     }
     return undefined;
   });
