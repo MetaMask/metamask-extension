@@ -81,7 +81,6 @@ describe('Chain Interactions', function () {
 
         // approve and switch chain
         await driver.clickElement({ text: 'Approve', tag: 'button' });
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // switch to extension
         await driver.switchToWindowWithTitle(
