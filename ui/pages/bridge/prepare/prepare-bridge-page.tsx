@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import {
+  resetBridgeState,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
@@ -108,6 +109,11 @@ const PrepareBridgePage = () => {
   useEffect(() => {
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, Object.values(quoteParams));
+
+  useEffect(() => {
+    // Reset controller and inputs on load
+    dispatch(resetBridgeState());
+  }, []);
 
   return (
     <div className="prepare-bridge-page">
