@@ -44,7 +44,7 @@ describe('Block Explorer', function () {
           url: 'https://etherscan.io/address/0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
         });
 
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Empty page by MetaMask',
           tag: 'body',
         });
@@ -99,7 +99,7 @@ describe('Block Explorer', function () {
           url: 'https://etherscan.io/token/0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
         });
 
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Empty page by MetaMask',
           tag: 'body',
         });
@@ -147,7 +147,7 @@ describe('Block Explorer', function () {
           url: 'https://etherscan.io/tx/0xe5e7b95690f584b8f66b33e31acc6184fea553fa6722d42486a59990d13d5fa2',
         });
 
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Empty page by MetaMask',
           tag: 'body',
         });
