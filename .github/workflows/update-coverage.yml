@@ -15,6 +15,10 @@ on:
     - cron: 0 0 * * *
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update-coverage:
     name: Update coverage
@@ -29,8 +33,8 @@ jobs:
 
       - name: Create branch, commit, and push
         run: |
-          git config user.name "MetaMask Bot"
-          git config user.email "metamaskbot@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b update-coverage
           git add coverage.json
           git commit -m "chore: Update coverage.json"
