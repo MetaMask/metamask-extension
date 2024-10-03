@@ -18,6 +18,13 @@ const ECMA_SIZES = {
   Float64Array: 8,
 };
 
+/**
+ * Get the size of a primitive value.
+ *
+ * @param {unknown} data - The primitive value to measure.
+ * @param {ReturnType<typeof unknown>} dataType - The type of the value.
+ * @throws Throws if the type is not a recognized primitive value.
+ */
 function getPrimitiveSize(data, dataType) {
   if (data === null || data === undefined) {
     return 1;
@@ -46,16 +53,25 @@ function isPrimitive(data, dataType) {
 }
 
 /**
- * Main module's entry point
- * Calculates Bytes for the provided parameter
+ * Assert that the data is below a certain size, in bytes.
  *
- * @param data - handles object/string/boolean/buffer
- * @param maxSize
- * @returns {*}
+ * The size of the data is estimated piece by piece, halting and throwing an
+ * error if the maximum size is reached.
+ *
+ * @param {unknown} data - The data to measure.
+ * @param {number} [maxSize] - The maximum size, in bytes.
+ * @throws Throws if the estimated size of the data exceeds the maximum size.
  */
 export function assertObjectMaxSize(data, maxSize = 0) {
   let size = 0;
 
+  /**
+   * Count the size of a primitive value.
+   *
+   * @param {unknown} value - The value to count.
+   * @param {ReturnType<typeof unknown>} valueType - The type of the value.
+   * @throws Throws if the estimated size of all data counted so far exceeds the maximum size.
+   */
   function countPrimitiveSize(value, valueType) {
     size += getPrimitiveSize(value, valueType);
     if (size > maxSize) {
@@ -71,6 +87,13 @@ export function assertObjectMaxSize(data, maxSize = 0) {
 
   const objects = [data];
 
+  /**
+   * Count the size of a value. If the value is a non-primitive value, it's registered as an object
+   * to be counted later.
+   *
+   * @param {unknown} value - The value to count.
+   * @throws Throws if the estimated size of all data counted so far exceeds the maximum size.
+   */
   function countValueSize(value) {
     const valueType = typeof value;
     if (isPrimitive(value, valueType)) {
