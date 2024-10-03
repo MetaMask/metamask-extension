@@ -16,6 +16,9 @@ import { selectPaymasterAddress } from '../../../../../../../selectors/account-a
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useFourByte } from '../../hooks/useFourByte';
+import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { PRIMARY } from '../../../../../../../helpers/constants/common';
+import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -83,6 +86,30 @@ export const MethodDataRow = () => {
   );
 };
 
+export const AmountRow = () => {
+  const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currency } = useUserPreferencedCurrency(PRIMARY);
+
+  const value = currentConfirmation?.txParams?.value;
+  const simulationData = currentConfirmation?.simulationData;
+
+  if (!value || value === '0x' || simulationData?.error) {
+    return null;
+  }
+
+  return (
+    <ConfirmInfoSection>
+      <ConfirmInfoRow
+        data-testid="transaction-details-amount-row"
+        label={t('amount')}
+      >
+        <ConfirmInfoRowCurrency value={value} currency={currency} />
+      </ConfirmInfoRow>
+    </ConfirmInfoSection>
+  );
+};
+
 const PaymasterRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -124,6 +151,7 @@ export const TransactionDetails = () => {
         <RecipientRow />
         {showAdvancedDetails && <MethodDataRow />}
       </ConfirmInfoSection>
+      <AmountRow />
       <PaymasterRow />
     </>
   );

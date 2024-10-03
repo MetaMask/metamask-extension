@@ -39,4 +39,14 @@ describe('<TransactionDetails />', () => {
     );
     expect(container).toMatchSnapshot();
   });
+
+  it('renders component for transaction details with amount', () => {
+    const state = getMockContractInteractionConfirmState();
+    const mockStore = configureMockStore(middleware)(state);
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TransactionDetails />,
+      mockStore,
+    );
+    expect(getByTestId('transaction-details-amount-row')).toBeInTheDocument();
+  });
 });
