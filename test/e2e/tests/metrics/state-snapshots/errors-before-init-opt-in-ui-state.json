@@ -74,6 +74,10 @@
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": null,
+      "metaMetricsDataDeletionTimestamp": 0
+    },
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networksMetadata": {
@@ -108,10 +112,12 @@
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
-        "useNativeCurrencyAsPrimaryCurrency": true,
+        "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
         "showConfirmationAdvancedDetails": false,
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+        "showMultiRpcModal": "boolean",
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",

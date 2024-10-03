@@ -124,6 +124,10 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
+  "MetaMetricsDataDeletionController": {
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0
+  },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
@@ -139,10 +143,10 @@
         "status": "available"
       }
     },
-    "networkConfigurations": "object"
+    "networkConfigurationsByChainId": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    "orderedNetworkList": { "0": "object", "1": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -207,11 +211,13 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
+      "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean",
+      "showMultiRpcModal": "boolean",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",

@@ -59,6 +59,8 @@ const removedBackgroundFields = [
   'AppStateController.lastInteractedConfirmationInfo',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
+  // This property is timing-dependent
+  'MetaMetricsController.latestNonAnonymousEventTimestamp',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
@@ -245,7 +247,7 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -276,7 +278,7 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -317,7 +319,7 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -363,7 +365,7 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -424,7 +426,7 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryInvariantMigrationError,
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -473,7 +475,7 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -519,7 +521,7 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -583,7 +585,7 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -619,7 +621,7 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -654,7 +656,7 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -700,7 +702,7 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, ganacheServer, mockedEndpoint }) => {
@@ -764,7 +766,7 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, mockedEndpoint }) => {
@@ -808,7 +810,7 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
-            doNotForceSentryForThisTest: true,
+            sentry: { doNotForceSentryForThisTest: true },
           },
         },
         async ({ driver, ganacheServer, mockedEndpoint }) => {
@@ -896,7 +898,7 @@ describe('Sentry errors', function () {
         ganacheOptions,
         title: this.test.fullTitle(),
         manifestFlags: {
-          doNotForceSentryForThisTest: true,
+          sentry: { doNotForceSentryForThisTest: true },
         },
       },
       async ({ driver }) => {

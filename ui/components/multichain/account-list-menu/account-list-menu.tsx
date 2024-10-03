@@ -18,6 +18,8 @@ import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
   BitcoinWalletSnapSender,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -57,6 +59,7 @@ import {
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getIsWatchEthereumAccountEnabled,
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -64,7 +67,6 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
-  getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -78,10 +80,18 @@ import {
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import {
+  ACCOUNT_WATCHER_NAME,
+  ACCOUNT_WATCHER_SNAP_ID,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
@@ -93,10 +103,6 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import {
-  ACCOUNT_WATCHER_NAME,
-  ACCOUNT_WATCHER_SNAP_ID,
-} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -106,9 +112,9 @@ const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for watch-only account)
   ADD_WATCH_ONLY: 'add-watch-only',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
   // Same but for testnet
@@ -132,9 +138,9 @@ export const getActionTitle = (
   switch (actionMode) {
     case ACTION_MODES.ADD:
     case ACTION_MODES.MENU:
-    case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    case ACTION_MODES.ADD_WATCH_ONLY:
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccount');
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
@@ -225,6 +231,7 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
@@ -242,7 +249,7 @@ export const AccountListMenu = ({
     onClose();
     history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
   }, [trackEvent, onClose, history]);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinTestnetSupportEnabled = useSelector(
     getIsBitcoinTestnetSupportEnabled,
@@ -544,19 +551,23 @@ export const AccountListMenu = ({
               </Box>
               ///: END:ONLY_INCLUDE_IF
             }
-            {isAddWatchEthereumAccountEnabled && (
-              <Box marginTop={4}>
-                <ButtonLink
-                  disabled={!isAddWatchEthereumAccountEnabled}
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Eye}
-                  onClick={handleAddWatchAccount}
-                  data-testid="multichain-account-menu-popover-add-watch-only-account"
-                >
-                  {t('addEthereumWatchOnlyAccount')}
-                </ButtonLink>
-              </Box>
-            )}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              isAddWatchEthereumAccountEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={!isAddWatchEthereumAccountEnabled}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Eye}
+                    onClick={handleAddWatchAccount}
+                    data-testid="multichain-account-menu-popover-add-watch-only-account"
+                  >
+                    {t('addEthereumWatchOnlyAccount')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
           </Box>
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (

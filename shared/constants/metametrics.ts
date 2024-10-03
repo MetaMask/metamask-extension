@@ -156,7 +156,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
-  successEvent?: string;
+  successEvent: string;
   /**
    * The event name to fire when the fragment is closed with a rejection.
    */
@@ -169,7 +169,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event category to use for both the success and failure events.
    */
-  category?: string;
+  category: string;
   /**
    * Should this fragment be persisted in state and progressed after the
    * extension is locked and unlocked.
@@ -446,9 +446,9 @@ export enum MetaMetricsUserTrait {
    */
   TokenDetectionEnabled = 'token_detection_enabled',
   /**
-   * Identified when the user enables native currency.
+   * Identified when show native token as main balance is toggled.
    */
-  UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
+  ShowNativeTokenAsMainBalance = 'show_native_token_as_main_balance',
   /**
    * Identified when the security provider feature is enabled.
    */
@@ -468,6 +468,10 @@ export enum MetaMetricsUserTrait {
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IF
   PetnameAddressCount = 'petname_addresses_count',
+  /**
+   * Identified when the user selects a currency from settings
+   */
+  CurrentCurrency = 'current_currency',
 }
 
 /**
@@ -503,6 +507,8 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
+  AccountsSyncAdded = 'Accounts Sync Added',
+  AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
@@ -514,6 +520,7 @@ export enum MetaMetricsEventName {
   BridgeLinkClicked = 'Bridge Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
+  CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
@@ -569,7 +576,6 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
   OnboardingWalletCreationComplete = 'Wallet Created',
-  OnboardingWalletSetupComplete = 'Application Opened',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
@@ -593,6 +599,9 @@ export enum MetaMetricsEventName {
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
+  SignatureApprovedAnon = 'Signature Approved Anon',
+  SignatureRejectedAnon = 'Signature Rejected Anon',
+  SignatureRequestedAnon = 'Signature Requested Anon',
   SimulationFails = 'Simulation Fails',
   SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
   SrpRevealStarted = 'Reveal SRP Initiated',
@@ -623,12 +632,14 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
-  UseNativeCurrencyAsPrimaryCurrency = 'Use Native Currency as Primary Currency',
+  ShowNativeTokenAsMainBalance = 'Show native token as main balance',
   WalletSetupStarted = 'Wallet Setup Selected',
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
+  // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
+  // END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   DeeplinkClicked = 'Deeplink Clicked',
   ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
@@ -763,6 +774,7 @@ export enum MetaMetricsEventCategory {
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
   Phishing = 'Phishing',
+  ProfileSyncing = 'Profile Syncing',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
   Send = 'Send',
@@ -848,4 +860,19 @@ export enum MetaMetricsEventUiCustomization {
  */
 export enum MetaMetricsContextProp {
   PageTitle = 'location',
+}
+
+/**
+ * The status on which to filter the returned regulations.
+ * Mentioned here: https://docs.segmentapis.com/tag/Deletion-and-Suppression#operation/listRegulationsFromSource
+ */
+export enum DeleteRegulationStatus {
+  Failed = 'FAILED',
+  Finished = 'FINISHED',
+  Initialized = 'INITIALIZED',
+  Invalid = 'INVALID',
+  NotSupported = 'NOT_SUPPORTED',
+  PartialSuccess = 'PARTIAL_SUCCESS',
+  Running = 'RUNNING',
+  Unknown = 'UNKNOWN',
 }

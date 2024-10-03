@@ -63,7 +63,9 @@ const SIWESignInfo: React.FC = () => {
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
         <ConfirmInfoRowDate
-          date={DateTime.fromISO(issuedAt).toJSDate().getTime()}
+          unixTimestamp={DateTime.fromISO(issuedAt, {
+            zone: 'utc',
+          }).toUnixInteger()}
         />
       </ConfirmInfoRow>
       {requestId && (

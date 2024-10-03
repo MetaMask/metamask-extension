@@ -84,7 +84,7 @@ export type PreferencesControllerMessenger = RestrictedControllerMessenger<
 >;
 
 type PreferencesControllerOptions = {
-  networkConfigurations?: Record<string, { chainId: Hex }>;
+  networkConfigurationsByChainId?: Record<Hex, { chainId: Hex }>;
   initState?: Partial<PreferencesControllerState>;
   initLangCode?: string;
   messenger: PreferencesControllerMessenger;
@@ -96,14 +96,17 @@ export type Preferences = {
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
   smartTransactionsOptInStatus: boolean | null;
+  showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
   redesignedConfirmationsEnabled: boolean;
   redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
+  showMultiRpcModal: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
+  shouldShowAggregatedBalancePopover: boolean;
 };
 
 export type PreferencesControllerState = {
@@ -121,7 +124,9 @@ export type PreferencesControllerState = {
   useRequestQueue: boolean;
   openSeaEnabled: boolean;
   securityAlertsEnabled: boolean;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
   addSnapAccountEnabled: boolean;
@@ -170,7 +175,7 @@ export default class PreferencesController {
    */
   constructor(opts: PreferencesControllerOptions) {
     const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
-      opts.networkConfigurations ?? {},
+      opts.networkConfigurationsByChainId ?? {},
     ).reduce((acc: Record<Hex, boolean>, element) => {
       acc[element.chainId] = true;
       return acc;
@@ -222,14 +227,17 @@ export default class PreferencesController {
         showFiatInTestnets: false,
         showTestNetworks: false,
         smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
+        showNativeTokenAsMainBalance: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
         redesignedTransactionsEnabled: true,
         featureNotificationsEnabled: false,
+        showMultiRpcModal: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
+        shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -423,6 +431,7 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
@@ -434,6 +443,7 @@ export default class PreferencesController {
       watchEthereumAccountEnabled,
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `bitcoinSupportEnabled` property.
@@ -521,8 +531,11 @@ export default class PreferencesController {
    */
   addKnownMethodData(fourBytePrefix: string, methodData: string): void {
     const { knownMethodData } = this.store.getState();
-    knownMethodData[fourBytePrefix] = methodData;
-    this.store.updateState({ knownMethodData });
+
+    const updatedKnownMethodData = { ...knownMethodData };
+    updatedKnownMethodData[fourBytePrefix] = methodData;
+
+    this.store.updateState({ knownMethodData: updatedKnownMethodData });
   }
 
   /**
@@ -765,11 +778,16 @@ export default class PreferencesController {
     const addresses = Object.values(accounts).map((account) =>
       account.address.toLowerCase(),
     );
-    Object.keys(identities).forEach((identity) => {
-      if (addresses.includes(identity.toLowerCase())) {
-        lostIdentities[identity] = identities[identity];
-      }
-    });
+
+    const updatedLostIdentities = Object.keys(identities).reduce(
+      (acc, identity) => {
+        if (addresses.includes(identity.toLowerCase())) {
+          acc[identity] = identities[identity];
+        }
+        return acc;
+      },
+      { ...(lostIdentities ?? {}) },
+    );
 
     const updatedIdentities = Object.values(accounts).reduce(
       (identitiesMap: Record<string, AccountIdentityEntry>, account) => {
@@ -786,7 +804,7 @@ export default class PreferencesController {
 
     this.store.updateState({
       identities: updatedIdentities,
-      lostIdentities,
+      lostIdentities: updatedLostIdentities,
       selectedAddress: selectedAccount?.address || '', // it will be an empty string during onboarding
     });
   }

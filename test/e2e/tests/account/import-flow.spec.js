@@ -58,6 +58,11 @@ describe('Import flow @no-mmi', function () {
 
         // Show account information
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        // Wait until account list is loaded to mitigate race condition
+        await driver.waitForSelector({
+          text: 'Account 1',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
         );
@@ -99,6 +104,11 @@ describe('Import flow @no-mmi', function () {
 
         // choose Create account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        // Wait until account list is loaded to mitigate race condition
+        await driver.waitForSelector({
+          text: 'Account 1',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
@@ -132,7 +142,7 @@ describe('Import flow @no-mmi', function () {
         await locateAccountBalanceDOM(driver, ganacheServer);
         await openActionMenuAndStartSendFlow(driver);
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await driver.fill('input[placeholder="0"]', '1');
@@ -182,6 +192,11 @@ describe('Import flow @no-mmi', function () {
 
         // Show account information
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        // Wait until account list is loaded to mitigate race condition
+        await driver.waitForSelector({
+          text: 'Account 1',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
         );
@@ -226,6 +241,11 @@ describe('Import flow @no-mmi', function () {
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        // Wait until account list is loaded to mitigate race condition
+        await driver.waitForSelector({
+          text: 'Account 1',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
@@ -249,6 +269,11 @@ describe('Import flow @no-mmi', function () {
           text: 'Imported',
         });
 
+        // Wait until account list is loaded to mitigate race condition
+        await driver.waitForSelector({
+          text: 'Account 4',
+          tag: 'span',
+        });
         // Imports Account 5 with private key
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -307,6 +332,11 @@ describe('Import flow @no-mmi', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
         // Imports an account with JSON file
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        // Wait until account list is loaded to mitigate race condition
+        await driver.waitForSelector({
+          text: 'Account 1',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
@@ -372,6 +402,11 @@ describe('Import flow @no-mmi', function () {
 
         // choose Import Account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        // Wait until account list is loaded to mitigate race condition
+        await driver.waitForSelector({
+          text: 'Account 1',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
@@ -406,6 +441,12 @@ describe('Import flow @no-mmi', function () {
 
         // choose Connect hardware wallet from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
+
+        // Wait until account list is loaded to mitigate race condition
+        await driver.waitForSelector({
+          text: 'Account 1',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );

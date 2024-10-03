@@ -580,6 +580,38 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('Change Signature XXX anonymous event names', function () {
+    it.each([
+      ['Signature Requested', 'Signature Requested Anon'],
+      ['Signature Rejected', 'Signature Rejected Anon'],
+      ['Signature Approved', 'Signature Approved Anon'],
+    ])(
+      'should change "%s" anonymous event names to "%s"',
+      (eventType, anonEventType) => {
+        const metaMetricsController = getMetaMetricsController();
+        const spy = jest.spyOn(segment, 'track');
+        metaMetricsController.submitEvent({
+          event: eventType,
+          category: 'Unit Test',
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+          sensitiveProperties: { foo: 'bar' },
+        });
+
+        expect(spy).toHaveBeenCalledTimes(2);
+
+        expect(spy.mock.calls[0][0]).toMatchObject({
+          event: anonEventType,
+          properties: { foo: 'bar', ...DEFAULT_EVENT_PROPERTIES },
+        });
+
+        expect(spy.mock.calls[1][0]).toMatchObject({
+          event: eventType,
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+        });
+      },
+    );
+  });
+
   describe('Change Transaction XXX anonymous event namnes', function () {
     it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', function () {
       const metaMetricsController = getMetaMetricsController();
@@ -1056,7 +1088,7 @@ describe('MetaMetricsController', function () {
         securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
         security_providers: [],
         names: {
           [NameType.ETHEREUM_ADDRESS]: {
@@ -1111,7 +1143,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
-        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: true,
+        [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: true,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
@@ -1149,7 +1181,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1176,7 +1208,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: false,
+        showNativeTokenAsMainBalance: false,
       });
 
       expect(updatedTraits).toStrictEqual({
@@ -1184,7 +1216,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.NumberOfAccounts]: 3,
         [MetaMetricsUserTrait.NumberOfTokens]: 1,
         [MetaMetricsUserTrait.OpenseaApiEnabled]: false,
-        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: false,
+        [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
       });
     });
 
@@ -1213,7 +1245,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1235,7 +1267,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
       });
       expect(updatedTraits).toStrictEqual(null);
     });
