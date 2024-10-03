@@ -204,7 +204,7 @@ describe('rampsSlice', () => {
       expect(getIsNativeTokenBuyable(state)).toBe(false);
     });
 
-    it('should return true when Bitcoin is buyable', () => {
+    it('should return true when Bitcoin is buyable and current chain is Bitcoin', () => {
       getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(true);
       const mockBuyableChains = [
@@ -218,7 +218,7 @@ describe('rampsSlice', () => {
       expect(getIsNativeTokenBuyable(state)).toBe(true);
     });
 
-    it('should return false when Bitcoin is not buyable', () => {
+    it('should return false when Bitcoin is not buyable and current chain is Bitcoin', () => {
       getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(true);
       const mockBuyableChains = [
