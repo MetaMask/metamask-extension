@@ -37,7 +37,6 @@ import {
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
-import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import AssetListControlBar from './asset-list-control-bar';
 import NativeToken from './native-token';
 
@@ -57,14 +56,11 @@ export type AssetListProps = {
 };
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
-  const [tokenList, setTokenList] = useState<TokenWithBalance[]>([]);
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
-
-  const { loading } = useAccountTotalFiatBalance();
 
   const {
     currency: primaryCurrency,
@@ -117,14 +113,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             margin={4}
           />
         )}
-      <AssetListControlBar
-        setTokenList={setTokenList}
-        showTokensLinks={showTokensLinks}
-      />
+      <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenList
         nativeToken={<NativeToken onClickAsset={onClickAsset} />}
-        tokens={tokenList}
-        loading={loading}
         onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);
           trackEvent({
