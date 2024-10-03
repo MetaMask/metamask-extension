@@ -36,10 +36,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b update-coverage
-          git pull
           git add coverage.json
           git commit -m "chore: Update coverage.json"
-          git push origin update-coverage
+          git push -f origin update-coverage
 
       - name: Create pull request
         env:
