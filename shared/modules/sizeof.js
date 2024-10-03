@@ -41,6 +41,10 @@ function getPrimitiveSize(data, dataType) {
   }
 }
 
+function isPrimitive(data, dataType) {
+  return data === null || dataType !== 'object';
+}
+
 /**
  * Main module's entry point
  * Calculates Bytes for the provided parameter
@@ -51,12 +55,17 @@ function getPrimitiveSize(data, dataType) {
  */
 export function assertObjectMaxSize(data, maxSize = 0) {
   let size = 0;
-  const topLevelType = typeof data;
-  if (data === null || topLevelType !== 'object') {
-    size = getPrimitiveSize(data, topLevelType);
+
+  function countPrimitiveSize(value, valueType) {
+    size += getPrimitiveSize(value, valueType);
     if (size > maxSize) {
       throw new Error('object exceeded max size');
     }
+  }
+
+  const topLevelType = typeof data;
+  if (isPrimitive(data, topLevelType)) {
+    countPrimitiveSize(data, topLevelType);
     return;
   }
 
@@ -64,13 +73,10 @@ export function assertObjectMaxSize(data, maxSize = 0) {
 
   function countValueSize(value) {
     const valueType = typeof value;
-    if (value !== null && valueType === 'object') {
-      objects.push(value);
+    if (isPrimitive(value, valueType)) {
+      countPrimitiveSize(value, valueType);
     } else {
-      size += getPrimitiveSize(value, valueType);
-      if (size > maxSize) {
-        throw new Error('object exceeded max size');
-      }
+      objects.push(value);
     }
   }
 
