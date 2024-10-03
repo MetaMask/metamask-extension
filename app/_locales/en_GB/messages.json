@@ -997,12 +997,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
-  "confirmAlertModalDetails": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Your assets may be at risk"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
   },
@@ -1939,10 +1933,6 @@
   },
   "feeDetails": {
     "message": "Fee details"
-  },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "File import not working? Click here!",
@@ -3172,9 +3162,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
-  "noConversionDateAvailable": {
-    "message": "No currency conversion date available"
-  },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
@@ -4012,12 +3999,6 @@
   },
   "priceUnavailable": {
     "message": "price unavailable"
-  },
-  "primaryCurrencySetting": {
-    "message": "Primary currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
   "primaryType": {
     "message": "Primary type"
@@ -6230,9 +6211,6 @@
   },
   "updateRequest": {
     "message": "Update request"
-  },
-  "updatedWithDate": {
-    "message": "Updated $1"
   },
   "uploadDropFile": {
     "message": "Drop your file here"

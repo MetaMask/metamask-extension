@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Uyarıyı kabul ediyor ve yine de ilerlemek istiyorum"
   },
-  "confirmAlertModalDetails": {
-    "message": "Oturum açarsanız dolandırıcıklarla bilinen üçüncü bir taraf tüm varlıklarınızı ele geçirebilir. İlerlemeden önce lütfen uyarıları inceleyin."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Varlıklarınız risk altında olabilir"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Devam et düğmesine tıkladığınızda sizi şuraya yönlendireceğiz: $1."
   },
@@ -1878,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "Ücret bilgileri"
-  },
-  "fiat": {
-    "message": "Fiat Para",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
@@ -3098,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
   },
-  "noConversionDateAvailable": {
-    "message": "Para birimi dönüşüm tarihi mevcut değil"
-  },
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
@@ -3920,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "fiyat mevcut değil"
-  },
-  "primaryCurrencySetting": {
-    "message": "Öncelikli para birimi"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Değerlerin zincirin yerli para biriminde (ör. ETH) görüntülenmesini önceliklendirmek için yerli seçimi yapın. Seçtiğiniz fiat parada değerlerin gösterilmesini önceliklendirmek için Fiat Para seçin."
   },
   "primaryType": {
     "message": "Öncelikli tür"
@@ -6090,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "Talebi güncelle"
-  },
-  "updatedWithDate": {
-    "message": "$1 güncellendi"
   },
   "uploadDropFile": {
     "message": "Dosyanızı buraya sürükleyin"

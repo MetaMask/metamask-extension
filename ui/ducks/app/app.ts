@@ -34,6 +34,7 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
+  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
@@ -104,7 +105,7 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
 };
 
-type AppSliceState = {
+export type AppSliceState = {
   appState: AppState;
 };
 
@@ -127,6 +128,7 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
+  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
@@ -261,6 +263,18 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: true,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: false,
       };
 
     case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:

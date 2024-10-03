@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Έχω ενημερωθεί για την ειδοποίηση και εξακολουθώ να θέλω να συνεχίσω"
   },
-  "confirmAlertModalDetails": {
-    "message": "Εάν συνδεθείτε, ένας τρίτος που είναι γνωστός για απάτες μπορεί να αποκτήσει όλα τα περιουσιακά σας στοιχεία. Ελέγξτε τις ειδοποιήσεις πριν συνεχίσετε."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Τα περιουσιακά σας στοιχεία μπορεί να κινδυνεύουν"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Θα σας ανακατευθύνουμε στο $1 όταν κάνετε κλικ για να συνεχίσετε."
   },
@@ -1878,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "Λεπτομέρειες χρεώσεων"
-  },
-  "fiat": {
-    "message": "Εντολή",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
@@ -3098,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
   },
-  "noConversionDateAvailable": {
-    "message": "Δεν υπάρχει διαθέσιμη ημερομηνία μετατροπής νομίσματος"
-  },
   "noConversionRateAvailable": {
     "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
   },
@@ -3920,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "μη διαθέσιμη τιμή"
-  },
-  "primaryCurrencySetting": {
-    "message": "Κύριο νόμισμα"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Επιλέξτε εγχώριο για να δώσετε προτεραιότητα στην εμφάνιση των τιμών στο νόμισμα της αλυσίδας (π.χ. ETH). Επιλέξτε Παραστατικό για να δώσετε προτεραιότητα στην εμφάνιση τιμών στο επιλεγμένο παραστατικό νόμισμα."
   },
   "primaryType": {
     "message": "Βασικός τύπος"
@@ -6090,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "Αίτημα ενημέρωσης"
-  },
-  "updatedWithDate": {
-    "message": "Ενημερώθηκε $1"
   },
   "uploadDropFile": {
     "message": "Αφήστε το αρχείο σας εδώ"

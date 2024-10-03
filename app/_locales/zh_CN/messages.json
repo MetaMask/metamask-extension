@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "我已知晓提醒并仍想继续"
   },
-  "confirmAlertModalDetails": {
-    "message": "如果您登录，以欺诈闻名的第三方可能会拿走您的所有资产。在继续操作之前，请查看提醒。"
-  },
-  "confirmAlertModalTitle": {
-    "message": "您的资产可能面临风险"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "点击“继续”后，我们会将您重定向到 $1。"
   },
@@ -1878,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "费用详情"
-  },
-  "fiat": {
-    "message": "法币",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
@@ -3098,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask 未连接到此站点"
   },
-  "noConversionDateAvailable": {
-    "message": "没有可用的货币转换日期"
-  },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
   },
@@ -3920,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "价格不可用"
-  },
-  "primaryCurrencySetting": {
-    "message": "主要货币"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "选择原生以优先显示链的原生货币（例如 ETH）的值。选择法币以优先显示以您所选法币显示的值。"
   },
   "primaryType": {
     "message": "主要类型"
@@ -6090,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "更新请求"
-  },
-  "updatedWithDate": {
-    "message": "已于 $1 更新"
   },
   "uploadDropFile": {
     "message": "将您的文件放在此处"

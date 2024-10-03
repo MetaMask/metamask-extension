@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "J’ai pris connaissance de l’alerte, mais je souhaite quand même continuer"
   },
-  "confirmAlertModalDetails": {
-    "message": "Si vous vous connectez, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs. Veuillez examiner les alertes avant de continuer."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Vous risquez de perdre tout ou partie de vos actifs"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Nous vous redirigerons vers $1 une fois que vous cliquerez sur « Continuer »."
   },
@@ -1878,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "Détails des frais"
-  },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
@@ -3098,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask n’est pas connecté à ce site"
   },
-  "noConversionDateAvailable": {
-    "message": "Aucune date de conversion des devises n’est disponible"
-  },
   "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
   },
@@ -3920,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "prix non disponible"
-  },
-  "primaryCurrencySetting": {
-    "message": "Devise principale"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Sélectionnez « natif » pour donner la priorité à l’affichage des valeurs dans la devise native de la chaîne (par ex. ETH). Sélectionnez « fiduciaire » pour donner la priorité à l’affichage des valeurs dans la devise de votre choix."
   },
   "primaryType": {
     "message": "Type principal"
@@ -6090,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "Demande de mise à jour"
-  },
-  "updatedWithDate": {
-    "message": "Mis à jour $1"
   },
   "uploadDropFile": {
     "message": "Déposez votre fichier ici"

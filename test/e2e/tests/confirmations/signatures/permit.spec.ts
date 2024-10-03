@@ -46,11 +46,6 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
-        await assertAccountDetailsMetrics(
-          driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-        );
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
@@ -59,6 +54,12 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
+
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData_v4',
+        );
 
         await assertSignatureConfirmedMetrics({
           driver,
@@ -126,7 +127,7 @@ async function assertInfoValues(driver: Driver) {
     css: '.name__value',
     text: '0x5B38D...eddC4',
   });
-  const value = driver.findElement({ text: '3,000' });
+  const value = driver.findElement({ text: '<0.000001' });
   const nonce = driver.findElement({ text: '0' });
   const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
 
