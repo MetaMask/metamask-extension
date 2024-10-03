@@ -128,20 +128,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   // Accessibility improvement for popover
   const lastItemRef = React.useRef(null);
 
-  const portfolioSpendingCapsUrl = useMemo(
-    () =>
-      getPortfolioUrl(
-        '',
-        'global_menu',
-        metaMetricsId,
-        isMetaMetricsEnabled,
-        isMarketingEnabled,
-        account.address,
-        'spending-caps',
-      ),
-    [account.address, isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId],
-  );
-
   React.useEffect(() => {
     const lastItem = lastItemRef.current;
     const handleKeyDown = (event) => {
@@ -327,6 +313,16 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       <MenuItem
         iconName={IconName.SecurityUser}
         onClick={() => {
+          const portfolioSpendingCapsUrl = getPortfolioUrl(
+            '',
+            'global_menu',
+            metaMetricsId,
+            isMetaMetricsEnabled,
+            isMarketingEnabled,
+            account.address,
+            'spending-caps',
+          );
+
           global.platform.openTab({ url: portfolioSpendingCapsUrl });
 
           trackEvent({
