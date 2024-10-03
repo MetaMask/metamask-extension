@@ -29,7 +29,7 @@ jobs:
 
       - name: Update coverage
         run: |
-          echo "{ \"coverage\": 71 }" > coverage.json
+          echo "{ \"coverage\": 72 }" > coverage.json
 
       - name: Create branch, commit, and push
         run: |
