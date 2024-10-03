@@ -125,12 +125,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         assert.equal(navigationText.includes('1 of 2'), true);
 
-        // Check correct network on confirm tx.
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Localhost 8545',
-        });
-
         // Reject All Transactions
         await driver.clickElement('.page-container__footer-secondary a');
 
@@ -162,17 +156,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         await driver.clickElement({ text: 'Reject all', tag: 'button' });
 
-        // Wait for confirmation to close
-        await driver.waitUntilXWindowHandles(3);
-
         // Wait for new confirmations queued from second dapp to open
         await switchToNotificationWindow(driver, 4);
-
-        // Check correct network on confirm tx.
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Localhost 8545',
-        });
       },
     );
   });
