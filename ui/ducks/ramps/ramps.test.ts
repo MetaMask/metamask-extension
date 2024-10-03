@@ -213,7 +213,6 @@ describe('rampsSlice', () => {
           buyableChains: [null, null, null],
         },
       };
-      n;
       expect(getIsNativeTokenBuyable(mockCorruptedState)).toBe(false);
     });
   });
