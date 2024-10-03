@@ -26,6 +26,7 @@ import {
   setEditedNetwork,
   grantPermittedChain,
   showPermittedNetworkToast,
+  setShowRPCTimeoutToast,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -307,9 +308,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           setSwitchingNetwork(true);
           switchNetworkTimeout = setTimeout(() => {
             console.log('unresponsive RPC URL');
-
-            // Show toast to inform the user of the unresponsive RPC URL and option to edit network RPC URL
-
+            setShowRPCTimeoutToast(true); // Trigger the toast
             setSwitchingNetwork(false);
           }, RPC_TIMEOUT);
 

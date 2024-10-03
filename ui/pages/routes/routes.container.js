@@ -54,6 +54,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   setEditedNetwork,
   hidePermittedNetworkToast,
+  setShowRPCTimeoutToast,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -151,6 +152,7 @@ function mapStateToProps(state) {
       state.appState.showKeyringRemovalSnapModal,
     pendingConfirmations: getUnapprovedConfirmations(state),
     ///: END:ONLY_INCLUDE_IF
+    showRPCTimeoutToast: state.appState.showRPCTimeoutToast,
   };
 }
 
@@ -188,6 +190,7 @@ function mapDispatchToProps(dispatch) {
     ///: END:ONLY_INCLUDE_IF
     setHideNftEnablementToast: (value) =>
       dispatch(setShowNftDetectionEnablementToast(value)),
+    setShowRPCTimeoutToast: (value) => dispatch(setShowRPCTimeoutToast(value)),
   };
 }
 
