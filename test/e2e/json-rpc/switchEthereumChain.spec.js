@@ -157,7 +157,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithUrl(DAPP_ONE_URL)
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
         // Initiate send transaction on Dapp two
         await driver.clickElement('#sendButton');
@@ -168,7 +168,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         });
 
         // Switch to Dapp One
-        await driver.switchToWindowWithUrl(DAPP_URL)
+        await driver.switchToWindowWithUrl(DAPP_URL);
 
         // Switch Ethereum chain request
         const switchEthereumChainRequest = JSON.stringify({
