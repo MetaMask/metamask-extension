@@ -8,6 +8,7 @@ import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import CrossChainSwap from '.';
 
+const mockResetBridgeState = jest.fn();
 const middleware = [thunk];
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
@@ -24,6 +25,7 @@ setBackgroundConnection({
     .mockResolvedValue({ chainId: '0x1' }),
   setBridgeFeatureFlags: jest.fn(),
   selectSrcNetwork: jest.fn(),
+  resetState: () => mockResetBridgeState(),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
 
@@ -73,5 +75,6 @@ describe('Bridge', () => {
 
     expect(getByText('Bridge')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });
 });
