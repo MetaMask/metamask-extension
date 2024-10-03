@@ -161,10 +161,11 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
-  const { customSpendingCap, pending } =
+  const { customSpendingCap, pending: spendingCapPending } =
     useCurrentSpendingCap(currentConfirmation);
 
   let isRevokeSetApprovalForAll = false;
+  let revokePending = false;
   if (
     currentConfirmation?.type === TransactionType.tokenMethodSetApprovalForAll
   ) {
@@ -173,7 +174,16 @@ const ConfirmTitle: React.FC = memo(() => {
     isRevokeSetApprovalForAll = getIsRevokeSetApprovalForAll(
       decodedResponse.value,
     );
+    revokePending = decodedResponse.pending;
   }
+
+  console.log({
+    currentConfirmation,
+    isNFT,
+    customSpendingCap,
+    isRevokeSetApprovalForAll,
+    spendingCapPending,
+  });
 
   const title = useMemo(
     () =>
@@ -183,9 +193,16 @@ const ConfirmTitle: React.FC = memo(() => {
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
-        pending,
+        spendingCapPending || revokePending,
       ),
-    [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],
+    [
+      currentConfirmation,
+      isNFT,
+      customSpendingCap,
+      isRevokeSetApprovalForAll,
+      spendingCapPending,
+      revokePending,
+    ],
   );
 
   const description = useMemo(
@@ -196,10 +213,17 @@ const ConfirmTitle: React.FC = memo(() => {
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
-        pending,
+        spendingCapPending || revokePending,
       ),
 
-    [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],
+    [
+      currentConfirmation,
+      isNFT,
+      customSpendingCap,
+      isRevokeSetApprovalForAll,
+      spendingCapPending,
+      revokePending,
+    ],
   );
 
   if (!currentConfirmation) {
