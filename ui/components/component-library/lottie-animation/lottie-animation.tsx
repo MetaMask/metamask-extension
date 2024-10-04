@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import lottie, { AnimationConfigWithPath, AnimationItem } from 'lottie-web';
 
-export interface LottieAnimationProps {
+export type LottieAnimationProps = {
   /** The URL or path to the Lottie JSON animation file. */
   path: string;
   /** Whether the animation should loop. Defaults to true. */
@@ -14,7 +14,7 @@ export interface LottieAnimationProps {
   className?: string;
   /** Optional callback function that is called when the animation completes. */
   onComplete?: () => void;
-}
+};
 
 export const LottieAnimation: React.FC<LottieAnimationProps> = ({
   path,
@@ -31,9 +31,9 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
     const animationConfig: AnimationConfigWithPath = {
       container: containerRef.current as HTMLElement,
       renderer: 'svg',
-      loop: loop,
-      autoplay: autoplay,
-      path: path,
+      loop,
+      autoplay,
+      path,
     };
 
     animationInstance.current = lottie.loadAnimation(animationConfig);

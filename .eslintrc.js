@@ -51,17 +51,6 @@ module.exports = {
         ],
       },
     ],
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      {
-        js: 'never',
-        jsx: 'never',
-        ts: 'never',
-        tsx: 'never',
-        lottie: 'never',
-      },
-    ],
   },
   overrides: [
     /**
@@ -104,9 +93,7 @@ module.exports = {
           // using packages like `prop-types` (where we would otherwise get "No
           // default export found in imported module 'prop-types'" from
           // TypeScript because imports work differently there).
-          node: {
-            extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.lottie'],
-          },
+          node: {},
           typescript: {
             // Always try to resolve types under `<root>/@types` directory even
             // it doesn't contain any source code, like `@types/unist`
@@ -484,12 +471,4 @@ module.exports = {
       },
     },
   ],
-  settings: {
-    'import/extensions': ['.js', '.jsx', '.ts', '.tsx', '.lottie'],
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.lottie'],
-      },
-    },
-  },
 };
