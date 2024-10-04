@@ -413,7 +413,7 @@ export const AccountListMenu = ({
 
                       // The account creation + renaming is handled by the
                       // Snap account bridge, so we need to close the current
-                      // model
+                      // modal
                       onClose();
 
                       await createBitcoinAccount(MultichainNetworks.BITCOIN);
@@ -436,7 +436,7 @@ export const AccountListMenu = ({
                     startIconName={IconName.Add}
                     onClick={async () => {
                       // The account creation + renaming is handled by the Snap account bridge, so
-                      // we need to close the current model
+                      // we need to close the current modal
                       onClose();
 
                       await createBitcoinAccount(
