@@ -61,7 +61,6 @@
   "app/scripts/inpage.js",
   "app/scripts/lib/ComposableObservableStore.js",
   "app/scripts/lib/ComposableObservableStore.test.js",
-  "app/scripts/lib/account-tracker.js",
   "app/scripts/lib/cleanErrorStack.js",
   "app/scripts/lib/cleanErrorStack.test.js",
   "app/scripts/lib/createLoggerMiddleware.js",

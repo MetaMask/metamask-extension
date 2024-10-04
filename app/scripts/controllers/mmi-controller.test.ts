@@ -99,7 +99,7 @@ describe('MMIController', function () {
           'NetworkController:infuraIsUnblocked',
         ],
       }),
-      state: mockNetworkState({chainId: CHAIN_IDS.SEPOLIA}),
+      state: mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
       infuraProjectId: 'mock-infura-project-id',
     });
 
@@ -271,7 +271,7 @@ describe('MMIController', function () {
 
     mmiController.getState = jest.fn();
     mmiController.captureException = jest.fn();
-    mmiController.accountTracker = { syncWithAddresses: jest.fn() };
+    mmiController.accountTrackerController = { syncWithAddresses: jest.fn() };
 
     jest.spyOn(metaMetricsController.store, 'getState').mockReturnValue({
       metaMetricsId: mockMetaMetricsId,
@@ -384,7 +384,7 @@ describe('MMIController', function () {
       mmiController.keyringController.addNewAccountForKeyring = jest.fn();
 
       mmiController.custodyController.setAccountDetails = jest.fn();
-      mmiController.accountTracker.syncWithAddresses = jest.fn();
+      mmiController.accountTrackerController.syncWithAddresses = jest.fn();
       mmiController.storeCustodianSupportedChains = jest.fn();
       mmiController.custodyController.storeCustodyStatusMap = jest.fn();
 
@@ -399,7 +399,9 @@ describe('MMIController', function () {
       expect(
         mmiController.custodyController.setAccountDetails,
       ).toHaveBeenCalled();
-      expect(mmiController.accountTracker.syncWithAddresses).toHaveBeenCalled();
+      expect(
+        mmiController.accountTrackerController.syncWithAddresses,
+      ).toHaveBeenCalled();
       expect(mmiController.storeCustodianSupportedChains).toHaveBeenCalled();
       expect(
         mmiController.custodyController.storeCustodyStatusMap,
