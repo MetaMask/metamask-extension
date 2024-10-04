@@ -738,10 +738,12 @@ describe('preferences controller', () => {
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
         redesignedTransactionsEnabled: true,
+        shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
+        showNativeTokenAsMainBalance: false,
       });
     });
 
@@ -759,10 +761,12 @@ describe('preferences controller', () => {
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
         redesignedTransactionsEnabled: true,
+        shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
+        showNativeTokenAsMainBalance: false,
       });
     });
   });

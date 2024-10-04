@@ -1873,10 +1873,6 @@
   "feeDetails": {
     "message": "Λεπτομέρειες χρεώσεων"
   },
-  "fiat": {
-    "message": "Εντολή",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
     "description": "Helps user import their account from a JSON file"
@@ -3092,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
   },
-  "noConversionDateAvailable": {
-    "message": "Δεν υπάρχει διαθέσιμη ημερομηνία μετατροπής νομίσματος"
-  },
   "noConversionRateAvailable": {
     "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
   },
@@ -3914,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "μη διαθέσιμη τιμή"
-  },
-  "primaryCurrencySetting": {
-    "message": "Κύριο νόμισμα"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Επιλέξτε εγχώριο για να δώσετε προτεραιότητα στην εμφάνιση των τιμών στο νόμισμα της αλυσίδας (π.χ. ETH). Επιλέξτε Παραστατικό για να δώσετε προτεραιότητα στην εμφάνιση τιμών στο επιλεγμένο παραστατικό νόμισμα."
   },
   "primaryType": {
     "message": "Βασικός τύπος"
@@ -6084,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "Αίτημα ενημέρωσης"
-  },
-  "updatedWithDate": {
-    "message": "Ενημερώθηκε $1"
   },
   "uploadDropFile": {
     "message": "Αφήστε το αρχείο σας εδώ"

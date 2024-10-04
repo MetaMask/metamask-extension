@@ -3293,10 +3293,12 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
+      ///: END:ONLY_INCLUDE_IF
       setBitcoinSupportEnabled:
         preferencesController.setBitcoinSupportEnabled.bind(
           preferencesController,
@@ -3544,6 +3546,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setOnboardingDate:
         appStateController.setOnboardingDate.bind(appStateController),
+      setLastViewedUserSurvey:
+        appStateController.setLastViewedUserSurvey.bind(appStateController),
       setNewPrivacyPolicyToastClickedOrClosed:
         appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
           appStateController,

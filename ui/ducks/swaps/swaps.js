@@ -942,7 +942,7 @@ export const signAndSendSwapsSmartTransaction = ({
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
-      is_gas_included_trade: usedQuote.isGasIncludedTrade,
+      gas_included: usedQuote.isGasIncludedTrade,
       ...additionalTrackingParams,
     };
     trackEvent({
