@@ -3893,6 +3893,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
         ),
+      [BridgeUserAction.SELECT_SRC_NETWORK]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_SRC_NETWORK}`,
+      ),
       [BridgeUserAction.SELECT_DEST_NETWORK]:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
