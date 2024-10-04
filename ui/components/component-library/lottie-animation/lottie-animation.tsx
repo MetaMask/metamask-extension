@@ -1,11 +1,16 @@
 import React, { useEffect, useRef } from 'react';
-import { AnimationConfigWithData, AnimationItem } from 'lottie-web';
+import {
+  AnimationConfigWithData,
+  AnimationConfigWithPath,
+  AnimationItem,
+} from 'lottie-web';
 // Use lottie_light to avoid unsafe-eval which breaks the CSP
 // https://github.com/airbnb/lottie-web/issues/289#issuecomment-1454909624
 import lottie from 'lottie-web/build/player/lottie_light';
 
 export type LottieAnimationProps = {
-  data: object;
+  data?: object;
+  path?: string;
   loop?: boolean;
   autoplay?: boolean;
   style?: React.CSSProperties;
@@ -15,6 +20,7 @@ export type LottieAnimationProps = {
 
 export const LottieAnimation: React.FC<LottieAnimationProps> = ({
   data,
+  path,
   loop = true,
   autoplay = true,
   style = {},
@@ -30,12 +36,19 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
       return () => null;
     }
 
-    const animationConfig: AnimationConfigWithData = {
+    if (Boolean(data) === Boolean(path)) {
+      console.error(
+        'LottieAnimation: Exactly one of data or path must be provided',
+      );
+      return () => null;
+    }
+
+    const animationConfig: AnimationConfigWithData | AnimationConfigWithPath = {
       container: containerRef.current,
       renderer: 'svg',
       loop,
       autoplay,
-      animationData: data,
+      ...(data ? { animationData: data } : { path }),
     };
 
     try {
@@ -56,7 +69,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
         animationInstance.current = null;
       }
     };
-  }, [data, loop, autoplay, onComplete]);
+  }, [data, path, loop, autoplay, onComplete]);
 
   return <div ref={containerRef} style={style} className={className}></div>;
 };

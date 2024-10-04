@@ -25,6 +25,7 @@ describe('LottieAnimation', () => {
   const mockData = {
     /* Your mock animation data here */
   };
+  const mockPath = 'https://example.com/animation.json';
 
   it('renders without crashing', () => {
     const { container } = render(<LottieAnimation data={mockData} />);
@@ -49,7 +50,7 @@ describe('LottieAnimation', () => {
     expect(element).toHaveStyle('height: 100px');
   });
 
-  it('calls lottie.loadAnimation with correct config', () => {
+  it('calls lottie.loadAnimation with correct config when using data', () => {
     render(<LottieAnimation data={mockData} loop={false} autoplay={false} />);
 
     expect(lottie.loadAnimation).toHaveBeenCalledWith(
@@ -61,6 +62,40 @@ describe('LottieAnimation', () => {
         container: expect.any(HTMLElement),
       }),
     );
+  });
+
+  it('calls lottie.loadAnimation with correct config when using path', () => {
+    render(<LottieAnimation path={mockPath} loop={true} autoplay={true} />);
+
+    expect(lottie.loadAnimation).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: mockPath,
+        loop: true,
+        autoplay: true,
+        renderer: 'svg',
+        container: expect.any(HTMLElement),
+      }),
+    );
+  });
+
+  it('logs an error when neither data nor path is provided', () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    render(<LottieAnimation />);
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'LottieAnimation: Exactly one of data or path must be provided',
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it('logs an error when both data and path are provided', () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    render(<LottieAnimation data={mockData} path={mockPath} />);
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'LottieAnimation: Exactly one of data or path must be provided',
+    );
+    consoleSpy.mockRestore();
   });
 
   it('calls onComplete when animation completes', () => {
