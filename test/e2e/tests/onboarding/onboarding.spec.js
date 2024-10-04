@@ -270,111 +270,116 @@ describe('MetaMask onboarding @no-mmi', function () {
       },
 
       async ({ driver, secondaryGanacheServer }) => {
-        await driver.navigate();
-        await importSRPOnboardingFlow(
-          driver,
-          TEST_SEED_PHRASE,
-          WALLET_PASSWORD,
-        );
+        try {
+          await driver.navigate();
+          await importSRPOnboardingFlow(
+            driver,
+            TEST_SEED_PHRASE,
+            WALLET_PASSWORD,
+          );
 
-        await driver.clickElement({
-          text: 'Manage default settings',
-          tag: 'button',
-        });
+          await driver.clickElement({
+            text: 'Manage default settings',
+            tag: 'button',
+          });
 
-        await driver.clickElement({
-          text: 'General',
-        });
+          await driver.clickElement({
+            text: 'General',
+          });
 
-        await driver.clickElement({ text: 'Add a network' });
+          await driver.clickElement({ text: 'Add a network' });
 
-        await driver.waitForSelector(
-          '.multichain-network-list-menu-content-wrapper__dialog',
-        );
+          await driver.waitForSelector(
+            '.multichain-network-list-menu-content-wrapper__dialog',
+          );
 
-        await driver.fill(
-          '[data-testid="network-form-network-name"]',
-          networkName,
-        );
-        await driver.fill(
-          '[data-testid="network-form-chain-id"]',
-          chainId.toString(),
-        );
-        await driver.fill(
-          '[data-testid="network-form-ticker-input"]',
-          currencySymbol,
-        );
+          await driver.fill(
+            '[data-testid="network-form-network-name"]',
+            networkName,
+          );
+          await driver.fill(
+            '[data-testid="network-form-chain-id"]',
+            chainId.toString(),
+          );
+          await driver.fill(
+            '[data-testid="network-form-ticker-input"]',
+            currencySymbol,
+          );
 
-        // Add rpc url
-        const rpcUrlInputDropDown = await driver.waitForSelector(
-          '[data-testid="test-add-rpc-drop-down"]',
-        );
-        await rpcUrlInputDropDown.click();
-        await driver.delay(tinyDelayMs);
-        await driver.clickElement({
-          text: 'Add RPC URL',
-          tag: 'button',
-        });
-        const rpcUrlInput = await driver.waitForSelector(
-          '[data-testid="rpc-url-input-test"]',
-        );
-        await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(networkUrl);
-        await driver.clickElement({
-          text: 'Add URL',
-          tag: 'button',
-        });
+          // Add rpc url
+          const rpcUrlInputDropDown = await driver.waitForSelector(
+            '[data-testid="test-add-rpc-drop-down"]',
+          );
+          await rpcUrlInputDropDown.click();
+          await driver.delay(tinyDelayMs);
+          await driver.clickElement({
+            text: 'Add RPC URL',
+            tag: 'button',
+          });
+          const rpcUrlInput = await driver.waitForSelector(
+            '[data-testid="rpc-url-input-test"]',
+          );
+          await rpcUrlInput.clear();
+          await rpcUrlInput.sendKeys(networkUrl);
+          await driver.clickElement({
+            text: 'Add URL',
+            tag: 'button',
+          });
 
-        await driver.clickElement({ text: 'Save', tag: 'button' });
+          await driver.clickElement({ text: 'Save', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
-        await driver.waitForSelector('[data-testid="category-back-button"]');
-        const generalBackButton = await driver.waitForSelector(
-          '[data-testid="category-back-button"]',
-        );
-        await generalBackButton.click();
+          await driver.delay(regularDelayMs);
+          await driver.waitForSelector('[data-testid="category-back-button"]');
+          const generalBackButton = await driver.waitForSelector(
+            '[data-testid="category-back-button"]',
+          );
+          await generalBackButton.click();
 
-        await driver.delay(regularDelayMs);
+          await driver.delay(regularDelayMs);
 
-        await driver.waitForSelector(
-          '[data-testid="privacy-settings-back-button"]',
-        );
-        const defaultSettingsBackButton = await driver.findElement(
-          '[data-testid="privacy-settings-back-button"]',
-        );
-        await defaultSettingsBackButton.click();
+          await driver.waitForSelector(
+            '[data-testid="privacy-settings-back-button"]',
+          );
+          const defaultSettingsBackButton = await driver.findElement(
+            '[data-testid="privacy-settings-back-button"]',
+          );
+          await defaultSettingsBackButton.click();
 
-        await driver.delay(regularDelayMs);
+          await driver.delay(regularDelayMs);
 
-        await driver.clickElement({
-          text: 'Done',
-          tag: 'button',
-        });
+          await driver.clickElement({
+            text: 'Done',
+            tag: 'button',
+          });
 
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
+          await driver.clickElement({
+            text: 'Next',
+            tag: 'button',
+          });
 
-        await driver.delay(regularDelayMs);
+          await driver.delay(regularDelayMs);
 
-        await driver.clickElement({
-          text: 'Done',
-          tag: 'button',
-        });
+          await driver.clickElement({
+            text: 'Done',
+            tag: 'button',
+          });
 
-        await driver.clickElement('.mm-picker-network');
-        await driver.clickElement(
-          `[data-rbd-draggable-id="${toHex(chainId)}"]`,
-        );
+          await driver.clickElement('.mm-picker-network');
+          await driver.clickElement(
+            `[data-rbd-draggable-id="${toHex(chainId)}"]`,
+          );
 
-        // Check localhost 8546 is selected and its balance value is correct
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: networkName,
-        });
+          // Check localhost 8546 is selected and its balance value is correct
+          await driver.findElement({
+            css: '[data-testid="network-display"]',
+            text: networkName,
+          });
 
-        await locateAccountBalanceDOM(driver, secondaryGanacheServer[0]);
+          await locateAccountBalanceDOM(driver, secondaryGanacheServer[0]);
+        } catch (error) {
+          console.error('Error in test:', error);
+          throw error;
+        }
       },
     );
   });
