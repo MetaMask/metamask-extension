@@ -9,13 +9,13 @@ import {
   IconSize,
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
-import useNavigation from '../../../../hooks/snaps/useNavigation';
+import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 
 export const SnapUILink = ({ href, children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const isMetaMaskUrl = href.startsWith('metamask:');
-  const { navigate } = useNavigation();
+  const { navigate } = useSnapNavigation();
 
   const handleLinkClick = () => {
     if (isMetaMaskUrl) {

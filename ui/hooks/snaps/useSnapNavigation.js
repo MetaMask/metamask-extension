@@ -2,7 +2,7 @@ import { useHistory } from 'react-router-dom';
 import { parseMetaMaskUrl } from '@metamask/snaps-utils';
 import { getSnapRoute } from '../../helpers/utils/util';
 
-const useNavigation = () => {
+const useSnapNavigation = () => {
   const history = useHistory();
   const navigate = (url) => {
     let path;
@@ -19,4 +19,4 @@ const useNavigation = () => {
   };
 };
 
-export default useNavigation;
+export default useSnapNavigation;
