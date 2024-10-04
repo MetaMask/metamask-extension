@@ -5,6 +5,7 @@ import log from 'loglevel';
 import { captureMessage } from '@sentry/browser';
 
 import { TransactionType } from '@metamask/transaction-controller';
+import { createProjectLogger } from '@metamask/utils';
 import {
   addToken,
   addTransactionAndWaitForPublish,
@@ -96,6 +97,8 @@ import {
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
+
+const debugLog = createProjectLogger('swaps');
 
 export const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -1116,13 +1119,15 @@ export const signAndSendTransactions = (
         estimatedBaseFee,
         chainId,
       );
+
+      debugLog('Received 1559 gas fee estimates', transactionGasFeeEstimates);
     }
 
     const tradeGasFeeEstimates =
       transactionGasFeeEstimates?.tradeGasFeeEstimates;
 
-    const approvalGasFeeEstimates =
-      transactionGasFeeEstimates?.approvalGasFeeEstimates;
+    const approveGasFeeEstimates =
+      transactionGasFeeEstimates?.approveGasFeeEstimates;
 
     const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || 0, 16)
       .round(0)
@@ -1171,7 +1176,7 @@ export const signAndSendTransactions = (
       ? calcGasTotal(
           approvalGasLimitEstimate,
           networkAndAccountSupports1559
-            ? approvalGasFeeEstimates?.baseAndPriorityFeePerGas
+            ? approveGasFeeEstimates?.baseAndPriorityFeePerGas
             : usedGasPrice,
         )
       : '0x0';
@@ -1256,11 +1261,13 @@ export const signAndSendTransactions = (
 
     if (approveTxParams) {
       if (networkAndAccountSupports1559) {
-        approveTxParams.maxFeePerGas = approvalGasFeeEstimates?.maxFeePerGas;
+        approveTxParams.maxFeePerGas = approveGasFeeEstimates?.maxFeePerGas;
         approveTxParams.maxPriorityFeePerGas =
-          approvalGasFeeEstimates?.maxPriorityFeePerGas;
+          approveGasFeeEstimates?.maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
       }
+
+      debugLog('Creating approve transaction', approveTxParams);
 
       try {
         finalApproveTxMeta = await addTransactionAndWaitForPublish(
@@ -1278,11 +1285,14 @@ export const signAndSendTransactions = (
           },
         );
       } catch (e) {
+        debugLog('Approve transaction failed', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
         history.push(SWAPS_ERROR_ROUTE);
         return;
       }
     }
+
+    debugLog('Creating trade transaction', usedTradeTxParams);
 
     try {
       await addTransactionAndWaitForPublish(usedTradeTxParams, {
@@ -1307,7 +1317,7 @@ export const signAndSendTransactions = (
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR
         : SWAP_FAILED_ERROR;
-      console.error(e);
+      debugLog('Trade transaction failed', e);
       await dispatch(setSwapsErrorKey(errorKey));
       history.push(SWAPS_ERROR_ROUTE);
       return;

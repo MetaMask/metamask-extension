@@ -391,7 +391,10 @@ export function getRenderableNetworkFeesForQuote({
   nonGasFee: string;
 } {
   const tradeGasFeeTotalHex = calcGasTotal(tradeGas, gasPriceTrade);
-  const approveGasFeeTotalHex = calcGasTotal(approveGas, gasPriceApprove);
+
+  const approveGasFeeTotalHex = approveGas
+    ? calcGasTotal(approveGas, gasPriceApprove)
+    : '0x0';
 
   const gasTotalInWeiHex = sumHexes(
     tradeGasFeeTotalHex,
