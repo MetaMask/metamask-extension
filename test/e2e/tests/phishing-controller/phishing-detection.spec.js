@@ -208,9 +208,9 @@ describe('Phishing Detection', function () {
         await driver.findElement({
           text: `Empty page by ${BlockProvider.MetaMask}`,
         });
-        await driver.waitForUrl(
-          `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
-        );
+        await driver.waitForUrl({
+          url: `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
+        });
       },
     );
   });
@@ -445,10 +445,11 @@ describe('Phishing Detection', function () {
         // check that the redirect was ultimately _not_ followed and instead
         // went to our "MetaMask Phishing Detection" site
 
-        await driver.waitForUrl(
-          // http://localhost:9999 is the Phishing Warning page
-          `http://localhost:9999/#hostname=${blocked}&href=http%3A%2F%2F${blocked}%3A${port}%2F`,
-        );
+        await driver.waitForUrl({
+          url:
+            // http://localhost:9999 is the Phishing Warning page
+            `http://localhost:9999/#hostname=${blocked}&href=http%3A%2F%2F${blocked}%3A${port}%2F`,
+        });
       });
     }
   });

@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import FixtureBuilder from '../../../fixture-builder';
 import {
   PRIVATE_KEY,
