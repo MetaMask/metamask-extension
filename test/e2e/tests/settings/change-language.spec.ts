@@ -41,7 +41,7 @@ async function changeLanguage(driver: Driver, languageIndex: number) {
 }
 
 describe('Settings - general tab @no-mmi', function (this: Suite) {
-  it('validate the change language functionality', async function () {
+  it('validate the change language functionality and language is persisted after the page refresh', async function () {
     let languageIndex = 10;
 
     await withFixtures(
@@ -62,6 +62,10 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
         await driver.refresh();
+
+        await driver.assertElementNotPresent('.loading-overlay__spinner');
+
+        await driver.findVisibleElement(selectors.labelSpanish);
 
         // Change back to English and verify that the word is correctly changed back to English
         languageIndex = 9;
