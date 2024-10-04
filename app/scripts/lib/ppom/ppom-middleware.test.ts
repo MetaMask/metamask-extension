@@ -200,7 +200,6 @@ describe('PPOMMiddleware', () => {
       securityAlertResponse: undefined,
     };
 
-    // @ts-expect-error Passing in invalid input for testing purposes
     await middleware(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();

@@ -1096,7 +1096,6 @@ describe('SwapsController', function () {
             oldState.swapsState.swapsStxGetTransactionsRefreshTime,
           swapsStxBatchStatusRefreshTime:
             oldState.swapsState.swapsStxBatchStatusRefreshTime,
-          swapsStxStatusDeadline: oldState.swapsState.swapsStxStatusDeadline,
         });
       });
 
