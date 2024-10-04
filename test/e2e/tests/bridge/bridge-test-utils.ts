@@ -120,7 +120,17 @@ const mockServer =
             };
           }),
     );
-    return Promise.all(featureFlagMocks);
+    const portfolioMock = async () =>
+      await mockServer_
+        .forGet('https://portfolio.metamask.io/bridge')
+        .always()
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {},
+          };
+        });
+    return Promise.all([...featureFlagMocks, portfolioMock]);
   };
 
 export const getBridgeFixtures = (
