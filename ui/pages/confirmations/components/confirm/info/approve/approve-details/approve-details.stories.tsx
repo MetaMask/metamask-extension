@@ -3,7 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import {
   DEPOSIT_METHOD_DATA,
-  genUnapprovedApproveConfirmation,
+  genUnapprovedContractInteractionConfirmation,
 } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../../../store/store';
@@ -22,7 +22,7 @@ const store = configureStore({
     },
   },
   confirm: {
-    currentConfirmation: genUnapprovedApproveConfirmation(),
+    currentConfirmation: genUnapprovedContractInteractionConfirmation(),
   },
 });
 

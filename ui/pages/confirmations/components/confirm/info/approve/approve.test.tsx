@@ -2,7 +2,7 @@ import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import ApproveInfo from './approve';
@@ -31,7 +31,7 @@ describe('<ApproveInfo />', () => {
     const state = {
       ...mockState,
       confirm: {
-        currentConfirmation: genUnapprovedApproveConfirmation(),
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
       },
     };
     const mockStore = configureMockStore(middleware)(state);
