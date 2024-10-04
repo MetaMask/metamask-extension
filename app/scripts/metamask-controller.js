@@ -732,10 +732,7 @@ export default class MetamaskController extends EventEmitter {
       addNft: this.nftController.addNft.bind(this.nftController),
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
-      disabled:
-        this.preferencesController.state.useNftDetection === undefined
-          ? false // the detection is enabled by default
-          : !this.preferencesController.state.useNftDetection,
+      disabled: !this.preferencesController.state.useNftDetection,
     });
 
     this.metaMetricsController = new MetaMetricsController({
