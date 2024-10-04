@@ -1,6 +1,5 @@
 import { Driver } from '../../webdriver/driver';
 
-
 class SettingsPage {
   private readonly driver: Driver;
 

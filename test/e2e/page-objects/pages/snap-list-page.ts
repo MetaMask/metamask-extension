@@ -1,91 +1,71 @@
 import { Driver } from '../../webdriver/driver';
 
-export default class SnapListPage {
-  private driver: Driver;
+class SnapListPage {
+  private readonly driver: Driver;
 
-  private snapListContainer: string;
-  private snapItem: string;
-  private snapToggle: string;
-  private snapName: string;
-  private noSnapsMessage: string;
-  private toggleButton: string;
-  private removeSnapButton: string;
-  private continueButton: { text: string; tag: string };
-  private removeSnapConfirmationInput: string;
-  private removeSnapConfirmButton: { text: string; tag: string };
-  private noSnapsInstalledMessage: { css: string; text: string; tag: string };
+  private readonly closeModalButton = 'button[aria-label="Close"]';
+
+  private readonly continueRemoveSnapButton = {
+    tag: 'button',
+    text: 'Continue',
+  };
+
+  private readonly continueRemoveSnapModalMessage = {
+    tag: 'p',
+    text: 'Removing this Snap removes these accounts from MetaMask',
+  };
+
+  private readonly noSnapInstalledMessage = {
+    tag: 'p',
+    text: "You don't have any snaps installed.",
+  };
+
+  private readonly removeSnapButton = '[data-testid="remove-snap-button"]';
+
+  private readonly removeSnapConfirmationInput =
+    '[data-testid="remove-snap-confirmation-input"]';
+
+  private readonly removeSnapConfirmButton = {
+    tag: 'button',
+    text: 'Remove Snap',
+  };
+
+  private readonly snapListItem = '.snap-list-item';
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.snapListContainer = '.snap-list-container';
-    this.snapItem = '.snap-item';
-    this.snapToggle = '.snap-toggle';
-    this.snapName = '.snap-name';
-    this.noSnapsMessage = '.no-snaps-message';
-    this.toggleButton = '.toggle-button > div';
-    this.removeSnapButton = '[data-testid="remove-snap-button"]';
-    this.continueButton = { text: 'Continue', tag: 'button' };
-    this.removeSnapConfirmationInput = '[data-testid="remove-snap-confirmation-input"]';
-    this.removeSnapConfirmButton = { text: 'Remove Snap', tag: 'button' };
-    this.noSnapsInstalledMessage = { css: '.mm-box', text: "You don't have any snaps installed.", tag: 'p' };
   }
 
-  async getSnapList(): Promise<any[]> {
-    return await this.driver.findElements(this.snapItem);
-  }
+  async removeSnapByName(snapName: string): Promise<void> {
+    console.log('Removing snap on snap list page with name: ', snapName);
+    await this.driver.clickElement({ text: snapName, css: this.snapListItem });
 
-  async toggleSnap(snapName: string): Promise<void> {
-    const snapItems = await this.getSnapList();
-    for (const item of snapItems) {
-      const name = await item.findElement(this.snapName).getText();
-      if (name === snapName) {
-        await item.findElement(this.snapToggle).click();
-        break;
-      }
-    }
-  }
-
-  async isSnapEnabled(snapName: string): Promise<boolean> {
-    const snapItems = await this.getSnapList();
-    for (const item of snapItems) {
-      const name = await item.findElement(this.snapName).getText();
-      if (name === snapName) {
-        const toggleClass = await item.findElement(this.snapToggle).getAttribute('class');
-        return toggleClass.includes('enabled');
-      }
-    }
-    return false;
-  }
-
-  async verifyNoSnapsMessage(): Promise<void> {
-    await this.driver.waitForSelector(this.noSnapsMessage);
-  }
-
-  async selectSnapByName(name: string): Promise<void> {
-    await this.driver.clickElement({ text: name, tag: 'p' });
-  }
-
-  async toggleSnapStatus(): Promise<void> {
-    await this.driver.clickElement(this.toggleButton);
-  }
-
-  async removeSnap(): Promise<void> {
     const removeButton = await this.driver.findElement(this.removeSnapButton);
     await this.driver.scrollToElement(removeButton);
     await this.driver.clickElement(this.removeSnapButton);
+
+    await this.driver.waitForSelector(this.continueRemoveSnapModalMessage);
+    await this.driver.clickElement(this.continueRemoveSnapButton);
+
+    console.log(`Fill confirmation input to confirm snap removal`);
+    await this.driver.waitForSelector(this.removeSnapConfirmationInput);
+    await this.driver.fill(this.removeSnapConfirmationInput, snapName);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.removeSnapConfirmButton,
+    );
+
+    console.log(`Check snap removal success message is displayed`);
+    await this.driver.waitForSelector({
+      text: `${snapName} removed`,
+      tag: 'p',
+    });
+    await this.driver.clickElementAndWaitToDisappear(this.closeModalButton);
   }
 
-  async confirmRemoval(text: string): Promise<void> {
-    await this.driver.clickElement(this.continueButton);
-    await this.driver.fill(this.removeSnapConfirmationInput, text);
-    await this.driver.clickElement(this.removeSnapConfirmButton);
-  }
-
-  async verifySnapRemovalMessage(message: string): Promise<void> {
-    await this.driver.findVisibleElement({ text: message, tag: 'p' });
-  }
-
-  async verifyNoSnapsInstalled(): Promise<void> {
-    await this.driver.findElement(this.noSnapsInstalledMessage);
+  async check_noSnapInstalledMessageIsDisplayed(): Promise<void> {
+    console.log('Verifying no snaps is installed for current account');
+    await this.driver.waitForSelector(this.noSnapInstalledMessage);
   }
 }
+
+export default SnapListPage;
