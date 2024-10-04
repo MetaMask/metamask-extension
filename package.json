@@ -615,7 +615,6 @@
     "jest-environment-jsdom": "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch",
     "jsdom": "^16.7.0",
     "json-schema-to-ts": "^3.0.1",
-    "keyv": "^5.0.3",
     "koa": "^2.7.0",
     "lavamoat": "^8.0.2",
     "lavamoat-browserify": "^17.0.4",
