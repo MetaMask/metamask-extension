@@ -1,14 +1,14 @@
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import { PendingJsonRpcResponse } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerRequestType } from './types';
+import { HandlerRequestType as LogWeb3ShimUsageHandlerRequest } from './types';
 import logWeb3ShimUsage, {
   GetWeb3ShimUsageState,
   SetWeb3ShimUsageRecorded,
 } from './log-web3-shim-usage';
 
 describe('logWeb3ShimUsage', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockEnd: jest.Mock<any, any, any>;
+  let mockEnd: JsonRpcEngineEndCallback;
   let mockGetWeb3ShimUsageState: GetWeb3ShimUsageState;
   let mockSetWeb3ShimUsageRecorded: SetWeb3ShimUsageRecorded;
 
@@ -19,7 +19,7 @@ describe('logWeb3ShimUsage', () => {
   });
 
   it('should call getWeb3ShimUsageState and setWeb3ShimUsageRecorded when the handler is invoked', async () => {
-    const req: HandlerRequestType = {
+    const req: LogWeb3ShimUsageHandlerRequest = {
       origin: 'testOrigin',
       params: [],
       id: '22',

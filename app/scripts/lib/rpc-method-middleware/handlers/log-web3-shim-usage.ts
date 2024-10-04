@@ -3,15 +3,14 @@ import type {
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';
 import type { JsonRpcParams, PendingJsonRpcResponse } from '@metamask/utils';
-import { OriginString } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   HandlerWrapper,
   HandlerRequestType as LogWeb3ShimUsageHandlerRequest,
 } from './types';
 
-export type GetWeb3ShimUsageState = (origin: OriginString) => undefined | 1 | 2;
-export type SetWeb3ShimUsageRecorded = (origin: OriginString) => void;
+export type GetWeb3ShimUsageState = (origin: string) => undefined | 1 | 2;
+export type SetWeb3ShimUsageRecorded = (origin: string) => void;
 
 export type LogWeb3ShimUsageOptions = {
   getWeb3ShimUsageState: GetWeb3ShimUsageState;
