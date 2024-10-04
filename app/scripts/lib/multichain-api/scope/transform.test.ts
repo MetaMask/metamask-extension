@@ -38,6 +38,20 @@ describe('Scope Transform', () => {
           'eip155:64': validScopeObject,
         });
       });
+
+      it('returns one deep cloned scope per `references` element', () => {
+        const flattenedScopes = flattenScope('eip155', {
+          ...validScopeObject,
+          references: ['1', '5'],
+        });
+
+        expect(flattenedScopes['eip155:1']).not.toBe(
+          flattenedScopes['eip155:5'],
+        );
+        expect(flattenedScopes['eip155:1'].methods).not.toBe(
+          flattenedScopes['eip155:5'].methods,
+        );
+      });
     });
   });
 

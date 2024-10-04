@@ -94,9 +94,6 @@ const createMockedHandler = () => {
       },
     }),
   );
-  const getNetworkConfigurationByNetworkClientId = jest.fn().mockReturnValue({
-    chainId: '0x1',
-  });
   const updateCaveat = jest.fn();
   const grantPermissions = jest.fn().mockReturnValue(
     Object.freeze({
@@ -125,7 +122,6 @@ const createMockedHandler = () => {
     requestPermissionsHandler.implementation(request, response, next, end, {
       requestPermissionsForOrigin,
       getPermissionsForOrigin,
-      getNetworkConfigurationByNetworkClientId,
       updateCaveat,
       grantPermissions,
       requestPermissionApprovalForOrigin,
@@ -139,7 +135,6 @@ const createMockedHandler = () => {
     end,
     requestPermissionsForOrigin,
     getPermissionsForOrigin,
-    getNetworkConfigurationByNetworkClientId,
     updateCaveat,
     grantPermissions,
     requestPermissionApprovalForOrigin,
@@ -175,12 +170,9 @@ describe('requestPermissionsHandler', () => {
     );
   });
 
-  it('requests approval from the ApprovalController for eth_accounts and permittedChains with the chainId for the currently selected networkClientId (either global or dapp selected) when only eth_accounts is specified in params', async () => {
-    const {
-      handler,
-      getNetworkConfigurationByNetworkClientId,
-      requestPermissionApprovalForOrigin,
-    } = createMockedHandler();
+  it('requests approval from the ApprovalController for eth_accounts and permittedChains when only eth_accounts is specified in params', async () => {
+    const { handler, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
 
     await handler({
       ...getBaseRequest(),
@@ -193,30 +185,17 @@ describe('requestPermissionsHandler', () => {
       ],
     });
 
-    expect(getNetworkConfigurationByNetworkClientId).toHaveBeenCalledWith(
-      'mainnet',
-    );
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
       [RestrictedMethods.eth_accounts]: {
         foo: 'bar',
       },
-      [PermissionNames.permittedChains]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: ['0x1'],
-          },
-        ],
-      },
+      [PermissionNames.permittedChains]: {},
     });
   });
 
   it('requests approval from the ApprovalController for eth_accounts and permittedChains when only permittedChains is specified in params', async () => {
-    const {
-      handler,
-      getNetworkConfigurationByNetworkClientId,
-      requestPermissionApprovalForOrigin,
-    } = createMockedHandler();
+    const { handler, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
 
     await handler({
       ...getBaseRequest(),
@@ -234,7 +213,6 @@ describe('requestPermissionsHandler', () => {
       ],
     });
 
-    expect(getNetworkConfigurationByNetworkClientId).not.toHaveBeenCalled();
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
       [RestrictedMethods.eth_accounts]: {},
       [PermissionNames.permittedChains]: {
@@ -249,11 +227,8 @@ describe('requestPermissionsHandler', () => {
   });
 
   it('requests approval from the ApprovalController for eth_accounts and permittedChains when both are specified in params', async () => {
-    const {
-      handler,
-      getNetworkConfigurationByNetworkClientId,
-      requestPermissionApprovalForOrigin,
-    } = createMockedHandler();
+    const { handler, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
 
     await handler({
       ...getBaseRequest(),
@@ -274,7 +249,6 @@ describe('requestPermissionsHandler', () => {
       ],
     });
 
-    expect(getNetworkConfigurationByNetworkClientId).not.toHaveBeenCalled();
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
       [RestrictedMethods.eth_accounts]: {
         foo: 'bar',

@@ -17,7 +17,6 @@
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
     "networkConfigurations": "object",
-    "networkConfigurationsByChainId": "object",
     "addressBook": "object",
     "confirmationExchangeRates": {},
     "pendingTokens": "object",
@@ -32,12 +31,13 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
+      "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "showMultiRpcModal": "boolean"
+      "showMultiRpcModal": "boolean",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -70,6 +70,7 @@
     "showAccountBanner": true,
     "trezorModel": null,
     "onboardingDate": null,
+    "lastViewedUserSurvey": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -95,7 +96,9 @@
         "status": "available"
       }
     },
+    "networkConfigurationsByChainId": "object",
     "keyrings": "object",
+    "selectedAddress": "string",
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
@@ -127,16 +130,15 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
-    "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
-    "metaMetricsDataDeletionId": null,
-    "metaMetricsDataDeletionTimestamp": 0,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0,
     "currentCurrency": "usd",
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "unconnectedAccountAlertShownOrigins": "object",
@@ -248,17 +250,11 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionSupport": "boolean",
-        "srcNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        },
-        "destNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        }
-      }
+        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
+        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
+      },
+      "destTokens": {},
+      "destTopAssets": {}
     },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",

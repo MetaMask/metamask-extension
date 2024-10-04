@@ -66,7 +66,9 @@ describe('wallet_getSession', () => {
 
   it('throws an error if the CAIP-25 endowment permission does not exist', async () => {
     const { handler, getCaveat, end } = createMockedHandler();
-    getCaveat.mockReturnValue(null);
+    getCaveat.mockImplementation(() => {
+      throw new Error('permission not found');
+    });
 
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(

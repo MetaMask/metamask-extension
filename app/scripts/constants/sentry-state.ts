@@ -102,6 +102,8 @@ export const SENTRY_BACKGROUND_STATE = {
         destNetworkAllowlist: [],
         srcNetworkAllowlist: [],
       },
+      destTokens: {},
+      destTopAssets: [],
     },
   },
   CronjobController: {
@@ -226,7 +228,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showFiatInTestnets: true,
       showTestNetworks: true,
       smartTransactionsOptInStatus: true,
-      useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: true,
       petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
     },

@@ -9,7 +9,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Settings Search', function () {
   const settingsSearch = {
-    general: 'Primary currency',
+    general: 'Show native token as main balance',
     advanced: 'State logs',
     contacts: 'Contacts',
     security: 'Reveal Secret',
