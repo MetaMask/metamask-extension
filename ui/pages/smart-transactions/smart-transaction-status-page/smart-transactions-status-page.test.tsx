@@ -7,7 +7,6 @@ import {
 } from '@metamask/smart-transactions-controller/dist/types';
 
 import { fireEvent } from '@testing-library/react';
-import { Provider } from 'react-redux';
 import {
   renderWithProvider,
   createSwapsMockStore,
