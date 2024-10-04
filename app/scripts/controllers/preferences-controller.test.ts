@@ -15,7 +15,7 @@ import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
 } from './preferences-controller';
-import PreferencesController from './preferences-controller';
+import { PreferencesController } from './preferences-controller';
 
 const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   {

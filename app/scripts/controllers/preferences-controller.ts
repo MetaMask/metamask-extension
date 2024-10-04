@@ -408,7 +408,7 @@ const controllerMetadata = {
   },
 };
 
-export default class PreferencesController extends BaseController<
+export class PreferencesController extends BaseController<
   typeof controllerName,
   PreferencesControllerState,
   PreferencesControllerMessenger
