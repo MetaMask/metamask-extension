@@ -26,7 +26,7 @@ export const useTokenValues = (
     const tokenWithBalance = tokensWithBalances.find(
       (token) =>
         toChecksumHexAddress(token.address) ===
-        toChecksumHexAddress(transactionMeta.txParams.to as string),
+        toChecksumHexAddress(transactionMeta?.txParams?.to as string),
     );
 
     if (!tokenWithBalance) {
@@ -36,7 +36,7 @@ export const useTokenValues = (
     return calcTokenAmount(tokenWithBalance.balance, tokenWithBalance.decimals);
   }, [tokensWithBalances]);
 
-  const exchangeRate = useTokenExchangeRate(transactionMeta.txParams.to);
+  const exchangeRate = useTokenExchangeRate(transactionMeta?.txParams?.to);
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && tokenBalance !== '') {

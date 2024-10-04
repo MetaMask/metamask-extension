@@ -14,7 +14,7 @@ export const useTokenImage = (
   const tokenImage =
     selectedToken?.iconUrl ||
     selectedToken?.image ||
-    tokenList[transactionMeta.txParams.to as string]?.iconUrl;
+    tokenList[transactionMeta?.txParams?.to as string]?.iconUrl;
 
   return { tokenImage };
 };
