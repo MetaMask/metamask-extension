@@ -67,13 +67,14 @@ export function useSimulationMetrics({
     setLoadingComplete();
   }
 
-  const displayNameRequests: UseDisplayNameRequest[] = balanceChanges.map(
-    ({ asset }) => ({
-      value: asset.address ?? '',
+  const displayNameRequests: UseDisplayNameRequest[] = balanceChanges
+    // Filter out changes with no address (e.g. ETH)
+    .filter(({ asset }) => Boolean(asset.address))
+    .map(({ asset }) => ({
+      value: asset.address as string,
       type: NameType.ETHEREUM_ADDRESS,
       preferContractSymbol: true,
-    }),
-  );
+    }));
 
   const displayNames = useDisplayNames(displayNameRequests);
 

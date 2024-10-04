@@ -92,15 +92,11 @@ exports[`SmartTransactionStatusPage renders the "cancelled" STX status 1`] = `
         class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
-        />
-        <div
           class="mm-box mm-box--display-flex"
-          style="font-size: 48px;"
+          style="width: 48px; height: 48px;"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-inherit mm-box--margin-bottom-4 mm-box--display-inline-block mm-box--color-error-default"
-            style="mask-image: url('./images/icons/danger.svg');"
+          <div
+            class=""
           />
         </div>
         <h4
@@ -128,9 +124,6 @@ exports[`SmartTransactionStatusPage renders the "cancelled" STX status 1`] = `
           </button>
         </div>
       </div>
-      <div
-        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
-      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -159,15 +152,11 @@ exports[`SmartTransactionStatusPage renders the "cancelled" STX status for a dap
         class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
-        />
-        <div
           class="mm-box mm-box--display-flex"
-          style="font-size: 48px;"
+          style="width: 48px; height: 48px;"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-inherit mm-box--margin-bottom-4 mm-box--display-inline-block mm-box--color-error-default"
-            style="mask-image: url('./images/icons/danger.svg');"
+          <div
+            class=""
           />
         </div>
         <h4
@@ -195,9 +184,6 @@ exports[`SmartTransactionStatusPage renders the "cancelled" STX status for a dap
           </button>
         </div>
       </div>
-      <div
-        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
-      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -226,15 +212,11 @@ exports[`SmartTransactionStatusPage renders the "deadline_missed" STX status 1`]
         class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
-        />
-        <div
           class="mm-box mm-box--display-flex"
-          style="font-size: 48px;"
+          style="width: 48px; height: 48px;"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-inherit mm-box--margin-bottom-4 mm-box--display-inline-block mm-box--color-error-default"
-            style="mask-image: url('./images/icons/danger.svg');"
+          <div
+            class=""
           />
         </div>
         <h4
@@ -262,9 +244,6 @@ exports[`SmartTransactionStatusPage renders the "deadline_missed" STX status 1`]
           </button>
         </div>
       </div>
-      <div
-        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
-      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -293,53 +272,18 @@ exports[`SmartTransactionStatusPage renders the "pending" STX status for a dapp 
         class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
-        />
-        <div
           class="mm-box mm-box--display-flex"
-          style="font-size: 48px;"
+          style="width: 48px; height: 48px;"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-inherit mm-box--margin-bottom-4 mm-box--display-inline-block mm-box--color-primary-default"
-            style="mask-image: url('./images/icons/clock.svg');"
+          <div
+            class=""
           />
         </div>
         <h4
           class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--color-text-default"
         >
-          Submitting your transaction
+          Your transaction was submitted
         </h4>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
-        >
-          <div
-            class="smart-transaction-status-page__loading-bar-container"
-          >
-            <div
-              class="smart-transaction-status-page__loading-bar"
-              style="width: 0%;"
-            />
-          </div>
-        </div>
-        <div
-          class="mm-box smart-transaction-status-page__description mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--color-text-alternative"
-          >
-            <span>
-               
-              Estimated completion in &lt; 
-              <p
-                class="mm-box mm-text smart-transaction-status-page__countdown mm-text--body-sm mm-text--text-align-center mm-box--display-inline-block mm-box--color-text-alternative"
-              >
-                0:45
-              </p>
-              
-               
-            </span>
-          </p>
-        </div>
         <div
           class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--flex-direction-column"
         >
@@ -351,9 +295,6 @@ exports[`SmartTransactionStatusPage renders the "pending" STX status for a dapp 
           </button>
         </div>
       </div>
-      <div
-        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
-      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -387,15 +328,11 @@ exports[`SmartTransactionStatusPage renders the "reverted" STX status 1`] = `
         class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
-        />
-        <div
           class="mm-box mm-box--display-flex"
-          style="font-size: 48px;"
+          style="width: 48px; height: 48px;"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-inherit mm-box--margin-bottom-4 mm-box--display-inline-block mm-box--color-error-default"
-            style="mask-image: url('./images/icons/danger.svg');"
+          <div
+            class=""
           />
         </div>
         <h4
@@ -423,9 +360,6 @@ exports[`SmartTransactionStatusPage renders the "reverted" STX status 1`] = `
           </button>
         </div>
       </div>
-      <div
-        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
-      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -454,15 +388,11 @@ exports[`SmartTransactionStatusPage renders the "success" STX status 1`] = `
         class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
-        />
-        <div
           class="mm-box mm-box--display-flex"
-          style="font-size: 48px;"
+          style="width: 48px; height: 48px;"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-inherit mm-box--margin-bottom-4 mm-box--display-inline-block mm-box--color-success-default"
-            style="mask-image: url('./images/icons/confirmation.svg');"
+          <div
+            class=""
           />
         </div>
         <h4
@@ -481,9 +411,6 @@ exports[`SmartTransactionStatusPage renders the "success" STX status 1`] = `
           </button>
         </div>
       </div>
-      <div
-        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
-      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -512,15 +439,11 @@ exports[`SmartTransactionStatusPage renders the "success" STX status for a dapp 
         class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
-        />
-        <div
           class="mm-box mm-box--display-flex"
-          style="font-size: 48px;"
+          style="width: 48px; height: 48px;"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-inherit mm-box--margin-bottom-4 mm-box--display-inline-block mm-box--color-success-default"
-            style="mask-image: url('./images/icons/confirmation.svg');"
+          <div
+            class=""
           />
         </div>
         <h4
@@ -539,9 +462,6 @@ exports[`SmartTransactionStatusPage renders the "success" STX status for a dapp 
           </button>
         </div>
       </div>
-      <div
-        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
-      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -570,15 +490,11 @@ exports[`SmartTransactionStatusPage renders the "unknown" STX status 1`] = `
         class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
-        />
-        <div
           class="mm-box mm-box--display-flex"
-          style="font-size: 48px;"
+          style="width: 48px; height: 48px;"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-inherit mm-box--margin-bottom-4 mm-box--display-inline-block mm-box--color-error-default"
-            style="mask-image: url('./images/icons/danger.svg');"
+          <div
+            class=""
           />
         </div>
         <h4
@@ -606,9 +522,6 @@ exports[`SmartTransactionStatusPage renders the "unknown" STX status 1`] = `
           </button>
         </div>
       </div>
-      <div
-        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
-      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
