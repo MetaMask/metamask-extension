@@ -52,8 +52,10 @@ describe('Alert for insufficient funds @no-mmi', function () {
 });
 
 async function verifyAlertForInsufficientBalance(driver: Driver) {
-  const alert = await driver.findElement('[data-testid="inline-alert"]');
-  assert.equal(await alert.getText(), 'Alert');
+  await driver.waitForSelector({
+    css: '[data-testid="inline-alert"]',
+    text: 'Alert',
+  });
   await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
   await driver.clickElement('[data-testid="inline-alert"]');
 
@@ -70,12 +72,8 @@ async function mintNft(driver: Driver) {
 }
 
 async function displayAlertForInsufficientBalance(driver: Driver) {
-  const alertDescription = await driver.findElement(
-    '[data-testid="alert-modal__selected-alert"]',
-  );
-  const alertDescriptionText = await alertDescription.getText();
-  assert.equal(
-    alertDescriptionText,
-    'You do not have enough ETH in your account to pay for transaction fees.',
-  );
+  await driver.waitForSelector({
+    css: '[data-testid="alert-modal__selected-alert"]',
+    text: 'You do not have enough ETH in your account to pay for transaction fees.',
+  });
 }

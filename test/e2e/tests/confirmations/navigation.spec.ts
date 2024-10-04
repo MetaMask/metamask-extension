@@ -122,11 +122,10 @@ async function verifySignTypedData(driver: Driver) {
 }
 
 async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
-  const rejectionResult = await driver.findElement(verifyResultId);
-  assert.equal(
-    await rejectionResult.getText(),
-    'Error: User rejected the request.',
-  );
+  await driver.waitForSelector({
+    css: verifyResultId,
+    text: 'Error: User rejected the request.',
+  });
 }
 
 async function verifySignedTypeV3Confirmation(driver: Driver) {
