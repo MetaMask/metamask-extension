@@ -2946,7 +2946,7 @@
     },
     "@sentry/browser": {
       "globals": {
-        "PerformanceObserver.supportedEntryTypes.includes": true,
+        "PerformanceObserver.supportedEntryTypes": true,
         "Request": true,
         "URL": true,
         "XMLHttpRequest.prototype": true,
@@ -3043,7 +3043,8 @@
         "innerWidth": true,
         "location.href": true,
         "location.origin": true,
-        "parent": true
+        "parent": true,
+        "setTimeout": true
       },
       "packages": {
         "@sentry/browser>@sentry-internal/browser-utils": true,
@@ -4509,6 +4510,14 @@
         "define": true
       }
     },
+    "history": {
+      "globals": {
+        "console": true,
+        "define": true,
+        "document.defaultView": true,
+        "document.querySelector": true
+      }
+    },
     "https-browserify": {
       "packages": {
         "browserify>url": true,
@@ -5086,6 +5095,58 @@
         "react-router-dom>tiny-warning": true
       }
     },
+    "react-router-dom-v5-compat": {
+      "globals": {
+        "FormData": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "__reactRouterVersion": "write",
+        "addEventListener": true,
+        "confirm": true,
+        "define": true,
+        "document": true,
+        "history.scrollRestoration": true,
+        "location.href": true,
+        "removeEventListener": true,
+        "scrollTo": true,
+        "scrollY": true,
+        "sessionStorage.getItem": true,
+        "sessionStorage.setItem": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "history": true,
+        "react": true,
+        "react-dom": true,
+        "react-router-dom": true,
+        "react-router-dom-v5-compat>@remix-run/router": true,
+        "react-router-dom-v5-compat>react-router": true
+      }
+    },
+    "react-router-dom-v5-compat>@remix-run/router": {
+      "globals": {
+        "AbortController": true,
+        "DOMException": true,
+        "FormData": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "console": true,
+        "document.defaultView": true
+      }
+    },
+    "react-router-dom-v5-compat>react-router": {
+      "globals": {
+        "console.error": true,
+        "define": true
+      },
+      "packages": {
+        "react": true,
+        "react-router-dom-v5-compat>@remix-run/router": true
+      }
+    },
     "react-router-dom>history": {
       "globals": {
         "addEventListener": true,
@@ -5109,37 +5170,10 @@
         "prop-types>react-is": true,
         "react": true,
         "react-redux>hoist-non-react-statics": true,
-        "react-router-dom>react-router>history": true,
-        "react-router-dom>react-router>mini-create-react-context": true,
+        "react-router-dom>history": true,
         "react-router-dom>tiny-invariant": true,
         "react-router-dom>tiny-warning": true,
         "serve-handler>path-to-regexp": true
-      }
-    },
-    "react-router-dom>react-router>history": {
-      "globals": {
-        "addEventListener": true,
-        "confirm": true,
-        "document": true,
-        "history": true,
-        "location": true,
-        "navigator.userAgent": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "react-router-dom>history>resolve-pathname": true,
-        "react-router-dom>history>value-equal": true,
-        "react-router-dom>tiny-invariant": true,
-        "react-router-dom>tiny-warning": true
-      }
-    },
-    "react-router-dom>react-router>mini-create-react-context": {
-      "packages": {
-        "@babel/runtime": true,
-        "prop-types": true,
-        "react": true,
-        "react-router-dom>react-router>mini-create-react-context>gud": true,
-        "react-router-dom>tiny-warning": true
       }
     },
     "react-router-dom>tiny-warning": {

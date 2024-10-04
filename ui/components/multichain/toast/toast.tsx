@@ -65,6 +65,7 @@ export const Toast = ({
       data-theme={theme === ThemeType.light ? ThemeType.dark : ThemeType.light}
       onClose={onClose}
       borderRadius={borderRadius}
+      data-testid={dataTestId ? `${dataTestId}-banner-base` : undefined}
     >
       <Box display={Display.Flex} gap={4} data-testid={dataTestId}>
         {startAdornment}
