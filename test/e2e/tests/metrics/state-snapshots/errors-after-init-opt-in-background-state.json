@@ -67,7 +67,9 @@
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       },
       "destTokens": {},
-      "destTopAssets": {}
+      "destTopAssets": {},
+      "srcTokens": {},
+      "srcTopAssets": {}
     }
   },
   "CronjobController": { "jobs": "object" },
