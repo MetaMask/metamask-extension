@@ -2946,7 +2946,7 @@
     },
     "@sentry/browser": {
       "globals": {
-        "PerformanceObserver.supportedEntryTypes.includes": true,
+        "PerformanceObserver.supportedEntryTypes": true,
         "Request": true,
         "URL": true,
         "XMLHttpRequest.prototype": true,
@@ -3043,7 +3043,8 @@
         "innerWidth": true,
         "location.href": true,
         "location.origin": true,
-        "parent": true
+        "parent": true,
+        "setTimeout": true
       },
       "packages": {
         "@sentry/browser>@sentry-internal/browser-utils": true,
