@@ -40,6 +40,10 @@ export default class BridgeController extends BaseController<
       this.setBridgeFeatureFlags.bind(this),
     );
     this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:selectSrcNetwork`,
+      this.selectSrcNetwork.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:selectDestNetwork`,
       this.selectDestNetwork.bind(this),
     );
@@ -59,6 +63,11 @@ export default class BridgeController extends BaseController<
     this.update((_state) => {
       _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
     });
+  };
+
+  selectSrcNetwork = async (chainId: Hex) => {
+    await this.#setTopAssets(chainId, 'srcTopAssets');
+    await this.#setTokens(chainId, 'srcTokens');
   };
 
   selectDestNetwork = async (chainId: Hex) => {
