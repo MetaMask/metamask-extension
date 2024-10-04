@@ -19,6 +19,7 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { HEX_ZERO } from '../constants';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -86,7 +87,7 @@ export const MethodDataRow = () => {
   );
 };
 
-export const AmountRow = () => {
+const AmountRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { currency } = useUserPreferencedCurrency(PRIMARY);
@@ -94,7 +95,7 @@ export const AmountRow = () => {
   const value = currentConfirmation?.txParams?.value;
   const simulationData = currentConfirmation?.simulationData;
 
-  if (!value || value === '0x' || !simulationData?.error) {
+  if (!value || value === HEX_ZERO || !simulationData?.error) {
     return null;
   }
 

@@ -168,7 +168,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
 
   // Overwrite simulation data if provided
   if (simulationData) {
-    console.log('>>>>>', simulationData);
     (confirmation as TransactionMeta).simulationData = simulationData;
   }
 
