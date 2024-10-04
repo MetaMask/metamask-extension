@@ -36,6 +36,11 @@ class SnapListPage {
     this.driver = driver;
   }
 
+  /**
+   * Removes a snap by its name from the snap list.
+   *
+   * @param snapName - The name of the snap to be removed.
+   */
   async removeSnapByName(snapName: string): Promise<void> {
     console.log('Removing snap on snap list page with name: ', snapName);
     await this.driver.clickElement({ text: snapName, css: this.snapListItem });

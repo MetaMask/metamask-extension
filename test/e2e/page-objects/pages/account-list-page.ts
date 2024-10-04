@@ -168,6 +168,11 @@ class AccountListPage {
     });
   }
 
+  /**
+   * Checks that the account with the specified label is not displayed in the account list.
+   *
+   * @param expectedLabel - The label of the account that should not be displayed.
+   */
   async check_accountIsNotDisplayedInAccountList(
     expectedLabel: string,
   ): Promise<void> {

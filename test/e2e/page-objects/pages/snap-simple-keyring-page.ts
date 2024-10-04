@@ -95,6 +95,9 @@ class SnapSimpleKeyringPage {
     console.log('Snap Simple Keyring page is loaded');
   }
 
+  /**
+   * Creates a new account on the Snap Simple Keyring page and checks the account is created.
+   */
   async createNewAccount(): Promise<void> {
     console.log('Create new account on Snap Simple Keyring page');
     await this.driver.clickElement(this.createAccountSection);
@@ -117,6 +120,9 @@ class SnapSimpleKeyringPage {
     await this.check_accountSupportedMethodsDisplayed();
   }
 
+  /**
+   * Installs the Simple Keyring Snap and checks the snap is connected.
+   */
   async installSnap(): Promise<void> {
     console.log('Install Simple Keyring Snap');
     await this.driver.clickElement(this.connectButton);
