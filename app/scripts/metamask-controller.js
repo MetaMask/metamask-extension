@@ -598,6 +598,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:getSelectedAccount',
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
+        'NetworkController:getState',
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
@@ -606,8 +607,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.PreferencesController,
       initLangCode: opts.initLangCode,
       messenger: preferencesMessenger,
-      networkConfigurationsByChainId:
-        this.networkController.state.networkConfigurationsByChainId,
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({

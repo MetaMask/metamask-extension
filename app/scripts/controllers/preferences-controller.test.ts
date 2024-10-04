@@ -45,7 +45,6 @@ const setupController = ({
     | KeyringControllerStateChangeEvent
     | SnapControllerStateChangeEvent
   >();
-
   const preferencesControllerMessenger: PreferencesControllerMessenger =
     controllerMessenger.getRestricted({
       name: 'PreferencesController',
@@ -54,15 +53,20 @@ const setupController = ({
         'AccountsController:setAccountName',
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
+        'NetworkController:getState',
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
 
+  controllerMessenger.registerActionHandler(
+    'NetworkController:getState',
+    jest.fn().mockReturnValue({
+      networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
+    }),
+  );
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
     state,
-    networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
-    initLangCode: 'en_US',
   });
 
   const accountsControllerMessenger = controllerMessenger.getRestricted({
@@ -109,7 +113,7 @@ describe('preferences controller', () => {
     it('checks the default currentLocale', () => {
       const { controller } = setupController({});
       const { currentLocale } = controller.state;
-      expect(currentLocale).toStrictEqual('en_US');
+      expect(currentLocale).toStrictEqual('');
     });
 
     it('sets current locale in preferences controller', () => {

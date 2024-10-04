@@ -14,6 +14,7 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Json } from 'json-rpc-engine';
+import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
@@ -73,7 +74,8 @@ export type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerSetAccountNameAction
   | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerSetSelectedAccountAction;
+  | AccountsControllerSetSelectedAccountAction
+  | NetworkControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -89,9 +91,7 @@ export type PreferencesControllerMessenger = RestrictedControllerMessenger<
 >;
 
 type PreferencesControllerOptions = {
-  networkConfigurationsByChainId?: Record<Hex, { chainId: Hex }>;
   state?: Partial<PreferencesControllerState>;
-  initLangCode?: string;
   messenger: PreferencesControllerMessenger;
 };
 
@@ -130,7 +130,7 @@ export type PreferencesControllerState = {
   watchEthereumAccountEnabled: boolean;
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
-  addSnapAccountEnabled: boolean;
+  addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   // WARNING: Do not use feature flags for security-sensitive things.
   // Feature flag toggling is available in the global namespace
@@ -151,7 +151,7 @@ export type PreferencesControllerState = {
   // TODO: Replace `Json` with correct type
   snapRegistryList: Record<string, Json>;
   theme: ThemeType;
-  snapsAddSnapAccountModalDismissed: boolean;
+  snapsAddSnapAccountModalDismissed?: boolean;
   useExternalNameSources: boolean;
   useTransactionSimulations: boolean;
   enableMV3TimestampSave: boolean;
@@ -411,17 +411,14 @@ export default class PreferencesController extends BaseController<
    * Constructs a Preferences controller.
    *
    * @param options - the controller options
-   * @param options.networkConfigurationsByChainId - The network configurations
-   * @param options.initLangCode - The language code
    * @param options.messenger - The controller messenger
    * @param options.state - The initial controller state
    */
-  constructor({
-    networkConfigurationsByChainId,
-    initLangCode,
-    messenger,
-    state,
-  }: PreferencesControllerOptions) {
+  constructor({ messenger, state }: PreferencesControllerOptions) {
+    const { networkConfigurationsByChainId } = messenger.call(
+      'NetworkController:getState',
+    );
+
     const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
       networkConfigurationsByChainId ?? {},
     ).reduce((acc: Record<Hex, boolean>, element) => {
@@ -439,7 +436,6 @@ export default class PreferencesController extends BaseController<
           ...addedNonMainNetwork,
           ...testNetworks,
         },
-        currentLocale: initLangCode ?? '',
         ...state,
       },
     });
