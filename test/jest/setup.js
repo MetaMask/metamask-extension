@@ -1,9 +1,6 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
 import '../helpers/setup-after-helper';
 
-import '@testing-library/jest-dom';
-import 'jest-canvas-mock';
-
 jest.mock('webextension-polyfill', () => {
   return {
     runtime: {
