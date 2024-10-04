@@ -244,10 +244,6 @@
   "fast": {
     "message": "Greitas"
   },
-  "fiat": {
-    "message": "Standartinė valiuta",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Failo importavimas neveikia? Spustelėkite čia!",
     "description": "Helps user import their account from a JSON file"
@@ -508,12 +504,6 @@
   "prev": {
     "message": "Peržiūra"
   },
-  "primaryCurrencySetting": {
-    "message": "Pagrindinė valiuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Rinkitės vietinę, kad vertės pirmiausia būtų rodomos vietine grandinės valiuta (pvz., ETH). Rinkitės standartinę, kad vertės pirmiausia būtų rodomos jūsų pasirinkta standartine valiuta."
-  },
   "privacyMsg": {
     "message": "Privatumo politika"
   },
@@ -764,9 +754,6 @@
   },
   "unlockMessage": {
     "message": "Laukiančios decentralizuotos svetainės"
-  },
-  "updatedWithDate": {
-    "message": "Atnaujinta $1"
   },
   "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
