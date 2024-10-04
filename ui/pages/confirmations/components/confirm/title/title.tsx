@@ -207,7 +207,6 @@ const ConfirmTitle: React.FC = memo(() => {
         isRevokeSetApprovalForAll,
         spendingCapPending || revokePending,
       ),
-
     [
       currentConfirmation,
       isNFT,

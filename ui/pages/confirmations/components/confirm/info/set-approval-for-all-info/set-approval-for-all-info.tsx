@@ -1,18 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '../../../../../../components/component-library';
-import Preloader from '../../../../../../components/ui/icon/preloader';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { ApproveDetails } from '../approve/approve-details/approve-details';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
+import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { getIsRevokeSetApprovalForAll } from '../utils';
 import { RevokeSetApprovalForAllStaticSimulation } from './revoke-set-approval-for-all-static-simulation/revoke-set-approval-for-all-static-simulation';
@@ -39,15 +33,7 @@ const SetApprovalForAllInfo = () => {
   }
 
   if (pending) {
-    return (
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-      >
-        <Preloader size={20} />
-      </Box>
-    );
+    return <ConfirmLoader />;
   }
 
   return (

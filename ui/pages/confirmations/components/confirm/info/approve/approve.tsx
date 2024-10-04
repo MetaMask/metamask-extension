@@ -4,17 +4,11 @@ import {
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '../../../../../../components/component-library';
-import Preloader from '../../../../../../components/ui/icon/preloader';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
+import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { ApproveDetails } from './approve-details/approve-details';
 import { ApproveStaticSimulation } from './approve-static-simulation/approve-static-simulation';
@@ -59,15 +53,7 @@ const ApproveInfo = () => {
   }
 
   if (pending) {
-    return (
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-      >
-        <Preloader size={20} />
-      </Box>
-    );
+    return <ConfirmLoader />;
   }
 
   return (
