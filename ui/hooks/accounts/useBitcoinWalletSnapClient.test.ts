@@ -1,13 +1,13 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useBitcoinWalletSnapClient } from './useBitcoinWalletSnapClient';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { HandlerType } from '@metamask/snaps-utils';
 import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import {
   handleSnapRequest,
   multichainUpdateBalance,
 } from '../../store/actions';
+import { useBitcoinWalletSnapClient } from './useBitcoinWalletSnapClient';
 
 jest.mock('../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
