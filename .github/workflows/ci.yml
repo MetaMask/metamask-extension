@@ -16,27 +16,3 @@ jobs:
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
-
-  sonarcloud:
-    name: SonarCloud
-    runs-on: ubuntu-latest
-    needs:
-      - run-tests
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: lcov.info
-          path: coverage
-
-      - name: SonarCloud Scan
-        # This is SonarSource/sonarcloud-github-action@v2.0.0
-        uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
