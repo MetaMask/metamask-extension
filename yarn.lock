@@ -7942,7 +7942,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:^8.33.1":
+"@sentry/browser@npm:^8.19.0":
   version: 8.33.1
   resolution: "@sentry/browser@npm:8.33.1"
   dependencies:
@@ -7982,9 +7982,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/types@npm:8.33.1"
+"@sentry/types@npm:8.19.0":
+  version: 8.19.0
+  resolution: "@sentry/types@npm:8.19.0"
   checksum: 10/8812f7394c6c031197abc04d80e5b5b3693742dc065b877c535a9ceb538aabd60ee27fc2b13824e2b8fc264819868109bbd4de3642fd1c7bf30d304fb0c21aa9
   languageName: node
   linkType: hard
@@ -7996,9 +7996,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:^8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/types@npm:8.33.1"
+"@sentry/types@npm:^8.19.0":
+  version: 8.20.0
+  resolution: "@sentry/types@npm:8.20.0"
   checksum: 10/c7d7ed17975f0fc0b4bf5aece58084953c2a76e8f417923a476fe1fd42a2c9339c548d701edbc4b938c9252cf680d3eff4c6c2a986bc7ac62649aebf656c5b64
   languageName: node
   linkType: hard
@@ -8012,11 +8012,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/utils@npm:^8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/utils@npm:8.33.1"
+"@sentry/utils@npm:^8.19.0":
+  version: 8.19.0
+  resolution: "@sentry/utils@npm:8.19.0"
   dependencies:
-    "@sentry/types": "npm:8.33.1"
+    "@sentry/types": "npm:8.19.0"
   checksum: 10/abd507e5b37c7753534865f74a1a622fdbe2d71cfa61fd009703f4c9c90634fb6d26e3b2f8e09904631d4692e3735de451ed914c505c31700a6f5504a61e649e
   languageName: node
   linkType: hard
@@ -26186,10 +26186,10 @@ __metadata:
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
     "@segment/loosely-validate-event": "npm:^2.0.0"
-    "@sentry/browser": "npm:^8.33.1"
+    "@sentry/browser": "npm:^8.19.0"
     "@sentry/cli": "npm:^2.19.4"
-    "@sentry/types": "npm:^8.33.1"
-    "@sentry/utils": "npm:^8.33.1"
+    "@sentry/types": "npm:^8.19.0"
+    "@sentry/utils": "npm:^8.19.0"
     "@storybook/addon-a11y": "npm:^7.6.20"
     "@storybook/addon-actions": "npm:^7.6.20"
     "@storybook/addon-designs": "npm:^7.0.9"
