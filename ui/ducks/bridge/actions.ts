@@ -53,12 +53,9 @@ import { ETH_USDT_ADDRESS, FeeType } from '../../../shared/constants/bridge';
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { bridgeSlice } from './bridge';
 import {
-  DUMMY_QUOTES_APPROVAL,
-  DUMMY_QUOTES_NO_APPROVAL,
-} from './dummy-quotes';
-import {
   getApprovalGasMultipliers,
   getBridgeGasMultipliers,
+  getQuotes,
 } from './selectors';
 
 const {
@@ -145,7 +142,7 @@ export const getBridgeERC20Allowance = async (
   );
 };
 
-export const signBridgeTransaction = (
+export const submitBridgeTransaction = (
   history: ReturnType<typeof useHistory>,
 ) => {
   return async (
@@ -161,8 +158,9 @@ export const signBridgeTransaction = (
       return;
     }
 
-    const quoteMeta = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
-    // const quoteMeta = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
+    const quoteMetas = getQuotes(state);
+    const quoteMeta = quoteMetas[0];
+    console.log('Bridge', 'submitBridgeTransaction', { quoteMeta });
 
     // Track event TODO
 
@@ -197,6 +195,7 @@ export const signBridgeTransaction = (
     };
 
     const calcMaxGasLimit = (gasLimit: number, gasMultiplier: number) => {
+      console.log('Bridge', 'calcMaxGasLimit', { gasLimit, gasMultiplier });
       return new Numeric(
         new BigNumber(gasLimit).times(gasMultiplier).round(0).toString(),
         10,
@@ -300,6 +299,7 @@ export const signBridgeTransaction = (
         maxFeePerGas,
         maxPriorityFeePerGas,
       };
+      console.log('Bridge', 'handleApprovalTx sdada', { txParams });
       const txMeta = await addTransactionAndWaitForPublish(txParams, {
         requireApproval: false,
         // @ts-expect-error Need TransactionController v37+, TODO add this type
@@ -315,10 +315,11 @@ export const signBridgeTransaction = (
           },
         },
       });
+      console.log('Bridge', 'handleApprovalTx 222', { txMeta });
       await forceUpdateMetamaskState(dispatch);
 
       console.log('Bridge', { approvalTxId: txMeta.id });
-      return txMeta.id;
+      return txMeta?.id;
     };
 
     const handleBridgeTx = async ({
@@ -436,6 +437,10 @@ export const signBridgeTransaction = (
       }
 
       // Add the token after network is guaranteed to exist
+      console.log('Bridge', 'addDestToken', {
+        networkConfigurations,
+        destNetworkConfig,
+      });
       const rpcEndpointIndex = destNetworkConfig.defaultRpcEndpointIndex;
       const destNetworkClientId =
         destNetworkConfig.rpcEndpoints[rpcEndpointIndex].networkClientId;
@@ -462,11 +467,14 @@ export const signBridgeTransaction = (
       // Execute transaction(s)
       let approvalTxId: string | undefined;
       if (quoteMeta?.approval) {
+        console.log('Bridge', 'execute', 'handleApprovalTx');
         approvalTxId = await handleApprovalTx({
           maxFeePerGas,
           maxPriorityFeePerGas,
         });
       }
+
+      console.log('Bridge', 'execute', 'handleBridgeTx');
       await handleBridgeTx({
         approvalTxId,
         maxFeePerGas,
@@ -484,6 +492,7 @@ export const signBridgeTransaction = (
       // Route user to activity tab on Home page
       await dispatch(setDefaultHomeActiveTabName('activity'));
       history.push(DEFAULT_ROUTE);
+      console.log('Bridge', 'execute', 'history.push');
     };
 
     await execute();
