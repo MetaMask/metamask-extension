@@ -14,11 +14,40 @@ const {
   MetaMetricsEventName,
 } = require('../../../../shared/constants/metametrics');
 
-async function mockedDappViewedEndpoint(mockServer) {
+async function mockedDappViewedEndpointFirstVisit(mockServer) {
   return await mockServer
     .forPost('https://api.segment.io/v1/batch')
     .withJsonBodyIncluding({
-      batch: [{ type: 'track', event: MetaMetricsEventName.DappViewed }],
+      batch: [
+        {
+          type: 'track',
+          event: MetaMetricsEventName.DappViewed,
+          properties: {
+            is_first_visit: true,
+          },
+        },
+      ],
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
+async function mockedDappViewedEndpointReVisit(mockServer) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [
+        {
+          type: 'track',
+          event: MetaMetricsEventName.DappViewed,
+          properties: {
+            is_first_visit: false,
+          },
+        },
+      ],
     })
     .thenCallback(() => {
       return {
@@ -67,7 +96,7 @@ describe('Dapp viewed Event @no-mmi', function () {
   const validFakeMetricsId = 'fake-metrics-fd20';
   it('is not sent when metametrics ID is not valid', async function () {
     async function mockSegment(mockServer) {
-      return [await mockedDappViewedEndpoint(mockServer)];
+      return [await mockedDappViewedEndpointFirstVisit(mockServer)];
     }
 
     await withFixtures(
@@ -93,7 +122,7 @@ describe('Dapp viewed Event @no-mmi', function () {
 
   it('is sent when navigating to dapp with no account connected', async function () {
     async function mockSegment(mockServer) {
-      return [await mockedDappViewedEndpoint(mockServer)];
+      return [await mockedDappViewedEndpointFirstVisit(mockServer)];
     }
 
     await withFixtures(
@@ -125,8 +154,8 @@ describe('Dapp viewed Event @no-mmi', function () {
   it('is sent when opening the dapp in a new tab with one account connected', async function () {
     async function mockSegment(mockServer) {
       return [
-        await mockedDappViewedEndpoint(mockServer),
-        await mockedDappViewedEndpoint(mockServer),
+        await mockedDappViewedEndpointFirstVisit(mockServer),
+        await mockedDappViewedEndpointReVisit(mockServer),
         await mockPermissionApprovedEndpoint(mockServer),
       ];
     }
@@ -163,8 +192,8 @@ describe('Dapp viewed Event @no-mmi', function () {
   it('is sent when refreshing dapp with one account connected', async function () {
     async function mockSegment(mockServer) {
       return [
-        await mockedDappViewedEndpoint(mockServer),
-        await mockedDappViewedEndpoint(mockServer),
+        await mockedDappViewedEndpointFirstVisit(mockServer),
+        await mockedDappViewedEndpointReVisit(mockServer),
         await mockPermissionApprovedEndpoint(mockServer),
       ];
     }
@@ -189,10 +218,9 @@ describe('Dapp viewed Event @no-mmi', function () {
         // refresh dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.refresh();
-
         const events = await getEventPayloads(driver, mockedEndpoints);
 
-        // events are original dapp viewed, new dapp viewed when refresh, and permission approved
+        // events are original dapp viewed, navigate to dapp, new dapp viewed when refresh, new dapp viewed when navigate and permission approved
         const dappViewedEventProperties = events[1].properties;
         assert.equal(dappViewedEventProperties.is_first_visit, false);
         assert.equal(dappViewedEventProperties.number_of_accounts, 1);
@@ -204,10 +232,10 @@ describe('Dapp viewed Event @no-mmi', function () {
   it('is sent when navigating to a connected dapp', async function () {
     async function mockSegment(mockServer) {
       return [
-        await mockedDappViewedEndpoint(mockServer),
-        await mockedDappViewedEndpoint(mockServer),
-        await mockedDappViewedEndpoint(mockServer),
-        await mockedDappViewedEndpoint(mockServer),
+        await mockedDappViewedEndpointFirstVisit(mockServer),
+        await mockedDappViewedEndpointReVisit(mockServer),
+        await mockedDappViewedEndpointFirstVisit(mockServer),
+        await mockedDappViewedEndpointReVisit(mockServer),
         await mockPermissionApprovedEndpoint(mockServer),
       ];
     }
@@ -247,7 +275,7 @@ describe('Dapp viewed Event @no-mmi', function () {
 
   it('is sent when connecting dapp with two accounts', async function () {
     async function mockSegment(mockServer) {
-      return [await mockedDappViewedEndpoint(mockServer)];
+      return [await mockedDappViewedEndpointFirstVisit(mockServer)];
     }
     await withFixtures(
       {
@@ -299,8 +327,8 @@ describe('Dapp viewed Event @no-mmi', function () {
   it('is sent when reconnect to a dapp that has been connected before', async function () {
     async function mockSegment(mockServer) {
       return [
-        await mockedDappViewedEndpoint(mockServer),
-        await mockedDappViewedEndpoint(mockServer),
+        await mockedDappViewedEndpointFirstVisit(mockServer),
+        await mockedDappViewedEndpointReVisit(mockServer),
       ];
     }
 
