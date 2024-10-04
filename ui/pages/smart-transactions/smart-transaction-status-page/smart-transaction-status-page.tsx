@@ -34,15 +34,7 @@ import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
 import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
 
-const ANIMATION_DIRECTORY = './images/animations/smart-transaction-status';
-
-enum SmartTransactionAnimations {
-  Failed = `${ANIMATION_DIRECTORY}/smart-transaction-failed.lottie`,
-  Confirmed = `${ANIMATION_DIRECTORY}/smart-transaction-confirmed.lottie`,
-  SubmittingLoop = `${ANIMATION_DIRECTORY}/smart-transaction-submitting-loop.lottie`,
-  SubmittingIntro = `${ANIMATION_DIRECTORY}/smart-transaction-submitting-intro.lottie`,
-  Processing = `${ANIMATION_DIRECTORY}/smart-transaction-processing.json`,
-}
+import { SmartTransactionsStatusAnimation } from './smart-transaction-status-animation';
 
 export type RequestState = {
   smartTransaction?: SmartTransaction;
@@ -287,72 +279,6 @@ const Title = ({ title }: { title: string }) => {
   );
 };
 
-const SmartTransactionsStatusIcon = ({
-  status,
-}: {
-  status: SmartTransactionStatuses;
-}) => {
-  const animationContainer = useRef<HTMLDivElement>(null);
-  const [isIntro, setIsIntro] = useState(true);
-
-  useEffect(() => {
-    if (!animationContainer.current) {
-      return undefined;
-    }
-    let animationPath: string;
-    let shouldLoop = true;
-
-    if (status === SmartTransactionStatuses.PENDING) {
-      // Handle dual animations for the submitting (pending) status
-      animationPath = isIntro
-        ? SmartTransactionAnimations.SubmittingIntro
-        : SmartTransactionAnimations.SubmittingLoop;
-      shouldLoop = !isIntro;
-    } else {
-      switch (status) {
-        case SmartTransactionStatuses.SUCCESS:
-          animationPath = SmartTransactionAnimations.Confirmed;
-          shouldLoop = false;
-          break;
-        case SmartTransactionStatuses.REVERTED:
-        case SmartTransactionStatuses.UNKNOWN:
-          animationPath = SmartTransactionAnimations.Failed;
-          shouldLoop = false;
-          break;
-        default:
-          animationPath = SmartTransactionAnimations.Processing;
-          shouldLoop = true;
-      }
-    }
-
-    const animation = lottie.loadAnimation({
-      container: animationContainer.current,
-      renderer: 'svg',
-      loop: shouldLoop,
-      autoplay: true,
-      path: animationPath, // Use the animation path from the enum
-      rendererSettings: {
-        preserveAspectRatio: 'xMidYMid meet',
-      },
-    });
-
-    if (status === SmartTransactionStatuses.PENDING && isIntro) {
-      animation.addEventListener('complete', () => {
-        setIsIntro(false); // Switch to loop animation after intro completes
-      });
-    }
-
-    // Cleanup on unmount
-    return () => animation.destroy();
-  }, [status, isIntro]);
-
-  return (
-    <Box display={Display.Flex} style={{ width: '48px', height: '48px' }}>
-      <div ref={animationContainer} />
-    </Box>
-  );
-};
-
 export const SmartTransactionStatusPage = ({
   requestState,
   onCloseExtension,
@@ -426,7 +352,7 @@ export const SmartTransactionStatusPage = ({
           paddingRight={6}
           width={BlockSize.Full}
         >
-          <SmartTransactionsStatusIcon
+          <SmartTransactionsStatusAnimation
             status={smartTransaction?.status as SmartTransactionStatuses}
           />
           <Title title={title} />

@@ -61,3 +61,37 @@ export const Pending: Story = {
     onViewActivity: () => {},
   },
 };
+
+export const Success: Story = {
+  args: {
+    requestState: {
+      smartTransaction: {
+        status: 'success',
+        creationTime: Date.now() - 60000, // 1 minute ago
+        uuid: 'uuid-success',
+        chainId: '0x1',
+      },
+      isDapp: false,
+      txId: 'txId-success',
+    },
+    onCloseExtension: () => {},
+    onViewActivity: () => {},
+  },
+};
+
+export const Failed: Story = {
+  args: {
+    requestState: {
+      smartTransaction: {
+        status: 'unknown',
+        creationTime: Date.now() - 180000, // 3 minutes ago
+        uuid: 'uuid-failed',
+        chainId: '0x1',
+      },
+      isDapp: false,
+      txId: 'txId-failed',
+    },
+    onCloseExtension: () => {},
+    onViewActivity: () => {},
+  },
+};

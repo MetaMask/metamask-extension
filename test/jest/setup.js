@@ -132,9 +132,3 @@ expect.extend({
         };
   },
 });
-
-// Mock .lottie files
-jest.mock(
-  'app/images/animations/smart-transaction-status/*.lottie',
-  () => ({}),
-);
