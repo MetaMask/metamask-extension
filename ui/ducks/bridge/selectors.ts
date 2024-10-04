@@ -25,8 +25,9 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { BridgeState } from './bridge';
+import { DUMMY_QUOTES_APPROVAL } from './dummy-quotes';
 
-type BridgeAppState = {
+export type BridgeAppState = {
   metamask: NetworkState & { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
   };
@@ -205,3 +206,7 @@ export const getIsBridgeTx = createDeepEqualSelector(
       ? fromChain.chainId !== toChain.chainId
       : false,
 );
+
+export const getQuotes = (state: BridgeAppState) => {
+  return DUMMY_QUOTES_APPROVAL;
+};
