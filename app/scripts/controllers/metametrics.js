@@ -846,8 +846,8 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
-      [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
-        metamaskState.useNativeCurrencyAsPrimaryCurrency,
+      [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
+        metamaskState.showNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,

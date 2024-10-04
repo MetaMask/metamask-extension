@@ -738,19 +738,23 @@ describe('MetaMaskController', () => {
     });
 
     describe('#getBalance', () => {
-      it('should return the balance known by accountTracker', async () => {
+      it('should return the balance known by accountTrackerController', async () => {
         const accounts = {};
         const balance = '0x14ced5122ce0a000';
         accounts[TEST_ADDRESS] = { balance };
 
-        metamaskController.accountTracker.store.putState({ accounts });
+        jest
+          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
+          .mockReturnValue({
+            accounts,
+          });
 
         const gotten = await metamaskController.getBalance(TEST_ADDRESS);
 
         expect(balance).toStrictEqual(gotten);
       });
 
-      it('should ask the network for a balance when not known by accountTracker', async () => {
+      it('should ask the network for a balance when not known by accountTrackerController', async () => {
         const accounts = {};
         const balance = '0x14ced5122ce0a000';
         const ethQuery = new EthQuery();
@@ -758,7 +762,11 @@ describe('MetaMaskController', () => {
           callback(undefined, balance);
         });
 
-        metamaskController.accountTracker.store.putState({ accounts });
+        jest
+          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
+          .mockReturnValue({
+            accounts,
+          });
 
         const gotten = await metamaskController.getBalance(
           TEST_ADDRESS,
@@ -1687,21 +1695,27 @@ describe('MetaMaskController', () => {
 
       it('should do nothing if there are no keyrings in state', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
         await metamaskController._onKeyringControllerUpdate({ keyrings: [] });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).not.toHaveBeenCalled();
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('should sync addresses if there are keyrings in state', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
@@ -1714,14 +1728,17 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('should NOT update selected address if already unlocked', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
@@ -1735,14 +1752,17 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('filter out non-EVM addresses prior to calling syncWithAddresses', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
@@ -1759,7 +1779,7 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
