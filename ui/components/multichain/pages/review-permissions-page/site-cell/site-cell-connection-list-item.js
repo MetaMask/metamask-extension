@@ -15,10 +15,7 @@ import {
   AvatarIcon,
   AvatarIconSize,
   Box,
-  ButtonIcon,
-  ButtonIconSize,
   ButtonLink,
-  IconName,
   Text,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -31,6 +28,8 @@ export const SiteCellConnectionListItem = ({
   isConnectFlow,
   onClick,
   content,
+  paddingTopValue,
+  paddingBottomValue,
 }) => {
   const t = useI18nContext();
 
@@ -42,9 +41,10 @@ export const SiteCellConnectionListItem = ({
       alignItems={AlignItems.baseline}
       width={BlockSize.Full}
       backgroundColor={BackgroundColor.backgroundDefault}
-      padding={4}
       gap={4}
       className="multichain-connection-list-item"
+      paddingTop={paddingTopValue}
+      paddingBottom={paddingBottomValue}
     >
       <AvatarIcon
         iconName={iconName}
@@ -58,7 +58,7 @@ export const SiteCellConnectionListItem = ({
         width={BlockSize.FiveTwelfths}
         style={{ alignSelf: 'center', flexGrow: 1 }}
       >
-        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
+        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left}>
           {title}
         </Text>
         <Box
@@ -71,7 +71,7 @@ export const SiteCellConnectionListItem = ({
             as="span"
             width={BlockSize.Max}
             color={TextColor.textAlternative}
-            variant={TextVariant.bodyMd}
+            variant={TextVariant.bodySm}
             ellipsis
           >
             {isConnectFlow ? unconnectedMessage : connectedMessage}
@@ -79,17 +79,9 @@ export const SiteCellConnectionListItem = ({
           {content}
         </Box>
       </Box>
-      {isConnectFlow ? (
-        <ButtonLink onClick={() => onClick()}>{t('edit')}</ButtonLink>
-      ) : (
-        <ButtonIcon
-          iconName={IconName.MoreVertical}
-          data-testid="site-cell-edit-button"
-          ariaLabel={t('edit')}
-          onClick={() => onClick()}
-          size={ButtonIconSize.Sm}
-        />
-      )}
+      <ButtonLink onClick={() => onClick()} data-testid="edit">
+        {t('edit')}
+      </ButtonLink>
     </Box>
   );
 };
@@ -108,6 +100,16 @@ SiteCellConnectionListItem.propTypes = {
    * The message that should be displayed when there are connected accounts
    */
   connectedMessage: PropTypes.string,
+
+  /**
+   * Padding Top Value to keep the padding between list items same
+   */
+  paddingTopValue: PropTypes.number,
+
+  /**
+   * Padding Bottom Value to keep the padding between list items same
+   */
+  paddingBottomValue: PropTypes.number,
 
   /**
    * The message that should be displayed when there are no connected accounts
