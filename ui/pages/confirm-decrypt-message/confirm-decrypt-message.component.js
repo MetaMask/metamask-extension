@@ -120,36 +120,6 @@ const VisualSection = ({ name, notice, targetSubjectMetadata }) => (
   </div>
 );
 
-// const MessageContainer = ({
-//   copyMessage,
-//   copyToClipboardPressed,
-//   decryptMessageInline,
-//   errorMessage,
-//   hasCopied,
-//   hasDecrypted,
-//   hasError,
-//   isScrollable,
-//   isScrolledToBottom,
-//   onScroll,
-//   rawMessage,
-//   ref,
-//   scrollToBottom,
-//   setCopyToClipboardPressed,
-//   setErrorMessage,
-//   setHasDecrypted,
-//   setHasError,
-//   setRawMessage,
-//   txData,
-// }) => {
-//   const t = useI18nContext();
-
-//   console.log({ hasDecrypted, hasError, isScrollable, isScrolledToBottom });
-
-//   return (
-
-//   );
-// };
-
 const Footer = ({
   cancelDecryptMessage,
   clearConfirmTransaction,
