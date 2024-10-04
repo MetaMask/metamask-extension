@@ -1,5 +1,5 @@
 import { StateMetadata } from '@metamask/base-controller';
-import { Hex } from '@metamask/utils';
+import { add0x, Hex } from '@metamask/utils';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import {
@@ -19,6 +19,7 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/pages/bridge/types';
+import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
@@ -82,7 +83,9 @@ export default class BridgeController extends StaticIntervalPollingController<
     await this.#fetchBridgeQuotes(updatedQuoteRequest);
   };
 
-  updateBridgeQuoteRequestParams = (paramsToUpdate: Partial<QuoteRequest>) => {
+  updateBridgeQuoteRequestParams = async (
+    paramsToUpdate: Partial<QuoteRequest>,
+  ) => {
     // if (this.#pollingTokenForQuotes) {
     //   this.stopPollingByPollingToken(this.#pollingTokenForQuotes);
     // }
@@ -109,11 +112,27 @@ export default class BridgeController extends StaticIntervalPollingController<
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       const walletAddress = this.#getSelectedAccount().address;
-      // this.#pollingTokenForQuotes =
-      this.startPollingByNetworkClientId(
+      const srcChainIdInHex = add0x(
         decimalToHex(updatedQuoteRequest.srcChainId),
-        { ...updatedQuoteRequest, walletAddress },
       );
+      const provider = this.#getSelectedNetworkClient()?.provider;
+
+      const insufficientBal = provider
+        ? !(await hasSufficientBalance(
+            provider,
+            walletAddress,
+            updatedQuoteRequest.srcTokenAddress,
+            updatedQuoteRequest.srcTokenAmount,
+            srcChainIdInHex,
+          ))
+        : true;
+
+      // this.#pollingTokenForQuotes =
+      this.startPollingByNetworkClientId(srcChainIdInHex, {
+        ...updatedQuoteRequest,
+        walletAddress,
+        insufficientBal,
+      });
     }
     // else {
     //   this.update((_state) => {
@@ -212,5 +231,11 @@ export default class BridgeController extends StaticIntervalPollingController<
 
   #getSelectedAccount() {
     return this.messagingSystem.call('AccountsController:getSelectedAccount');
+  }
+
+  #getSelectedNetworkClient() {
+    return this.messagingSystem.call(
+      'NetworkController:getSelectedNetworkClient',
+    );
   }
 }
