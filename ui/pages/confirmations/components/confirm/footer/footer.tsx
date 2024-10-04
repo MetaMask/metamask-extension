@@ -23,9 +23,11 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  setNextNonce,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   updateAndApproveTx,
   ///: END:ONLY_INCLUDE_IF
+  updateCustomNonce,
 } from '../../../../../store/actions';
 import { selectUseTransactionSimulations } from '../../../selectors/preferences';
 
@@ -37,6 +39,7 @@ import {
 import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 
 export type OnCancelHandler = ({
@@ -44,6 +47,21 @@ export type OnCancelHandler = ({
 }: {
   location: MetaMetricsEventLocation;
 }) => void;
+
+function reviewAlertButtonText(
+  unconfirmedDangerAlerts: Alert[],
+  t: ReturnType<typeof useI18nContext>,
+) {
+  if (unconfirmedDangerAlerts.length === 1) {
+    return t('reviewAlert');
+  }
+
+  if (unconfirmedDangerAlerts.length > 1) {
+    return t('reviewAlerts');
+  }
+
+  return t('confirm');
+}
 
 function getButtonDisabledState(
   hasUnconfirmedDangerAlerts: boolean,
@@ -77,10 +95,15 @@ const ConfirmButton = ({
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
 
-  const { dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
-    useAlerts(alertOwnerId);
+  const {
+    hasDangerAlerts,
+    hasUnconfirmedDangerAlerts,
+    fieldAlerts,
+    hasUnconfirmedFieldDangerAlerts,
+    unconfirmedFieldDangerAlerts,
+  } = useAlerts(alertOwnerId);
 
-  const hasDangerBlockingAlerts = dangerAlerts.some(
+  const hasDangerBlockingAlerts = fieldAlerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
 
@@ -114,9 +137,13 @@ const ConfirmButton = ({
           )}
           onClick={handleOpenConfirmModal}
           size={ButtonSize.Lg}
-          startIconName={IconName.Danger}
+          startIconName={
+            hasUnconfirmedFieldDangerAlerts
+              ? IconName.SecuritySearch
+              : IconName.Danger
+          }
         >
-          {dangerAlerts?.length > 0 ? t('reviewAlerts') : t('confirm')}
+          {reviewAlertButtonText(unconfirmedFieldDangerAlerts, t)}
         </Button>
       ) : (
         <Button
@@ -180,6 +207,8 @@ const Footer = () => {
       dispatch(
         rejectPendingApproval(currentConfirmation.id, serializeError(error)),
       );
+      dispatch(updateCustomNonce(''));
+      dispatch(setNextNonce(''));
     },
     [currentConfirmation],
   );
@@ -219,6 +248,8 @@ const Footer = () => {
       mmiOnSignCallback();
       ///: END:ONLY_INCLUDE_IF
     }
+    dispatch(updateCustomNonce(''));
+    dispatch(setNextNonce(''));
   }, [
     currentConfirmation,
     customNonceValue,

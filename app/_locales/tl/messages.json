@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Kinikilala ko ang mga alerto at nais ko pa rin magpatuloy"
   },
-  "confirmAlertModalDetails": {
-    "message": "Kung mag-sign in ka, maaaring kunin ng third party na kilala sa mga panloloko ang lahat ng iyong mga asset. Mangyaring suriin ang mga alerto bago ka magpatuloy."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Maaaring nasa panganib ang iyong mga asset"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Ire-redirect ka namin sa $1 sa pagpindot ng magpatuloy."
   },
@@ -1878,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "Mga detalye ng singil"
-  },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
@@ -3098,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
   },
-  "noConversionDateAvailable": {
-    "message": "Walang available na petsa sa pagpapapalit ng currency"
-  },
   "noConversionRateAvailable": {
     "message": "Hindi available ang rate ng palitan"
   },
@@ -3920,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "hindi available ang presyo"
-  },
-  "primaryCurrencySetting": {
-    "message": "Pangunahing Currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Piliin ang native para maisapriyoridad ang pagpapakita ng mga value sa native na currency ng chain (hal. ETH). Piliin ang Fiat para maisapriyoridad ang pagpapakita ng mga value sa napili mong fiat na salapi."
   },
   "primaryType": {
     "message": "Pangunahing uri"
@@ -6090,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "Hiling sa pag-update"
-  },
-  "updatedWithDate": {
-    "message": "Na-update noong $1"
   },
   "uploadDropFile": {
     "message": "I-drop ang file mo rito"

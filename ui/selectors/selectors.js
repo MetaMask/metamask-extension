@@ -1307,6 +1307,10 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+export function getShowPermittedNetworkToastOpen(state) {
+  return state.appState.showPermittedNetworkToastOpen;
+}
+
 /**
  * Returns a memoized selector that gets the internal accounts from the Redux store.
  *
@@ -1473,6 +1477,11 @@ export const getConnectedSitesList = createDeepEqualSelector(
     return sitesList;
   },
 );
+
+export function getShouldShowAggregatedBalancePopover(state) {
+  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
+  return shouldShowAggregatedBalancePopover;
+}
 
 export const getConnectedSnapsList = createDeepEqualSelector(
   getSnapsList,
@@ -1958,6 +1967,10 @@ export function getShowPrivacyPolicyToast(state) {
     // old users who don't have onboardingDate set should see the notice
     (onboardingDate < newPrivacyPolicyDate || !onboardingDate)
   );
+}
+
+export function getLastViewedUserSurvey(state) {
+  return state.metamask.lastViewedUserSurvey;
 }
 
 export function getShowOutdatedBrowserWarning(state) {

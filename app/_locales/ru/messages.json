@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Я подтвердил(-а) получение предупреждения и все еще хочу продолжить"
   },
-  "confirmAlertModalDetails": {
-    "message": "Если вы войдете, третья сторона, которая, как известно, совершала мошеннические действия, может похитиь твсе ваши активы. Прежде чем продолжить, просмотрите оповещения."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Ваши активы могут быть в опасности"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Мы перенаправим вас на $1 после нажатия кнопки «Продолжить»."
   },
@@ -1878,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "Сведения о комиссии"
-  },
-  "fiat": {
-    "message": "Фиатная",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
@@ -3098,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
   },
-  "noConversionDateAvailable": {
-    "message": "Дата обмена валюты недоступна"
-  },
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
   },
@@ -3920,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "цена недоступна"
-  },
-  "primaryCurrencySetting": {
-    "message": "Основная валюта"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Выберите «собственная», чтобы установить приоритет отображения значений в собственной валюте блокчейна (например, ETH). Выберите «Фиатная», чтобы установить приоритет отображения значений в выбранной фиатной валюте."
   },
   "primaryType": {
     "message": "Основной тип"
@@ -6090,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "Запрос обновления"
-  },
-  "updatedWithDate": {
-    "message": "Обновлено $1"
   },
   "uploadDropFile": {
     "message": "Переместите свой файл сюда"

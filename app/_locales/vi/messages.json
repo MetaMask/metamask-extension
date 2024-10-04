@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Tôi đã hiểu rõ cảnh báo và vẫn muốn tiếp tục"
   },
-  "confirmAlertModalDetails": {
-    "message": "Nếu bạn đăng nhập, một bên thứ ba nổi tiếng là lừa đảo có thể lấy tất cả tài sản của bạn. Vui lòng xem lại các cảnh báo trước khi tiếp tục."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Tài sản của bạn có thể gặp rủi ro"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Chúng tôi sẽ chuyển hướng bạn đến $1 sau khi nhấn vào tiếp tục."
   },
@@ -1878,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "Chi tiết phí"
-  },
-  "fiat": {
-    "message": "Pháp định",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Tính năng nhập tập tin không hoạt động? Nhấp vào đây!",
@@ -3098,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
   },
-  "noConversionDateAvailable": {
-    "message": "Hiện không có ngày quy đổi tiền tệ nào"
-  },
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
   },
@@ -3920,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "giá không khả dụng"
-  },
-  "primaryCurrencySetting": {
-    "message": "Tiền tệ chính"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Chọn Gốc để ưu tiên hiển thị giá trị bằng đơn vị tiền tệ gốc của chuỗi (ví dụ: ETH). Chọn Pháp định để ưu tiên hiển thị giá trị bằng đơn vị tiền pháp định mà bạn chọn."
   },
   "primaryType": {
     "message": "Loại chính"
@@ -6090,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "Yêu cầu cập nhật"
-  },
-  "updatedWithDate": {
-    "message": "Đã cập nhật $1"
   },
   "uploadDropFile": {
     "message": "Thả tập tin của bạn vào đây"

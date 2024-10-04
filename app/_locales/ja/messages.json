@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "アラートを確認したうえで続行します"
   },
-  "confirmAlertModalDetails": {
-    "message": "サインインすると、詐欺が判明しているサードパーティにすべての資産を奪われる可能性があります。続ける前にアラートを確認してください。"
-  },
-  "confirmAlertModalTitle": {
-    "message": "資産が危険にさらされている可能性があります"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "「続行」をクリックすると、$1にリダイレクトされます。"
   },
@@ -1878,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "手数料の詳細"
-  },
-  "fiat": {
-    "message": "法定通貨",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
@@ -3098,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMaskはこのサイトに接続されていません"
   },
-  "noConversionDateAvailable": {
-    "message": "通貨換算日がありません"
-  },
   "noConversionRateAvailable": {
     "message": "利用可能な換算レートがありません"
   },
@@ -3920,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "価格が利用できません"
-  },
-  "primaryCurrencySetting": {
-    "message": "プライマリ通貨"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "チェーンのネイティブ通貨 (ETHなど) による値の表示を優先するには、「ネイティブ」を選択します。選択した法定通貨による値の表示を優先するには、「法定通貨」を選択します。"
   },
   "primaryType": {
     "message": "基本型"
@@ -6090,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "更新リクエスト"
-  },
-  "updatedWithDate": {
-    "message": "$1が更新されました"
   },
   "uploadDropFile": {
     "message": "ここにファイルをドロップします"

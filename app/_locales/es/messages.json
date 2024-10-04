@@ -969,12 +969,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Soy consciente de la alerta y aun así deseo continuar"
   },
-  "confirmAlertModalDetails": {
-    "message": "Si inicia sesión, un tercero conocido por estafas podría quedarse con todos sus activos. Revise las alertas antes de continuar."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Sus activos podrían estar en riesgo"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Lo redirigiremos a $1 al hacer clic en continuar."
   },
@@ -1875,10 +1869,6 @@
   },
   "feeDetails": {
     "message": "Detalles de la tarifa"
-  },
-  "fiat": {
-    "message": "Fiduciaria",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? Haga clic aquí.",
@@ -3095,9 +3085,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask no está conectado a este sitio"
   },
-  "noConversionDateAvailable": {
-    "message": "No hay fecha de conversión de moneda disponible"
-  },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
   },
@@ -3917,12 +3904,6 @@
   },
   "priceUnavailable": {
     "message": "precio no disponible"
-  },
-  "primaryCurrencySetting": {
-    "message": "Moneda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Seleccione Nativa para dar prioridad a mostrar los valores en la moneda nativa de la cadena (p. ej., ETH). Seleccione Fiduciaria para dar prioridad a mostrar los valores en la moneda fiduciaria seleccionada."
   },
   "primaryType": {
     "message": "Tipo principal"
@@ -6087,9 +6068,6 @@
   },
   "updateRequest": {
     "message": "Solicitud de actualización"
-  },
-  "updatedWithDate": {
-    "message": "$1 actualizado"
   },
   "uploadDropFile": {
     "message": "Ingrese su archivo aquí"

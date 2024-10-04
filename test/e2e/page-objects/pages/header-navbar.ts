@@ -9,6 +9,8 @@ class HeaderNavbar {
 
   private lockMetaMaskButton: string;
 
+  private mmiPortfolioButton: string;
+
   private settingsButton: string;
 
   private accountSnapButton: object;
@@ -18,12 +20,17 @@ class HeaderNavbar {
     this.accountMenuButton = '[data-testid="account-menu-icon"]';
     this.accountOptionMenu = '[data-testid="account-options-menu-button"]';
     this.lockMetaMaskButton = '[data-testid="global-menu-lock"]';
+    this.mmiPortfolioButton = '[data-testid="global-menu-mmi-portfolio"]';
     this.settingsButton = '[data-testid="global-menu-settings"]';
     this.accountSnapButton = { text: 'Snaps', tag: 'div' };
   }
 
   async lockMetaMask(): Promise<void> {
     await this.driver.clickElement(this.accountOptionMenu);
+    // fix race condition with mmi build
+    if (process.env.MMI) {
+      await this.driver.waitForSelector(this.mmiPortfolioButton);
+    }
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
 
@@ -40,6 +47,10 @@ class HeaderNavbar {
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
     await this.driver.clickElement(this.accountOptionMenu);
+    // fix race condition with mmi build
+    if (process.env.MMI) {
+      await this.driver.waitForSelector(this.mmiPortfolioButton);
+    }
     await this.driver.clickElement(this.settingsButton);
   }
 
