@@ -1,44 +1,53 @@
 import React, { useEffect, useRef } from 'react';
-import lottie, { AnimationConfigWithPath, AnimationItem } from 'lottie-web';
+import { AnimationConfigWithData, AnimationItem } from 'lottie-web';
+// Use lottie_light to avoid unsafe-eval which breaks the CSP
+// https://github.com/airbnb/lottie-web/issues/289#issuecomment-1454909624
+import lottie from 'lottie-web/build/player/lottie_light';
 
 export type LottieAnimationProps = {
-  /** The URL or path to the Lottie JSON animation file. */
-  path: string;
-  /** Whether the animation should loop. Defaults to true. */
+  data: object;
   loop?: boolean;
-  /** Whether the animation should start playing automatically. Defaults to true. */
   autoplay?: boolean;
-  /** Optional inline styles for the container div. */
   style?: React.CSSProperties;
-  /** Optional CSS class for the container div. */
   className?: string;
-  /** Optional callback function that is called when the animation completes. */
   onComplete?: () => void;
 };
 
 export const LottieAnimation: React.FC<LottieAnimationProps> = ({
-  path,
+  data,
   loop = true,
   autoplay = true,
   style = {},
   className = '',
-  onComplete = () => {},
+  onComplete = () => null,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const animationInstance = useRef<AnimationItem | null>(null);
 
   useEffect(() => {
-    const animationConfig: AnimationConfigWithPath = {
-      container: containerRef.current as HTMLElement,
+    if (!containerRef.current) {
+      console.error('LottieAnimation: containerRef is null');
+      return () => null;
+    }
+
+    const animationConfig: AnimationConfigWithData = {
+      container: containerRef.current,
       renderer: 'svg',
       loop,
       autoplay,
-      path,
+      animationData: data,
     };
 
-    animationInstance.current = lottie.loadAnimation(animationConfig);
+    try {
+      animationInstance.current = lottie.loadAnimation(animationConfig);
+      animationInstance.current.addEventListener('complete', onComplete);
 
-    animationInstance.current.addEventListener('complete', onComplete);
+      animationInstance.current.addEventListener('error', (error) => {
+        console.error('LottieAnimation error:', error);
+      });
+    } catch (error) {
+      console.error('Failed to load animation:', error);
+    }
 
     return () => {
       if (animationInstance.current) {
@@ -47,7 +56,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
         animationInstance.current = null;
       }
     };
-  }, [path, loop, autoplay, onComplete]);
+  }, [data, loop, autoplay, onComplete]);
 
   return <div ref={containerRef} style={style} className={className}></div>;
 };

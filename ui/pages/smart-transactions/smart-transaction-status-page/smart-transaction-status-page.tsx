@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   SmartTransactionStatuses,
   SmartTransaction,
 } from '@metamask/smart-transactions-controller/dist/types';
-import lottie from 'lottie-web';
 
 import {
   Box,

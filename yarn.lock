@@ -4245,6 +4245,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@keyv/serialize@npm:*":
+  version: 1.0.1
+  resolution: "@keyv/serialize@npm:1.0.1"
+  dependencies:
+    buffer: "npm:^6.0.3"
+  checksum: 10/b47418bed4fb17e16e136d1071f71d12de6f566bbf4d484a611a2d7063e0e79aedb3164b51153054101b6b7eb2a2b349469d438f70a5fbac22a68f136a535ec4
+  languageName: node
+  linkType: hard
+
 "@kurkle/color@npm:^0.3.0":
   version: 0.3.2
   resolution: "@kurkle/color@npm:0.3.2"
@@ -24579,6 +24588,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"keyv@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "keyv@npm:5.0.3"
+  dependencies:
+    "@keyv/serialize": "npm:*"
+  checksum: 10/d194b99e0fa01241fe1db43387cbd87c056a25ffe76ca819d9732c60e28e83adb44e848aedd12f4e4a6082c83f8d1d3d295ddc288ed5840861a7f471a8bc413c
+  languageName: node
+  linkType: hard
+
 "kind-of@npm:^2.0.1":
   version: 2.0.1
   resolution: "kind-of@npm:2.0.1"
@@ -26343,6 +26361,7 @@ __metadata:
     json-rpc-engine: "npm:^6.1.0"
     json-rpc-middleware-stream: "npm:^5.0.1"
     json-schema-to-ts: "npm:^3.0.1"
+    keyv: "npm:^5.0.3"
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
     lavamoat: "npm:^8.0.2"

@@ -4,31 +4,48 @@ import { Box } from '../../../components/component-library';
 import { Display } from '../../../helpers/constants/design-system';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
-const ANIMATIONS_FOLDER = './images/animations/smart-transaction-status';
+// eslint-disable-next-line import/no-restricted-paths
+import failedAnimation from '../../../../app/images/animations/smart-transaction-status/failed.lottie.json';
+// eslint-disable-next-line import/no-restricted-paths
+import confirmedAnimation from '../../../../app/images/animations/smart-transaction-status/confirmed.lottie.json';
+// eslint-disable-next-line import/no-restricted-paths
+import submittingIntroAnimation from '../../../../app/images/animations/smart-transaction-status/submitting-intro.lottie.json';
+// eslint-disable-next-line import/no-restricted-paths
+import submittingLoopAnimation from '../../../../app/images/animations/smart-transaction-status/submitting-loop.lottie.json';
+// eslint-disable-next-line import/no-restricted-paths
+import processingAnimation from '../../../../app/images/animations/smart-transaction-status/processing.lottie.json';
+
+const ANIMATIONS_FOLDER = 'images/animations/smart-transaction-status';
 
 type AnimationInfo = {
+  data: object;
   path: string;
   loop: boolean;
 };
 
 const Animations: Record<string, AnimationInfo> = {
   Failed: {
+    data: failedAnimation,
     path: `${ANIMATIONS_FOLDER}/failed.lottie.json`,
     loop: false,
   },
   Confirmed: {
+    data: confirmedAnimation,
     path: `${ANIMATIONS_FOLDER}/confirmed.lottie.json`,
     loop: false,
   },
   SubmittingIntro: {
+    data: submittingIntroAnimation,
     path: `${ANIMATIONS_FOLDER}/submitting-intro.lottie.json`,
     loop: false,
   },
   SubmittingLoop: {
+    data: submittingLoopAnimation,
     path: `${ANIMATIONS_FOLDER}/submitting-loop.lottie.json`,
     loop: true,
   },
   Processing: {
+    data: processingAnimation,
     path: `${ANIMATIONS_FOLDER}/processing.lottie.json`,
     loop: true,
   },
@@ -70,7 +87,7 @@ export const SmartTransactionsStatusAnimation = ({
   return (
     <Box display={Display.Flex} style={{ width: '48px', height: '48px' }}>
       <LottieAnimation
-        path={animation.path}
+        data={animation.data}
         loop={animation.loop}
         autoplay={true}
         onComplete={handleAnimationComplete}

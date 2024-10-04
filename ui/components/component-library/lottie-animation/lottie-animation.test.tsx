@@ -1,9 +1,10 @@
 import React from 'react';
 import { render, act } from '@testing-library/react';
+import lottie from 'lottie-web/build/player/lottie_light';
 import { LottieAnimation } from './lottie-animation';
 
 // Mock lottie-web
-jest.mock('lottie-web', () => {
+jest.mock('lottie-web/build/player/lottie_light', () => {
   const eventListeners: { [key: string]: (() => void) | undefined } = {};
   return {
     loadAnimation: jest.fn(() => ({
@@ -21,17 +22,19 @@ jest.mock('lottie-web', () => {
 });
 
 describe('LottieAnimation', () => {
-  const mockPath = 'path/to/animation.json';
+  const mockData = {
+    /* Your mock animation data here */
+  };
 
   it('renders without crashing', () => {
-    const { container } = render(<LottieAnimation path={mockPath} />);
+    const { container } = render(<LottieAnimation data={mockData} />);
     expect(container.firstChild).toBeInTheDocument();
   });
 
   it('applies custom className', () => {
     const customClass = 'custom-class';
     const { container } = render(
-      <LottieAnimation path={mockPath} className={customClass} />,
+      <LottieAnimation data={mockData} className={customClass} />,
     );
     expect(container.firstChild).toHaveClass(customClass);
   });
@@ -39,7 +42,7 @@ describe('LottieAnimation', () => {
   it('applies custom style', () => {
     const customStyle = { width: '100px', height: '100px' };
     const { container } = render(
-      <LottieAnimation path={mockPath} style={customStyle} />,
+      <LottieAnimation data={mockData} style={customStyle} />,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveStyle('width: 100px');
@@ -47,26 +50,26 @@ describe('LottieAnimation', () => {
   });
 
   it('calls lottie.loadAnimation with correct config', () => {
-    const lottie = require('lottie-web');
-    render(<LottieAnimation path={mockPath} loop={false} autoplay={false} />);
+    render(<LottieAnimation data={mockData} loop={false} autoplay={false} />);
 
     expect(lottie.loadAnimation).toHaveBeenCalledWith(
       expect.objectContaining({
-        path: mockPath,
+        animationData: mockData,
         loop: false,
         autoplay: false,
         renderer: 'svg',
+        container: expect.any(HTMLElement),
       }),
     );
   });
 
   it('calls onComplete when animation completes', () => {
     const onCompleteMock = jest.fn();
-    const lottie = require('lottie-web');
 
-    render(<LottieAnimation path={mockPath} onComplete={onCompleteMock} />);
+    render(<LottieAnimation data={mockData} onComplete={onCompleteMock} />);
 
-    const animationInstance = lottie.loadAnimation.mock.results[0].value;
+    const animationInstance = (lottie.loadAnimation as jest.Mock).mock
+      .results[0].value;
 
     act(() => {
       animationInstance.triggerComplete();
@@ -77,13 +80,13 @@ describe('LottieAnimation', () => {
 
   it('removes event listener on unmount', () => {
     const onCompleteMock = jest.fn();
-    const lottie = require('lottie-web');
 
     const { unmount } = render(
-      <LottieAnimation path={mockPath} onComplete={onCompleteMock} />,
+      <LottieAnimation data={mockData} onComplete={onCompleteMock} />,
     );
 
-    const animationInstance = lottie.loadAnimation.mock.results[0].value;
+    const animationInstance = (lottie.loadAnimation as jest.Mock).mock
+      .results[0].value;
 
     unmount();
 
