@@ -30,7 +30,7 @@ describe('Remove Account Snap @no-mmi', function (this: Suite) {
         await headerNavbar.check_accountLabel('SSK Account');
 
         // Navigate to account snaps list page.
-        await headerNavbar.openSnapListPagee();
+        await headerNavbar.openSnapListPage();
         const snapListPage = new SnapListPage(driver);
 
         // Remove the snap and check snap is successfully removed

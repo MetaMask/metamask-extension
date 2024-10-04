@@ -38,7 +38,7 @@ class HeaderNavbar {
     await this.driver.clickElement(this.accountMenuButton);
   }
 
-  async openSnapListPagee(): Promise<void> {
+  async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
     await this.driver.clickElement(this.accountOptionMenu);
     await this.driver.clickElement(this.accountSnapButton);
