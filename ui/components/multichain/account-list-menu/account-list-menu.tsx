@@ -92,7 +92,7 @@ import {
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { useBitcoinSnapWalletClient } from '../../../hooks/accounts/useBitcoinSnapWalletClient';
+import { useBitcoinWalletSnapClient } from '../../../hooks/accounts/useBitcoinWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 import {
   InternalAccountWithBalance,
@@ -257,7 +257,7 @@ export const AccountListMenu = ({
     hasCreatedBtcTestnetAccount,
   );
 
-  const bitcoinWalletSnapClient = useBitcoinSnapWalletClient();
+  const bitcoinWalletSnapClient = useBitcoinWalletSnapClient();
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');

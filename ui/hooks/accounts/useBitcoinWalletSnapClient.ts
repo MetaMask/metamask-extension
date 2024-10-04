@@ -43,7 +43,7 @@ export class BitcoinWalletSnapClient {
   }
 }
 
-export function useBitcoinSnapWalletClient() {
+export function useBitcoinWalletSnapClient() {
   const client = useMemo(() => {
     return new BitcoinWalletSnapClient();
   }, []);

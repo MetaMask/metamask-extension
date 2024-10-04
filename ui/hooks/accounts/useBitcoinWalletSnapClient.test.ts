@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useBitcoinSnapWalletClient } from './useBitcoinSnapWalletClient';
+import { useBitcoinWalletSnapClient } from './useBitcoinWalletSnapClient';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { HandlerType } from '@metamask/snaps-utils';
@@ -17,7 +17,7 @@ jest.mock('../../store/actions', () => ({
 const mockHandleSnapRequest = handleSnapRequest as jest.Mock;
 const mockMultichainUpdateBalance = multichainUpdateBalance as jest.Mock;
 
-describe('useBitcoinSnapWalletClient', () => {
+describe('useBitcoinWalletSnapClient', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -31,7 +31,7 @@ describe('useBitcoinSnapWalletClient', () => {
   };
 
   it('dispatch a Snap keyring request to create a Bitcoin account', async () => {
-    const { result } = renderHook(() => useBitcoinSnapWalletClient());
+    const { result } = renderHook(() => useBitcoinWalletSnapClient());
     const bitcoinWalletSnapClient = result.current;
 
     mockHandleSnapRequest.mockResolvedValue(mockAccount);
@@ -46,7 +46,7 @@ describe('useBitcoinSnapWalletClient', () => {
   });
 
   it('force fetches the balance after creating a Bitcoin account', async () => {
-    const { result } = renderHook(() => useBitcoinSnapWalletClient());
+    const { result } = renderHook(() => useBitcoinWalletSnapClient());
     const bitcoinWalletSnapClient = result.current;
 
     mockHandleSnapRequest.mockResolvedValue(mockAccount);
