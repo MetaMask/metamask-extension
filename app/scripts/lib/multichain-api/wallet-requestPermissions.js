@@ -23,7 +23,6 @@ export const requestPermissionsHandler = {
     grantPermissions: true,
     requestPermissionApprovalForOrigin: true,
     getAccounts: true,
-    getNetworkConfigurationByNetworkClientId: true,
   },
 };
 
@@ -41,7 +40,6 @@ export const requestPermissionsHandler = {
  * @param options.grantPermissions
  * @param options.requestPermissionApprovalForOrigin
  * @param options.getAccounts
- * @param options.getNetworkConfigurationByNetworkClientId
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
@@ -56,10 +54,9 @@ async function requestPermissionsImplementation(
     grantPermissions,
     requestPermissionApprovalForOrigin,
     getAccounts,
-    getNetworkConfigurationByNetworkClientId,
   },
 ) {
-  const { origin, params, networkClientId } = req;
+  const { origin, params } = req;
 
   if (!Array.isArray(params) || !isPlainObject(params[0])) {
     return end(invalidParams({ data: { request: req } }));
@@ -90,16 +87,7 @@ async function requestPermissionsImplementation(
     }
 
     if (!legacyRequestedPermissions[PermissionNames.permittedChains]) {
-      const { chainId } =
-        getNetworkConfigurationByNetworkClientId(networkClientId);
-      legacyRequestedPermissions[PermissionNames.permittedChains] = {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: [chainId],
-          },
-        ],
-      };
+      legacyRequestedPermissions[PermissionNames.permittedChains] = {};
     }
 
     legacyApproval = await requestPermissionApprovalForOrigin(

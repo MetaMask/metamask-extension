@@ -12,11 +12,17 @@ export async function walletGetSessionHandler(
   end,
   hooks,
 ) {
-  const caveat = hooks.getCaveat(
-    request.origin,
-    Caip25EndowmentPermissionName,
-    Caip25CaveatType,
-  );
+  let caveat;
+  try {
+    caveat = hooks.getCaveat(
+      request.origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+    );
+  } catch (e) {
+    // noop
+  }
+
   if (!caveat) {
     return end(new EthereumRpcError(5501, 'No active sessions'));
   }

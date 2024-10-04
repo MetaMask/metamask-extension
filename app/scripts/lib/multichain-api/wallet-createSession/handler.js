@@ -1,5 +1,5 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { RestrictedMethods } from '../../../../../shared/constants/permissions';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import {
   mergeScopes,
   validateAndFlattenScopes,
@@ -16,7 +16,16 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { assignAccountsToScopes, validateAndAddEip3085 } from './helpers';
+import { PermissionNames } from '../../../controllers/permissions';
+import {
+  getEthAccounts,
+  setEthAccounts,
+} from '../adapters/caip-permission-adapter-eth-accounts';
+import {
+  getPermittedEthChainIds,
+  setPermittedEthChainIds,
+} from '../adapters/caip-permission-adapter-permittedChains';
+import { validateAndAddEip3085 } from './helpers';
 
 export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
   // TODO: Does this handler need a rate limiter/lock like the one in eth_requestAccounts?
@@ -71,11 +80,6 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
     });
-    // We assert if the unsupportable scopes are supported in order
-    // to have an appropriate error thrown for the response
-    assertScopesSupported(unsupportableRequiredScopes, {
-      isChainIdSupported: existsNetworkClientForChainId,
-    });
 
     const {
       supportedScopes: supportedOptionalScopes,
@@ -96,38 +100,60 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
       unsupportableOptionalScopes,
     });
 
-    // use old account popup for now to get the accounts
-    const legacyApproval = await hooks.requestPermissionApprovalForOrigin({
-      [RestrictedMethods.eth_accounts]: {},
+    // These should be EVM accounts already although the name does not necessary imply that
+    // These addresses are lowercased already
+    const existingEvmAddresses = hooks
+      .listAccounts()
+      .map((account) => account.address);
+    const supportedEthAccounts = getEthAccounts({
+      requiredScopes: supportedRequiredScopes,
+      optionalScopes: supportedOptionalScopes,
+    })
+      .map((address) => address.toLowerCase())
+      .filter((address) => existingEvmAddresses.includes(address));
+    const supportedEthChainIds = getPermittedEthChainIds({
+      requiredScopes: supportedRequiredScopes,
+      optionalScopes: supportedOptionalScopes,
     });
-    assignAccountsToScopes(
-      supportedRequiredScopes,
-      legacyApproval.approvedAccounts,
+
+    const legacyApproval = await hooks.requestPermissionApprovalForOrigin({
+      [PermissionNames.eth_accounts]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictReturnedAccounts,
+            value: supportedEthAccounts,
+          },
+        ],
+      },
+      [PermissionNames.permittedChains]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: supportedEthChainIds,
+          },
+        ],
+      },
+    });
+
+    let caip25CaveatValue = {
+      requiredScopes: supportedRequiredScopes,
+      optionalScopes: supportedOptionalScopes,
+      isMultichainOrigin: true,
+      // TODO: preserve sessionProperties?
+    };
+
+    caip25CaveatValue = setPermittedEthChainIds(
+      caip25CaveatValue,
+      legacyApproval.approvedChainIds,
     );
-    assignAccountsToScopes(
-      supportableRequiredScopes,
-      legacyApproval.approvedAccounts,
-    );
-    assignAccountsToScopes(
-      supportedOptionalScopes,
-      legacyApproval.approvedAccounts,
-    );
-    assignAccountsToScopes(
-      supportableOptionalScopes,
+    caip25CaveatValue = setEthAccounts(
+      caip25CaveatValue,
       legacyApproval.approvedAccounts,
     );
 
-    const grantedRequiredScopes = mergeScopes(
-      supportedRequiredScopes,
-      supportableRequiredScopes,
-    );
-    const grantedOptionalScopes = mergeScopes(
-      supportedOptionalScopes,
-      supportableOptionalScopes,
-    );
     const sessionScopes = mergeScopes(
-      grantedRequiredScopes,
-      grantedOptionalScopes,
+      caip25CaveatValue.requiredScopes,
+      caip25CaveatValue.optionalScopes,
     );
 
     await Promise.all(
@@ -158,11 +184,7 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
           caveats: [
             {
               type: Caip25CaveatType,
-              value: {
-                requiredScopes: grantedRequiredScopes,
-                optionalScopes: grantedOptionalScopes,
-                isMultichainOrigin: true,
-              },
+              value: caip25CaveatValue,
             },
           ],
         },
