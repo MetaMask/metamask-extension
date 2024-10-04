@@ -4263,6 +4263,12 @@ export function setNewPrivacyPolicyToastClickedOrClosed() {
   };
 }
 
+export function setLastViewedUserSurvey(id: number) {
+  return async () => {
+    await submitRequestToBackground('setLastViewedUserSurvey', [id]);
+  };
+}
+
 export function setOnboardingDate() {
   return async () => {
     await submitRequestToBackground('setOnboardingDate');

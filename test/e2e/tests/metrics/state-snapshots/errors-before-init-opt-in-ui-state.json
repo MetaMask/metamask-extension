@@ -50,23 +50,6 @@
       },
       "snapsInstallPrivacyWarningShown": true
     },
-    "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionSupport": "boolean",
-          "srcNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          },
-          "destNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          }
-        }
-      }
-    },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -165,6 +148,25 @@
       "detectedTokens": "object",
       "ignoredTokens": "object",
       "tokens": "object"
+    },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          },
+          "destNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          }
+        },
+        "destTokens": {},
+        "destTopAssets": {}
+      }
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",
