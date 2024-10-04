@@ -72,11 +72,12 @@ function onboardingFixture() {
           showFiatInTestnets: false,
           showTestNetworks: false,
           smartTransactionsOptInStatus: false,
-          useNativeCurrencyAsPrimaryCurrency: true,
+          showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+          shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
         theme: 'light',
@@ -183,6 +184,14 @@ class FixtureBuilder {
   withConversionRateDisabled() {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
+    });
+  }
+
+  withShowFiatTestnetEnabled() {
+    return this.withPreferencesController({
+      preferences: {
+        showFiatInTestnets: true,
+      },
     });
   }
 
@@ -391,6 +400,8 @@ class FixtureBuilder {
           extensionSupport: false,
           srcNetworkAllowlist: [],
         },
+        destTokens: {},
+        destTopAssets: [],
       },
     };
     return this;
@@ -640,6 +651,14 @@ class FixtureBuilder {
     return this.withPreferencesController({
       preferences: {
         petnamesEnabled: false,
+      },
+    });
+  }
+
+  withPreferencesControllerShowNativeTokenAsMainBalanceDisabled() {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
       },
     });
   }

@@ -1478,6 +1478,11 @@ export const getConnectedSitesList = createDeepEqualSelector(
   },
 );
 
+export function getShouldShowAggregatedBalancePopover(state) {
+  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
+  return shouldShowAggregatedBalancePopover;
+}
+
 export const getConnectedSnapsList = createDeepEqualSelector(
   getSnapsList,
   (snapsData) => {
@@ -1962,6 +1967,10 @@ export function getShowPrivacyPolicyToast(state) {
     // old users who don't have onboardingDate set should see the notice
     (onboardingDate < newPrivacyPolicyDate || !onboardingDate)
   );
+}
+
+export function getLastViewedUserSurvey(state) {
+  return state.metamask.lastViewedUserSurvey;
 }
 
 export function getShowOutdatedBrowserWarning(state) {

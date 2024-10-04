@@ -676,7 +676,7 @@ const state = {
     welcomeScreenSeen: false,
     currentLocale: 'en',
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: true,
     },
     incomingTransactionsPreferences: {
       [CHAIN_IDS.MAINNET]: true,
