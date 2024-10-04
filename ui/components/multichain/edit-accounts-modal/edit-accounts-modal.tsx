@@ -28,7 +28,6 @@ import {
   FlexDirection,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { getURLHost } from '../../../helpers/utils/util';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import {
   MetaMetricsEventCategory,
@@ -38,7 +37,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 type EditAccountsModalProps = {
-  activeTabOrigin: string;
   accounts: MergedInternalAccount[];
   defaultSelectedAccountAddresses: string[];
   onClose: () => void;
@@ -46,7 +44,6 @@ type EditAccountsModalProps = {
 };
 
 export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
-  activeTabOrigin,
   accounts,
   defaultSelectedAccountAddresses,
   onClose,
@@ -91,8 +88,6 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const checked = allAreSelected();
   const isIndeterminate = !checked && selectedAccountAddresses.length > 0;
 
-  const hostName = getURLHost(activeTabOrigin);
-
   const defaultSet = new Set(defaultSelectedAccountAddresses);
   const selectedSet = new Set(selectedAccountAddresses);
 
@@ -107,7 +102,11 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
         <ModalOverlay />
         <ModalContent>
           <ModalHeader onClose={onClose}>{t('editAccounts')}</ModalHeader>
-          <ModalBody paddingLeft={0} paddingRight={0}>
+          <ModalBody
+            paddingLeft={0}
+            paddingRight={0}
+            className="edit-accounts-modal__body"
+          >
             {showAddNewAccounts ? (
               <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
                 <CreateEthAccount
@@ -176,7 +175,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                           variant={TextVariant.bodySm}
                           color={TextColor.errorDefault}
                         >
-                          {t('disconnectMessage', [hostName])}
+                          {t('disconnectMessage')}
                         </Text>
                       </Box>
                       <ButtonPrimary
@@ -231,6 +230,58 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
               </>
             )}
           </ModalBody>
+          <ModalFooter>
+            {selectedAccountAddresses.length === 0 ? (
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={4}
+              >
+                <Box
+                  display={Display.Flex}
+                  gap={1}
+                  alignItems={AlignItems.center}
+                  justifyContent={JustifyContent.center}
+                >
+                  <Icon
+                    name={IconName.Danger}
+                    size={IconSize.Sm}
+                    color={IconColor.errorDefault}
+                  />
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.errorDefault}
+                  >
+                    {t('disconnectMessage')}
+                  </Text>
+                </Box>
+                <ButtonPrimary
+                  data-testid="disconnect-accounts-button"
+                  onClick={() => {
+                    onSubmit([]);
+                    onClose();
+                  }}
+                  size={ButtonPrimarySize.Lg}
+                  block
+                  danger
+                >
+                  {t('disconnect')}
+                </ButtonPrimary>
+              </Box>
+            ) : (
+              <ButtonPrimary
+                data-testid="connect-more-accounts-button"
+                onClick={() => {
+                  onSubmit(selectedAccountAddresses);
+                  onClose();
+                }}
+                size={ButtonPrimarySize.Lg}
+                block
+              >
+                {t('update')}
+              </ButtonPrimary>
+            )}
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
