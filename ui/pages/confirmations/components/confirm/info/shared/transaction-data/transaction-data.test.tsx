@@ -24,6 +24,7 @@ async function renderTransactionData(transactionData: string) {
     confirm: {
       currentConfirmation: {
         txParams: {
+          to: '0x1234',
           data: transactionData,
         },
       },

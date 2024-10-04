@@ -20,9 +20,10 @@ export function useDecodedTransactionData(): AsyncResult<
   const chainId = currentConfirmation?.chainId as Hex;
   const contractAddress = currentConfirmation?.txParams?.to as Hex;
   const transactionData = currentConfirmation?.txParams?.data as Hex;
+  const transactionTo = currentConfirmation?.txParams?.to as Hex;
 
   return useAsyncResult(async () => {
-    if (!hasTransactionData(transactionData)) {
+    if (!hasTransactionData(transactionData) || !transactionTo) {
       return undefined;
     }
 
@@ -31,5 +32,5 @@ export function useDecodedTransactionData(): AsyncResult<
       chainId,
       contractAddress,
     });
-  }, [transactionData, chainId, contractAddress]);
+  }, [transactionData, transactionTo, chainId, contractAddress]);
 }
