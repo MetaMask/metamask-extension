@@ -18,7 +18,7 @@ import {
   TEST_NETWORK_TICKER_MAP,
 } from '../../../shared/constants/network';
 import MMIController from './mmi-controller';
-import AppStateController from './app-state-controller';
+import { AppStateController } from './app-state-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
 import MetaMetricsController from './metametrics';

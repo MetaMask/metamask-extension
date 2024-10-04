@@ -46,7 +46,7 @@ import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import PreferencesController from './preferences-controller';
-import AppStateController from './app-state-controller';
+import { AppStateController } from './app-state-controller';
 
 type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;

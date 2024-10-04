@@ -4,12 +4,13 @@ import {
 } from '@metamask/approval-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
+import { Browser } from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../../shared/constants/app';
-import AppStateController from './app-state-controller';
+import { AppStateController } from './app-state-controller';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -18,6 +19,8 @@ import type {
   AppStateControllerState,
 } from './app-state-controller';
 import { PreferencesControllerStateChangeEvent } from './preferences-controller';
+
+jest.mock('webextension-polyfill');
 
 let appStateController: AppStateController;
 let controllerMessenger: ControllerMessenger<
@@ -64,11 +67,14 @@ describe('AppStateController', () => {
       messenger: appStateMessenger,
       extension: {
         alarms: {
-          clear: jest.fn(),
+          getAll: jest.fn(() => Promise.resolve([])),
           create: jest.fn(),
-          onAlarm: { addListener: jest.fn() },
+          clear: jest.fn(),
+          onAlarm: {
+            addListener: jest.fn(),
+          },
         },
-      },
+      } as unknown as jest.Mocked<Browser>,
     });
   };
 

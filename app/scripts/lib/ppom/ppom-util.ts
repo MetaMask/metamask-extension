@@ -15,7 +15,7 @@ import {
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import AppStateController from '../../controllers/app-state-controller';
+import { AppStateController } from '../../controllers/app-state-controller';
 import { SecurityAlertResponse } from './types';
 import {
   getSecurityAlertsAPISupportedChainIds,

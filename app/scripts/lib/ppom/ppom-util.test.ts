@@ -13,7 +13,7 @@ import {
   BlockaidResultType,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
-import AppStateController from '../../controllers/app-state-controller';
+import { AppStateController } from '../../controllers/app-state-controller';
 import {
   generateSecurityAlertId,
   isChainSupported,

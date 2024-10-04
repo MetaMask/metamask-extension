@@ -289,7 +289,7 @@ import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import PreferencesController from './controllers/preferences-controller';
-import AppStateController from './controllers/app-state-controller';
+import { AppStateController } from './controllers/app-state-controller';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';

@@ -10,6 +10,7 @@ import {
   AddApprovalRequest,
 } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
+import { Browser } from 'webextension-polyfill';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -24,7 +25,7 @@ import {
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
-import { SecurityAlertSource } from '../../../shared/constants/security-provider';
+import { SecurityAlertResponse } from '../lib/ppom/types';
 import type {
   Preferences,
   PreferencesControllerStateChangeEvent,
@@ -126,33 +127,34 @@ type PollingTokenType =
   | 'notificationGasPollTokens'
   | 'fullScreenGasPollTokens';
 
-type SecurityAlertResponse = {
-  block?: number;
-  description?: string;
-  features?: string[];
-  providerRequestsCount?: Record<string, number>;
-  reason: string;
-  result_type: string;
-  securityAlertId?: string;
-  source?: SecurityAlertSource;
-};
+type AppStateControllerInitState = Partial<
+  Omit<
+    AppStateControllerState,
+    | 'qrHardware'
+    | 'nftsDropdownState'
+    | 'usedNetworks'
+    | 'surveyLinkLastClickedOrClosed'
+    | 'signatureSecurityAlertResponses'
+    | 'switchedNetworkDetails'
+    | 'switchedNetworkNeverShowMessage'
+    | 'currentExtensionPopupId'
+  >
+>;
 
 type AppStateControllerOptions = {
   addUnlockListener: (callback: () => void) => void;
   isUnlocked: () => boolean;
-  initState?: Partial<AppStateControllerState>;
+  initState?: AppStateControllerInitState;
   onInactiveTimeout?: () => void;
   // TODO: Remove this as soon as PreferencesController upgrade to BaseControllerV2 merges with develop
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   preferencesStore: any;
   messenger: AppStateControllerMessenger;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  extension: any;
+  extension: Browser;
 };
 
-const getInitState = (
-  initState?: Partial<AppStateControllerState>,
+const getDefaultAppStateControllerState = (
+  initState?: AppStateControllerInitState,
 ): AppStateControllerState => ({
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   connectedStatusPopoverHasBeenShown: true,
@@ -190,10 +192,8 @@ const getInitState = (
   currentExtensionPopupId: 0,
 });
 
-export default class AppStateController extends EventEmitter {
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private extension: any;
+export class AppStateController extends EventEmitter {
+  private extension: AppStateControllerOptions['extension'];
 
   private onInactiveTimeout: () => void;
 
@@ -207,7 +207,7 @@ export default class AppStateController extends EventEmitter {
 
   private messagingSystem: AppStateControllerMessenger;
 
-  private _approvalRequestId: string | null;
+  #approvalRequestId: string | null;
 
   constructor(opts: AppStateControllerOptions) {
     const {
@@ -223,7 +223,9 @@ export default class AppStateController extends EventEmitter {
 
     this.extension = extension;
     this.onInactiveTimeout = onInactiveTimeout || (() => undefined);
-    this.store = new ObservableStore(getInitState(initState));
+    this.store = new ObservableStore(
+      getDefaultAppStateControllerState(initState),
+    );
     this.timer = null;
 
     this.isUnlocked = isUnlocked;
@@ -258,7 +260,7 @@ export default class AppStateController extends EventEmitter {
     }
 
     this.messagingSystem = messenger;
-    this._approvalRequestId = null;
+    this.#approvalRequestId = null;
   }
 
   /**
@@ -816,16 +818,16 @@ export default class AppStateController extends EventEmitter {
 
   private _requestApproval(): void {
     // If we already have a pending request this is a no-op
-    if (this._approvalRequestId) {
+    if (this.#approvalRequestId) {
       return;
     }
-    this._approvalRequestId = uuid();
+    this.#approvalRequestId = uuid();
 
     this.messagingSystem
       .call(
         'ApprovalController:addRequest',
         {
-          id: this._approvalRequestId,
+          id: this.#approvalRequestId,
           origin: ORIGIN_METAMASK,
           type: ApprovalType.Unlock,
         },
@@ -833,7 +835,7 @@ export default class AppStateController extends EventEmitter {
       )
       .catch(() => {
         // If the promise fails, we allow a new popup to be triggered
-        this._approvalRequestId = null;
+        this.#approvalRequestId = null;
       });
   }
 
@@ -843,18 +845,18 @@ export default class AppStateController extends EventEmitter {
   }
 
   private _acceptApproval(): void {
-    if (!this._approvalRequestId) {
+    if (!this.#approvalRequestId) {
       return;
     }
     try {
       this.messagingSystem.call(
         'ApprovalController:acceptRequest',
-        this._approvalRequestId,
+        this.#approvalRequestId,
       );
     } catch (error) {
       log.error('Failed to unlock approval request', error);
     }
 
-    this._approvalRequestId = null;
+    this.#approvalRequestId = null;
   }
 }
