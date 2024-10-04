@@ -1,4 +1,5 @@
 import { CaipReference } from '@metamask/utils';
+import { cloneDeep } from 'lodash';
 import {
   ExternalScopeObject,
   ExternalScopesObject,
@@ -37,7 +38,7 @@ export const flattenScope = (
 
   const scopeMap: ScopesObject = {};
   references.forEach((nestedReference: CaipReference) => {
-    scopeMap[`${namespace}:${nestedReference}`] = restScopeObject;
+    scopeMap[`${namespace}:${nestedReference}`] = cloneDeep(restScopeObject);
   });
   return scopeMap;
 };
