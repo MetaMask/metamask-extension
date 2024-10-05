@@ -280,8 +280,8 @@ const Title = ({ title }: { title: string }) => {
 
 export const SmartTransactionStatusPage = ({
   requestState,
-  onCloseExtension,
-  onViewActivity,
+  onCloseExtension = () => null,
+  onViewActivity = () => null,
 }: SmartTransactionStatusPageProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
