@@ -1,16 +1,30 @@
+/* eslint-disable @babel/no-invalid-this -- TODO remove */
+
 import { isEvmAccountType } from '@metamask/keyring-api';
 import React from 'react';
 import { MILLISECOND, SECOND } from '../../../shared/constants/time';
-import { Toast, ToastContainer } from '../../components/multichain';
-import { SurveyToast } from '../../components/ui/survey-toast';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getShowAutoNetworkSwitchTest } from './isolated';
+import { PRIVACY_POLICY_LINK, SURVEY_LINK } from '../../../shared/lib/ui-utils';
 import {
   AvatarAccount,
   AvatarAccountSize,
+  AvatarNetwork,
+  Icon,
+  IconName,
 } from '../../components/component-library';
-import { BorderColor } from '../../helpers/constants/design-system';
+import { Toast, ToastContainer } from '../../components/multichain';
+import { SurveyToast } from '../../components/ui/survey-toast';
+import {
+  BorderColor,
+  BorderRadius,
+  IconColor,
+  TextVariant,
+} from '../../helpers/constants/design-system';
+import {
+  DEFAULT_ROUTE,
+  REVIEW_PERMISSIONS,
+} from '../../helpers/constants/routes';
 import { getURLHost } from '../../helpers/utils/util';
+import { getShowAutoNetworkSwitchTest } from './isolated';
 
 export function renderToasts(props, context) {
   const { t } = context;

@@ -5,6 +5,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../shared/constants/app';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { ThemeType } from '../../../shared/constants/preferences';
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -18,7 +19,6 @@ import {
   REVIEW_PERMISSIONS,
   SEND_ROUTE,
   SNAPS_VIEW_ROUTE,
-  SWAPS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -47,15 +47,18 @@ export function setTheme(theme) {
   );
 }
 
-export function onSwapsPage() {
-  const { location } = this.props;
-  return Boolean(
-    matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
-  );
-}
+// function onSwapsPage(props) {
+//   const { location } = props;
+//   return Boolean(
+//     matchPath(location.pathname, {
+//       path: SWAPS_ROUTE,
+//       exact: false,
+//     }),
+//   );
+// }
 
-export function onConfirmPage() {
-  const { location } = this.props;
+function onConfirmPage(props) {
+  const { location } = props;
   return Boolean(
     matchPath(location.pathname, {
       path: CONFIRM_TRANSACTION_ROUTE,
@@ -64,8 +67,8 @@ export function onConfirmPage() {
   );
 }
 
-export function onInitializationUnlockPage() {
-  const { location } = this.props;
+function onInitializationUnlockPage(props) {
+  const { location } = props;
   return Boolean(
     matchPath(location.pathname, {
       path: ONBOARDING_UNLOCK_ROUTE,
@@ -83,10 +86,10 @@ export function showOnboardingHeader(location) {
   );
 }
 
-export function toggleMetamaskActive() {
-  if (this.props.isUnlocked) {
+export function toggleMetamaskActive(props) {
+  if (props.isUnlocked) {
     // currently active: deactivate
-    this.props.lockMetaMask();
+    props.lockMetaMask();
   } else {
     // currently inactive: redirect to password box
     const passwordBox = document.querySelector('input[type=password]');
@@ -97,12 +100,12 @@ export function toggleMetamaskActive() {
   }
 }
 
-export function getConnectingLabel(loadingMessage) {
+export function getConnectingLabel(loadingMessage, props, context) {
   if (loadingMessage) {
     return loadingMessage;
   }
-  const { providerType, providerId } = this.props;
-  const { t } = this.context;
+  const { providerType, providerId } = props;
+  const { t } = context;
 
   switch (providerType) {
     case NETWORK_TYPES.MAINNET:
@@ -143,7 +146,7 @@ export function hideAppHeader(props) {
     }),
   );
 
-  if (isInitializing && !this.onInitializationUnlockPage()) {
+  if (isInitializing && !onInitializationUnlockPage(props)) {
     return true;
   }
 
@@ -186,7 +189,7 @@ export function hideAppHeader(props) {
     return true;
   }
 
-  if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
+  if (windowType === ENVIRONMENT_TYPE_POPUP && onConfirmPage(props)) {
     return true;
   }
 
