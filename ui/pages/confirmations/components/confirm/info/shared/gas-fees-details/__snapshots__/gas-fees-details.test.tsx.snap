@@ -9,6 +9,10 @@ exports[`<GasFeesDetails /> renders component for gas fees section 1`] = `
   >
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+<<<<<<< HEAD
+=======
+      style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
     >
       <div
         class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -72,7 +76,12 @@ exports[`<GasFeesDetails /> renders component for gas fees section 1`] = `
     style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
   >
     <div
+<<<<<<< HEAD
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
+=======
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
     >
       <div
         class="mm-box mm-box--display-flex mm-box--align-items-center"

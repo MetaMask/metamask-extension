@@ -16,6 +16,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -37,6 +41,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -90,6 +98,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -146,6 +158,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -196,6 +212,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -249,6 +269,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -305,6 +329,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -350,6 +378,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -395,6 +427,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -517,6 +553,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -567,6 +607,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -620,6 +664,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -676,6 +724,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -732,6 +784,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -782,6 +838,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -835,6 +895,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -891,6 +955,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -947,6 +1015,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1008,6 +1080,10 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1030,6 +1106,10 @@ exports[`TransactionData renders decoded data with no names 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1062,6 +1142,10 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+          style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1107,6 +1191,10 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+          style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1163,6 +1251,10 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+          style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1222,6 +1314,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1244,6 +1340,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1292,6 +1392,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+          style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1348,6 +1452,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+          style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1386,6 +1494,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+            style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1424,6 +1536,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1462,6 +1578,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1518,6 +1638,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1563,6 +1687,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1608,6 +1736,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1654,6 +1786,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1692,6 +1828,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1748,6 +1888,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1793,6 +1937,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1838,6 +1986,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1884,6 +2036,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+              style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1922,6 +2078,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1978,6 +2138,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2023,6 +2187,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2068,6 +2236,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+                style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2115,6 +2287,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+            style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2171,6 +2347,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+            style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2217,6 +2397,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+          style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2278,6 +2462,10 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2299,6 +2487,10 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+<<<<<<< HEAD
+=======
+        style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"

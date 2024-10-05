@@ -9,6 +9,10 @@ exports[`<EditGasFeesRow /> renders component 1`] = `
   >
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+<<<<<<< HEAD
+=======
+      style="align-items: center;"
+>>>>>>> origin/Version-v12.4.0
     >
       <div
         class="mm-box mm-box--display-flex mm-box--align-items-center"

@@ -126,53 +126,13 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class=""
-        >
-          <div
-            class="identicon"
-            style="height: 32px; width: 32px; border-radius: 16px;"
-          >
-            <div
-              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 100, 242);"
-            >
-              <svg
-                height="32"
-                width="32"
-                x="0"
-                y="0"
-              >
-                <rect
-                  fill="#C81420"
-                  height="32"
-                  transform="translate(-5.505236904904678 -5.265123363737541) rotate(385.9 16 16)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-                <rect
-                  fill="#E9F500"
-                  height="32"
-                  transform="translate(10.674469406726399 12.429928159193388) rotate(184.5 16 16)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-                <rect
-                  fill="#FAB300"
-                  height="32"
-                  transform="translate(1.815455199236231 -26.03028190637629) rotate(431.3 16 16)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
+          class="identicon__image-border"
+          style="height: 32px; width: 32px; border-radius: 16px;"
+        />
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
-          G
+          ?
         </div>
       </div>
       <div
@@ -185,9 +145,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           data-testid="header-network-display-name"
-        >
-          Goerli
-        </p>
+        />
       </div>
     </div>
     <div
@@ -217,20 +175,6 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
               />
             </button>
           </div>
-        </div>
-        <div
-          class="mm-box mm-box--margin-left-4 mm-box--background-color-transparent mm-box--rounded-md"
-        >
-          <button
-            aria-label="Advanced tx details"
-            class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-            data-testid="header-advanced-details-button"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/customize.svg');"
-            />
-          </button>
         </div>
       </div>
     </div>

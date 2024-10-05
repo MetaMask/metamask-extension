@@ -263,6 +263,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   renderWatchAccountToggle() {
     const { t, trackEvent } = this.context;
     const { watchAccountEnabled, setWatchAccountEnabled } = this.props;
@@ -297,7 +298,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // We're only setting the code fences here since
   // we should remove it for the feature release
   renderBitcoinSupport() {
@@ -385,7 +385,11 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IF
         }
-        {this.renderWatchAccountToggle()}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          this.renderWatchAccountToggle()
+          ///: END:ONLY_INCLUDE_IF
+        }
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           // We're only setting the code fences here since

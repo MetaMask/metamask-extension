@@ -1,4 +1,6 @@
 import {
+  SimulationData,
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -16,20 +18,18 @@ export const CONTRACT_INTERACTION_SENDER_ADDRESS =
 
 export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
 
-export const CHAIN_ID = '0xaa36a7';
-
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   txData = DEPOSIT_METHOD_DATA,
-  chainId = CHAIN_ID,
+  simulationData,
 }: {
   address?: Hex;
   txData?: Hex;
-  chainId?: string;
-} = {}): Confirmation =>
-  ({
+  simulationData?: SimulationData;
+} = {}): Confirmation => {
+  const confirmation: Confirmation = {
     actionId: String(400855682),
-    chainId,
+    chainId: '0xaa36a7',
     dappSuggestedGasFees: {
       gas: '0xab77',
     },
@@ -43,7 +43,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     history: [
       {
         actionId: String(400855682),
-        chainId,
+        chainId: '0xaa36a7',
         dappSuggestedGasFees: {
           gas: '0xab77',
         },
@@ -160,44 +160,12 @@ export const genUnapprovedContractInteractionConfirmation = ({
     userEditedGasLimit: false,
     userFeeLevel: 'medium',
     verifiedOnBlockchain: false,
-  } as SignatureRequestType);
+  } as SignatureRequestType;
 
-export const genUnapprovedApproveConfirmation = ({
-  address = CONTRACT_INTERACTION_SENDER_ADDRESS,
-  chainId = CHAIN_ID,
-}: {
-  address?: Hex;
-  chainId?: string;
-} = {}) => ({
-  ...genUnapprovedContractInteractionConfirmation({ chainId }),
-  txParams: {
-    from: address,
-    data: '0x095ea7b30000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000001',
-    gas: '0x16a92',
-    to: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-    value: '0x0',
-    maxFeePerGas: '0x5b06b0c0d',
-    maxPriorityFeePerGas: '0x59682f00',
-  },
-  type: TransactionType.tokenMethodApprove,
-});
+  // Overwrite simulation data if provided
+  if (simulationData) {
+    (confirmation as TransactionMeta).simulationData = simulationData;
+  }
 
-export const genUnapprovedSetApprovalForAllConfirmation = ({
-  address = CONTRACT_INTERACTION_SENDER_ADDRESS,
-  chainId = CHAIN_ID,
-}: {
-  address?: Hex;
-  chainId?: string;
-} = {}) => ({
-  ...genUnapprovedContractInteractionConfirmation({ chainId }),
-  txParams: {
-    from: address,
-    data: '0x095ea7b30000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000001',
-    gas: '0x16a92',
-    to: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-    value: '0x0',
-    maxFeePerGas: '0x5b06b0c0d',
-    maxPriorityFeePerGas: '0x59682f00',
-  },
-  type: TransactionType.tokenMethodSetApprovalForAll,
-});
+  return confirmation;
+};
