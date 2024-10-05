@@ -12,6 +12,8 @@ import {
   getFromChain,
   getFromChains,
   getFromToken,
+  getFromTokens,
+  getFromTopAssets,
   getIsBridgeTx,
   getToAmount,
   getToChain,
@@ -454,6 +456,39 @@ describe('Bridge selectors', () => {
       const result = getToTopAssets(state as never);
 
       expect(result).toStrictEqual([]);
+    });
+  });
+
+  describe('getFromTokens', () => {
+    it('returns src tokens from controller state', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+        },
+      );
+      const result = getFromTokens(state as never);
+
+      expect(result).toStrictEqual({
+        '0x00': { address: '0x00', symbol: 'TEST' },
+      });
+    });
+  });
+
+  describe('getFromTopAssets', () => {
+    it('returns src top assets from controller state', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+        },
+      );
+      const result = getFromTopAssets(state as never);
+
+      expect(result).toStrictEqual([{ address: '0x00', symbol: 'TEST' }]);
     });
   });
 });

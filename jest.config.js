@@ -23,9 +23,9 @@ module.exports = {
   // resetMocks: true,
   restoreMocks: true,
   setupFiles: [
+    'jest-canvas-mock',
     '<rootDir>/test/setup.js',
     '<rootDir>/test/env.js',
-    'jest-canvas-mock',
   ],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
