@@ -146,7 +146,9 @@ export function useSimulationMetrics({
 
 function useIncompleteAssetEvent(
   balanceChanges: BalanceChange[],
-  displayNamesByAddress: { [address: string]: UseDisplayNameResponse },
+  displayNamesByAddress: {
+    [address: string]: UseDisplayNameResponse | undefined;
+  },
 ) {
   const trackEvent = useContext(MetaMetricsContext);
   const [processedAssets, setProcessedAssets] = useState<string[]>([]);
@@ -171,7 +173,7 @@ function useIncompleteAssetEvent(
       properties: {
         asset_address: change.asset.address,
         asset_petname: getPetnameType(change, displayName),
-        asset_symbol: displayName.contractDisplayName,
+        asset_symbol: displayName?.contractDisplayName,
         asset_type: getAssetType(change.asset.standard),
         fiat_conversion_available: change.fiatAmount
           ? FiatType.Available
@@ -245,7 +247,7 @@ function getAssetType(standard: TokenStandard) {
 
 function getPetnameType(
   balanceChange: BalanceChange,
-  displayName: UseDisplayNameResponse,
+  displayName: UseDisplayNameResponse = { name: '', hasPetname: false },
 ) {
   if (balanceChange.asset.standard === TokenStandard.none) {
     return PetnameType.Default;
