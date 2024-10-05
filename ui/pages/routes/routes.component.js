@@ -1,3 +1,7 @@
+/* eslint-disable no-unused-vars -- TODO remove */
+/* eslint-disable react/no-unused-prop-types -- TODO remove */
+/* eslint-disable react/no-unused-state -- TODO remove */
+
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -137,6 +141,7 @@ import NetworkConfirmationPopover from '../../components/multichain/network-list
 import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
 import CrossChainSwap from '../bridge';
 import {
+  getConnectingLabel,
   getShowAutoNetworkSwitchTest,
   hideAppHeader,
   isConfirmTransactionRoute,
@@ -484,7 +489,7 @@ export default class Routes extends Component {
 
     const loadMessage =
       loadingMessage || isNetworkLoading
-        ? this.getConnectingLabel(loadingMessage)
+        ? getConnectingLabel(loadingMessage, this.props, this.context)
         : null;
 
     // Conditions for displaying the Send route
