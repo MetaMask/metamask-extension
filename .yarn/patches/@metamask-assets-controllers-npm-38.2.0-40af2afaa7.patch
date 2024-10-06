@@ -19,3 +19,18 @@ index e90a1b6767bc8ac54b7a4d580035cf5db6861dca..cbda9aba94bff918ef2ff56466f0239c
      // We want to ensure that the CID is v1 (https://docs.ipfs.io/concepts/content-addressing/#identifier-formats)
      // because most cid v0s appear to be incompatible with IPFS subdomains
      return {
+diff --git a/dist/token-prices-service/codefi-v2.mjs b/dist/token-prices-service/codefi-v2.mjs
+index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..4ef2923b06b5dccb4b4b8f95d69f01ad9f239c3d 100644
+--- a/dist/token-prices-service/codefi-v2.mjs
++++ b/dist/token-prices-service/codefi-v2.mjs
+@@ -12,8 +12,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var _CodefiTokenPricesServiceV2_tokenPricePolicy;
+ import { handleFetch } from "@metamask/controller-utils";
+ import { hexToNumber } from "@metamask/utils";
+-import $cockatiel from "cockatiel";
+-const { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } = $cockatiel;
++
++const { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } = require('cockatiel');
+ /**
+  * The list of currencies that can be supplied as the `vsCurrency` parameter to
+  * the `/spot-prices` endpoint, in lowercase form.
