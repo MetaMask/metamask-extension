@@ -685,7 +685,6 @@
         "Headers": true,
         "URL": true,
         "URLSearchParams": true,
-        "__import__": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -694,6 +693,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
