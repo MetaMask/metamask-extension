@@ -30,6 +30,7 @@ class SnapListPage {
     text: 'Remove Snap',
   };
 
+  // this selector needs to be combined with snap name to be unique.
   private readonly snapListItem = '.snap-list-item';
 
   constructor(driver: Driver) {
@@ -46,6 +47,9 @@ class SnapListPage {
     await this.driver.clickElement({ text: snapName, css: this.snapListItem });
 
     const removeButton = await this.driver.findElement(this.removeSnapButton);
+    // The need to scroll to the element before clicking it is due to a bug in the Snap test dapp page.
+    // This bug has been fixed in the Snap test dapp page (PR here: https://github.com/MetaMask/snaps/pull/2782), which should mitigate the flaky issue of scrolling and clicking elements in the Snap test dapp.
+    // TODO: Once the Snaps team releases the new version with the fix, we'll be able to remove these scrolling steps and just use clickElement (which already handles scrolling).
     await this.driver.scrollToElement(removeButton);
     await this.driver.clickElement(this.removeSnapButton);
 
