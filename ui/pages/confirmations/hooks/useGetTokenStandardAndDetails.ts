@@ -37,12 +37,10 @@ const useGetTokenStandardAndDetails = (
 
   if (standard === TokenStandard.ERC20) {
     let parsedDecimals = parseTokenDetailDecimals(decimals);
-    if (parsedDecimals === undefined) {
-      parsedDecimals = ERC20_DEFAULT_DECIMALS;
+    if (parsedDecimals !== undefined) {
+      details.decimals = String(parsedDecimals);
+      details.decimalsNumber = parsedDecimals;
     }
-
-    details.decimals = String(parsedDecimals);
-    details.decimalsNumber = parsedDecimals;
   }
 
   return details;

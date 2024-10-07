@@ -19,6 +19,7 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
+import { ERC20_DEFAULT_DECIMALS } from '../../../utils/token';
 import useGetTokenStandardAndDetails from '../../../hooks/useGetTokenStandardAndDetails';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
@@ -103,7 +104,8 @@ export const DataTree = ({
   tokenDecimals?: number;
 }) => {
   const tokenContract = getTokenContractInDataTree(data);
-  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
+  const { decimalsNumber = ERC20_DEFAULT_DECIMALS } =
+    useGetTokenStandardAndDetails(tokenContract);
   const tokenDecimals =
     typeof decimalsNumber === 'number' ? decimalsNumber : tokenDecimalsProp;
 
