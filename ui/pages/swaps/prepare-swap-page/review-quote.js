@@ -23,7 +23,6 @@ import { useGasFeeInputs } from '../../confirmations/hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getQuotes,
-  getSelectedQuote,
   getApproveTxParams,
   getFetchParams,
   setBalanceError,
@@ -36,6 +35,7 @@ import {
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
+  getUsedQuote,
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
@@ -84,6 +84,7 @@ import {
   decimalToHex,
   decWEIToDecETH,
   sumHexes,
+  hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
 import {
@@ -113,6 +114,7 @@ import {
   Size,
   FlexDirection,
   Severity,
+  FontStyle,
 } from '../../../helpers/constants/design-system';
 import {
   BannerAlert,
@@ -133,6 +135,8 @@ import {
   calcTokenAmount,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import {
   calcTokenValue,
@@ -141,10 +145,40 @@ import {
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
 let intervalId;
+
+const ViewAllQuotesLink = React.memo(function ViewAllQuotesLink({
+  trackAllAvailableQuotesOpened,
+  setSelectQuotePopoverShown,
+  t,
+}) {
+  const handleClick = useCallback(() => {
+    trackAllAvailableQuotesOpened();
+    setSelectQuotePopoverShown(true);
+  }, [trackAllAvailableQuotesOpened, setSelectQuotePopoverShown]);
+
+  return (
+    <ButtonLink
+      key="view-all-quotes"
+      data-testid="review-quote-view-all-quotes"
+      onClick={handleClick}
+      size={Size.inherit}
+    >
+      {t('viewAllQuotes')}
+    </ButtonLink>
+  );
+});
+
+ViewAllQuotesLink.propTypes = {
+  trackAllAvailableQuotesOpened: PropTypes.func.isRequired,
+  setSelectQuotePopoverShown: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
+};
 
 export default function ReviewQuote({ setReceiveToAmount }) {
   const history = useHistory();
@@ -204,9 +238,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams, isEqual);
   const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
-  const selectedQuote = useSelector(getSelectedQuote, isEqual);
   const topQuote = useSelector(getTopQuote, isEqual);
-  const usedQuote = selectedQuote || topQuote;
+  const usedQuote = useSelector(getUsedQuote, isEqual);
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
@@ -227,6 +260,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
+  const { isGasIncludedTrade } = usedQuote;
   const isSmartTransaction =
     currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
 
@@ -878,7 +912,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   ]);
 
   useEffect(() => {
-    if (isSmartTransaction && !insufficientTokens) {
+    // If it's a smart transaction, has sufficient tokens, and gas is not included in the trade,
+    // set up gas fee polling.
+    if (isSmartTransaction && !insufficientTokens && !isGasIncludedTrade) {
       const unsignedTx = {
         from: unsignedTransaction.from,
         to: unsignedTransaction.to,
@@ -921,6 +957,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     chainId,
     swapsNetworkConfig.stxGetTransactionsRefreshTime,
     insufficientTokens,
+    isGasIncludedTrade,
   ]);
 
   useEffect(() => {
@@ -1043,6 +1080,40 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     }
   };
 
+  const gasTokenFiatAmount = useMemo(() => {
+    if (!isGasIncludedTrade) {
+      return undefined;
+    }
+    const tradeTxTokenFee =
+      smartTransactionFees?.tradeTxFees?.fees?.[0]?.tokenFees?.[0];
+    if (!tradeTxTokenFee) {
+      return undefined;
+    }
+    const { token: { address, decimals, symbol } = {}, balanceNeededToken } =
+      tradeTxTokenFee;
+    const checksumAddress = toChecksumHexAddress(address);
+    const contractExchangeRate = memoizedTokenConversionRates[checksumAddress];
+    const gasTokenAmountDec = calcTokenAmount(
+      hexToDecimal(balanceNeededToken),
+      decimals,
+    ).toString(10);
+    return getTokenFiatAmount(
+      contractExchangeRate,
+      conversionRate,
+      currentCurrency,
+      gasTokenAmountDec,
+      symbol,
+      true,
+      true,
+    );
+  }, [
+    isGasIncludedTrade,
+    smartTransactionFees,
+    memoizedTokenConversionRates,
+    conversionRate,
+    currentCurrency,
+  ]);
+
   return (
     <div className="review-quote">
       <div className="review-quote__content">
@@ -1120,9 +1191,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
             <Text
               variant={TextVariant.bodyMd}
               marginRight={1}
-              color={TextColor.textAlternative}
+              color={TextColor.textDefault}
             >
-              {t('quoteRate')}
+              {t('quoteRate')}*
             </Text>
             <ExchangeRateDisplay
               primaryTokenValue={calcTokenValue(
@@ -1139,78 +1210,156 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               showIconForSwappingTokens={false}
             />
           </Box>
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.stretch}
-          >
+          {isGasIncludedTrade && (
             <Box
               display={DISPLAY.FLEX}
-              alignItems={AlignItems.center}
-              width={FRACTIONS.SIX_TWELFTHS}
+              justifyContent={JustifyContent.spaceBetween}
+              alignItems={AlignItems.stretch}
             >
-              <Text
-                variant={TextVariant.bodyMd}
-                as="h6"
-                color={TextColor.textAlternative}
-                marginRight={1}
+              <Box
+                display={DISPLAY.FLEX}
+                alignItems={AlignItems.center}
+                width={FRACTIONS.SIX_TWELFTHS}
               >
-                {t('transactionDetailGasHeading')}
-              </Text>
-              <InfoTooltip
-                position="left"
-                contentText={
-                  <p className="fee-card__info-tooltip-paragraph">
-                    {t('swapGasFeesExplanation', [
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  marginRight={1}
+                >
+                  {t('gasFee')}
+                </Text>
+                <InfoTooltip
+                  position="left"
+                  contentText={
+                    <>
+                      <p className="fee-card__info-tooltip-paragraph">
+                        {t('swapGasIncludedTooltipExplanation')}
+                      </p>
                       <ButtonLink
-                        key="learn-more-gas-link"
+                        key="learn-more-about-gas-included-link"
                         size={ButtonLinkSize.Inherit}
-                        href={ZENDESK_URLS.GAS_FEES}
+                        href={ZENDESK_URLS.SWAPS_GAS_FEES}
                         target="_blank"
                         rel="noopener noreferrer"
                         externalLink
                         onClick={() => {
                           trackEvent({
-                            event: 'Clicked "Gas Fees: Learn More" Link',
+                            event:
+                              'Clicked "GasIncluded tooltip: Learn More" Link',
                             category: MetaMetricsEventCategory.Swaps,
                           });
                         }}
                       >
-                        {t('swapGasFeesExplanationLinkText')}
-                      </ButtonLink>,
-                    ])}
-                  </p>
-                }
-              />
+                        {t('swapGasIncludedTooltipExplanationLinkText')}
+                      </ButtonLink>
+                    </>
+                  }
+                />
+              </Box>
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.flexEnd}
+                alignItems={AlignItems.flexEnd}
+                width={FRACTIONS.SIX_TWELFTHS}
+              >
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  data-testid="review-quote-gas-fee-in-fiat"
+                  textAlign={TEXT_ALIGN.RIGHT}
+                  style={{ textDecoration: 'line-through' }}
+                  marginRight={1}
+                >
+                  {gasTokenFiatAmount}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  textAlign={TEXT_ALIGN.RIGHT}
+                  fontStyle={FontStyle.Italic}
+                >
+                  {t('included')}
+                </Text>
+              </Box>
             </Box>
+          )}
+          {!isGasIncludedTrade && (
             <Box
               display={DISPLAY.FLEX}
-              alignItems={AlignItems.flexEnd}
-              width={FRACTIONS.SIX_TWELFTHS}
+              justifyContent={JustifyContent.spaceBetween}
+              alignItems={AlignItems.stretch}
             >
-              <Text
-                variant={TextVariant.bodyMd}
-                as="h6"
-                color={TextColor.textAlternative}
-                width={FRACTIONS.EIGHT_TWELFTHS}
-                textAlign={TEXT_ALIGN.RIGHT}
-                paddingRight={1}
+              <Box
+                display={DISPLAY.FLEX}
+                alignItems={AlignItems.center}
+                width={FRACTIONS.SIX_TWELFTHS}
               >
-                {feeInEth}
-              </Text>
-              <Text
-                variant={TextVariant.bodyMdBold}
-                as="h6"
-                color={TextColor.textAlternative}
-                data-testid="review-quote-gas-fee-in-fiat"
-                width={FRACTIONS.FOUR_TWELFTHS}
-                textAlign={TEXT_ALIGN.RIGHT}
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  marginRight={1}
+                >
+                  {t('transactionDetailGasHeading')}
+                </Text>
+                <InfoTooltip
+                  position="left"
+                  contentText={
+                    <p className="fee-card__info-tooltip-paragraph">
+                      {t('swapGasFeesExplanation', [
+                        <ButtonLink
+                          key="learn-more-gas-link"
+                          size={ButtonLinkSize.Inherit}
+                          href={ZENDESK_URLS.GAS_FEES}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          externalLink
+                          onClick={() => {
+                            trackEvent({
+                              event: 'Clicked "Gas Fees: Learn More" Link',
+                              category: MetaMetricsEventCategory.Swaps,
+                            });
+                          }}
+                        >
+                          {t('swapGasFeesExplanationLinkText')}
+                        </ButtonLink>,
+                      ])}
+                    </p>
+                  }
+                />
+              </Box>
+              <Box
+                display={DISPLAY.FLEX}
+                alignItems={AlignItems.flexEnd}
+                width={FRACTIONS.SIX_TWELFTHS}
               >
-                {` ${feeInFiat}`}
-              </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  width={FRACTIONS.EIGHT_TWELFTHS}
+                  textAlign={TEXT_ALIGN.RIGHT}
+                  paddingRight={1}
+                >
+                  {feeInEth}
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMdBold}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  data-testid="review-quote-gas-fee-in-fiat"
+                  width={FRACTIONS.FOUR_TWELFTHS}
+                  textAlign={TEXT_ALIGN.RIGHT}
+                >
+                  {` ${feeInFiat}`}
+                </Text>
+              </Box>
             </Box>
-          </Box>
-          {(maxFeeInFiat || maxFeeInEth) && (
+          )}
+          {!isGasIncludedTrade && (maxFeeInFiat || maxFeeInEth) && (
             <Box display={DISPLAY.FLEX}>
               <Box display={DISPLAY.FLEX} width={FRACTIONS.SIX_TWELFTHS}></Box>
               <Box
@@ -1220,7 +1369,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               >
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={TextColor.textDefault}
                   width={FRACTIONS.EIGHT_TWELFTHS}
                   paddingRight={1}
                   textAlign={TEXT_ALIGN.RIGHT}
@@ -1229,7 +1378,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 </Text>
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={TextColor.textDefault}
                   width={FRACTIONS.FOUR_TWELFTHS}
                   textAlign={TEXT_ALIGN.RIGHT}
                 >
@@ -1246,7 +1395,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               <Text
                 variant={TextVariant.bodyMd}
                 as="h6"
-                color={TextColor.textAlternative}
+                color={TextColor.textDefault}
                 marginRight={1}
               >
                 {t('swapEnableTokenForSwapping', [tokenApprovalTextComponent])}
@@ -1262,32 +1411,55 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               </Text>
             </Box>
           )}
-          <Box
-            display={DISPLAY.FLEX}
-            marginTop={3}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-          >
-            <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-              {t('swapIncludesMetaMaskFeeViewAllQuotes', [
-                metaMaskFee,
-                <ButtonLink
-                  key="view-all-quotes"
-                  data-testid="review-quote-view-all-quotes"
-                  onClick={
-                    /* istanbul ignore next */
-                    () => {
-                      trackAllAvailableQuotesOpened();
-                      setSelectQuotePopoverShown(true);
+          {isGasIncludedTrade && (
+            <Box
+              display={DISPLAY.FLEX}
+              marginTop={3}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              flexDirection={FlexDirection.Column}
+            >
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                * {t('swapIncludesGasAndMetaMaskFee', [metaMaskFee])}
+              </Text>
+              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
+                <ViewAllQuotesLink
+                  trackAllAvailableQuotesOpened={trackAllAvailableQuotesOpened}
+                  setSelectQuotePopoverShown={setSelectQuotePopoverShown}
+                  t={t}
+                />
+              </Text>
+            </Box>
+          )}
+          {!isGasIncludedTrade && (
+            <Box
+              display={DISPLAY.FLEX}
+              marginTop={3}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+            >
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                *
+                {t('swapIncludesMetaMaskFeeViewAllQuotes', [
+                  metaMaskFee,
+                  <ViewAllQuotesLink
+                    key="view-all-quotes"
+                    trackAllAvailableQuotesOpened={
+                      trackAllAvailableQuotesOpened
                     }
-                  }
-                  size={Size.inherit}
-                >
-                  {t('viewAllQuotes')}
-                </ButtonLink>,
-              ])}
-            </Text>
-          </Box>
+                    setSelectQuotePopoverShown={setSelectQuotePopoverShown}
+                    t={t}
+                  />,
+                ])}
+              </Text>
+            </Box>
+          )}
         </Box>
       </div>
       <SwapsFooter

@@ -28,6 +28,8 @@ import { NetworkController } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import {
   MMIControllerOptions,
@@ -37,10 +39,12 @@ import {
   Signature,
   ConnectionRequest,
 } from '../../../shared/constants/mmi-controller';
-import AccountTracker from '../lib/account-tracker';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
+import AccountTrackerController from './account-tracker-controller';
 import PreferencesController from './preferences-controller';
 import { AppStateController } from './app-state';
 
@@ -82,7 +86,7 @@ export default class MMIController extends EventEmitter {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getPendingNonce: (address: string) => Promise<any>;
 
-  private accountTracker: AccountTracker;
+  private accountTrackerController: AccountTrackerController;
 
   private metaMetricsController: MetaMetricsController;
 
@@ -144,7 +148,7 @@ export default class MMIController extends EventEmitter {
     this.custodyController = opts.custodyController;
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
-    this.accountTracker = opts.accountTracker;
+    this.accountTrackerController = opts.accountTrackerController;
     this.metaMetricsController = opts.metaMetricsController;
     this.networkController = opts.networkController;
     this.permissionController = opts.permissionController;
@@ -454,7 +458,7 @@ export default class MMIController extends EventEmitter {
     const allAccounts = await this.keyringController.getAccounts();
 
     const accountsToTrack = [
-      ...new Set(
+      ...new Set<string>(
         oldAccounts.concat(allAccounts.map((a: string) => a.toLowerCase())),
       ),
     ];
@@ -500,7 +504,7 @@ export default class MMIController extends EventEmitter {
       }
     });
 
-    this.accountTracker.syncWithAddresses(accountsToTrack);
+    this.accountTrackerController.syncWithAddresses(accountsToTrack);
 
     for (const address of newAccounts) {
       try {

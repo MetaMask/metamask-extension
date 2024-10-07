@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
@@ -27,6 +28,7 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -69,6 +71,7 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -93,13 +96,10 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement(
-          '#signTypedDataV3Result',
-        );
-        assert.equal(
-          await rejectionResult.getText(),
-          'Error: User rejected the request.',
-        );
+        await driver.waitForSelector({
+          css: '#signTypedDataV3Result',
+          text: 'Error: User rejected the request.',
+        });
       },
       mockSignatureRejected,
     );

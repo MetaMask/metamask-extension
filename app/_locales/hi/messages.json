@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "मैंने एलर्ट को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
   },
-  "confirmAlertModalDetails": {
-    "message": "यदि आप साइन इन करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है। कृपया आगे बढ़ने से पहले एलर्ट की समीक्षा करें।"
-  },
-  "confirmAlertModalTitle": {
-    "message": "आपके एसेट खतरे में हो सकते हैं"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "'जारी रखें' पर क्लिक करने पर हम आपको $1 पर रीडायरेक्ट कर देंगे।"
   },
@@ -1004,9 +998,6 @@
   },
   "confirmTitleDescSIWESignature": {
     "message": "एक साइट चाहती है कि आप यह साबित करने के लिए साइन इन करें कि यह आपका अकाउंट है।"
-  },
-  "confirmTitleDescSignature": {
-    "message": "इस संदेश को केवल तभी कन्फर्म करें जब आप कंटेंट को एप्रूव करते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं।"
   },
   "confirmTitlePermitTokens": {
     "message": "खर्च करने की सीमा का अनुरोध"
@@ -1881,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "फ़ीस का ब्यौरा"
-  },
-  "fiat": {
-    "message": "फिएट",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
@@ -2867,10 +2854,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "यह नेटवर्क अपनी एसोसिएटेड चेन ID या नाम से मेल नहीं खाता है। कई लोकप्रिय टोकन $1 नाम का उपयोग करते हैं, जिससे इसमें स्कैम किया जा सकता है। स्कैम करने वाले आपको बदले में ज़्यादा कीमती करेंसी भेजने का झांसा दे सकते हैं। आगे बढ़ने से पहले सब कुछ वेरीफाई करें।",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "यह एक बड़ा स्कैम हो सकता है"
+    "message": "यह एक बड़ा स्कैम हो सकता है",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "मदद चाहिए? $1 से कॉन्टेक्ट करें",
@@ -3099,9 +3087,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask इस साइट से कनेक्टेड नहीं है।"
-  },
-  "noConversionDateAvailable": {
-    "message": "कोई करेंसी कन्वर्शन तारीख उपलब्ध नहीं है"
   },
   "noConversionRateAvailable": {
     "message": "कोई भी कन्वर्शन दर उपलब्ध नहीं है"
@@ -3922,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "प्राइस अनुपलब्ध है"
-  },
-  "primaryCurrencySetting": {
-    "message": "प्राथमिक मुद्रा"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "चेन की ओरिजिनल करेंसी (जैसे ETH) में प्रदर्शित वैल्यूज़ को प्राथमिकता देने के लिए ओरिजिनल को चुनें। अपनी चुना गया फिएट करेंसी में प्रदर्शित वैल्यूज़ को प्राथमिकता देने के लिए फिएट को चुनें।"
   },
   "primaryType": {
     "message": "प्राइमरी टाइप"
@@ -6092,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "अपडेट का अनुरोध"
-  },
-  "updatedWithDate": {
-    "message": "अपडेट किया गया $1"
   },
   "uploadDropFile": {
     "message": "अपनी फ़ाइल यहां छोड़ें"

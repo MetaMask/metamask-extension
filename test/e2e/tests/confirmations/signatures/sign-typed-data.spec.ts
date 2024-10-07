@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
@@ -26,6 +27,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -67,6 +69,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -113,18 +116,13 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataVerify');
 
-  const result = await driver.findElement('#signTypedDataResult');
+  await driver.waitForSelector({
+    css: '#signTypedDataResult',
+    text: '0x32791e3c41d40dd5bbfb42e66cf80ca354b0869ae503ad61cd19ba68e11d4f0d2e42a5835b0bfd633596b6a7834ef7d36033633a2479dacfdb96bda360d51f451b',
+  });
+
   await driver.waitForSelector({
     css: '#signTypedDataVerifyResult',
     text: publicAddress,
   });
-  const verifyRecoverAddress = await driver.findElement(
-    '#signTypedDataVerifyResult',
-  );
-
-  assert.equal(
-    await result.getText(),
-    '0x32791e3c41d40dd5bbfb42e66cf80ca354b0869ae503ad61cd19ba68e11d4f0d2e42a5835b0bfd633596b6a7834ef7d36033633a2479dacfdb96bda360d51f451b',
-  );
-  assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }

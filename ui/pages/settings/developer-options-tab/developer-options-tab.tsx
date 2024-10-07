@@ -32,6 +32,8 @@ import {
   setServiceWorkerKeepAlivePreference,
   setRedesignedConfirmationsDeveloperEnabled,
 } from '../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';

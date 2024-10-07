@@ -972,12 +972,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "アラートを確認したうえで続行します"
   },
-  "confirmAlertModalDetails": {
-    "message": "サインインすると、詐欺が判明しているサードパーティにすべての資産を奪われる可能性があります。続ける前にアラートを確認してください。"
-  },
-  "confirmAlertModalTitle": {
-    "message": "資産が危険にさらされている可能性があります"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "「続行」をクリックすると、$1にリダイレクトされます。"
   },
@@ -1004,9 +998,6 @@
   },
   "confirmTitleDescSIWESignature": {
     "message": "サイトがこのアカウントを所有することを証明するためにサインインを求めています。"
-  },
-  "confirmTitleDescSignature": {
-    "message": "このメッセージの内容を承認し、要求元のサイトを信頼する場合にのみ確定してください。"
   },
   "confirmTitlePermitTokens": {
     "message": "使用上限リクエスト"
@@ -1881,10 +1872,6 @@
   },
   "feeDetails": {
     "message": "手数料の詳細"
-  },
-  "fiat": {
-    "message": "法定通貨",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
@@ -2867,10 +2854,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "このネットワークは関連付けられているチェーンIDまたは名前と一致していません。人気のトークンの多くが「$1」という名前を使用しているため、詐欺の対象となっています。詐欺師はより価値の高い通貨を送り返すよう仕向けてくる可能性があります。続行する前にすべてを確認してください。",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "これは詐欺の可能性があります"
+    "message": "これは詐欺の可能性があります",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "アシスタンスが必要な場合は、$1にお問い合わせください",
@@ -3099,9 +3087,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMaskはこのサイトに接続されていません"
-  },
-  "noConversionDateAvailable": {
-    "message": "通貨換算日がありません"
   },
   "noConversionRateAvailable": {
     "message": "利用可能な換算レートがありません"
@@ -3922,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "価格が利用できません"
-  },
-  "primaryCurrencySetting": {
-    "message": "プライマリ通貨"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "チェーンのネイティブ通貨 (ETHなど) による値の表示を優先するには、「ネイティブ」を選択します。選択した法定通貨による値の表示を優先するには、「法定通貨」を選択します。"
   },
   "primaryType": {
     "message": "基本型"
@@ -6092,9 +6071,6 @@
   },
   "updateRequest": {
     "message": "更新リクエスト"
-  },
-  "updatedWithDate": {
-    "message": "$1が更新されました"
   },
   "uploadDropFile": {
     "message": "ここにファイルをドロップします"

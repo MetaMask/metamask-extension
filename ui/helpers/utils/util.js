@@ -30,6 +30,8 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -820,4 +822,19 @@ export const getFilteredSnapPermissions = (
   }
 
   return filteredPermissions;
+};
+/**
+ * Helper function to calculate the token amount 1dAgo using price percentage a day ago.
+ *
+ * @param {*} tokenFiatBalance - current token fiat balance
+ * @param {*} tokenPricePercentChange1dAgo - price percentage 1day ago
+ * @returns token amount 1day ago
+ */
+export const getCalculatedTokenAmount1dAgo = (
+  tokenFiatBalance,
+  tokenPricePercentChange1dAgo,
+) => {
+  return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
+    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+    : tokenFiatBalance ?? 0;
 };

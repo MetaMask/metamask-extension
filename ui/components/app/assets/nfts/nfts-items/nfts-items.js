@@ -16,6 +16,8 @@ import {
   FLEX_WRAP,
 } from '../../../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import {
   getCurrentChainId,
@@ -155,7 +157,7 @@ export default function NftsItems({
 
   const updateNftDropDownStateKey = (key, isExpanded) => {
     const newCurrentAccountState = {
-      ...nftsDropdownState[selectedAddress][chainId],
+      ...nftsDropdownState?.[selectedAddress]?.[chainId],
       [key]: !isExpanded,
     };
 
