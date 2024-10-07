@@ -1,5 +1,6 @@
 import { migrate, version } from './130';
 const oldVersion = 129;
+
 describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
     const oldStorage = {

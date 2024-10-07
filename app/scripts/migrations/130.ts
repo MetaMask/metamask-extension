@@ -1,5 +1,6 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
