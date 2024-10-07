@@ -152,8 +152,10 @@ async function acknowledgeAlert(driver: Driver) {
 
 async function verifyAlertIsDisplayed(driver: Driver) {
   await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-  const alert = await driver.findElement('[data-testid="inline-alert"]');
-  assert.equal(await alert.getText(), 'Alert');
+  await driver.waitForSelector({
+    css: '[data-testid="inline-alert"]',
+    text: 'Alert',
+  });
   await driver.clickElement('[data-testid="inline-alert"]');
 }
 
@@ -161,6 +163,8 @@ async function assertVerifiedMessage(driver: Driver, message: string) {
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  const verifySigUtil = await driver.findElement('#siweResult');
-  assert.equal(await verifySigUtil.getText(), message);
+  await driver.waitForSelector({
+    css: '#siweResult',
+    text: message,
+  });
 }
