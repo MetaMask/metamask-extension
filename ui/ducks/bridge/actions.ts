@@ -375,10 +375,9 @@ export const submitBridgeTransaction = (
             destinationTokenAddress: quoteMeta.quote.destAsset.address,
             approvalTxId,
             // this is the decimal (non atomic) amount (not USD value) of source token to swap
-            swapTokenValue: new Numeric(
-              quoteMeta.quote.srcTokenAmount,
-              10,
-            ).shiftedBy(quoteMeta.quote.srcAsset.decimals),
+            swapTokenValue: new Numeric(quoteMeta.quote.srcTokenAmount, 10)
+              .shiftedBy(quoteMeta.quote.srcAsset.decimals)
+              .toString(),
           },
         },
       });
