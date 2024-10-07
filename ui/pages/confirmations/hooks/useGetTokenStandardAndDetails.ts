@@ -13,9 +13,6 @@ import {
  * Returns token details for a given token contract
  *
  * @param tokenAddress
- * @param options
- * @param options.canTrackMissingDecimalsMetric
- * @param options.metricLocation
  * @returns
  */
 const useGetTokenStandardAndDetails = (

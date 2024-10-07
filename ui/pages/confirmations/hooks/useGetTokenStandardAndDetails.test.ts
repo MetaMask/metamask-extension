@@ -36,7 +36,7 @@ describe('useGetTokenStandardAndDetails', () => {
 
     await waitFor(() => {
       expect(result.current).toEqual({
-        decimals: "2",
+        decimals: 2,
         decimalsNumber: 2,
         standard: 'ERC20',
       });

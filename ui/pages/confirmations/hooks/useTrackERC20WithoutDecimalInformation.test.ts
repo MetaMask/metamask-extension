@@ -26,9 +26,10 @@ describe('useTrackERC20WithoutDecimalInformation', () => {
       if (context === MetaMetricsContext) {
         return trackEventMock;
       }
+      return undefined;
     });
 
-    const response = renderHook(() =>
+    renderHook(() =>
       useTrackERC20WithoutDecimalInformation('0x5', {
         standard: TokenStandard.ERC20,
       } as TokenDetailsERC20),
