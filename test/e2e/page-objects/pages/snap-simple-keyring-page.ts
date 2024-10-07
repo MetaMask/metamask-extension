@@ -127,7 +127,6 @@ class SnapSimpleKeyringPage {
     console.log('Install Simple Keyring Snap');
     await this.driver.clickElement(this.connectButton);
 
-    await this.driver.waitUntilXWindowHandles(3);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.clickElement(this.confirmConnectionButton);
 
