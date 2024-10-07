@@ -1861,10 +1861,6 @@
   "feeDetails": {
     "message": "Λεπτομέρειες χρεώσεων"
   },
-  "fiat": {
-    "message": "Εντολή",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
     "description": "Helps user import their account from a JSON file"
@@ -3080,9 +3076,6 @@
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
   },
-  "noConversionDateAvailable": {
-    "message": "Δεν υπάρχει διαθέσιμη ημερομηνία μετατροπής νομίσματος"
-  },
   "noConversionRateAvailable": {
     "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
   },
@@ -3902,12 +3895,6 @@
   },
   "priceUnavailable": {
     "message": "μη διαθέσιμη τιμή"
-  },
-  "primaryCurrencySetting": {
-    "message": "Κύριο νόμισμα"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Επιλέξτε εγχώριο για να δώσετε προτεραιότητα στην εμφάνιση των τιμών στο νόμισμα της αλυσίδας (π.χ. ETH). Επιλέξτε Παραστατικό για να δώσετε προτεραιότητα στην εμφάνιση τιμών στο επιλεγμένο παραστατικό νόμισμα."
   },
   "primaryType": {
     "message": "Βασικός τύπος"
@@ -4735,13 +4722,6 @@
   "smartTransactionSuccess": {
     "message": "Η συναλλαγή σας ολοκληρώθηκε"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Συγγνώμη για την αναμονή"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Εάν η συναλλαγή σας δεν ολοκληρωθεί εντός $1, θα ακυρωθεί και δεν θα χρεωθείτε με τέλη συναλλαγών.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Έξυπνες συναλλαγές"
   },
@@ -5157,10 +5137,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Προσπαθήστε ξανά να κάνετε ανταλλαγή. Θα είμαστε εδώ για να σας προστατεύσουμε από παρόμοιους κινδύνους και την επόμενη φορά."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Εκτιμώμενη ολοκλήρωση σε < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Η ανταλλαγή απέτυχε"
@@ -6072,9 +6048,6 @@
   },
   "updateRequest": {
     "message": "Αίτημα ενημέρωσης"
-  },
-  "updatedWithDate": {
-    "message": "Ενημερώθηκε $1"
   },
   "uploadDropFile": {
     "message": "Αφήστε το αρχείο σας εδώ"

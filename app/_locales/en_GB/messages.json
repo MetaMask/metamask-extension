@@ -1922,10 +1922,6 @@
   "feeDetails": {
     "message": "Fee details"
   },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
@@ -3154,9 +3150,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
-  "noConversionDateAvailable": {
-    "message": "No currency conversion date available"
-  },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
@@ -3995,12 +3988,6 @@
   "priceUnavailable": {
     "message": "price unavailable"
   },
-  "primaryCurrencySetting": {
-    "message": "Primary currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
-  },
   "primaryType": {
     "message": "Primary type"
   },
@@ -4822,7 +4809,7 @@
     "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
   },
   "smartTransactionPending": {
-    "message": "Submitting your transaction"
+    "message": "Your transaction was submitted"
   },
   "smartTransactionSuccess": {
     "message": "Your transaction is complete"
@@ -6212,9 +6199,6 @@
   },
   "updateRequest": {
     "message": "Update request"
-  },
-  "updatedWithDate": {
-    "message": "Updated $1"
   },
   "uploadDropFile": {
     "message": "Drop your file here"

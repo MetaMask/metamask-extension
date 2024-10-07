@@ -1861,10 +1861,6 @@
   "feeDetails": {
     "message": "Сведения о комиссии"
   },
-  "fiat": {
-    "message": "Фиатная",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
     "description": "Helps user import their account from a JSON file"
@@ -3080,9 +3076,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
   },
-  "noConversionDateAvailable": {
-    "message": "Дата обмена валюты недоступна"
-  },
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
   },
@@ -3902,12 +3895,6 @@
   },
   "priceUnavailable": {
     "message": "цена недоступна"
-  },
-  "primaryCurrencySetting": {
-    "message": "Основная валюта"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Выберите «собственная», чтобы установить приоритет отображения значений в собственной валюте блокчейна (например, ETH). Выберите «Фиатная», чтобы установить приоритет отображения значений в выбранной фиатной валюте."
   },
   "primaryType": {
     "message": "Основной тип"
@@ -4735,13 +4722,6 @@
   "smartTransactionSuccess": {
     "message": "Ваша транзакция завершена"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Извините за ожидание"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Если ваша транзакция не будет завершена в течение $1, она будет отменена и с вас не будет взиматься плата за газ.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Умные транзакции"
   },
@@ -5157,10 +5137,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Попробуйте выполнить своп еще раз. Мы готовы защитить вас от подобных рисков в следующий раз."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Предполагаемое завершение через < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Своп не удался"
@@ -6072,9 +6048,6 @@
   },
   "updateRequest": {
     "message": "Запрос обновления"
-  },
-  "updatedWithDate": {
-    "message": "Обновлено $1"
   },
   "uploadDropFile": {
     "message": "Переместите свой файл сюда"

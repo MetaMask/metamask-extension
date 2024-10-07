@@ -770,10 +770,6 @@
   "feeAssociatedRequest": {
     "message": "Esta solicitud tiene asociada una tarifa."
   },
-  "fiat": {
-    "message": "Fiduciaria",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? ¡Haga clic aquí!",
     "description": "Helps user import their account from a JSON file"
@@ -1309,9 +1305,6 @@
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
   },
-  "noConversionDateAvailable": {
-    "message": "No hay fecha de conversión de moneda disponible"
-  },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
   },
@@ -1476,12 +1469,6 @@
   },
   "prev": {
     "message": "Ant."
-  },
-  "primaryCurrencySetting": {
-    "message": "Moneda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Seleccione Nativa para dar prioridad a mostrar los valores en la moneda nativa de la cadena (p. ej., ETH). Seleccione Fiduciaria para dar prioridad a mostrar los valores en la moneda fiduciaria seleccionada."
   },
   "priorityFee": {
     "message": "Tarifa de prioridad"
@@ -2392,9 +2379,6 @@
   "unsendableAsset": {
     "message": "El envío de tokens coleccionables (ERC-721) no se admite actualmente",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
-  },
-  "updatedWithDate": {
-    "message": "$1 actualizado"
   },
   "urlErrorMsg": {
     "message": "Las direcciones URL requieren el prefijo HTTP/HTTPS adecuado."

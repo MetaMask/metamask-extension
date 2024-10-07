@@ -1861,10 +1861,6 @@
   "feeDetails": {
     "message": "फ़ीस का ब्यौरा"
   },
-  "fiat": {
-    "message": "फिएट",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
@@ -3080,9 +3076,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask इस साइट से कनेक्टेड नहीं है।"
   },
-  "noConversionDateAvailable": {
-    "message": "कोई करेंसी कन्वर्शन तारीख उपलब्ध नहीं है"
-  },
   "noConversionRateAvailable": {
     "message": "कोई भी कन्वर्शन दर उपलब्ध नहीं है"
   },
@@ -3902,12 +3895,6 @@
   },
   "priceUnavailable": {
     "message": "प्राइस अनुपलब्ध है"
-  },
-  "primaryCurrencySetting": {
-    "message": "प्राथमिक मुद्रा"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "चेन की ओरिजिनल करेंसी (जैसे ETH) में प्रदर्शित वैल्यूज़ को प्राथमिकता देने के लिए ओरिजिनल को चुनें। अपनी चुना गया फिएट करेंसी में प्रदर्शित वैल्यूज़ को प्राथमिकता देने के लिए फिएट को चुनें।"
   },
   "primaryType": {
     "message": "प्राइमरी टाइप"
@@ -4735,13 +4722,6 @@
   "smartTransactionSuccess": {
     "message": "आपका ट्रांसेक्शन पूरा हो गया है"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "माफ़ी चाहते हैं कि आपको इंतज़ार करना पड़ा"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "यदि आपका ट्रांसेक्शन $1 के भीतर फाइनलाइज़ नहीं होता है, तो इसे कैंसिल कर दिया जाएगा और आपसे गैस फ़ीस नहीं ली जाएगी।",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "स्मार्ट ट्रांसेक्शन"
   },
@@ -5157,10 +5137,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "अपना स्वैप फिर से कोशिश करें। अगली बार भी इस तरह के जोखिमों से आपको बचाने के लिए हम यहां होंगे।"
-  },
-  "stxEstimatedCompletion": {
-    "message": "<$1 में पूरा होने का अनुमान",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "स्वैप नहीं हो पाया"
@@ -6072,9 +6048,6 @@
   },
   "updateRequest": {
     "message": "अपडेट का अनुरोध"
-  },
-  "updatedWithDate": {
-    "message": "अपडेट किया गया $1"
   },
   "uploadDropFile": {
     "message": "अपनी फ़ाइल यहां छोड़ें"

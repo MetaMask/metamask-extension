@@ -1861,10 +1861,6 @@
   "feeDetails": {
     "message": "Detail biaya"
   },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
@@ -3080,9 +3076,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask tidak terhubung ke situs ini"
   },
-  "noConversionDateAvailable": {
-    "message": "Tanggal konversi mata uang tidak tersedia"
-  },
   "noConversionRateAvailable": {
     "message": "Nilai konversi tidak tersedia"
   },
@@ -3902,12 +3895,6 @@
   },
   "priceUnavailable": {
     "message": "harga tidak tersedia"
-  },
-  "primaryCurrencySetting": {
-    "message": "Mata uang primer"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Pilih asal untuk memprioritaskan nilai yang ditampilkan dalam mata uang asal chain (contoh, ETH). Pilih Fiat untuk memprioritaskan nilai yang ditampilkan dalam mata uang fiat yang Anda pilih."
   },
   "primaryType": {
     "message": "Tipe primer"
@@ -4735,13 +4722,6 @@
   "smartTransactionSuccess": {
     "message": "Transaksi Anda selesai"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Maaf telah menunggu"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Jika transaksi tidak diselesaikan dalam $1, transaksi akan dibatalkan dan Anda tidak akan dikenakan biaya gas.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Transaksi Pintar"
   },
@@ -5157,10 +5137,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Cobalah untuk menukar lagi. Kami akan selalu hadir untuk melindungi Anda dari risiko serupa di lain waktu."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Estimasi penyelesaian dalam < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Pertukaran gagal"
@@ -6072,9 +6048,6 @@
   },
   "updateRequest": {
     "message": "Permintaan pembaruan"
-  },
-  "updatedWithDate": {
-    "message": "Diperbarui $1"
   },
   "uploadDropFile": {
     "message": "Letakkan fail di sini"

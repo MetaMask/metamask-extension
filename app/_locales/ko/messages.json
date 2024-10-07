@@ -1861,10 +1861,6 @@
   "feeDetails": {
     "message": "수수료 세부 정보"
   },
-  "fiat": {
-    "message": "명목",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
@@ -3080,9 +3076,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
   },
-  "noConversionDateAvailable": {
-    "message": "사용 가능한 통화 변환 날짜 없음"
-  },
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
   },
@@ -3902,12 +3895,6 @@
   },
   "priceUnavailable": {
     "message": "가격 사용 불가"
-  },
-  "primaryCurrencySetting": {
-    "message": "기본 통화"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "체인의 고유 통화(예: ETH)로 값을 우선 표시하려면 고유를 선택합니다. 선택한 명목 통화로 값을 우선 표시하려면 명목을 선택합니다."
   },
   "primaryType": {
     "message": "기본 유형"
@@ -4735,13 +4722,6 @@
   "smartTransactionSuccess": {
     "message": "트랜잭션 완료"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "기다리게 해서 죄송합니다"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "$1 이내에 트랜잭션이 완료되지 않으면 트랜잭션이 취소되고 가스비가 부과되지 않습니다.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "스마트 트랜잭션"
   },
@@ -5157,10 +5137,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "스왑을 다시 진행하세요. 다음에도 유사한 위험이 발생한다면 보호해 드리겠습니다."
-  },
-  "stxEstimatedCompletion": {
-    "message": "예상 잔여 시간: <$1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "스왑 실패"
@@ -6072,9 +6048,6 @@
   },
   "updateRequest": {
     "message": "업데이트 요청"
-  },
-  "updatedWithDate": {
-    "message": "$1에 업데이트됨"
   },
   "uploadDropFile": {
     "message": "여기에 파일을 드롭"

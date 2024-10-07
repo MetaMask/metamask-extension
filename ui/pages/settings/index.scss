@@ -262,11 +262,11 @@
   }
 
   &__body {
-    padding: 24px;
+    padding: 0 16px 16px 16px;
   }
 
   &__content-row {
-    padding: 10px 0 20px;
+    padding: 16px 0 0;
 
     @include design-system.screen-sm-max {
       flex-wrap: wrap;
@@ -293,6 +293,12 @@
 
     & .dialog {
       margin-top: 10px;
+    }
+
+    &__title {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 22px;
     }
 
     &__identicon {
@@ -325,11 +331,7 @@
     &__description {
       @include design-system.H6;
 
-      margin-top: 8px;
-      margin-bottom: 12px;
-      color: var(--color-text-default);
-      font-size: 14px;
-      font-weight: 400;
+      line-height: 22px;
     }
   }
 
