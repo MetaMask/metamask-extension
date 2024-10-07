@@ -1,16 +1,14 @@
 name: Run tests
 
 on:
-  push:
-    branches:
-      - develop
-      - master
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-  merge_group:
+  workflow_call:
+    outputs:
+      current-coverage:
+        description: Current coverage
+        value: ${{ jobs.report-coverage.outputs.current-coverage }}
+      stored-coverage:
+        description: Stored coverage
+        value: ${{ jobs.report-coverage.outputs.stored-coverage }}
 
 jobs:
   test-unit:
@@ -79,18 +77,19 @@ jobs:
           name: coverage-integration
           path: coverage/integration/coverage-integration.json
 
-  sonarcloud:
-    name: SonarCloud
+  report-coverage:
+    name: Report coverage
     runs-on: ubuntu-latest
     needs:
       - test-unit
       - test-webpack
       - test-integration
+    outputs:
+      current-coverage: ${{ steps.get-current-coverage.outputs.CURRENT_COVERAGE }}
+      stored-coverage: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
 
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
@@ -109,35 +108,28 @@ jobs:
           name: lcov.info
           path: coverage/lcov.info
 
-      - name: Get Sonar coverage
-        id: get-sonar-coverage
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Get current coverage
+        id: get-current-coverage
         run: |
-          projectKey=$(grep 'sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
-          sonar_coverage=$(curl --silent --header "Authorization: Bearer $SONAR_TOKEN" "https://sonarcloud.io/api/measures/component?component=$projectKey&metricKeys=coverage" | jq -r '.component.measures[0].value // 0')
-          echo "The Sonar coverage of $projectKey is $sonar_coverage%."
-          echo 'SONAR_COVERAGE='"$sonar_coverage" >> "$GITHUB_OUTPUT"
+          current_coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print int($3)}')
+          echo "The current coverage is $current_coverage%."
+          echo 'CURRENT_COVERAGE='"$current_coverage" >> "$GITHUB_OUTPUT"
+
+      - name: Get stored coverage
+        id: get-stored-coverage
+        run: |
+          stored_coverage=$(jq ".coverage" coverage.json)
+          echo "The stored coverage is $stored_coverage%."
+          echo 'STORED_COVERAGE='"$stored_coverage" >> "$GITHUB_OUTPUT"
 
       - name: Validate test coverage
         env:
-            SONAR_COVERAGE: ${{ steps.get-sonar-coverage.outputs.SONAR_COVERAGE }}
+          CURRENT_COVERAGE: ${{ steps.get-current-coverage.outputs.CURRENT_COVERAGE }}
+          STORED_COVERAGE: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
         run: |
-          coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print $3}')
-          if [ -z "$coverage" ]; then
-            echo "::error::Could not retrieve test coverage."
-            exit 1
-          fi
-          if (( $(echo "$coverage < $SONAR_COVERAGE" | bc -l) )); then
-            echo "::error::Quality gate failed for test coverage. Current test coverage is $coverage%, please increase coverage to at least $SONAR_COVERAGE%."
+          if (( $(echo "$CURRENT_COVERAGE < $STORED_COVERAGE" | bc -l) )); then
+            echo "::error::Quality gate failed for test coverage. Current coverage is $CURRENT_COVERAGE%, please increase coverage to at least $STORED_COVERAGE%."
             exit 1
           else
-            echo "Test coverage is $coverage%. Quality gate passed."
+            echo "Current coverage is $CURRENT_COVERAGE%, Stored coverage is $STORED_COVERAGE%. Quality gate passed."
           fi
-
-      - name: SonarCloud Scan
-        # This is SonarSource/sonarcloud-github-action@v2.0.0
-        uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
