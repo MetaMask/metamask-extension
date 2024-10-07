@@ -1,15 +1,15 @@
 diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
-index e90a1b6767bc8ac54b7a4d580035cf5db6861dca..cbda9aba94bff918ef2ff56466f0239ce053d441 100644
+index e90a1b6767bc8ac54b7a4d580035cf5db6861dca..2662df7869e9079f9379c4dd1ded40b5af4e71f2 100644
 --- a/dist/assetsUtil.cjs
 +++ b/dist/assetsUtil.cjs
-@@ -2,6 +2,7 @@
- var __importDefault = (this && this.__importDefault) || function (mod) {
+@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
      return (mod && mod.__esModule) ? mod : { "default": mod };
  };
-+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
  Object.defineProperty(exports, "__esModule", { value: true });
++function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
  exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
  const controller_utils_1 = require("@metamask/controller-utils");
+ const utils_1 = require("@metamask/utils");
 @@ -221,7 +222,7 @@ async function getIpfsCIDv1AndPath(ipfsUrl) {
      const index = url.indexOf('/');
      const cid = index !== -1 ? url.substring(0, index) : url;
@@ -20,7 +20,7 @@ index e90a1b6767bc8ac54b7a4d580035cf5db6861dca..cbda9aba94bff918ef2ff56466f0239c
      // because most cid v0s appear to be incompatible with IPFS subdomains
      return {
 diff --git a/dist/token-prices-service/codefi-v2.mjs b/dist/token-prices-service/codefi-v2.mjs
-index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..4ef2923b06b5dccb4b4b8f95d69f01ad9f239c3d 100644
+index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..416dab35e83334f0cafe23c9bd34d0a0380145b2 100644
 --- a/dist/token-prices-service/codefi-v2.mjs
 +++ b/dist/token-prices-service/codefi-v2.mjs
 @@ -12,8 +12,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -30,7 +30,7 @@ index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..4ef2923b06b5dccb4b4b8f95d69f01ad
 -import $cockatiel from "cockatiel";
 -const { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } = $cockatiel;
 +
-+const { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } = require('cockatiel');
++import { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } from "cockatiel";
  /**
   * The list of currencies that can be supplied as the `vsCurrency` parameter to
   * the `/spot-prices` endpoint, in lowercase form.
