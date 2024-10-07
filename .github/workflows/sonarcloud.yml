@@ -1,23 +1,16 @@
 name: SonarCloud
 
 on:
-  workflow_run:
-    workflows:
-      - CI
-    types:
-      - completed
+  workflow_call:
 
 jobs:
   sonarcloud:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.workflow_run.head_repository.full_name }} # Use the repository that triggered the workflow
-          ref: ${{ github.event.workflow_run.head_branch }} # Use the branch that triggered the workflow
           fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
 
       - name: Download artifacts

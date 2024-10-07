@@ -3,12 +3,12 @@ name: Run tests
 on:
   workflow_call:
     outputs:
-      active-branch-coverage:
-        description: Active branch coverage
-        value: ${{ jobs.report-coverage.outputs.active-branch-coverage }}
-      default-branch-coverage:
-        description: Default branch coverage
-        value: ${{ jobs.report-coverage.outputs.default-branch-coverage }}
+      current-coverage:
+        description: Current coverage
+        value: ${{ jobs.report-coverage.outputs.current-coverage }}
+      stored-coverage:
+        description: Stored coverage
+        value: ${{ jobs.report-coverage.outputs.stored-coverage }}
 
 jobs:
   test-unit:
@@ -85,8 +85,8 @@ jobs:
       - test-webpack
       - test-integration
     outputs:
-      active-branch-coverage: ${{ steps.get-active-branch-coverage.outputs.ACTIVE_BRANCH_COVERAGE }}
-      default-branch-coverage: ${{ steps.get-default-branch-coverage.outputs.DEFAULT_BRANCH_COVERAGE }}
+      current-coverage: ${{ steps.get-current-coverage.outputs.CURRENT_COVERAGE }}
+      stored-coverage: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -108,32 +108,28 @@ jobs:
           name: lcov.info
           path: coverage/lcov.info
 
-      - name: Get active branch coverage
-        id: get-active-branch-coverage
+      - name: Get current coverage
+        id: get-current-coverage
         run: |
-          active_branch_coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print int($3)}')
-          echo "The active branch coverage is $active_branch_coverage%."
-          echo 'ACTIVE_BRANCH_COVERAGE='"$active_branch_coverage" >> "$GITHUB_OUTPUT"
+          current_coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print int($3)}')
+          echo "The current coverage is $current_coverage%."
+          echo 'CURRENT_COVERAGE='"$current_coverage" >> "$GITHUB_OUTPUT"
 
-      - name: Get default branch coverage
-        id: get-default-branch-coverage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPOSITORY_OWNER: ${{ github.repository_owner }}
-          REPOSITORY: ${{ github.repository }}
+      - name: Get stored coverage
+        id: get-stored-coverage
         run: |
-          default_branch_coverage=$(gh api -H "Accept: application/vnd.github.raw" "repos/$REPOSITORY_OWNER/$REPOSITORY/contents/coverage.json" | jq -r ".coverage // 0")
-          echo "The default branch coverage is $default_branch_coverage%."
-          echo 'DEFAULT_BRANCH_COVERAGE='"$default_branch_coverage" >> "$GITHUB_OUTPUT"
+          stored_coverage=$(jq ".coverage" coverage.json)
+          echo "The stored coverage is $stored_coverage%."
+          echo 'STORED_COVERAGE='"$stored_coverage" >> "$GITHUB_OUTPUT"
 
       - name: Validate test coverage
         env:
-            ACTIVE_BRANCH_COVERAGE: ${{ steps.get-active-branch-coverage.outputs.ACTIVE_BRANCH_COVERAGE }}
-            DEFAULT_BRANCH_COVERAGE: ${{ steps.get-default-branch-coverage.outputs.DEFAULT_BRANCH_COVERAGE }}
+          CURRENT_COVERAGE: ${{ steps.get-current-coverage.outputs.CURRENT_COVERAGE }}
+          STORED_COVERAGE: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
         run: |
-          if (( $(echo "$ACTIVE_BRANCH_COVERAGE < $DEFAULT_BRANCH_COVERAGE" | bc -l) )); then
-            echo "::error::Quality gate failed for test coverage. Active branch coverage is $ACTIVE_BRANCH_COVERAGE%, please increase coverage to at least $DEFAULT_BRANCH_COVERAGE%."
+          if (( $(echo "$CURRENT_COVERAGE < $STORED_COVERAGE" | bc -l) )); then
+            echo "::error::Quality gate failed for test coverage. Current coverage is $CURRENT_COVERAGE%, please increase coverage to at least $STORED_COVERAGE%."
             exit 1
           else
-            echo "Active branch coverage is $ACTIVE_BRANCH_COVERAGE%, default branch coverage is $DEFAULT_BRANCH_COVERAGE%. Quality gate passed."
+            echo "Current coverage is $CURRENT_COVERAGE%, Stored coverage is $STORED_COVERAGE%. Quality gate passed."
           fi

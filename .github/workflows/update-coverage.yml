@@ -2,6 +2,7 @@ name: Update coverage
 
 on:
   schedule:
+    # Once per day at midnight UTC
     - cron: 0 0 * * *
   workflow_dispatch:
 
@@ -35,10 +36,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b update-coverage
+          git checkout -b metamaskbot/update-coverage
           git add coverage.json
           git commit -m "chore: Update coverage.json"
-          git push -f origin update-coverage
+          git push -f origin metamaskbot/update-coverage
 
       - name: Create/update pull request
         env:
