@@ -5412,9 +5412,6 @@
   "swapSlippageLowTitle": {
     "message": "Низкое проскальзывание"
   },
-  "swapSlippageNegative": {
-    "message": "Проскальзывание должно быть больше нуля или равно нулю"
-  },
   "swapSlippageNegativeDescription": {
     "message": "Проскальзывание должно быть больше или равно нулю"
   },

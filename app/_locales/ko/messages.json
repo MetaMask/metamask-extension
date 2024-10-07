@@ -5412,9 +5412,6 @@
   "swapSlippageLowTitle": {
     "message": "낮은 슬리피지"
   },
-  "swapSlippageNegative": {
-    "message": "슬리패지는 0보다 크거나 같아야 합니다."
-  },
   "swapSlippageNegativeDescription": {
     "message": "슬리피지는 0보다 크거나 같아야 합니다."
   },

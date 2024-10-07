@@ -5412,9 +5412,6 @@
   "swapSlippageLowTitle": {
     "message": "Χαμηλή απόκλιση"
   },
-  "swapSlippageNegative": {
-    "message": "Η απόκλιση πρέπει να είναι μεγαλύτερη ή ίση με το μηδέν"
-  },
   "swapSlippageNegativeDescription": {
     "message": "Η απόκλιση πρέπει να είναι μεγαλύτερη ή ίση με μηδέν"
   },

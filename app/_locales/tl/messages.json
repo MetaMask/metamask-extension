@@ -5412,9 +5412,6 @@
   "swapSlippageLowTitle": {
     "message": "Mababang slippage"
   },
-  "swapSlippageNegative": {
-    "message": "Ang slippage ay dapat mas malaki o katumbas ng zero"
-  },
   "swapSlippageNegativeDescription": {
     "message": "Dapat na mas malaki o katumbas ng zero ang slippage"
   },

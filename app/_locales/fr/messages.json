@@ -5412,9 +5412,6 @@
   "swapSlippageLowTitle": {
     "message": "Faible effet de glissement"
   },
-  "swapSlippageNegative": {
-    "message": "Le glissement doit être supérieur ou égal à zéro"
-  },
   "swapSlippageNegativeDescription": {
     "message": "Le slippage doit être supérieur ou égal à zéro"
   },

@@ -5412,9 +5412,6 @@
   "swapSlippageLowTitle": {
     "message": "Mức trượt giá thấp"
   },
-  "swapSlippageNegative": {
-    "message": "Mức trượt giá phải lớn hơn hoặc bằng 0"
-  },
   "swapSlippageNegativeDescription": {
     "message": "Mức trượt giá phải lớn hơn hoặc bằng 0"
   },

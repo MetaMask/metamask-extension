@@ -2047,9 +2047,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "A continuación se muestran todas las cotizaciones recopiladas de diversas fuentes de liquidez."
   },
-  "swapSlippageNegative": {
-    "message": "El desfase debe ser mayor o igual que cero"
-  },
   "swapSource": {
     "message": "Fuente de liquidez"
   },

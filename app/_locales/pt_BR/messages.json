@@ -2047,9 +2047,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Abaixo estão todas as cotações reunidas de diversas fontes de liquidez."
   },
-  "swapSlippageNegative": {
-    "message": "O slippage deve ser maior ou igual a zero"
-  },
   "swapSource": {
     "message": "Fonte de liquidez"
   },

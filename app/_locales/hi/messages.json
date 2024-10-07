@@ -5412,9 +5412,6 @@
   "swapSlippageLowTitle": {
     "message": "कम स्लिपेज"
   },
-  "swapSlippageNegative": {
-    "message": "स्लिपेज शून्य से अधिक या बराबर होना चाहिए"
-  },
   "swapSlippageNegativeDescription": {
     "message": "स्लिपेज शून्य से अधिक या बराबर होना चाहिए"
   },

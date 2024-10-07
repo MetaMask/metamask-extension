@@ -5412,9 +5412,6 @@
   "swapSlippageLowTitle": {
     "message": "Slippage baixo"
   },
-  "swapSlippageNegative": {
-    "message": "O slippage deve ser maior ou igual a zero"
-  },
   "swapSlippageNegativeDescription": {
     "message": "O slippage deve ser maior ou igual a zero"
   },

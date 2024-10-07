@@ -5412,9 +5412,6 @@
   "swapSlippageLowTitle": {
     "message": "低滑点"
   },
-  "swapSlippageNegative": {
-    "message": "滑点必须大于或等于0"
-  },
   "swapSlippageNegativeDescription": {
     "message": "滑点必须大于或等于 0"
   },
