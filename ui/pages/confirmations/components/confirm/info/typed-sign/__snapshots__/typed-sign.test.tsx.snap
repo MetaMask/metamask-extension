@@ -12,136 +12,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Estimated changes
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-8"
-              class=""
-              data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        style="align-items: center;"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          You're giving the spender permission to spend this many tokens from your account.
+          Spender
         </p>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Spending cap
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box"
-        style="margin-left: auto; max-width: 100%;"
-      >
-        <div
-          class="mm-box"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-          >
-            <div
-              class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
-            >
-              <div
-                style="min-width: 0;"
-              >
-                <div
-                  aria-describedby="tippy-tooltip-9"
-                  class=""
-                  data-original-title="3,000"
-                  data-tooltipped=""
-                  style="display: inline;"
-                  tabindex="0"
-                >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-                    data-testid="simulation-token-value"
-                    style="padding-top: 1px; padding-bottom: 1px;"
-                  >
-                    3,000
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div
-                class="name name__missing"
-              >
-                <span
-                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
-                <p
-                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-                >
-                  0xCcCCc...ccccC
-                </p>
-              </div>
-            </div>
-          </div>
-          <div
-            class="mm-box"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Spender
-          </p>
-        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -252,16 +129,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Interacting with
-          </p>
-        </div>
+          Interacting with
+        </p>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -331,16 +205,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Message
-          </p>
-        </div>
+          Message
+        </p>
       </div>
       <div
         class="mm-box mm-box--width-full"
@@ -351,16 +222,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
           >
-            <div
-              class="mm-box mm-box--display-flex mm-box--align-items-center"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-              >
-                Primary type:
-              </p>
-            </div>
+              Primary type:
+            </p>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -386,16 +254,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
-                <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                  >
-                    Owner:
-                  </p>
-                </div>
+                  Owner:
+                </p>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -461,16 +326,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
-                <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                  >
-                    Spender:
-                  </p>
-                </div>
+                  Spender:
+                </p>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -536,16 +398,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
-                <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                  >
-                    Value:
-                  </p>
-                </div>
+                  Value:
+                </p>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -577,16 +436,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
-                <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                  >
-                    Nonce:
-                  </p>
-                </div>
+                  Nonce:
+                </p>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -605,16 +461,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
-                <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                  >
-                    Deadline:
-                  </p>
-                </div>
+                  Deadline:
+                </p>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -841,6 +694,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
     />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div

@@ -10,7 +10,7 @@ import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { Icon, IconName, IconSize } from '../../component-library';
+import { Icon, IconName, IconSize, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -169,20 +169,35 @@ export const CoinOverview = ({
               )}
             </div>
             <div className="wallet-overview__currency-wrapper">
+              <div className="wallet-overview__currency-wrapper">
               {showFiat && isOriginalNativeSymbol && balance && (
-                <UserPreferencedCurrencyDisplay
-                  className={classnames({
-                    [`${classPrefix}__cached-secondary-balance`]:
+                  <UserPreferencedCurrencyDisplay
+                    className={classnames({
+                      [`${classPrefix}__cached-secondary-balance`]:
+
                       balanceIsCached,
-                    [`${classPrefix}__secondary-balance`]: !balanceIsCached,
-                  })}
-                  data-testid={`${classPrefix}-overview__secondary-currency`}
-                  value={balance}
-                  type={SECONDARY}
-                  ethNumberOfDecimals={4}
-                  hideTitle
+                      [`${classPrefix}__secondary-balance`]: !balanceIsCached,
+                    })}
+                    data-testid={`${classPrefix}-overview__secondary-currency`}
+                    value={balance}
+                    type={SECONDARY}
+                    ethNumberOfDecimals={4}
+                    hideTitle
+                  />
+                )}
+              <div
+                onClick={handlePortfolioOnClick}
+                className="wallet-overview__portfolio_button"
+                data-testid="portfolio-link"
+              >
+                {t('portfolio')}
+                <Icon
+                  size={IconSize.Sm}
+                  name={IconName.Export}
+                  color={IconColor.primaryDefault}
                 />
-              )}
+              </div>
+            </div>
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
                 <div
