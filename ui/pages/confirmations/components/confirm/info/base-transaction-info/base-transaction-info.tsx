@@ -18,7 +18,7 @@ const BaseTransactionInfo = () => {
     selectConfirmationAdvancedDetailsOpen,
   );
 
-  const { simulationData } = transactionMeta;
+  const simulationData = transactionMeta?.simulationData;
 
   if (!transactionMeta?.txParams) {
     return null;
