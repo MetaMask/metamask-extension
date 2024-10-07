@@ -74,7 +74,7 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
     if (isMethodAllowed) {
       if (method.errors) {
         method.errors.forEach((err) => {
-          const unsupportedErrorCodes = [5000, 5300, 5301];
+          const unsupportedErrorCodes = [5000, 5100, 5101, 5102, 5300, 5301];
           const error = err as ErrorObject;
           if (unsupportedErrorCodes.includes(error.code)) {
             return;
@@ -87,26 +87,6 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
                   'eip155:10124': {
                     methods: ['eth_signTypedData_v4'],
                     notifications: [],
-                  },
-                },
-              };
-              break;
-            case 5101:
-              params = {
-                requiredScopes: {
-                  'eip155:1': {
-                    methods: ['foo'],
-                    notifications: [],
-                  },
-                },
-              };
-              break;
-            case 5102:
-              params = {
-                requiredScopes: {
-                  'eip155:1': {
-                    methods: [],
-                    notifications: ['potato'],
                   },
                 },
               };

@@ -178,13 +178,13 @@ async function main() {
         reporters: ['console-streaming'],
         skip: ['wallet_invokeMethod'],
         rules: [
-          new ExamplesRule({
-            skip: [],
-            only: [
-              // 'wallet_getSession',
-              'wallet_revokeSession'
-            ],
-          }),
+          // new ExamplesRule({
+          //   skip: [],
+          //   only: [
+          //     'wallet_getSession',
+          //     'wallet_revokeSession'
+          //   ],
+          // }),
           new MultichainAuthorizationConfirmation({
             driver,
           }),
