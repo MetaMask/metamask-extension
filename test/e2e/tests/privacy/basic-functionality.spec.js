@@ -74,7 +74,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
         await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="category-item-Assets"]');
+        await driver.delay(regularDelayMs);
         await driver.clickElement(
           '[data-testid="currency-rate-check-toggle"] .toggle-button',
         );

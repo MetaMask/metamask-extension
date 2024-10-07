@@ -21,6 +21,7 @@ const {
   regularDelayMs,
   unlockWallet,
   tinyDelayMs,
+  largeDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -286,7 +287,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           await driver.clickElement({
             text: 'General',
           });
-
+          await driver.delay(largeDelayMs);
           await driver.clickElement({ text: 'Add a network' });
 
           await driver.waitForSelector(
@@ -310,6 +311,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           const rpcUrlInputDropDown = await driver.waitForSelector(
             '[data-testid="test-add-rpc-drop-down"]',
           );
+          await driver.delay(tinyDelayMs);
           await rpcUrlInputDropDown.click();
           await driver.delay(tinyDelayMs);
           await driver.clickElement({
@@ -328,14 +330,14 @@ describe('MetaMask onboarding @no-mmi', function () {
 
           await driver.clickElement({ text: 'Save', tag: 'button' });
 
-          await driver.delay(regularDelayMs);
+          await driver.delay(largeDelayMs);
           await driver.waitForSelector('[data-testid="category-back-button"]');
           const generalBackButton = await driver.waitForSelector(
             '[data-testid="category-back-button"]',
           );
           await generalBackButton.click();
 
-          await driver.delay(regularDelayMs);
+          await driver.delay(largeDelayMs);
 
           await driver.waitForSelector(
             '[data-testid="privacy-settings-back-button"]',
@@ -345,7 +347,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           );
           await defaultSettingsBackButton.click();
 
-          await driver.delay(regularDelayMs);
+          await driver.delay(largeDelayMs);
 
           await driver.clickElement({
             text: 'Done',
@@ -357,7 +359,7 @@ describe('MetaMask onboarding @no-mmi', function () {
             tag: 'button',
           });
 
-          await driver.delay(regularDelayMs);
+          await driver.delay(largeDelayMs);
 
           await driver.clickElement({
             text: 'Done',
