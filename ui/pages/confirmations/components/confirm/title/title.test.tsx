@@ -1,6 +1,6 @@
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-
 import {
   getMockApproveConfirmState,
   getMockContractInteractionConfirmState,
@@ -135,7 +135,7 @@ describe('ConfirmTitle', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render the title and description for a setApprovalForAll transaction', () => {
+  it('should render the title and description for a setApprovalForAll transaction', async () => {
     const mockStore = configureMockStore([])(
       getMockSetApprovalForAllConfirmState(),
     );
@@ -144,12 +144,15 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(
-      getByText(tEn('setApprovalForAllRedesignedTitle') as string),
-    ).toBeInTheDocument();
-    expect(
-      getByText(tEn('confirmTitleDescApproveTransaction') as string),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        getByText(tEn('setApprovalForAllRedesignedTitle') as string),
+      ).toBeInTheDocument();
+
+      expect(
+        getByText(tEn('confirmTitleDescApproveTransaction') as string),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('Alert banner', () => {
