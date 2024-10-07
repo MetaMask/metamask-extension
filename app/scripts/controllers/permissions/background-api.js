@@ -12,16 +12,12 @@ import {
   getPermittedEthChainIds,
   setPermittedEthChainIds,
 } from '../../lib/multichain-api/adapters/caip-permission-adapter-permittedChains';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionNames } from './specifications';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
   approvalController,
-  networkController,
 }) {
   // To add more than one account when already connected to the dapp
   const addMoreAccounts = (origin, accounts) => {
@@ -75,16 +71,22 @@ export function getPermissionBackgroundApiMethods({
       throw new Error('tried to add chains when none have been permissioned'); // TODO: better error
     }
 
+    // get the list of permitted eth accounts before we modify the permitted chains and potentially lose some
+    const ethAccounts = getEthAccounts(caip25Caveat.value);
+
     const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
     const updatedEthChainIds = Array.from(
       new Set([...ethChainIds, ...chainIds]),
     );
 
-    const updatedCaveatValue = setPermittedEthChainIds(
+    let updatedCaveatValue = setPermittedEthChainIds(
       caip25Caveat.value,
       updatedEthChainIds,
     );
+
+    // ensure that the list of permitted eth accounts is intact after permitted chain updates
+    updatedCaveatValue = setEthAccounts(updatedCaveatValue, ethAccounts);
 
     permissionController.updateCaveat(
       origin,
@@ -95,11 +97,6 @@ export function getPermissionBackgroundApiMethods({
   };
 
   const requestAccountsAndChainPermissionsWithId = (origin) => {
-    const { chainId } =
-      networkController.getNetworkConfigurationByNetworkClientId(
-        networkController.state.selectedNetworkClientId,
-      );
-
     const id = nanoid();
     // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
     // Until they are actually combined, when testing, you must request both
@@ -115,14 +112,7 @@ export function getPermissionBackgroundApiMethods({
           },
           permissions: {
             [RestrictedMethods.eth_accounts]: {},
-            [PermissionNames.permittedChains]: {
-              caveats: [
-                {
-                  type: CaveatTypes.restrictNetworkSwitching,
-                  value: [chainId],
-                },
-              ],
-            },
+            [PermissionNames.permittedChains]: {},
           },
         },
         type: MethodNames.requestPermissions,

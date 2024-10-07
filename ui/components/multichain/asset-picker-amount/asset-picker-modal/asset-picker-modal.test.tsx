@@ -14,7 +14,6 @@ import {
   getCurrentChainId,
   getCurrentCurrency,
   getNativeCurrencyImage,
-  getPreferences,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
@@ -134,9 +133,7 @@ describe('AssetPickerModal', () => {
       if (selector === getTopAssets) {
         return [];
       }
-      if (selector === getPreferences) {
-        return { useNativeCurrencyAsPrimaryCurrency: false };
-      }
+
       if (selector === getSwapsBlockedTokens) {
         return new Set(['0xtoken1']);
       }

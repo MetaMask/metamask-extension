@@ -24,7 +24,7 @@ export async function CaipPermissionAdapterMiddleware(
   } catch (err) {
     // noop
   }
-  if (!caveat?.value.isMultichainOrigin) {
+  if (!caveat?.value?.isMultichainOrigin) {
     return next();
   }
 

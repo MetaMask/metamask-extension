@@ -1,13 +1,14 @@
 import { MethodNames } from '@metamask/permission-controller';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../lib/multichain-api/caip25permissions';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import {
+  KnownNotifications,
+  KnownRpcMethods,
+} from '../../lib/multichain-api/scope';
 import { getPermissionBackgroundApiMethods } from './background-api';
 import { PermissionNames } from './specifications';
 
@@ -469,45 +470,7 @@ describe('permission background API methods', () => {
   });
 
   describe('requestAccountsAndChainPermissionsWithId', () => {
-    it('gets the networkConfiguration for the current globally selected network client', () => {
-      const networkController = {
-        state: {
-          selectedNetworkClientId: 'mainnet',
-        },
-        getNetworkConfigurationByNetworkClientId: jest.fn().mockReturnValue({
-          chainId: '0x1',
-        }),
-      };
-      const approvalController = {
-        addAndShowApprovalRequest: jest.fn().mockResolvedValue({
-          approvedChainIds: ['0x1', '0x5'],
-          approvedAccounts: ['0xdeadbeef'],
-        }),
-      };
-      const permissionController = {
-        grantPermissions: jest.fn(),
-      };
-
-      getPermissionBackgroundApiMethods({
-        networkController,
-        approvalController,
-        permissionController,
-      }).requestAccountsAndChainPermissionsWithId('foo.com');
-
-      expect(
-        networkController.getNetworkConfigurationByNetworkClientId,
-      ).toHaveBeenCalledWith('mainnet');
-    });
-
     it('requests eth_accounts and permittedChains approval and returns the request id', async () => {
-      const networkController = {
-        state: {
-          selectedNetworkClientId: 'mainnet',
-        },
-        getNetworkConfigurationByNetworkClientId: jest.fn().mockReturnValue({
-          chainId: '0x1',
-        }),
-      };
       const approvalController = {
         addAndShowApprovalRequest: jest.fn().mockResolvedValue({
           approvedChainIds: ['0x1', '0x5'],
@@ -519,7 +482,6 @@ describe('permission background API methods', () => {
       };
 
       const result = getPermissionBackgroundApiMethods({
-        networkController,
         approvalController,
         permissionController,
       }).requestAccountsAndChainPermissionsWithId('foo.com');
@@ -539,14 +501,7 @@ describe('permission background API methods', () => {
             },
             permissions: {
               [RestrictedMethods.eth_accounts]: {},
-              [PermissionNames.permittedChains]: {
-                caveats: [
-                  {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1'],
-                  },
-                ],
-              },
+              [PermissionNames.permittedChains]: {},
             },
           },
           type: MethodNames.requestPermissions,
@@ -555,14 +510,6 @@ describe('permission background API methods', () => {
     });
 
     it('grants a legacy CAIP-25 permission (isMultichainOrigin: false) with the approved eip155 chainIds and accounts', async () => {
-      const networkController = {
-        state: {
-          selectedNetworkClientId: 'mainnet',
-        },
-        getNetworkConfigurationByNetworkClientId: jest.fn().mockReturnValue({
-          chainId: '0x1',
-        }),
-      };
       const approvalController = {
         addAndShowApprovalRequest: jest.fn().mockResolvedValue({
           approvedChainIds: ['0x1', '0x5'],
@@ -574,7 +521,6 @@ describe('permission background API methods', () => {
       };
 
       getPermissionBackgroundApiMethods({
-        networkController,
         approvalController,
         permissionController,
       }).requestAccountsAndChainPermissionsWithId('foo.com');
@@ -594,13 +540,13 @@ describe('permission background API methods', () => {
                   requiredScopes: {},
                   optionalScopes: {
                     'eip155:1': {
-                      methods: [],
-                      notifications: [],
+                      methods: KnownRpcMethods.eip155,
+                      notifications: KnownNotifications.eip155,
                       accounts: ['eip155:1:0xdeadbeef'],
                     },
                     'eip155:5': {
-                      methods: [],
-                      notifications: [],
+                      methods: KnownRpcMethods.eip155,
+                      notifications: KnownNotifications.eip155,
                       accounts: ['eip155:5:0xdeadbeef'],
                     },
                   },
@@ -649,7 +595,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('calls updateCaveat with the chain added', () => {
+    it('calls updateCaveat with the chain added and all eip155 accounts synced', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -661,7 +607,7 @@ describe('permission background API methods', () => {
               'eip155:10': {
                 methods: [],
                 notifications: [],
-                accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
+                accounts: ['eip155:10:0x2'],
               },
             },
             optionalScopes: {
@@ -675,7 +621,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
-                accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
+                accounts: ['eip155:1:0x1'],
               },
             },
             isMultichainOrigin: true,
@@ -698,6 +644,7 @@ describe('permission background API methods', () => {
             'eip155:1': {
               methods: [],
               notifications: [],
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:10': {
               methods: [],
@@ -716,12 +663,12 @@ describe('permission background API methods', () => {
             'eip155:1': {
               methods: [],
               notifications: [],
-              accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:1337': {
-              methods: [],
-              notifications: [],
-              accounts: [],
+              methods: KnownRpcMethods.eip155,
+              notifications: KnownNotifications.eip155,
+              accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
             },
           },
           isMultichainOrigin: true,
@@ -765,7 +712,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('calls updateCaveat with the chains added', () => {
+    it('calls updateCaveat with the chains added and all eip155 accounts synced', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -777,7 +724,7 @@ describe('permission background API methods', () => {
               'eip155:10': {
                 methods: [],
                 notifications: [],
-                accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
+                accounts: ['eip155:10:0x2'],
               },
             },
             optionalScopes: {
@@ -791,7 +738,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
-                accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
+                accounts: ['eip155:1:0x1'],
               },
             },
             isMultichainOrigin: true,
@@ -814,6 +761,7 @@ describe('permission background API methods', () => {
             'eip155:1': {
               methods: [],
               notifications: [],
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:10': {
               methods: [],
@@ -832,17 +780,17 @@ describe('permission background API methods', () => {
             'eip155:1': {
               methods: [],
               notifications: [],
-              accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:4': {
-              methods: [],
-              notifications: [],
-              accounts: [],
+              methods: KnownRpcMethods.eip155,
+              notifications: KnownNotifications.eip155,
+              accounts: ['eip155:4:0x1', 'eip155:4:0x2'],
             },
             'eip155:5': {
-              methods: [],
-              notifications: [],
-              accounts: [],
+              methods: KnownRpcMethods.eip155,
+              notifications: KnownNotifications.eip155,
+              accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
             },
           },
           isMultichainOrigin: true,

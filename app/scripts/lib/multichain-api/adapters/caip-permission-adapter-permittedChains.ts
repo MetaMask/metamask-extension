@@ -2,6 +2,8 @@ import { Hex, KnownCaipNamespace } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { Caip25CaveatValue } from '../caip25permissions';
 import {
+  KnownNotifications,
+  KnownRpcMethods,
   mergeScopes,
   parseScopeString,
   ScopesObject,
@@ -44,8 +46,8 @@ export const addPermittedEthChainId = (
     optionalScopes: {
       ...caip25CaveatValue.optionalScopes,
       [scopeString]: {
-        methods: [],
-        notifications: [],
+        methods: KnownRpcMethods.eip155,
+        notifications: KnownNotifications.eip155,
         accounts: [],
       },
     },

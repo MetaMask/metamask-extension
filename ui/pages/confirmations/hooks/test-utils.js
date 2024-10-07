@@ -10,10 +10,10 @@ import {
 import {
   getCurrentCurrency,
   getShouldShowFiat,
-  getPreferences,
   txDataSelector,
   getCurrentKeyring,
   getTokenExchangeRates,
+  getPreferences,
 } from '../../../selectors';
 
 import {
@@ -118,7 +118,7 @@ export const generateUseSelectorRouter =
     }
     if (selector === getPreferences) {
       return {
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
       };
     }
     if (
