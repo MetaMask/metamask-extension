@@ -3,6 +3,7 @@ import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
+import { Ganache } from '../seeder/ganache';
 
 describe('eth_requestAccounts', function () {
   it('executes a request accounts json rpc call', async function () {
@@ -13,10 +14,16 @@ describe('eth_requestAccounts', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle() ?? 'Test title not available',
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }): Promise<void> => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // eth_requestAccounts
         await driver.openNewPage(`http://127.0.0.1:8080`);
