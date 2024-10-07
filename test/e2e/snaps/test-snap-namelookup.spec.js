@@ -2,7 +2,6 @@ const {
   withFixtures,
   defaultGanacheOptions,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -31,25 +30,25 @@ describe('Test Snap Name Lookup', function () {
         // find and scroll to the namelookup test snap and connect
         const snapButton1 = await driver.findElement('#connectname-lookup');
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+        await driver.waitForSelector('#connectname-lookup');
         await driver.clickElement('#connectname-lookup');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',

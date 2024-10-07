@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -30,11 +29,11 @@ describe('Test Snap Get Locale', function () {
 
         const dialogButton = await driver.findElement('#connectgetlocale');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
+        await driver.waitForSelector('#connectgetlocale');
         await driver.clickElement('#connectgetlocale');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',

@@ -21,10 +21,17 @@ describe('Test Snap Multi Install', function () {
 
         // navigate to test snaps page and multi-install snaps
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // scroll to and connect to multi-install snap
         const dialogButton = await driver.findElement('#multi-install-connect');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
+        await driver.waitForSelector('#multi-install-connect');
         await driver.clickElement('#multi-install-connect');
 
         // switch to metamask extension and click connect
@@ -57,7 +64,7 @@ describe('Test Snap Multi Install', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for anc click OK
+        // wait for and click OK
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',
@@ -90,7 +97,7 @@ describe('Test Snap Multi Install', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for anc click OK
+        // wait for and click OK
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',

@@ -21,10 +21,17 @@ describe('Test Snap Interactive UI', function () {
 
         // navigate to test snaps page and connect to interactive ui snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // scroll to and connect to interactive-ui snap
         const dialogButton = await driver.findElement('#connectinteractive-ui');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
+        await driver.waitForSelector('#connectinteractive-ui');
         await driver.clickElement('#connectinteractive-ui');
 
         // switch to metamask extension and click connect
@@ -47,7 +54,7 @@ describe('Test Snap Interactive UI', function () {
           tag: 'button',
         });
 
-        // wait for anc click OK
+        // wait for and click OK
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',

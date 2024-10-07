@@ -29,7 +29,7 @@ describe('Test Snap Dialog', function () {
 
         const dialogButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(500);
+        await driver.waitForSelector('#connectdialogs');
         await driver.clickElement('#connectdialogs');
 
         // switch to metamask extension and click connect
@@ -39,15 +39,15 @@ describe('Test Snap Dialog', function () {
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',

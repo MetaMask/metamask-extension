@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -31,26 +30,35 @@ describe('Test Snap Images', function () {
         // find and scroll to the images test and connect
         const snapButton1 = await driver.findElement('#connectimages');
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
         await driver.waitForSelector('#connectimages');
         await driver.clickElement('#connectimages');
 
-        // switch to metamask extension and click connect and approve
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
+
+        // wait for confirm
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // deal with OK button
+        // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',

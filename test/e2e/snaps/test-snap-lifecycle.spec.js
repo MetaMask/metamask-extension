@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -28,27 +27,28 @@ describe('Test Snap Lifecycle Hooks', function () {
           tag: 'h2',
         });
 
+        // scroll to and connect to lifecycle hooks snap
         const snapButton = await driver.findElement('#connectlifecycle-hooks');
         await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
+        await driver.waitForSelector('#connectlifecycle-hooks');
         await driver.clickElement('#connectlifecycle-hooks');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElement({
           text: 'OK',
           tag: 'button',
@@ -64,7 +64,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         });
 
         // switch to dialog popup
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // check dialog contents
         const result = await driver.findElement('.snap-ui-renderer__panel');

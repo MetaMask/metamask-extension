@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -35,7 +34,7 @@ describe('Test Snap bip-44', function () {
         await driver.clickElement('#connectbip44');
 
         // switch to metamask extension and click connect and approve
-        await switchToNotificationWindow(driver, 2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -92,7 +91,7 @@ describe('Test Snap bip-44', function () {
         await driver.clickElement('#signBip44Message');
 
         // Switch to approve signature message window and approve
-        await switchToNotificationWindow(driver, 2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Approve',
           tag: 'button',

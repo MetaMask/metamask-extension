@@ -27,14 +27,19 @@ describe('Test Snap Signature Insights', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
 
         // find and scroll to the transaction-insights test and connect
         const snapButton1 = await driver.findElement(
           '#connectsignature-insights',
         );
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+        await driver.waitForSelector('#connectsignature-insights');
         await driver.clickElement('#connectsignature-insights');
 
         // switch to metamask extension and click connect
@@ -44,15 +49,15 @@ describe('Test Snap Signature Insights', function () {
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
@@ -295,6 +300,8 @@ describe('Test Snap Signature Insights', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+
+        // delay added for page render (deflake)
         await driver.delay(1000);
 
         // find and scroll to the transaction-insights test and connect
@@ -302,7 +309,7 @@ describe('Test Snap Signature Insights', function () {
           '#connectsignature-insights',
         );
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+        await driver.waitForSelector('#connectsignature-insights');
         await driver.clickElement('#connectsignature-insights');
 
         // switch to metamask extension and click connect
@@ -312,15 +319,15 @@ describe('Test Snap Signature Insights', function () {
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
@@ -358,7 +365,6 @@ describe('Test Snap Signature Insights', function () {
           text: '127.0.0.1:8080',
           tag: 'span',
         });
-
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
@@ -401,7 +407,6 @@ describe('Test Snap Signature Insights', function () {
           text: '127.0.0.1:8080',
           tag: 'span',
         });
-
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
@@ -448,7 +453,6 @@ describe('Test Snap Signature Insights', function () {
           text: '127.0.0.1:8080',
           tag: 'span',
         });
-
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
@@ -495,7 +499,6 @@ describe('Test Snap Signature Insights', function () {
           text: '127.0.0.1:8080',
           tag: 'span',
         });
-
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
