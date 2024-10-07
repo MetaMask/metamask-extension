@@ -1,4 +1,5 @@
 import { migrate, version } from './130';
+
 const oldVersion = 129;
 
 describe(`migration #${version}`, () => {

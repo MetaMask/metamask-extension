@@ -82,7 +82,7 @@ export const useNativeTokenBalance = () => {
 
   const nativeTokenWithBalance: TokenWithBalance = {
     address: '',
-    symbol: tokenSymbol || '',
+    symbol: tokenSymbol ?? '',
     string: primaryBalance,
     image: primaryTokenImage,
     secondary: secondaryBalance,

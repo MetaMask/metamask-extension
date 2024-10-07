@@ -44,8 +44,6 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
     <TokenListItem
       onClick={() => onClickAsset(nativeCurrency)}
       title={nativeCurrency}
-      // The primary and secondary currencies are subject to change based on the user's settings
-      // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
       primary={string}
       tokenSymbol={symbol}
       secondary={secondary}

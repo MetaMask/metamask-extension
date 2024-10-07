@@ -49,52 +49,50 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   };
 
   return (
-    <>
-      <Box
-        className="asset-list-control-bar"
-        ref={controlBarRef}
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        marginLeft={4}
-        marginRight={4}
-        paddingTop={4}
+    <Box
+      className="asset-list-control-bar"
+      ref={controlBarRef}
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+      marginLeft={4}
+      marginRight={4}
+      paddingTop={4}
+    >
+      <ButtonBase
+        data-testid="sort-by-popover-toggle"
+        className="asset-list-control-bar__button"
+        onClick={handleOpenPopover}
+        size={ButtonBaseSize.Sm}
+        endIconName={IconName.ArrowDown}
+        backgroundColor={
+          isPopoverOpen
+            ? BackgroundColor.backgroundPressed
+            : BackgroundColor.backgroundDefault
+        }
+        borderColor={BorderColor.borderMuted}
+        borderStyle={BorderStyle.solid}
+        color={TextColor.textDefault}
       >
-        <ButtonBase
-          data-testid="sort-by-popover-toggle"
-          className="asset-list-control-bar__button"
-          onClick={handleOpenPopover}
-          size={ButtonBaseSize.Sm}
-          endIconName={IconName.ArrowDown}
-          backgroundColor={
-            isPopoverOpen
-              ? BackgroundColor.backgroundPressed
-              : BackgroundColor.backgroundDefault
-          }
-          borderColor={BorderColor.borderMuted}
-          borderStyle={BorderStyle.solid}
-          color={TextColor.textDefault}
-        >
-          {t('sortBy')}
-        </ButtonBase>
-        <ImportControl showTokensLinks={showTokensLinks} />
-        <Popover
-          onClickOutside={closePopover}
-          isOpen={isPopoverOpen}
-          position={PopoverPosition.BottomStart}
-          referenceElement={controlBarRef.current}
-          matchWidth={!isFullScreen}
-          style={{
-            zIndex: 10,
-            display: 'flex',
-            flexDirection: 'column',
-            padding: 0,
-            minWidth: isFullScreen ? '325px' : '',
-          }}
-        >
-          <SortControl handleClose={closePopover} />
-        </Popover>
-      </Box>
-    </>
+        {t('sortBy')}
+      </ButtonBase>
+      <ImportControl showTokensLinks={showTokensLinks} />
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={isPopoverOpen}
+        position={PopoverPosition.BottomStart}
+        referenceElement={controlBarRef.current}
+        matchWidth={!isFullScreen}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          minWidth: isFullScreen ? '325px' : '',
+        }}
+      >
+        <SortControl handleClose={closePopover} />
+      </Popover>
+    </Box>
   );
 };
 

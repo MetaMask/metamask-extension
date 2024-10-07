@@ -75,14 +75,20 @@ export default function TokenList({
     </Box>
   ) : (
     <div>
-      {sortedTokens.map((tokenData, index) => {
+      {sortedTokens.map((tokenData) => {
         if (tokenData?.isNative) {
           // we need cloneElement so that we can pass the unique key
           return React.cloneElement(nativeToken as React.ReactElement, {
-            key: index,
+            key: `${tokenData.symbol}-${tokenData.address}`,
           });
         }
-        return <TokenCell key={index} {...tokenData} onClick={onTokenClick} />;
+        return (
+          <TokenCell
+            key={`${tokenData.symbol}-${tokenData.address}`}
+            {...tokenData}
+            onClick={onTokenClick}
+          />
+        );
       })}
     </div>
   );
