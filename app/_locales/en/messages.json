@@ -5004,17 +5004,10 @@
     "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
   },
   "smartTransactionPending": {
-    "message": "Submitting your transaction"
+    "message": "Your transaction was submitted"
   },
   "smartTransactionSuccess": {
     "message": "Your transaction is complete"
-  },
-  "smartTransactionTakingTooLong": {
-    "message": "Sorry for the wait"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "If your transaction is not finalized within $1, it will be canceled and you will not be charged for gas.",
-    "description": "$1 is remaining time in seconds"
   },
   "smartTransactions": {
     "message": "Smart Transactions"
@@ -5440,10 +5433,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Estimated completion in < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Swap failed"

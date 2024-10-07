@@ -1856,6 +1856,10 @@ export default class MetamaskController extends EventEmitter {
           getCurrentChainId({ metamask: this.networkController.state })
         ],
       incomingTransactions: {
+        etherscanApiKeysByChainId: {
+          [CHAIN_IDS.MAINNET]: process.env.ETHERSCAN_API_KEY,
+          [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
+        },
         includeTokenTransfers: false,
         isEnabled: () =>
           Boolean(
