@@ -25346,6 +25346,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lottie-web@npm:^5.12.2":
+  version: 5.12.2
+  resolution: "lottie-web@npm:5.12.2"
+  checksum: 10/cd377d54a675b37ac9359306b84097ea402dff3d74a2f45e6e0dbcff1df94b3a978e92e48fd34765754bdbb94bd2d8d4da31954d95f156e77489596b235cac91
+  languageName: node
+  linkType: hard
+
 "lower-case@npm:^2.0.2":
   version: 2.0.2
   resolution: "lower-case@npm:2.0.2"
@@ -26340,6 +26347,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     loglevel: "npm:^1.8.1"
     loose-envify: "npm:^1.4.0"
+    lottie-web: "npm:^5.12.2"
     luxon: "npm:^3.2.1"
     mocha: "npm:^10.2.0"
     mocha-junit-reporter: "npm:^2.2.1"
