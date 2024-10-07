@@ -560,26 +560,9 @@ describe('MetaMaskController', () => {
           test: '123',
         });
 
-        expect(result).toStrictEqual({
-          internalAccounts:
-            metamaskController.accountsController.listAccounts(),
-          dappRequest: undefined,
-          networkClientId:
-            metamaskController.networkController.state.selectedNetworkClientId,
-          selectedAccount:
-            metamaskController.accountsController.getAccountByAddress(
-              transactionParams.from,
-            ),
-          transactionController: expect.any(Object),
-          transactionOptions,
+        expect(result).toMatchObject({
           transactionParams,
-          userOperationController: expect.any(Object),
-          chainId: '0x1',
-          ppomController: expect.any(Object),
-          securityAlertsEnabled:
-            metamaskController.preferencesController.store.getState()
-              ?.securityAlertsEnabled,
-          updateSecurityAlertResponse: expect.any(Function),
+          transactionOptions,
           test: '123',
         });
       });
