@@ -137,9 +137,10 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.confirmAddtoMetamask);
 
     await this.driver.waitForSelector(this.installationCompleteMessage);
-    await this.driver.clickElement(this.confirmCompleteButton);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmCompleteButton,
+    );
 
-    await this.driver.waitUntilXWindowHandles(2);
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
