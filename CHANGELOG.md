@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.5.0]
+
 ## [12.4.0]
 ### Fixed
 - fix: flaky test `Test Snap Interactive UI test interactive ui elements` ([#26792](https://github.com/MetaMask/metamask-extension/pull/26792))
@@ -5580,8 +5581,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...HEAD
-[12.5.0]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...v12.5.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.4.0...HEAD
+[12.5.0]: https://github.com/MetaMask/metamask-extension/compare/v12.4.0...v12.5.0
 [12.4.0]: https://github.com/MetaMask/metamask-extension/compare/v12.3.1...v12.4.0
 [12.3.1]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...v12.3.1
 [12.3.0]: https://github.com/MetaMask/metamask-extension/compare/v12.2.4...v12.3.0
