@@ -7031,9 +7031,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/schema-utils-js@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "@open-rpc/schema-utils-js@npm:2.0.3"
+"@open-rpc/schema-utils-js@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "@open-rpc/schema-utils-js@npm:2.0.4"
   dependencies:
     "@json-schema-tools/dereferencer": "npm:^1.6.3"
     "@json-schema-tools/meta-schema": "npm:^1.7.5"
@@ -7045,7 +7045,7 @@ __metadata:
     fs-extra: "npm:^10.1.0"
     is-url: "npm:^1.2.4"
     isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/93dea20f3a6aa51f47779b9d84cfa14a7d8a1f41cb46708869bcbc500075f1ed693569fdeaa377c487a3363b35a17a587a91e1d2210faf85ef7f1d4167dcc9cb
+  checksum: 10/35ad0d517e635305844281945ddd6021e525bc2a32f0e95af2c4246ca7a63064db8f293251c70b923647402fbb1322212d5a40ca58c5060e811cc5b4bd1eea71
   languageName: node
   linkType: hard
 
@@ -26155,7 +26155,7 @@ __metadata:
     "@octokit/core": "npm:^3.6.0"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/mock-server": "npm:^1.7.5"
-    "@open-rpc/schema-utils-js": "npm:^2.0.3"
+    "@open-rpc/schema-utils-js": "npm:^2.0.4"
     "@open-rpc/test-coverage": "npm:^2.2.4"
     "@playwright/test": "npm:^1.39.0"
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.11"

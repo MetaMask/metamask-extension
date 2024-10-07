@@ -9,7 +9,7 @@ import {
 import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
-import { IOptions } from '@open-rpc/test-coverage/build/coverage';
+import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
 import { ScopeString } from '../../app/scripts/lib/multichain-api/scope';
 import { Driver, PAGES } from './webdriver/driver';
 
@@ -127,7 +127,7 @@ async function main() {
               name: 'requiredScopes',
               value: {
                 eip155: {
-                  scopes: ['eip155:1337'],
+                  references: ['1337'],
                   methods: ethereumMethods,
                   notifications: ['eth_subscription'],
                 },
@@ -178,6 +178,13 @@ async function main() {
         reporters: ['console-streaming'],
         skip: ['wallet_invokeMethod'],
         rules: [
+          new ExamplesRule({
+            skip: [],
+            only: [
+              // 'wallet_getSession',
+              'wallet_revokeSession'
+            ],
+          }),
           new MultichainAuthorizationConfirmation({
             driver,
           }),
@@ -228,6 +235,12 @@ async function main() {
       const joinedResults = testCoverageResults.concat(
         testCoverageResultsCaip27,
       );
+      joinedResults.forEach((r, index) => {
+        r.id = index;
+        if (r.resultSchema) {
+          r.resultSchema = false;
+        }
+      });
 
       const htmlReporter = new HtmlReporter({
         autoOpen: !process.env.CI,
