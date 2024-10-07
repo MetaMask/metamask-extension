@@ -211,6 +211,7 @@
       "smartTransactionsOptInStatus": false,
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
+      "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
@@ -304,7 +305,8 @@
   "TxController": {
     "methodData": "object",
     "transactions": "object",
-    "lastFetchedBlockNumbers": "object"
+    "lastFetchedBlockNumbers": "object",
+    "submitHistory": "object"
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
