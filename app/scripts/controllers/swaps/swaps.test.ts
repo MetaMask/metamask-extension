@@ -1096,7 +1096,6 @@ describe('SwapsController', function () {
             oldState.swapsState.swapsStxGetTransactionsRefreshTime,
           swapsStxBatchStatusRefreshTime:
             oldState.swapsState.swapsStxBatchStatusRefreshTime,
-          swapsStxStatusDeadline: oldState.swapsState.swapsStxStatusDeadline,
         });
       });
 
@@ -1173,6 +1172,7 @@ describe('SwapsController', function () {
         const swapsStxBatchStatusRefreshTime = 0;
         const swapsStxGetTransactionsRefreshTime = 0;
         const swapsStxStatusDeadline = 0;
+
         swapsController.__test__updateState({
           swapsState: {
             ...swapsController.state.swapsState,
