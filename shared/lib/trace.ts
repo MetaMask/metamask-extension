@@ -5,6 +5,9 @@ import { createModuleLogger } from '@metamask/utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
 
+/**
+ * The supported trace names.
+ */
 export enum TraceName {
   BackgroundConnect = 'Background Connect',
   DeveloperTest = 'Developer Test',
@@ -36,22 +39,71 @@ type PendingTrace = {
   startTime: number;
 };
 
+/**
+ * A context object to associate traces with each other and generate nested traces.
+ */
 export type TraceContext = unknown;
 
+/**
+ * A callback function that can be traced.
+ */
 export type TraceCallback<T> = (context?: TraceContext) => T;
 
+/**
+ * A request to create a new trace.
+ */
 export type TraceRequest = {
+  /**
+   * Custom data to associate with the trace.
+   */
   data?: Record<string, number | string | boolean>;
+
+  /**
+   * A unique identifier when not tracing a callback.
+   * Defaults to 'default' if not provided.
+   */
   id?: string;
+
+  /**
+   * The name of the trace.
+   */
   name: TraceName;
+
+  /**
+   * The parent context of the trace.
+   * If provided, the trace will be nested under the parent trace.
+   */
   parentContext?: TraceContext;
+
+  /**
+   * Override the start time of the trace.
+   */
   startTime?: number;
+
+  /**
+   * Custom tags to associate with the trace.
+   */
   tags?: Record<string, number | string | boolean>;
 };
 
+/**
+ * A request to end a pending trace.
+ */
 export type EndTraceRequest = {
+  /**
+   * The unique identifier of the trace.
+   * Defaults to 'default' if not provided.
+   */
   id?: string;
+
+  /**
+   * The name of the trace.
+   */
   name: TraceName;
+
+  /**
+   * Override the end time of the trace.
+   */
   timestamp?: number;
 };
 
@@ -59,6 +111,16 @@ export function trace<T>(request: TraceRequest, fn: TraceCallback<T>): T;
 
 export function trace(request: TraceRequest): TraceContext;
 
+/**
+ * Create a Sentry transaction to analyse the duration of a code flow.
+ * If a callback is provided, the transaction will be automatically ended when the callback completes.
+ * If the callback returns a promise, the transaction will be ended when the promise resolves or rejects.
+ * If no callback is provided, the transaction must be manually ended using `endTrace`.
+ *
+ * @param request - The data associated with the trace, such as the name and tags.
+ * @param fn - The optional callback to record the duration of.
+ * @returns The context of the trace, or the result of the callback if provided.
+ */
 export function trace<T>(
   request: TraceRequest,
   fn?: TraceCallback<T>,
@@ -70,6 +132,12 @@ export function trace<T>(
   return traceCallback(request, fn);
 }
 
+/**
+ * End a pending trace that was started without a callback.
+ * Does nothing if the pending trace cannot be found.
+ *
+ * @param request - The data necessary to identify and end the pending trace.
+ */
 export function endTrace(request: EndTraceRequest) {
   const { name, timestamp } = request;
   const id = getTraceId(request);
@@ -189,6 +257,13 @@ function getPerformanceTimestamp(): number {
   return performance.timeOrigin + performance.now();
 }
 
+/**
+ * Initialise the isolated Sentry scope created for each trace.
+ * Includes setting all non-numeric tags.
+ *
+ * @param scope - The Sentry scope to initialise.
+ * @param request - The trace request.
+ */
 function initScope(scope: Sentry.Scope, request: TraceRequest) {
   const tags = request.tags ?? {};
 
@@ -199,6 +274,13 @@ function initScope(scope: Sentry.Scope, request: TraceRequest) {
   }
 }
 
+/**
+ * Initialise the Sentry span created for each trace.
+ * Includes setting all numeric tags as measurements so they can be queried numerically in Sentry.
+ *
+ * @param _span - The Sentry span to initialise.
+ * @param request - The trace request.
+ */
 function initSpan(_span: Sentry.Span, request: TraceRequest) {
   const tags = request.tags ?? {};
 

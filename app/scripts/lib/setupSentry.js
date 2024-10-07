@@ -86,9 +86,7 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration({
-        enableLongAnimationFrame: true,
-      }),
+      Sentry.browserTracingIntegration(),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,

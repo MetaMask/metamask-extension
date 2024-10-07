@@ -2,6 +2,7 @@
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
+import { MetaMaskReduxState } from '../../store/store';
 import { getStartupTraceTags } from './tags';
 
 jest.mock('../../../app/scripts/lib/util', () => ({
@@ -17,7 +18,19 @@ const STATE_EMPTY_MOCK = {
     },
     metamaskNotificationsList: [],
   },
-};
+} as unknown as MetaMaskReduxState;
+
+function createMockState(
+  metamaskState: Partial<MetaMaskReduxState['metamask']>,
+): MetaMaskReduxState {
+  return {
+    ...STATE_EMPTY_MOCK,
+    metamask: {
+      ...STATE_EMPTY_MOCK.metamask,
+      ...metamaskState,
+    },
+  };
+}
 
 describe('Tags Utils', () => {
   const getEnvironmentTypeMock = jest.mocked(getEnvironmentType);
@@ -36,42 +49,27 @@ describe('Tags Utils', () => {
     });
 
     it('includes if unlocked', () => {
-      const state = {
-        metamask: {
-          ...STATE_EMPTY_MOCK.metamask,
-          isUnlocked: true,
-        },
-      };
-
+      const state = createMockState({ isUnlocked: true });
       const tags = getStartupTraceTags(state);
 
       expect(tags['wallet.unlocked']).toStrictEqual(true);
     });
 
     it('includes if not unlocked', () => {
-      const state = {
-        metamask: {
-          ...STATE_EMPTY_MOCK.metamask,
-          isUnlocked: false,
-        },
-      };
-
+      const state = createMockState({ isUnlocked: false });
       const tags = getStartupTraceTags(state);
 
       expect(tags['wallet.unlocked']).toStrictEqual(false);
     });
 
     it('includes pending approval type', () => {
-      const state = {
-        metamask: {
-          ...STATE_EMPTY_MOCK.metamask,
-          pendingApprovals: {
-            1: {
-              type: 'eth_sendTransaction',
-            },
+      const state = createMockState({
+        pendingApprovals: {
+          1: {
+            type: 'eth_sendTransaction',
           },
-        },
-      };
+        } as unknown as MetaMaskReduxState['metamask']['pendingApprovals'],
+      });
 
       const tags = getStartupTraceTags(state);
 
@@ -81,19 +79,16 @@ describe('Tags Utils', () => {
     });
 
     it('includes first pending approval type if multiple', () => {
-      const state = {
-        metamask: {
-          ...STATE_EMPTY_MOCK.metamask,
-          pendingApprovals: {
-            1: {
-              type: 'eth_sendTransaction',
-            },
-            2: {
-              type: 'personal_sign',
-            },
+      const state = createMockState({
+        pendingApprovals: {
+          1: {
+            type: 'eth_sendTransaction',
           },
-        },
-      };
+          2: {
+            type: 'personal_sign',
+          },
+        } as unknown as MetaMaskReduxState['metamask']['pendingApprovals'],
+      });
 
       const tags = getStartupTraceTags(state);
 
@@ -103,17 +98,14 @@ describe('Tags Utils', () => {
     });
 
     it('includes account count', () => {
-      const state = {
-        metamask: {
-          ...STATE_EMPTY_MOCK.metamask,
-          internalAccounts: {
-            accounts: {
-              '0x1234': {},
-              '0x4321': {},
-            },
+      const state = createMockState({
+        internalAccounts: {
+          accounts: {
+            '0x1234': {},
+            '0x4321': {},
           },
-        },
-      };
+        } as unknown as MetaMaskReduxState['metamask']['internalAccounts'],
+      });
 
       const tags = getStartupTraceTags(state);
 
@@ -121,38 +113,35 @@ describe('Tags Utils', () => {
     });
 
     it('includes nft count', () => {
-      const state = {
-        metamask: {
-          ...STATE_EMPTY_MOCK.metamask,
-          allNfts: {
-            '0x1234': {
-              '0x1': [
-                {
-                  tokenId: '1',
-                },
-                {
-                  tokenId: '2',
-                },
-              ],
-              '0x2': [
-                {
-                  tokenId: '3',
-                },
-                {
-                  tokenId: '4',
-                },
-              ],
-            },
-            '0x4321': {
-              '0x3': [
-                {
-                  tokenId: '5',
-                },
-              ],
-            },
+      const state = createMockState({
+        allNfts: {
+          '0x1234': {
+            '0x1': [
+              {
+                tokenId: '1',
+              },
+              {
+                tokenId: '2',
+              },
+            ],
+            '0x2': [
+              {
+                tokenId: '3',
+              },
+              {
+                tokenId: '4',
+              },
+            ],
           },
-        },
-      };
+          '0x4321': {
+            '0x3': [
+              {
+                tokenId: '5',
+              },
+            ],
+          },
+        } as unknown as MetaMaskReduxState['metamask']['allNfts'],
+      });
 
       const tags = getStartupTraceTags(state);
 
@@ -160,12 +149,13 @@ describe('Tags Utils', () => {
     });
 
     it('includes notification count', () => {
-      const state = {
-        metamask: {
-          ...STATE_EMPTY_MOCK.metamask,
-          metamaskNotificationsList: [{}, {}, {}],
-        },
-      };
+      const state = createMockState({
+        metamaskNotificationsList: [
+          {},
+          {},
+          {},
+        ] as unknown as MetaMaskReduxState['metamask']['metamaskNotificationsList'],
+      });
 
       const tags = getStartupTraceTags(state);
 
@@ -173,20 +163,17 @@ describe('Tags Utils', () => {
     });
 
     it('includes token count', () => {
-      const state = {
-        metamask: {
-          ...STATE_EMPTY_MOCK.metamask,
-          allTokens: {
-            '0x1': {
-              '0x1234': [{}, {}],
-              '0x4321': [{}],
-            },
-            '0x2': {
-              '0x5678': [{}],
-            },
+      const state = createMockState({
+        allTokens: {
+          '0x1': {
+            '0x1234': [{}, {}],
+            '0x4321': [{}],
           },
-        },
-      };
+          '0x2': {
+            '0x5678': [{}],
+          },
+        } as unknown as MetaMaskReduxState['metamask']['allTokens'],
+      });
 
       const tags = getStartupTraceTags(state);
 
@@ -194,25 +181,22 @@ describe('Tags Utils', () => {
     });
 
     it('includes transaction count', () => {
-      const state = {
-        metamask: {
-          ...STATE_EMPTY_MOCK.metamask,
-          transactions: [
-            {
-              id: 1,
-              chainId: '0x1',
-            },
-            {
-              id: 2,
-              chainId: '0x1',
-            },
-            {
-              id: 3,
-              chainId: '0x2',
-            },
-          ],
-        },
-      };
+      const state = createMockState({
+        transactions: [
+          {
+            id: 1,
+            chainId: '0x1',
+          },
+          {
+            id: 2,
+            chainId: '0x1',
+          },
+          {
+            id: 3,
+            chainId: '0x2',
+          },
+        ] as unknown as MetaMaskReduxState['metamask']['transactions'],
+      });
 
       const tags = getStartupTraceTags(state);
 

@@ -3,29 +3,30 @@
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
-  ApprovalsMetaMaskState,
   getInternalAccounts,
   getPendingApprovals,
   getTransactions,
   selectAllTokensFlat,
 } from '../../selectors';
 import { getMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
-import { NftState, selectAllNftsFlat } from '../../selectors/nft';
+import { selectAllNftsFlat } from '../../selectors/nft';
+import { MetaMaskReduxState } from '../../store/store';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getStartupTraceTags(state: any) {
+/**
+ * Generate the required tags for the UI startup trace.
+ *
+ * @param state - The current flattened UI state.
+ * @returns The tags for the startup trace.
+ */
+export function getStartupTraceTags(state: MetaMaskReduxState) {
   const uiType = getEnvironmentType();
   const unlocked = getIsUnlocked(state) as boolean;
   const accountCount = getInternalAccounts(state).length;
-  const nftCount = selectAllNftsFlat(state as unknown as NftState).length;
+  const nftCount = selectAllNftsFlat(state).length;
   const notificationCount = getMetamaskNotifications(state).length;
   const tokenCount = selectAllTokensFlat(state).length as number;
   const transactionCount = getTransactions(state).length;
-
-  const pendingApprovals = getPendingApprovals(
-    state as unknown as ApprovalsMetaMaskState,
-  );
-
+  const pendingApprovals = getPendingApprovals(state);
   const firstApprovalType = pendingApprovals?.[0]?.type;
 
   return {

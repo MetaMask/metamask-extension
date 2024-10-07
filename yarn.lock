@@ -7897,7 +7897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:^8.19.0":
+"@sentry/browser@npm:^8.33.1":
   version: 8.33.1
   resolution: "@sentry/browser@npm:8.33.1"
   dependencies:
@@ -7937,14 +7937,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:8.33.1, @sentry/types@npm:^8.19.0":
+"@sentry/types@npm:8.33.1, @sentry/types@npm:^8.33.1":
   version: 8.33.1
   resolution: "@sentry/types@npm:8.33.1"
   checksum: 10/bcd7f80e84a23cb810fa5819dc85f45bd62d52b01b1f64a1b31297df21e9d1f4de8f7ea91835c5d6a7010d7dbfc8b09cd708d057d345a6ff685b7f12db41ae57
   languageName: node
   linkType: hard
 
-"@sentry/utils@npm:8.33.1, @sentry/utils@npm:^8.19.0":
+"@sentry/utils@npm:8.33.1, @sentry/utils@npm:^8.33.1":
   version: 8.33.1
   resolution: "@sentry/utils@npm:8.33.1"
   dependencies:
@@ -26118,10 +26118,10 @@ __metadata:
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
     "@segment/loosely-validate-event": "npm:^2.0.0"
-    "@sentry/browser": "npm:^8.19.0"
+    "@sentry/browser": "npm:^8.33.1"
     "@sentry/cli": "npm:^2.19.4"
-    "@sentry/types": "npm:^8.19.0"
-    "@sentry/utils": "npm:^8.19.0"
+    "@sentry/types": "npm:^8.33.1"
+    "@sentry/utils": "npm:^8.33.1"
     "@storybook/addon-a11y": "npm:^7.6.20"
     "@storybook/addon-actions": "npm:^7.6.20"
     "@storybook/addon-designs": "npm:^7.0.9"
