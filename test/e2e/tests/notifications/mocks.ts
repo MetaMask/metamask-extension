@@ -34,7 +34,9 @@ export async function mockNotificationServices(server: Mockttp) {
   mockAPICall(server, {
     url: `${NOTIFICATIONS_USER_STORAGE_ENDPOINT}/${NOTIFICATION_USER_STORAGE_KEY}`,
     requestMethod: 'GET',
-    response: NotificationMocks.createMockFullUserStorage(),
+    response: NotificationMocks.createMockFullUserStorage({
+      triggersEnabled: false,
+    }),
   });
 
   mockAPICall(server, {
