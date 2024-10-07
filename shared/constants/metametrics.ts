@@ -620,6 +620,7 @@ export enum MetaMetricsEventName {
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
   StakingEntryPointClicked = 'Stake Button Clicked',
+  SurveyToast = 'Survey Toast',
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',
@@ -637,7 +638,9 @@ export enum MetaMetricsEventName {
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
+  // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
+  // END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   DeeplinkClicked = 'Deeplink Clicked',
   ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
@@ -777,6 +780,7 @@ export enum MetaMetricsEventCategory {
   Retention = 'Retention',
   Send = 'Send',
   Settings = 'Settings',
+  Feedback = 'Feedback',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
   Tokens = 'Tokens',

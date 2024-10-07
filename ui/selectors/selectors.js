@@ -1981,6 +1981,10 @@ export function getShowPrivacyPolicyToast(state) {
   );
 }
 
+export function getLastViewedUserSurvey(state) {
+  return state.metamask.lastViewedUserSurvey;
+}
+
 export function getShowOutdatedBrowserWarning(state) {
   const { outdatedBrowserWarningLastShown } = state.metamask;
   if (!outdatedBrowserWarningLastShown) {

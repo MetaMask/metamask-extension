@@ -10,7 +10,6 @@
 import EthQuery from '@metamask/eth-query';
 import { v4 as random } from 'uuid';
 
-import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import pify from 'pify';
 import { Web3Provider } from '@ethersproject/providers';
@@ -22,10 +21,16 @@ import {
   NetworkClientConfiguration,
   NetworkClientId,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
   Provider,
 } from '@metamask/network-controller';
 import { hasProperty, Hex } from '@metamask/utils';
-import { ControllerMessenger } from '@metamask/base-controller';
+import {
+  BaseController,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
@@ -33,51 +38,139 @@ import {
 import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-api';
 
-import OnboardingController, {
-  OnboardingControllerStateChangeEvent,
-} from '../controllers/onboarding';
-import PreferencesController from '../controllers/preferences-controller';
 import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
-import { previousValueComparator } from './util';
+import { previousValueComparator } from '../lib/util';
+import type {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from './onboarding';
+import PreferencesController from './preferences-controller';
+
+// Unique name for the controller
+const controllerName = 'AccountTrackerController';
 
 type Account = {
   address: string;
   balance: string | null;
 };
 
-export type AccountTrackerState = {
+/**
+ * The state of the {@link AccountTrackerController}
+ *
+ * @property accounts - The accounts currently stored in this AccountTrackerController
+ * @property accountsByChainId - The accounts currently stored in this AccountTrackerController keyed by chain id
+ * @property currentBlockGasLimit - A hex string indicating the gas limit of the current block
+ * @property currentBlockGasLimitByChainId - A hex string indicating the gas limit of the current block keyed by chain id
+ */
+export type AccountTrackerControllerState = {
   accounts: Record<string, Account | Record<string, never>>;
   currentBlockGasLimit: string;
-  accountsByChainId: Record<string, AccountTrackerState['accounts']>;
+  accountsByChainId: Record<string, AccountTrackerControllerState['accounts']>;
   currentBlockGasLimitByChainId: Record<Hex, string>;
 };
 
-export const getDefaultAccountTrackerState = (): AccountTrackerState => ({
-  accounts: {},
-  currentBlockGasLimit: '',
-  accountsByChainId: {},
-  currentBlockGasLimitByChainId: {},
-});
+/**
+ * {@link AccountTrackerController}'s metadata.
+ *
+ * This allows us to choose if fields of the state should be persisted or not
+ * using the `persist` flag; and if they can be sent to Sentry or not, using
+ * the `anonymous` flag.
+ */
+const controllerMetadata = {
+  accounts: {
+    persist: true,
+    anonymous: false,
+  },
+  currentBlockGasLimit: {
+    persist: true,
+    anonymous: true,
+  },
+  accountsByChainId: {
+    persist: true,
+    anonymous: false,
+  },
+  currentBlockGasLimitByChainId: {
+    persist: true,
+    anonymous: true,
+  },
+};
 
+/**
+ * Function to get default state of the {@link AccountTrackerController}.
+ */
+export const getDefaultAccountTrackerControllerState =
+  (): AccountTrackerControllerState => ({
+    accounts: {},
+    currentBlockGasLimit: '',
+    accountsByChainId: {},
+    currentBlockGasLimitByChainId: {},
+  });
+
+/**
+ * Returns the state of the {@link AccountTrackerController}.
+ */
+export type AccountTrackerControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  AccountTrackerControllerState
+>;
+
+/**
+ * Actions exposed by the {@link AccountTrackerController}.
+ */
+export type AccountTrackerControllerActions =
+  AccountTrackerControllerGetStateAction;
+
+/**
+ * Event emitted when the state of the {@link AccountTrackerController} changes.
+ */
+export type AccountTrackerControllerStateChangeEvent =
+  ControllerStateChangeEvent<
+    typeof controllerName,
+    AccountTrackerControllerState
+  >;
+
+/**
+ * Events emitted by {@link AccountTrackerController}.
+ */
+export type AccountTrackerControllerEvents =
+  AccountTrackerControllerStateChangeEvent;
+
+/**
+ * Actions that this controller is allowed to call.
+ */
 export type AllowedActions =
+  | OnboardingControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
+  | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction;
 
+/**
+ * Events that this controller is allowed to subscribe.
+ */
 export type AllowedEvents =
   | AccountsControllerSelectedEvmAccountChangeEvent
   | KeyringControllerAccountRemovedEvent
   | OnboardingControllerStateChangeEvent;
 
-export type AccountTrackerOptions = {
-  initState: Partial<AccountTrackerState>;
+/**
+ * Messenger type for the {@link AccountTrackerController}.
+ */
+export type AccountTrackerControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  AccountTrackerControllerActions | AllowedActions,
+  AccountTrackerControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
+
+export type AccountTrackerControllerOptions = {
+  state: Partial<AccountTrackerControllerState>;
+  messenger: AccountTrackerControllerMessenger;
   provider: Provider;
   blockTracker: BlockTracker;
-  getCurrentChainId: () => Hex;
   getNetworkIdentifier: (config?: NetworkClientConfiguration) => string;
   preferencesController: PreferencesController;
-  onboardingController: OnboardingController;
-  controllerMessenger: ControllerMessenger<AllowedActions, AllowedEvents>;
 };
 
 /**
@@ -86,22 +179,12 @@ export type AccountTrackerOptions = {
  *
  * It also tracks transaction hashes, and checks their inclusion status on each new block.
  *
- * AccountTracker
- *
- * @property store The stored object containing all accounts to track, as well as the current block's gas limit.
- * @property store.accounts The accounts currently stored in this AccountTracker
- * @property store.accountsByChainId The accounts currently stored in this AccountTracker keyed by chain id
- * @property store.currentBlockGasLimit A hex string indicating the gas limit of the current block
- * @property store.currentBlockGasLimitByChainId A hex string indicating the gas limit of the current block keyed by chain id
  */
-export default class AccountTracker {
-  /**
-   * Observable store containing controller data.
-   */
-  store: ObservableStore<AccountTrackerState>;
-
-  resetState: () => void;
-
+export default class AccountTrackerController extends BaseController<
+  typeof controllerName,
+  AccountTrackerControllerState,
+  AccountTrackerControllerMessenger
+> {
   #pollingTokenSets = new Map<NetworkClientId, Set<string>>();
 
   #listeners: Record<NetworkClientId, (blockNumber: string) => Promise<void>> =
@@ -113,52 +196,48 @@ export default class AccountTracker {
 
   #currentBlockNumberByChainId: Record<Hex, string | null> = {};
 
-  #getCurrentChainId: AccountTrackerOptions['getCurrentChainId'];
+  #getNetworkIdentifier: AccountTrackerControllerOptions['getNetworkIdentifier'];
 
-  #getNetworkIdentifier: AccountTrackerOptions['getNetworkIdentifier'];
-
-  #preferencesController: AccountTrackerOptions['preferencesController'];
-
-  #onboardingController: AccountTrackerOptions['onboardingController'];
-
-  #controllerMessenger: AccountTrackerOptions['controllerMessenger'];
+  #preferencesController: AccountTrackerControllerOptions['preferencesController'];
 
   #selectedAccount: InternalAccount;
 
   /**
-   * @param opts - Options for initializing the controller
-   * @param opts.provider - An EIP-1193 provider instance that uses the current global network
-   * @param opts.blockTracker - A block tracker, which emits events for each new block
-   * @param opts.getCurrentChainId - A function that returns the `chainId` for the current global network
-   * @param opts.getNetworkIdentifier - A function that returns the current network or passed nework configuration
+   * @param options - Options for initializing the controller
+   * @param options.state - Initial controller state.
+   * @param options.messenger - Messenger used to communicate with BaseV2 controller.
+   * @param options.provider - An EIP-1193 provider instance that uses the current global network
+   * @param options.blockTracker - A block tracker, which emits events for each new block
+   * @param options.getNetworkIdentifier - A function that returns the current network or passed network configuration
+   * @param options.preferencesController - The preferences controller
    */
-  constructor(opts: AccountTrackerOptions) {
-    const initState = getDefaultAccountTrackerState();
-    this.store = new ObservableStore({
-      ...initState,
-      ...opts.initState,
+  constructor(options: AccountTrackerControllerOptions) {
+    super({
+      name: controllerName,
+      metadata: controllerMetadata,
+      state: {
+        ...getDefaultAccountTrackerControllerState(),
+        ...options.state,
+      },
+      messenger: options.messenger,
     });
 
-    this.resetState = () => {
-      this.store.updateState(initState);
-    };
+    this.#provider = options.provider;
+    this.#blockTracker = options.blockTracker;
 
-    this.#provider = opts.provider;
-    this.#blockTracker = opts.blockTracker;
-
-    this.#getCurrentChainId = opts.getCurrentChainId;
-    this.#getNetworkIdentifier = opts.getNetworkIdentifier;
-    this.#preferencesController = opts.preferencesController;
-    this.#onboardingController = opts.onboardingController;
-    this.#controllerMessenger = opts.controllerMessenger;
+    this.#getNetworkIdentifier = options.getNetworkIdentifier;
+    this.#preferencesController = options.preferencesController;
 
     // subscribe to account removal
-    this.#controllerMessenger.subscribe(
+    this.messagingSystem.subscribe(
       'KeyringController:accountRemoved',
       (address) => this.removeAccounts([address]),
     );
 
-    this.#controllerMessenger.subscribe(
+    const onboardingState = this.messagingSystem.call(
+      'OnboardingController:getState',
+    );
+    this.messagingSystem.subscribe(
       'OnboardingController:stateChange',
       previousValueComparator((prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
@@ -167,14 +246,14 @@ export default class AccountTracker {
           this.updateAccountsAllActiveNetworks();
         }
         return true;
-      }, this.#onboardingController.state),
+      }, onboardingState),
     );
 
-    this.#selectedAccount = this.#controllerMessenger.call(
+    this.#selectedAccount = this.messagingSystem.call(
       'AccountsController:getSelectedAccount',
     );
 
-    this.#controllerMessenger.subscribe(
+    this.messagingSystem.subscribe(
       'AccountsController:selectedEvmAccountChange',
       (newAccount) => {
         const { useMultiAccountBalanceChecker } =
@@ -189,6 +268,21 @@ export default class AccountTracker {
         }
       },
     );
+  }
+
+  resetState(): void {
+    const {
+      accounts,
+      accountsByChainId,
+      currentBlockGasLimit,
+      currentBlockGasLimitByChainId,
+    } = getDefaultAccountTrackerControllerState();
+    this.update((state) => {
+      state.accounts = accounts;
+      state.accountsByChainId = accountsByChainId;
+      state.currentBlockGasLimit = currentBlockGasLimit;
+      state.currentBlockGasLimitByChainId = currentBlockGasLimitByChainId;
+    });
   }
 
   /**
@@ -221,6 +315,22 @@ export default class AccountTracker {
   }
 
   /**
+   * Gets the current chain ID.
+   */
+  #getCurrentChainId(): Hex {
+    const { selectedNetworkClientId } = this.messagingSystem.call(
+      'NetworkController:getState',
+    );
+    const {
+      configuration: { chainId },
+    } = this.messagingSystem.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    );
+    return chainId;
+  }
+
+  /**
    * Resolves a networkClientId to a network client config
    * or globally selected network config if not provided
    *
@@ -235,7 +345,7 @@ export default class AccountTracker {
   } {
     if (networkClientId) {
       const { configuration, provider, blockTracker } =
-        this.#controllerMessenger.call(
+        this.messagingSystem.call(
           'NetworkController:getNetworkClientById',
           networkClientId,
         );
@@ -355,13 +465,15 @@ export default class AccountTracker {
    *
    * @param chainId - The chain ID
    */
-  #getAccountsForChainId(chainId: Hex): AccountTrackerState['accounts'] {
-    const { accounts, accountsByChainId } = this.store.getState();
+  #getAccountsForChainId(
+    chainId: Hex,
+  ): AccountTrackerControllerState['accounts'] {
+    const { accounts, accountsByChainId } = this.state;
     if (accountsByChainId[chainId]) {
       return cloneDeep(accountsByChainId[chainId]);
     }
 
-    const newAccounts: AccountTrackerState['accounts'] = {};
+    const newAccounts: AccountTrackerControllerState['accounts'] = {};
     Object.keys(accounts).forEach((address) => {
       newAccounts[address] = {};
     });
@@ -370,16 +482,16 @@ export default class AccountTracker {
 
   /**
    * Ensures that the locally stored accounts are in sync with a set of accounts stored externally to this
-   * AccountTracker.
+   * AccountTrackerController.
    *
-   * Once this AccountTracker's accounts are up to date with those referenced by the passed addresses, each
+   * Once this AccountTrackerController accounts are up to date with those referenced by the passed addresses, each
    * of these accounts are given an updated balance via EthQuery.
    *
-   * @param addresses - The array of hex addresses for accounts with which this AccountTracker's accounts should be
+   * @param addresses - The array of hex addresses for accounts with which this AccountTrackerController accounts should be
    * in sync
    */
   syncWithAddresses(addresses: string[]): void {
-    const { accounts } = this.store.getState();
+    const { accounts } = this.state;
     const locals = Object.keys(accounts);
 
     const accountsToAdd: string[] = [];
@@ -408,7 +520,7 @@ export default class AccountTracker {
    */
   addAccounts(addresses: string[]): void {
     const { accounts: _accounts, accountsByChainId: _accountsByChainId } =
-      this.store.getState();
+      this.state;
     const accounts = cloneDeep(_accounts);
     const accountsByChainId = cloneDeep(_accountsByChainId);
 
@@ -422,7 +534,10 @@ export default class AccountTracker {
       });
     });
     // save accounts state
-    this.store.updateState({ accounts, accountsByChainId });
+    this.update((state) => {
+      state.accounts = accounts;
+      state.accountsByChainId = accountsByChainId;
+    });
 
     // fetch balances for the accounts if there is block number ready
     if (this.#currentBlockNumberByChainId[this.#getCurrentChainId()]) {
@@ -443,7 +558,7 @@ export default class AccountTracker {
    */
   removeAccounts(addresses: string[]): void {
     const { accounts: _accounts, accountsByChainId: _accountsByChainId } =
-      this.store.getState();
+      this.state;
     const accounts = cloneDeep(_accounts);
     const accountsByChainId = cloneDeep(_accountsByChainId);
 
@@ -457,23 +572,26 @@ export default class AccountTracker {
       });
     });
     // save accounts state
-    this.store.updateState({ accounts, accountsByChainId });
+    this.update((state) => {
+      state.accounts = accounts;
+      state.accountsByChainId = accountsByChainId;
+    });
   }
 
   /**
    * Removes all addresses and associated balances
    */
   clearAccounts(): void {
-    this.store.updateState({
-      accounts: {},
-      accountsByChainId: {
+    this.update((state) => {
+      state.accounts = {};
+      state.accountsByChainId = {
         [this.#getCurrentChainId()]: {},
-      },
+      };
     });
   }
 
   /**
-   * Given a block, updates this AccountTracker's currentBlockGasLimit and currentBlockGasLimitByChainId and then updates
+   * Given a block, updates this AccountTrackerController currentBlockGasLimit and currentBlockGasLimitByChainId and then updates
    * each local account's balance via EthQuery
    *
    * @private
@@ -485,7 +603,7 @@ export default class AccountTracker {
   };
 
   /**
-   * Given a block, updates this AccountTracker's currentBlockGasLimitByChainId, and then updates each local account's balance
+   * Given a block, updates this AccountTrackerController currentBlockGasLimitByChainId, and then updates each local account's balance
    * via EthQuery
    *
    * @private
@@ -510,15 +628,11 @@ export default class AccountTracker {
       return;
     }
     const currentBlockGasLimit = currentBlock.gasLimit;
-    const { currentBlockGasLimitByChainId } = this.store.getState();
-    this.store.updateState({
-      ...(chainId === this.#getCurrentChainId() && {
-        currentBlockGasLimit,
-      }),
-      currentBlockGasLimitByChainId: {
-        ...currentBlockGasLimitByChainId,
-        [chainId]: currentBlockGasLimit,
-      },
+    this.update((state) => {
+      if (chainId === this.#getCurrentChainId()) {
+        state.currentBlockGasLimit = currentBlockGasLimit;
+      }
+      state.currentBlockGasLimitByChainId[chainId] = currentBlockGasLimit;
     });
 
     try {
@@ -549,7 +663,9 @@ export default class AccountTracker {
    * @param networkClientId - optional network client ID to use instead of the globally selected network.
    */
   async updateAccounts(networkClientId?: NetworkClientId): Promise<void> {
-    const { completedOnboarding } = this.#onboardingController.state;
+    const { completedOnboarding } = this.messagingSystem.call(
+      'OnboardingController:getState',
+    );
     if (!completedOnboarding) {
       return;
     }
@@ -561,11 +677,11 @@ export default class AccountTracker {
 
     let addresses = [];
     if (useMultiAccountBalanceChecker) {
-      const { accounts } = this.store.getState();
+      const { accounts } = this.state;
 
       addresses = Object.keys(accounts);
     } else {
-      const selectedAddress = this.#controllerMessenger.call(
+      const selectedAddress = this.messagingSystem.call(
         'AccountsController:getSelectedAccount',
       ).address;
 
@@ -573,14 +689,11 @@ export default class AccountTracker {
     }
 
     const rpcUrl = 'http://127.0.0.1:8545';
-    const singleCallBalancesAddress =
-      SINGLE_CALL_BALANCES_ADDRESSES[
-        chainId as keyof typeof SINGLE_CALL_BALANCES_ADDRESSES
-      ];
     if (
       identifier === LOCALHOST_RPC_URL ||
       identifier === rpcUrl ||
-      !singleCallBalancesAddress
+      !((id): id is keyof typeof SINGLE_CALL_BALANCES_ADDRESSES =>
+        id in SINGLE_CALL_BALANCES_ADDRESSES)(chainId)
     ) {
       await Promise.all(
         addresses.map((address) =>
@@ -590,7 +703,7 @@ export default class AccountTracker {
     } else {
       await this.#updateAccountsViaBalanceChecker(
         addresses,
-        singleCallBalancesAddress,
+        SINGLE_CALL_BALANCES_ADDRESSES[chainId],
         provider,
         chainId,
       );
@@ -657,15 +770,11 @@ export default class AccountTracker {
 
     newAccounts[address] = result;
 
-    const { accountsByChainId } = this.store.getState();
-    this.store.updateState({
-      ...(chainId === this.#getCurrentChainId() && {
-        accounts: newAccounts,
-      }),
-      accountsByChainId: {
-        ...accountsByChainId,
-        [chainId]: newAccounts,
-      },
+    this.update((state) => {
+      if (chainId === this.#getCurrentChainId()) {
+        state.accounts = newAccounts;
+      }
+      state.accountsByChainId[chainId] = newAccounts;
     });
   }
 
@@ -695,7 +804,7 @@ export default class AccountTracker {
       const balances = await ethContract.balances(addresses, ethBalance);
 
       const accounts = this.#getAccountsForChainId(chainId);
-      const newAccounts: AccountTrackerState['accounts'] = {};
+      const newAccounts: AccountTrackerControllerState['accounts'] = {};
       Object.keys(accounts).forEach((address) => {
         if (!addresses.includes(address)) {
           newAccounts[address] = { address, balance: null };
@@ -706,15 +815,11 @@ export default class AccountTracker {
         newAccounts[address] = { address, balance };
       });
 
-      const { accountsByChainId } = this.store.getState();
-      this.store.updateState({
-        ...(chainId === this.#getCurrentChainId() && {
-          accounts: newAccounts,
-        }),
-        accountsByChainId: {
-          ...accountsByChainId,
-          [chainId]: newAccounts,
-        },
+      this.update((state) => {
+        if (chainId === this.#getCurrentChainId()) {
+          state.accounts = newAccounts;
+        }
+        state.accountsByChainId[chainId] = newAccounts;
       });
     } catch (error) {
       log.warn(
