@@ -29,7 +29,6 @@ import {
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
-import { ERC20_DEFAULT_DECIMALS } from '../../../../../../constants/token';
 import { TokenDetailsERC20 } from '../../../../../../utils/token';
 
 type PermitSimulationValueDisplayParams = {
@@ -58,8 +57,7 @@ const PermitSimulationValueDisplay: React.FC<
     tokenDetails as TokenDetailsERC20,
     MetaMetricsEventLocation.SignatureConfirmation,
   );
-  const { decimalsNumber: tokenDecimals = ERC20_DEFAULT_DECIMALS } =
-    tokenDetails;
+  const { decimalsNumber: tokenDecimals } = tokenDetails;
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && value) {
