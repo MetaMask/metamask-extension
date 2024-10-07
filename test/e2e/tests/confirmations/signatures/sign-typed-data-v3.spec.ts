@@ -96,13 +96,10 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement(
-          '#signTypedDataV3Result',
-        );
-        assert.equal(
-          await rejectionResult.getText(),
-          'Error: User rejected the request.',
-        );
+        await driver.waitForSelector({
+          css: '#signTypedDataV3Result',
+          text: 'Error: User rejected the request.',
+        });
       },
       mockSignatureRejected,
     );

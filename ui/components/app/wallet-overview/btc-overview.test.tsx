@@ -114,20 +114,15 @@ describe('BtcOverview', () => {
   });
 
   it('shows the primary balance as BTC when showNativeTokenAsMainBalance if true', async () => {
-    const { queryByTestId, queryByText } = renderWithProvider(
-      <BtcOverview />,
-      getStore(),
-    );
+    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
 
     const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
     expect(primaryBalance).toBeInTheDocument();
     expect(primaryBalance).toHaveTextContent(`${mockNonEvmBalance}BTC`);
-    // For now we consider balance to be always cached
-    expect(queryByText('*')).toBeInTheDocument();
   });
 
   it('shows the primary balance as fiat when showNativeTokenAsMainBalance if false', async () => {
-    const { queryByTestId, queryByText } = renderWithProvider(
+    const { queryByTestId } = renderWithProvider(
       <BtcOverview />,
       getStore({
         metamask: {
@@ -143,8 +138,6 @@ describe('BtcOverview', () => {
     const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
     expect(primaryBalance).toBeInTheDocument();
     expect(primaryBalance).toHaveTextContent(`$${mockNonEvmBalanceUsd}USD`);
-    // For now we consider balance to be always cached
-    expect(queryByText('*')).toBeInTheDocument();
   });
 
   it('shows a spinner if balance is not available', async () => {

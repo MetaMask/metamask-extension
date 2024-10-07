@@ -1850,6 +1850,10 @@ export default class MetamaskController extends EventEmitter {
           getCurrentChainId({ metamask: this.networkController.state })
         ],
       incomingTransactions: {
+        etherscanApiKeysByChainId: {
+          [CHAIN_IDS.MAINNET]: process.env.ETHERSCAN_API_KEY,
+          [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
+        },
         includeTokenTransfers: false,
         isEnabled: () =>
           Boolean(
@@ -3949,6 +3953,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
         ),
+      [BridgeUserAction.SELECT_SRC_NETWORK]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_SRC_NETWORK}`,
+      ),
       [BridgeUserAction.SELECT_DEST_NETWORK]:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -4182,7 +4190,7 @@ export default class MetamaskController extends EventEmitter {
     const { tokens } = this.tokensController.state;
 
     const staticTokenListDetails =
-      STATIC_MAINNET_TOKEN_LIST[address.toLowerCase()] || {};
+      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
     const tokenListDetails = tokenList[address.toLowerCase()] || {};
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>

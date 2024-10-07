@@ -21,11 +21,14 @@ export type BridgeFeatureFlags = {
 
 export type BridgeControllerState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
+  srcTokens: Record<string, SwapsTokenObject>;
+  srcTopAssets: { address: string }[];
   destTokens: Record<string, SwapsTokenObject>;
   destTopAssets: { address: string }[];
 };
 
 export enum BridgeUserAction {
+  SELECT_SRC_NETWORK = 'selectSrcNetwork',
   SELECT_DEST_NETWORK = 'selectDestNetwork',
 }
 export enum BridgeBackgroundAction {
@@ -40,6 +43,7 @@ type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
 // Maps to BridgeController function names
 type BridgeControllerActions =
   | BridgeControllerAction<BridgeBackgroundAction.SET_FEATURE_FLAGS>
+  | BridgeControllerAction<BridgeUserAction.SELECT_SRC_NETWORK>
   | BridgeControllerAction<BridgeUserAction.SELECT_DEST_NETWORK>;
 
 type BridgeControllerEvents = ControllerStateChangeEvent<
