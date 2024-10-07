@@ -1,32 +1,13 @@
-import { useSelector } from 'react-redux';
-import { useCallback, useContext } from 'react';
 import { Hex } from '@metamask/utils';
 
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventLocation,
-  MetaMetricsEventName,
-  MetaMetricsEventUiCustomization,
-} from '../../../../shared/constants/metametrics';
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useAsyncResult } from '../../../hooks/useAsyncResult';
-import { getCurrentChainId } from '../../../selectors';
 import {
   ERC20_DEFAULT_DECIMALS,
   parseTokenDetailDecimals,
   memoizedGetTokenStandardAndDetails,
   TokenDetailsERC20,
 } from '../utils/token';
-
-type UseGetTokenStandardAndDetailsProps = {
-  canTrackMissingDecimalsMetric?: boolean;
-  metricLocation?: MetaMetricsEventLocation;
-
-  // We can add these optional params to support ERC721 and ERC1155
-  // tokenId?: string;
-  // userAddress?: string;
-};
 
 /**
  * Returns token details for a given token contract
@@ -39,14 +20,7 @@ type UseGetTokenStandardAndDetailsProps = {
  */
 const useGetTokenStandardAndDetails = (
   tokenAddress: Hex | string | undefined,
-  {
-    canTrackMissingDecimalsMetric = false,
-    metricLocation = MetaMetricsEventLocation.SignatureConfirmation,
-  }: UseGetTokenStandardAndDetailsProps = {},
 ) => {
-  const trackEvent = useContext(MetaMetricsContext);
-  const chainId = useSelector(getCurrentChainId);
-
   const { value: details } = useAsyncResult<TokenDetailsERC20>(
     async () =>
       (await memoizedGetTokenStandardAndDetails(
@@ -56,23 +30,6 @@ const useGetTokenStandardAndDetails = (
   );
 
   const { decimals, standard } = details || {};
-
-  const trackIncompleteAsset = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
-      category: MetaMetricsEventCategory.Confirmations,
-      properties: {
-        token_decimals_available: false,
-        asset_address: tokenAddress,
-        asset_type: TokenStandard.ERC20,
-        chain_id: chainId,
-        location: metricLocation,
-        ui_customizations: [
-          MetaMetricsEventUiCustomization.RedesignedConfirmation,
-        ],
-      },
-    });
-  }, [chainId, tokenAddress, trackEvent]);
 
   if (!details) {
     return { decimalsNumber: undefined };
@@ -86,10 +43,6 @@ const useGetTokenStandardAndDetails = (
 
     details.decimals = String(parsedDecimals);
     details.decimalsNumber = parsedDecimals;
-
-    if (canTrackMissingDecimalsMetric) {
-      trackIncompleteAsset();
-    }
   }
 
   return details;

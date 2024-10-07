@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
-import { shortenString } from '../../../../../../../../helpers/utils/util';
 
+import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
+import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
@@ -12,6 +13,7 @@ import {
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
 import useGetTokenStandardAndDetails from '../../../../../../hooks/useGetTokenStandardAndDetails';
+import useTrackERC20WithoutDecimalInformation from '../../../../../../hooks/useTrackERC20WithoutDecimalInformation';
 
 import {
   Box,
@@ -27,6 +29,7 @@ import {
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
+import { TokenDetailsERC20 } from '../../../../../../utils/token';
 
 type PermitSimulationValueDisplayParams = {
   /** The primaryType of the typed sign message */
@@ -48,10 +51,13 @@ const PermitSimulationValueDisplay: React.FC<
 > = ({ primaryType, tokenContract, value }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
-  const { decimalsNumber: tokenDecimals } = useGetTokenStandardAndDetails(
+  const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
+  useTrackERC20WithoutDecimalInformation(
     tokenContract,
-    { canTrackMissingDecimalsMetric: true },
+    tokenDetails as TokenDetailsERC20,
+    MetaMetricsEventLocation.SignatureConfirmation,
   );
+  const { decimalsNumber: tokenDecimals } = tokenDetails;
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && value) {
