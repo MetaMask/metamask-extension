@@ -4132,7 +4132,7 @@ export default class MetamaskController extends EventEmitter {
     const { tokens } = this.tokensController.state;
 
     const staticTokenListDetails =
-      STATIC_MAINNET_TOKEN_LIST[address.toLowerCase()] || {};
+      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
     const tokenListDetails = tokenList[address.toLowerCase()] || {};
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
