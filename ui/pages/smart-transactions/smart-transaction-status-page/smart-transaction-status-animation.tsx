@@ -68,7 +68,7 @@ export const SmartTransactionStatusAnimation = ({
   }, [status, isIntro]);
 
   return (
-    <Box display={Display.Flex} style={{ width: '48px', height: '48px' }}>
+    <Box display={Display.Flex} style={{ width: '96px', height: '96px' }}>
       <LottieAnimation
         path={animation.path}
         loop={animation.loop}
