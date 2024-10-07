@@ -30,7 +30,7 @@ const useTrackERC20WithoutDecimalInformation = (
   const chainId = useSelector(getCurrentChainId);
 
   useEffect(() => {
-    if (!chainId || !tokenDetails) {
+    if (chainId === undefined || tokenDetails === undefined) {
       return;
     }
     const { decimals, standard } = tokenDetails || {};
