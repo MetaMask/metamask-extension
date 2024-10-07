@@ -6,9 +6,13 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
@@ -69,6 +73,10 @@ export default async function launchMetamaskUi(opts) {
   );
 
   const store = await startApp(metamaskState, backgroundConnection, opts);
+
+  await promisify(
+    backgroundConnection.startPatches.bind(backgroundConnection),
+  )();
 
   setupStateHooks(store);
 
@@ -282,9 +290,6 @@ function setupStateHooks(store) {
     // for more info)
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
-    state.completeTxList = await actions.getTransactions({
-      filterToCurrentNetwork: false,
-    });
     return state;
   };
   window.stateHooks.getSentryAppState = function () {
@@ -303,12 +308,6 @@ function setupStateHooks(store) {
     return logsArray;
   };
 }
-
-// Check for local feature flags and represent them so they're avialable
-// to the front-end of the app
-window.metamaskFeatureFlags = {
-  networkMenuRedesign: Boolean(process.env.ENABLE_NETWORK_UI_REDESIGN),
-};
 
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();

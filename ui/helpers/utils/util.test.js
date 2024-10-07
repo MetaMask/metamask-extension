@@ -1044,15 +1044,15 @@ describe('util', () => {
     });
   });
 
-  describe('formatUTCDate', () => {
+  describe('formatUTCDateFromUnixTimestamp', () => {
     it('formats passed date string', () => {
-      expect(util.formatUTCDate(1633019124000)).toStrictEqual(
-        '30 September 2021, 16:25',
+      expect(util.formatUTCDateFromUnixTimestamp(2036528542)).toStrictEqual(
+        '14 July 2034, 22:22',
       );
     });
 
     it('returns empty string if empty string is passed', () => {
-      expect(util.formatUTCDate('')).toStrictEqual('');
+      expect(util.formatUTCDateFromUnixTimestamp('')).toStrictEqual('');
     });
   });
 
@@ -1224,6 +1224,39 @@ describe('util', () => {
           weight: 4,
         },
       ]);
+    });
+  });
+
+  describe('getCalculatedTokenAmount1dAgo', () => {
+    it('should return successfully balance of token 1dago', () => {
+      const mockTokenFiatAmount = '10';
+      const mockTokenPercent1dAgo = 1;
+      const expectedRes = 9.900990099009901;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(expectedRes);
+    });
+
+    it('should return token balance if percentage is undefined', () => {
+      const mockTokenFiatAmount = '10';
+      const mockTokenPercent1dAgo = undefined;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(mockTokenFiatAmount);
+    });
+
+    it('should return zero if token amount is undefined', () => {
+      const mockTokenFiatAmount = undefined;
+      const mockTokenPercent1dAgo = 1;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(0);
     });
   });
 });

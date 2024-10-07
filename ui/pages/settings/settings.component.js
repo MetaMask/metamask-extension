@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route, matchPath } from 'react-router-dom';
+import { Switch, Route, matchPath, Redirect } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
 
@@ -24,7 +24,6 @@ import {
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
-import AddNetwork from '../../components/app/add-network/add-network';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -41,11 +40,12 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import MetafoxLogo from '../../components/ui/metafox-logo';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
-import NetworksTab from './networks-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
@@ -70,6 +70,7 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
+    toggleNetworkMenu: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -321,11 +322,6 @@ class SettingsPage extends PureComponent {
         key: ALERTS_ROUTE,
       },
       {
-        content: t('networks'),
-        icon: <Icon name={IconName.Plug} />,
-        key: NETWORKS_ROUTE,
-      },
-      {
         content: t('experimental'),
         icon: <Icon name={IconName.Flask} />,
         key: EXPERIMENTAL_ROUTE,
@@ -384,17 +380,26 @@ class SettingsPage extends PureComponent {
         <Route
           exact
           path={ADD_NETWORK_ROUTE}
-          render={() => <NetworksTab addNewNetwork />}
+          render={() => {
+            this.props.toggleNetworkMenu({ isAddingNewNetwork: true });
+            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+          }}
         />
         <Route
           exact
           path={NETWORKS_ROUTE}
-          render={() => <NetworksTab addNewNetwork={false} />}
+          render={() => {
+            this.props.toggleNetworkMenu();
+            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+          }}
         />
         <Route
           exact
           path={ADD_POPULAR_CUSTOM_NETWORK}
-          render={() => <AddNetwork />}
+          render={() => {
+            this.props.toggleNetworkMenu();
+            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+          }}
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />

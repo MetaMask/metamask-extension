@@ -997,12 +997,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
-  "confirmAlertModalDetails": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Your assets may be at risk"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
   },
@@ -1036,10 +1030,7 @@
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
   },
-  "confirmTitleDescSignature": {
-    "message": "Only confirm this message if you approve the content and trust the requesting site."
-  },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Spending cap request"
   },
   "confirmTitleSIWESignature": {
@@ -1612,9 +1603,6 @@
   "domain": {
     "message": "Domain"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Network does not support domain lookup"
-  },
   "done": {
     "message": "Done"
   },
@@ -1800,12 +1788,6 @@
   "ensDomainsSettingTitle": {
     "message": "Show ENS domains in address bar"
   },
-  "ensIllegalCharacter": {
-    "message": "Illegal character for ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Error in ENS name registration"
-  },
   "ensUnknownError": {
     "message": "ENS lookup failed."
   },
@@ -1951,10 +1933,6 @@
   },
   "feeDetails": {
     "message": "Fee details"
-  },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "File import not working? Click here!",
@@ -2454,9 +2432,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Recipient address is invalid"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Not ETH network, set to lowercase"
   },
   "invalidAssetType": {
     "message": "This asset is an NFT and needs to be re-added on the Import NFTs page found under the NFTs tab"
@@ -3181,17 +3156,11 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
-  "noAddressForName": {
-    "message": "No address has been set for this name."
-  },
   "noConnectedAccountDescription": {
     "message": "Select an account you want to use on this site to continue."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
-  },
-  "noConversionDateAvailable": {
-    "message": "No currency conversion date available"
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
@@ -4031,12 +4000,6 @@
   "priceUnavailable": {
     "message": "price unavailable"
   },
-  "primaryCurrencySetting": {
-    "message": "Primary currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
-  },
   "primaryType": {
     "message": "Primary type"
   },
@@ -4199,9 +4162,6 @@
     "message": "Receive"
   },
   "recipientAddressPlaceholder": {
-    "message": "Enter public address (0x) or ENS name"
-  },
-  "recipientAddressPlaceholderFlask": {
     "message": "Enter public address (0x) or domain name"
   },
   "recommendedGasLabel": {
@@ -4861,7 +4821,7 @@
     "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
   },
   "smartTransactionPending": {
-    "message": "Submitting your transaction"
+    "message": "Your transaction was submitted"
   },
   "smartTransactionSuccess": {
     "message": "Your transaction is complete"
@@ -6252,9 +6212,6 @@
   "updateRequest": {
     "message": "Update request"
   },
-  "updatedWithDate": {
-    "message": "Updated $1"
-  },
   "uploadDropFile": {
     "message": "Drop your file here"
   },
@@ -6475,9 +6432,6 @@
   },
   "whatsThis": {
     "message": "What's this?"
-  },
-  "wrongChainId": {
-    "message": "This chain ID doesn’t match the network name."
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."

@@ -23,6 +23,8 @@ const PAGES = {
   POPUP: 'popup',
 };
 
+const artifactDir = (title) => `./test-artifacts/${this.browser}/${title}`;
+
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -61,6 +63,8 @@ function wrapElementWithAPI(element, driver) {
         return await driver.wait(until.stalenessOf(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
+      case 'disabled':
+        return await driver.wait(until.elementIsDisabled(element), timeout);
       default:
         throw new Error(`Provided state: '${state}' is not supported`);
     }
@@ -589,6 +593,17 @@ class Driver {
     }
   }
 
+  /** @param {string} title - The title of the window or tab the screenshot is being taken in */
+  async takeScreenshot(title) {
+    const filepathBase = `${artifactDir(title)}/test-screenshot`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
+
+    const screenshot = await this.driver.takeScreenshot();
+    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+      encoding: 'base64',
+    });
+  }
+
   /**
    * Clicks on an element identified by the provided locator and waits for it to disappear.
    * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
@@ -764,12 +779,25 @@ class Driver {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
-      await this.driver.wait(
-        until.elementLocated(this.buildLocator('.controller-loaded')),
-        10 * 1000,
-      );
+      await this.waitForControllersLoaded();
     }
     return response;
+  }
+
+  /**
+   * Waits for the controllers to be loaded on the page.
+   *
+   * This function waits until an element with the class 'controller-loaded' is located,
+   * indicating that the controllers have finished loading.
+   *
+   * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
+   * @throws {Error} Will throw an error if the element is not located within the timeout period.
+   */
+  async waitForControllersLoaded() {
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.controller-loaded')),
+      10 * 1000,
+    );
   }
 
   /**
@@ -1087,9 +1115,8 @@ class Driver {
     );
     console.error(`${error}\n`);
 
-    const artifactDir = `./test-artifacts/${this.browser}/${title}`;
-    const filepathBase = `${artifactDir}/test-failure`;
-    await fs.mkdir(artifactDir, { recursive: true });
+    const filepathBase = `${artifactDir(title)}/test-failure`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
     // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
