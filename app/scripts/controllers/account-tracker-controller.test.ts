@@ -1,19 +1,19 @@
 import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { InternalAccount } from '@metamask/keyring-api';
-import { Hex } from '@metamask/utils';
 import { BlockTracker, Provider } from '@metamask/network-controller';
 
 import { flushPromises } from '../../../test/lib/timer-helpers';
-import PreferencesController from '../controllers/preferences-controller';
-import OnboardingController from '../controllers/onboarding';
 import { createTestProviderTools } from '../../../test/stub/provider';
-import AccountTracker, {
-  AccountTrackerOptions,
+import PreferencesController from './preferences-controller';
+import type {
+  AccountTrackerControllerOptions,
   AllowedActions,
   AllowedEvents,
-  getDefaultAccountTrackerState,
-} from './account-tracker';
+} from './account-tracker-controller';
+import AccountTrackerController, {
+  getDefaultAccountTrackerControllerState,
+} from './account-tracker-controller';
 
 const noop = () => true;
 const currentNetworkId = '5';
@@ -68,18 +68,18 @@ type WithControllerOptions = {
   useMultiAccountBalanceChecker?: boolean;
   getNetworkClientById?: jest.Mock;
   getSelectedAccount?: jest.Mock;
-} & Partial<AccountTrackerOptions>;
+} & Partial<AccountTrackerControllerOptions>;
 
 type WithControllerCallback<ReturnValue> = ({
   controller,
   blockTrackerFromHookStub,
   blockTrackerStub,
-  triggerOnAccountRemoved,
+  triggerAccountRemoved,
 }: {
-  controller: AccountTracker;
+  controller: AccountTrackerController;
   blockTrackerFromHookStub: MockBlockTracker;
   blockTrackerStub: MockBlockTracker;
-  triggerOnAccountRemoved: (address: string) => void;
+  triggerAccountRemoved: (address: string) => void;
 }) => ReturnValue;
 
 type WithControllerArgs<ReturnValue> =
@@ -132,23 +132,37 @@ function withController<ReturnValue>(
     chainId: '0x1',
   });
 
-  const blockTrackerFromHookStub = buildMockBlockTracker();
+  const getNetworkStateStub = jest.fn().mockReturnValue({
+    selectedNetworkClientId: 'selectedNetworkClientId',
+  });
+  controllerMessenger.registerActionHandler(
+    'NetworkController:getState',
+    getNetworkStateStub,
+  );
 
+  const blockTrackerFromHookStub = buildMockBlockTracker();
   const getNetworkClientByIdStub = jest.fn().mockReturnValue({
     configuration: {
-      chainId: '0x1',
+      chainId: currentChainId,
     },
     blockTracker: blockTrackerFromHookStub,
     provider: providerFromHook,
   });
-
   controllerMessenger.registerActionHandler(
     'NetworkController:getNetworkClientById',
     getNetworkClientById || getNetworkClientByIdStub,
   );
 
-  const controller = new AccountTracker({
-    initState: getDefaultAccountTrackerState(),
+  const getOnboardingControllerState = jest.fn().mockReturnValue({
+    completedOnboarding,
+  });
+  controllerMessenger.registerActionHandler(
+    'OnboardingController:getState',
+    getOnboardingControllerState,
+  );
+
+  const controller = new AccountTrackerController({
+    state: getDefaultAccountTrackerControllerState(),
     provider: provider as Provider,
     blockTracker: blockTrackerStub as unknown as BlockTracker,
     getNetworkIdentifier: jest.fn(),
@@ -159,13 +173,20 @@ function withController<ReturnValue>(
         }),
       },
     } as PreferencesController,
-    onboardingController: {
-      state: {
-        completedOnboarding,
-      },
-    } as OnboardingController,
-    controllerMessenger,
-    getCurrentChainId: () => currentChainId,
+    messenger: controllerMessenger.getRestricted({
+      name: 'AccountTrackerController',
+      allowedActions: [
+        'AccountsController:getSelectedAccount',
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'OnboardingController:getState',
+      ],
+      allowedEvents: [
+        'AccountsController:selectedEvmAccountChange',
+        'OnboardingController:stateChange',
+        'KeyringController:accountRemoved',
+      ],
+    }),
     ...accountTrackerOptions,
   });
 
@@ -173,13 +194,13 @@ function withController<ReturnValue>(
     controller,
     blockTrackerFromHookStub,
     blockTrackerStub,
-    triggerOnAccountRemoved: (address: string) => {
+    triggerAccountRemoved: (address: string) => {
       controllerMessenger.publish('KeyringController:accountRemoved', address);
     },
   });
 }
 
-describe('Account Tracker', () => {
+describe('AccountTrackerController', () => {
   describe('start', () => {
     it('restarts the subscription to the block tracker and update accounts', async () => {
       withController(({ controller, blockTrackerStub }) => {
@@ -456,9 +477,7 @@ describe('Account Tracker', () => {
 
           expect(updateAccountsSpy).toHaveBeenCalledWith(undefined);
 
-          const newState = controller.store.getState();
-
-          expect(newState).toStrictEqual({
+          expect(controller.state).toStrictEqual({
             accounts: {},
             accountsByChainId: {},
             currentBlockGasLimit: GAS_LIMIT,
@@ -509,9 +528,7 @@ describe('Account Tracker', () => {
 
           expect(updateAccountsSpy).toHaveBeenCalledWith('mainnet');
 
-          const newState = controller.store.getState();
-
-          expect(newState).toStrictEqual({
+          expect(controller.state).toStrictEqual({
             accounts: {},
             accountsByChainId: {},
             currentBlockGasLimit: '',
@@ -567,8 +584,7 @@ describe('Account Tracker', () => {
         async ({ controller }) => {
           await controller.updateAccounts();
 
-          const state = controller.store.getState();
-          expect(state).toStrictEqual({
+          expect(controller.state).toStrictEqual({
             accounts: {},
             currentBlockGasLimit: '',
             accountsByChainId: {},
@@ -579,7 +595,6 @@ describe('Account Tracker', () => {
     });
 
     describe('chain does not have single call balance address', () => {
-      const getCurrentChainIdStub: () => Hex = () => '0x999'; // chain without single call balance address
       const mockAccountsWithSelectedAddress = {
         ...mockAccounts,
         [SELECTED_ADDRESS]: {
@@ -600,11 +615,9 @@ describe('Account Tracker', () => {
             {
               completedOnboarding: true,
               useMultiAccountBalanceChecker: true,
-              getCurrentChainId: getCurrentChainIdStub,
+              state: mockInitialState,
             },
             async ({ controller }) => {
-              controller.store.updateState(mockInitialState);
-
               await controller.updateAccounts();
 
               const accounts = {
@@ -622,8 +635,7 @@ describe('Account Tracker', () => {
                 },
               };
 
-              const newState = controller.store.getState();
-              expect(newState).toStrictEqual({
+              expect(controller.state).toStrictEqual({
                 accounts,
                 accountsByChainId: {
                   '0x999': accounts,
@@ -642,11 +654,9 @@ describe('Account Tracker', () => {
             {
               completedOnboarding: true,
               useMultiAccountBalanceChecker: false,
-              getCurrentChainId: getCurrentChainIdStub,
+              state: mockInitialState,
             },
             async ({ controller }) => {
-              controller.store.updateState(mockInitialState);
-
               await controller.updateAccounts();
 
               const accounts = {
@@ -661,8 +671,7 @@ describe('Account Tracker', () => {
                 },
               };
 
-              const newState = controller.store.getState();
-              expect(newState).toStrictEqual({
+              expect(controller.state).toStrictEqual({
                 accounts,
                 accountsByChainId: {
                   '0x999': accounts,
@@ -686,20 +695,18 @@ describe('Account Tracker', () => {
               getNetworkIdentifier: jest
                 .fn()
                 .mockReturnValue('http://not-localhost:8545'),
-              getCurrentChainId: () => '0x1', // chain with single call balance address
               getSelectedAccount: jest.fn().mockReturnValue({
                 id: 'accountId',
                 address: VALID_ADDRESS,
               } as InternalAccount),
-            },
-            async ({ controller }) => {
-              controller.store.updateState({
+              state: {
                 accounts: { ...mockAccounts },
                 accountsByChainId: {
                   '0x1': { ...mockAccounts },
                 },
-              });
-
+              },
+            },
+            async ({ controller }) => {
               await controller.updateAccounts('mainnet');
 
               const accounts = {
@@ -713,8 +720,7 @@ describe('Account Tracker', () => {
                 },
               };
 
-              const newState = controller.store.getState();
-              expect(newState).toStrictEqual({
+              expect(controller.state).toStrictEqual({
                 accounts,
                 accountsByChainId: {
                   '0x1': accounts,
@@ -731,75 +737,77 @@ describe('Account Tracker', () => {
 
   describe('onAccountRemoved', () => {
     it('should remove an account from state', () => {
-      withController(({ controller, triggerOnAccountRemoved }) => {
-        controller.store.updateState({
-          accounts: { ...mockAccounts },
-          accountsByChainId: {
-            [currentChainId]: {
-              ...mockAccounts,
-            },
-            '0x1': {
-              ...mockAccounts,
-            },
-            '0x2': {
-              ...mockAccounts,
+      withController(
+        {
+          state: {
+            accounts: { ...mockAccounts },
+            accountsByChainId: {
+              [currentChainId]: {
+                ...mockAccounts,
+              },
+              '0x1': {
+                ...mockAccounts,
+              },
+              '0x2': {
+                ...mockAccounts,
+              },
             },
           },
-        });
+        },
+        ({ controller, triggerAccountRemoved }) => {
+          triggerAccountRemoved(VALID_ADDRESS);
 
-        triggerOnAccountRemoved(VALID_ADDRESS);
+          const accounts = {
+            [VALID_ADDRESS_TWO]: mockAccounts[VALID_ADDRESS_TWO],
+          };
 
-        const newState = controller.store.getState();
-
-        const accounts = {
-          [VALID_ADDRESS_TWO]: mockAccounts[VALID_ADDRESS_TWO],
-        };
-
-        expect(newState).toStrictEqual({
-          accounts,
-          accountsByChainId: {
-            [currentChainId]: accounts,
-            '0x1': accounts,
-            '0x2': accounts,
-          },
-          currentBlockGasLimit: '',
-          currentBlockGasLimitByChainId: {},
-        });
-      });
+          expect(controller.state).toStrictEqual({
+            accounts,
+            accountsByChainId: {
+              [currentChainId]: accounts,
+              '0x1': accounts,
+              '0x2': accounts,
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          });
+        },
+      );
     });
   });
 
   describe('clearAccounts', () => {
     it('should reset state', () => {
-      withController(({ controller }) => {
-        controller.store.updateState({
-          accounts: { ...mockAccounts },
-          accountsByChainId: {
-            [currentChainId]: {
-              ...mockAccounts,
-            },
-            '0x1': {
-              ...mockAccounts,
-            },
-            '0x2': {
-              ...mockAccounts,
+      withController(
+        {
+          state: {
+            accounts: { ...mockAccounts },
+            accountsByChainId: {
+              [currentChainId]: {
+                ...mockAccounts,
+              },
+              '0x1': {
+                ...mockAccounts,
+              },
+              '0x2': {
+                ...mockAccounts,
+              },
             },
           },
-        });
+        },
+        ({ controller }) => {
+          controller.clearAccounts();
 
-        controller.clearAccounts();
-
-        const newState = controller.store.getState();
-
-        expect(newState).toStrictEqual({
-          accounts: {},
-          accountsByChainId: {
-            [currentChainId]: {},
-          },
-          currentBlockGasLimit: '',
-          currentBlockGasLimitByChainId: {},
-        });
-      });
+          expect(controller.state).toStrictEqual({
+            accounts: {},
+            accountsByChainId: {
+              [currentChainId]: {},
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          });
+        },
+      );
     });
   });
 });

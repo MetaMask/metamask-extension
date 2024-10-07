@@ -1088,7 +1088,7 @@ describe('MetaMetricsController', function () {
         securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
         security_providers: [],
         names: {
           [NameType.ETHEREUM_ADDRESS]: {
@@ -1143,7 +1143,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
-        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: true,
+        [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: true,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
@@ -1181,7 +1181,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1208,7 +1208,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: false,
+        showNativeTokenAsMainBalance: false,
       });
 
       expect(updatedTraits).toStrictEqual({
@@ -1216,7 +1216,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.NumberOfAccounts]: 3,
         [MetaMetricsUserTrait.NumberOfTokens]: 1,
         [MetaMetricsUserTrait.OpenseaApiEnabled]: false,
-        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: false,
+        [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
       });
     });
 
@@ -1245,7 +1245,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1267,7 +1267,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
       });
       expect(updatedTraits).toStrictEqual(null);
     });
