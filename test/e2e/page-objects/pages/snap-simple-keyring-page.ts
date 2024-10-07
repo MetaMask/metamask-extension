@@ -103,7 +103,6 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.createAccountSection);
     await this.driver.clickElement(this.createAccountButton);
 
-    await this.driver.waitUntilXWindowHandles(3);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.createAccountMessage);
     await this.driver.clickElement(this.confirmationSubmitButton);
