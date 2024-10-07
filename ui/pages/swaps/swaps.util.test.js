@@ -36,6 +36,7 @@ import {
   showRemainingTimeInMinAndSec,
   getFeeForSmartTransaction,
   formatSwapsValueForDisplay,
+  fetchTopAssetsList,
   getSwap1559GasFeeEstimates,
 } from './swaps.util';
 
@@ -101,6 +102,25 @@ describe('Swaps Util', () => {
     it('should fetch aggregator metadata on prod', async () => {
       const result = await fetchAggregatorMetadata(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(AGGREGATOR_METADATA);
+    });
+  });
+
+  describe('fetchTopAssetsList', () => {
+    beforeEach(() => {
+      nock('https://swap.api.cx.metamask.io')
+        .persist()
+        .get('/networks/1/topAssets')
+        .reply(200, TOP_ASSETS);
+    });
+
+    it('should fetch top assets', async () => {
+      const result = await fetchTopAssetsList(CHAIN_IDS.MAINNET);
+      expect(result).toStrictEqual(TOP_ASSETS);
+    });
+
+    it('should fetch top assets on prod', async () => {
+      const result = await fetchTopAssetsList(CHAIN_IDS.MAINNET);
+      expect(result).toStrictEqual(TOP_ASSETS);
     });
   });
 

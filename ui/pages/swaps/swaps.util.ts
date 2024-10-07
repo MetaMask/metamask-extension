@@ -63,7 +63,7 @@ type Validator = {
   validator: (a: string) => boolean;
 };
 
-const TOKEN_VALIDATORS: Validator[] = [
+export const TOKEN_VALIDATORS: Validator[] = [
   {
     property: 'address',
     type: 'string',
@@ -206,9 +206,9 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
   return filteredAggregators;
 }
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function fetchTopAssets(chainId: any): Promise<object> {
+export async function fetchTopAssetsList(
+  chainId: string,
+): Promise<{ address: string }[]> {
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
     (await fetchWithCache({
@@ -217,14 +217,19 @@ export async function fetchTopAssets(chainId: any): Promise<object> {
       fetchOptions: { method: 'GET', headers: clientIdHeader },
       cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     })) || [];
+  const topAssetsList = response.filter((asset: { address: string }) =>
+    validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl),
+  );
+  return topAssetsList;
+}
+
+export async function fetchTopAssets(
+  chainId: string,
+): Promise<Record<string, { index: string }>> {
+  const response = await fetchTopAssetsList(chainId);
   const topAssetsMap = response.reduce(
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (_topAssetsMap: any, asset: { address: string }, index: number) => {
-      if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
-        return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
-      }
-      return _topAssetsMap;
+    (_topAssetsMap, asset: { address: string }, index: number) => {
+      return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
     },
     {},
   );
