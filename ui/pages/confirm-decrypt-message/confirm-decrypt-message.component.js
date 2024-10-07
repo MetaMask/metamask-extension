@@ -218,14 +218,14 @@ const ConfirmDecryptMessage = ({
     setTimeout(() => setHasCopied(false), SECOND * 3);
   };
 
-  const targetSubjectMetadata = subjectMetadata[txData.msgParams.origin];
-  const name = targetSubjectMetadata?.name || txData.msgParams.origin;
-  const notice = t('decryptMessageNotice', [txData.msgParams.origin]);
-
   if (!txData) {
     log.warn('ConfirmDecryptMessage Page: Missing txData prop.');
     return null;
   }
+
+  const targetSubjectMetadata = subjectMetadata[txData.msgParams.origin];
+  const name = targetSubjectMetadata?.name || txData.msgParams.origin;
+  const notice = t('decryptMessageNotice', [txData.msgParams.origin]);
 
   return (
     <div className="request-decrypt-message__container">
