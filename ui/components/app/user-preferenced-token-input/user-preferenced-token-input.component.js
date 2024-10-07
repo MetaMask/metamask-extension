@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import TokenInput from '../../ui/token-input';
 import { getTokenSymbol } from '../../../store/actions';
 
+// This component is not used in codebase, removing usage of useNativeCurrencyAsPrimaryCurrency in this PR
 export default class UserPreferencedTokenInput extends PureComponent {
   static propTypes = {
     token: PropTypes.shape({
@@ -10,7 +11,6 @@ export default class UserPreferencedTokenInput extends PureComponent {
       decimals: PropTypes.number,
       symbol: PropTypes.string,
     }).isRequired,
-    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   };
 
   state = {
@@ -28,16 +28,10 @@ export default class UserPreferencedTokenInput extends PureComponent {
   }
 
   render() {
-    const { useNativeCurrencyAsPrimaryCurrency, ...restProps } = this.props;
+    const { ...restProps } = this.props;
 
     return (
-      <TokenInput
-        {...restProps}
-        showFiat={
-          !useNativeCurrencyAsPrimaryCurrency &&
-          this.state.isOriginalTokenSymbol
-        }
-      />
+      <TokenInput {...restProps} showFiat={this.state.isOriginalTokenSymbol} />
     );
   }
 }

@@ -112,11 +112,12 @@
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
-        "useNativeCurrencyAsPrimaryCurrency": true,
+        "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
         "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-        "showMultiRpcModal": "boolean"
+        "showMultiRpcModal": "boolean",
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -161,7 +162,11 @@
             "1": "string",
             "2": "string"
           }
-        }
+        },
+        "destTokens": {},
+        "destTopAssets": {},
+        "srcTokens": {},
+        "srcTopAssets": {}
       }
     },
     "TransactionController": { "transactions": "object" },

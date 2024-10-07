@@ -1873,10 +1873,6 @@
   "feeDetails": {
     "message": "Mga detalye ng singil"
   },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
@@ -3092,9 +3088,6 @@
   "noConnectedAccountTitle": {
     "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
   },
-  "noConversionDateAvailable": {
-    "message": "Walang available na petsa sa pagpapapalit ng currency"
-  },
   "noConversionRateAvailable": {
     "message": "Hindi available ang rate ng palitan"
   },
@@ -3914,12 +3907,6 @@
   },
   "priceUnavailable": {
     "message": "hindi available ang presyo"
-  },
-  "primaryCurrencySetting": {
-    "message": "Pangunahing Currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Piliin ang native para maisapriyoridad ang pagpapakita ng mga value sa native na currency ng chain (hal. ETH). Piliin ang Fiat para maisapriyoridad ang pagpapakita ng mga value sa napili mong fiat na salapi."
   },
   "primaryType": {
     "message": "Pangunahing uri"
@@ -4747,13 +4734,6 @@
   "smartTransactionSuccess": {
     "message": "Nakumpleto ang transaksyon mo"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Paumanhin sa paghihintay"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Kung ang transaksyon mo ay hindi natapos sa loob ng $1, ito ay kakanselahin at hindi ka sisingilin para sa gas.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Mga Smart Transaction"
   },
@@ -5169,10 +5149,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Subukan muli ang pag-swap. Narito kami para protektahan ka sa mga katulad na panganib sa susunod."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Tinatayang pagkumpleto sa loob ng < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Nabigo ang pag-swap"
@@ -6084,9 +6060,6 @@
   },
   "updateRequest": {
     "message": "Hiling sa pag-update"
-  },
-  "updatedWithDate": {
-    "message": "Na-update noong $1"
   },
   "uploadDropFile": {
     "message": "I-drop ang file mo rito"

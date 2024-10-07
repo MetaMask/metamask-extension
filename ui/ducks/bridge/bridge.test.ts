@@ -3,9 +3,12 @@ import thunk from 'redux-thunk';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge/types';
+import {
+  BridgeBackgroundAction,
+  BridgeUserAction,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../app/scripts/controllers/bridge/types';
 import bridgeReducer from './bridge';
 import {
   setBridgeFeatureFlags,
@@ -13,6 +16,7 @@ import {
   setFromTokenInputValue,
   setToChain,
   setToToken,
+  setFromChain,
 } from './actions';
 
 const middleware = [thunk];
@@ -26,14 +30,28 @@ describe('Ducks - Bridge', () => {
   });
 
   describe('setToChain', () => {
-    it('calls the "bridge/setToChain" action', () => {
+    it('calls the "bridge/setToChainId" action and the selectDestNetwork background action', () => {
       const state = store.getState().bridge;
-      const actionPayload = CHAIN_IDS.BSC;
-      store.dispatch(setToChain(actionPayload));
+      const actionPayload = CHAIN_IDS.OPTIMISM;
+
+      const mockSelectDestNetwork = jest.fn().mockReturnValue({});
+      setBackgroundConnection({
+        [BridgeUserAction.SELECT_DEST_NETWORK]: mockSelectDestNetwork,
+      } as never);
+
+      store.dispatch(setToChain(actionPayload as never) as never);
+
+      // Check redux state
       const actions = store.getActions();
-      expect(actions[0].type).toBe('bridge/setToChain');
+      expect(actions[0].type).toBe('bridge/setToChainId');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toChain).toBe(actionPayload);
+      expect(newState.toChainId).toBe(actionPayload);
+      // Check background state
+      expect(mockSelectDestNetwork).toHaveBeenCalledTimes(1);
+      expect(mockSelectDestNetwork).toHaveBeenCalledWith(
+        '0xa',
+        expect.anything(),
+      );
     });
   });
 
@@ -81,6 +99,23 @@ describe('Ducks - Bridge', () => {
       } as never);
       store.dispatch(setBridgeFeatureFlags() as never);
       expect(mockSetBridgeFeatureFlags).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('setFromChain', () => {
+    it('calls the selectSrcNetwork background action', async () => {
+      const mockSelectSrcNetwork = jest.fn().mockReturnValue({});
+      setBackgroundConnection({
+        [BridgeUserAction.SELECT_SRC_NETWORK]: mockSelectSrcNetwork,
+      } as never);
+
+      await store.dispatch(setFromChain(CHAIN_IDS.MAINNET) as never);
+
+      expect(mockSelectSrcNetwork).toHaveBeenCalledTimes(1);
+      expect(mockSelectSrcNetwork).toHaveBeenCalledWith(
+        '0x1',
+        expect.anything(),
+      );
     });
   });
 });
