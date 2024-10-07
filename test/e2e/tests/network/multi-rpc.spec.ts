@@ -395,9 +395,12 @@ describe('MultiRpc:', function (this: Suite) {
 
         await driver.delay(regularDelayMs);
 
-        // go to advanced settigns
+        // go to advanced settings
         await driver.clickElement({
-          text: 'Advanced configuration',
+          text: 'Manage default settings',
+        });
+        await driver.clickElement({
+          text: 'General',
         });
 
         // open edit modal
@@ -419,10 +422,14 @@ describe('MultiRpc:', function (this: Suite) {
           tag: 'button',
         });
 
-        await driver.clickElement({
-          text: 'Done',
-          tag: 'button',
-        });
+        // Back out of settings
+        await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.clickElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+        await driver.clickElement({ text: 'Done', tag: 'button' });
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Done', tag: 'button' });
 
         // Validate the network was edited
         const networkEdited = await driver.isElementPresent({
