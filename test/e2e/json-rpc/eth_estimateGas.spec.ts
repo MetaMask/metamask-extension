@@ -1,10 +1,11 @@
-const { strict: assert } = require('assert');
-const {
+import { strict as assert } from 'assert';
+import {
   withFixtures,
   defaultGanacheOptions,
-  unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} from '../helpers';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import FixtureBuilder from '../fixture-builder';
+import { Driver } from '../webdriver/driver';
 
 describe('eth_estimateGas', function () {
   it('executes a estimate gas json rpc call', async function () {
@@ -15,15 +16,15 @@ describe('eth_estimateGas', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle() ?? '',
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // eth_estimateGas
         await driver.openNewPage(`http://127.0.0.1:8080`);
 
-        const estimateGas = JSON.stringify({
+        const estimateGas: string = JSON.stringify({
           jsonrpc: '2.0',
           method: 'eth_estimateGas',
           params: [
@@ -34,12 +35,12 @@ describe('eth_estimateGas', function () {
           ],
         });
 
-        const estimateGasRequest = await driver.executeScript(
-          `return window.ethereum.request(${estimateGas})`,
-        );
+        const estimateGasRequest: string = await driver.executeScript(
+          `return window.ethereum.request(${estimateGas})`
+        ) as string;
 
         assert.strictEqual(estimateGasRequest, '0x5208');
-      },
+      }
     );
   });
 });
