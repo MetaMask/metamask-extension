@@ -1,4 +1,3 @@
-import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   PermissionDoesNotExistError,
   UnrecognizedSubjectError,
@@ -42,28 +41,24 @@ describe('wallet_revokeSession', () => {
     );
   });
 
-  it('throws a 5501 error if the CAIP-25 endowment permission does not exist', async () => {
-    const { handler, revokePermission, end } = createMockedHandler();
+  it('returns true if the CAIP-25 endowment permission does not exist', async () => {
+    const { handler, response, revokePermission } = createMockedHandler();
     revokePermission.mockImplementation(() => {
       throw new PermissionDoesNotExistError();
     });
 
     await handler(baseRequest);
-    expect(end).toHaveBeenCalledWith(
-      new EthereumRpcError(5501, 'No active sessions'),
-    );
+    expect(response.result).toStrictEqual(true);
   });
 
-  it('throws a 5501 error if the subject does not exist', async () => {
-    const { handler, revokePermission, end } = createMockedHandler();
+  it('returns true if the subject does not exist', async () => {
+    const { handler, response, revokePermission } = createMockedHandler();
     revokePermission.mockImplementation(() => {
       throw new UnrecognizedSubjectError();
     });
 
     await handler(baseRequest);
-    expect(end).toHaveBeenCalledWith(
-      new EthereumRpcError(5501, 'No active sessions'),
-    );
+    expect(response.result).toStrictEqual(true);
   });
 
   it('throws an internal RPC error if something unexpected goes wrong with revoking the permission', async () => {
