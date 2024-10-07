@@ -1,10 +1,11 @@
-const { strict: assert } = require('assert');
-const {
+import { strict as assert } from 'assert';
+import {
   withFixtures,
   defaultGanacheOptions,
   unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} from '../helpers';
+import { Driver } from '../webdriver/driver';
+import FixtureBuilder from '../fixture-builder';
 
 describe('eth_accounts', function () {
   it('executes a eth_accounts json rpc call', async function () {
@@ -18,9 +19,9 @@ describe('eth_accounts', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle() ?? '',
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
         // eth_accounts
@@ -31,15 +32,15 @@ describe('eth_accounts', function () {
           method: 'eth_accounts',
         });
 
-        const accounts = await driver.executeScript(
-          `return window.ethereum.request(${accountsRequest})`,
+        const accounts: string[] = await driver.executeScript(
+          `return window.ethereum.request(${accountsRequest})`
         );
 
         assert.deepStrictEqual(accounts, [
           '0x09781764c08de8ca82e156bbf156a3ca217c7950',
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         ]);
-      },
+      }
     );
   });
 });
