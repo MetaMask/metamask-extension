@@ -5,6 +5,7 @@ import { NonEmptyArray } from '@metamask/utils';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
+  AlignItems,
   BlockSize,
   Display,
   FlexDirection,
@@ -222,11 +223,12 @@ export const ReviewPermissions = () => {
                 flexDirection={FlexDirection.Column}
                 width={BlockSize.Full}
                 gap={2}
+                alignItems={AlignItems.center}
               >
                 {showAccountToast ? (
                   <ToastContainer>
                     <Toast
-                      text={t('accountPermissionToast', [hostName])}
+                      text={t('accountPermissionToast')}
                       onClose={() => setShowAccountToast(false)}
                       startAdornment={
                         <AvatarFavicon
@@ -241,7 +243,7 @@ export const ReviewPermissions = () => {
                 {showNetworkToast ? (
                   <ToastContainer>
                     <Toast
-                      text={t('networkPermissionToast', [hostName])}
+                      text={t('networkPermissionToast')}
                       onClose={() => setShowNetworkToast(false)}
                       startAdornment={
                         <AvatarFavicon

@@ -1,14 +1,18 @@
 .toasts-container {
   position: sticky;
-  bottom: 10px;
-  margin-inline-start: 10px;
-  margin-inline-end: 10px;
+  bottom: 16px;
+  margin-inline-start: 16px;
+  margin-inline-end: 16px;
   z-index: 200;
   display: flex;
   gap: 10px;
   width: 90%;
   flex-direction: column;
-  max-width: 600px;
+
+  &__banner-base {
+    border-radius: 8px;
+    box-shadow: var(--shadow-size-md)
+  }
 }
 
 .toast-text {
