@@ -1,8 +1,5 @@
 import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-} from '../helpers';
+import { withFixtures, defaultGanacheOptions } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
@@ -33,9 +30,9 @@ describe('eth_newBlockFilter', function () {
           method: 'eth_newBlockFilter',
         });
 
-        const newBlockFilter = await driver.executeScript(
-          `return window.ethereum.request(${newBlockfilterRequest})`
-        ) as string;
+        const newBlockFilter = (await driver.executeScript(
+          `return window.ethereum.request(${newBlockfilterRequest})`,
+        )) as string;
 
         assert.strictEqual(newBlockFilter, '0x01');
 
@@ -53,13 +50,13 @@ describe('eth_newBlockFilter', function () {
           method: 'eth_getBlockByNumber',
           params: ['latest', false],
         });
-        const blockByHash = await driver.executeScript(
-          `return window.ethereum.request(${blockByHashRequest})`
-        ) as { hash: string };
+        const blockByHash = (await driver.executeScript(
+          `return window.ethereum.request(${blockByHashRequest})`,
+        )) as { hash: string };
 
-        const filterChanges = await driver.executeScript(
-          `return window.ethereum.request(${getFilterChangesRequest})`
-        ) as string[];
+        const filterChanges = (await driver.executeScript(
+          `return window.ethereum.request(${getFilterChangesRequest})`,
+        )) as string[];
 
         assert.strictEqual(filterChanges.includes(blockByHash.hash), true);
 
@@ -70,12 +67,12 @@ describe('eth_newBlockFilter', function () {
           params: ['0x01'],
         });
 
-        const uninstallFilter = await driver.executeScript(
-          `return window.ethereum.request(${uninstallFilterRequest})`
-        ) as boolean;
+        const uninstallFilter = (await driver.executeScript(
+          `return window.ethereum.request(${uninstallFilterRequest})`,
+        )) as boolean;
 
         assert.strictEqual(uninstallFilter, true);
-      }
+      },
     );
   });
 });

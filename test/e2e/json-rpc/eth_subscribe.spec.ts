@@ -1,8 +1,5 @@
 import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-} from '../helpers';
+import { withFixtures, defaultGanacheOptions } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
@@ -30,21 +27,22 @@ describe('eth_subscribe', function () {
           params: ['newHeads'],
         });
 
-        const subscribe: string = await driver.executeScript(
-          `return window.ethereum.request(${subscribeRequest})`
-        ) as string;
+        const subscribe: string = (await driver.executeScript(
+          `return window.ethereum.request(${subscribeRequest})`,
+        )) as string;
 
-        interface SubscriptionMessage {
+        type SubscriptionMessage = {
           data: {
             subscription: string;
           };
           type: string;
-        }
+        };
 
-        const subscriptionMessage: SubscriptionMessage = await driver.executeAsyncScript(
-          `const callback = arguments[arguments.length - 1];
-           window.ethereum.on('message', (message) => callback(message))`
-        ) as SubscriptionMessage;
+        const subscriptionMessage: SubscriptionMessage =
+          (await driver.executeAsyncScript(
+            `const callback = arguments[arguments.length - 1];
+           window.ethereum.on('message', (message) => callback(message))`,
+          )) as SubscriptionMessage;
 
         assert.strictEqual(subscribe, subscriptionMessage.data.subscription);
         assert.strictEqual(subscriptionMessage.type, 'eth_subscription');
@@ -56,9 +54,9 @@ describe('eth_subscribe', function () {
           params: [subscribe],
         });
 
-        const unsubscribe: boolean = await driver.executeScript(
-          `return window.ethereum.request(${unsubscribeRequest})`
-        ) as boolean;
+        const unsubscribe: boolean = (await driver.executeScript(
+          `return window.ethereum.request(${unsubscribeRequest})`,
+        )) as boolean;
 
         assert.strictEqual(unsubscribe, true);
       },

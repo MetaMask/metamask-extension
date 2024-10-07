@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { withFixtures, defaultGanacheOptions } from '../helpers';
 import { Driver } from '../webdriver/driver';
+import { Ganache } from '../seeder/ganache';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
@@ -18,8 +19,14 @@ describe('eth_accounts', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // eth_accounts
         await driver.openNewPage(`http://127.0.0.1:8080`);

@@ -1,8 +1,5 @@
 import { strict as assert } from 'assert';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-} from '../helpers';
+import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
@@ -30,14 +27,14 @@ describe('eth_coinbase', function () {
         });
 
         const coinbase: string = await driver.executeScript(
-          `return window.ethereum.request(${coinbaseRequest})`
+          `return window.ethereum.request(${coinbaseRequest})`,
         );
 
         assert.deepStrictEqual(
           coinbase,
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
-      }
+      },
     );
   });
 });

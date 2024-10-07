@@ -1,8 +1,5 @@
 import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-} from '../helpers';
+import { withFixtures, defaultGanacheOptions } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
@@ -35,12 +32,12 @@ describe('eth_estimateGas', function () {
           ],
         });
 
-        const estimateGasRequest: string = await driver.executeScript(
-          `return window.ethereum.request(${estimateGas})`
-        ) as string;
+        const estimateGasRequest: string = (await driver.executeScript(
+          `return window.ethereum.request(${estimateGas})`,
+        )) as string;
 
         assert.strictEqual(estimateGasRequest, '0x5208');
-      }
+      },
     );
   });
 });

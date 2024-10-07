@@ -1,8 +1,5 @@
 import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-} from '../helpers';
+import { withFixtures, defaultGanacheOptions } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -29,9 +26,9 @@ describe('eth_chainId', function () {
           params: [],
           id: 0,
         });
-        const result = await driver.executeScript(
-          `return window.ethereum.request(${request})`
-        ) as string;
+        const result = (await driver.executeScript(
+          `return window.ethereum.request(${request})`,
+        )) as string;
 
         assert.equal(result, '0x539');
       },

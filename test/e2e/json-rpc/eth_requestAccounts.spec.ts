@@ -1,8 +1,5 @@
 import { strict as assert } from 'assert';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-} from '../helpers';
+import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
@@ -30,7 +27,7 @@ describe('eth_requestAccounts', function () {
         });
 
         const requestAccount: string[] = await driver.executeScript(
-          `return window.ethereum.request(${requestAccountRequest})`
+          `return window.ethereum.request(${requestAccountRequest})`,
         );
 
         assert.deepStrictEqual(requestAccount, [

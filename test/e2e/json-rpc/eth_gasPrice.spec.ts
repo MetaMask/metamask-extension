@@ -1,8 +1,5 @@
 import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-} from '../helpers';
+import { withFixtures, defaultGanacheOptions } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
@@ -30,11 +27,11 @@ describe('eth_gasPrice', function () {
         });
 
         const gasPrice: string = await driver.executeScript(
-          `return window.ethereum.request(${gasPriceRequest})`
+          `return window.ethereum.request(${gasPriceRequest})`,
         );
 
         assert.strictEqual(gasPrice, '0x77359400'); // 2000000000
-      }
+      },
     );
   });
 });
