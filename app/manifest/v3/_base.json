@@ -73,6 +73,7 @@
     "storage",
     "unlimitedStorage",
     "webRequest",
+    "webRequestBlocking",
     "offscreen"
   ],
   "sandbox": {
