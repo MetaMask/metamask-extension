@@ -1187,7 +1187,6 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -1220,7 +1219,6 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: false,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -1263,7 +1261,6 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -1291,7 +1288,6 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
