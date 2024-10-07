@@ -5,6 +5,7 @@ const {
   importSRPOnboardingFlow,
   WALLET_PASSWORD,
   tinyDelayMs,
+  regularDelayMs,
   defaultGanacheOptions,
 } = require('../../helpers');
 const { METAMASK_STALELIST_URL } = require('../phishing-controller/helpers');
@@ -62,9 +63,13 @@ describe('MetaMask onboarding @no-mmi', function () {
           tag: 'button',
         });
         await driver.clickElement('[data-testid="category-item-General"]');
+
+        await driver.delay(regularDelayMs);
+
         await driver.clickElement(
           '[data-testid="basic-functionality-toggle"] .toggle-button',
         );
+
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
         await driver.clickElement('[data-testid="category-back-button"]');
@@ -73,9 +78,11 @@ describe('MetaMask onboarding @no-mmi', function () {
           '[data-testid="currency-rate-check-toggle"] .toggle-button',
         );
         await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.delay(regularDelayMs);
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
+        await driver.delay(regularDelayMs);
 
         await driver.clickElement({ text: 'Done', tag: 'button' });
         await driver.clickElement('[data-testid="pin-extension-next"]');
