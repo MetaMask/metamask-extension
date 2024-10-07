@@ -34,7 +34,7 @@ const useTrackERC20WithoutDecimalInformation = (
     }
     const { decimals, standard } = tokenDetails || {};
     if (standard === TokenStandard.ERC20) {
-      let parsedDecimals = parseTokenDetailDecimals(decimals);
+      const parsedDecimals = parseTokenDetailDecimals(decimals);
       if (parsedDecimals === undefined) {
         trackEvent({
           event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
