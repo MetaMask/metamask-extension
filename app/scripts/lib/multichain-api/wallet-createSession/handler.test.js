@@ -4,7 +4,6 @@ import {
   validateAndFlattenScopes,
   processScopedProperties,
   bucketScopes,
-  assertScopesSupported,
   KnownRpcMethods,
   KnownNotifications,
 } from '../scope';
@@ -33,7 +32,6 @@ jest.mock('../scope', () => ({
   validateAndFlattenScopes: jest.fn(),
   processScopedProperties: jest.fn(),
   bucketScopes: jest.fn(),
-  assertScopesSupported: jest.fn(),
 }));
 
 jest.mock('./helpers', () => ({
