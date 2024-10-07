@@ -24,7 +24,7 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { isValidQuoteRequest } from '../../pages/bridge/types';
 import { BridgeState } from './bridge';
-import { DUMMY_QUOTES_APPROVAL } from './dummy-quotes.test';
+import { DUMMY_QUOTES_APPROVAL } from './dummy-quotes';
 
 export type BridgeAppState = {
   metamask: NetworkState & { bridgeState: BridgeControllerState } & {
