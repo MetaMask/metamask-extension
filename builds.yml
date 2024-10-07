@@ -157,6 +157,7 @@ env:
   - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
   # Blockaid public key for verifying signatures of data files downloaded from CDN
   - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
+  - NODE_OPTIONS: --experimental-vm-modules
 
   - ENABLE_MV3: true
   # These are exclusively used for MV3
