@@ -67,6 +67,7 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
+  sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
 
 import {
@@ -362,6 +363,13 @@ export function getSelectedInternalAccount(state) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
+export function getSelectedEvmInternalAccount(state) {
+  const [evmAccountSelected] = sortSelectedInternalAccounts(
+    getEvmInternalAccounts(state),
+  );
+  return evmAccountSelected;
+}
+
 export function checkIfMethodIsEnabled(state, methodName) {
   const internalAccount = getSelectedInternalAccount(state);
   return Boolean(internalAccount.methods.includes(methodName));
@@ -381,6 +389,11 @@ export function getSelectedInternalAccountWithBalance(state) {
 
 export function getInternalAccounts(state) {
   return Object.values(state.metamask.internalAccounts.accounts);
+}
+
+export function getEvmInternalAccounts(state) {
+  const accounts = Object.values(state.metamask.internalAccounts.accounts);
+  return accounts.filter((account) => isEvmAccountType(account.type));
 }
 
 export function getInternalAccount(state, accountId) {

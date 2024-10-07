@@ -180,12 +180,14 @@ export function createMockInternalAccount({
   address = MOCK_DEFAULT_ADDRESS,
   type = EthAccountType.Eoa,
   keyringType = KeyringTypes.hd,
+  lastSelected = 0,
   snapOptions = undefined,
 }: {
   name?: string;
   address?: string;
   type?: string;
   keyringType?: string;
+  lastSelected?: number;
   snapOptions?: {
     enabled: boolean;
     name: string;
@@ -228,6 +230,7 @@ export function createMockInternalAccount({
         type: keyringType,
       },
       snap: snapOptions,
+      lastSelected,
     },
     options: {},
     methods,
