@@ -35,6 +35,18 @@ import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
 
+const recursivelyRemoveComponents = (obj: { components?: object }) => {
+  if (obj.components) {
+    delete obj.components;
+  }
+  Object.values(obj).forEach((value) => {
+    if (typeof value === 'object') {
+      recursivelyRemoveComponents(value);
+    }
+  });
+  return obj;
+}
+
 async function main() {
   const port = 8545;
   const chainId = 1337;
@@ -228,6 +240,14 @@ async function main() {
       const joinedResults = testCoverageResults.concat(
         testCoverageResultsCaip27,
       );
+      joinedResults.forEach((r, index) => {
+        r.id = index;
+        if (r.resultSchema) {
+          r.resultSchema = recursivelyRemoveComponents(
+            r.resultSchema as { components?: object },
+          );
+        }
+      });
 
       const htmlReporter = new HtmlReporter({
         autoOpen: !process.env.CI,
