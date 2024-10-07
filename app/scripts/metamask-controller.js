@@ -6357,6 +6357,42 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
+    // TODO: Might be able to DRY this with the stateChange event
+    try {
+      const caip25Caveat = this.permissionController.getCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+
+      // add new notification subscriptions for changed authorizations
+      const mergedScopes = mergeScopes(
+        caip25Caveat.value.requiredScopes,
+        caip25Caveat.value.optionalScopes,
+      );
+
+      // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+      // then get the subscriptionManager going for that scope
+      Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
+        if (
+          scopeObject.notifications.includes('eth_subscription') &&
+          scopeObject.methods.includes('eth_subscribe')
+        ) {
+          this.multichainMiddlewareManager.removeMiddleware(scope, origin);
+          this.multichainSubscriptionManager.unsubscribe(scope, origin);
+          const subscriptionManager =
+            this.multichainSubscriptionManager.subscribe(scope, origin);
+          this.multichainMiddlewareManager.addMiddleware(
+            scope,
+            origin,
+            subscriptionManager.middleware,
+          );
+        }
+      });
+    } catch (err) {
+      // noop
+    }
+
     this.multichainSubscriptionManager.on(
       'notification',
       (_origin, message) => {
