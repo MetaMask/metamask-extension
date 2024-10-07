@@ -1,10 +1,11 @@
-const { strict: assert } = require('assert');
-const {
+import { strict as assert } from 'assert';
+import {
   defaultGanacheOptions,
   withFixtures,
-  unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} from '../helpers';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import FixtureBuilder from '../fixture-builder';
+import { Driver } from '../webdriver/driver';
 
 describe('eth_requestAccounts', function () {
   it('executes a request accounts json rpc call', async function () {
@@ -15,21 +16,21 @@ describe('eth_requestAccounts', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test?.fullTitle() ?? 'Test title not available',
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver }: { driver: Driver }): Promise<void> => {
+        await loginWithBalanceValidation(driver);
 
         // eth_requestAccounts
         await driver.openNewPage(`http://127.0.0.1:8080`);
 
-        const requestAccountRequest = JSON.stringify({
+        const requestAccountRequest: string = JSON.stringify({
           jsonrpc: '2.0',
           method: 'eth_requestAccounts',
         });
 
-        const requestAccount = await driver.executeScript(
-          `return window.ethereum.request(${requestAccountRequest})`,
+        const requestAccount: string[] = await driver.executeScript(
+          `return window.ethereum.request(${requestAccountRequest})`
         );
 
         assert.deepStrictEqual(requestAccount, [
