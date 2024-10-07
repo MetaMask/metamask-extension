@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
@@ -31,6 +31,18 @@ import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-ap
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
+
+function countDecimalDigits(numberString: string) {
+  const decimalPointIndex = numberString.indexOf('.');
+
+  if (decimalPointIndex === -1) {
+    return 0;
+  }
+
+  const decimalDigits = numberString.length - decimalPointIndex - 1;
+
+  return decimalDigits;
+}
 
 export const EditSpendingCapModal = ({
   isOpenEditSpendingCapModal,
@@ -116,10 +128,17 @@ export const EditSpendingCapModal = ({
     setCustomSpendingCapInputValue(formattedSpendingCap.toString());
   }, [customSpendingCapInputValue, formattedSpendingCap]);
 
+  const showDecimalError = useMemo(() => {
+    return (
+      decimals &&
+      parseInt(decimals, 10) < countDecimalDigits(customSpendingCapInputValue)
+    );
+  }, [decimals, customSpendingCapInputValue]);
+
   return (
     <Modal
       isOpen={isOpenEditSpendingCapModal}
-      onClose={() => setIsOpenEditSpendingCapModal(false)}
+      onClose={() => handleCancel()}
       isClosedOnEscapeKey
       isClosedOnOutsideClick
       className="edit-spending-cap-modal"
@@ -164,11 +183,24 @@ export const EditSpendingCapModal = ({
               tokenSymbol || '',
             ])}
           </Text>
+          {showDecimalError && (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.errorDefault}
+              paddingTop={1}
+            >
+              {t('editSpendingCapError', [decimals])}
+            </Text>
+          )}
         </ModalBody>
         <ModalFooter
           onSubmit={handleSubmit}
           onCancel={handleCancel}
-          submitButtonProps={{ children: t('save'), loading: isModalSaving }}
+          submitButtonProps={{
+            children: t('save'),
+            loading: isModalSaving,
+            disabled: showDecimalError,
+          }}
         />
       </ModalContent>
     </Modal>
