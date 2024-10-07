@@ -17,10 +17,8 @@ import { parseTokenDetailDecimals, TokenDetailsERC20 } from '../utils/token';
  * Track event that number of decimals in ERC20 is not obtained
  *
  * @param tokenAddress
- * @param options
- * @param options.tokenAddress
- * @param options.tokenDetails
- * @param options.metricLocation
+ * @param tokenDetails
+ * @param metricLocation
  * @returns
  */
 const useTrackERC20WithoutDecimalInformation = (
