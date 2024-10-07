@@ -194,7 +194,7 @@ export const submitBridgeTransaction = (
       };
     };
 
-    const calcMaxGasLimit = (gasLimit: number, gasMultiplier: number) => {
+    const calcMaxGasLimit = (gasLimit: number, gasMultiplier = 1) => {
       console.log('Bridge', 'calcMaxGasLimit', { gasLimit, gasMultiplier });
       return new Numeric(
         new BigNumber(gasLimit).times(gasMultiplier).round(0).toString(),
