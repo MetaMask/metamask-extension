@@ -414,6 +414,7 @@ export function rewriteReport(report) {
     }
 
     report.extra.appState = appState;
+
     if (browser.runtime && browser.runtime.id) {
       report.extra.extensionId = browser.runtime.id;
     }

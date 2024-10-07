@@ -425,6 +425,7 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
@@ -436,6 +437,7 @@ export default class PreferencesController {
       watchEthereumAccountEnabled,
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `bitcoinSupportEnabled` property.
