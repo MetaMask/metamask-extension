@@ -10,9 +10,9 @@ import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { Icon, IconName, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
