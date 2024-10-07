@@ -397,7 +397,13 @@ describe('MultiRpc:', function (this: Suite) {
 
         // go to advanced settigns
         await driver.clickElement({
-          text: 'Advanced configuration',
+          text: 'Manage default settings',
+        });
+
+        await driver.delay(regularDelayMs);
+
+        await driver.clickElement({
+          text: 'General',
         });
 
         // open edit modal
@@ -418,6 +424,34 @@ describe('MultiRpc:', function (this: Suite) {
           text: 'Save',
           tag: 'button',
         });
+
+        await driver.delay(regularDelayMs);
+        await driver.waitForSelector('[data-testid="category-back-button"]');
+        const generalBackButton = await driver.waitForSelector(
+          '[data-testid="category-back-button"]',
+        );
+        await generalBackButton.click();
+
+        await driver.delay(regularDelayMs);
+
+        const defaultSettingsBackButton = await driver.findElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+        await defaultSettingsBackButton.click();
+
+        await driver.delay(regularDelayMs);
+
+        await driver.clickElement({
+          text: 'Done',
+          tag: 'button',
+        });
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+        });
+
+        await driver.delay(regularDelayMs);
 
         await driver.clickElement({
           text: 'Done',
