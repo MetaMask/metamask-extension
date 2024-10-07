@@ -35,6 +35,8 @@ jobs:
   sonarcloud:
     name: SonarCloud
     uses: ./.github/workflows/sonarcloud.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     needs:
       - run-tests
 

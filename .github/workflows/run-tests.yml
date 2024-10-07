@@ -131,5 +131,5 @@ jobs:
             echo "::error::Quality gate failed for test coverage. Current coverage is $CURRENT_COVERAGE%, please increase coverage to at least $STORED_COVERAGE%."
             exit 1
           else
-            echo "Current coverage is $CURRENT_COVERAGE%, Stored coverage is $STORED_COVERAGE%. Quality gate passed."
+            echo "The current coverage is $CURRENT_COVERAGE%, stored coverage is $STORED_COVERAGE%. Quality gate passed."
           fi
