@@ -88,10 +88,6 @@ describe('Confirm', () => {
       container = renderContainer;
     });
 
-    // await waitFor(() => {
-    //   expect(screen.getByText('Signature request')).toBeInTheDocument();
-    // });
-
     expect(container).toMatchSnapshot();
   });
 
@@ -121,10 +117,6 @@ describe('Confirm', () => {
       container = renderContainer;
     });
 
-    // await waitFor(() => {
-    //   expect(screen.getByText('Signature request')).toBeInTheDocument();
-    // });
-
     expect(container).toMatchSnapshot();
   });
 
@@ -139,10 +131,6 @@ describe('Confirm', () => {
 
       container = renderContainer;
     });
-
-    // await waitFor(() => {
-    //   expect(screen.getByText('Signature request')).toBeInTheDocument();
-    // });
 
     expect(container).toMatchSnapshot();
   });
