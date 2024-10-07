@@ -226,29 +226,6 @@ export default class PreferencesController {
       identities: {},
       lostIdentities: {},
       forgottenPassword: false,
-      preferences: {
-        autoLockTimeLimit: undefined,
-        showExtensionInFullSizeView: false,
-        showFiatInTestnets: false,
-        showTestNetworks: false,
-        smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
-        showNativeTokenAsMainBalance: false,
-        useNativeCurrencyAsPrimaryCurrency: true,
-        hideZeroBalanceTokens: false,
-        petnamesEnabled: true,
-        redesignedConfirmationsEnabled: true,
-        redesignedTransactionsEnabled: true,
-        featureNotificationsEnabled: false,
-        showMultiRpcModal: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
-        showConfirmationAdvancedDetails: false,
-        tokenSortConfig: {
-          key: 'tokenFiatAmount',
-          order: 'dsc',
-          sortCallback: 'stringNumeric',
-        },
-        shouldShowAggregatedBalancePopover: true, // by default user should see popover;
-      },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       isIpfsGatewayEnabled: true,
@@ -271,6 +248,30 @@ export default class PreferencesController {
       // The flag is true by Default, meaning the toggle is ON by default.
       useExternalServices: true,
       ...opts.initState,
+      preferences: {
+        autoLockTimeLimit: undefined,
+        showExtensionInFullSizeView: false,
+        showFiatInTestnets: false,
+        showTestNetworks: false,
+        smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
+        showNativeTokenAsMainBalance: false,
+        useNativeCurrencyAsPrimaryCurrency: true,
+        hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        redesignedTransactionsEnabled: true,
+        featureNotificationsEnabled: false,
+        showMultiRpcModal: false,
+        isRedesignedConfirmationsDeveloperEnabled: false,
+        showConfirmationAdvancedDetails: false,
+        tokenSortConfig: {
+          key: 'tokenFiatAmount',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+        shouldShowAggregatedBalancePopover: true, // by default user should see popover;
+        ...opts.initState?.preferences,
+      },
     };
 
     this.store = new ObservableStore(initState);
