@@ -19,7 +19,6 @@ import { parseTokenDetailDecimals, TokenDetailsERC20 } from '../utils/token';
  * @param tokenAddress
  * @param tokenDetails
  * @param metricLocation
- * @returns
  */
 const useTrackERC20WithoutDecimalInformation = (
   tokenAddress: Hex | string | undefined,
