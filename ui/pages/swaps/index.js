@@ -399,9 +399,7 @@ export default function Swap() {
             )}
           </Box>
         </div>
-        <div
-          className="swaps__content"
-        >
+        <div className="swaps__content">
           <Switch>
             <FeatureToggledRoute
               redirectRoute={SWAPS_MAINTENANCE_ROUTE}
