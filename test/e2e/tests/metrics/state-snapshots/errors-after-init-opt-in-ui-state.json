@@ -33,6 +33,7 @@
       "smartTransactionsOptInStatus": false,
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
+      "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
@@ -179,6 +180,7 @@
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
+    "submitHistory": "object",
     "fiatCurrency": "usd",
     "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
     "cryptocurrencies": ["btc"],
@@ -253,7 +255,11 @@
         "extensionSupport": "boolean",
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
-      }
+      },
+      "destTokens": {},
+      "destTopAssets": {},
+      "srcTokens": {},
+      "srcTopAssets": {}
     },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
