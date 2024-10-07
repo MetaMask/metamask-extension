@@ -6,6 +6,7 @@ const {
   WALLET_PASSWORD,
   tinyDelayMs,
   regularDelayMs,
+  largeDelayMs,
   defaultGanacheOptions,
 } = require('../../helpers');
 const { METAMASK_STALELIST_URL } = require('../phishing-controller/helpers');
@@ -131,11 +132,13 @@ describe('MetaMask onboarding @no-mmi', function () {
           tag: 'button',
         });
         await driver.clickElement('[data-testid="category-item-General"]');
+        await driver.delay(largeDelayMs);
         await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.delay(largeDelayMs);
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
-
+        await driver.delay(largeDelayMs);
         await driver.clickElement({ text: 'Done', tag: 'button' });
         await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement({ text: 'Done', tag: 'button' });
@@ -143,7 +146,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
-        await driver.delay(tinyDelayMs);
 
         // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
         await driver.assertElementNotPresent('.loading-overlay');
