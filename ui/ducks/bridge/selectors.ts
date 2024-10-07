@@ -25,7 +25,7 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { BridgeState } from './bridge';
-import { DUMMY_QUOTES_APPROVAL } from './dummy-quotes.test';
+import { DUMMY_QUOTES_APPROVAL } from './dummy-quotes';
 
 export type BridgeAppState = {
   metamask: NetworkState & { bridgeState: BridgeControllerState } & {
