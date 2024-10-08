@@ -26306,7 +26306,6 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     eth-lattice-keyring: "npm:^0.12.4"
     eth-method-registry: "npm:^4.0.0"
-    eth-rpc-errors: "npm:^4.0.2"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:5.7.0"
     extension-port-stream: "npm:^3.0.0"

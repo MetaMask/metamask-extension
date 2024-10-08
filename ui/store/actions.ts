@@ -9,7 +9,7 @@ import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { Hex, Json } from '@metamask/utils';
 import {
   AssetsContractController,
@@ -1378,10 +1378,7 @@ export function cancelTx(
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'rejectPendingApproval',
-        [
-          String(txMeta.id),
-          ethErrors.provider.userRejectedRequest().serialize(),
-        ],
+        [String(txMeta.id), providerErrors.userRejectedRequest().serialize()],
         (error) => {
           if (error) {
             reject(error);
@@ -1427,10 +1424,7 @@ export function cancelTxs(
           new Promise<void>((resolve, reject) => {
             callBackgroundMethod(
               'rejectPendingApproval',
-              [
-                String(id),
-                ethErrors.provider.userRejectedRequest().serialize(),
-              ],
+              [String(id), providerErrors.userRejectedRequest().serialize()],
               (err) => {
                 if (err) {
                   reject(err);
@@ -4061,7 +4055,7 @@ export function rejectAllMessages(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const userRejectionError = serializeError(
-      ethErrors.provider.userRejectedRequest(),
+      providerErrors.userRejectedRequest(),
     );
     await Promise.all(
       messageList.map(
