@@ -1,94 +1,98 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { hasProperty } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { NotificationListItemSnap } from '../../../../components/multichain';
+import {
+  NotificationDetailButton,
+  NotificationDetailTitle,
+  NotificationListItemSnap,
+} from '../../../../components/multichain';
 import type { SnapNotification } from '../../snap/types/types';
 import { getSnapsMetadata } from '../../../../selectors';
 import { markNotificationsAsRead } from '../../../../store/actions';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
-import SnapNotificationModal from '../../../../components/app/snaps/snap-notification-modal/snap-notification-modal';
+import { NotificationComponent } from '../types/notifications/notifications';
+import { formatIsoDateString } from '../../../../helpers/utils/notification.util';
+import { SnapUIRenderer } from '../../../../components/app/snaps/snap-ui-renderer';
+import { BackgroundColor } from '../../../../helpers/constants/design-system';
+import { ButtonVariant } from '../../../../components/component-library';
+import { isOfTypeNodeGuard } from '../node-guard';
+import { TRIGGER_TYPES } from '..';
 
-type SnapComponentProps = {
-  snapNotification: SnapNotification;
-};
-
-export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const snapsMetadata = useSelector(getSnapsMetadata);
-
-  const snapsNameGetter = getSnapName(snapsMetadata);
-
-  const hasExpandedView = hasProperty(snapNotification.data, 'expandedView');
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const handleSnapClick = () => {
-    dispatch(markNotificationsAsRead([snapNotification.id]));
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationClicked,
-      properties: {
-        notification_id: snapNotification.id,
-        notification_type: snapNotification.type,
-        previously_read: snapNotification.isRead,
-      },
-    });
-    if (hasExpandedView) {
-      setIsOpen(true);
-    }
-  };
-
-  const handleSnapButton = () => {
-    dispatch(markNotificationsAsRead([snapNotification.id]));
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationClicked,
-      properties: {
-        notification_id: snapNotification.id,
-        notification_type: snapNotification.type,
-        previously_read: snapNotification.isRead,
-      },
-    });
-    history.push(getSnapRoute(snapNotification.data.origin));
-  };
-
-  return (
-    <>
-      {hasExpandedView && (
-        <SnapNotificationModal
-          isOpen={isOpen}
-          handleClose={handleClose}
-          data={snapNotification.data}
-        />
-      )}
+export const components: NotificationComponent<SnapNotification> = {
+  guardFn: isOfTypeNodeGuard([TRIGGER_TYPES.SNAP]),
+  item: ({ notification, onClick }) => {
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const trackEvent = useContext(MetaMetricsContext);
+    const snapsMetadata = useSelector(getSnapsMetadata);
+    const snapsNameGetter = getSnapName(snapsMetadata);
+    const handleSnapButton = () => {
+      dispatch(markNotificationsAsRead([notification.id]));
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationInteraction,
+        event: MetaMetricsEventName.NotificationClicked,
+        properties: {
+          notification_id: notification.id,
+          notification_type: notification.type,
+          previously_read: notification.isRead,
+        },
+      });
+      history.push(getSnapRoute(notification.data.origin));
+    };
+    return (
       <NotificationListItemSnap
-        id={snapNotification.id}
-        snapId={snapNotification.data.origin}
-        isRead={snapNotification.isRead}
-        createdAt={new Date(snapNotification.createdAt)}
+        id={notification.id}
+        snapId={notification.data.origin}
+        isRead={notification.isRead}
+        createdAt={new Date(notification.createdAt)}
         title={{
           items: [
             {
-              text: snapsNameGetter(snapNotification.data.origin) || 'Snap',
+              text: snapsNameGetter(notification.data.origin) || 'Snap',
             },
           ],
         }}
-        snapMessage={snapNotification.data.message}
-        handleSnapClick={handleSnapClick}
+        snapMessage={notification.data.message}
+        handleSnapClick={onClick}
         handleSnapButton={handleSnapButton}
       />
-    </>
-  );
+    );
+  },
+  details: {
+    title: ({ notification }) => (
+      <NotificationDetailTitle
+        title={notification.data.expandedView.title}
+        date={formatIsoDateString(notification.createdAt)}
+      />
+    ),
+    body: {
+      type: 'body_snap_notification',
+      Content: ({ notification }) => (
+        <SnapUIRenderer
+          snapId={notification.data.origin}
+          interfaceId={notification.data.expandedView.interfaceId}
+          useDelineator={false}
+          contentBackgroundColor={BackgroundColor.backgroundDefault}
+        />
+      ),
+    },
+  },
+  footer: {
+    type: 'footer_snap_notification',
+    Link: ({ notification }) =>
+      notification.data.expandedView.footerLink ? (
+        <NotificationDetailButton
+          notification={notification}
+          text={notification.data.expandedView.footerLink.text}
+          href={notification.data.expandedView.footerLink.href}
+          id={notification.id}
+          variant={ButtonVariant.Secondary}
+        />
+      ) : null,
+  },
 };

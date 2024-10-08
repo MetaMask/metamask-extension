@@ -11,10 +11,15 @@ import {
   enableMetamaskNotifications,
   disableMetamaskNotifications,
 } from '../../store/actions';
+import { SnapNotification } from '../../pages/notifications/snap/types/types';
 
-type Notification = NotificationServicesController.Types.INotification;
-type MarkAsReadNotificationsParam =
-  NotificationServicesController.Types.MarkAsReadNotificationsParam;
+type Notification =
+  | NotificationServicesController.Types.INotification
+  | SnapNotification;
+export type MarkAsReadNotificationsParam = Pick<
+  Notification,
+  'id' | 'type' | 'isRead'
+>[];
 
 // Define KeyringType interface
 type KeyringType = {

@@ -12,10 +12,13 @@ import {
   IconName,
 } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
+import { SnapNotification } from '../../../pages/notifications/snap/types/types';
+import { TRIGGER_TYPES } from '../../../pages/notifications/notification-components';
+import useSnapNavigation from '../../../hooks/snaps/useSnapNavigation';
 
-type Notification = NotificationServicesController.Types.INotification;
-
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+type Notification =
+  | NotificationServicesController.Types.INotification
+  | SnapNotification;
 
 type NotificationDetailButtonProps = {
   notification: Notification;
@@ -37,6 +40,16 @@ export const NotificationDetailButton = ({
   endIconName = true,
 }: NotificationDetailButtonProps) => {
   const trackEvent = useContext(MetaMetricsContext);
+  const { navigate } = useSnapNavigation();
+  const isMetaMaskUrl = href.startsWith('metamask:');
+
+  // this logic can be expanded once this detail button is used outside of the current use cases
+  const getClickedItem = () => {
+    if (notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT) {
+      return 'block_explorer';
+    }
+    return isExternal ? 'external_link' : 'internal_link';
+  };
 
   const onClick = () => {
     trackEvent({
@@ -45,20 +58,25 @@ export const NotificationDetailButton = ({
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
-        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
-          chain_id: notification?.chain_id,
-        }),
-        clicked_item: 'block_explorer',
+        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+          notification.type !== TRIGGER_TYPES.SNAP && {
+            chain_id: notification?.chain_id,
+          }),
+        clicked_item: getClickedItem(),
       },
     });
+
+    if (notification.type === TRIGGER_TYPES.SNAP && isMetaMaskUrl) {
+      navigate(href);
+    }
   };
 
   return (
     <Button
       key={id}
-      href={href}
+      {...(!isMetaMaskUrl && { href })}
       variant={variant}
-      externalLink={isExternal}
+      externalLink={!isMetaMaskUrl}
       size={ButtonSize.Lg}
       width={BlockSize.Full}
       endIconName={endIconName ? IconName.Arrow2UpRight : undefined}

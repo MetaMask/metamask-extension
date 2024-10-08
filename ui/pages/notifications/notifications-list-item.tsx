@@ -16,11 +16,14 @@ import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import {
   NotificationComponents,
+  TRIGGER_TYPES,
   hasNotificationComponents,
 } from './notification-components';
+import { SnapNotification } from './snap/types/types';
 
-type Notification = NotificationServicesController.Types.INotification;
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+type Notification =
+  | NotificationServicesController.Types.INotification
+  | SnapNotification;
 
 export function NotificationsListItem({
   notification,
@@ -39,9 +42,10 @@ export function NotificationsListItem({
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
-        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
-          chain_id: notification?.chain_id,
-        }),
+        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+          notification.type !== TRIGGER_TYPES.SNAP && {
+            chain_id: notification?.chain_id,
+          }),
         previously_read: notification.isRead,
       },
     });
@@ -52,6 +56,14 @@ export function NotificationsListItem({
         isRead: notification.isRead,
       },
     ]);
+
+    if (
+      notification.type === TRIGGER_TYPES.SNAP &&
+      !notification.data.expandedView
+    ) {
+      return;
+    }
+
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
   }, [notification, markNotificationAsRead, history]);
 

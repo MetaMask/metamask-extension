@@ -1,4 +1,4 @@
-export const SNAP = 'SNAP' as const;
+import { SNAP_TRIGGER } from '../../notification-components';
 
 export type SnapNotificationExpandedView = {
   title: string;
@@ -19,6 +19,6 @@ export type SnapNotification = {
   id: string;
   createdAt: string;
   isRead: boolean;
-  type: typeof SNAP;
+  type: SNAP_TRIGGER.SNAP;
   data: RawSnapNotification;
 };

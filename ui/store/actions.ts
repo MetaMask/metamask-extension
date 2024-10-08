@@ -137,6 +137,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { MarkAsReadNotificationsParam } from '../hooks/metamask-notifications/useNotifications';
 
 type CustomGasSettings = {
   gas?: string;
@@ -5463,7 +5464,7 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
  * @returns A thunk action that, when dispatched, attempts to mark MetaMask notifications as read.
  */
 export function markMetamaskNotificationsAsRead(
-  notifications: NotificationServicesController.Types.MarkAsReadNotificationsParam,
+  notifications: MarkAsReadNotificationsParam,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {

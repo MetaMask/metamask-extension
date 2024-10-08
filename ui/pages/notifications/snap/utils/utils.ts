@@ -1,5 +1,5 @@
+import { TRIGGER_TYPES } from '../../notification-components';
 import type { RawSnapNotification, SnapNotification } from '../types/types';
-import { SNAP } from '../types/types';
 
 export const processSnapNotifications = (
   snapNotifications: RawSnapNotification[],
@@ -9,7 +9,7 @@ export const processSnapNotifications = (
       id: snapNotification.id,
       createdAt: new Date(snapNotification.createdDate).toISOString(),
       isRead: Boolean(snapNotification.readDate),
-      type: SNAP,
+      type: TRIGGER_TYPES.SNAP,
       data: snapNotification,
     };
   });

@@ -6,8 +6,11 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import type { NotificationComponent } from '../../notifications/notification-components/types/notifications/notifications';
+import { SnapNotification } from '../../notifications/snap/types/types';
 
-type Notification = NotificationServicesController.Types.INotification;
+type Notification =
+  | NotificationServicesController.Types.INotification
+  | SnapNotification;
 
 type NotificationDetailsBodyProps = {
   body: NotificationComponent['details']['body'];
@@ -46,6 +49,9 @@ export const NotificationDetailsBody = ({
           {body.Provider && <body.Provider notification={notification} />}
           {body.NetworkFee && <body.NetworkFee notification={notification} />}
         </>
+      )}
+      {body.type === 'body_snap_notification' && (
+        <body.Content notification={notification} />
       )}
     </Box>
   );

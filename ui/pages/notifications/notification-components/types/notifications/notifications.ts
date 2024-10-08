@@ -1,7 +1,10 @@
 import type { FC } from 'react';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { SnapNotification } from '../../../snap/types/types';
 
-type Notification = NotificationServicesController.Types.INotification;
+type Notification =
+  | NotificationServicesController.Types.INotification
+  | SnapNotification;
 
 /**
  * NotificationFC is the shared component interface for all notification components
@@ -32,6 +35,11 @@ type BodyFeatureAnnouncement<N = Notification> = {
   Description: NotificationFC<N>;
 };
 
+type BodySnapNotification<N = Notification> = {
+  type: 'body_snap_notification';
+  Content: NotificationFC<N>;
+};
+
 type FooterOnChainNotification<N = Notification> = {
   type: 'footer_onchain_notification';
   ScanLink: NotificationFC<N>;
@@ -42,6 +50,11 @@ type FooterFeatureAnnouncement<N = Notification> = {
   ExtensionLink: NotificationFC<N>;
 };
 
+type FooterSnapNotification<N = Notification> = {
+  type: 'footer_snap_notification';
+  Link: NotificationFC<N>;
+}
+
 /**
  * This is the object shape that contains all the components of the particular notification.
  * the `guardFn` can be used to narrow a wide notification into the specific notification required.
@@ -51,7 +64,13 @@ export type NotificationComponent<N extends Notification = Notification> = {
   item: NotificationFC<N>;
   details: {
     title: NotificationFC<N>;
-    body: BodyFeatureAnnouncement<N> | BodyOnChainNotification<N>;
+    body:
+      | BodyFeatureAnnouncement<N>
+      | BodyOnChainNotification<N>
+      | BodySnapNotification<N>;
   };
-  footer: FooterFeatureAnnouncement<N> | FooterOnChainNotification<N>;
+  footer:
+    | FooterFeatureAnnouncement<N>
+    | FooterOnChainNotification<N>
+    | FooterSnapNotification<N>;
 };

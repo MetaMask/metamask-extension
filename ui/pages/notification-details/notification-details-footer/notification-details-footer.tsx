@@ -39,6 +39,11 @@ export const NotificationDetailsFooter = ({
           <footer.ExtensionLink notification={notification} />
         </>
       )}
+      {footer.type === 'footer_snap_notification' && (
+        <>
+          <footer.Link notification={notification} />
+        </>
+      )}
     </Box>
   );
 };

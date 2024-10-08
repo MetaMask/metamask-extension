@@ -34,10 +34,11 @@ import { NotificationsList } from './notifications-list';
 import { processSnapNotifications } from './snap/utils/utils';
 import { SnapNotification } from './snap/types/types';
 import { NewFeatureTag } from './NewFeatureTag';
+import { TRIGGER_TYPES } from './notification-components';
 
 type Notification = NotificationServicesController.Types.INotification;
 
-const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
+const { TRIGGER_TYPES_WALLET_SET } =
   NotificationServicesController.Constants;
 
 export type NotificationType = Notification | SnapNotification;
@@ -152,7 +153,9 @@ const filterNotifications = (
   }
 
   if (activeTab === TAB_KEYS.WEB3) {
-    return notifications.filter((notification) => notification.type === 'SNAP');
+    return notifications.filter(
+      (notification) => notification.type === TRIGGER_TYPES.SNAP,
+    );
   }
 
   return notifications;
