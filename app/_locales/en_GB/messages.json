@@ -400,12 +400,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Update gas options"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "If you approve this request, a third party known for scams might take all your assets."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Multiple alerts!"
-  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
