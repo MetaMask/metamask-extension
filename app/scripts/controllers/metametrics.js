@@ -868,6 +868,8 @@ export default class MetaMetricsController {
         metamaskState.participateInMetaMetrics,
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
+      [MetaMetricsUserTrait.TokenSortPreference]:
+        metamaskState.tokenSortConfig?.key || '',
     };
 
     if (!previousUserTraits) {
