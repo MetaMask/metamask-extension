@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Perbarui opsi gas"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan dapat mengambil semua aset Anda."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Beberapa peringatan!"
-  },
   "alertDisableTooltip": {
     "message": "Ini dapat diubah dalam \"Pengaturan > Peringatan\""
   },
