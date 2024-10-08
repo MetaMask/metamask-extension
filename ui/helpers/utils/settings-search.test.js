@@ -174,7 +174,7 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(20);
+      ).toStrictEqual(21);
     });
 
     it('returns "Alerts" section count', () => {
