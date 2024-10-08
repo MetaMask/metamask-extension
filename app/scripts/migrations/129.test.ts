@@ -1,7 +1,7 @@
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { cloneDeep } from 'lodash';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
-import { migrate, version } from './128';
+import { migrate, version } from './129';
 
 const sentryCaptureExceptionMock = jest.fn();
 
@@ -9,7 +9,7 @@ global.sentry = {
   captureException: sentryCaptureExceptionMock,
 };
 
-const oldVersion = 127;
+const oldVersion = 128;
 
 const mockInternalAccount = createMockInternalAccount();
 const mockAccountsControllerState: AccountsControllerState = {
@@ -21,7 +21,7 @@ const mockAccountsControllerState: AccountsControllerState = {
   },
 };
 
-describe('migration #128', () => {
+describe('migration #129', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('updates the version metadata', async () => {

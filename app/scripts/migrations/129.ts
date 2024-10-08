@@ -7,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 128;
+export const version = 129;
 
 /**
  * Fix AccountsController state corruption, where the `selectedAccount` state is set to an invalid
