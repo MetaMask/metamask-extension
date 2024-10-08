@@ -503,12 +503,31 @@ export function checkHardwareStatus(
   };
 }
 
-export const getHardwareDeviceName = (deviceName, hdPath) => {
-  return submitRequestToBackground('getHardwareDeviceName', [
-    deviceName,
-    hdPath,
-  ]);
-};
+export function getHardwareDeviceName(
+  deviceName: string,
+  hdPath: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  log.debug(`background.getHardwareDeviceName`, deviceName, hdPath);
+
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    let result;
+    try {
+      result = submitRequestToBackground('getHardwareDeviceName', [
+        deviceName,
+        hdPath,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+    return result;
+  };
+}
 
 export function forgetDevice(
   deviceName: HardwareDeviceNames,

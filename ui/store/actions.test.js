@@ -483,6 +483,48 @@ describe('Actions', () => {
     });
   });
 
+  describe('#getHardwareDeviceName', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getHardwareDeviceName in background', async () => {
+      const store = mockStore();
+
+      const getHardwareDeviceName = background.getHardwareDeviceName.callsFake(
+        (_, __, cb) => cb(),
+      );
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.getHardwareDeviceName('ledger', "m/44'/60'/0'/0/0"),
+      );
+      expect(getHardwareDeviceName.callCount).toStrictEqual(1);
+    });
+
+    it('shows loading indicator and displays error', async () => {
+      const store = mockStore();
+
+      background.getHardwareDeviceName.callsFake((_, __, cb) =>
+        cb(new Error('error')),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await expect(
+        store.dispatch(actions.getHardwareDeviceName()),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
   describe('#forgetDevice', () => {
     afterEach(() => {
       sinon.restore();
