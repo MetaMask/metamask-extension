@@ -153,9 +153,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="refresh-list-button"]');
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
-          console.log('mocked endpoints index', mockedEndpoints[i]);
           const requests = await mockedEndpoints[i].getSeenRequests();
-          console.log('requests', requests);
           assert.equal(
             requests.length,
             1,
