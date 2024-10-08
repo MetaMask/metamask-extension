@@ -6,10 +6,10 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-top-0"
     >
       <div
-        class="mm-box mm-box--padding-4"
+        class="mm-box name-snap-account-page mm-box--padding-4"
       >
         <header
           class="mm-box mm-header-base mm-modal-header mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
@@ -104,10 +104,10 @@ exports[`create-named-snap-account confirmation matches snapshot 2`] = `
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-top-0"
     >
       <div
-        class="mm-box mm-box--padding-4"
+        class="mm-box name-snap-account-page mm-box--padding-4"
       >
         <header
           class="mm-box mm-header-base mm-modal-header mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"

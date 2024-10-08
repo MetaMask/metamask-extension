@@ -5,11 +5,24 @@ import { renderWithProvider } from '../../../../../../../test/lib/render-helpers
 import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirmations/typed_sign';
 import TypedSignInfoV1 from './typed-sign-v1';
 
+jest.mock(
+  '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
+
 describe('TypedSignInfo', () => {
   it('correctly renders typed sign data request', () => {
     const mockState = {
       confirm: {
         currentConfirmation: unapprovedTypedSignMsgV1,
+      },
+      confirmAlerts: {
+        alerts: [],
+        confirmed: [],
       },
     };
     const mockStore = configureMockStore([])(mockState);
@@ -26,6 +39,10 @@ describe('TypedSignInfo', () => {
           time: new Date().getTime(),
           type: 'json_request',
         },
+      },
+      confirmAlerts: {
+        alerts: [],
+        confirmed: [],
       },
     };
     const mockStore = configureMockStore([])(mockState);

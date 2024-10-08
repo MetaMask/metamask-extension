@@ -44,6 +44,18 @@ async function getExtensionStorageFilePath(driver) {
 }
 
 /**
+ * Gets the size of a file in bytes.
+ *
+ * @param {string} filePath - The path to the file.
+ * @returns {Promise<number>} A promise that resolves to the size of the file in bytes.
+ */
+async function getFileSize(filePath) {
+  const stats = await fs.promises.stat(filePath);
+  console.log(`File Size =========================: ${stats.size} bytes`);
+  return stats.size;
+}
+
+/**
  * Closes the announcements popover if present
  *
  * @param {WebDriver} driver
@@ -121,7 +133,29 @@ describe('Vault Decryptor Page', function () {
         // fill the input field with storage recovered from filesystem
         await driver.clickElement('[name="vault-source"]');
         const inputField = await driver.findElement('#fileinput');
-        inputField.press(await getExtensionStorageFilePath(driver));
+
+        const filePath = await getExtensionStorageFilePath(driver);
+
+        // Retry-logic to ensure the file is ready before uploading it
+        // to mitigate flakiness when Chrome hasn't finished writing
+        const MAX_RETRIES = 3;
+        const MIN_FILE_SIZE = 1000000; // bytes
+
+        for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+          const fileSize = await getFileSize(filePath);
+          if (fileSize > MIN_FILE_SIZE) {
+            break;
+          } else {
+            console.log(`File size is too small (${fileSize} bytes)`);
+            if (attempt < MAX_RETRIES - 1) {
+              console.log(`Waiting for 2 seconds before retrying...`);
+              await driver.delay(2000);
+            }
+          }
+        }
+
+        await inputField.press(filePath);
+
         // fill in the password
         await driver.fill('#passwordinput', WALLET_PASSWORD);
         // decrypt

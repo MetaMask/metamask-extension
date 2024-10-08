@@ -252,6 +252,9 @@
   "addEthereumChainWarningModalTitle": {
     "message": "You are adding a new RPC provider for Ethereum Mainnet"
   },
+  "addEthereumWatchOnlyAccount": {
+    "message": "Watch an Ethereum account (Beta)"
+  },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
@@ -275,6 +278,10 @@
   },
   "addNetwork": {
     "message": "Add network"
+  },
+  "addNetworkConfirmationTitle": {
+    "message": "Add $1",
+    "description": "$1 represents network name"
   },
   "addNetworkTooltipWarning": {
     "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
@@ -344,6 +351,17 @@
   "addressCopied": {
     "message": "Address copied!"
   },
+  "addressMismatch": {
+    "message": "Site address mismatch"
+  },
+  "addressMismatchOriginal": {
+    "message": "Current URL: $1",
+    "description": "$1 replaced by origin URL in confirmation request"
+  },
+  "addressMismatchPunycode": {
+    "message": "Punycode version: $1",
+    "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -408,6 +426,9 @@
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
+  },
+  "alertMessageAddressMismatchWarning": {
+    "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
   "alertMessageGasEstimateFailed": {
     "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
@@ -1033,8 +1054,17 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
+  "confirmTitleApproveTransaction": {
+    "message": "Allowance request"
+  },
+  "confirmTitleDeployContract": {
+    "message": "Deploy a contract"
+  },
+  "confirmTitleDescApproveTransaction": {
+    "message": "This site wants permission to withdraw your NFTs"
+  },
+  "confirmTitleDescDeployContract": {
+    "message": "This site wants you to deploy a contract"
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
@@ -1249,6 +1279,9 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
+  },
+  "copyAddressShort": {
+    "message": "Copy address"
   },
   "copyPrivateKey": {
     "message": "Copy private key"
@@ -1549,24 +1582,6 @@
   "developerOptions": {
     "message": "Developer Options"
   },
-  "developerOptionsSentryButtonGenerateBackgroundError": {
-    "message": "Generate Background Error"
-  },
-  "developerOptionsSentryButtonGenerateTrace": {
-    "message": "Generate Trace"
-  },
-  "developerOptionsSentryButtonGenerateUIError": {
-    "message": "Generate UI Error"
-  },
-  "developerOptionsSentryDescriptionGenerateBackgroundError": {
-    "message": "Generate an unhandled $1 in the service worker."
-  },
-  "developerOptionsSentryDescriptionGenerateTrace": {
-    "message": " Generate a $1 Sentry trace."
-  },
-  "developerOptionsSentryDescriptionGenerateUIError": {
-    "message": "Generate an unhandled $1 in this window."
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1745,6 +1760,9 @@
   },
   "editNetworkLink": {
     "message": "edit the original network"
+  },
+  "editNetworksTitle": {
+    "message": "Edit networks"
   },
   "editNonceField": {
     "message": "Edit nonce"
@@ -2871,6 +2889,9 @@
   },
   "more": {
     "message": "more"
+  },
+  "multichainAddEthereumChainConfirmationDescription": {
+    "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
@@ -4221,9 +4242,6 @@
   "receive": {
     "message": "Receive"
   },
-  "receiveTokensCamelCase": {
-    "message": "Receive tokens"
-  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },
@@ -4811,6 +4829,12 @@
   "signingInWith": {
     "message": "Signing in with"
   },
+  "simulationApproveHeading": {
+    "message": "Withdraw"
+  },
+  "simulationDetailsApproveDesc": {
+    "message": "You're giving someone else permission to withdraw NFTs from your account."
+  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
@@ -5070,7 +5094,7 @@
     "message": "Snaps connected"
   },
   "snapsNoInsight": {
-    "message": "The snap didn't return any insight"
+    "message": "No insight to show"
   },
   "snapsPrivacyWarningFirstMessage": {
     "message": "You acknowledge that any Snap that you install is a Third Party Service, unless otherwise identified, as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
@@ -5152,6 +5176,9 @@
   },
   "spender": {
     "message": "Spender"
+  },
+  "spenderTooltipDesc": {
+    "message": "This is the address that will be able to withdraw your NFTs."
   },
   "spendingCap": {
     "message": "Spending cap"
@@ -5878,6 +5905,9 @@
   "testNetworks": {
     "message": "Test networks"
   },
+  "testnets": {
+    "message": "Testnets"
+  },
   "theme": {
     "message": "Theme"
   },
@@ -6426,6 +6456,13 @@
   "warningTooltipText": {
     "message": "$1 The third party could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
     "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
+  },
+  "watchEthereumAccountsDescription": {
+    "message": "Turning this option on will give you the ability to watch Ethereum accounts via a public address or ENS name. For feedback on this Beta feature please complete this $1.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "watchEthereumAccountsToggle": {
+    "message": "Watch Ethereum Accounts (Beta)"
   },
   "weak": {
     "message": "Weak"

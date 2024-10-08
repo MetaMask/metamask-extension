@@ -22,6 +22,7 @@ import SnapAvatar from '../../app/snaps/snap-avatar';
 
 export type NotificationListItemSnapProps = {
   id: string;
+  snapId: string;
   isRead: boolean;
   title: NotificationListItemTextProps;
   snapMessage: string;
@@ -38,6 +39,7 @@ export type NotificationListItemSnapProps = {
  * @param props.title - The title of the notification.
  * @param props.createdAt - The date of the notification.
  * @param props.id - The id of the notification.
+ * @param props.snapId - The id of the Snap that created the notification.
  * @param props.handleSnapClick - The function to call when the notification is clicked.
  * @param props.handleSnapButton - The function to call when the snap button is clicked.
  * @param props.snapMessage - The snap message to display on the notification.
@@ -49,6 +51,7 @@ export const NotificationListItemSnap = ({
   title,
   snapMessage,
   createdAt,
+  snapId,
   handleSnapClick,
   handleSnapButton,
 }: NotificationListItemSnapProps) => {
@@ -105,7 +108,7 @@ export const NotificationListItemSnap = ({
 
         <Box height={BlockSize.Full} className="notification-list-item__icon">
           <SnapAvatar
-            snapId="npm:@metamask/notification-example-snap"
+            snapId={snapId}
             badgeBackgroundColor={BackgroundColor.backgroundDefault}
             avatarSize={IconSize.Md}
           />

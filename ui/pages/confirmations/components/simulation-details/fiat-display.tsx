@@ -7,6 +7,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text } from '../../../../components/component-library';
 import { SizeNumber } from '../../../../components/component-library/box/box.types';
+import Tooltip from '../../../../components/ui/tooltip';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { useHideFiatForTestnet } from '../../../../hooks/useHideFiatForTestnet';
 import { FIAT_UNAVAILABLE, FiatAmount } from './types';
@@ -51,10 +52,17 @@ export const IndividualFiatDisplay: React.FC<{
     return <FiatNotAvailableDisplay />;
   }
   const absFiat = Math.abs(fiatAmount);
+  const fiatDisplayValue = fiatFormatter(absFiat, { shorten });
 
-  return (
+  return shorten ? (
+    <Tooltip position="bottom" title={fiatDisplayValue} interactive>
+      <Text {...textStyle} data-testid="individual-fiat-display">
+        {fiatDisplayValue}
+      </Text>
+    </Tooltip>
+  ) : (
     <Text {...textStyle} data-testid="individual-fiat-display">
-      {fiatFormatter(absFiat, { shorten })}
+      {fiatDisplayValue}
     </Text>
   );
 };

@@ -381,13 +381,6 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
-    "providerConfig": {
-      "type": "rpc",
-      "nickname": "goerli",
-      "chainId": "0x5",
-      "ticker": "ETH",
-      "id": "chain5"
-    },
     "networkConfigurations": {
       "testNetworkConfigurationId": {
         "rpcUrl": "https://testrpc.com",
@@ -396,12 +389,12 @@
         "type": "rpc",
         "id": "testNetworkConfigurationId"
       },
-      "chain5": {
+      "goerli": {
         "type": "rpc",
         "chainId": "0x5",
         "ticker": "ETH",
         "nickname": "Chain 5",
-        "id": "chain5"
+        "id": "goerli"
       }
     },
     "internalAccounts": {
@@ -1873,6 +1866,7 @@
       }
     ],
     "addSnapAccountEnabled": false,
+    "watchEthereumAccountEnabled": false,
     "bitcoinSupportEnabled": false,
     "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {

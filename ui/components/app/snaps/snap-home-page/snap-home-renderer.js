@@ -66,12 +66,14 @@ export const SnapHomeRenderer = ({ snapId }) => {
   return (
     <Box height={BlockSize.Full}>
       {error && (
-        <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
-          <Text variant={TextVariant.bodySm} marginBottom={4}>
-            {t('snapsUIError', [<b key="0">{snapName}</b>])}
-          </Text>
-          <Copyable text={error.message} />
-        </SnapDelineator>
+        <Box height={BlockSize.Full} padding={4}>
+          <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
+            <Text variant={TextVariant.bodySm} marginBottom={4}>
+              {t('snapsUIError', [<b key="0">{snapName}</b>])}
+            </Text>
+            <Copyable text={error.message} />
+          </SnapDelineator>
+        </Box>
       )}
       {(interfaceId || loading) && (
         <SnapUIRenderer
@@ -79,6 +81,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
           interfaceId={interfaceId}
           isLoading={loading}
           useDelineator={false}
+          useFooter
         />
       )}
     </Box>

@@ -8,7 +8,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderColor,
   Display,
   FlexDirection,
   FontWeight,
@@ -46,7 +45,6 @@ import {
   getMultichainCurrentChainId,
   getMultichainCurrentNetwork,
   getMultichainIsEvm,
-  getMultichainNativeCurrencyImage,
 } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -82,7 +80,6 @@ export const TokenListItem = ({
 }) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const primaryTokenImage = useSelector(getMultichainNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getMultichainCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -128,11 +125,10 @@ export const TokenListItem = ({
       as="button"
       backgroundColor={BackgroundColor.transparent}
       data-testid={`staking-entrypoint-${chainId}`}
-      display={Display.InlineFlex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
       gap={1}
       paddingInline={0}
+      paddingInlineStart={1}
+      paddingInlineEnd={1}
       tabIndex="0"
       onClick={(e) => {
         e.preventDefault();
@@ -159,7 +155,13 @@ export const TokenListItem = ({
       }}
     >
       <Text as="span">•</Text>
-      <Text as="span" color={TextColor.primaryDefault}>
+      <Text
+        as="span"
+        color={TextColor.primaryDefault}
+        paddingInlineStart={1}
+        paddingInlineEnd={1}
+        fontWeight={FontWeight.Medium}
+      >
         {t('stake')}
       </Text>
       <Icon
@@ -189,7 +191,10 @@ export const TokenListItem = ({
         })}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
-        padding={4}
+        paddingTop={2}
+        paddingBottom={2}
+        paddingLeft={4}
+        paddingRight={4}
         data-testid="multichain-token-list-button"
         {...(onClick && {
           as: 'a',
@@ -222,21 +227,13 @@ export const TokenListItem = ({
               name={currentNetwork?.nickname}
               src={currentNetwork?.rpcPrefs?.imageUrl}
               backgroundColor={testNetworkBackgroundColor}
-              borderColor={
-                primaryTokenImage
-                  ? BorderColor.borderMuted
-                  : BorderColor.borderDefault
-              }
+              className="multichain-token-list-item__badge__avatar-network"
             />
           }
-          marginRight={3}
+          marginRight={4}
           className="multichain-token-list-item__badge"
         >
-          <AvatarToken
-            name={tokenSymbol}
-            src={tokenImage}
-            borderColor={tokenImage ? undefined : BorderColor.borderDefault}
-          />
+          <AvatarToken name={tokenSymbol} src={tokenImage} />
         </BadgeWrapper>
         <Box
           className="multichain-token-list-item__container-cell--text-container"

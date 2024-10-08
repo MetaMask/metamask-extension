@@ -11,6 +11,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -42,6 +43,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -66,6 +68,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -82,6 +85,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -106,6 +110,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -122,6 +127,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    style="align-items: center;"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -193,6 +199,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    style="align-items: center;"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -264,6 +271,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    style="align-items: center;"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -339,6 +347,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -355,6 +364,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -371,6 +381,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    style="align-items: center;"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -395,6 +406,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    style="align-items: center;"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -411,6 +423,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -482,6 +495,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -553,6 +567,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"

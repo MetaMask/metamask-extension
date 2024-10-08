@@ -1,13 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import {
-  DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
-  openDapp,
-  switchToNotificationWindow,
-  unlockWallet,
-} from '../../../helpers';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from '../helpers';
@@ -16,9 +10,12 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureMetrics,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
@@ -33,10 +30,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#personalSign');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -48,17 +42,17 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           mockedEndpoints as MockedEndpoint[],
           'personal_sign',
         );
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
-        await assertSignatureMetrics(
+        await assertSignatureConfirmedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'personal_sign',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'personal_sign',
+        });
       },
     );
   });
@@ -70,10 +64,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#personalSign');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
@@ -87,11 +78,12 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           text: 'Error: User rejected the request.',
         });
         assert.ok(rejectionResult);
-        await assertSignatureMetrics(
+        await assertSignatureRejectedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'personal_sign',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'personal_sign',
+          location: 'confirmation',
+        });
       },
     );
   });

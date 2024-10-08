@@ -77,7 +77,7 @@ export const TransactionData = () => {
   );
 };
 
-function Container({
+export function Container({
   children,
   isLoading,
   transactionData,

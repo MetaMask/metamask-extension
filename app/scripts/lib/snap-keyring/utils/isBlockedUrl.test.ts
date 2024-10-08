@@ -10,17 +10,24 @@ describe('isBlockedUrl', () => {
     allowedEvents: [],
   });
   const phishingController = new PhishingController({
+    // @ts-expect-error TODO: Resolve/patch mismatch between messenger types
     messenger: phishingControllerMessenger,
     state: {
       phishingLists: [
         {
-          blocklist: ['https://metamask.test'],
+          blocklist: [
+            'metamask.test',
+            'QmYwAPJzv5CZsnAzt8auVTL6aKqgfZY5vHBYdbyz4ySxTm',
+            'ipfs://QmXbVAkGZMz6p8nJ3wXBng4JwvBqZWkFwnDMevL7Tz5w8y',
+            'QmT78zSuBmuS4z925WJg3vNLRiT4Mj6apb5iS4iykKs4n8',
+          ],
           allowlist: [],
           fuzzylist: [],
           tolerance: 0,
           version: 1,
           lastUpdated: 0,
           name: ListNames.MetaMask,
+          c2DomainBlocklist: [],
         },
       ],
     },
@@ -32,6 +39,16 @@ describe('isBlockedUrl', () => {
     ['https://metamask.io', false],
     ['https://metamask.test', true],
     ['sftp://metamask.io', true],
+    ['ipfs://QmYwAPJzv5CZsnAzt8auVTL6aKqgfZY5vHBYdbyz4ySxTm', true],
+    ['ipfs://QmXbVAkGZMz6p8nJ3wXBng4JwvBqZWkFgnDMevL7Tz5w8y', true],
+    [
+      'https://ipfs.io/ipfs/QmT78zSuBmuS4z925WJg3vNLRiT4Mj6apb5iS4iykKs4n8',
+      true,
+    ],
+    [
+      'https://ipfs.io/ipfs/QmT78zSuBmuS4zdsf925WJsadfsdfg3vNLRiT4Mj6apb5iS4iykKs4n8',
+      false,
+    ],
     ['', true],
     ['1', true],
     [undefined, true],

@@ -52,7 +52,7 @@ describe('Test Snap Images', function () {
 
         // deal with OK button
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -70,13 +70,15 @@ describe('Test Snap Images', function () {
         await driver.clickElement('#showSVGImage');
 
         // switch to notification window
-        await switchToNotificationWindow(driver, 2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // check snaps ui image using waitForSelector
         await driver.waitForSelector('[data-testid="snaps-ui-image"]');
 
         // click ok to close window
-        await driver.clickElement('[data-testid="confirmation-submit-button"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="confirmation-submit-button"]',
+        );
 
         // switch back to test-snaps window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
@@ -85,7 +87,7 @@ describe('Test Snap Images', function () {
         await driver.clickElement('#showPNGImage');
 
         // switch to notification window
-        await switchToNotificationWindow(driver, 2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // check snaps ui image using waitForSelector
         await driver.waitForSelector('[data-testid="snaps-ui-image"]');

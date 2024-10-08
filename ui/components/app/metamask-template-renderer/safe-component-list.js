@@ -26,6 +26,7 @@ import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUILink } from '../snaps/snap-ui-link';
 import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
+import { SnapUIIcon } from '../snaps/snap-ui-icon';
 import { SnapUIImage } from '../snaps/snap-ui-image';
 import { SnapUIFileInput } from '../snaps/snap-ui-file-input';
 import { SnapUIInput } from '../snaps/snap-ui-input';
@@ -35,6 +36,8 @@ import { SnapUIDropdown } from '../snaps/snap-ui-dropdown';
 import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
 import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
+import { SnapUICard } from '../snaps/snap-ui-card';
+import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapFooterButton } from '../snaps/snap-footer-button';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
@@ -79,6 +82,7 @@ export const safeComponentList = {
   SnapDelineator,
   SnapUIMarkdown,
   SnapUILink,
+  SnapUIIcon,
   SnapUIImage,
   Spinner,
   ConfirmInfoRow,
@@ -92,6 +96,8 @@ export const safeComponentList = {
   SnapUIRadioGroup,
   SnapUICheckbox,
   SnapUITooltip,
+  SnapUICard,
+  SnapUISelector,
   SnapFooterButton,
   FormTextField,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

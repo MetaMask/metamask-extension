@@ -65,6 +65,20 @@ describe('useDecodedTransactionData', () => {
     },
   );
 
+  it('returns undefined if no transaction to', async () => {
+    const result = await runHook({
+      currentConfirmation: {
+        chainId: CHAIN_ID_MOCK,
+        txParams: {
+          data: TRANSACTION_DATA_UNISWAP,
+          to: undefined,
+        } as TransactionParams,
+      },
+    });
+
+    expect(result).toStrictEqual({ pending: false, value: undefined });
+  });
+
   it('returns the decoded data', async () => {
     decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_SOURCIFY);
 

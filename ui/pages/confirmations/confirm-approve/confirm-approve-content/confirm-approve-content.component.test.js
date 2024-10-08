@@ -4,12 +4,13 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
     metamask: {
-      providerConfig: { chainId: '0x0' },
+      ...mockNetworkState({ chainId: '0x0' }),
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },

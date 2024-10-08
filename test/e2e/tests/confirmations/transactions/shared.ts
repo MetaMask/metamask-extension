@@ -43,11 +43,39 @@ export async function confirmContractDeploymentTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
-    css: '.confirm-page-container-summary__action__name',
-    text: 'Contract deployment',
+    css: 'h2',
+    text: 'Deploy a contract',
   });
 
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  await scrollAndConfirmAndAssertConfirm(driver);
+
+  await driver.delay(2000);
+  await driver.waitUntilXWindowHandles(2);
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElement({ text: 'Activity', tag: 'button' });
+  await driver.waitForSelector(
+    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+  );
+}
+
+export async function confirmRedesignedContractDeploymentTransaction(
+  driver: Driver,
+) {
+  await driver.waitUntilXWindowHandles(3);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  await driver.waitForSelector({
+    css: 'h2',
+    text: 'Deploy a contract',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'This site wants you to deploy a contract',
+  });
+
+  await scrollAndConfirmAndAssertConfirm(driver);
 
   await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
@@ -80,6 +108,7 @@ export async function confirmDepositTransaction(driver: Driver) {
     text: 'Nonce',
   });
 
+  await driver.delay(veryLargeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 }
 

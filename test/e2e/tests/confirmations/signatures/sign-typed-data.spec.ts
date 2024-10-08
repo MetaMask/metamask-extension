@@ -1,13 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import {
-  DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
-  openDapp,
-  switchToNotificationWindow,
-  unlockWallet,
-} from '../../../helpers';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from '../helpers';
@@ -16,9 +10,12 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureMetrics,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Suite) {
@@ -33,10 +30,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedData');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.SignTypedData);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -54,11 +48,11 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         await driver.clickElement('[data-testid="confirm-footer-button"]');
         await driver.delay(1000);
 
-        await assertSignatureMetrics(
+        await assertSignatureConfirmedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData',
+        });
 
         await assertVerifiedResults(driver, publicAddress);
       },
@@ -72,21 +66,19 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedData');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.SignTypedData);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
         );
         await driver.delay(1000);
 
-        await assertSignatureMetrics(
+        await assertSignatureRejectedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData',
+          location: 'confirmation',
+        });
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

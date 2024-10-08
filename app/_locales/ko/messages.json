@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "정말로 RPC URL을 삭제하시겠습니까? 고객님의 정보는 이 네트워크에 저장되지 않습니다."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 트랜젝션을 컨펌하세요."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "해당 사이트에서 토큰 사용 승인을 요청합니다."
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "받기"
-  },
-  "receiveTokensCamelCase": {
-    "message": "토큰 받기"
   },
   "recipientAddressPlaceholder": {
     "message": "공개 주소(0x) 또는 ENS 제목 입력"

@@ -2,10 +2,10 @@
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
     "UserStorageController": { "isProfileSyncingEnabled": true },
-    "MetamaskNotificationsController": {
+    "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
-      "isMetamaskNotificationsEnabled": "boolean",
+      "isNotificationServicesEnabled": "boolean",
       "isMetamaskNotificationsFeatureSeen": "boolean",
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
@@ -79,15 +79,7 @@
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
       },
-      "providerConfig": {
-        "chainId": "0x539",
-        "nickname": "Localhost 8545",
-        "rpcPrefs": "object",
-        "rpcUrl": "string",
-        "ticker": "ETH",
-        "type": "rpc",
-        "id": "networkConfigurationId"
-      },
+      "providerConfig": "object",
       "networkConfigurations": "object"
     },
     "OnboardingController": {
@@ -153,7 +145,17 @@
     "BridgeController": {
       "bridgeState": {
         "bridgeFeatureFlags": {
-          "extensionSupport": "boolean"
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          },
+          "destNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          }
         }
       }
     },

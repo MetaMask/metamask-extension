@@ -24,6 +24,7 @@ import {
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
   getUseRequestQueue,
+  getCurrentChainId,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -170,7 +171,7 @@ export async function setupInitialStore(
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
     metamaskState.networkId,
-    metamaskState.providerConfig.chainId,
+    getCurrentChainId({ metamask: metamaskState }),
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
   if (numberOfUnapprovedTx > 0) {
@@ -197,9 +198,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   global.metamask = {
     updateCurrentLocale: (code) => {
       store.dispatch(actions.updateCurrentLocale(code));
-    },
-    setProviderType: (type) => {
-      store.dispatch(actions.setProviderType(type));
     },
     setFeatureFlag: (key, value) => {
       store.dispatch(actions.setFeatureFlag(key, value));

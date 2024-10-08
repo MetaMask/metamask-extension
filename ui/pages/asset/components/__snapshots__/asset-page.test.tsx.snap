@@ -87,24 +87,6 @@ exports[`AssetPage should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button coin-overview__button"
-          data-testid="coin-overview-send"
-        >
-          <div
-            class="icon-button__circle"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Send
-          </p>
-        </button>
-        <button
           class="icon-button coin-overview__button icon-button--disabled"
           data-testid="token-overview-button-swap"
           disabled=""
@@ -143,20 +125,38 @@ exports[`AssetPage should render a native asset 1`] = `
         </button>
         <button
           class="icon-button coin-overview__button"
-          data-testid="coin-overview-portfolio"
+          data-testid="coin-overview-send"
         >
           <div
             class="icon-button__circle"
           >
             <span
               class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/diagram.svg');"
+              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
           <p
             class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
-            Portfolio
+            Send
+          </p>
+        </button>
+        <button
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-receive"
+        >
+          <div
+            class="icon-button__circle"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/scan-barcode.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Receive
           </p>
         </button>
       </div>
@@ -174,14 +174,14 @@ exports[`AssetPage should render a native asset 1`] = `
         data-testid="multichain-token-list-item"
       >
         <div
-          class="mm-box multichain-token-list-item__container-cell mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row"
+          class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
           data-testid="multichain-token-list-button"
         >
           <div
-            class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-3 mm-box--display-inline-block"
+            class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
             >
               T
             </div>
@@ -189,10 +189,10 @@ exports[`AssetPage should render a native asset 1`] = `
               class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="network logo"
+                  alt="Ethereum Mainnet logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -458,14 +458,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         data-testid="multichain-token-list-item"
       >
         <div
-          class="mm-box multichain-token-list-item__container-cell mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row"
+          class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
           data-testid="multichain-token-list-button"
         >
           <div
-            class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-3 mm-box--display-inline-block"
+            class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
             >
               T
             </div>
@@ -473,10 +473,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="network logo"
+                  alt="Ethereum Mainnet logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -935,14 +935,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         data-testid="multichain-token-list-item"
       >
         <div
-          class="mm-box multichain-token-list-item__container-cell mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row"
+          class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
           data-testid="multichain-token-list-button"
         >
           <div
-            class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-3 mm-box--display-inline-block"
+            class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
             >
               T
             </div>
@@ -950,10 +950,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="network logo"
+                  alt="Ethereum Mainnet logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />

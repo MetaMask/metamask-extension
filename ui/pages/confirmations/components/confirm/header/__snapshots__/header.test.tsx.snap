@@ -217,7 +217,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--background-color-transparent mm-box--rounded-md"
+          class="mm-box mm-box--margin-left-4 mm-box--background-color-transparent mm-box--rounded-md"
         >
           <button
             aria-label="Advanced tx details"

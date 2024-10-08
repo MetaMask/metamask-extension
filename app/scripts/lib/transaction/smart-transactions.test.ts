@@ -110,7 +110,8 @@ describe('submitSmartTransactionHook', () => {
       smartTransactionsController: createSmartTransactionsControllerMock(),
       transactionController: createTransactionControllerMock(),
       isSmartTransaction: true,
-      isHardwareWallet: false,
+      signedTransactionInHex:
+        '0x02f8b104058504a817c8008504a817c80082b427949ba60bbf4ba1de43f3b4983a539feebfbd5fd97680b844095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000011170c080a0fdd2cb46203b5e7bba99cc56a37da3e5e3f36163a5bd9c51cddfd8d7028f5dd0a054c35cfa10b3350a3fd3a0e7b4aeb0b603d528c07a8cfdf4a78505d9864edef4',
       controllerMessenger: createSmartTransactionsControllerMessengerMock(),
       featureFlags: {
         extensionActive: true,
@@ -145,13 +146,6 @@ describe('submitSmartTransactionHook', () => {
   it('falls back to regular transaction submit if the transaction type is "swapApproval"', async () => {
     const request: SubmitSmartTransactionRequestMocked = createRequest();
     request.transactionMeta.type = TransactionType.swapApproval;
-    const result = await submitSmartTransactionHook(request);
-    expect(result).toEqual({ transactionHash: undefined });
-  });
-
-  it('falls back to regular transaction submit if a hardware wallet is used', async () => {
-    const request: SubmitSmartTransactionRequestMocked = createRequest();
-    request.isHardwareWallet = true;
     const result = await submitSmartTransactionHook(request);
     expect(result).toEqual({ transactionHash: undefined });
   });
@@ -211,8 +205,91 @@ describe('submitSmartTransactionHook', () => {
     );
   });
 
-  it('submits a smart transaction', async () => {
+  it('submits a smart transaction with an already signed transaction', async () => {
     const request: SubmitSmartTransactionRequestMocked = createRequest();
+    setImmediate(() => {
+      request.smartTransactionsController.eventEmitter.emit(
+        `uuid:smartTransaction`,
+        {
+          status: 'pending',
+          statusMetadata: {
+            minedHash: '',
+          },
+        },
+      );
+      request.smartTransactionsController.eventEmitter.emit(
+        `uuid:smartTransaction`,
+        {
+          status: 'success',
+          statusMetadata: {
+            minedHash: txHash,
+          },
+        },
+      );
+    });
+    const result = await submitSmartTransactionHook(request);
+    expect(result).toEqual({ transactionHash: txHash });
+    const { txParams } = request.transactionMeta;
+    expect(
+      request.smartTransactionsController.submitSignedTransactions,
+    ).toHaveBeenCalledWith({
+      signedTransactions: [request.signedTransactionInHex],
+      signedCanceledTransactions: [],
+      txParams,
+      transactionMeta: request.transactionMeta,
+    });
+    addRequestCallback();
+    expect(request.controllerMessenger.call).toHaveBeenCalledTimes(4);
+    expect(request.controllerMessenger.call).toHaveBeenCalledWith(
+      'ApprovalController:startFlow',
+    );
+    expect(request.controllerMessenger.call).toHaveBeenCalledWith(
+      'ApprovalController:addRequest',
+      {
+        id: 'approvalId',
+        origin: 'http://localhost',
+        type: 'smartTransaction:showSmartTransactionStatusPage',
+        requestState: {
+          smartTransaction: {
+            status: 'pending',
+            uuid,
+            creationTime: expect.any(Number),
+          },
+          isDapp: true,
+          txId,
+        },
+      },
+      true,
+    );
+    expect(request.controllerMessenger.call).toHaveBeenCalledWith(
+      'ApprovalController:updateRequestState',
+      {
+        id: 'approvalId',
+        requestState: {
+          smartTransaction: {
+            status: 'success',
+            statusMetadata: {
+              minedHash:
+                '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356',
+            },
+          },
+          isDapp: true,
+          txId,
+        },
+      },
+    );
+
+    expect(request.controllerMessenger.call).toHaveBeenCalledWith(
+      'ApprovalController:endFlow',
+      {
+        id: 'approvalId',
+      },
+    );
+  });
+
+  it('signs and submits a smart transaction', async () => {
+    const request: SubmitSmartTransactionRequestMocked = createRequest();
+    request.signedTransactionInHex = undefined;
     setImmediate(() => {
       request.smartTransactionsController.eventEmitter.emit(
         `uuid:smartTransaction`,
@@ -333,24 +410,14 @@ describe('submitSmartTransactionHook', () => {
     });
     const result = await submitSmartTransactionHook(request);
     expect(result).toEqual({ transactionHash: txHash });
-    const { txParams, chainId } = request.transactionMeta;
+    const { txParams } = request.transactionMeta;
     expect(
       request.transactionController.approveTransactionsWithSameNonce,
-    ).toHaveBeenCalledWith(
-      [
-        {
-          ...txParams,
-          maxFeePerGas: '0x2fd8a58d7',
-          maxPriorityFeePerGas: '0xaa0f8a94',
-          chainId,
-        },
-      ],
-      { hasNonce: true },
-    );
+    ).not.toHaveBeenCalled();
     expect(
       request.smartTransactionsController.submitSignedTransactions,
     ).toHaveBeenCalledWith({
-      signedTransactions: [createSignedTransaction()],
+      signedTransactions: [request.signedTransactionInHex],
       signedCanceledTransactions: [],
       txParams,
       transactionMeta: request.transactionMeta,

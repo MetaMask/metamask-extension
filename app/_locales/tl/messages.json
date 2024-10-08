@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Sigurado ka ba na nais mong tanggalin ang RPC URL? Ang iyong impormasyon ay hindi mase-save sa network na ito."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Kumpirmahin lamang ang transaksyong ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Ang site na ito ay nais ng permiso para gamitin ang iyong mga token."
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "Tumanggap"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Tumanggap ng mga token"
   },
   "recipientAddressPlaceholder": {
     "message": "Ilagay ang pampublikong address (0x) o ENS name"

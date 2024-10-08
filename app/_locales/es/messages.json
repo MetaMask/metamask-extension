@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "¿Está seguro de que desea eliminar la URL RPC? Su información no se guardará para esta red."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Solo confirme esta transacción si entiende completamente el contenido y confía en el sitio solicitante."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Este sitio solicita permiso para gastar sus tokens."
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "Recibir"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Recibir tokens"
   },
   "recipientAddressPlaceholder": {
     "message": "Ingrese la dirección pública (0x) o el nombre de ENS"

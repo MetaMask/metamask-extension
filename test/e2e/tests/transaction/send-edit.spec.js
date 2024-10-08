@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+
 const {
   defaultGanacheOptions,
   withFixtures,

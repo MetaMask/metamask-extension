@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "क्या आप वाकई RPC URL को हटाना चाहते हैं? आपकी जानकारी इस नेटवर्क के लिए सेव नहीं की जाएगी।"
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "यदि आप कंटेंट को पूरी तरह से समझते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं तो ही इस ट्रांसेक्शन को कन्फर्म करें"
-  },
   "confirmTitleDescPermitSignature": {
     "message": "यह साइट आपके टोकन खर्च करने की अनुमति चाहती है।"
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "प्राप्त करें"
-  },
-  "receiveTokensCamelCase": {
-    "message": "टोकन प्राप्त करें"
   },
   "recipientAddressPlaceholder": {
     "message": "सार्वजनिक एड्रेस (0x) या ENS नाम डालें"

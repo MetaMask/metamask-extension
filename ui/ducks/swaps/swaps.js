@@ -1027,6 +1027,7 @@ export const signAndSendSwapsSmartTransaction = ({
       history.push(SMART_TRANSACTION_STATUS_ROUTE);
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
+      dispatch(setSwapsSTXSubmitLoading(false));
       const {
         swaps: { isFeatureFlagLoaded },
       } = getState();

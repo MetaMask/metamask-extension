@@ -24,7 +24,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { DomainInputResolutionCell } from './domain-input-resolution-cell';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';

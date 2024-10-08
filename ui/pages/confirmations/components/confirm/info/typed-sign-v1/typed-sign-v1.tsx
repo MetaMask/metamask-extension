@@ -1,10 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import {
@@ -27,9 +29,14 @@ const TypedSignV1Info: React.FC = () => {
   return (
     <>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.RequestFrom}
+          ownerId={currentConfirmation.id}
+          label={t('requestFrom')}
+          tooltip={t('requestFromInfo')}
+        >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
+        </ConfirmInfoAlertRow>
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         <ConfirmInfoRow label={t('message')}>

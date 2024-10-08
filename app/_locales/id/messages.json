@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Yakin ingin menghapus URL RPC? Informasi Anda tidak akan disimpan untuk jaringan ini."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Konfirmasikan transaksi ini hanya jika Anda benar-benar memahami isinya dan memercayai situs yang memintanya."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Situs ini meminta izin untuk menggunakan token Anda."
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "Terima"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Terima token"
   },
   "recipientAddressPlaceholder": {
     "message": "Masukkan alamat publik (0x) atau nama ENS"

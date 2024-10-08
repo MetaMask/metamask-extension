@@ -8,13 +8,20 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
 import { currentConfirmationSelector } from '../../../../../selectors';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useFourByte } from '../../hooks/useFourByte';
+import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { PRIMARY } from '../../../../../../../helpers/constants/common';
+import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { HEX_ZERO } from '../constants';
 
-const OriginRow = () => {
+export const OriginRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
@@ -28,17 +35,19 @@ const OriginRow = () => {
   }
 
   return (
-    <ConfirmInfoRow
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.RequestFrom}
+      ownerId={currentConfirmation.id}
       data-testid="transaction-details-origin-row"
       label={t('requestFrom')}
       tooltip={t('requestFromTransactionDescription')}
     >
       <ConfirmInfoRowUrl url={origin} />
-    </ConfirmInfoRow>
+    </ConfirmInfoAlertRow>
   );
 };
 
-const RecipientRow = () => {
+export const RecipientRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
@@ -63,7 +72,7 @@ const RecipientRow = () => {
   );
 };
 
-const MethodDataRow = () => {
+export const MethodDataRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
@@ -84,6 +93,32 @@ const MethodDataRow = () => {
     >
       <ConfirmInfoRowText text={methodData.name} />
     </ConfirmInfoRow>
+  );
+};
+
+const AmountRow = () => {
+  const t = useI18nContext();
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as TransactionMeta;
+  const { currency } = useUserPreferencedCurrency(PRIMARY);
+
+  const value = currentConfirmation?.txParams?.value;
+  const simulationData = currentConfirmation?.simulationData;
+
+  if (!value || value === HEX_ZERO || !simulationData?.error) {
+    return null;
+  }
+
+  return (
+    <ConfirmInfoSection>
+      <ConfirmInfoRow
+        data-testid="transaction-details-amount-row"
+        label={t('amount')}
+      >
+        <ConfirmInfoRowCurrency value={value} currency={currency} />
+      </ConfirmInfoRow>
+    </ConfirmInfoSection>
   );
 };
 
@@ -120,13 +155,18 @@ const PaymasterRow = () => {
 };
 
 export const TransactionDetails = () => {
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
         <OriginRow />
         <RecipientRow />
-        <MethodDataRow />
+        {showAdvancedDetails && <MethodDataRow />}
       </ConfirmInfoSection>
+      <AmountRow />
       <PaymasterRow />
     </>
   );

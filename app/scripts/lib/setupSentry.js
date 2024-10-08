@@ -3,12 +3,11 @@ import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-import { filterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-
-let installType = 'unknown';
+import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
+let installType = 'unknown';
 
 export const log = createModuleLogger(
   projectLogger,
@@ -36,6 +35,39 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
+export default function setupSentry() {
+  if (!RELEASE) {
+    throw new Error('Missing release');
+  }
+
+  if (!getSentryTarget()) {
+    log('Skipped initialization');
+    return undefined;
+  }
+
+  log('Initializing');
+
+  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
+  // If it's not, we still get the extensionId, but the installType will default to "unknown"
+  browser.management
+    .getSelf()
+    .then((extensionInfo) => {
+      if (extensionInfo.installType) {
+        installType = extensionInfo.installType;
+      }
+    })
+    .catch((error) => {
+      log('Error getting extension installType', error);
+    });
+  integrateLogging();
+  setSentryClient();
+
+  return {
+    ...Sentry,
+    getMetaMetricsEnabled,
+  };
+}
+
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
@@ -44,8 +76,8 @@ function getClientOptions() {
     beforeBreadcrumb: beforeBreadcrumb(),
     beforeSend: (report) => rewriteReport(report),
     debug: METAMASK_DEBUG,
-    dsn: sentryTarget,
     dist: isManifestV3 ? 'mv3' : 'mv2',
+    dsn: sentryTarget,
     environment,
     integrations: [
       Sentry.dedupeIntegration(),
@@ -66,26 +98,6 @@ function getClientOptions() {
   };
 }
 
-export default function setupSentry() {
-  if (!RELEASE) {
-    throw new Error('Missing release');
-  }
-
-  if (!getSentryTarget()) {
-    log('Skipped initialization');
-    return undefined;
-  }
-
-  log('Initializing');
-
-  integrateLogging();
-  setSentryClient();
-
-  return {
-    ...Sentry,
-    getMetaMetricsEnabled,
-  };
-}
 /**
  * Returns whether MetaMetrics is enabled, given the application state.
  *
@@ -224,18 +236,6 @@ function setSentryClient() {
   const clientOptions = getClientOptions();
   const { dsn, environment, release } = clientOptions;
 
-  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
-  // If it's not, we still get the extensionId, but the installType will default to "unknown"
-  browser.management
-    .getSelf()
-    .then((extensionInfo) => {
-      if (extensionInfo.installType) {
-        installType = extensionInfo.installType;
-      }
-    })
-    .catch((error) => {
-      console.log('Error getting extension installType', error);
-    });
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
    * potentially clashing with a website also using Sentry, but this could only happen in the content script.

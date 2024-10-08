@@ -28,7 +28,6 @@ import {
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
-import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
   isPrefixedFormattedHexString,
@@ -45,9 +44,9 @@ import { usePrevious } from '../../../../hooks/usePrevious';
 import {
   getNonTestNetworks,
   getOrderedNetworksList,
-  useSafeChainsListValidationSelector,
 } from '../../../../selectors';
 import {
+  upsertNetworkConfiguration,
   requestUserApproval,
   setEditedNetwork,
   setNewNetworkAdded,
@@ -55,7 +54,6 @@ import {
   showDeprecatedNetworkModal,
   showModal,
   toggleNetworkMenu,
-  upsertNetworkConfiguration,
 } from '../../../../store/actions';
 import {
   Box,
@@ -88,7 +86,7 @@ import {
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
 import { ACTION_MODES } from '../../../../components/multichain/network-list-menu/network-list-menu';
 import InfoTooltip from '../../../../components/ui/info-tooltip';
-import { sha256 } from '../../../../../shared/modules/hash.utils';
+import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -190,10 +188,7 @@ const NetworksForm = ({
   const nonTestNetworks = useSelector(getNonTestNetworks);
 
   const trackEvent = useContext(MetaMetricsContext);
-
-  const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
-  );
+  const { safeChains } = useSafeChains();
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
 
@@ -204,50 +199,37 @@ const NetworksForm = ({
   const safeChainsList = useRef([]);
 
   useEffect(() => {
-    async function fetchChainList() {
-      try {
-        const chainList = await fetchWithCache({
-          url: 'https://chainid.network/chains.json',
-          functionName: 'getSafeChainsList',
-        });
-        Object.values(BUILT_IN_NETWORKS).forEach((network) => {
-          const index = chainList.findIndex(
-            (chain) =>
-              chain.chainId.toString() === getDisplayChainId(network.chainId),
-          );
-          if (network.ticker && index !== -1) {
-            chainList[index].nativeCurrency.symbol = network.ticker;
-          }
-        });
-        safeChainsList.current = [
-          ...chainList,
-          {
-            chainId: 137,
-            nativeCurrency: {
-              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.MATIC,
-            },
-          },
-          {
-            chainId: 78,
-            nativeCurrency: {
-              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
-            },
-          },
-          {
-            chainId: 88888,
-            nativeCurrency: {
-              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.CHZ,
-            },
-          },
-        ];
-      } catch (error) {
-        log.warn('Failed to fetch chainList from chainid.network', error);
+    Object.values(BUILT_IN_NETWORKS).forEach((network) => {
+      const index = safeChains.findIndex(
+        (chain) =>
+          chain.chainId.toString() === getDisplayChainId(network.chainId),
+      );
+      if (network.ticker && index !== -1) {
+        safeChains[index].nativeCurrency.symbol = network.ticker;
       }
-    }
-    if (useSafeChainsListValidation) {
-      fetchChainList();
-    }
-  }, [useSafeChainsListValidation]);
+    });
+    safeChainsList.current = [
+      ...safeChains,
+      {
+        chainId: 137,
+        nativeCurrency: {
+          symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.MATIC,
+        },
+      },
+      {
+        chainId: 78,
+        nativeCurrency: {
+          symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
+        },
+      },
+      {
+        chainId: 88888,
+        nativeCurrency: {
+          symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.CHZ,
+        },
+      },
+    ];
+  }, [safeChains]);
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
@@ -965,6 +947,7 @@ const NetworksForm = ({
             },
           ),
         );
+
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
@@ -977,7 +960,7 @@ const NetworksForm = ({
             token_symbol: ticker,
           },
           sensitiveProperties: {
-            rpcUrl: await sha256(rpcUrl),
+            rpcUrl: rpcIdentifierUtility(rpcUrl, safeChains),
           },
         });
         if (networkMenuRedesign) {

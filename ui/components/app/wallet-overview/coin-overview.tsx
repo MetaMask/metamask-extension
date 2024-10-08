@@ -1,15 +1,25 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
-
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
+import { Icon, IconName, IconSize } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
+  getDataCollectionForMarketing,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
   getPreferences,
   getTokensMarketData,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -66,6 +76,12 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useContext(I18nContext);
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+
   const isEvm = useSelector(getMultichainIsEvm);
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
@@ -77,6 +93,25 @@ export const CoinOverview = ({
     rpcUrl,
   );
   const tokensMarketData = useSelector(getTokensMarketData);
+
+  const handlePortfolioOnClick = useCallback(() => {
+    const url = getPortfolioUrl(
+      '',
+      'ext_portfolio_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
+    global.platform.openTab({ url });
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PortfolioLinkClicked,
+      properties: {
+        location: 'Home',
+        text: 'Portfolio',
+      },
+    });
+  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
 
   return (
     <WalletOverview
@@ -120,19 +155,34 @@ export const CoinOverview = ({
                 </span>
               )}
             </div>
-            {showFiat && isOriginalNativeSymbol && balance && (
-              <UserPreferencedCurrencyDisplay
-                className={classnames({
-                  [`${classPrefix}__cached-secondary-balance`]: balanceIsCached,
-                  [`${classPrefix}__secondary-balance`]: !balanceIsCached,
-                })}
-                data-testid={`${classPrefix}-overview__secondary-currency`}
-                value={balance}
-                type={SECONDARY}
-                ethNumberOfDecimals={4}
-                hideTitle
-              />
-            )}
+            <div className="wallet-overview__currency-wrapper">
+              {showFiat && isOriginalNativeSymbol && balance && (
+                <UserPreferencedCurrencyDisplay
+                  className={classnames({
+                    [`${classPrefix}__cached-secondary-balance`]:
+                      balanceIsCached,
+                    [`${classPrefix}__secondary-balance`]: !balanceIsCached,
+                  })}
+                  data-testid={`${classPrefix}-overview__secondary-currency`}
+                  value={balance}
+                  type={SECONDARY}
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                />
+              )}
+              <div
+                onClick={handlePortfolioOnClick}
+                className="wallet-overview__portfolio_button"
+                data-testid="portfolio-link"
+              >
+                {t('portfolio')}
+                <Icon
+                  size={IconSize.Sm}
+                  name={IconName.Export}
+                  color={IconColor.primaryDefault}
+                />
+              </div>
+            </div>
             {isEvm && (
               <PercentageAndAmountChange
                 value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}

@@ -1,27 +1,15 @@
-import { isHexString } from 'ethereumjs-util';
 import EthQuery, { Provider } from '@metamask/eth-query';
-import { BigNumber } from 'bignumber.js';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
+import { BigNumber } from 'bignumber.js';
+import { isHexString } from 'ethereumjs-util';
 
+import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import {
-  determineTransactionAssetType,
-  isEIP1559Transaction,
-} from '../../../../shared/modules/transaction.utils';
-import {
-  hexWEIToDecETH,
-  hexWEIToDecGWEI,
-} from '../../../../shared/modules/conversion.utils';
-import {
-  TokenStandard,
-  TransactionApprovalAmountType,
-  TransactionMetaMetricsEvent,
-} from '../../../../shared/constants/transaction';
+import { GasRecommendations } from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
@@ -30,22 +18,37 @@ import {
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
-import { GasRecommendations } from '../../../../shared/constants/gas';
+import {
+  TokenStandard,
+  TransactionApprovalAmountType,
+  TransactionMetaMetricsEvent,
+} from '../../../../shared/constants/transaction';
 import {
   calcGasTotal,
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import {
+  hexWEIToDecETH,
+  hexWEIToDecGWEI,
+} from '../../../../shared/modules/conversion.utils';
+import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
+import {
+  determineTransactionAssetType,
+  isEIP1559Transaction,
+} from '../../../../shared/modules/transaction.utils';
+import {
   getBlockaidMetricsProps,
   getSwapAndSendMetricsProps,
 } from '../../../../ui/helpers/utils/metrics';
-import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
+import {
+  REDESIGN_DEV_TRANSACTION_TYPES,
+  REDESIGN_USER_TRANSACTION_TYPES,
+} from '../../../../ui/pages/confirmations/utils';
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
-import { REDESIGN_TRANSACTION_TYPES } from '../../../../ui/pages/confirmations/utils';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -1004,9 +1007,14 @@ async function buildEventFragmentProperties({
     transactionMetricsRequest.getRedesignedTransactionsEnabled();
 
   if (
-    (isRedesignedConfirmationsDeveloperSettingEnabled ||
-      isRedesignedTransactionsUserSettingEnabled) &&
-    REDESIGN_TRANSACTION_TYPES.includes(transactionMeta.type as TransactionType)
+    (isRedesignedConfirmationsDeveloperSettingEnabled &&
+      REDESIGN_DEV_TRANSACTION_TYPES.includes(
+        transactionMeta.type as TransactionType,
+      )) ||
+    (isRedesignedTransactionsUserSettingEnabled &&
+      REDESIGN_USER_TRANSACTION_TYPES.includes(
+        transactionMeta.type as TransactionType,
+      ))
   ) {
     uiCustomizations.push(
       MetaMetricsEventUiCustomization.RedesignedConfirmation,

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import type { FC } from 'react';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/types';
-import { TRIGGER_TYPES } from '../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -25,6 +24,9 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MINUTE } from '../../../../shared/constants/time';
+
+type Notification = NotificationServicesController.Types.INotification;
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 export type NotificationDetailCopyButtonProps = {
   notification?: Notification;

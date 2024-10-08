@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "RPC URLを削除してよろしいですか？このネットワークの情報は保存されません。"
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "このトランザクションの内容を完全に理解し、要求元のサイトを信頼する場合にのみ確定してください。"
-  },
   "confirmTitleDescPermitSignature": {
     "message": "このサイトがトークンの使用許可を求めています。"
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "受取"
-  },
-  "receiveTokensCamelCase": {
-    "message": "トークンの受取"
   },
   "recipientAddressPlaceholder": {
     "message": "パブリックアドレス (0x) またはENS名を入力してください"

@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Voulez-vous vraiment supprimer l’URL du RPC ? Vos informations ne seront pas sauvegardées pour ce réseau."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Ne confirmez cette transaction que si vous comprenez parfaitement son contenu et si vous faites confiance au site demandeur."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Ce site demande que vous lui accordiez l'autorisation de dépenser vos jetons."
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "Recevoir"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Recevez des jetons"
   },
   "recipientAddressPlaceholder": {
     "message": "Saisissez l’adresse publique (0x) ou le nom de domaine ENS"

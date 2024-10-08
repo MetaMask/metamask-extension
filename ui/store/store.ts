@@ -51,6 +51,7 @@ type TemporaryBackgroundState = {
       name: string;
     }[];
   };
+  // todo: can this be deleted post network controller v20
   providerConfig: {
     chainId: string;
   };

@@ -20,6 +20,7 @@ import { SecurityAlertResponse } from './types';
 import {
   getSecurityAlertsAPISupportedChainIds,
   isSecurityAlertsAPIEnabled,
+  SecurityAlertsAPIRequest,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
 
@@ -205,7 +206,7 @@ async function findConfirmationBySecurityAlertId(
 
 async function validateWithController(
   ppomController: PPOMController,
-  request: JsonRpcRequest,
+  request: SecurityAlertsAPIRequest | JsonRpcRequest,
 ): Promise<SecurityAlertResponse> {
   const response = (await ppomController.usePPOM((ppom: PPOM) =>
     ppom.validateJsonRpc(request),
@@ -220,7 +221,7 @@ async function validateWithController(
 async function validateWithAPI(
   ppomController: PPOMController,
   chainId: string,
-  request: JsonRpcRequest,
+  request: SecurityAlertsAPIRequest | JsonRpcRequest,
 ): Promise<SecurityAlertResponse> {
   try {
     const response = await validateWithSecurityAlertsAPI(chainId, request);

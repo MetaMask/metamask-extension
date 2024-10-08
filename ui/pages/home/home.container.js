@@ -69,8 +69,8 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
-  setEditedNetwork,
   setDataCollectionForMarketing,
+  setEditedNetwork,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,

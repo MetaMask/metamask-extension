@@ -7,7 +7,8 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponentFactory } from './types';
+import { UIComponentFactory, UIComponentParams } from './types';
+import { button as buttonFn } from './button';
 
 export const DEFAULT_FOOTER = {
   element: 'Box',
@@ -28,11 +29,12 @@ export const DEFAULT_FOOTER = {
 const getDefaultButtons = (
   footer: FooterElement,
   t: (value: string) => string,
-  onCancel: () => void,
+  onCancel?: () => void,
 ) => {
   const children = getJsxChildren(footer);
 
-  if (children.length === 1) {
+  // If onCancel is omitted by the caller we assume that it is safe to not display the default footer.
+  if (children.length === 1 && onCancel) {
     return {
       element: 'SnapFooterButton',
       key: 'default-button',
@@ -51,20 +53,24 @@ export const footer: UIComponentFactory<FooterElement> = ({
   element,
   t,
   onCancel,
+  ...params
 }) => {
   const defaultButtons = getDefaultButtons(element, t, onCancel);
 
   const footerChildren = (getJsxChildren(element) as ButtonElement[]).map(
-    (children) => {
-      const { children: buttonChildren, ...props } = children.props;
+    (children, index) => {
+      const buttonMapped = buttonFn({
+        ...params,
+        element: children,
+      } as UIComponentParams<ButtonElement>);
       return {
         element: 'SnapFooterButton',
-        key: `snap-footer-button-${props.name}`,
+        key: `snap-footer-button-${buttonMapped.props?.name ?? index}`,
         props: {
-          ...props,
+          ...buttonMapped.props,
           isSnapAction: true,
         },
-        children: buttonChildren,
+        children: buttonMapped.children,
       };
     },
   );

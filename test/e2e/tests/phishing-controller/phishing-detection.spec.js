@@ -253,39 +253,6 @@ describe('Phishing Detection', function () {
     );
   });
 
-  it('should navigate the user to PhishFort to dispute a Phishfort Block', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
-          return setupPhishingDetectionMocks(mockServer, {
-            blockProvider: BlockProvider.PhishFort,
-            blocklist: ['127.0.0.1'],
-          });
-        },
-        dapp: true,
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage('http://127.0.0.1:8080');
-
-        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-        await driver.clickElement({ text: 'report a detection problem.' });
-
-        // wait for page to load before checking URL.
-        await driver.findElement({
-          text: `Empty page by ${BlockProvider.PhishFort}`,
-        });
-        assert.equal(
-          await driver.getCurrentUrl(),
-          `https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
-        );
-      },
-    );
-  });
-
   it('should open a new extension expanded view when clicking back to safety button', async function () {
     await withFixtures(
       {

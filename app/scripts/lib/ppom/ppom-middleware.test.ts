@@ -1,5 +1,4 @@
 import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
-import * as ControllerUtils from '@metamask/controller-utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
@@ -7,6 +6,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
@@ -65,7 +65,7 @@ const createMiddleware = (
   }
 
   const networkController = {
-    state: { providerConfig: { chainId: chainId || CHAIN_IDS.MAINNET } },
+    state: mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
   };
 
   const appStateController = {
@@ -238,7 +238,7 @@ describe('PPOMMiddleware', () => {
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -258,32 +258,13 @@ describe('PPOMMiddleware', () => {
         '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
         'Example password',
       ],
-      jsonrpc: '2.0',
+      jsonrpc: '2.0' as const,
       id: 2974202441,
       origin: 'https://metamask.github.io',
       networkClientId: 'mainnet',
       tabId: 1048745900,
       securityAlertResponse: undefined,
     };
-    jest.spyOn(ControllerUtils, 'detectSIWE').mockReturnValue({
-      isSIWEMessage: true,
-      parsedMessage: {
-        address: '0x935e73edb9ff52e23bac7f7e049a1ecd06d05477',
-        chainId: 1,
-        domain: 'metamask.github.io',
-        expirationTime: null,
-        issuedAt: '2021-09-30T16:25:24.000Z',
-        nonce: '32891757',
-        notBefore: '2022-03-17T12:45:13.610Z',
-        requestId: 'some_id',
-        scheme: null,
-        statement:
-          'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
-        uri: 'https://metamask.github.io',
-        version: '1',
-        resources: null,
-      },
-    });
 
     await middlewareFunction(req, undefined, () => undefined);
 

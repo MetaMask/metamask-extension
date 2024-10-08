@@ -40,6 +40,22 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
+/**
+ * @typedef {object} Fixtures
+ * @property {import('./webdriver/driver').Driver} driver - The driver number.
+ * @property {GanacheContractAddressRegistry | undefined} contractRegistry - The contract registry.
+ * @property {Ganache | undefined} ganacheServer - The Ganache server.
+ * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
+ * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
+ * @property {Bundler} bundlerServer - The bundler server.
+ * @property {mockttp.Mockttp} mockServer - The mock server.
+ */
+
+/**
+ *
+ * @param {object} options
+ * @param {(fixtures: Fixtures) => Promise<void>} testSuite
+ */
 async function withFixtures(options, testSuite) {
   const {
     dapp,
@@ -180,9 +196,9 @@ async function withFixtures(options, testSuite) {
           if (typeof originalProperty === 'function') {
             return (...args) => {
               console.log(
-                `[driver] Called '${prop}' with arguments ${JSON.stringify(
+                `${new Date().toISOString()} [driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
-                ).slice(0, 200)}`, // limit the length of the log entry to 200 characters
+                ).slice(0, 224)}`, // limit the length of the log entry to 224 characters
               );
               return originalProperty.bind(target)(...args);
             };
@@ -734,6 +750,10 @@ const switchToOrOpenDapp = async (
   }
 };
 
+/**
+ *
+ * @param {import('./webdriver/driver').Driver} driver
+ */
 const connectToDapp = async (driver) => {
   await openDapp(driver);
   // Connect to dapp
@@ -742,12 +762,12 @@ const connectToDapp = async (driver) => {
     tag: 'button',
   });
 
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Next',
     tag: 'button',
   });
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'Confirm',
     tag: 'button',
   });
@@ -1066,7 +1086,7 @@ async function switchToNotificationWindow(driver) {
  * @param {WebDriver} driver
  * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints
  * @param {boolean} hasRequest
- * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
+ * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse[]>}
  */
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(

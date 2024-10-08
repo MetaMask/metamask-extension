@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "您确定要删除 RPC（远程过程调用）URL 吗？您的信息将不会保存到此网络。"
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "仅在您完全理解内容并信任请求网站的情况下，才能确认此交易。"
-  },
   "confirmTitleDescPermitSignature": {
     "message": "此网站需要获得许可来使用您的代币。"
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "收款"
-  },
-  "receiveTokensCamelCase": {
-    "message": "收取代币"
   },
   "recipientAddressPlaceholder": {
     "message": "输入公钥 (0x) 或 ENS 名称"

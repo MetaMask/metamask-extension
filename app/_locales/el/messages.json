@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Είστε σίγουροι ότι θέλετε να διαγράψετε τη διεύθυνση URL RPC; Οι πληροφορίες σας δεν θα αποθηκευτούν για αυτό το δίκτυο."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Επιβεβαιώστε αυτή τη συναλλαγή μόνο εάν κατανοείτε πλήρως το περιεχόμενο και εμπιστεύεστε τον ιστότοπο που τη ζητάει."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Αυτός ο ιστότοπος ζητάει άδεια για να δαπανήσει τα tokens σας."
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "Λήψη"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Λάβετε tokens"
   },
   "recipientAddressPlaceholder": {
     "message": "Εισάγετε τη δημόσια διεύθυνση (0x) ή το όνομα ENS"

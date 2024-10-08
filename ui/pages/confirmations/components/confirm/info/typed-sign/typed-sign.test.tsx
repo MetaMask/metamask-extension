@@ -11,6 +11,15 @@ import {
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import TypedSignInfo from './typed-sign';
 
+jest.mock(
+  '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
+
 jest.mock('../../../../../../store/actions', () => {
   return {
     getTokenStandardAndDetails: jest.fn().mockResolvedValue({ decimals: 2 }),
