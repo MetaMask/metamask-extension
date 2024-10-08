@@ -4734,13 +4734,6 @@
   "smartTransactionSuccess": {
     "message": "आपका ट्रांसेक्शन पूरा हो गया है"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "माफ़ी चाहते हैं कि आपको इंतज़ार करना पड़ा"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "यदि आपका ट्रांसेक्शन $1 के भीतर फाइनलाइज़ नहीं होता है, तो इसे कैंसिल कर दिया जाएगा और आपसे गैस फ़ीस नहीं ली जाएगी।",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "स्मार्ट ट्रांसेक्शन"
   },
@@ -5156,10 +5149,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "अपना स्वैप फिर से कोशिश करें। अगली बार भी इस तरह के जोखिमों से आपको बचाने के लिए हम यहां होंगे।"
-  },
-  "stxEstimatedCompletion": {
-    "message": "<$1 में पूरा होने का अनुमान",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "स्वैप नहीं हो पाया"
