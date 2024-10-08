@@ -95,7 +95,7 @@ export default class UnlockPage extends Component {
     } catch ({ message }) {
       this.failed_attempts += 1;
 
-      if (message === 'Incorrect password') {
+      if (message.startsWith('Incorrect password')) {
         await forceUpdateMetamaskState();
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Navigation,
