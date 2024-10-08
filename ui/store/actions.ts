@@ -504,7 +504,7 @@ export function checkHardwareStatus(
 }
 
 export function getHardwareDeviceName(
-  deviceName: string,
+  deviceName: HardwareDeviceNames,
   hdPath: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.getHardwareDeviceName`, deviceName, hdPath);
@@ -512,12 +512,12 @@ export function getHardwareDeviceName(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
-    let result;
+    let result: string;
     try {
-      result = await submitRequestToBackground('getHardwareDeviceName', [
-        deviceName,
-        hdPath,
-      ]);
+      result = await submitRequestToBackground<string>(
+        'getHardwareDeviceName',
+        [deviceName, hdPath],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -525,6 +525,8 @@ export function getHardwareDeviceName(
     } finally {
       dispatch(hideLoadingIndication());
     }
+
+    await forceUpdateMetamaskState(dispatch);
     return result;
   };
 }

@@ -4648,6 +4648,27 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * get hardware wallet Device name for metric logging in UI.
+   * Currently, it only handle the special case for OneKeyDevice connect metamask via Trezor.
+   *
+   * @param deviceName - HardwareDeviceNames
+   * @param hdPath - string
+   * @returns {Promise<string>}
+   */
+  async getHardwareDeviceName(deviceName, hdPath) {
+    if (deviceName === HardwareDeviceNames.trezor) {
+      const keyring = await this.getKeyringForDevice(deviceName, hdPath);
+      const { minorVersion } = keyring.bridge;
+      // OneKeyDevice can connect metamask via Trezor usb, and they use minorVersion 99 to differentiate oneKeyDevice and Trezor.
+      if (minorVersion && minorVersion === 99) {
+        return HardwareDeviceNames.oneKeyViaTrezor;
+      }
+    }
+
+    return deviceName;
+  }
+
+  /**
    * Clear
    *
    * @param deviceName
@@ -4728,27 +4749,6 @@ export default class MetamaskController extends EventEmitter {
     return `${name[0].toUpperCase()}${name.slice(1)} ${
       parseInt(index, 10) + 1
     } ${hdPathDescription || ''}`.trim();
-  }
-
-  /**
-   * get hardware wallet Device name for metric logging in UI.
-   * Currently it only handle the special case for OneKeyDevice connect metamask via Trezor.
-   *
-   * @param deviceName - HardwareDeviceNames
-   * @param hdPath - string
-   * @returns {HardwareDeviceNames|*}
-   */
-  async getHardwareDeviceName(deviceName, hdPath) {
-    if (deviceName === HardwareDeviceNames.trezor) {
-      const keyring = await this.getKeyringForDevice(deviceName, hdPath);
-      const { minorVersion } = keyring.bridge;
-      // OneKeyDevice can connect metamask via Trezor usb, and they use minorVersion 99 to differentiate oneKeyDevice and Trezor.
-      if (minorVersion && minorVersion === 99) {
-        return HardwareDeviceNames.oneKeyViaTrezor;
-      }
-    }
-
-    return deviceName;
   }
 
   /**

@@ -28,7 +28,6 @@ import {
 } from '../../../components/component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
-import { getHardwareDeviceName } from '../../../store/actions';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -293,7 +292,10 @@ class ConnectHardwareForm extends Component {
         : '';
 
     // process device type. specially handle trezor for oneKey device.
-    const metricDeviceName = await getHardwareDeviceName(device, path);
+    const metricDeviceName = await this.props.getHardwareDeviceName(
+      device,
+      path,
+    );
 
     return unlockHardwareWalletAccounts(
       selectedAccounts,
@@ -444,6 +446,7 @@ class ConnectHardwareForm extends Component {
 ConnectHardwareForm.propTypes = {
   connectHardware: PropTypes.func,
   checkHardwareStatus: PropTypes.func,
+  getHardwareDeviceName: PropTypes.func,
   forgetDevice: PropTypes.func,
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
@@ -464,7 +467,6 @@ const mapStateToProps = (state) => ({
   rpcPrefs: getRpcPrefsForCurrentProvider(state),
   accounts: getMetaMaskAccounts(state),
   connectedAccounts: getMetaMaskAccountsConnected(state),
-  getHardwareDeviceName: getHardwareDeviceName(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
   ledgerTransportType: state.metamask.ledgerTransportType,
