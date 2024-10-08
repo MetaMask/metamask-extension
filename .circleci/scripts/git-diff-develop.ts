@@ -111,9 +111,9 @@ function writePrBodyToFile(prBody: string) {
 }
 
 /**
- * Stores the output of git diff to a file.
+ * Main run function, stores the output of git diff and the body of the matching PR to a file.
  *
- * @returns Returns a promise that resolves when the git diff output is successfully stored.
+ * @returns Returns a promise that resolves when the git diff output and PR body is successfully stored.
  */
 async function storeGitDiffOutputAndPrBody() {
   try {
