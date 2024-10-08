@@ -8,29 +8,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.4.0]
 ### Added
-- Added client-side malicious network request detection ([#25839](https://github.com/MetaMask/metamask-extension/pull/25839))
-- Added icons for IoTeX network ([#26723](https://github.com/MetaMask/metamask-extension/pull/26723))
-- Introduced a new receive flow ([#26148](https://github.com/MetaMask/metamask-extension/pull/26148))
-- Added contract deployment redesigned transaction screen ([#26382](https://github.com/MetaMask/metamask-extension/pull/26382))
-- Enabled hardware wallets for smart transactions, signing a transaction only once ([#26251](https://github.com/MetaMask/metamask-extension/pull/26251))
-- Added warning for origin validation on redesigned pages ([#26306](https://github.com/MetaMask/metamask-extension/pull/26306))
-- Added NEAR icon for chainId 397 and 398 ([#26459](https://github.com/MetaMask/metamask-extension/pull/26459))
+- Added a receive button to the home screen, allowing users to easily get their address or QR-code for receiving cryptocurrency ([#26148](https://github.com/MetaMask/metamask-extension/pull/26148))
+- Added smart transactions functionality for hardware wallet users ([#26251](https://github.com/MetaMask/metamask-extension/pull/26251))
+- Added new custom UI components for Snaps developers ([#26675](https://github.com/MetaMask/metamask-extension/pull/26675))
+- Add support for footers to Snap home pages ([#26463](https://github.com/MetaMask/metamask-extension/pull/26463))
 - [FLASK] Added Account Watcher as a preinstalled snap and added it to the menu list ([#26402](https://github.com/MetaMask/metamask-extension/pull/26402))
 - [FLASK] Added footers to Snap home pages ([#26463](https://github.com/MetaMask/metamask-extension/pull/26463))
+- Added icons for IoTeX network ([#26723](https://github.com/MetaMask/metamask-extension/pull/26723))
+- Added NEAR icon for chainId 397 and 398 ([#26459](https://github.com/MetaMask/metamask-extension/pull/26459))
+
 
 ### Changed
-- Updated Polygon from MATIC to POL ([#26671](https://github.com/MetaMask/metamask-extension/pull/26671))
+- Redesign contract deployment transaction screen ([#26382](https://github.com/MetaMask/metamask-extension/pull/26382))
+- Improve performance, reliability and coverage of the phishing detection feature ([#25839](https://github.com/MetaMask/metamask-extension/pull/25839))
 - Updated Moonbeam and Moonriver network and token logos ([#26677](https://github.com/MetaMask/metamask-extension/pull/26677))
-- Updated UI for adding chain ID screen ([#25777](https://github.com/MetaMask/metamask-extension/pull/25777))
-- Polished multichain token list styles ([#26300](https://github.com/MetaMask/metamask-extension/pull/26300))
+- Updated UI for add network notification window ([#25777](https://github.com/MetaMask/metamask-extension/pull/25777))
+- Update visual styling of token lists ([#26300](https://github.com/MetaMask/metamask-extension/pull/26300))
+- Update spacing on Snap home page ([#26462](https://github.com/MetaMask/metamask-extension/pull/26462))
 - [FLASK] Integrated Snaps into the redesigned confirmation pages ([#26435](https://github.com/MetaMask/metamask-extension/pull/26435))
 
 ### Fixed
-- Stopped using a hardcoded Snap ID for notifications ([#26739](https://github.com/MetaMask/metamask-extension/pull/26739))
-- Corrected duplicate notifications event tracking in the global menu ([#26525](https://github.com/MetaMask/metamask-extension/pull/26525))
 - Fixed network change toast width in wide screen mode ([#26532](https://github.com/MetaMask/metamask-extension/pull/26532))
 - Fixed missing deadline in swaps smart transaction status screen ([#25779](https://github.com/MetaMask/metamask-extension/pull/25779))
-- Improved Snap Address component UI/UX ([#26477](https://github.com/MetaMask/metamask-extension/pull/26477))
+- Improved Snap Address component UI/UX; stop using petnames in custom Snaps UIs ([#26477](https://github.com/MetaMask/metamask-extension/pull/26477))
+- Fixed bug that could prevent the Import NFT modal from closing after importing some tokens ([#26269](https://github.com/MetaMask/metamask-extension/pull/26269))
 
 ## [12.3.1]
 ### Fixed
