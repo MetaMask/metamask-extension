@@ -1,7 +1,7 @@
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { cloneDeep } from 'lodash';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
-import { migrate, version } from './129';
+import { migrate, version } from './130';
 
 const sentryCaptureExceptionMock = jest.fn();
 
@@ -9,7 +9,7 @@ global.sentry = {
   captureException: sentryCaptureExceptionMock,
 };
 
-const oldVersion = 128;
+const oldVersion = 129;
 
 const mockInternalAccount = createMockInternalAccount();
 const mockAccountsControllerState: AccountsControllerState = {
