@@ -764,7 +764,9 @@
       "core-js-pure": true,
       "resolve-url-loader>es6-iterator>d>es5-ext": false,
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
-      "level>classic-level": false
+      "level>classic-level": false,
+      "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false,
+      "@metamask/notification-services-controller>firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
     }
   },
   "packageManager": "yarn@4.4.1"
