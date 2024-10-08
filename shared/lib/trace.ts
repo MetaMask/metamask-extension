@@ -87,9 +87,8 @@ export function endTrace(request: EndTraceRequest) {
 
   const { request: pendingRequest, startTime } = pendingTrace;
   const endTime = timestamp ?? getPerformanceTimestamp();
-  const duration = endTime - startTime;
 
-  log('Finished trace', name, id, duration, { request: pendingRequest });
+  logTrace(pendingRequest, startTime, endTime);
 }
 
 function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
@@ -109,9 +108,7 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
       },
       () => {
         const end = Date.now();
-        const duration = end - start;
-
-        log('Finished trace', name, duration, { error, request });
+        logTrace(request, start, end, error);
       },
     ) as T;
   };
@@ -165,6 +162,23 @@ function startSpan<T>(
 
     return callback(spanOptions);
   });
+}
+
+function logTrace(
+  request: TraceRequest,
+  startTime: number,
+  endTime: number,
+  error?: unknown,
+) {
+  const duration = endTime - startTime;
+  const { name } = request;
+
+  if (process.env.IN_TEST) {
+    globalThis.customTraces = globalThis.customTraces || {};
+    globalThis.customTraces[name] = duration;
+  }
+
+  log('Finished trace', name, duration, { request, error });
 }
 
 function getTraceId(request: TraceRequest) {

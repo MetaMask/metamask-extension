@@ -105,6 +105,8 @@ async function profilePageLoad(pages, numSamples, retries) {
         (metrics) =>
           metrics.navigation[0] && metrics.navigation[0].domInteractive,
       ),
+      loadScripts: runResults.map((metrics) => metrics.loadScripts),
+      startup: runResults.map((metrics) => metrics.startup),
     };
 
     results[pageName] = {

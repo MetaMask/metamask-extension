@@ -1313,6 +1313,9 @@ function collectMetrics() {
       });
     });
 
+  results.loadScripts = window.customTraces['Load Scripts'];
+  results.startup = window.customTraces['UI Startup'];
+
   return results;
 }
 
