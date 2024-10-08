@@ -43,6 +43,6 @@ jobs:
 
       - name: Create/update pull request
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
         run: |
           gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%." --base develop --head metamaskbot/update-coverage || gh pr edit --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%."
