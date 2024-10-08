@@ -5,6 +5,11 @@ import { ApprovalControllerState } from '@metamask/approval-controller';
 import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { InternalAccount } from '@metamask/keyring-api';
+import {
+  NftControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
+import { NotificationServicesControllerState } from '@metamask/notification-services-controller/notification-services';
 import rootReducer from '../ducks';
 import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
 import type { NetworkStatus } from '../../shared/constants/network';
@@ -45,48 +50,50 @@ export type MessagesIndexedById = {
  * state received from the background takes precedence over anything in the
  * metamask reducer.
  */
-type TemporaryBackgroundState = {
-  addressBook: {
-    [chainId: string]: {
-      name: string;
-    }[];
-  };
-  // todo: can this be deleted post network controller v20
-  providerConfig: {
-    chainId: string;
-  };
-  transactions: TransactionMeta[];
-  ledgerTransportType: LedgerTransportTypes;
-  unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedPersonalMsgs: MessagesIndexedById;
-  unapprovedTypedMessages: MessagesIndexedById;
-  networksMetadata: {
-    [NetworkClientId: string]: {
-      EIPS: { [eip: string]: boolean };
-      status: NetworkStatus;
+type TemporaryBackgroundState = NftControllerState &
+  NotificationServicesControllerState &
+  TokensControllerState & {
+    addressBook: {
+      [chainId: string]: {
+        name: string;
+      }[];
     };
-  };
-  selectedNetworkClientId: string;
-  pendingApprovals: ApprovalControllerState['pendingApprovals'];
-  approvalFlows: ApprovalControllerState['approvalFlows'];
-  knownMethodData?: {
-    [fourBytePrefix: string]: Record<string, unknown>;
-  };
-  gasFeeEstimates: GasFeeEstimates;
-  gasEstimateType: GasEstimateType;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  custodyAccountDetails?: { [key: string]: any };
-  ///: END:ONLY_INCLUDE_IF
-  internalAccounts: {
-    accounts: {
-      [key: string]: InternalAccount;
+    // todo: can this be deleted post network controller v20
+    providerConfig: {
+      chainId: string;
     };
-    selectedAccount: string;
+    transactions: TransactionMeta[];
+    ledgerTransportType: LedgerTransportTypes;
+    unapprovedDecryptMsgs: MessagesIndexedById;
+    unapprovedPersonalMsgs: MessagesIndexedById;
+    unapprovedTypedMessages: MessagesIndexedById;
+    networksMetadata: {
+      [NetworkClientId: string]: {
+        EIPS: { [eip: string]: boolean };
+        status: NetworkStatus;
+      };
+    };
+    selectedNetworkClientId: string;
+    pendingApprovals: ApprovalControllerState['pendingApprovals'];
+    approvalFlows: ApprovalControllerState['approvalFlows'];
+    knownMethodData?: {
+      [fourBytePrefix: string]: Record<string, unknown>;
+    };
+    gasFeeEstimates: GasFeeEstimates;
+    gasEstimateType: GasEstimateType;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    custodyAccountDetails?: { [key: string]: any };
+    ///: END:ONLY_INCLUDE_IF
+    internalAccounts: {
+      accounts: {
+        [key: string]: InternalAccount;
+      };
+      selectedAccount: string;
+    };
+    keyrings: { type: string; accounts: string[] }[];
   };
-  keyrings: { type: string; accounts: string[] }[];
-};
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
 
