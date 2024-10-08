@@ -494,7 +494,7 @@ export function getAllTokens(state) {
  * Get a flattened list of all ERC-20 tokens owned by the user.
  * Includes all tokens from all chains and accounts.
  *
- * @returns Object[] - All ERC-20 tokens owned by the user in a flat array.
+ * @returns {Object[]} All ERC-20 tokens owned by the user in a flat array.
  */
 export const selectAllTokensFlat = createSelector(
   getAllTokens,
