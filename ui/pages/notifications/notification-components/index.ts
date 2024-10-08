@@ -20,7 +20,7 @@ export const TRIGGER_TYPES = {
   ...SNAP_TRIGGER,
 };
 
-export type TRIGGER_TYPES =
+type TRIGGER_TYPES =
   | NotificationServicesController.Constants.TRIGGER_TYPES
   | SNAP_TRIGGER;
 
