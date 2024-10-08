@@ -66,7 +66,7 @@ export const components: NotificationComponent<SnapNotification> = {
   details: {
     title: ({ notification }) => (
       <NotificationDetailTitle
-        title={notification.data.expandedView?.title}
+        title={notification.data.expandedView?.title as string}
         date={formatIsoDateString(notification.createdAt)}
       />
     ),
@@ -75,7 +75,7 @@ export const components: NotificationComponent<SnapNotification> = {
       Content: ({ notification }) => (
         <SnapUIRenderer
           snapId={notification.data.origin}
-          interfaceId={notification.data.expandedView?.interfaceId}
+          interfaceId={notification.data.expandedView?.interfaceId as string}
           useDelineator={false}
           contentBackgroundColor={BackgroundColor.backgroundDefault}
         />
@@ -88,8 +88,8 @@ export const components: NotificationComponent<SnapNotification> = {
       notification.data.expandedView?.footerLink ? (
         <NotificationDetailButton
           notification={notification}
-          text={notification.data.expandedView?.footerLink.text}
-          href={notification.data.expandedView?.footerLink.href}
+          text={notification.data.expandedView?.footerLink.text as string}
+          href={notification.data.expandedView?.footerLink.href as string}
           id={notification.id}
           variant={ButtonVariant.Secondary}
         />
