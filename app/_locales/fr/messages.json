@@ -4728,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "Votre transaction est terminée"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Désolé de vous avoir fait attendre"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Si votre transaction n’est pas finalisée dans un délai de $1, elle sera annulée et les frais de gaz ne vous seront pas facturés.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Transactions intelligentes"
   },
@@ -5150,10 +5143,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Réessayez le swap. Nous serons là pour vous protéger contre des risques similaires la prochaine fois."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Délai estimé < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Échec du swap"

@@ -4728,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "Giao dịch của bạn đã hoàn tất"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Xin lỗi đã để bạn đợi lâu"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Nếu giao dịch của bạn không được hoàn thành trong vòng $1, thì giao dịch sẽ bị hủy và bạn sẽ không bị tính phí gas.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Giao dịch thông minh"
   },
@@ -5150,10 +5143,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Hãy thử hoán đổi lại. Chúng tôi ở đây để bảo vệ bạn trước những rủi ro tương tự trong lần tới."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Dự kiến hoàn thành sau < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Hoán đổi không thành công"
