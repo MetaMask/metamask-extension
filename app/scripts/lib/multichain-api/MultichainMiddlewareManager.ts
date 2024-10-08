@@ -7,67 +7,110 @@ export type ExtendedJsonRpcMiddleware = JsonRpcMiddleware<unknown, unknown> & {
   destroy?: () => void;
 };
 
-type MiddlewareByScope = Record<ExternalScopeString, ExtendedJsonRpcMiddleware>;
+type MiddlewareKey = {
+  scope: ExternalScopeString;
+  origin: string;
+  tabId?: string;
+};
+type MiddlewareEntry = MiddlewareKey & {
+  middleware: ExtendedJsonRpcMiddleware;
+};
 
 export default class MultichainMiddlewareManager {
-  constructor() {
-    this.middleware.destroy = this.removeAllMiddleware.bind(this);
+  #middlewares: MiddlewareEntry[] = [];
+
+  #getMiddlewareEntry({
+    scope,
+    origin,
+    tabId,
+  }: MiddlewareKey): MiddlewareEntry | undefined {
+    return this.#middlewares.find((middlewareEntry) => {
+      return (
+        middlewareEntry.scope === scope &&
+        middlewareEntry.origin === origin &&
+        middlewareEntry.tabId === tabId
+      );
+    });
   }
 
-  private middlewareCountByDomainAndScope: {
-    [scope: string]: { [domain: string]: number };
-  } = {};
+  addMiddleware(middlewareEntry: MiddlewareEntry) {
+    const { scope, origin, tabId } = middlewareEntry;
+    if (!this.#getMiddlewareEntry({ scope, origin, tabId })) {
+      this.#middlewares.push(middlewareEntry);
+    }
+  }
 
-  private middlewaresByScope: MiddlewareByScope = {};
+  removeMiddleware(middlewareKey: MiddlewareKey) {
+    const existingMiddlewareEntry =
+      this.#getMiddlewareEntry(middlewareKey);
+    if (!existingMiddlewareEntry) {
+      return;
+    }
 
-  public removeAllMiddleware() {
-    for (const [scope, domainObject] of Object.entries(
-      this.middlewareCountByDomainAndScope,
-    )) {
-      for (const domain of Object.keys(domainObject)) {
-        this.removeMiddleware(scope, domain);
+    const { scope, origin, tabId, middleware } = existingMiddlewareEntry;
+
+    middleware.destroy?.();
+
+    this.#middlewares = this.#middlewares.filter((middlewareEntry) => {
+        return (
+          middlewareEntry.scope !== scope ||
+          middlewareEntry.origin !== origin ||
+          middlewareEntry.tabId !== tabId
+
+        )
+    });
+  }
+
+  removeMiddlewareByScope(scope: ExternalScopeString) {
+    this.#middlewares.forEach((middlewareEntry) => {
+      if(middlewareEntry.scope === scope) {
+        this.removeMiddleware(middlewareEntry)
+      }
+    });
+  }
+
+  removeMiddlewareByScopeAndOrigin(scope: ExternalScopeString, origin: string) {
+    this.#middlewares.forEach((middlewareEntry) => {
+      if(middlewareEntry.scope === scope && middlewareEntry.origin === origin) {
+        this.removeMiddleware(middlewareEntry)
+      }
+    });
+  }
+
+  removeMiddlewareByOrigin(origin: string) {
+    this.#middlewares.forEach((middlewareEntry) => {
+      if(middlewareEntry.origin === origin) {
+        this.removeMiddleware(middlewareEntry)
+      }
+    });
+  }
+
+  removeMiddlewareByOriginAndTabId(origin: string, tabId?: string) {
+    this.#middlewares.forEach((middlewareEntry) => {
+      if(middlewareEntry.origin === origin && middlewareEntry.tabId === tabId) {
+        this.removeMiddleware(middlewareEntry)
+      }
+    });
+  }
+
+  generateMiddlewareForOriginAndTabId(origin: string, tabId: string) {
+    const middleware: ExtendedJsonRpcMiddleware = (req, res, next, end) => {
+      const r = req as unknown as {
+        scope: string;
+        origin: string;
+        tabId?: string;
+      };
+      const { scope, origin, tabId } = r;
+      const middlewareEntry = this.#getMiddlewareEntry({ scope, origin, tabId });
+
+      if (middlewareEntry) {
+        middlewareEntry.middleware(req, res, next, end);
+      } else {
+        next();
       }
     }
-  }
+    middleware.destroy = this.removeMiddlewareByOriginAndTabId.bind(this, origin, tabId)
 
-  public addMiddleware(
-    scopeString: ExternalScopeString,
-    domain: string,
-    middleware: ExtendedJsonRpcMiddleware,
-  ) {
-    this.middlewareCountByDomainAndScope[scopeString] =
-      this.middlewareCountByDomainAndScope[scopeString] || {};
-    this.middlewareCountByDomainAndScope[scopeString][domain] =
-      this.middlewareCountByDomainAndScope[scopeString][domain] || 0;
-    this.middlewareCountByDomainAndScope[scopeString][domain] += 1;
-    if (!this.middlewaresByScope[scopeString]) {
-      this.middlewaresByScope[scopeString] = middleware;
-    }
+    return middleware
   }
-
-  public removeMiddleware(scopeString: ExternalScopeString, domain: string) {
-    if (this.middlewareCountByDomainAndScope[scopeString]?.[domain]) {
-      this.middlewareCountByDomainAndScope[scopeString][domain] -= 1;
-      if (this.middlewareCountByDomainAndScope[scopeString][domain] === 0) {
-        delete this.middlewareCountByDomainAndScope[scopeString][domain];
-      }
-      if (
-        Object.keys(this.middlewareCountByDomainAndScope[scopeString])
-          .length === 0
-      ) {
-        delete this.middlewareCountByDomainAndScope[scopeString];
-        delete this.middlewaresByScope[scopeString];
-      }
-    }
-  }
-
-  public middleware: ExtendedJsonRpcMiddleware = (req, res, next, end) => {
-    const r = req as unknown as { scope: string };
-    const { scope } = r;
-    if (typeof this.middlewaresByScope[scope] === 'function') {
-      this.middlewaresByScope[scope](req, res, next, end);
-    } else {
-      next();
-    }
-  };
 }

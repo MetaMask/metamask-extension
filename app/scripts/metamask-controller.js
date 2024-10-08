@@ -2890,8 +2890,14 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.notifications.includes('eth_subscription') &&
               scopeObject.methods.includes('eth_subscribe')
             ) {
-              this.multichainMiddlewareManager.removeMiddleware(scope, origin);
-              this.multichainSubscriptionManager.unsubscribe(scope, origin);
+              this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
+                scope,
+                origin,
+              );
+              this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
+                scope,
+                origin,
+              );
             }
           });
         }
@@ -2910,14 +2916,22 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.notifications.includes('eth_subscription') &&
               scopeObject.methods.includes('eth_subscribe')
             ) {
-              this.multichainMiddlewareManager.removeMiddleware(scope, origin);
-              this.multichainSubscriptionManager.unsubscribe(scope, origin);
-              const subscriptionManager =
-                this.multichainSubscriptionManager.subscribe(scope, origin);
-              this.multichainMiddlewareManager.addMiddleware(
-                scope,
-                origin,
-                subscriptionManager.middleware,
+              // for each tabId
+              Object.entries(this.connections[origin]).forEach(
+                ([_, { tabId }]) => {
+                  const subscriptionManager =
+                    this.multichainSubscriptionManager.subscribe({
+                      scope,
+                      origin,
+                      tabId,
+                    });
+                  this.multichainMiddlewareManager.addMiddleware({
+                    scope,
+                    origin,
+                    tabId,
+                    middleware: subscriptionManager.middleware,
+                  });
+                },
               );
             }
           });
@@ -5019,7 +5033,7 @@ export default class MetamaskController extends EventEmitter {
   removeNetwork(chainId) {
     const scope = `eip155:${parseInt(chainId, 16)}`;
     this.multichainSubscriptionManager.unsubscribeScope(scope);
-    this.multichainMiddlewareManager.removeMiddleware(scope);
+    this.multichainMiddlewareManager.removeMiddlewareByScope(scope);
 
     this.removeAllChainIdPermissions(chainId);
 
@@ -5620,7 +5634,7 @@ export default class MetamaskController extends EventEmitter {
     // setup connection
     const providerStream = createEngineStream({ engine });
 
-    const connectionId = this.addConnection(origin, { engine });
+    const connectionId = this.addConnection(origin, { tabId, engine });
 
     pipeline(
       outStream,
@@ -5688,7 +5702,7 @@ export default class MetamaskController extends EventEmitter {
     // setup connection
     const providerStream = createEngineStream({ engine });
 
-    const connectionId = this.addConnection(origin, { engine });
+    const connectionId = this.addConnection(origin, { tabId, engine });
 
     pipeline(
       outStream,
@@ -5696,6 +5710,15 @@ export default class MetamaskController extends EventEmitter {
       providerStream,
       outStream,
       (err) => {
+        this.multichainMiddlewareManager.removeMiddlewareByOriginAndTabId(
+          origin,
+          tabId,
+        )
+        this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
+          scope,
+          origin
+        )
+
         // handle any middleware cleanup
         engine._middleware.forEach((mid) => {
           if (mid.destroy && typeof mid.destroy === 'function') {
@@ -6176,8 +6199,6 @@ export default class MetamaskController extends EventEmitter {
           end,
         ) => {
           return walletCreateSessionHandler(request, response, next, end, {
-            multichainMiddlewareManager: this.multichainMiddlewareManager,
-            multichainSubscriptionManager: this.multichainSubscriptionManager,
             grantPermissions: this.permissionController.grantPermissions.bind(
               this.permissionController,
             ),
@@ -6374,15 +6395,18 @@ export default class MetamaskController extends EventEmitter {
           scopeObject.notifications.includes('eth_subscription') &&
           scopeObject.methods.includes('eth_subscribe')
         ) {
-          this.multichainMiddlewareManager.removeMiddleware(scope, origin);
-          this.multichainSubscriptionManager.unsubscribe(scope, origin);
           const subscriptionManager =
-            this.multichainSubscriptionManager.subscribe(scope, origin);
-          this.multichainMiddlewareManager.addMiddleware(
+            this.multichainSubscriptionManager.subscribe({
+              scope,
+              origin,
+              tabId,
+            });
+          this.multichainMiddlewareManager.addMiddleware({
             scope,
             origin,
-            subscriptionManager.middleware,
-          );
+            tabId,
+            middleware: subscriptionManager.middleware,
+          });
         }
       });
     } catch (err) {
@@ -6391,14 +6415,14 @@ export default class MetamaskController extends EventEmitter {
 
     this.multichainSubscriptionManager.on(
       'notification',
-      (_origin, message) => {
-        if (origin === _origin) {
+      (targetOrigin, targetTabId, message) => {
+        if (origin === targetOrigin && tabId === targetTabId) {
           engine.emit('notification', message);
         }
       },
     );
 
-    engine.push(this.multichainMiddlewareManager.middleware);
+    engine.push(this.multichainMiddlewareManager.generateMiddlewareForOriginAndTabId(origin, tabId));
 
     engine.push((req, res, _next, end) => {
       const { provider } = this.networkController.getNetworkClientById(
@@ -6451,9 +6475,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - The connection's origin string.
    * @param {object} options - Data associated with the connection
    * @param {object} options.engine - The connection's JSON Rpc Engine
+   * @param options.tabId
    * @returns {string} The connection's id (so that it can be deleted later)
    */
-  addConnection(origin, { engine }) {
+  addConnection(origin, { tabId, engine }) {
     if (origin === ORIGIN_METAMASK) {
       return null;
     }
@@ -6464,6 +6489,7 @@ export default class MetamaskController extends EventEmitter {
 
     const id = nanoid();
     this.connections[origin][id] = {
+      tabId,
       engine,
     };
 
