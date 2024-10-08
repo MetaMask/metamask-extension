@@ -5380,9 +5380,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:^3.1.3":
-  version: 3.1.3
-  resolution: "@metamask/eth-trezor-keyring@npm:3.1.3"
+"@metamask/eth-trezor-keyring@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/eth-trezor-keyring@npm:4.0.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@ethereumjs/util": "npm:^8.1.0"
@@ -5390,7 +5390,8 @@ __metadata:
     "@trezor/connect-plugin-ethereum": "npm:^9.0.3"
     "@trezor/connect-web": "npm:^9.1.11"
     hdkey: "npm:^2.1.0"
-  checksum: 10/d32a687bcaab4593e6208a1bb59cbdd2b111eff357fd30e707787454ef571abfb4e6162422504f730f3ab2fe576b555d68114de0406ae5cdad252dab1b635cce
+    tslib: "npm:^2.6.2"
+  checksum: 10/27e7a29a20673b9573c0a7b0e17f94a624f6708292e51b26b921634febdab8e1c99e2970f309963ce09aad2ab342a053ed591f65a7ef8fb2e13e788f729170b6
   languageName: node
   linkType: hard
 
@@ -26065,7 +26066,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^4.3.6"
     "@metamask/eth-token-tracker": "npm:^8.0.0"
-    "@metamask/eth-trezor-keyring": "npm:^3.1.3"
+    "@metamask/eth-trezor-keyring": "npm:^4.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/ethjs": "npm:^0.6.0"
     "@metamask/ethjs-contract": "npm:^0.4.1"
@@ -34969,6 +34970,13 @@ __metadata:
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: 10/bd26c22d36736513980091a1e356378e8b662ded04204453d353a7f34a4c21ed0afc59b5f90719d4ba756e581a162ecbf93118dc9c6be5acf70aa309188166ca
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.6.2":
+  version: 2.7.0
+  resolution: "tslib@npm:2.7.0"
+  checksum: 10/9a5b47ddac65874fa011c20ff76db69f97cf90c78cff5934799ab8894a5342db2d17b4e7613a087046bc1d133d21547ddff87ac558abeec31ffa929c88b7fce6
   languageName: node
   linkType: hard
 
