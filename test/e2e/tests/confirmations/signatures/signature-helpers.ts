@@ -218,11 +218,10 @@ export async function clickHeaderInfoBtn(driver: Driver) {
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
-  const headerBalanceEl = await driver.findElement(
-    '[data-testid="confirmation-account-details-modal__account-balance"]',
-  );
-  await driver.waitForNonEmptyElement(headerBalanceEl);
-  assert.equal(await headerBalanceEl.getText(), `${WALLET_ETH_BALANCE}\nETH`);
+  await driver.waitForSelector({
+    css: '[data-testid="confirmation-account-details-modal__account-balance"]',
+    text: `${WALLET_ETH_BALANCE} ETH`,
+  });
 }
 
 export async function copyAddressAndPasteWalletAddress(driver: Driver) {
