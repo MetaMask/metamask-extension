@@ -5,25 +5,38 @@ import { promisify } from 'util';
 
 const exec = promisify(execCallback);
 
+// The CIRCLE_PR_NUMBER variable is only available on forked Pull Requests
+const PR_NUMBER =
+  process.env.CIRCLE_PR_NUMBER ||
+  process.env.CIRCLE_PULL_REQUEST?.split('/').pop();
+
 const MAIN_BRANCH = 'develop';
-const SOURCE_BRANCH = `refs/pull/${process.env.CIRCLE_PR_NUMBER}/head`;
+const SOURCE_BRANCH = `refs/pull/${PR_NUMBER}/head`;
+
+const CHANGED_FILES_DIR = 'changed-files';
+
+type PRInfo = {
+  base: {
+    ref: string;
+  };
+  body: string;
+};
 
 /**
- * Get the target branch for the given pull request.
+ * Get JSON info about the given pull request
  *
- * @returns The name of the branch targeted by the PR.
+ * @returns JSON info from GitHub
  */
-async function getBaseRef(): Promise<string | null> {
-  if (!process.env.CIRCLE_PR_NUMBER) {
+async function getPrInfo(): Promise<PRInfo | null> {
+  if (!PR_NUMBER) {
     return null;
   }
 
-  const pull = await (
+  return await (
     await fetch(
-      `https://api.github.com/repos/${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PR_REPONAME}/pulls/${process.env.CIRCLE_PR_NUMBER}`,
+      `https://api.github.com/repos/${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PROJECT_REPONAME}/pulls/${PR_NUMBER}`,
     )
   ).json();
-  return pull.base.ref;
 }
 
 /**
@@ -34,9 +47,9 @@ async function getBaseRef(): Promise<string | null> {
  */
 async function fetchWithDepth(depth: number): Promise<boolean> {
   try {
-    await exec(`git fetch --depth ${depth} origin ${MAIN_BRANCH}`);
+    await exec(`git fetch --depth ${depth} origin "${MAIN_BRANCH}"`);
     await exec(
-      `git fetch --depth ${depth} origin ${SOURCE_BRANCH}:${SOURCE_BRANCH}`,
+      `git fetch --depth ${depth} origin "${SOURCE_BRANCH}:${SOURCE_BRANCH}"`,
     );
     return true;
   } catch (error: unknown) {
@@ -61,12 +74,7 @@ async function fetchUntilMergeBaseFound() {
       await exec(`git merge-base origin/HEAD HEAD`);
       return;
     } catch (error: unknown) {
-      if (
-        error instanceof Error &&
-        Object.hasOwnProperty.call(error, 'code') &&
-        // @ts-expect-error
-        error.code === 1
-      ) {
+      if (error instanceof Error && 'code' in error) {
         console.error(
           `Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`,
         );
@@ -75,7 +83,7 @@ async function fetchUntilMergeBaseFound() {
       }
     }
   }
-  await exec(`git fetch --unshallow origin ${MAIN_BRANCH}`);
+  await exec(`git fetch --unshallow origin "${MAIN_BRANCH}"`);
 }
 
 /**
@@ -88,7 +96,7 @@ async function fetchUntilMergeBaseFound() {
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
   const { stdout: diffResult } = await exec(
-    `git diff --name-only origin/HEAD...${SOURCE_BRANCH}`,
+    `git diff --name-only "origin/HEAD...${SOURCE_BRANCH}"`,
   );
   if (!diffResult) {
     throw new Error('Unable to get diff after full checkout.');
@@ -106,19 +114,20 @@ async function storeGitDiffOutput() {
     // Create the directory
     // This is done first because our CirleCI config requires that this directory is present,
     // even if we want to skip this step.
-    const outputDir = 'changed-files';
-    fs.mkdirSync(outputDir, { recursive: true });
+    fs.mkdirSync(CHANGED_FILES_DIR, { recursive: true });
 
     console.log(
-      `Determining whether this run is for a PR targetting ${MAIN_BRANCH}`,
+      `Determining whether this run is for a PR targeting ${MAIN_BRANCH}`,
     );
-    if (!process.env.CIRCLE_PULL_REQUEST) {
+    if (!PR_NUMBER) {
       console.log('Not a PR, skipping git diff');
       return;
     }
 
-    const baseRef = await getBaseRef();
-    if (baseRef === null) {
+    const prInfo = await getPrInfo();
+
+    const baseRef = prInfo?.base.ref;
+    if (!baseRef) {
       console.log('Not a PR, skipping git diff');
       return;
     } else if (baseRef !== MAIN_BRANCH) {
@@ -131,7 +140,7 @@ async function storeGitDiffOutput() {
     console.log(diffOutput);
 
     // Store the output of git diff
-    const outputPath = path.resolve(outputDir, 'changed-files.txt');
+    const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.txt');
     fs.writeFileSync(outputPath, diffOutput.trim());
 
     console.log(`Git diff results saved to ${outputPath}`);
