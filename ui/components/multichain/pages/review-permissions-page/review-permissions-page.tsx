@@ -10,7 +10,6 @@ import {
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
-import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
@@ -175,8 +174,6 @@ export const ReviewPermissions = () => {
 
     setShowAccountToast(true);
   };
-
-  const hostName = getURLHost(securedOrigin);
 
   return (
     <Page
