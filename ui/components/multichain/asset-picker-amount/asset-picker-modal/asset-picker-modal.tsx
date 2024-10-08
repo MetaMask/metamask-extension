@@ -249,8 +249,10 @@ export function AssetPickerModal({
 
     // Default filter predicate for whether a token should be included in displayed list
     const shouldAddToken = (symbol: string, address?: string | null) => {
+      const trimmedSearchQuery = searchQuery.trim();
       return (
-        symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (!trimmedSearchQuery ||
+          symbol?.toLowerCase().includes(trimmedSearchQuery.toLowerCase())) &&
         !filteredTokensAddresses.has(address?.toLowerCase())
       );
     };
