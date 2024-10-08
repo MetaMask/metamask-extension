@@ -17,7 +17,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
   getSelectedAccount,
-  getPermittedAccountsForCurrentTab,
   getSwitchedNetworkDetails,
   getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
@@ -57,7 +56,6 @@ import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
 import {
-  getAlertEnabledness,
   getIsUnlocked,
   getProviderConfig,
 } from '../../ducks/metamask/metamask';
@@ -73,18 +71,9 @@ function mapStateToProps(state) {
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
-  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
   const account = getSelectedAccount(state);
   const activeTabOrigin = activeTab?.origin;
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
   const currentNetwork = getCurrentNetwork(state);
-  const showConnectAccountToast = Boolean(
-    allowShowAccountSetting &&
-      account &&
-      activeTabOrigin &&
-      connectedAccounts.length > 0 &&
-      !connectedAccounts.find((address) => address === account.address),
-  );
 
   const networkToAutomaticallySwitchTo =
     getNetworkToAutomaticallySwitchTo(state);
@@ -97,7 +86,6 @@ function mapStateToProps(state) {
     alertOpen,
     alertMessage,
     account,
-    showConnectAccountToast,
     activeTabOrigin,
     textDirection: state.metamask.textDirection,
     isLoading,

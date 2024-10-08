@@ -1,7 +1,8 @@
-/* eslint-disable @babel/no-invalid-this -- TODO remove */
+/* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
 import { isEvmAccountType } from '@metamask/keyring-api';
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { PRIVACY_POLICY_LINK, SURVEY_LINK } from '../../../shared/lib/ui-utils';
 import {
@@ -24,21 +25,27 @@ import {
   REVIEW_PERMISSIONS,
 } from '../../helpers/constants/routes';
 import { getURLHost } from '../../helpers/utils/util';
-import { getShowAutoNetworkSwitchTest } from './isolated';
-import { useSelector } from 'react-redux';
 import {
   SURVEY_DATE,
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../helpers/constants/survey';
+import { getAlertEnabledness } from '../../ducks/metamask/metamask';
+import {
+  getPermittedAccountsForCurrentTab,
+  getSelectedAccount,
+} from '../../selectors';
+import { getShowAutoNetworkSwitchTest } from './isolated';
+
+// Allow comparison with a previous value, in order to detect changes
+// (This pattern only works if ToastMaster is a singleton)
+let prevAccountAddress;
 
 export function ToastMaster({ props, context }) {
   const { t } = context;
   const {
-    account,
     activeTabOrigin,
     addPermittedAccount,
-    showConnectAccountToast,
     showPrivacyPolicyToast,
     newPrivacyPolicyToastShownDate,
     clearSwitchedNetworkDetails,
@@ -54,15 +61,30 @@ export function ToastMaster({ props, context }) {
   } = props;
 
   const showAutoNetworkSwitchToast = getShowAutoNetworkSwitchTest(props);
+  console.log('switchedNetworkDetails', switchedNetworkDetails);
+  console.log('showAutoNetworkSwitchToast', showAutoNetworkSwitchToast);
+
   const isPrivacyToastRecent = getIsPrivacyToastRecent(
     props.newPrivacyPolicyToastShownDate,
   );
   const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
-  const isEvmAccount = isEvmAccountType(account?.type);
   const autoHideToastDelay = 5 * SECOND;
   const safeEncodedHost = encodeURIComponent(activeTabOrigin);
 
   const showSurveyToast = useSelector(getShowSurveyToast);
+
+  const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
+  const account = useSelector(getSelectedAccount);
+
+  // If the account has changed, allow the connect account toast again
+  if (account.address !== prevAccountAddress) {
+    prevAccountAddress = account.address;
+    setHideConnectAccountToast(false);
+  }
+
+  const showConnectAccountToast = useSelector((state) =>
+    getShowConnectAccountToast(state, account),
+  );
 
   const onAutoHideToast = () => {
     setHideNftEnablementToast(false);
@@ -74,9 +96,7 @@ export function ToastMaster({ props, context }) {
   return (
     <ToastContainer>
       <SurveyToast />
-      {showConnectAccountToast &&
-      !this.state.hideConnectAccountToast &&
-      isEvmAccount ? (
+      {!hideConnectAccountToast && showConnectAccountToast && (
         <Toast
           dataTestId="connect-account-toast"
           key="connect-account-toast"
@@ -107,9 +127,9 @@ export function ToastMaster({ props, context }) {
                 ?.dispatchEvent(new CustomEvent('mouseenter', {}));
             }, 250 * MILLISECOND);
           }}
-          onClose={() => this.setState({ hideConnectAccountToast: true })}
+          onClose={() => setHideConnectAccountToast(true)}
         />
-      ) : null}
+      )}
       {showSurveyToast && (
         <Toast
           key="survey-toast"
@@ -149,6 +169,7 @@ export function ToastMaster({ props, context }) {
             }}
           />
         )}
+      {/* TODO fix showAutoNetworkSwitchToast */}
       {showAutoNetworkSwitchToast ? (
         <Toast
           key="switched-network-toast"
@@ -255,4 +276,21 @@ function getShowSurveyToast(state) {
   const now = Date.now();
 
   return now > startTime && now < endTime;
+}
+
+// If there is more than one connected account to activeTabOrigin,
+// *BUT* the current account is not one of them, show the banner
+function getShowConnectAccountToast(state, account) {
+  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
+  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const isEvmAccount = isEvmAccountType(account?.type);
+
+  return (
+    allowShowAccountSetting &&
+    account &&
+    state.activeTab?.origin &&
+    isEvmAccount &&
+    connectedAccounts.length > 0 &&
+    !connectedAccounts.some((address) => address === account.address)
+  );
 }
