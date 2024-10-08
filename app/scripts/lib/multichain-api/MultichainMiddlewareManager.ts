@@ -41,8 +41,7 @@ export default class MultichainMiddlewareManager {
   }
 
   removeMiddleware(middlewareKey: MiddlewareKey) {
-    const existingMiddlewareEntry =
-      this.#getMiddlewareEntry(middlewareKey);
+    const existingMiddlewareEntry = this.#getMiddlewareEntry(middlewareKey);
     if (!existingMiddlewareEntry) {
       return;
     }
@@ -52,48 +51,56 @@ export default class MultichainMiddlewareManager {
     middleware.destroy?.();
 
     this.#middlewares = this.#middlewares.filter((middlewareEntry) => {
-        return (
-          middlewareEntry.scope !== scope ||
-          middlewareEntry.origin !== origin ||
-          middlewareEntry.tabId !== tabId
-
-        )
+      return (
+        middlewareEntry.scope !== scope ||
+        middlewareEntry.origin !== origin ||
+        middlewareEntry.tabId !== tabId
+      );
     });
   }
 
   removeMiddlewareByScope(scope: ExternalScopeString) {
     this.#middlewares.forEach((middlewareEntry) => {
-      if(middlewareEntry.scope === scope) {
-        this.removeMiddleware(middlewareEntry)
+      if (middlewareEntry.scope === scope) {
+        this.removeMiddleware(middlewareEntry);
       }
     });
   }
 
   removeMiddlewareByScopeAndOrigin(scope: ExternalScopeString, origin: string) {
     this.#middlewares.forEach((middlewareEntry) => {
-      if(middlewareEntry.scope === scope && middlewareEntry.origin === origin) {
-        this.removeMiddleware(middlewareEntry)
+      if (
+        middlewareEntry.scope === scope &&
+        middlewareEntry.origin === origin
+      ) {
+        this.removeMiddleware(middlewareEntry);
       }
     });
   }
 
   removeMiddlewareByOrigin(origin: string) {
     this.#middlewares.forEach((middlewareEntry) => {
-      if(middlewareEntry.origin === origin) {
-        this.removeMiddleware(middlewareEntry)
+      if (middlewareEntry.origin === origin) {
+        this.removeMiddleware(middlewareEntry);
       }
     });
   }
 
   removeMiddlewareByOriginAndTabId(origin: string, tabId?: string) {
     this.#middlewares.forEach((middlewareEntry) => {
-      if(middlewareEntry.origin === origin && middlewareEntry.tabId === tabId) {
-        this.removeMiddleware(middlewareEntry)
+      if (
+        middlewareEntry.origin === origin &&
+        middlewareEntry.tabId === tabId
+      ) {
+        this.removeMiddleware(middlewareEntry);
       }
     });
   }
 
-  generateMiddlewareForOriginAndTabId(origin: string, tabId: string) {
+  generateMiddlewareForOriginAndTabId(
+    targetOrigin: string,
+    targetTabId: string,
+  ) {
     const middleware: ExtendedJsonRpcMiddleware = (req, res, next, end) => {
       const r = req as unknown as {
         scope: string;
@@ -101,16 +108,24 @@ export default class MultichainMiddlewareManager {
         tabId?: string;
       };
       const { scope, origin, tabId } = r;
-      const middlewareEntry = this.#getMiddlewareEntry({ scope, origin, tabId });
+      const middlewareEntry = this.#getMiddlewareEntry({
+        scope,
+        origin,
+        tabId,
+      });
 
       if (middlewareEntry) {
         middlewareEntry.middleware(req, res, next, end);
       } else {
         next();
       }
-    }
-    middleware.destroy = this.removeMiddlewareByOriginAndTabId.bind(this, origin, tabId)
+    };
+    middleware.destroy = this.removeMiddlewareByOriginAndTabId.bind(
+      this,
+      targetOrigin,
+      targetTabId,
+    );
 
-    return middleware
+    return middleware;
   }
 }
