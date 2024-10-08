@@ -32,7 +32,7 @@ describe('Test Snap bip-32', function () {
         await driver.scrollToElement(snapButton1);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(3000);
 
         // wait for and click connect to bip-32
         await driver.waitForSelector('#connectbip32');

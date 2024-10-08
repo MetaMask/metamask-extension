@@ -34,7 +34,7 @@ describe('Test Snap revoke permission', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectethereum-provider');
@@ -77,7 +77,7 @@ describe('Test Snap revoke permission', function () {
         await driver.scrollToElement(snapButton3);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click send
         await driver.waitForSelector('#sendEthproviderAccounts');
@@ -162,7 +162,7 @@ describe('Test Snap revoke permission', function () {
         await driver.scrollToElement(snapButton4);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#sendEthproviderAccounts');

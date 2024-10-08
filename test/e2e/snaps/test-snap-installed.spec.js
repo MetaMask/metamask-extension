@@ -37,7 +37,7 @@ describe('Test Snap Installed', function () {
         await driver.scrollToElement(confirmButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectdialogs');
@@ -78,7 +78,7 @@ describe('Test Snap Installed', function () {
         await driver.scrollToElement(errorButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connecterrors');

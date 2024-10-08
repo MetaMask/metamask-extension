@@ -32,7 +32,7 @@ describe('Test Snap RPC', function () {
         await driver.scrollToElement(snapButton1);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectbip32');
@@ -82,7 +82,7 @@ describe('Test Snap RPC', function () {
         await driver.scrollToElement(snapButton2);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectjson-rpc');
@@ -129,7 +129,7 @@ describe('Test Snap RPC', function () {
         await driver.scrollToElement(snapButton3);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click send
         await driver.waitForSelector('#sendRpc');

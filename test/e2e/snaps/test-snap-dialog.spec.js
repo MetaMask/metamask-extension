@@ -32,7 +32,7 @@ describe('Test Snap Dialog', function () {
         await driver.scrollToElement(dialogButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectdialogs');

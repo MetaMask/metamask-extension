@@ -274,6 +274,12 @@ class Driver {
     await new Promise((resolve) => setTimeout(resolve, time));
   }
 
+  async delayFirefox(time) {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      await new Promise((resolve) => setTimeout(resolve, time));
+    }
+  }
+
   /**
    * Function to wait for a specific condition to be met within a given timeout period,
    * with an option to catch and handle any errors that occur during the wait.

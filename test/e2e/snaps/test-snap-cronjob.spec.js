@@ -32,7 +32,7 @@ describe('Test Snap Cronjob', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectcronjobs');

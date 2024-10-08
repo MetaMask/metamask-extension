@@ -41,7 +41,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.scrollToElement(snapButton1);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectsignature-insights');
@@ -316,7 +316,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.scrollToElement(snapButton1);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectsignature-insights');

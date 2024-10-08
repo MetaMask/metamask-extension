@@ -36,7 +36,7 @@ describe('Test Snap update via snaps component', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectUpdate');

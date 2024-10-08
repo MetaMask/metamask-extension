@@ -197,7 +197,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectnotifications');
@@ -287,7 +287,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectnotifications');
@@ -370,7 +370,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectnotifications');
@@ -445,7 +445,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectnotifications');
@@ -568,7 +568,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectUpdate');
@@ -630,7 +630,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton2);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectUpdateNew');
@@ -732,7 +732,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectUpdate');
@@ -794,7 +794,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton2);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect new
         await driver.waitForSelector('#connectUpdateNew');
@@ -884,7 +884,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click connect
         await driver.waitForSelector('#connectUpdate');
@@ -946,7 +946,7 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton2);
 
         // added delay for firefox (deflake)
-        await driver.delay(1000);
+        await driver.delayFirefox(1000);
 
         // wait for and click update new
         await driver.waitForSelector('#connectUpdateNew');
