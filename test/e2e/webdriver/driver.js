@@ -1227,6 +1227,11 @@ class Driver {
     });
   }
 
+  async addConsoleListener(fn) {
+    const cdpConnection = await this.driver.createCDPConnection('page');
+    this.driver.onLogEvent(cdpConnection, fn);
+  }
+
   #flushEventProcessingStack() {
     let completeErrorText = '';
 
@@ -1312,9 +1317,6 @@ function collectMetrics() {
         type: navigationEntry.type,
       });
     });
-
-  results.loadScripts = window.customTraces['Load Scripts'];
-  results.startup = window.customTraces['UI Startup'];
 
   return results;
 }

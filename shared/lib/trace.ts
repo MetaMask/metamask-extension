@@ -174,8 +174,7 @@ function logTrace(
   const { name } = request;
 
   if (process.env.IN_TEST) {
-    globalThis.customTraces = globalThis.customTraces || {};
-    globalThis.customTraces[name] = duration;
+    console.debug('Custom Trace', name, duration);
   }
 
   log('Finished trace', name, duration, { request, error });

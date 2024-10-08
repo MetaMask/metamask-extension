@@ -266,12 +266,6 @@ export declare global {
 
   var stateHooks: StateHooks;
 
-  /**
-   * Durations of custom traces, keyed by name.
-   * Only generated in test builds.
-   */
-  var customTraces: Record<string, number>;
-
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
     // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

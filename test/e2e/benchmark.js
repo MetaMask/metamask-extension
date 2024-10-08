@@ -16,6 +16,12 @@ const FixtureBuilder = require('./fixture-builder');
 
 const DEFAULT_NUM_SAMPLES = 20;
 const ALL_PAGES = Object.values(PAGES);
+const CUSTOM_TRACE_LOG_MESSAGE = 'Custom Trace';
+
+const CUSTOM_TRACES = {
+  loadScripts: 'Load Scripts',
+  startup: 'UI Startup',
+};
 
 async function measurePage(pageName) {
   let metrics;
@@ -25,6 +31,19 @@ async function measurePage(pageName) {
       disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
+      const customTraces = {};
+
+      await driver.addConsoleListener((event) => {
+        const firstArg = event.args?.[0]?.value;
+
+        if (firstArg === CUSTOM_TRACE_LOG_MESSAGE) {
+          const name = event.args?.[1]?.value;
+          const value = event.args?.[2]?.value;
+
+          customTraces[name] = value;
+        }
+      });
+
       await driver.delay(tinyDelayMs);
       await unlockWallet(driver, {
         waitLoginSuccess: false,
@@ -32,7 +51,13 @@ async function measurePage(pageName) {
       await driver.findElement('[data-testid="account-menu-icon"]');
       await driver.navigate(pageName);
       await driver.delay(1000);
-      metrics = await driver.collectMetrics();
+
+      const automatedMetrics = await driver.collectMetrics();
+
+      metrics = {
+        ...automatedMetrics,
+        ...customTraces,
+      };
     },
   );
   return metrics;
@@ -105,9 +130,11 @@ async function profilePageLoad(pages, numSamples, retries) {
         (metrics) =>
           metrics.navigation[0] && metrics.navigation[0].domInteractive,
       ),
-      loadScripts: runResults.map((metrics) => metrics.loadScripts),
-      startup: runResults.map((metrics) => metrics.startup),
     };
+
+    for (const [key, name] of Object.entries(CUSTOM_TRACES)) {
+      result[key] = runResults.map((metrics) => metrics[name]);
+    }
 
     results[pageName] = {
       min: minResult(result),
