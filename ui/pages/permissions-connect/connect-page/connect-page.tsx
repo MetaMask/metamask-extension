@@ -62,7 +62,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
-  activeTabOrigin,
 }) => {
   const t = useI18nContext();
 
