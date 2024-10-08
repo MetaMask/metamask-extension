@@ -1,4 +1,10 @@
+import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import MultichainSubscriptionManager from './MultichainSubscriptionManager';
+
+jest.mock('@metamask/eth-json-rpc-filters/subscriptionManager', () =>
+  jest.fn(),
+);
+const MockCreateSubscriptionManager = jest.mocked(createSubscriptionManager);
 
 const newHeadsNotificationMock = {
   method: 'eth_subscription',
@@ -26,28 +32,49 @@ const newHeadsNotificationMock = {
   },
 };
 
-describe('MultichainSubscriptionManager', () => {
-  it('should subscribe to a domain and scope', () => {
-    const domain = 'example.com';
-    const scope = 'eip155:1';
-    const mockFindNetworkClientIdByChainId = jest.fn();
-    const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
-      blockTracker: {},
-      provider: {},
-    }));
-    const subscriptionManager = new MultichainSubscriptionManager({
-      findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
-      getNetworkClientById: mockGetNetworkClientById,
-    });
-    const onNotificationSpy = jest.fn();
+const scope = 'eip155:1';
+const origin = 'example.com';
+const tabId = 123;
 
-    subscriptionManager.on('notification', onNotificationSpy);
-    subscriptionManager.subscribe(scope, domain);
-    subscriptionManager.subscriptionManagerByChain[scope].events.emit(
-      'notification',
+const createMultichainSubscriptionManager = () => {
+  const mockFindNetworkClientIdByChainId = jest.fn();
+  const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
+    blockTracker: {},
+    provider: {},
+  }));
+  const multichainSubscriptionManager = new MultichainSubscriptionManager({
+    findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
+    getNetworkClientById: mockGetNetworkClientById,
+  });
+  const onNotificationSpy = jest.fn();
+
+  multichainSubscriptionManager.on('notification', onNotificationSpy);
+
+  return { multichainSubscriptionManager, onNotificationSpy };
+};
+
+describe('MultichainSubscriptionManager', () => {
+  const mockSubscriptionManager = {
+    events: {
+      on: jest.fn(),
+    },
+    destroy: jest.fn(),
+  };
+
+  beforeEach(() => {
+    MockCreateSubscriptionManager.mockReturnValue(mockSubscriptionManager);
+  });
+
+  it('should subscribe to a scope, origin, and tabId', () => {
+    const { multichainSubscriptionManager, onNotificationSpy } =
+      createMultichainSubscriptionManager();
+    multichainSubscriptionManager.subscribe({ scope, origin, tabId });
+
+    mockSubscriptionManager.events.on.mock.calls[0][1](
       newHeadsNotificationMock,
     );
-    expect(onNotificationSpy).toHaveBeenCalledWith(domain, {
+
+    expect(onNotificationSpy).toHaveBeenCalledWith(origin, tabId, {
       method: 'wallet_notify',
       params: {
         scope,
@@ -56,26 +83,13 @@ describe('MultichainSubscriptionManager', () => {
     });
   });
 
-  it('should unsubscribe from a domain and scope', () => {
-    const domain = 'example.com';
-    const scope = 'eip155:1';
-    const mockFindNetworkClientIdByChainId = jest.fn();
-    const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
-      blockTracker: {},
-      provider: {},
-    }));
-    const subscriptionManager = new MultichainSubscriptionManager({
-      findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
-      getNetworkClientById: mockGetNetworkClientById,
-    });
-    const onNotificationSpy = jest.fn();
-    subscriptionManager.on('notification', onNotificationSpy);
-    subscriptionManager.subscribe(scope, domain);
-    const scopeSubscriptionManager =
-      subscriptionManager.subscriptionManagerByChain[scope];
-    subscriptionManager.unsubscribe(scope, domain);
-    scopeSubscriptionManager.events.emit(
-      'notification',
+  it('should unsubscribe from a scope, origin, and tabId', () => {
+    const { multichainSubscriptionManager, onNotificationSpy } =
+      createMultichainSubscriptionManager();
+    multichainSubscriptionManager.subscribe({ scope, origin, tabId });
+    multichainSubscriptionManager.unsubscribe({ scope, origin, tabId });
+
+    mockSubscriptionManager.events.on.mock.calls[0][1](
       newHeadsNotificationMock,
     );
 
@@ -83,25 +97,38 @@ describe('MultichainSubscriptionManager', () => {
   });
 
   it('should unsubscribe from a scope', () => {
-    const domain = 'example.com';
-    const scope = 'eip155:1';
-    const mockFindNetworkClientIdByChainId = jest.fn();
-    const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
-      blockTracker: {},
-      provider: {},
-    }));
-    const subscriptionManager = new MultichainSubscriptionManager({
-      findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
-      getNetworkClientById: mockGetNetworkClientById,
-    });
-    const onNotificationSpy = jest.fn();
-    subscriptionManager.on('notification', onNotificationSpy);
-    subscriptionManager.subscribe(scope, domain);
-    const scopeSubscriptionManager =
-      subscriptionManager.subscriptionManagerByChain[scope];
-    subscriptionManager.unsubscribeScope(scope);
-    scopeSubscriptionManager.events.emit(
-      'notification',
+    const { multichainSubscriptionManager, onNotificationSpy } =
+      createMultichainSubscriptionManager();
+    multichainSubscriptionManager.subscribe({ scope, origin, tabId });
+    multichainSubscriptionManager.unsubscribeByScope(scope);
+
+    mockSubscriptionManager.events.on.mock.calls[0][1](
+      newHeadsNotificationMock,
+    );
+
+    expect(onNotificationSpy).not.toHaveBeenCalled();
+  });
+
+  it('should unsubscribe from a scope and origin', () => {
+    const { multichainSubscriptionManager, onNotificationSpy } =
+      createMultichainSubscriptionManager();
+    multichainSubscriptionManager.subscribe({ scope, origin, tabId });
+    multichainSubscriptionManager.unsubscribeByScopeAndOrigin(scope, origin);
+
+    mockSubscriptionManager.events.on.mock.calls[0][1](
+      newHeadsNotificationMock,
+    );
+
+    expect(onNotificationSpy).not.toHaveBeenCalled();
+  });
+
+  it('should unsubscribe from a origin and tabId', () => {
+    const { multichainSubscriptionManager, onNotificationSpy } =
+      createMultichainSubscriptionManager();
+    multichainSubscriptionManager.subscribe({ scope, origin, tabId });
+    multichainSubscriptionManager.unsubscribeByOriginAndTabId(origin, tabId);
+
+    mockSubscriptionManager.events.on.mock.calls[0][1](
       newHeadsNotificationMock,
     );
 
@@ -109,33 +136,17 @@ describe('MultichainSubscriptionManager', () => {
   });
 
   it('should unsubscribe all', () => {
-    const domain = 'example.com';
-    const scope = 'eip155:1';
-    const mockFindNetworkClientIdByChainId = jest.fn();
-    const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
-      blockTracker: {},
-      provider: {},
-    }));
-    const subscriptionManager = new MultichainSubscriptionManager({
-      findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
-      getNetworkClientById: mockGetNetworkClientById,
-    });
-    const onNotificationSpy = jest.fn();
-    subscriptionManager.on('notification', onNotificationSpy);
-    subscriptionManager.subscribe(scope, domain);
+    const { multichainSubscriptionManager, onNotificationSpy } =
+      createMultichainSubscriptionManager();
+    multichainSubscriptionManager.subscribe({ scope, origin, tabId });
     const scope2 = 'eip155:2';
-    subscriptionManager.subscribe(scope2, domain);
-    const scopeSubscriptionManager =
-      subscriptionManager.subscriptionManagerByChain[scope];
-    const scopeSubscriptionManager2 =
-      subscriptionManager.subscriptionManagerByChain[scope2];
-    subscriptionManager.unsubscribeAll();
-    scopeSubscriptionManager.events.emit(
-      'notification',
+    multichainSubscriptionManager.subscribe({ scope: scope2, origin, tabId });
+    multichainSubscriptionManager.unsubscribeAll();
+
+    mockSubscriptionManager.events.on.mock.calls[0][1](
       newHeadsNotificationMock,
     );
-    scopeSubscriptionManager2.events.emit(
-      'notification',
+    mockSubscriptionManager.events.on.mock.calls[1][1](
       newHeadsNotificationMock,
     );
 
