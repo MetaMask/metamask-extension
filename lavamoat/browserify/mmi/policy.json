@@ -2252,8 +2252,8 @@
     },
     "@metamask/rpc-errors": {
       "packages": {
-        "@metamask/utils": true,
-        "eth-rpc-errors>fast-safe-stringify": true
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/rpc-methods-flask>nanoid": {
@@ -4159,11 +4159,6 @@
         "@metamask/ethjs-query": true
       }
     },
-    "eth-rpc-errors": {
-      "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
     "ethereumjs-util": {
       "packages": {
         "bn.js": true,
@@ -4617,8 +4612,8 @@
     },
     "json-rpc-engine": {
       "packages": {
-        "eth-rpc-errors": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "json-rpc-engine>eth-rpc-errors": true
       }
     },
     "json-rpc-engine>@metamask/safe-event-emitter": {
@@ -4627,6 +4622,11 @@
       },
       "packages": {
         "webpack>events": true
+      }
+    },
+    "json-rpc-engine>eth-rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true
       }
     },
     "json-rpc-middleware-stream": {
