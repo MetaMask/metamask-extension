@@ -88,17 +88,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.23.5":
-  version: 7.24.7
-  resolution: "@babel/code-frame@npm:7.24.7"
-  dependencies:
-    "@babel/highlight": "npm:^7.24.7"
-    picocolors: "npm:^1.0.0"
-  checksum: 10/4812e94885ba7e3213d49583a155fdffb05292330f0a9b2c41b49288da70cf3c746a3fda0bf1074041a6d741c33f8d7be24be5e96f41ef77395eeddc5c9ff624
-  languageName: node
-  linkType: hard
-
-"@babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.25.9":
+"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.23.5, @babel/code-frame@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/code-frame@npm:7.25.9"
   dependencies:
@@ -416,24 +406,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-string-parser@npm:^7.24.8":
-  version: 7.24.8
-  resolution: "@babel/helper-string-parser@npm:7.24.8"
-  checksum: 10/6d1bf8f27dd725ce02bdc6dffca3c95fb9ab8a06adc2edbd9c1c9d68500274230d1a609025833ed81981eff560045b6b38f7b4c6fb1ab19fc90e5004e3932535
-  languageName: node
-  linkType: hard
-
 "@babel/helper-validator-identifier@npm:^7.22.20, @babel/helper-validator-identifier@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/helper-validator-identifier@npm:7.25.9"
   checksum: 10/3f9b649be0c2fd457fa1957b694b4e69532a668866b8a0d81eabfa34ba16dbf3107b39e0e7144c55c3c652bf773ec816af8df4a61273a2bb4eb3145ca9cf478e
-  languageName: node
-  linkType: hard
-
-"@babel/helper-validator-identifier@npm:^7.24.7":
-  version: 7.24.7
-  resolution: "@babel/helper-validator-identifier@npm:7.24.7"
-  checksum: 10/86875063f57361471b531dbc2ea10bbf5406e12b06d249b03827d361db4cad2388c6f00936bcd9dc86479f7e2c69ea21412c2228d4b3672588b754b70a449d4b
   languageName: node
   linkType: hard
 
@@ -485,18 +461,6 @@ __metadata:
     js-tokens: "npm:^4.0.0"
     picocolors: "npm:^1.0.0"
   checksum: 10/0d165283dd4eb312292cea8fec3ae0d376874b1885f476014f0136784ed5b564b2c2ba2d270587ed546ee92505056dab56493f7960c01c4e6394d71d1b2e7db6
-  languageName: node
-  linkType: hard
-
-"@babel/highlight@npm:^7.24.7":
-  version: 7.24.7
-  resolution: "@babel/highlight@npm:7.24.7"
-  dependencies:
-    "@babel/helper-validator-identifier": "npm:^7.24.7"
-    chalk: "npm:^2.4.2"
-    js-tokens: "npm:^4.0.0"
-    picocolors: "npm:^1.0.0"
-  checksum: 10/69b73f38cdd4f881b09b939a711e76646da34f4834f4ce141d7a49a6bb1926eab1c594148970a8aa9360398dff800f63aade4e81fafdd7c8d8a8489ea93bfec1
   languageName: node
   linkType: hard
 
@@ -1682,18 +1646,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.12.0, @babel/types@npm:^7.13.0, @babel/types@npm:^7.18.9, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.24.0, @babel/types@npm:^7.24.7, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
-  version: 7.24.9
-  resolution: "@babel/types@npm:7.24.9"
-  dependencies:
-    "@babel/helper-string-parser": "npm:^7.24.8"
-    "@babel/helper-validator-identifier": "npm:^7.24.7"
-    to-fast-properties: "npm:^2.0.0"
-  checksum: 10/21873a08a124646824aa230de06af52149ab88206dca59849dcb3003990a6306ec2cdaa4147ec1127c0cfc5f133853cfc18f80d7f6337b6662a3c378ed565f15
-  languageName: node
-  linkType: hard
-
-"@babel/types@npm:^7.20.0, @babel/types@npm:^7.25.9":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.12.0, @babel/types@npm:^7.13.0, @babel/types@npm:^7.18.9, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.24.0, @babel/types@npm:^7.24.7, @babel/types@npm:^7.25.9, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
   version: 7.26.0
   resolution: "@babel/types@npm:7.26.0"
   dependencies:
@@ -4312,27 +4265,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/cryptoassets@npm:13.5.0":
+"@ledgerhq/cryptoassets-evm-signatures@npm:^13.5.0":
   version: 13.5.0
-  resolution: "@ledgerhq/cryptoassets@npm:13.5.0"
+  resolution: "@ledgerhq/cryptoassets-evm-signatures@npm:13.5.0"
   dependencies:
     "@ledgerhq/live-env": "npm:^2.3.0"
     axios: "npm:1.7.7"
-    bs58check: "npm:^2.1.2"
-    invariant: "npm:2"
-  checksum: 10/9301bfe0a1b3169252ac3c62df3026521a10fb8525bb9574f131d146b186a961a5c9f306372ecb69337a54c90946c92b08e5825d04cb76db5cc967a677bd5fbb
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/cryptoassets@patch:@ledgerhq/cryptoassets@npm%3A13.5.0#~/.yarn/patches/@ledgerhq-cryptoassets-npm-13.5.0-21b479d64a.patch":
-  version: 13.5.0
-  resolution: "@ledgerhq/cryptoassets@patch:@ledgerhq/cryptoassets@npm%3A13.5.0#~/.yarn/patches/@ledgerhq-cryptoassets-npm-13.5.0-21b479d64a.patch::version=13.5.0&hash=15d39c"
-  dependencies:
-    "@ledgerhq/live-env": "npm:^2.3.0"
-    axios: "npm:1.7.7"
-    bs58check: "npm:^2.1.2"
-    invariant: "npm:2"
-  checksum: 10/366e9dd3aed38865cb3f91adc6c58ebfa38b58c74db8231f986bc661a5807d0c7efd839e470f737fad1bac76b88408476bc6d643b842832226f46b775c6164a9
+  checksum: 10/ce6e3343fdf60255ede1d784a2fb47c8c5f49e8257559947e2678fac250700140695c85ae06bef777ccc4bb37577db813a4b3d031f3b0b84cbcd6e139613fbf9
   languageName: node
   linkType: hard
 
@@ -4348,18 +4287,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/domain-service@npm:^1.2.5":
-  version: 1.2.5
-  resolution: "@ledgerhq/domain-service@npm:1.2.5"
+"@ledgerhq/domain-service@npm:^1.2.6":
+  version: 1.2.6
+  resolution: "@ledgerhq/domain-service@npm:1.2.6"
   dependencies:
     "@ledgerhq/errors": "npm:^6.19.1"
     "@ledgerhq/logs": "npm:^6.12.0"
-    "@ledgerhq/types-live": "npm:^6.51.1"
+    "@ledgerhq/types-live": "npm:^6.52.0"
     axios: "npm:1.7.7"
     eip55: "npm:^2.1.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-  checksum: 10/3f66dff929a71ad3ad5f86bf3ee58d335b0f16796ec7a9ddaf663f675dd5126203de2d6b96274d6e65e3b5d727bc1283337f8bc4afa4697246a16097df1df4ce
+  checksum: 10/0b680af9deff24f608446cb7026b06e09ea693a367a5ef5e71068c70fabfbb98019cb618daefed278ed875a0ff5d296735fb743746ac0edee1357ae12fd58d99
   languageName: node
   linkType: hard
 
@@ -4370,37 +4309,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/evm-tools@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "@ledgerhq/evm-tools@npm:1.2.2"
+"@ledgerhq/evm-tools@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "@ledgerhq/evm-tools@npm:1.2.3"
   dependencies:
-    "@ledgerhq/cryptoassets": "npm:^13.5.0"
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.0"
     "@ledgerhq/live-env": "npm:^2.3.0"
     axios: "npm:1.7.7"
     crypto-js: "npm:4.2.0"
     ethers: "npm:5.7.2"
-  checksum: 10/0579fc0ca821984ea6a6e9541540028ac14f8879366f45f0a50eb15af557e321055d8f4f6110a4daecd6c851277366e1d8bdd73977b2bb29f9bf2dfa95b61364
+  checksum: 10/956a0a3ac26454ac350c5e34b5cfb911ed3a0f3f724bec1ce2c56f2de344635b582f977e4901841c353d98c50b076e40bfb03d865eed3a82e328744043e00ee7
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-app-eth@npm:^6.38.1":
-  version: 6.38.2
-  resolution: "@ledgerhq/hw-app-eth@npm:6.38.2"
+"@ledgerhq/hw-app-eth@npm:^6.39.0":
+  version: 6.39.0
+  resolution: "@ledgerhq/hw-app-eth@npm:6.39.0"
   dependencies:
     "@ethersproject/abi": "npm:^5.5.0"
     "@ethersproject/rlp": "npm:^5.5.0"
-    "@ledgerhq/cryptoassets": "npm:^13.5.0"
-    "@ledgerhq/domain-service": "npm:^1.2.5"
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.0"
+    "@ledgerhq/domain-service": "npm:^1.2.6"
     "@ledgerhq/errors": "npm:^6.19.1"
-    "@ledgerhq/evm-tools": "npm:^1.2.2"
+    "@ledgerhq/evm-tools": "npm:^1.2.3"
     "@ledgerhq/hw-transport": "npm:^6.31.4"
     "@ledgerhq/hw-transport-mocker": "npm:^6.29.4"
     "@ledgerhq/logs": "npm:^6.12.0"
-    "@ledgerhq/types-live": "npm:^6.51.1"
+    "@ledgerhq/types-live": "npm:^6.52.0"
     axios: "npm:1.7.7"
     bignumber.js: "npm:^9.1.2"
     semver: "npm:^7.3.5"
-  checksum: 10/7c1a462c1113f753b4d0ca8bf0c7517ab49a0267b3ea04021c9b0a610390130b392747ae163d4858cccc5dd2717cfd1f1689d4fa810c722643cfd022f7c6bda1
+  checksum: 10/5b50aac35989e09704557523efe5b6b29a1f31f5279088ecceb90164e32e05860f3ff20c32a084003a69723ed08165ae140c2987424657245f088c3f9a908cd6
   languageName: node
   linkType: hard
 
@@ -4444,13 +4383,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/types-live@npm:^6.51.1":
-  version: 6.51.1
-  resolution: "@ledgerhq/types-live@npm:6.51.1"
+"@ledgerhq/types-live@npm:^6.52.0":
+  version: 6.52.0
+  resolution: "@ledgerhq/types-live@npm:6.52.0"
   dependencies:
     bignumber.js: "npm:^9.1.2"
     rxjs: "npm:^7.8.1"
-  checksum: 10/ac8713e21f2fe89f981866e0ba397463f8303a2f61c02b239624c51d2f130933a016e8f57c5907d1b648c6ccac59b4139f1096f2a801602e18cf1e7ea489a265
+  checksum: 10/c410f02159538d66f59956512fc5bab2cb17edee7f6a15a517c31d89d6c730e52691666bb2e1d98718c701e94306dd7498544ea3d7772ff0b5ad6522fb2c335c
   languageName: node
   linkType: hard
 
@@ -5401,17 +5340,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:5.0.0"
+"@metamask/eth-ledger-bridge-keyring@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:5.0.1"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^4.2.0"
     "@ethereumjs/util": "npm:^8.1.0"
-    "@ledgerhq/hw-app-eth": "npm:^6.38.1"
+    "@ledgerhq/hw-app-eth": "npm:^6.39.0"
     "@metamask/eth-sig-util": "npm:^7.0.3"
     hdkey: "npm:^2.1.0"
-  checksum: 10/2a0360b7db5623eef78188ebc230110e0b4da21257292c5fd35e7c39ac9c5da8021b2e17d88e4474604b9344dedaff14f203622abd8ef2831d45e92b173f9f9b
+  checksum: 10/5ac967d7c88c2f1f2853118cfe65ee081a90c2633fb468eae8049c3a78a4985f03130bff3071e9fb893e4c97bc55aeb2196e2b6e9e363ac6235379b80e7cfc7e
   languageName: node
   linkType: hard
 
@@ -6270,17 +6209,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.1":
-  version: 6.3.1
-  resolution: "@metamask/rpc-errors@npm:6.3.1"
-  dependencies:
-    "@metamask/utils": "npm:^9.0.0"
-    fast-safe-stringify: "npm:^2.0.6"
-  checksum: 10/f968fb490b13b632c2ad4770a144d67cecdff8d539cb8b489c732b08dab7a62fae65d7a2908ce8c5b77260317aa618948a52463f093fa8d9f84aee1c5f6f5daf
-  languageName: node
-  linkType: hard
-
-"@metamask/rpc-errors@npm:^6.3.0":
+"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.0, @metamask/rpc-errors@npm:^6.3.1":
   version: 6.4.0
   resolution: "@metamask/rpc-errors@npm:6.4.0"
   dependencies:
@@ -13312,7 +13241,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.7.7":
+"axios@npm:1.7.7, axios@npm:^1.1.3":
   version: 1.7.7
   resolution: "axios@npm:1.7.7"
   dependencies:
@@ -13339,17 +13268,6 @@ __metadata:
     follow-redirects: "npm:^1.14.9"
     form-data: "npm:^4.0.0"
   checksum: 10/2efaf18dd0805f7bc772882bc86f004abd92d51007b54c5081f74db0d08ce3593e2c010261896d25a14318eeaa2e966fd825e34f810e8a3339dc64b9d177cf70
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.1.3":
-  version: 1.7.4
-  resolution: "axios@npm:1.7.4"
-  dependencies:
-    follow-redirects: "npm:^1.15.6"
-    form-data: "npm:^4.0.0"
-    proxy-from-env: "npm:^1.1.0"
-  checksum: 10/7a1429be1e3d0c2e1b96d4bba4d113efbfabc7c724bed107beb535c782c7bea447ff634886b0c7c43395a264d085450d009eb1154b5f38a8bae49d469fdcbc61
   languageName: node
   linkType: hard
 
@@ -22502,7 +22420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:2, invariant@npm:2.2.4, invariant@npm:^2.2.4":
+"invariant@npm:2.2.4, invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -26637,7 +26555,7 @@ __metadata:
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "patch:@metamask/eth-json-rpc-middleware@npm%3A14.0.1#~/.yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^5.0.0"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^5.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^4.4.0"
@@ -38143,21 +38061,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.3.4":
+"yaml@npm:^2.3.4, yaml@npm:^2.4.1":
   version: 2.6.0
   resolution: "yaml@npm:2.6.0"
   bin:
     yaml: bin.mjs
   checksum: 10/f4369f667c7626c216ea81b5840fe9b530cdae4cff2d84d166ec1239e54bf332dbfac4a71bf60d121f8e85e175364a4e280a520292269b6cf9d074368309adf9
-  languageName: node
-  linkType: hard
-
-"yaml@npm:^2.4.1":
-  version: 2.4.1
-  resolution: "yaml@npm:2.4.1"
-  bin:
-    yaml: bin.mjs
-  checksum: 10/2c54fd69ef59126758ae710f9756405a7d41abcbb61aca894250d0e81e76057c14dc9bb00a9528f72f99b8f24077f694a6f7fd09cdd6711fcec2eebfbb5df409
   languageName: node
   linkType: hard
 
