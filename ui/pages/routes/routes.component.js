@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars -- TODO remove */
 /* eslint-disable react/no-unused-prop-types -- TODO remove */
-/* eslint-disable react/no-unused-state -- TODO remove */
 
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -155,7 +154,6 @@ export default class Routes extends Component {
     currentCurrency: PropTypes.string,
     account: PropTypes.object,
     activeTabOrigin: PropTypes.string,
-    showConnectAccountToast: PropTypes.bool.isRequired,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -234,10 +232,6 @@ export default class Routes extends Component {
     metricsEvent: PropTypes.func,
   };
 
-  state = {
-    hideConnectAccountToast: false,
-  };
-
   componentDidMount() {
     updateNewPrivacyPolicyToastDate(this.props);
   }
@@ -255,10 +249,6 @@ export default class Routes extends Component {
     } = this.props;
     if (theme !== prevProps.theme) {
       setTheme(theme);
-    }
-
-    if (prevProps.account?.address !== account?.address) {
-      this.setState({ hideConnectAccountToast: false });
     }
 
     // Automatically switch the network if the user
