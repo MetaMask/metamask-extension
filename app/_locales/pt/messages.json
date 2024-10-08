@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Atualizar opções de gás"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Se você aprovar esta solicitação, um terceiro conhecido por aplicar golpes poderá se apropriar de todos os seus ativos."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Vários alertas!"
-  },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
