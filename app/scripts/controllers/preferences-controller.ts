@@ -16,6 +16,10 @@ import {
 import { Json } from 'json-rpc-engine';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
+  ETHERSCAN_SUPPORTED_CHAIN_IDS,
+  type PreferencesState,
+} from '@metamask/preferences-controller';
+import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
 } from '../../../shared/constants/network';
@@ -114,21 +118,16 @@ export type Preferences = {
   shouldShowAggregatedBalancePopover: boolean;
 };
 
-export type PreferencesControllerState = {
-  selectedAddress: string;
+export type PreferencesControllerState = PreferencesState & {
   useBlockie: boolean;
   useNonceField: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
   useMultiAccountBalanceChecker: boolean;
   useSafeChainsListValidation: boolean;
-  useTokenDetection: boolean;
-  useNftDetection: boolean;
   use4ByteResolution: boolean;
   useCurrencyRateCheck: boolean;
   useRequestQueue: boolean;
-  openSeaEnabled: boolean;
-  securityAlertsEnabled: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
@@ -136,20 +135,11 @@ export type PreferencesControllerState = {
   bitcoinTestnetSupportEnabled: boolean;
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
-  // WARNING: Do not use feature flags for security-sensitive things.
-  // Feature flag toggling is available in the global namespace
-  // for convenient testing of pre-release features, and should never
-  // perform sensitive operations.
-  featureFlags: Record<string, boolean>;
   incomingTransactionsPreferences: Record<number, boolean>;
   knownMethodData: Record<string, string>;
   currentLocale: string;
-  identities: Record<string, AccountIdentityEntry>;
-  lostIdentities: Record<string, AccountIdentityEntry>;
   forgottenPassword: boolean;
   preferences: Preferences;
-  ipfsGateway: string;
-  isIpfsGatewayEnabled: boolean;
   useAddressBarEnsResolution: boolean;
   ledgerTransportType: LedgerTransportTypes;
   // TODO: Replace `Json` with correct type
@@ -157,7 +147,6 @@ export type PreferencesControllerState = {
   theme: ThemeType;
   snapsAddSnapAccountModalDismissed?: boolean;
   useExternalNameSources: boolean;
-  useTransactionSimulations: boolean;
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
@@ -240,6 +229,32 @@ export const getDefaultPreferencesControllerState =
     // Whenever useExternalServices is false, certain features will be disabled.
     // The flag is true by Default, meaning the toggle is ON by default.
     useExternalServices: true,
+    // from core PreferencesController
+    isMultiAccountBalancesEnabled: true,
+    showIncomingTransactions: {
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+    },
+    showTestNetworks: false,
+    smartTransactionsOptInStatus: false,
   });
 
 /**
@@ -406,6 +421,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
+  isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
+  showIncomingTransactions: { persist: true, anonymous: true },
+  showTestNetworks: { persist: true, anonymous: true },
+  smartTransactionsOptInStatus: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<

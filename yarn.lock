@@ -6044,6 +6044,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/preferences-controller@npm:^13.0.2":
+  version: 13.0.3
+  resolution: "@metamask/preferences-controller@npm:13.0.3"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.3.0"
+  peerDependencies:
+    "@metamask/keyring-controller": ^17.0.0
+  checksum: 10/d922c2e603c7a1ef0301dcfc7d5b6aa0bbdd9c318f0857fbbc9e95606609ae806e69c46231288953ce443322039781404565a46fe42bdfa731c4f0da20448d32
+  languageName: node
+  linkType: hard
+
 "@metamask/preinstalled-example-snap@npm:^0.1.0":
   version: 0.1.0
   resolution: "@metamask/preinstalled-example-snap@npm:0.1.0"
@@ -26130,6 +26142,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
+    "@metamask/preferences-controller": "npm:^13.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.1.0"
     "@metamask/profile-sync-controller": "npm:^0.9.4"
     "@metamask/providers": "npm:^14.0.2"
