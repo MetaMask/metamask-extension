@@ -427,19 +427,14 @@ describe('MultiRpc:', function (this: Suite) {
 
         await driver.delay(regularDelayMs);
         await driver.waitForSelector('[data-testid="category-back-button"]');
-        const generalBackButton = await driver.waitForSelector(
-          '[data-testid="category-back-button"]',
-        );
-        await generalBackButton.click();
+        await driver.clickElement('[data-testid="category-back-button"]');
 
-        await driver.delay(regularDelayMs);
-
-        const defaultSettingsBackButton = await driver.findElement(
+        await driver.waitForSelector(
           '[data-testid="privacy-settings-back-button"]',
         );
-        await defaultSettingsBackButton.click();
-
-        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
 
         await driver.clickElement({
           text: 'Done',
@@ -450,8 +445,6 @@ describe('MultiRpc:', function (this: Suite) {
           text: 'Next',
           tag: 'button',
         });
-
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement({
           text: 'Done',
@@ -467,7 +460,7 @@ describe('MultiRpc:', function (this: Suite) {
           true,
           '“Arbitrum One” was successfully edited!',
         );
-
+        // Ensures popover backround doesn't kill test
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="network-display"]');
 
