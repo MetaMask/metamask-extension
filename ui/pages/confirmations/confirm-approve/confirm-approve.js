@@ -27,7 +27,6 @@ import {
   getRpcPrefsForCurrentProvider,
   checkNetworkAndAccountSupports1559,
   getUseCurrencyRateCheck,
-  getPreferences,
 } from '../../../selectors';
 import { useApproveTransaction } from '../hooks/useApproveTransaction';
 import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarning';
@@ -84,7 +83,6 @@ export default function ConfirmApprove({
     isAddressLedgerByFromAddress(userAddress),
   );
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
@@ -298,9 +296,6 @@ export default function ConfirmApprove({
               hasLayer1GasFee={layer1GasFee !== undefined}
               supportsEIP1559={supportsEIP1559}
               useCurrencyRateCheck={useCurrencyRateCheck}
-              useNativeCurrencyAsPrimaryCurrency={
-                useNativeCurrencyAsPrimaryCurrency
-              }
             />
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover

@@ -28,10 +28,14 @@ import {
   BlockSize,
 } from '../../helpers/constants/design-system';
 import { getIsBridgeEnabled } from '../../selectors';
+import useBridging from '../../hooks/bridge/useBridging';
 import { PrepareBridgePage } from './prepare/prepare-bridge-page';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
+
+  useBridging();
+
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -40,7 +44,6 @@ const CrossChainSwap = () => {
   const redirectToDefaultRoute = async () => {
     history.push({
       pathname: DEFAULT_ROUTE,
-      // @ts-expect-error - property 'state' does not exist on type PartialPath.
       state: { stayOnHomePage: true },
     });
     dispatch(clearSwapsState());

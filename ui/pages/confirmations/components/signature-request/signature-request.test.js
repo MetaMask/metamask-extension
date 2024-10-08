@@ -45,9 +45,7 @@ const mockStore = {
       rpcUrl: 'http://localhost:8545',
       ticker: 'ETH',
     }),
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-    },
+    preferences: {},
     accounts: {
       '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
         address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
