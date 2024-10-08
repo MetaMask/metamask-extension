@@ -84,19 +84,19 @@ export const AssetPickerModalNetwork = ({
             height={BlockSize.Full}
           >
             {networksList.map((networkConfig) => {
-              const { name } = networkConfig;
+              const { name, chainId } = networkConfig;
               return (
                 <NetworkListItem
-                  key={networkConfig.chainId}
+                  key={chainId}
                   name={name}
-                  selected={selectedNetwork?.chainId === networkConfig.chainId}
+                  selected={selectedNetwork?.chainId === chainId}
                   onClick={() => {
                     onNetworkChange(networkConfig);
                     onBack();
                   }}
                   iconSrc={
                     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      networkConfig.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                      chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                     ]
                   }
                   focus={false}
