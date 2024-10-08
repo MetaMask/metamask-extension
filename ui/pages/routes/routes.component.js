@@ -310,15 +310,21 @@ export default class Routes extends Component {
       window.close();
     }
 
+    console.log('TIMEOUT > isNetworkLoading', isNetworkLoading);
+    console.log('TIMEOUT > prevProps', prevProps.isNetworkLoading);
+
     // Check if the network loading state has changed
     if (isNetworkLoading && !prevProps.isNetworkLoading) {
       // Start the timeout if the network starts loading
       this.networkLoadingTimeout = setTimeout(() => {
+        console.log('TIMEOUT > setup timeout');
         if (this.props.isNetworkLoading) {
+          console.log('TIMEOUT > show toast');
           setShowRPCTimeoutToast(true);
         }
       }, RPC_TIMEOUT);
     } else if (!isNetworkLoading && prevProps.isNetworkLoading) {
+      console.log('TIMEOUT > clear timeout');
       // Clear the timeout if the network stops loading
       clearTimeout(this.networkLoadingTimeout);
     }
@@ -744,7 +750,7 @@ export default class Routes extends Component {
             text={t('rpcTimeoutToastMessage', ['<rpc-name>', '<network name>'])} // TODO: replace with actual values
             actionText={t('rpcTimeoutToastAction')}
             onActionClick={() => {
-              console.log('TODO: open network editor');
+              console.log('TIMEOUT> TODO: open network editor');
               // global.platform.openTab({
               //   url: 'https://metamask.io/rpc-timeout/',
               // });

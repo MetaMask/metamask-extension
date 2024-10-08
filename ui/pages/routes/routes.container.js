@@ -29,6 +29,7 @@ import {
   getUseNftDetection,
   getNftDetectionEnablementToast,
   getCurrentNetwork,
+  getShowRPCTimeoutToast,
 } from '../../selectors';
 import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
 import {
@@ -152,7 +153,7 @@ function mapStateToProps(state) {
       state.appState.showKeyringRemovalSnapModal,
     pendingConfirmations: getUnapprovedConfirmations(state),
     ///: END:ONLY_INCLUDE_IF
-    showRPCTimeoutToast: state.appState.showRPCTimeoutToast,
+    showRPCTimeoutToast: getShowRPCTimeoutToast(state),
   };
 }
 

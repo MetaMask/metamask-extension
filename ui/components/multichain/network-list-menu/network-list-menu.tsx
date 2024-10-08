@@ -26,7 +26,6 @@ import {
   setEditedNetwork,
   grantPermittedChain,
   showPermittedNetworkToast,
-  setShowRPCTimeoutToast,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -86,7 +85,6 @@ import {
 } from '../../../ducks/metamask/metamask';
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
-import { usePrevious } from '../../../hooks/usePrevious';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -137,19 +135,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
     currentChainId,
   );
-
-  const RPC_TIMEOUT = 10000;
-  const [switchingNetwork, setSwitchingNetwork] = useState(false);
-  const previousChainId = usePrevious(currentChainId);
-  let switchNetworkTimeout: NodeJS.Timeout;
-
-  useEffect(() => {
-    if (switchingNetwork && currentChainId !== previousChainId) {
-      // Network switch is successful, clear the timeout
-      setSwitchingNetwork(false);
-      clearTimeout(switchNetworkTimeout);
-    }
-  }, [currentChainId, previousChainId, switchingNetwork]);
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -303,14 +288,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               dispatch(showPermittedNetworkToast());
             }
           }
-
-          // Set a timeout to handle unresponsive RPC URL
-          setSwitchingNetwork(true);
-          switchNetworkTimeout = setTimeout(() => {
-            console.log('unresponsive RPC URL');
-            setShowRPCTimeoutToast(true); // Trigger the toast
-            setSwitchingNetwork(false);
-          }, RPC_TIMEOUT);
 
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
