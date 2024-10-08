@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Cập nhật tùy chọn phí gas"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo có thể lấy hết tài sản của bạn."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Có nhiều cảnh báo!"
-  },
   "alertDisableTooltip": {
     "message": "Bạn có thể thay đổi trong phần \"Cài đặt > Cảnh báo\""
   },
