@@ -38,8 +38,7 @@ import { TRIGGER_TYPES } from './notification-components';
 
 type Notification = NotificationServicesController.Types.INotification;
 
-const { TRIGGER_TYPES_WALLET_SET } =
-  NotificationServicesController.Constants;
+const { TRIGGER_TYPES_WALLET_SET } = NotificationServicesController.Constants;
 
 export type NotificationType = Notification | SnapNotification;
 
