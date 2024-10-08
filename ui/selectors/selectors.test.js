@@ -94,14 +94,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getInternalAccounts', () => {
-    it('returns a list of internal accounts', () => {
-      expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
-        Object.values(mockState.metamask.internalAccounts.accounts),
-      );
-    });
-  });
-
   describe('#getInternalAccount', () => {
     it("returns undefined if the account doesn't exist", () => {
       expect(
