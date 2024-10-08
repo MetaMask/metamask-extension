@@ -95,7 +95,6 @@ describe('useBalanceChanges', () => {
 
   afterEach(() => {
     /** Reset memoized function for each test */
-    fetchErc20Decimals?.cache?.clear?.();
     memoizedGetTokenStandardAndDetails?.cache?.clear?.();
   });
 

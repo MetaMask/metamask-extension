@@ -38,7 +38,6 @@ describe('Confirm', () => {
     jest.resetAllMocks();
 
     /** Reset memoized function using getTokenStandardAndDetails for each test */
-    fetchErc20Decimals?.cache?.clear?.();
     memoizedGetTokenStandardAndDetails?.cache?.clear?.();
   });
 
