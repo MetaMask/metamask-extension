@@ -4734,13 +4734,6 @@
   "smartTransactionSuccess": {
     "message": "Ваша транзакция завершена"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Извините за ожидание"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Если ваша транзакция не будет завершена в течение $1, она будет отменена и с вас не будет взиматься плата за газ.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Умные транзакции"
   },
@@ -5156,10 +5149,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Попробуйте выполнить своп еще раз. Мы готовы защитить вас от подобных рисков в следующий раз."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Предполагаемое завершение через < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Своп не удался"

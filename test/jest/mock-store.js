@@ -705,16 +705,23 @@ export const createSwapsMockStore = () => {
 export const createBridgeMockStore = (
   featureFlagOverrides = {},
   bridgeSliceOverrides = {},
+  bridgeStateOverrides = {},
+  metamaskStateOverrides = {},
 ) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
     bridge: {
-      toChain: null,
+      toChainId: null,
       ...bridgeSliceOverrides,
     },
     metamask: {
       ...swapsStore.metamask,
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+      ),
+      ...metamaskStateOverrides,
       bridgeState: {
         ...(swapsStore.metamask.bridgeState ?? {}),
         bridgeFeatureFlags: {
@@ -723,11 +730,8 @@ export const createBridgeMockStore = (
           destNetworkAllowlist: [],
           ...featureFlagOverrides,
         },
+        ...bridgeStateOverrides,
       },
-      ...mockNetworkState(
-        { chainId: CHAIN_IDS.MAINNET },
-        { chainId: CHAIN_IDS.LINEA_MAINNET },
-      ),
     },
   };
 };
