@@ -13,6 +13,7 @@ import {
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {
@@ -65,6 +66,7 @@ describe('Token Cell', () => {
       address: '0xAddress',
       iconUrl: './images/test_1_image.svg',
       aggregators: [],
+      chainId: CHAIN_IDS.MAINNET,
     },
     '0xAnotherToken': {
       name: 'TEST',
@@ -74,6 +76,7 @@ describe('Token Cell', () => {
       address: '0xANoTherToKen',
       iconUrl: './images/test_image.svg',
       aggregators: [],
+      chainId: CHAIN_IDS.MAINNET,
     },
   };
 
@@ -85,6 +88,7 @@ describe('Token Cell', () => {
     string: '5.000',
     currentCurrency: 'usd',
     image: '',
+    chainId: CHAIN_IDS.MAINNET,
     onClick: jest.fn(),
   };
 
@@ -94,6 +98,7 @@ describe('Token Cell', () => {
     string: '5000000',
     currentCurrency: 'usd',
     image: '',
+    chainId: CHAIN_IDS.MAINNET,
     onClick: jest.fn(),
   };
   const useSelectorMock = useSelector;

@@ -12,6 +12,7 @@ type TokenCellProps = {
   symbol: string;
   string?: string;
   image: string;
+  chainId: string;
   onClick?: (arg: string) => void;
 };
 
@@ -20,6 +21,7 @@ export default function TokenCell({
   image,
   symbol,
   string,
+  chainId,
   onClick,
 }: TokenCellProps) {
   const tokenList = useSelector(getTokenList);
@@ -32,11 +34,12 @@ export default function TokenCell({
   const tokenImage = tokenData?.iconUrl || image;
   const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, false);
   const locale = useSelector(getIntlLocale);
-  const primary = new Intl.NumberFormat(locale, {
-    minimumSignificantDigits: 1,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-  }).format(string.toString());
+  const primary =
+    new Intl.NumberFormat(locale, {
+      minimumSignificantDigits: 1,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+    }).format(string.toString()) || '0';
 
   const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
 
@@ -45,11 +48,12 @@ export default function TokenCell({
       onClick={onClick ? () => onClick(address) : undefined}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
-      primary={`${primary || 0}`}
+      primary={primary}
       secondary={isOriginalTokenSymbol ? formattedFiat : null}
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}
+      chainId={chainId}
       showPercentage
     />
   );
