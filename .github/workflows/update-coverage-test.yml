@@ -17,8 +17,8 @@ jobs:
     name: Update coverage
     runs-on: ubuntu-latest
     env:
-      CURRENT_COVERAGE: 0
-      STORED_COVERAGE: 71
+      CURRENT_COVERAGE: 71
+      STORED_COVERAGE: 0
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
