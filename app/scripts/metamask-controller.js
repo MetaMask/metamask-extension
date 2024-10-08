@@ -5717,11 +5717,11 @@ export default class MetamaskController extends EventEmitter {
         this.multichainMiddlewareManager.removeMiddlewareByOriginAndTabId(
           origin,
           tabId,
-        )
-        this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
-          scope,
-          origin
-        )
+        );
+        this.multichainSubscriptionManager.unsubscribeByOriginAndTabId(
+          origin,
+          tabId,
+        );
 
         // handle any middleware cleanup
         engine._middleware.forEach((mid) => {
@@ -6426,7 +6426,12 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    engine.push(this.multichainMiddlewareManager.generateMiddlewareForOriginAndTabId(origin, tabId));
+    engine.push(
+      this.multichainMiddlewareManager.generateMiddlewareForOriginAndTabId(
+        origin,
+        tabId,
+      ),
+    );
 
     engine.push((req, res, _next, end) => {
       const { provider } = this.networkController.getNetworkClientById(
