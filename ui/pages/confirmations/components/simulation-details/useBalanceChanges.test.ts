@@ -9,10 +9,7 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
-import {
-  fetchErc20Decimals,
-  memoizedGetTokenStandardAndDetails,
-} from '../../utils/token';
+import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
 import { useBalanceChanges } from './useBalanceChanges';
 import { FIAT_UNAVAILABLE } from './types';
 

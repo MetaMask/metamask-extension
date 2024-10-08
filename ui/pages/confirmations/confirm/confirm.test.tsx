@@ -18,10 +18,7 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
-import {
-  fetchErc20Decimals,
-  memoizedGetTokenStandardAndDetails,
-} from '../utils/token';
+import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
 jest.mock('react-router-dom', () => ({
