@@ -388,6 +388,20 @@ export default class MetamaskController extends EventEmitter {
     super();
 
     const { isFirstMetaMaskControllerSetup } = opts;
+    if (process.env.ALLOW_LOCAL_SNAPS === '\\o//') {
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+      console.log('Untested code');
+    }
 
     this.defaultMaxListeners = 20;
 
