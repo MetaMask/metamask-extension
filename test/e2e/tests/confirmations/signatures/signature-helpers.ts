@@ -220,7 +220,7 @@ export async function clickHeaderInfoBtn(driver: Driver) {
 export async function assertHeaderInfoBalance(driver: Driver) {
   await driver.waitForSelector({
     css: '[data-testid="confirmation-account-details-modal__account-balance"]',
-    text: `${WALLET_ETH_BALANCE}\nETH`,
+    text: `${WALLET_ETH_BALANCE} ETH`,
   });
 }
 

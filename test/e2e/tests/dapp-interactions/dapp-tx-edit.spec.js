@@ -38,10 +38,9 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
         });
-        await driver.waitForSelector({
-          css: '[data-testid="confirm-page-back-edit-button"]',
-          text: 'Edit transaction button should not be visible on a contract interaction created by a dapp',
-        });
+        await driver.assertElementNotPresent(
+          '[data-testid="confirm-page-back-edit-button"]',
+        );
       },
     );
   });
@@ -68,10 +67,9 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
           css: '.confirm-page-container-summary__action__name',
           text: 'Sending ETH',
         });
-        await driver.waitForSelector({
-          css: '[data-testid="confirm-page-back-edit-button"]',
-          text: 'Edit transaction button should not be visible on a simple send transaction created by a dapp',
-        });
+        await driver.assertElementNotPresent(
+          '[data-testid="confirm-page-back-edit-button"]',
+        );
       },
     );
   });
