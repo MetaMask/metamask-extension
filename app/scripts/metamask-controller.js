@@ -4895,14 +4895,12 @@ export default class MetamaskController extends EventEmitter {
     const accountsMissingIdentities = accounts.filter(
       (address) =>
         !internalAccounts.some(
-          (account) =>
-            account.address.toLowerCase() === address.toLowerCase(),
+          (account) => account.address.toLowerCase() === address.toLowerCase(),
         ),
     );
-    const keyringTypesWithMissingIdentities =
-      accountsMissingIdentities.map((address) =>
-        this.keyringController.getAccountKeyringType(address),
-      );
+    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
+      (address) => this.keyringController.getAccountKeyringType(address),
+    );
 
     const internalAccountCount = internalAccounts.length;
 

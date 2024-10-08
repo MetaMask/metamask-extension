@@ -5,7 +5,6 @@ import {
   validateAndFlattenScopes,
   processScopedProperties,
   bucketScopes,
-  assertScopesSupported,
 } from '../scope';
 import {
   Caip25CaveatType,
