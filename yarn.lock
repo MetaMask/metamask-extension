@@ -5834,14 +5834,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/notification-controller@npm:6.0.0"
+"@metamask/notification-controller@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/notification-controller@npm:7.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/utils": "npm:^8.3.0"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/utils": "npm:^9.1.0"
     nanoid: "npm:^3.1.31"
-  checksum: 10/75bbbb3590e9bc4e89541eed841cf9ab5c826d668545b693ad52b30e7ef016d5705403463d8335be95c473dc373ff8eece2ec31e55d981143deed5ea0e88382d
+  checksum: 10/6b51f278d018a12838eaae18108b75ba0334bac1e6a1ea1cf4085d2d6af5db35ebdcd14b2b4894aba4545713e54116b4c2001b08bd601d499e48b82889416bae
   languageName: node
   linkType: hard
 
@@ -26127,7 +26127,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch"
-    "@metamask/notification-controller": "npm:^6.0.0"
+    "@metamask/notification-controller": "npm:^7.0.0"
     "@metamask/notification-services-controller": "npm:^0.7.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
