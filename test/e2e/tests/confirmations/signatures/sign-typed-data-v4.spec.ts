@@ -154,18 +154,13 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV4Verify');
 
-  const verifyResult = await driver.findElement('#signTypedDataV4Result');
+  await driver.waitForSelector({
+    css: '#signTypedDataV4Result',
+    text: '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
+  });
+
   await driver.waitForSelector({
     css: '#signTypedDataV4VerifyResult',
     text: publicAddress,
   });
-  const verifyRecoverAddress = await driver.findElement(
-    '#signTypedDataV4VerifyResult',
-  );
-
-  assert.equal(
-    await verifyResult.getText(),
-    '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
-  );
-  assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }

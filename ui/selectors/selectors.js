@@ -1969,6 +1969,10 @@ export function getShowPrivacyPolicyToast(state) {
   );
 }
 
+export function getLastViewedUserSurvey(state) {
+  return state.metamask.lastViewedUserSurvey;
+}
+
 export function getShowOutdatedBrowserWarning(state) {
   const { outdatedBrowserWarningLastShown } = state.metamask;
   if (!outdatedBrowserWarningLastShown) {
@@ -2555,6 +2559,26 @@ export function getEthereumAddressNames(state) {
 
 export function getNameSources(state) {
   return state.metamask.nameSources || {};
+}
+
+export function getShowDeleteMetaMetricsDataModal(state) {
+  return state.appState.showDeleteMetaMetricsDataModal;
+}
+
+export function getShowDataDeletionErrorModal(state) {
+  return state.appState.showDataDeletionErrorModal;
+}
+
+export function getMetaMetricsDataDeletionId(state) {
+  return state.metamask.metaMetricsDataDeletionId;
+}
+
+export function getMetaMetricsDataDeletionTimestamp(state) {
+  return state.metamask.metaMetricsDataDeletionTimestamp;
+}
+
+export function getMetaMetricsDataDeletionStatus(state) {
+  return state.metamask.metaMetricsDataDeletionStatus;
 }
 
 /**
