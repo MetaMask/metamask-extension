@@ -56,11 +56,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
-
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         // Open and connect to Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
