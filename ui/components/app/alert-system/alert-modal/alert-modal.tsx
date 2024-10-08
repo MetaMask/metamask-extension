@@ -157,10 +157,9 @@ function AlertDetails({
     <Box
       key={selectedAlert.key}
       display={Display.InlineBlock}
-      padding={2}
+      padding={customDetails ? 0 : 2}
       width={BlockSize.Full}
       backgroundColor={customDetails ? undefined : severityStyle.background}
-      gap={2}
       borderRadius={BorderRadius.SM}
     >
       {customDetails ?? (
@@ -209,12 +208,11 @@ export function AcknowledgeCheckboxBase({
   return (
     <Box
       display={Display.Flex}
-      padding={3}
+      padding={4}
       width={BlockSize.Full}
-      gap={3}
       backgroundColor={severityStyle.background}
-      marginTop={4}
       borderRadius={BorderRadius.LG}
+      marginTop={4}
     >
       <Checkbox
         label={label ?? t('alertModalAcknowledge')}
@@ -375,6 +373,7 @@ export function AlertModal({
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             gap={4}
+            paddingTop={2}
             width={BlockSize.Full}
           >
             {customAcknowledgeButton ?? (

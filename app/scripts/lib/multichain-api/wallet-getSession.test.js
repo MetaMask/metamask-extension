@@ -1,4 +1,3 @@
-import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -64,16 +63,16 @@ describe('wallet_getSession', () => {
     );
   });
 
-  it('throws an error if the CAIP-25 endowment permission does not exist', async () => {
-    const { handler, getCaveat, end } = createMockedHandler();
+  it('returns empty scopes if the CAIP-25 endowment permission does not exist', async () => {
+    const { handler, response, getCaveat } = createMockedHandler();
     getCaveat.mockImplementation(() => {
       throw new Error('permission not found');
     });
 
     await handler(baseRequest);
-    expect(end).toHaveBeenCalledWith(
-      new EthereumRpcError(5501, 'No active sessions'),
-    );
+    expect(response.result).toStrictEqual({
+      sessionScopes: {},
+    });
   });
 
   it('returns the merged scopes', async () => {
