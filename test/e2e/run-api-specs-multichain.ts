@@ -167,10 +167,12 @@ async function main() {
         },
       ];
 
-      const server = mockServer(port, transformedDoc);
+      const server = mockServer(
+        port,
+        await parseOpenRPCDocument(transformedDoc),
+      );
       server.start();
 
-      await parseOpenRPCDocument(MetaMaskOpenRPCDocument as never);
 
       const testCoverageResults = await testCoverage({
         openrpcDocument: doc,
@@ -235,11 +237,10 @@ async function main() {
       const joinedResults = testCoverageResults.concat(
         testCoverageResultsCaip27,
       );
+
+      // fix ids for html reporter
       joinedResults.forEach((r, index) => {
         r.id = index;
-        if (r.resultSchema) {
-          r.resultSchema = false;
-        }
       });
 
       const htmlReporter = new HtmlReporter({

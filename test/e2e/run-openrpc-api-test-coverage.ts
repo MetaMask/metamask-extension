@@ -51,12 +51,13 @@ async function main() {
           chainId,
           ACCOUNT_1,
         );
+      const parsedDoc = await parseOpenRPCDocument(doc);
 
-      const server = mockServer(port, doc);
+      const server = mockServer(port, parsedDoc);
       server.start();
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: await parseOpenRPCDocument(doc),
+        openrpcDocument: parsedDoc,
         transport,
         reporters: [
           'console-streaming',
