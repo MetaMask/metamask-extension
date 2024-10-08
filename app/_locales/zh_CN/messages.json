@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "更新燃料选项"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "多个提醒！"
-  },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
   },
@@ -1873,10 +1867,6 @@
   "feeDetails": {
     "message": "费用详情"
   },
-  "fiat": {
-    "message": "法币",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
@@ -3092,9 +3082,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask 未连接到此站点"
   },
-  "noConversionDateAvailable": {
-    "message": "没有可用的货币转换日期"
-  },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
   },
@@ -3914,12 +3901,6 @@
   },
   "priceUnavailable": {
     "message": "价格不可用"
-  },
-  "primaryCurrencySetting": {
-    "message": "主要货币"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "选择原生以优先显示链的原生货币（例如 ETH）的值。选择法币以优先显示以您所选法币显示的值。"
   },
   "primaryType": {
     "message": "主要类型"
@@ -4747,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "您的交易已完成"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "抱歉让您久等"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "如果您的交易在 $1 内未完成，则会取消，您无需支付燃料费。",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "智能交易"
   },
@@ -5169,10 +5143,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "再次尝试进行交换。下次我们会在这里保护您免受类似风险。 "
-  },
-  "stxEstimatedCompletion": {
-    "message": "预计将在 $1 内完成",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "交换失败"
@@ -6084,9 +6054,6 @@
   },
   "updateRequest": {
     "message": "更新请求"
-  },
-  "updatedWithDate": {
-    "message": "已于 $1 更新"
   },
   "uploadDropFile": {
     "message": "将您的文件放在此处"

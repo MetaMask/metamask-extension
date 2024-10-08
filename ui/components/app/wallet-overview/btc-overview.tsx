@@ -23,7 +23,8 @@ const BtcOverview = ({ className }: BtcOverviewProps) => {
   return (
     <CoinOverview
       balance={balance}
-      balanceIsCached
+      // We turn this off to avoid having that asterisk + the "Balance maybe be outdated" message for now
+      balanceIsCached={false}
       className={className}
       chainId={chainId}
       isSigningEnabled={false}
