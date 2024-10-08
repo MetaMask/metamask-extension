@@ -3,9 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import * as actions from '../../store/actions';
+import * as selectors from '../../selectors';
 import { submitBridgeTransaction } from './actions';
 import { DummyQuotesNoApproval, DummyQuotesWithApproval } from './dummy-quotes';
-import * as selectors from './selectors';
+import * as bridgeSelectors from './selectors';
 
 jest.mock('../../store/actions', () => {
   const original = jest.requireActual('../../store/actions');
@@ -13,6 +14,7 @@ jest.mock('../../store/actions', () => {
     ...original,
     addTransactionAndWaitForPublish: jest.fn(),
     addToken: jest.fn().mockImplementation(original.addToken),
+    addNetwork: jest.fn().mockImplementation(original.addNetwork),
   };
 });
 
@@ -31,7 +33,7 @@ jest.mock('../../selectors', () => {
     getIsBridgeChain: () => true,
     checkNetworkAndAccountSupports1559: () => true,
     getSelectedNetworkClientId: () => 'mainnet',
-    getNetworkConfigurationsByChainId: () => ({
+    getNetworkConfigurationsByChainId: jest.fn(() => ({
       '0x1': {
         blockExplorerUrls: ['https://etherscan.io'],
         chainId: '0x1',
@@ -43,7 +45,7 @@ jest.mock('../../selectors', () => {
           {
             networkClientId: 'mainnet',
             type: 'infura',
-            url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+            url: 'https://mainnet.infura.io/v3/infuraProjectId',
           },
         ],
       },
@@ -58,11 +60,11 @@ jest.mock('../../selectors', () => {
           {
             networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
             type: 'custom',
-            url: 'https://arbitrum-mainnet.infura.io/v3/05412cce7f71411d93cc724545806fd3',
+            url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
           },
         ],
       },
-    }),
+    })),
   };
 });
 
@@ -118,7 +120,7 @@ describe('bridge/actions', () => {
         };
       });
 
-      (selectors.getQuotes as jest.Mock).mockImplementation(
+      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
         () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
       );
 
@@ -173,7 +175,7 @@ describe('bridge/actions', () => {
         };
       });
 
-      (selectors.getQuotes as jest.Mock).mockImplementation(
+      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
         () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
       );
 
@@ -247,7 +249,7 @@ describe('bridge/actions', () => {
       const store = makeMockStore();
       const history = makeMockHistory();
 
-      (selectors.getQuotes as jest.Mock).mockImplementation(
+      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
         () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
       );
       (actions.addToken as jest.Mock).mockImplementation(
@@ -288,7 +290,7 @@ describe('bridge/actions', () => {
       (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
         mockAddTransactionAndWaitForPublish,
       );
-      (selectors.getQuotes as jest.Mock).mockImplementation(
+      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
         () => DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
       );
       (actions.addToken as jest.Mock).mockImplementation(
@@ -307,7 +309,37 @@ describe('bridge/actions', () => {
       ).addToken;
       (actions.addToken as jest.Mock).mockImplementation(originalAddToken);
     });
-    it.todo('adds dest token if it not the native gas token');
+    it('adds dest token if it not the native gas token', async () => {
+      // Setup
+      const store = makeMockStore();
+      const history = makeMockHistory();
+
+      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
+        () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
+      );
+      (actions.addToken as jest.Mock).mockImplementation(
+        () => async () => ({}),
+      );
+
+      // Execute
+      await store.dispatch(submitBridgeTransaction(history as any) as any);
+
+      // Assert
+      expect(actions.addToken).toHaveBeenCalledWith({
+        address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+        decimals: 6,
+        image:
+          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+        networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
+        symbol: 'USDC',
+      });
+
+      // Reset
+      const originalAddToken = jest.requireActual(
+        '../../store/actions',
+      ).addToken;
+      (actions.addToken as jest.Mock).mockImplementation(originalAddToken);
+    });
     it('does not add dest token if dest token is native gas token', async () => {
       // Setup
       const store = makeMockStore();
@@ -323,7 +355,7 @@ describe('bridge/actions', () => {
       (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
         mockAddTransactionAndWaitForPublish,
       );
-      (selectors.getQuotes as jest.Mock).mockImplementation(
+      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
         () => DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
       );
       (actions.addToken as jest.Mock).mockImplementation(
@@ -342,7 +374,79 @@ describe('bridge/actions', () => {
       ).addToken;
       (actions.addToken as jest.Mock).mockImplementation(originalAddToken);
     });
-    it.todo('adds dest network if it does not exist');
+    it('adds dest network if it does not exist', async () => {
+      // Setup
+      const store = makeMockStore();
+      const history = makeMockHistory();
+
+      const mockAddTransactionAndWaitForPublish = jest.fn(() => {
+        console.log('mockAddTransactionAndWaitForPublish');
+        return {
+          id: 'txMetaId-01',
+        };
+      });
+      // For some reason, setBackgroundConnection does not work, gets hung up on the promise, so mock this way instead
+      (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
+        mockAddTransactionAndWaitForPublish,
+      );
+
+      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
+        () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
+      );
+      (
+        selectors.getNetworkConfigurationsByChainId as jest.Mock
+      ).mockImplementation(() => ({
+        '0x1': {
+          blockExplorerUrls: ['https://etherscan.io'],
+          chainId: '0x1',
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              networkClientId: 'mainnet',
+              type: 'infura',
+              url: 'https://mainnet.infura.io/v3/infuraProjectId',
+            },
+          ],
+        },
+      }));
+      (actions.addNetwork as jest.Mock).mockImplementation(() => async () => ({
+        blockExplorerUrls: ['https://explorer.arbitrum.io'],
+        chainId: '0xa4b1',
+        defaultBlockExplorerUrlIndex: 0,
+        defaultRpcEndpointIndex: 0,
+        name: 'Arbitrum One',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
+            type: 'custom',
+            url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
+          },
+        ],
+      }));
+
+      // Execute
+      await store.dispatch(submitBridgeTransaction(history as any) as any);
+
+      // Assert
+      expect(actions.addNetwork).toHaveBeenCalledWith({
+        blockExplorerUrls: ['https://explorer.arbitrum.io'],
+        chainId: '0xa4b1',
+        defaultBlockExplorerUrlIndex: 0,
+        defaultRpcEndpointIndex: 0,
+        name: 'Arbitrum One',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            type: 'custom',
+            url: 'https://arbitrum-mainnet.infura.io/v3/undefined',
+          },
+        ],
+      });
+    });
     it.todo('routes to activity tab');
   });
 });
