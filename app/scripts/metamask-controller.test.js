@@ -923,7 +923,7 @@ describe('MetaMaskController', () => {
             .mockResolvedValue({
               bridge: {
                 model: 'T',
-                minorVersion: 99
+                minorVersion: 99,
               },
             });
           const result = await metamaskController.getHardwareDeviceName(
