@@ -34,11 +34,16 @@ describe('Test Snap Signature Insights', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the transaction-insights test and connect
+        // find and scroll to the transaction-insights snap
         const snapButton1 = await driver.findElement(
           '#connectsignature-insights',
         );
         await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectsignature-insights');
         await driver.clickElement('#connectsignature-insights');
 
@@ -304,11 +309,16 @@ describe('Test Snap Signature Insights', function () {
         // delay added for page render (deflake)
         await driver.delay(1000);
 
-        // find and scroll to the transaction-insights test and connect
+        // find and scroll to the transaction-insights test snap
         const snapButton1 = await driver.findElement(
           '#connectsignature-insights',
         );
         await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectsignature-insights');
         await driver.clickElement('#connectsignature-insights');
 

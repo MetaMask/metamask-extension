@@ -27,11 +27,16 @@ describe('Test Snap TxInsights', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the transaction-insights test and connect
+        // find and scroll to the transaction-insights test snap
         const snapButton1 = await driver.findElement(
           '#connecttransaction-insights',
         );
         await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connecttransaction-insights');
         await driver.clickElement('#connecttransaction-insights');
 

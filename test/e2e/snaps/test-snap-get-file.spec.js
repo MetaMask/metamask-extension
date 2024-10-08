@@ -30,6 +30,11 @@ describe('Test Snap Get File', function () {
         // scroll to and wait for connect to get file button
         const snapButton = await driver.findElement('#connectgetfile');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectgetfile');
         await driver.clickElement('#connectgetfile');
 

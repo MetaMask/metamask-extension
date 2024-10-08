@@ -27,9 +27,14 @@ describe('Test Snap Name Lookup', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the namelookup test snap and connect
+        // find and scroll to the namelookup test snap
         const snapButton1 = await driver.findElement('#connectname-lookup');
         await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectname-lookup');
         await driver.clickElement('#connectname-lookup');
 

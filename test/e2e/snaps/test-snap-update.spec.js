@@ -27,9 +27,14 @@ describe('Test Snap update', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the correct card and connect to update snap
+        // find and scroll to the update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectUpdate');
         await driver.clickElement('#connectUpdate');
 
@@ -75,9 +80,14 @@ describe('Test Snap update', function () {
           text: 'Reconnect to Update Snap',
         });
 
-        // find and scroll to the correct card and click first
+        // find and scroll to the update snap
         const snapButton2 = await driver.findElement('#connectUpdateNew');
         await driver.scrollToElement(snapButton2);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectUpdateNew');
         await driver.clickElement('#connectUpdateNew');
 

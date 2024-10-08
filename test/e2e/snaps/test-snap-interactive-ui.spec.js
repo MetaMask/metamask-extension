@@ -28,9 +28,14 @@ describe('Test Snap Interactive UI', function () {
           tag: 'h2',
         });
 
-        // scroll to and connect to interactive-ui snap
+        // scroll to interactive-ui snap
         const dialogButton = await driver.findElement('#connectinteractive-ui');
         await driver.scrollToElement(dialogButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectinteractive-ui');
         await driver.clickElement('#connectinteractive-ui');
 

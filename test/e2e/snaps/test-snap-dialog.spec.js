@@ -27,8 +27,14 @@ describe('Test Snap Dialog', function () {
           tag: 'h2',
         });
 
+        // scroll to connect dialogs snap
         const dialogButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(dialogButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectdialogs');
         await driver.clickElement('#connectdialogs');
 

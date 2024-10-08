@@ -27,10 +27,16 @@ describe('Test Snap ethereum_provider', function () {
           tag: 'h2',
         });
 
+        // scroll to ethereum provider snap
         const snapButton = await driver.findElement(
           '#connectethereum-provider',
         );
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectethereum-provider');
         await driver.clickElement('#connectethereum-provider');
 

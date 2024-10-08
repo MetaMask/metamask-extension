@@ -27,8 +27,14 @@ describe('Test Snap getEntropy', function () {
           tag: 'h2',
         });
 
+        // scroll to get entropy snap
         const snapButton = await driver.findElement('#connectGetEntropySnap');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectGetEntropySnap');
         await driver.clickElement('#connectGetEntropySnap');
 

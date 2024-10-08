@@ -28,9 +28,14 @@ describe('Test Snap Multi Install', function () {
           tag: 'h2',
         });
 
-        // scroll to and connect to multi-install snap
+        // scroll to multi-install snap
         const dialogButton = await driver.findElement('#multi-install-connect');
         await driver.scrollToElement(dialogButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#multi-install-connect');
         await driver.clickElement('#multi-install-connect');
 

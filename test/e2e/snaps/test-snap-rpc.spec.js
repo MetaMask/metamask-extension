@@ -27,9 +27,14 @@ describe('Test Snap RPC', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the bip32 test and connect
+        // find and scroll to the bip32 test snap
         const snapButton1 = await driver.findElement('#connectbip32');
         await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectbip32');
         await driver.clickElement('#connectbip32');
 
@@ -72,9 +77,14 @@ describe('Test Snap RPC', function () {
         // switch back to test-snaps window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
-        // scroll to and click connect to json-rpc snap
+        // scroll to json-rpc snap
         const snapButton2 = await driver.findElement('#connectjson-rpc');
         await driver.scrollToElement(snapButton2);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectjson-rpc');
         await driver.clickElement('#connectjson-rpc');
 
@@ -114,9 +124,14 @@ describe('Test Snap RPC', function () {
           text: 'Reconnect to JSON-RPC Snap',
         });
 
-        // scroll to and click send rpc
+        // scroll to send rpc
         const snapButton3 = await driver.findElement('#sendRpc');
         await driver.scrollToElement(snapButton3);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click send
         await driver.waitForSelector('#sendRpc');
         await driver.clickElement('#sendRpc');
 

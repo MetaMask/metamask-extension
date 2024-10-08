@@ -27,9 +27,14 @@ describe('Test Snap networkAccess', function () {
           tag: 'h2',
         });
 
-        // scroll to and connect to network access snap
+        // scroll to network access snap
         const dialogButton = await driver.findElement('#connectnetwork-access');
         await driver.scrollToElement(dialogButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectnetwork-access');
         await driver.clickElement('#connectnetwork-access');
 

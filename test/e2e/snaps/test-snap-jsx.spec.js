@@ -27,9 +27,14 @@ describe('Test Snap JSX', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the jsx test and connect
+        // find and scroll to the jsx test
         const snapButton = await driver.findElement('#connectjsx');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectjsx');
         await driver.clickElement('#connectjsx');
 

@@ -27,8 +27,14 @@ describe('Test Snap WASM', function () {
           tag: 'h2',
         });
 
+        // scroll to wasm snap
         const snapButton = await driver.findElement('#connectwasm');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectwasm');
         await driver.clickElement('#connectwasm');
 

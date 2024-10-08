@@ -30,6 +30,11 @@ describe('Test Snap Client Status', function () {
         // scroll to and click connect to client-status snap
         const snapButton = await driver.findElement('#connectclient-status');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectclient-status');
         await driver.clickElement('#connectclient-status');
 

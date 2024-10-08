@@ -32,8 +32,14 @@ describe('Test Snap Installed', function () {
           tag: 'h2',
         });
 
+        // scroll to dialogs snap
         const confirmButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(confirmButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectdialogs');
         await driver.clickElement('#connectdialogs');
 
@@ -70,7 +76,12 @@ describe('Test Snap Installed', function () {
         // click to connect to errors snap
         const errorButton = await driver.findElement('#connecterrors');
         await driver.scrollToElement(errorButton);
-        await driver.delay(500);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connecterrors');
         await driver.clickElement('#connecterrors');
 
         // switch to metamask extension and click connect

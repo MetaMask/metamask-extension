@@ -27,11 +27,16 @@ describe('Test Snap revoke permission', function () {
           tag: 'h2',
         });
 
-        // scroll to and connect to ethereum-provider snap
+        // scroll to ethereum-provider snap
         const snapButton = await driver.findElement(
           '#connectethereum-provider',
         );
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectethereum-provider');
         await driver.clickElement('#connectethereum-provider');
 
@@ -70,6 +75,11 @@ describe('Test Snap revoke permission', function () {
           '#sendEthproviderAccounts',
         );
         await driver.scrollToElement(snapButton3);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click send
         await driver.waitForSelector('#sendEthproviderAccounts');
         await driver.clickElement('#sendEthproviderAccounts');
 
@@ -112,6 +122,8 @@ describe('Test Snap revoke permission', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        // added delay for rendering (deflake)
         await driver.delay(1000);
 
         // click on the global action menu
@@ -148,6 +160,11 @@ describe('Test Snap revoke permission', function () {
           '#sendEthproviderAccounts',
         );
         await driver.scrollToElement(snapButton4);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#sendEthproviderAccounts');
         await driver.clickElement('#sendEthproviderAccounts');
 

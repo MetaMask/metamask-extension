@@ -27,9 +27,14 @@ describe('Test Snap bip-32', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the bip32 test and connect
+        // find and scroll to the bip32 snap
         const snapButton1 = await driver.findElement('#connectbip32');
         await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect to bip-32
         await driver.waitForSelector('#connectbip32');
         await driver.clickElement('#connectbip32');
 

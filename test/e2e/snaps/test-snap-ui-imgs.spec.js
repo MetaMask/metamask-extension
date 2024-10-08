@@ -27,9 +27,14 @@ describe('Test Snap Images', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the images test and connect
+        // find and scroll to the images test snap
         const snapButton1 = await driver.findElement('#connectimages');
         await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectimages');
         await driver.clickElement('#connectimages');
 

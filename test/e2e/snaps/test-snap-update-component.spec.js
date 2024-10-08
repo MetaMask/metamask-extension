@@ -31,9 +31,14 @@ describe('Test Snap update via snaps component', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the correct card and connect to update snap
+        // find and scroll to the update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectUpdate');
         await driver.clickElement('#connectUpdate');
 

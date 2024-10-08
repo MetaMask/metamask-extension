@@ -27,8 +27,14 @@ describe('Test Snap Get Locale', function () {
           tag: 'h2',
         });
 
+        // scroll to dialog snap
         const dialogButton = await driver.findElement('#connectgetlocale');
         await driver.scrollToElement(dialogButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectgetlocale');
         await driver.clickElement('#connectgetlocale');
 
@@ -45,17 +51,20 @@ describe('Test Snap Get Locale', function () {
           tag: 'p',
         });
 
+        // wait for confirm
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElement({
           text: 'OK',
           tag: 'button',

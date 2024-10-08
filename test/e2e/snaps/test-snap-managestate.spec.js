@@ -27,9 +27,14 @@ describe('Test Snap manageState', function () {
           tag: 'h2',
         });
 
-        // navigate to test snaps page and connect to manage-state snap
+        // scroll to manage-state snap
         const snapButton1 = await driver.findElement('#connectmanage-state');
         await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectmanage-state');
         await driver.clickElement('#connectmanage-state');
 

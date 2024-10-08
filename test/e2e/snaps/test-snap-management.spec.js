@@ -27,9 +27,14 @@ describe('Test Snap Management', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the notifications card and click first
+        // find and scroll to the notifications snap
         const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectnotifications');
         await driver.clickElement('#connectnotifications');
 

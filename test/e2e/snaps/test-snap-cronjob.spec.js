@@ -30,6 +30,11 @@ describe('Test Snap Cronjob', function () {
         // scroll to and connect to cronjobs snap
         const snapButton = await driver.findElement('#connectcronjobs');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectcronjobs');
         await driver.clickElement('#connectcronjobs');
 

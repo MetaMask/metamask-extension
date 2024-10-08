@@ -27,9 +27,14 @@ describe('Test Snap Lifecycle Hooks', function () {
           tag: 'h2',
         });
 
-        // scroll to and connect to lifecycle hooks snap
+        // scroll to lifecycle hooks snap
         const snapButton = await driver.findElement('#connectlifecycle-hooks');
         await driver.scrollToElement(snapButton);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectlifecycle-hooks');
         await driver.clickElement('#connectlifecycle-hooks');
 

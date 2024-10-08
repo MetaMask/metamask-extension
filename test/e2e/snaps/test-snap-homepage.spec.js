@@ -27,9 +27,14 @@ describe('Test Snap Homepage', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the homepage test and connect
+        // find and scroll to the homepage snap
         const snapButton1 = await driver.findElement('#connecthomepage');
         await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delay(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connecthomepage');
         await driver.clickElement('#connecthomepage');
 
