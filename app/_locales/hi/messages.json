@@ -450,18 +450,6 @@
   "alertReasonWrongAccount": {
     "message": "गलत अकाउंट"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "जो कनेक्टेड नहीं है वह अकाउंट चुनकर कोई वेबसाइट ब्राउज़ करना"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "यह चेतावनी पॉपअप में तब दिखाई जाती है, जब आप कनेक्टेड web3 साइट ब्राउज़ कर रहे होते हैं, लेकिन वर्तमान में चुना गया अकाउंट कनेक्ट नहीं होता है।"
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "जब कोई वेबसाइट हटाए गए window.web3 API का इस्तेमाल करने की कोशिश करती है"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "यह एलर्ट पॉपअप में तब दिखाया जाता है, जब आप ऐसी साइट ब्राउज़ कर रहे होते हैं, जो हटाए गए window.web3 API का इस्तेमाल करने की कोशिश करती है और परिणामस्वरूप उसमें गड़बड़ी आ सकती है।"
-  },
   "alerts": {
     "message": "चेतावनियां"
   },

@@ -450,18 +450,6 @@
   "alertReasonWrongAccount": {
     "message": "正しくないアカウント"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "選択した未接続のアカウントを使用してWebサイトをブラウズしています"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "このアラートは、選択中のアカウントが未接続のままweb3サイトを閲覧しているときにポップアップ表示されます。"
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Webサイトが削除済みのwindow.web3 APIを使用しようとした場合"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "このアラートは、削除されたwindow.web3 APIを使用しようとし、その結果破損している可能性があるサイトをブラウズした際、ポップアップに表示されます。"
-  },
   "alerts": {
     "message": "アラート"
   },

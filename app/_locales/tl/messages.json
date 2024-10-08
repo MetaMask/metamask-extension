@@ -450,18 +450,6 @@
   "alertReasonWrongAccount": {
     "message": "Maling account"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Nagba-browse sa isang website na may napiling hindi konektadong account"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Ang alertong ito ay ipinapakita sa popup kapag nagba-browse ka ng konektadong web3 site, ngunit ang kasalukuyang napiling account ay hindi nakakonekta."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Kapag sinubukan ng isang website na gamitin ang inalis na window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Ang alertong ito ay ipinapakita sa popup kapag nagba-browse ka sa isang site na sumusubok na gamitin ang inalis na window.web3 API, at maaaring masira bilang resulta."
-  },
   "alerts": {
     "message": "Mga Alerto"
   },

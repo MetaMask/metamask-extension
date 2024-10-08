@@ -450,18 +450,6 @@
   "alertReasonWrongAccount": {
     "message": "Mauvais compte"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Navigation sur un site Web avec un compte non connecté sélectionné"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Cette alerte s’affiche dans le pop-up lorsque vous naviguez sur un site web3 connecté, mais que le compte actuellement sélectionné n’est pas connecté."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Lorsqu’un site Web tente d’utiliser l’API window.web3 supprimée"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Cette alerte s’affiche dans le pop-up lorsque vous naviguez sur un site qui tente d’utiliser l’API window.web3 supprimée, et qui peut par conséquent être défaillant."
-  },
   "alerts": {
     "message": "Alertes"
   },

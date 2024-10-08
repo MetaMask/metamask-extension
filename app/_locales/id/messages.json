@@ -450,18 +450,6 @@
   "alertReasonWrongAccount": {
     "message": "Akun salah"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Memilih untuk menjelajahi situs web dengan akun yang tidak terhubung"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Peringatan ini ditampilkan dalam sembulan saat Anda menelusuri situs web3 yang terhubung, tetapi akun yang baru saja dipilih tidak terhubung."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Saat situs web mencoba menggunakan API window.web3 yang dihapus"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Peringatan ini ditampilkan dalam sembulan saat Anda menelusuri situs yang mencoba menggunakan API window.web3 yang dihapus, dan bisa mengakibatkan kerusakan."
-  },
   "alerts": {
     "message": "Peringatan"
   },
