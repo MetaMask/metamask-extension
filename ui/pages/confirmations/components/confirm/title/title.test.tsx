@@ -1,6 +1,6 @@
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-
 import {
   getMockApproveConfirmState,
   getMockContractInteractionConfirmState,
@@ -21,6 +21,22 @@ import {
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import ConfirmTitle from './title';
+
+jest.mock('../info/approve/hooks/use-approve-token-simulation', () => ({
+  useApproveTokenSimulation: jest.fn(() => ({
+    spendingCap: '1000',
+    formattedSpendingCap: '1000',
+    value: '1000',
+  })),
+}));
+
+jest.mock('../../../hooks/useAssetDetails', () => ({
+  useAssetDetails: jest.fn(() => ({
+    decimals: 18,
+    userBalance: '1000000',
+    tokenSymbol: 'TST',
+  })),
+}));
 
 jest.mock('../info/approve/hooks/use-is-nft', () => ({
   useIsNFT: jest.fn(() => ({ isNFT: true })),
@@ -119,7 +135,7 @@ describe('ConfirmTitle', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render the title and description for a setApprovalForAll transaction', () => {
+  it('should render the title and description for a setApprovalForAll transaction', async () => {
     const mockStore = configureMockStore([])(
       getMockSetApprovalForAllConfirmState(),
     );
@@ -128,12 +144,15 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(
-      getByText(tEn('setApprovalForAllRedesignedTitle') as string),
-    ).toBeInTheDocument();
-    expect(
-      getByText(tEn('confirmTitleDescApproveTransaction') as string),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        getByText(tEn('setApprovalForAllRedesignedTitle') as string),
+      ).toBeInTheDocument();
+
+      expect(
+        getByText(tEn('confirmTitleDescApproveTransaction') as string),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('Alert banner', () => {
@@ -143,16 +162,23 @@ describe('ConfirmTitle', () => {
       reason: 'mock reason',
       key: 'mock key',
     };
+
+    const alertMock2 = {
+      ...alertMock,
+      key: 'mock key 2',
+      reason: 'mock reason 2',
+    };
     const mockAlertState = (state: Partial<ConfirmAlertsState> = {}) =>
       getMockPersonalSignConfirmStateForRequest(unapprovedPersonalSignMsg, {
         metamask: {},
         confirmAlerts: {
           alerts: {
-            [unapprovedPersonalSignMsg.id]: [alertMock, alertMock, alertMock],
+            [unapprovedPersonalSignMsg.id]: [alertMock, alertMock2],
           },
           confirmed: {
             [unapprovedPersonalSignMsg.id]: {
               [alertMock.key]: false,
+              [alertMock2.key]: false,
             },
           },
           ...state,
@@ -175,7 +201,7 @@ describe('ConfirmTitle', () => {
       expect(queryByText(alertMock.message)).toBeInTheDocument();
     });
 
-    it('renders alert banner when there are multiple alerts', () => {
+    it('renders multiple alert banner when there are multiple alerts', () => {
       const mockStore = configureMockStore([])(mockAlertState());
 
       const { getByText } = renderWithConfirmContextProvider(
@@ -183,7 +209,8 @@ describe('ConfirmTitle', () => {
         mockStore,
       );
 
-      expect(getByText('Multiple alerts!')).toBeInTheDocument();
+      expect(getByText(alertMock.reason)).toBeInTheDocument();
+      expect(getByText(alertMock2.reason)).toBeInTheDocument();
     });
   });
 });

@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Gas-Optionen aktualisieren"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Wenn Sie diese Anfrage genehmigen, könnten Dritte, die für Betrügereien bekannt sind, alle Ihre Assets an sich reißen."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Mehrere Benachrichtigungen!"
-  },
   "alertDisableTooltip": {
     "message": "Dies kann in „Einstellungen > Benachrichtigungen“ geändert werden."
   },
@@ -971,12 +965,6 @@
   },
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Ich habe die Benachrichtigung zur Kenntnis genommen und möchte trotzdem fortfahren"
-  },
-  "confirmAlertModalDetails": {
-    "message": "Wenn Sie sich anmelden, könnten Dritte, die für Betrügereien bekannt sind, all Ihre Assets an sich reißen. Lesen Sie bitte die Benachrichtigungen, bevor Sie fortfahren."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Ihre Assets könnten gefährdet sein"
   },
   "confirmConnectCustodianRedirect": {
     "message": "Sobald Sie auf „Weiter“ klicken, leiten wir Sie weiter zu $1."
@@ -1878,10 +1866,6 @@
   },
   "feeDetails": {
     "message": "Details zur Gebühr"
-  },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
@@ -3098,9 +3082,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask ist nicht mit dieser Website verbunden"
   },
-  "noConversionDateAvailable": {
-    "message": "Kein Umrechnungskursdaten verfügbar"
-  },
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
   },
@@ -3920,12 +3901,6 @@
   },
   "priceUnavailable": {
     "message": "Preis nicht verfügbar"
-  },
-  "primaryCurrencySetting": {
-    "message": "Hauptwährung"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Wählen Sie 'Nativ', um dem Anzeigen von Werten in der nativen Währung der Chain (z. B. ETH) Vorrang zu geben. Wählen Sie 'Fiat', um dem Anzeigen von Werten in Ihrer gewählten Fiat-Währung Vorrang zu geben."
   },
   "primaryType": {
     "message": "Primärer Typ"
@@ -4753,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "Ihre Transaktion ist abgeschlossen"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Entschuldigung für die Wartezeit"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Wenn Ihre Transaktion nicht innerhalb von $1 abgeschlossen wird, wird sie storniert und Ihnen wird kein Gas berechnet.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Smart Transactions"
   },
@@ -5175,10 +5143,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Versuchen Sie Ihren Swap erneut. Wir werden hier sein, um Sie beim nächsten Mal vor ähnlichen Risiken zu schützen."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Geschätzter Abschluss in < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Swap fehlgeschlagen"
@@ -6090,9 +6054,6 @@
   },
   "updateRequest": {
     "message": "Aktualisierungsanfrage"
-  },
-  "updatedWithDate": {
-    "message": "$1 aktualisiert"
   },
   "uploadDropFile": {
     "message": "Legen Sie Ihre Datei hier ab"

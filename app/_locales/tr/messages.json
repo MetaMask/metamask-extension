@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Gaz seçeneklerini güncelle"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Bu talebi onaylarsanız dolandırıcılıkla bilinen üçüncü bir taraf tüm varlıklarınızı çalabilir."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Çoklu uyarı!"
-  },
   "alertDisableTooltip": {
     "message": "\"Ayarlar > Uyarılar\" kısmında değiştirilebilir"
   },
@@ -971,12 +965,6 @@
   },
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Uyarıyı kabul ediyor ve yine de ilerlemek istiyorum"
-  },
-  "confirmAlertModalDetails": {
-    "message": "Oturum açarsanız dolandırıcıklarla bilinen üçüncü bir taraf tüm varlıklarınızı ele geçirebilir. İlerlemeden önce lütfen uyarıları inceleyin."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Varlıklarınız risk altında olabilir"
   },
   "confirmConnectCustodianRedirect": {
     "message": "Devam et düğmesine tıkladığınızda sizi şuraya yönlendireceğiz: $1."
@@ -1878,10 +1866,6 @@
   },
   "feeDetails": {
     "message": "Ücret bilgileri"
-  },
-  "fiat": {
-    "message": "Fiat Para",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
@@ -3098,9 +3082,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
   },
-  "noConversionDateAvailable": {
-    "message": "Para birimi dönüşüm tarihi mevcut değil"
-  },
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
@@ -3920,12 +3901,6 @@
   },
   "priceUnavailable": {
     "message": "fiyat mevcut değil"
-  },
-  "primaryCurrencySetting": {
-    "message": "Öncelikli para birimi"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Değerlerin zincirin yerli para biriminde (ör. ETH) görüntülenmesini önceliklendirmek için yerli seçimi yapın. Seçtiğiniz fiat parada değerlerin gösterilmesini önceliklendirmek için Fiat Para seçin."
   },
   "primaryType": {
     "message": "Öncelikli tür"
@@ -4753,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "İşleminiz tamamlandı"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Beklettiğimiz için özür dileriz"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "İşleminiz $1 dahilinde sonuçlanmazsa iptal edilir ve sizden gaz ücreti alınmaz.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Akıllı İşlemler"
   },
@@ -5175,10 +5143,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Swap işlemini tekrar deneyin. Bir dahaki sefere sizi benzer risklere karşı korumak için burada olacağız."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Tamamlanmasına kalan tahmini süre $1 altında",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Swap başarısız oldu"
@@ -6090,9 +6054,6 @@
   },
   "updateRequest": {
     "message": "Talebi güncelle"
-  },
-  "updatedWithDate": {
-    "message": "$1 güncellendi"
   },
   "uploadDropFile": {
     "message": "Dosyanızı buraya sürükleyin"

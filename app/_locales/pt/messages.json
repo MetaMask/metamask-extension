@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Atualizar opções de gás"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Se você aprovar esta solicitação, um terceiro conhecido por aplicar golpes poderá se apropriar de todos os seus ativos."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Vários alertas!"
-  },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
@@ -971,12 +965,6 @@
   },
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Reconheço o alerta e quero prosseguir mesmo assim"
-  },
-  "confirmAlertModalDetails": {
-    "message": "Se você fizer login, um terceiro conhecido por aplicar golpes poderá se apropriar de todos os seus ativos. Confira os alertas antes de prosseguir."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Seus ativos podem estar em risco"
   },
   "confirmConnectCustodianRedirect": {
     "message": "Você será redirecionado para $1 ao clicar em continuar."
@@ -1878,10 +1866,6 @@
   },
   "feeDetails": {
     "message": "Detalhes da taxa"
-  },
-  "fiat": {
-    "message": "Fiduciária",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
@@ -3098,9 +3082,6 @@
   "noConnectedAccountTitle": {
     "message": "A MetaMask não está conectada a este site"
   },
-  "noConversionDateAvailable": {
-    "message": "Não há uma data de conversão de moeda disponível"
-  },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
   },
@@ -3920,12 +3901,6 @@
   },
   "priceUnavailable": {
     "message": "preço não disponível"
-  },
-  "primaryCurrencySetting": {
-    "message": "Moeda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selecione Nativa para priorizar a exibição de valores na moeda nativa da cadeia (por ex., ETH). Selecione Fiduciária para priorizar a exibição de valores na moeda fiduciária selecionada."
   },
   "primaryType": {
     "message": "Tipo primário"
@@ -4753,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "Sua transação foi concluída"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Desculpe pela espera"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Se a sua transação não for finalizada em $1, ela será cancelada e você não pagará gás.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Transações inteligentes"
   },
@@ -5175,10 +5143,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Tente trocar novamente. Estaremos aqui para proteger você contra riscos semelhantes no futuro."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Conclusão estimada em até $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Falha na troca"
@@ -6090,9 +6054,6 @@
   },
   "updateRequest": {
     "message": "Solicitação de atualização"
-  },
-  "updatedWithDate": {
-    "message": "Atualizado em $1"
   },
   "uploadDropFile": {
     "message": "Solte seu arquivo aqui"
