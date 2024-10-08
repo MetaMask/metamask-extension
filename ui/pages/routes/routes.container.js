@@ -22,7 +22,6 @@ import {
   getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  getShowSurveyToast,
   getNewPrivacyPolicyToastShownDate,
   getShowPrivacyPolicyToast,
   getUseRequestQueue,
@@ -143,7 +142,6 @@ function mapStateToProps(state) {
     useRequestQueue: getUseRequestQueue(state),
     newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
     showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
-    showSurveyToast: getShowSurveyToast(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
