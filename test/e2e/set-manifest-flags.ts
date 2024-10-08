@@ -103,6 +103,14 @@ export function setManifestFlags(flags: ManifestFlags = {}) {
 
     addFlagsFromPrBody(flags);
     addFlagsFromGitMessage(flags);
+
+    // Set `flags.sentry.forceEnable` to true by default
+    if (flags.sentry === undefined) {
+      flags.sentry = {};
+    }
+    if (flags.sentry.forceEnable === undefined) {
+      flags.sentry.forceEnable = true;
+    }
   }
 
   const manifest = JSON.parse(

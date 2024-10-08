@@ -51,7 +51,7 @@ describe('Traces', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryCustomTrace,
         manifestFlags: {
-          sentry: { doNotForceForThisTest: true },
+          sentry: { forceEnable: false },
         },
       },
       async ({ driver, mockedEndpoint }) => {
@@ -73,7 +73,7 @@ describe('Traces', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryCustomTrace,
         manifestFlags: {
-          sentry: { doNotForceForThisTest: true },
+          sentry: { forceEnable: false },
         },
       },
       async ({ driver, mockedEndpoint }) => {
@@ -95,7 +95,7 @@ describe('Traces', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryAutomatedTrace,
         manifestFlags: {
-          sentry: { doNotForceForThisTest: true },
+          sentry: { forceEnable: false },
         },
       },
       async ({ driver, mockedEndpoint }) => {
@@ -117,7 +117,7 @@ describe('Traces', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryAutomatedTrace,
         manifestFlags: {
-          sentry: { doNotForceForThisTest: true },
+          sentry: { forceEnable: false },
         },
       },
       async ({ driver, mockedEndpoint }) => {

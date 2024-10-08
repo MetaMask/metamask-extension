@@ -238,7 +238,7 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
-    getManifestFlags().sentry?.doNotForceForThisTest ||
+    !getManifestFlags().sentry?.forceEnable ||
     (process.env.IN_TEST && !SENTRY_DSN_DEV)
   ) {
     return SENTRY_DSN_FAKE;
@@ -272,7 +272,7 @@ async function getMetaMetricsEnabled() {
 
   if (
     METAMASK_BUILD_TYPE === 'mmi' ||
-    (flags.circleci && !flags.sentry?.doNotForceForThisTest)
+    (flags.circleci && flags.sentry.forceEnable)
   ) {
     return true;
   }
