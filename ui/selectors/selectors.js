@@ -102,7 +102,10 @@ import {
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
-import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ORIGIN_METAMASK,
+} from '../../shared/constants/app';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -152,7 +155,26 @@ export function getNetworkIdentifier(state) {
 
 export function getCurrentChainId(state) {
   const { chainId } = getProviderConfig(state);
-  return chainId;
+
+  if (state.metamask.domains === undefined) {
+    console.info(
+      `[getCurrentChainId] state.metamask.domains is undefined, returning global chainId (${chainId})`,
+    );
+    return chainId;
+  }
+
+  const pageChainId =
+    state.metamask.domains[state.activeTab?.origin || ORIGIN_METAMASK];
+  if (pageChainId === undefined) {
+    console.info(
+      `[getCurrentChainId] no page chainID found, returning global chainId (${chainId})`,
+      state.metamask.domains || '(no domains)',
+      state.activeTab?.origin || '(no origin)',
+    );
+    return chainId;
+  }
+
+  return pageChainId;
 }
 
 export function getMetaMetricsId(state) {
