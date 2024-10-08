@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { keccak } from 'ethereumjs-util';
-import { withFixtures, defaultGanacheOptions } from '../helpers';
+import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
 import { Ganache } from '../seeder/ganache';
