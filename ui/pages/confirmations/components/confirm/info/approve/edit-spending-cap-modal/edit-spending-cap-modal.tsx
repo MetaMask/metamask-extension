@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
@@ -32,16 +32,8 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 
-function countDecimalDigits(numberString: string) {
-  const decimalPointIndex = numberString.indexOf('.');
-
-  if (decimalPointIndex === -1) {
-    return 0;
-  }
-
-  const decimalDigits = numberString.length - decimalPointIndex - 1;
-
-  return decimalDigits;
+export function countDecimalDigits(numberString: string) {
+  return numberString.split('.')[1]?.length || 0;
 }
 
 export const EditSpendingCapModal = ({
@@ -128,17 +120,14 @@ export const EditSpendingCapModal = ({
     setCustomSpendingCapInputValue(formattedSpendingCap.toString());
   }, [customSpendingCapInputValue, formattedSpendingCap]);
 
-  const showDecimalError = useMemo(() => {
-    return (
-      decimals &&
-      parseInt(decimals, 10) < countDecimalDigits(customSpendingCapInputValue)
-    );
-  }, [decimals, customSpendingCapInputValue]);
+  const showDecimalError =
+    decimals &&
+    parseInt(decimals, 10) < countDecimalDigits(customSpendingCapInputValue);
 
   return (
     <Modal
       isOpen={isOpenEditSpendingCapModal}
-      onClose={() => handleCancel()}
+      onClose={handleCancel}
       isClosedOnEscapeKey
       isClosedOnOutsideClick
       className="edit-spending-cap-modal"
@@ -173,6 +162,15 @@ export const EditSpendingCapModal = ({
             style={{ width: '100%' }}
             inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
           />
+          {showDecimalError && (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.errorDefault}
+              paddingTop={1}
+            >
+              {t('editSpendingCapError', [decimals])}
+            </Text>
+          )}
           <Text
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
@@ -183,15 +181,6 @@ export const EditSpendingCapModal = ({
               tokenSymbol || '',
             ])}
           </Text>
-          {showDecimalError && (
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.errorDefault}
-              paddingTop={1}
-            >
-              {t('editSpendingCapError', [decimals])}
-            </Text>
-          )}
         </ModalBody>
         <ModalFooter
           onSubmit={handleSubmit}
