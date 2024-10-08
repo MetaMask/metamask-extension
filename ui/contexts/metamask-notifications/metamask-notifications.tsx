@@ -7,8 +7,11 @@ import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifica
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { SnapNotification } from '../../pages/notifications/snap/types/types';
 
-type Notification = NotificationServicesController.Types.INotification;
+type Notification =
+  | NotificationServicesController.Types.INotification
+  | SnapNotification;
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
