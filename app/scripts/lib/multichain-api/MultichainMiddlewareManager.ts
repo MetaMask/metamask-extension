@@ -10,7 +10,7 @@ export type ExtendedJsonRpcMiddleware = JsonRpcMiddleware<unknown, unknown> & {
 type MiddlewareKey = {
   scope: ExternalScopeString;
   origin: string;
-  tabId?: string;
+  tabId?: number;
 };
 type MiddlewareEntry = MiddlewareKey & {
   middleware: ExtendedJsonRpcMiddleware;
@@ -80,7 +80,7 @@ export default class MultichainMiddlewareManager {
     });
   }
 
-  removeMiddlewareByOriginAndTabId(origin: string, tabId?: string) {
+  removeMiddlewareByOriginAndTabId(origin: string, tabId?: number) {
     this.#middlewares.forEach((middlewareEntry) => {
       if (
         middlewareEntry.origin === origin &&
@@ -91,7 +91,7 @@ export default class MultichainMiddlewareManager {
     });
   }
 
-  generateMiddlewareForOriginAndTabId(origin: string, tabId?: string) {
+  generateMiddlewareForOriginAndTabId(origin: string, tabId?: number) {
     const middleware: ExtendedJsonRpcMiddleware = (req, res, next, end) => {
       const r = req as unknown as {
         scope: string;

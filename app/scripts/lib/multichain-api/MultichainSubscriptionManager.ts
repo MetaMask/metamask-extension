@@ -22,7 +22,7 @@ type SubscriptionNotificationEvent = {
 type SubscriptionKey = {
   scope: ExternalScopeString;
   origin: string;
-  tabId?: string;
+  tabId?: number;
 };
 type SubscriptionEntry = SubscriptionKey & {
   subscriptionManager: SubscriptionManager;
@@ -37,12 +37,6 @@ type MultichainSubscriptionManagerOptions = {
 };
 
 export default class MultichainSubscriptionManager extends SafeEventEmitter {
-  // private subscriptionsByChain: {
-  //   [scope: string]: {
-  //     [domain: string]: (message: SubscriptionNotificationEvent) => void;
-  //   };
-  // };
-
   #findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
 
   #getNetworkClientById: NetworkController['getNetworkClientById'];
@@ -159,7 +153,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     });
   }
 
-  unsubscribeByOriginAndTabId(origin: string, tabId?: string) {
+  unsubscribeByOriginAndTabId(origin: string, tabId?: number) {
     this.#subscriptions.forEach((subscriptionEntry) => {
       if (
         subscriptionEntry.origin === origin &&

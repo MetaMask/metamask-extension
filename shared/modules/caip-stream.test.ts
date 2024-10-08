@@ -1,7 +1,7 @@
 import { Duplex, PassThrough } from 'readable-stream';
 import { createDeferredPromise } from '@metamask/utils';
-import { createCaipStream } from './caip-stream';
 import { deferredPromise } from '../../app/scripts/lib/util';
+import { createCaipStream } from './caip-stream';
 
 const writeToStream = async (stream: Duplex, message: unknown) => {
   const { promise: isWritten, resolve: writeCallback } =
@@ -86,12 +86,12 @@ describe('CAIP Stream', () => {
 
       const providerStream = createCaipStream(sourceStream);
 
-      const {promise, resolve} = deferredPromise()
-      providerStream.on('close', () => resolve?.())
+      const { promise, resolve } = deferredPromise();
+      providerStream.on('close', () => resolve?.());
 
-      sourceStream.destroy()
+      sourceStream.destroy();
 
-      await promise
+      await promise;
     });
   });
 });
