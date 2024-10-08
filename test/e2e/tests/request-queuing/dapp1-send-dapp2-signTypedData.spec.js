@@ -90,6 +90,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x53a',
+        });
+
         // Should auto switch without prompt since already approved via connect
 
         // Switch back to Dapp One
@@ -106,7 +111,10 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x3e8',
+        });
         // Should auto switch without prompt since already approved via connect
 
         await driver.switchToWindowWithUrl(DAPP_URL);
