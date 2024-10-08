@@ -38,6 +38,7 @@ import {
   ToastContainer,
   Toast,
 } from '../../components/multichain';
+import { SurveyToast } from '../../components/ui/survey-toast';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
@@ -564,6 +565,17 @@ export default class Routes extends Component {
       return true;
     }
 
+    const isReviewPermissionsPgae = Boolean(
+      matchPath(location.pathname, {
+        path: REVIEW_PERMISSIONS,
+        exact: false,
+      }),
+    );
+
+    if (isReviewPermissionsPgae) {
+      return true;
+    }
+
     if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
       return true;
     }
@@ -665,6 +677,7 @@ export default class Routes extends Component {
 
     return (
       <ToastContainer>
+        <SurveyToast />
         {showConnectAccountToast &&
         !this.state.hideConnectAccountToast &&
         isEvmAccount ? (

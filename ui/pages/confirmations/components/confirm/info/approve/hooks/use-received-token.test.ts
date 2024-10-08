@@ -1,10 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 
-import {
-  CONTRACT_INTERACTION_SENDER_ADDRESS,
-  genUnapprovedApproveConfirmation,
-} from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { CONTRACT_INTERACTION_SENDER_ADDRESS } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/token-approve';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { useAccountTotalFiatBalance } from '../../../../../../../hooks/useAccountTotalFiatBalance';
 import { useReceivedToken } from './use-received-token';
