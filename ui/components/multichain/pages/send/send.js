@@ -260,6 +260,9 @@ export const SendPage = () => {
         {
           event: MetaMetricsEventName.sendSwapQuoteError,
           category: MetaMetricsEventCategory.Send,
+          properties: {
+            error: swapQuotesError
+          },
           sensitiveProperties: {
             ...sendAnalytics,
           },
