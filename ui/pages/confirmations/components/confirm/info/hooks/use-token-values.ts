@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-controller-utils';
 import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
@@ -11,44 +11,66 @@ export const useTokenValues = (
   transactionMeta: TransactionMeta,
   selectedToken: SelectedToken,
 ) => {
-  const {
-    tokensWithBalances,
-  }: {
-    tokensWithBalances: {
-      balance: string;
-      address: string;
-      decimals: number;
-      string: string;
-    }[];
-  } = useTokenTracker({ tokens: [selectedToken], address: undefined });
+  const [tokensWithBalances, setTokensWithBalances] = useState<
+    { balance: string; address: string; decimals: number; string: string }[]
+  >([]);
+
+  const fetchTokenBalances = async () => {
+    const result: {
+      tokensWithBalances: {
+        balance: string;
+        address: string;
+        decimals: number;
+        string: string;
+      }[];
+    } = await useTokenTracker({
+      tokens: [selectedToken],
+      address: undefined,
+    });
+
+    setTokensWithBalances(result.tokensWithBalances);
+  };
+
+  fetchTokenBalances();
+
+  const [exchangeRate, setExchangeRate] = useState<any>();
+  const fetchExchangeRate = async () => {
+    const result = await useTokenExchangeRate(transactionMeta?.txParams?.to);
+
+    setExchangeRate(result);
+  };
+
+  fetchExchangeRate();
 
   const tokenBalance = useMemo(() => {
     const tokenWithBalance = tokensWithBalances.find(
-      (token) =>
+      (token: {
+        balance: string;
+        address: string;
+        decimals: number;
+        string: string;
+      }) =>
         toChecksumHexAddress(token.address) ===
         toChecksumHexAddress(transactionMeta?.txParams?.to as string),
     );
 
     if (!tokenWithBalance) {
-      return '';
+      return undefined;
     }
 
     return calcTokenAmount(tokenWithBalance.balance, tokenWithBalance.decimals);
   }, [tokensWithBalances]);
 
-  const exchangeRate = useTokenExchangeRate(transactionMeta?.txParams?.to);
-
-  const fiatValue = useMemo(() => {
-    if (exchangeRate && tokenBalance !== '') {
-      return exchangeRate.times(tokenBalance).toNumber();
-    }
-    return undefined;
-  }, [exchangeRate, tokenBalance]);
+  const fiatValue =
+    exchangeRate && tokenBalance && exchangeRate.times(tokenBalance).toNumber();
 
   const fiatFormatter = useFiatFormatter();
 
   const fiatDisplayValue =
     fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
-  return { fiatDisplayValue, tokenBalance };
+  return {
+    fiatDisplayValue,
+    tokenBalance: tokenBalance && String(tokenBalance.toNumber()),
+  };
 };

@@ -123,6 +123,7 @@ import {
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -536,6 +537,24 @@ export const getSelectedAccount = createDeepEqualSelector(
     return undefined;
   },
 );
+
+export const getWatchedToken = (transactionMeta) =>
+  createSelector(
+    [getSelectedAccount, getAllTokens],
+    (selectedAccount, detectedTokens) => {
+      const chainId = transactionMeta.chainId;
+
+      const selectedToken = detectedTokens?.[chainId]?.[
+        selectedAccount.address
+      ]?.find(
+        (token) =>
+          toChecksumHexAddress(token.address) ===
+          toChecksumHexAddress(transactionMeta.txParams.to),
+      );
+
+      return selectedToken;
+    },
+  );
 
 export function getTargetAccount(state, targetAddress) {
   const accounts = getMetaMaskAccounts(state);
