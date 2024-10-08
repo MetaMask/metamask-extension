@@ -33,6 +33,16 @@ export default class MultichainMiddlewareManager {
     });
   }
 
+  #removeMiddlewareEntry({ scope, origin, tabId }: MiddlewareKey) {
+    this.#middlewares = this.#middlewares.filter((middlewareEntry) => {
+      return (
+        middlewareEntry.scope !== scope ||
+        middlewareEntry.origin !== origin ||
+        middlewareEntry.tabId !== tabId
+      );
+    });
+  }
+
   addMiddleware(middlewareEntry: MiddlewareEntry) {
     const { scope, origin, tabId } = middlewareEntry;
     if (!this.#getMiddlewareEntry({ scope, origin, tabId })) {
@@ -46,17 +56,9 @@ export default class MultichainMiddlewareManager {
       return;
     }
 
-    const { scope, origin, tabId, middleware } = existingMiddlewareEntry;
+    existingMiddlewareEntry.middleware.destroy?.();
 
-    middleware.destroy?.();
-
-    this.#middlewares = this.#middlewares.filter((middlewareEntry) => {
-      return (
-        middlewareEntry.scope !== scope ||
-        middlewareEntry.origin !== origin ||
-        middlewareEntry.tabId !== tabId
-      );
-    });
+    this.#removeMiddlewareEntry(middlewareKey);
   }
 
   removeMiddlewareByScope(scope: ExternalScopeString) {
@@ -78,14 +80,6 @@ export default class MultichainMiddlewareManager {
     });
   }
 
-  removeMiddlewareByOrigin(origin: string) {
-    this.#middlewares.forEach((middlewareEntry) => {
-      if (middlewareEntry.origin === origin) {
-        this.removeMiddleware(middlewareEntry);
-      }
-    });
-  }
-
   removeMiddlewareByOriginAndTabId(origin: string, tabId?: string) {
     this.#middlewares.forEach((middlewareEntry) => {
       if (
@@ -97,17 +91,12 @@ export default class MultichainMiddlewareManager {
     });
   }
 
-  generateMiddlewareForOriginAndTabId(
-    targetOrigin: string,
-    targetTabId: string,
-  ) {
+  generateMiddlewareForOriginAndTabId(origin: string, tabId?: string) {
     const middleware: ExtendedJsonRpcMiddleware = (req, res, next, end) => {
       const r = req as unknown as {
         scope: string;
-        origin: string;
-        tabId?: string;
       };
-      const { scope, origin, tabId } = r;
+      const { scope } = r;
       const middlewareEntry = this.#getMiddlewareEntry({
         scope,
         origin,
@@ -122,8 +111,8 @@ export default class MultichainMiddlewareManager {
     };
     middleware.destroy = this.removeMiddlewareByOriginAndTabId.bind(
       this,
-      targetOrigin,
-      targetTabId,
+      origin,
+      tabId,
     );
 
     return middleware;
