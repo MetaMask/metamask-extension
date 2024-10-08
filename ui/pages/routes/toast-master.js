@@ -262,11 +262,12 @@ function onHomeScreen(props) {
 
 /**
  * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
+ * (This function is exported only so the test can access it.)
  *
  * @param {*} state - The application state containing the necessary survey data.
  * @returns {boolean} True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
  */
-function getShowSurveyToast(state) {
+export function getShowSurveyToast(state) {
   if (state.metamask.surveyLinkLastClickedOrClosed) {
     return false;
   }
