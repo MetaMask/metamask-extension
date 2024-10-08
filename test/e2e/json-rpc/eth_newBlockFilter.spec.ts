@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { withFixtures, defaultGanacheOptions } from '../helpers';
+import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
