@@ -19,7 +19,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/metamask-notifications/useProfileSyncing';
 
-const renderAccountSyncDeleteDataFromUserStorage = () => {
+const AccountSyncDeleteDataFromUserStorage = () => {
   const [hasDeletedAccountSyncEntries, setHasDeletedAccountSyncEntries] =
     useState(false);
 
@@ -92,7 +92,7 @@ export const ProfileSyncDevSettings = () => {
       <Text className="settings-page__security-tab-sub-header__bold">
         Profile Sync
       </Text>
-      {renderAccountSyncDeleteDataFromUserStorage()}
+      <AccountSyncDeleteDataFromUserStorage />
     </>
   );
 };
