@@ -1120,9 +1120,9 @@ jobs:
           name: Comment on PR
           command: |
             if [  -f html-report-multichain/index.html ]; then
-              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report/index.html)."
+              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: Multichain API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report-multichain/index.html)."
             else
-              echo "API Spec Report not found!"
+              echo "Multichain API Spec Report not found!"
             fi
           when: on_fail
       - store_artifacts:
