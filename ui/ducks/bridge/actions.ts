@@ -177,9 +177,12 @@ export const submitBridgeTransaction = (
       if (networkAndAccountSupports1559) {
         const gasFeeEstimates = getGasFeeEstimates(state);
         // decEstimatedBaseFee = gasFeeEstimates.high.estimatedBaseFee;
-        maxFeePerGas = gasFeeEstimates?.high?.suggestedMaxFeePerGas;
-        maxPriorityFeePerGas =
-          gasFeeEstimates?.high?.suggestedMaxPriorityFeePerGas;
+        maxFeePerGas = decGWEIToHexWEI(
+          gasFeeEstimates?.high?.suggestedMaxFeePerGas,
+        );
+        maxPriorityFeePerGas = decGWEIToHexWEI(
+          gasFeeEstimates?.high?.suggestedMaxPriorityFeePerGas,
+        );
         // baseAndPriorityFeePerGas = addHexes(
         //   decEstimatedBaseFee,
         //   maxPriorityFeePerGas,
