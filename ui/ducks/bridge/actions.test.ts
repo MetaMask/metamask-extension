@@ -447,6 +447,15 @@ describe('bridge/actions', () => {
         ],
       });
     });
-    it.todo('routes to activity tab');
+    it('routes to activity tab', async () => {
+      const store = makeMockStore();
+      const history = makeMockHistory();
+
+      // Execute
+      await store.dispatch(submitBridgeTransaction(history as any) as any);
+
+      // Assert
+      expect(history.push).toHaveBeenCalledWith('/');
+    });
   });
 });
