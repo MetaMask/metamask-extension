@@ -9,7 +9,7 @@ export const createMockImplementation = <T,>(requests: Record<string, T>) => {
   };
 };
 
-export function mock4byte(hexSignature: string) {
+export function mock4byte(hexSignature: string, textSignature?: string) {
   const mockEndpoint = nock('https://www.4byte.directory:443', {
     encodedQueryParams: true,
   })
@@ -21,7 +21,7 @@ export function mock4byte(hexSignature: string) {
         {
           id: 235447,
           created_at: '2021-09-14T02:07:09.805000Z',
-          text_signature: 'mintNFTs(uint256)',
+          text_signature: textSignature ?? 'mintNFTs(uint256)',
           hex_signature: hexSignature,
           bytes_signature: ';K\u0013 ',
         },

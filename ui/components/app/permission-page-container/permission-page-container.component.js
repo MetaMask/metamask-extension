@@ -9,6 +9,8 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';

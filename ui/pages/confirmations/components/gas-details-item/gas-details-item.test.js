@@ -270,7 +270,7 @@ describe('GasDetailsItem', () => {
               high: {
                 suggestedMaxPriorityFeePerGas: '1',
               },
-              networkCongestion: 0.7,
+              networkCongestion: 0.91,
             },
           },
         },

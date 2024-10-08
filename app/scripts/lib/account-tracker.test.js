@@ -108,11 +108,8 @@ function buildAccountTracker({
       },
     },
     onboardingController: {
-      store: {
-        subscribe: noop,
-        getState: () => ({
-          completedOnboarding,
-        }),
+      state: {
+        completedOnboarding,
       },
     },
     controllerMessenger,

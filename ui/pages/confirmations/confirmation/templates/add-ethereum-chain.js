@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import { RpcEndpointType } from '@metamask/network-controller';
 
 import {
   infuraProjectId,
@@ -18,6 +19,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { BannerAlertSeverity } from '../../../../components/component-library';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
@@ -149,6 +151,8 @@ const MISMATCHED_NETWORK_RPC_CHAIN_ID = {
   },
 };
 
+const multichainFlag = process.env.CHAIN_PERMISSIONS;
+
 const ERROR_CONNECTING_TO_RPC = {
   id: 'ERROR_CONNECTING_TO_RPC',
   severity: Severity.Danger,
@@ -221,9 +225,31 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
-  const childrenTitleText = process.env.CHAIN_PERMISSIONS
-    ? t('addNetworkConfirmationTitle', [pendingApproval.requestData.chainName])
-    : t('addEthereumChainConfirmationTitle');
+
+  let title;
+  if (originIsMetaMask) {
+    title = t('wantToAddThisNetwork');
+  } else if (data.existingNetworkConfiguration) {
+    title = t('updateNetworkConfirmationTitle', [
+      data.existingNetworkConfiguration.name,
+    ]);
+  } else {
+    title = process.env.CHAIN_PERMISSIONS
+      ? t('addNetworkConfirmationTitle', [
+          pendingApproval.requestData.chainName,
+        ])
+      : t('addEthereumChainConfirmationTitle');
+  }
+
+  let subtitle;
+  if (data.existingNetworkConfiguration) {
+    subtitle = t('updateEthereumChainConfirmationDescription');
+  } else {
+    subtitle = process.env.CHAIN_PERMISSIONS
+      ? t('multichainAddEthereumChainConfirmationDescription')
+      : t('addEthereumChainConfirmationDescription');
+  }
+
   return {
     content: [
       {
@@ -249,13 +275,87 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
         ],
       },
+      multichainFlag && {
+        element: 'BannerAlert',
+        key: 'only-add-networks-you-trust',
+        children: [
+          {
+            element: 'Typography',
+            key: 'description',
+            props: {
+              style: { display: originIsMetaMask && '-webkit-box' },
+            },
+            children: [
+              `${t('unknownChainWarning')} `,
+              {
+                hide: !originIsMetaMask,
+                element: 'Tooltip',
+                key: 'tooltip-info',
+                props: {
+                  position: 'bottom',
+                  interactive: true,
+                  trigger: 'mouseenter',
+                  html: (
+                    <div
+                      style={{
+                        width: '180px',
+                        margin: '16px',
+                        textAlign: 'left',
+                      }}
+                    >
+                      <a
+                        key="zendesk_page_link"
+                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
+                        rel="noreferrer"
+                        target="_blank"
+                        style={{ color: 'var(--color-primary-default)' }}
+                      >
+                        {t('learnMoreUpperCase')}
+                      </a>
+                    </div>
+                  ),
+                },
+                children: [
+                  {
+                    element: 'i',
+                    key: 'info-circle',
+                    props: {
+                      className: 'fas fa-info-circle',
+                      style: {
+                        marginLeft: '4px',
+                        color: 'var(--color-icon-default)',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            element: 'a',
+            children: t('learnMoreUpperCase'),
+            key: 'learnMoreUpperCase',
+            props: {
+              href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
+              target: '__blank',
+            },
+          },
+        ],
+        props: {
+          severity: BannerAlertSeverity.Warning,
+          boxProps: {
+            margin: [0, 4],
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
+          },
+        },
+      },
 
       {
         element: 'Typography',
         key: 'title',
-        children: originIsMetaMask
-          ? t('wantToAddThisNetwork')
-          : childrenTitleText,
+        children: title,
         props: {
           variant: TypographyVariant.H3,
           align: 'center',
@@ -268,9 +368,7 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'description',
-        children: process.env.CHAIN_PERMISSIONS
-          ? t('multichainAddEthereumChainConfirmationDescription')
-          : t('addEthereumChainConfirmationDescription'),
+        children: subtitle,
         props: {
           variant: TypographyVariant.H7,
           align: 'center',
@@ -436,18 +534,26 @@ function getValues(pendingApproval, t, actions, history, data) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-        const networkConfigurationId = await actions.upsertNetworkConfiguration(
-          {
-            ...pendingApproval.requestData,
-            nickname: pendingApproval.requestData.chainName,
-          },
-          {
-            setActive: false,
-            source: pendingApproval.requestData.source,
-          },
-        );
+        const blockExplorer =
+          pendingApproval.requestData.rpcPrefs.blockExplorerUrl;
+
+        const addedNetwork = await actions.addNetwork({
+          chainId: pendingApproval.requestData.chainId,
+          name: pendingApproval.requestData.chainName,
+          nativeCurrency: pendingApproval.requestData.ticker,
+          blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
+          defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: pendingApproval.requestData.rpcUrl,
+              type: RpcEndpointType.Custom,
+            },
+          ],
+        });
+
         await actions.setNewNetworkAdded({
-          networkConfigurationId,
+          networkConfigurationId: addedNetwork.rpcEndpoints[0].networkClientId,
           nickname: pendingApproval.requestData.chainName,
         });
 

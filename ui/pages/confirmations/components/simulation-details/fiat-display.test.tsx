@@ -21,6 +21,12 @@ const mockStateWithShowingFiatOnTestnets = merge({}, mockStateWithTestnet, {
     preferences: {
       showFiatInTestnets: true,
     },
+    useCurrencyRateCheck: true,
+    currencyRates: {
+      SepoliaETH: {
+        conversionRate: 1,
+      },
+    },
   },
 });
 const mockStoreWithShowingFiatOnTestnets = configureStore()(
@@ -32,6 +38,7 @@ const mockStateWithHidingFiatOnTestnets = merge({}, mockStateWithTestnet, {
     preferences: {
       showFiatInTestnets: false,
     },
+    useCurrencyRateCheck: false,
   },
 });
 const mockStoreWithHidingFiatOnTestnets = configureStore()(

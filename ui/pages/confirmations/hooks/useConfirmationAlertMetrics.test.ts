@@ -1,7 +1,9 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react-hooks';
-import { TransactionType } from '@metamask/transaction-controller';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
+
+import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../helpers/constants/design-system';
 import {
   useConfirmationAlertMetrics,
@@ -37,26 +39,26 @@ const alertsMock = [
     alertDetails: ['Detail A', 'Detail B'],
   },
 ];
-const STATE_MOCK = {
-  ...mockState,
-  confirmAlerts: {
-    alerts: { [OWNER_ID_MOCK]: alertsMock },
-    confirmed: {
-      [OWNER_ID_MOCK]: {
-        [KEY_ALERT_KEY_MOCK]: false,
-        [UUID_ALERT_KEY_MOCK]: false,
+
+const contractInteraction = genUnapprovedContractInteractionConfirmation({
+  chainId: '0x5',
+});
+
+const STATE_MOCK = getMockConfirmStateForTransaction(
+  { ...contractInteraction, id: OWNER_ID_MOCK } as TransactionMeta,
+  {
+    metamask: {},
+    confirmAlerts: {
+      alerts: { [OWNER_ID_MOCK]: alertsMock },
+      confirmed: {
+        [OWNER_ID_MOCK]: {
+          [KEY_ALERT_KEY_MOCK]: false,
+          [UUID_ALERT_KEY_MOCK]: false,
+        },
       },
     },
   },
-  confirm: {
-    currentConfirmation: {
-      id: OWNER_ID_MOCK,
-      status: 'unapproved',
-      time: new Date().getTime(),
-      type: TransactionType.contractInteraction,
-    },
-  },
-};
+);
 
 const EXPECTED_PROPERTIES_BASE = {
   alert_action_clicked: [],
@@ -83,7 +85,7 @@ beforeEach(() => {
 
 describe('useConfirmationAlertMetrics', () => {
   it('initializes metrics properties correctly', () => {
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationAlertMetrics(),
       STATE_MOCK,
     );
@@ -94,7 +96,10 @@ describe('useConfirmationAlertMetrics', () => {
   });
 
   it('calls updateTransactionEventFragment with correct properties on initialization', () => {
-    renderHookWithProvider(() => useConfirmationAlertMetrics(), STATE_MOCK);
+    renderHookWithConfirmContextProvider(
+      () => useConfirmationAlertMetrics(),
+      STATE_MOCK,
+    );
 
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       { properties: EXPECTED_PROPERTIES_BASE },
@@ -163,7 +168,7 @@ describe('useConfirmationAlertMetrics', () => {
         ...expectedProperties,
       };
 
-      const { result } = renderHookWithProvider(
+      const { result } = renderHookWithConfirmContextProvider(
         () => useConfirmationAlertMetrics(),
         STATE_MOCK,
       );

@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -14,6 +16,8 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../shared/constants/permissions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';

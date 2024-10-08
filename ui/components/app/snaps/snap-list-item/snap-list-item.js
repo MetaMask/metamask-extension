@@ -17,7 +17,7 @@ import {
   IconSize,
   Icon,
 } from '../../../component-library';
-import SnapAvatar from '../snap-avatar';
+import { SnapIcon } from '../snap-icon';
 
 const SnapListItem = ({
   name,
@@ -45,7 +45,7 @@ const SnapListItem = ({
         width={BlockSize.Full}
       >
         <Box>
-          <SnapAvatar snapId={snapId} />
+          <SnapIcon snapId={snapId} />
         </Box>
         <Box
           paddingLeft={4}

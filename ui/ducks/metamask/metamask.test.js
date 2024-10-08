@@ -509,7 +509,7 @@ describe('MetaMask Reducers', () => {
             metamask: {
               gasFeeEstimatesByChainId: {
                 '0x1': {
-                  gasFeeEstimates: { networkCongestion: 0.67 },
+                  gasFeeEstimates: { networkCongestion: 0.91 },
                 },
               },
             },
@@ -526,7 +526,7 @@ describe('MetaMask Reducers', () => {
             metamask: {
               gasFeeEstimatesByChainId: {
                 '0x1': {
-                  gasFeeEstimates: { networkCongestion: 0.66 },
+                  gasFeeEstimates: { networkCongestion: 0.9 },
                 },
               },
             },
@@ -543,7 +543,7 @@ describe('MetaMask Reducers', () => {
             metamask: {
               gasFeeEstimatesByChainId: {
                 '0x1': {
-                  gasFeeEstimates: { networkCongestion: 0.65 },
+                  gasFeeEstimates: { networkCongestion: 0.89 },
                 },
               },
             },

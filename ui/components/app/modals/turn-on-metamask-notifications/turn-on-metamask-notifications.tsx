@@ -59,7 +59,6 @@ export default function TurnOnMetamaskNotifications() {
 
   const handleTurnOnNotifications = async () => {
     setIsLoading(true);
-    await createNotifications();
     trackEvent({
       category: MetaMetricsEventCategory.NotificationsActivationFlow,
       event: MetaMetricsEventName.NotificationsActivated,
@@ -68,6 +67,7 @@ export default function TurnOnMetamaskNotifications() {
         action_type: 'activated',
       },
     });
+    await createNotifications();
   };
 
   const handleHideModal = () => {

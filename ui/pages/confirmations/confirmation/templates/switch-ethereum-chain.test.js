@@ -19,20 +19,12 @@ const mockApproval = {
   origin: 'https://test-dapp.metamask.io',
   requestData: {
     toNetworkConfiguration: {
-      rpcUrl: 'https://rpcurl.test.chain',
-      rpcPrefs: {
-        blockExplorerUrl: 'https://blockexplorer.test.chain',
-      },
-      chainName: 'Test chain',
-      ticker: 'TST',
       chainId: '0x9999',
-      nickname: 'Test chain',
+      name: 'Test chain',
     },
     fromNetworkConfiguration: {
-      type: 'rpc',
-      rpcUrl: 'http://example-custom-rpc.metamask.io',
       chainId: '0x9999',
-      nickname: 'Test initial state',
+      name: 'Test initial state',
     },
   },
 };

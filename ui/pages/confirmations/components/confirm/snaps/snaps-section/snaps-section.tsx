@@ -1,16 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { currentConfirmationSelector } from '../../../../selectors';
 import { useInsightSnaps } from '../../../../../../hooks/snaps/useInsightSnaps';
 import { Box } from '../../../../../../components/component-library';
 import {
   Display,
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
+import { useConfirmContext } from '../../../../context/confirm';
 import { SnapInsight } from './snap-insight';
 
 export const SnapsSection = () => {
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
   const { data } = useInsightSnaps(currentConfirmation?.id);
 
   if (data.length === 0) {

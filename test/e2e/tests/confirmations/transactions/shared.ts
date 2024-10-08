@@ -94,6 +94,7 @@ export async function createDepositTransaction(driver: Driver) {
 
 export async function confirmDepositTransaction(driver: Driver) {
   await driver.waitUntilXWindowHandles(3);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -101,6 +102,7 @@ export async function confirmDepositTransaction(driver: Driver) {
     text: 'Transaction request',
   });
 
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await toggleAdvancedDetails(driver);
 
   await driver.waitForSelector({
@@ -224,13 +226,13 @@ export async function toggleAdvancedDetails(driver: Driver) {
 }
 
 export async function assertAdvancedGasDetails(driver: Driver) {
-  await driver.waitForSelector({ css: 'p', text: 'Estimated fee' });
+  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
   await driver.waitForSelector({ css: 'p', text: 'Speed' });
   await driver.waitForSelector({ css: 'p', text: 'Max fee' });
 }
 
 export async function assertAdvancedGasDetailsWithL2Breakdown(driver: Driver) {
-  await driver.waitForSelector({ css: 'p', text: 'Estimated fee' });
+  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
   await driver.waitForSelector({ css: 'p', text: 'L1 fee' });
   await driver.waitForSelector({ css: 'p', text: 'L2 fee' });
   await driver.waitForSelector({ css: 'p', text: 'Speed' });

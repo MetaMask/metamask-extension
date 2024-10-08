@@ -1,6 +1,7 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { EthAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -18,6 +19,7 @@ import {
   getMMIConfiguration,
   getInteractiveReplacementToken,
   getCustodianDeepLink,
+  getNoteToTraderMessage,
   getIsNoteToTraderSupported,
   MmiConfiguration,
   State,
@@ -69,6 +71,12 @@ const custodianMock = {
 function buildState(overrides = {}) {
   const defaultState = {
     metamask: {
+      networkConfigurationsByChainId: {
+        [toHex(1)]: {
+          chainId: toHex(1),
+          rpcEndpoints: [{}],
+        },
+      },
       internalAccounts: {
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         accounts: {
@@ -366,6 +374,12 @@ describe('Institutional selectors', () => {
           },
           keyrings: [],
           custodianSupportedChains: {},
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
+          },
         },
       });
 
@@ -839,6 +853,31 @@ describe('Institutional selectors', () => {
       const isSupported = getIsNoteToTraderSupported(state, '0x1');
 
       expect(isSupported).toBe(false);
+    });
+  });
+
+  describe('getNoteToTraderMessage', () => {
+    it('returns noteToTraderMessage if it exists', () => {
+      const noteToTraderMessage = 'some message';
+      const state = {
+        metamask: {
+          noteToTraderMessage,
+        },
+      };
+
+      const token = getNoteToTraderMessage(state);
+
+      expect(token).toStrictEqual(noteToTraderMessage);
+    });
+
+    it('returns an empty string if noteToTraderMessage does not exist', () => {
+      const state = {
+        metamask: {},
+      };
+
+      const token = getNoteToTraderMessage(state);
+
+      expect(token).toStrictEqual('');
     });
   });
 });

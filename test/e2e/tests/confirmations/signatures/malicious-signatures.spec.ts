@@ -1,9 +1,11 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -18,6 +20,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   it('displays alert for domain binding and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
@@ -40,6 +43,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   it('initiates and rejects from confirmation screen', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -67,14 +71,26 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             'sign_in_with_ethereum',
           ],
           location: 'confirmation',
+          expectedProps: {
+            alert_action_clicked: [],
+            alert_key_clicked: [],
+            alert_resolved: [],
+            alert_resolved_count: 0,
+            alert_triggered: ['requestFrom'],
+            alert_triggered_count: 1,
+            alert_visualized: [],
+            alert_visualized_count: 0,
+          },
         });
       },
+      mockSignatureRejected,
     );
   });
 
   it('initiates and rejects from alert friction modal', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -103,8 +119,19 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             'sign_in_with_ethereum',
           ],
           location: 'alert_friction_modal',
+          expectedProps: {
+            alert_action_clicked: [],
+            alert_key_clicked: [],
+            alert_resolved: [],
+            alert_resolved_count: 0,
+            alert_triggered: ['requestFrom'],
+            alert_triggered_count: 1,
+            alert_visualized: ['requestFrom'],
+            alert_visualized_count: 1,
+          },
         });
       },
+      mockSignatureRejected,
     );
   });
 });

@@ -81,14 +81,15 @@ export default class AccountTracker {
     // subscribe to account removal
     opts.onAccountRemoved((address) => this.removeAccounts([address]));
 
-    this.onboardingController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
+    this.controllerMessenger.subscribe(
+      'OnboardingController:stateChange',
+      previousValueComparator((prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           this.updateAccountsAllActiveNetworks();
         }
-      }, this.onboardingController.store.getState()),
+      }, this.onboardingController.state),
     );
 
     this.selectedAccount = this.controllerMessenger.call(
@@ -460,7 +461,7 @@ export default class AccountTracker {
    * @returns {Promise} after all account balances updated
    */
   async updateAccounts(networkClientId) {
-    const { completedOnboarding } = this.onboardingController.store.getState();
+    const { completedOnboarding } = this.onboardingController.state;
     if (!completedOnboarding) {
       return;
     }

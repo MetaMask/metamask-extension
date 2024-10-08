@@ -5,6 +5,8 @@ import thunk from 'redux-thunk';
 import { ApprovalType } from '@metamask/controller-utils';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { fireEvent } from '@testing-library/react';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../app/_locales/en/messages.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';

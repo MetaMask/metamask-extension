@@ -43,7 +43,11 @@ import {
   getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
 } from '../../../selectors';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';

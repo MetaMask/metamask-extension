@@ -46,10 +46,7 @@ async function watchEoaAddress(
   address: string = EOA_ADDRESS,
 ): Promise<void> {
   await startCreateWatchAccountFlow(driver, unlockWalletFirst);
-  await driver.fill(
-    '[placeholder="Enter a public address or ENS name"]',
-    address,
-  );
+  await driver.fill('input#address-input[type="text"]', address);
   await driver.clickElement({ text: 'Watch account', tag: 'button' });
   await driver.clickElement('[data-testid="submit-add-account-with-name"]');
 }
@@ -188,10 +185,7 @@ describe('Account-watcher snap', function (this: Suite) {
           async ({ driver }: { driver: Driver }) => {
             await startCreateWatchAccountFlow(driver);
 
-            await driver.fill(
-              '[placeholder="Enter a public address or ENS name"]',
-              input,
-            );
+            await driver.fill('input#address-input[type="text"]', input);
             await driver.clickElement({ text: 'Watch account', tag: 'button' });
 
             // error message should be displayed by the snap

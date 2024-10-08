@@ -1,11 +1,12 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
-  unlockWallet,
   regularDelayMs,
+  unlockWallet,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from './helpers';
@@ -14,6 +15,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   it('initiates and queues multiple signatures and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
@@ -53,6 +55,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   it('initiates and queues a mix of signatures and transactions and navigates', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
@@ -90,6 +93,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   it('initiates multiple signatures and rejects all', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);

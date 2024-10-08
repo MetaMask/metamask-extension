@@ -159,6 +159,11 @@ export const SENTRY_BACKGROUND_STATE = {
     traits: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,
+    latestNonAnonymousEventTimestamp: true,
+  },
+  MetaMetricsDataDeletionController: {
+    metaMetricsDataDeletionId: true,
+    metaMetricsDataDeletionTimestamp: true,
   },
   NameController: {
     names: false,
@@ -274,8 +279,6 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
-    unencryptedSnapStates: false,
-    snapStates: false,
     snaps: false,
   },
   SnapInterfaceController: {

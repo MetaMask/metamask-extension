@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { updateMetamaskState } from '../../../store/actions';
 import { getCurrentNetworkTransactions } from '../../../selectors/transactions';
-import { store, getNewState } from '../../../../.storybook/preview';
+import { store } from '../../../../.storybook/preview';
 
 import { subjectMetadata } from '../../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
@@ -24,34 +24,37 @@ const PageSet = ({ children }) => {
     'Icon URL',
     'https://metamask.github.io/test-dapp/metamask-fox.svg',
   );
-  const state = store.getState();
   const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
   const transaction = currentNetworkTxList.find(({ id }) => id === txId);
 
   useEffect(() => {
     transaction.origin = origin;
     store.dispatch(
-      updateMetamaskState(
-        getNewState(state.metamask, {
-          transactions: [transaction],
-        }),
-      ),
+      updateMetamaskState([
+        {
+          op: 'replace',
+          path: ['transactions'],
+          value: [transaction],
+        },
+      ]),
     );
-  }, [origin, transaction, state.metamask]);
+  }, [origin, transaction]);
 
   useEffect(() => {
     store.dispatch(
-      updateMetamaskState(
-        getNewState(state.metamask, {
-          subjectMetadata: {
+      updateMetamaskState([
+        {
+          op: 'replace',
+          path: ['subjectMetadata'],
+          value: {
             [origin]: {
               iconUrl: subjectIconUrl,
             },
           },
-        }),
-      ),
+        },
+      ]),
     );
-  }, [subjectIconUrl, origin, state.metamask]);
+  }, [subjectIconUrl, origin]);
 
   const params = useParams();
   params.id = txId;
@@ -59,14 +62,16 @@ const PageSet = ({ children }) => {
 };
 
 export const DefaultStory = () => {
-  const state = store.getState();
   store.dispatch(
-    updateMetamaskState(
-      getNewState(state.metamask, {
-        subjectMetadata,
-      }),
-    ),
+    updateMetamaskState([
+      {
+        op: 'replace',
+        path: ['subjectMetadata'],
+        value: subjectMetadata,
+      },
+    ]),
   );
+
   return (
     <PageSet>
       <ConfirmApprove />

@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
+import { getMockPersonalSignConfirmStateForRequest } from '../../../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import {
   SignatureRequestSIWEWithResources,
   signatureRequestSIWE,
@@ -11,26 +11,25 @@ import SIWESignInfo from './siwe-sign';
 
 describe('SIWESignInfo', () => {
   it('renders correctly for SIWE signature request', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: signatureRequestSIWE,
-      },
-    };
+    const state =
+      getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(<SIWESignInfo />, mockStore);
+    const { container } = renderWithConfirmContextProvider(
+      <SIWESignInfo />,
+      mockStore,
+    );
     expect(container).toMatchSnapshot();
   });
 
   it('renders correctly for SIWE signature request with resources', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: SignatureRequestSIWEWithResources,
-      },
-    };
+    const state = getMockPersonalSignConfirmStateForRequest(
+      SignatureRequestSIWEWithResources,
+    );
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(<SIWESignInfo />, mockStore);
+    const { container } = renderWithConfirmContextProvider(
+      <SIWESignInfo />,
+      mockStore,
+    );
     expect(container).toMatchSnapshot();
   });
 });

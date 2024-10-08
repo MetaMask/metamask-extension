@@ -69,7 +69,7 @@ export const Toast = ({
       <Box display={Display.Flex} gap={4} data-testid={dataTestId}>
         {startAdornment}
         <Box>
-          <Text className={'toast-text'} variant={textVariant}>
+          <Text className="toast-text" variant={textVariant}>
             {text}
           </Text>
           {actionText && onActionClick ? (

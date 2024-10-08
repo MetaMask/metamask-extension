@@ -3,6 +3,8 @@ import thunk from 'redux-thunk';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge/types';
 import bridgeReducer from './bridge';
 import { setBridgeFeatureFlags, setToChain } from './actions';

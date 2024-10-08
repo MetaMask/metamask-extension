@@ -54,8 +54,7 @@ export default function createDupeReqFilterStream() {
     transform(chunk: JsonRpcRequest, _, cb) {
       // JSON-RPC notifications have no ids; our only recourse is to let them through.
       const hasNoId = chunk.id === undefined;
-      const requestNotYetSeen =
-        chunk.id !== null && seenRequestIds.add(chunk.id);
+      const requestNotYetSeen = seenRequestIds.add(chunk.id);
 
       if (hasNoId || requestNotYetSeen) {
         cb(null, chunk);

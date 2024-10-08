@@ -1,6 +1,8 @@
-.snap-ui-button {
+.snap-ui-renderer__button {
   background: none;
   text-align: center;
+  display: flex;
+  padding-inline: 0;
 
   &:not(&--disabled) {
     &:hover {

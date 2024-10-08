@@ -14,6 +14,8 @@ import {
 import { SECOND } from '../constants/time';
 import { isValidHexAddress } from '../modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../modules/string-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decimalToHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
@@ -182,7 +184,7 @@ export const getBaseApi = function (type, chainId) {
 };
 
 export function calcTokenValue(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
+  const multiplier = new BigNumber(10).pow(new BigNumber(decimals));
   return new BigNumber(String(value)).times(multiplier);
 }
 

@@ -7,6 +7,7 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/privacy-and-security/basic-safety-and-security-tips-for-metamask/',
   CUSTOMIZE_NONCE:
     'https://support.metamask.io/transactions-and-gas/transactions/how-to-customize-a-transaction-nonce/',
+  GAS_FEES: 'https://support.metamask.io/transactions-and-gas/gas-fees/',
   HARDWARE_CONNECTION:
     'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/',
   IMPORT_ACCOUNTS:
@@ -35,7 +36,7 @@ const ZENDESK_URLS = {
   TOKEN_SAFETY_PRACTICES:
     'https://support.metamask.io/managing-my-tokens/token-safety-practices/',
   UNKNOWN_NETWORK:
-    'https://support.metamask.io/nl/networks-and-sidechains/managing-networks/the-risks-of-connecting-to-an-unknown-network/',
+    'https://support.metamask.io/networks-and-sidechains/managing-networks/the-risks-of-connecting-to-an-unknown-network/',
   USER_GUIDE_CUSTOM_NETWORKS:
     'https://support.metamask.io/networks-and-sidechains/managing-networks/user-guide-custom-networks-and-sidechains/',
   USER_GUIDE_DAPPS:

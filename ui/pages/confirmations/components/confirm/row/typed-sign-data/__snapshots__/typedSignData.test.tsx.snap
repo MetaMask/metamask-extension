@@ -11,13 +11,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Primary type:
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Primary type:
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -43,13 +46,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-            style="align-items: center;"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              Contents:
-            </p>
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Contents:
+              </p>
+            </div>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -68,13 +74,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-            style="align-items: center;"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              From:
-            </p>
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                From:
+              </p>
+            </div>
           </div>
           <div
             class="mm-box mm-box--width-full"
@@ -85,13 +94,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Name:
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Name:
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -110,13 +122,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Wallets:
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Wallets:
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--width-full"
@@ -127,13 +142,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      0:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        0:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -199,13 +217,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      1:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        1:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -271,13 +292,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      2:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        2:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -347,13 +371,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-            style="align-items: center;"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              To:
-            </p>
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                To:
+              </p>
+            </div>
           </div>
           <div
             class="mm-box mm-box--width-full"
@@ -364,13 +391,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  0:
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    0:
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--width-full"
@@ -381,13 +411,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      Name:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Name:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -406,13 +439,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      Wallets:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Wallets:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--width-full"
@@ -423,13 +459,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          0:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            0:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -495,13 +534,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          1:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            1:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -567,13 +609,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          2:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            2:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"

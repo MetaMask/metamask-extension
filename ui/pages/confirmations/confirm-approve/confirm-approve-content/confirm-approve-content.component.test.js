@@ -14,6 +14,7 @@ const renderComponent = (props) => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      currencyRates: {},
     },
   });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);

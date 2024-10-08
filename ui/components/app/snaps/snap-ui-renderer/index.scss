@@ -4,7 +4,8 @@
   }
 
   &__container {
-    & > div:first-child {
+    & > *:first-child {
+      gap: 16px;
       padding: 16px;
     }
   }
@@ -22,8 +23,29 @@
     height: 1px;
   }
 
+  &__input > .mm-text-field {
+    min-height: 48px;
+    border-radius: 8px;
+    border-color: var(--color-border-muted);
+
+    .mm-text--overflow-wrap-anywhere {
+      overflow-wrap: normal;
+    }
+
+    .snap-ui-renderer__image {
+      min-width: 24px;
+      max-width: 36px;
+      min-height: 24px;
+      max-height: 36px;
+    }
+  }
+
   &__panel {
     gap: 8px;
+
+    .mm-icon--size-inherit {
+      top: 0;
+    }
   }
 
   &__text {
@@ -47,21 +69,5 @@
 
   &__footer {
     margin-top: auto;
-
-    &-centered {
-      margin-top: auto;
-
-      & button {
-        &:first-child {
-          margin-right: 0;
-        }
-      }
-    }
-
-    & button {
-      &:first-child {
-        margin-right: 16px;
-      }
-    }
   }
 }

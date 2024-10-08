@@ -31,7 +31,9 @@ export default function IconButton(props) {
     >
       {renderWrapper(
         <>
-          <div className="icon-button__circle">{Icon}</div>
+          <div data-theme="light" className="icon-button__circle">
+            {Icon}
+          </div>
           {label.length > 10 ? (
             <Tooltip title={label} position="bottom">
               <Text

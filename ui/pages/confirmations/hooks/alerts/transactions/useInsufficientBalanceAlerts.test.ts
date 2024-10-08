@@ -1,18 +1,23 @@
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
+import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
+import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_ID_MOCK_2 = '456-789';
 
 const TRANSACTION_MOCK = {
+  ...genUnapprovedContractInteractionConfirmation({
+    chainId: '0x5',
+  }),
   id: TRANSACTION_ID_MOCK,
   txParams: {
     from: '0x123',
@@ -20,7 +25,7 @@ const TRANSACTION_MOCK = {
     maxFeePerGas: '0x2',
     gas: '0x3',
   } as TransactionParams,
-};
+} as TransactionMeta;
 
 function buildState({
   balance,
@@ -37,13 +42,19 @@ function buildState({
     name: 'Account 1',
   });
 
-  return {
-    ...mockState,
-    confirm: {
-      currentConfirmation,
-    },
+  let pendingApprovals = {};
+  if (currentConfirmation) {
+    pendingApprovals = {
+      [currentConfirmation.id as string]: {
+        id: currentConfirmation.id,
+        type: ApprovalType.Transaction,
+      },
+    };
+  }
+
+  return getMockConfirmState({
     metamask: {
-      ...mockState.metamask,
+      pendingApprovals,
       internalAccounts: {
         accounts:
           balance && transaction
@@ -57,12 +68,15 @@ function buildState({
       },
       transactions: transaction ? [transaction] : [],
     },
-  };
+  });
 }
 
 function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
   const state = buildState(stateOptions);
-  const response = renderHookWithProvider(useInsufficientBalanceAlerts, state);
+  const response = renderHookWithConfirmContextProvider(
+    useInsufficientBalanceAlerts,
+    state,
+  );
 
   return response.result.current;
 }
@@ -80,7 +94,7 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(
       runHook({
         balance: 7,
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
+        currentConfirmation: TRANSACTION_MOCK,
         transaction: {
           ...TRANSACTION_MOCK,
           id: TRANSACTION_ID_MOCK_2,
@@ -92,8 +106,8 @@ describe('useInsufficientBalanceAlerts', () => {
   it('returns no alerts if account has balance equal to gas fee plus value', () => {
     expect(
       runHook({
-        balance: 8,
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
+        balance: 210000000002,
+        currentConfirmation: TRANSACTION_MOCK,
         transaction: TRANSACTION_MOCK,
       }),
     ).toEqual([]);
@@ -102,8 +116,8 @@ describe('useInsufficientBalanceAlerts', () => {
   it('returns no alerts if account has balance greater than gas fee plus value', () => {
     expect(
       runHook({
-        balance: 9,
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
+        balance: 400000000000,
+        currentConfirmation: TRANSACTION_MOCK,
         transaction: TRANSACTION_MOCK,
       }),
     ).toEqual([]);
@@ -112,7 +126,7 @@ describe('useInsufficientBalanceAlerts', () => {
   it('returns alert if account has balance less than gas fee plus value', () => {
     const alerts = runHook({
       balance: 7,
-      currentConfirmation: { id: TRANSACTION_ID_MOCK },
+      currentConfirmation: TRANSACTION_MOCK,
       transaction: TRANSACTION_MOCK,
     });
 

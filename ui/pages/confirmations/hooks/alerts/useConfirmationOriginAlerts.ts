@@ -1,22 +1,19 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Confirmation, SignatureRequestType } from '../../types/confirm';
-import { currentConfirmationSelector } from '../../selectors';
+import { SignatureRequestType } from '../../types/confirm';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 import { isSignatureTransactionType } from '../../utils';
+import { useConfirmContext } from '../../context/confirm';
 
 const useConfirmationOriginAlerts = (): Alert[] => {
   const t = useI18nContext();
 
-  const currentConfirmation: Confirmation | undefined = useSelector(
-    currentConfirmationSelector,
-  );
+  const { currentConfirmation } = useConfirmContext();
 
   const origin = isSignatureTransactionType(currentConfirmation)
     ? (currentConfirmation as SignatureRequestType)?.msgParams?.origin

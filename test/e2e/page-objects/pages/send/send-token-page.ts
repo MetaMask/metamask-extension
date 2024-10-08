@@ -97,7 +97,6 @@ class SendTokenPage {
     });
     await this.driver.waitForSelector({
       text: address,
-      css: this.ensResolvedAddress,
     });
   }
 

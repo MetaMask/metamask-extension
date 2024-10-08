@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/browser';
 import { Primitive, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
 
 export enum TraceName {

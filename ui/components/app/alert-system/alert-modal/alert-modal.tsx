@@ -177,7 +177,7 @@ function AlertDetails({
               {t('alertModalDetails')}
             </Text>
           ) : null}
-          <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
+          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
             {selectedAlert.alertDetails?.map((detail, index) => (
               <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
                 <Text variant={TextVariant.bodyMd}>{detail}</Text>
@@ -219,11 +219,11 @@ export function AcknowledgeCheckboxBase({
     >
       <Checkbox
         label={label ?? t('alertModalAcknowledge')}
-        data-testid={'alert-modal-acknowledge-checkbox'}
+        data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
         onChange={onCheckboxClick}
         alignItems={AlignItems.flexStart}
-        className={'alert-modal__acknowledge-checkbox'}
+        className="alert-modal__acknowledge-checkbox"
       />
     </Box>
   );

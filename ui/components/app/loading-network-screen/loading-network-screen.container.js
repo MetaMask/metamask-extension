@@ -30,11 +30,9 @@ const mapStateToProps = (state) => {
   let networkName = nickname;
   if (networkName === undefined) {
     const networks = getAllEnabledNetworks(state);
-    const desiredNetwork = networks.find(
-      (network) => network.chainId === chainId,
-    );
+    const desiredNetwork = networks[chainId];
     if (desiredNetwork) {
-      networkName = desiredNetwork.nickname;
+      networkName = desiredNetwork.name;
     }
   }
 

@@ -205,9 +205,6 @@
   "delete": {
     "message": "Poista"
   },
-  "deleteNetwork": {
-    "message": "Poistetaanko verkko?"
-  },
   "details": {
     "message": "Tiedot"
   },
@@ -228,9 +225,6 @@
   },
   "editContact": {
     "message": "Muokkaa yhteystietoa"
-  },
-  "ensRegistrationError": {
-    "message": "Virhe ENS-nimen rekisteröinnissä"
   },
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
@@ -354,12 +348,6 @@
   "invalidAddressRecipient": {
     "message": "Vastaanottajan osoite on virheellinen"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ei ole ETH-verkosto; vaihda pieniin kirjaimiin"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Virheellinen Block Explorer URL-osoite"
-  },
   "invalidRPC": {
     "message": "Virheellinen RPC:n URL-osoite"
   },
@@ -459,9 +447,6 @@
   "next": {
     "message": "Seuraava"
   },
-  "noAddressForName": {
-    "message": "Tälle nimelle ei ole määritetty osoitetta."
-  },
   "noConversionRateAvailable": {
     "message": "Vaihtokurssi ei saatavilla"
   },
@@ -541,9 +526,6 @@
   },
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Haku, julkinen osoite (0x) tai ENS"
   },
   "reject": {
     "message": "Hylkää"

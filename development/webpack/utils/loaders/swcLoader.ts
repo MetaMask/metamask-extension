@@ -29,6 +29,16 @@ const schema = {
           type: 'boolean',
           default: false,
         },
+        experimental: {
+          type: 'object',
+          properties: {
+            keepImportAttributes: {
+              type: 'boolean',
+              default: false,
+            },
+          },
+          additionalProperties: false,
+        },
         transform: {
           type: 'object',
           properties: {
@@ -110,6 +120,12 @@ const schema = {
                   default: false,
                   type: 'boolean',
                 },
+                importAttributes: {
+                  description:
+                    'Enable parsing of import attributes. Defaults to `false`.',
+                  type: 'boolean',
+                  default: false,
+                },
               },
               additionalProperties: false,
               required: ['syntax'],
@@ -122,6 +138,12 @@ const schema = {
                 jsx: {
                   default: false,
                   type: 'boolean',
+                },
+                importAttributes: {
+                  description:
+                    'Enable parsing of import attributes. Defaults to `false`.',
+                  type: 'boolean',
+                  default: false,
                 },
               },
               additionalProperties: false,
@@ -201,6 +223,7 @@ export function getSwcLoader(
         parser: {
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
+          importAttributes: true,
         },
       },
     } as const satisfies SwcLoaderOptions,

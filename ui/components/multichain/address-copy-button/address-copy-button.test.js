@@ -32,6 +32,18 @@ const SAMPLE_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 describe('AccountListItem', () => {
   const mockStore = configureMockStore()(mockState);
 
+  afterEach(() => {
+    jest.clearAllMocks(); // Clear mocks to ensure no test interference
+  });
+
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <AddressCopyButton address={SAMPLE_ADDRESS} />,
+      mockStore,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders the full address by default', () => {
     renderWithProvider(
       <AddressCopyButton address={SAMPLE_ADDRESS} />,
@@ -103,7 +115,7 @@ describe('AccountListItem', () => {
     );
 
     const tooltipTitle = container.querySelector(
-      '[data-original-title="This account is not set up for use with Chain 5"]',
+      '[data-original-title="This account is not set up for use with Goerli"]',
     );
 
     const button = queryByTestId('address-copy-button-text');

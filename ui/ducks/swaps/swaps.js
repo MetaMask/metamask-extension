@@ -973,6 +973,7 @@ export const signAndSendSwapsSmartTransaction = ({
       );
       if (!fees) {
         log.error('"fetchSwapsSmartTransactionFees" failed');
+        dispatch(setSwapsSTXSubmitLoading(false));
         dispatch(setCurrentSmartTransactionsError(StxErrorTypes.unavailable));
         return;
       }
@@ -1025,6 +1026,7 @@ export const signAndSendSwapsSmartTransaction = ({
         );
       }
       history.push(SMART_TRANSACTION_STATUS_ROUTE);
+      dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
       dispatch(setSwapsSTXSubmitLoading(false));
@@ -1035,8 +1037,6 @@ export const signAndSendSwapsSmartTransaction = ({
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch(setCurrentSmartTransactionsError(errorObj?.error));
       }
-    } finally {
-      dispatch(setSwapsSTXSubmitLoading(false));
     }
   };
 };

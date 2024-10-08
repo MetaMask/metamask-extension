@@ -51,7 +51,7 @@ function PreviousButton({
       ariaLabel={t('back')}
       size={ButtonIconSize.Sm}
       onClick={onBackButtonClick}
-      className={'confirm_nav__left_btn'}
+      className="confirm_nav__left_btn"
       data-testid="alert-modal-back-button"
       borderRadius={BorderRadius.full}
       color={IconColor.iconAlternative}
@@ -81,7 +81,7 @@ function NextButton({
       ariaLabel={t('next')}
       size={ButtonIconSize.Sm}
       onClick={onNextButtonClick}
-      className={'confirm_nav__right_btn'}
+      className="confirm_nav__right_btn"
       data-testid="alert-modal-next-button"
       borderRadius={BorderRadius.full}
       color={IconColor.iconAlternative}

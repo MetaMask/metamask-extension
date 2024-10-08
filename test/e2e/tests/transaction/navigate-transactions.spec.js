@@ -84,6 +84,7 @@ describe('Navigate transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
+        // add transaction
         await openDapp(driver);
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

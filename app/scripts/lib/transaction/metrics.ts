@@ -40,10 +40,14 @@ import {
 import {
   getBlockaidMetricsProps,
   getSwapAndSendMetricsProps,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
 import {
   REDESIGN_DEV_TRANSACTION_TYPES,
   REDESIGN_USER_TRANSACTION_TYPES,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/pages/confirmations/utils';
 import {
   getSnapAndHardwareInfoForMetrics,
@@ -98,7 +102,6 @@ export type TransactionMetricsRequest = {
     txhash: string | undefined,
   ) => SmartTransaction;
   getRedesignedTransactionsEnabled: () => boolean;
-  getRedesignedConfirmationsEnabled: () => boolean;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;

@@ -27,6 +27,8 @@ type AssertSignatureMetricsOptions = {
   primaryType?: string;
   uiCustomizations?: string[];
   location?: string;
+  expectedProps?: Record<string, unknown>;
+  withAnonEvents?: boolean;
 };
 
 type SignatureEventProperty = {
@@ -35,6 +37,7 @@ type SignatureEventProperty = {
   chain_id: '0x539';
   environment_type: 'background';
   locale: 'en';
+  security_alert_reason: string;
   security_alert_response: 'NotApplicable';
   signature_type: string;
   eip712_primary_type?: string;
@@ -42,6 +45,19 @@ type SignatureEventProperty = {
   location?: string;
 };
 
+const signatureAnonProperties = {
+  eip712_verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+  eip712_domain_version: '1',
+  eip712_domain_name: 'Ether Mail',
+};
+
+/**
+ * Generates expected signature metric properties
+ *
+ * @param signatureType
+ * @param primaryType
+ * @param uiCustomizations
+ */
 function getSignatureEventProperty(
   signatureType: string,
   primaryType: string,
@@ -54,6 +70,7 @@ function getSignatureEventProperty(
     chain_id: '0x539',
     environment_type: 'background',
     locale: 'en',
+    security_alert_reason: 'NotApplicable',
     security_alert_response: 'NotApplicable',
     ui_customizations: uiCustomizations,
   };
@@ -69,16 +86,20 @@ function assertSignatureRequestedMetrics(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   events: any[],
   signatureEventProperty: SignatureEventProperty,
+  withAnonEvents = false,
 ) {
-  assert.equal(events[0].event, 'Signature Requested');
-  assert.deepStrictEqual(
-    events[0].properties,
-    {
+  assertEventPropertiesMatch(events, 'Signature Requested', {
+    ...signatureEventProperty,
+    security_alert_reason: 'NotApplicable',
+  });
+
+  if (withAnonEvents) {
+    assertEventPropertiesMatch(events, 'Signature Requested Anon', {
       ...signatureEventProperty,
       security_alert_reason: 'NotApplicable',
-    },
-    'Signature request event details do not match',
-  );
+      ...signatureAnonProperties,
+    });
+  }
 }
 
 export async function assertSignatureConfirmedMetrics({
@@ -87,6 +108,7 @@ export async function assertSignatureConfirmedMetrics({
   signatureType,
   primaryType = '',
   uiCustomizations = ['redesigned_confirmation'],
+  withAnonEvents = false,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -95,13 +117,24 @@ export async function assertSignatureConfirmedMetrics({
     uiCustomizations,
   );
 
-  assertSignatureRequestedMetrics(events, signatureEventProperty);
-  assert.equal(events[1].event, 'Signature Approved');
-  assert.deepStrictEqual(
-    events[1].properties,
+  assertSignatureRequestedMetrics(
+    events,
     signatureEventProperty,
-    'Signature Accepted event properties do not match',
+    withAnonEvents,
   );
+
+  assertEventPropertiesMatch(
+    events,
+    'Signature Approved',
+    signatureEventProperty,
+  );
+
+  if (withAnonEvents) {
+    assertEventPropertiesMatch(events, 'Signature Approved Anon', {
+      ...signatureEventProperty,
+      ...signatureAnonProperties,
+    });
+  }
 }
 
 export async function assertSignatureRejectedMetrics({
@@ -111,6 +144,8 @@ export async function assertSignatureRejectedMetrics({
   primaryType = '',
   uiCustomizations = ['redesigned_confirmation'],
   location,
+  expectedProps = {},
+  withAnonEvents = false,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -119,16 +154,24 @@ export async function assertSignatureRejectedMetrics({
     uiCustomizations,
   );
 
-  assertSignatureRequestedMetrics(events, signatureEventProperty);
-  assert.equal(events[1].event, 'Signature Rejected');
-  assert.deepStrictEqual(
-    events[1].properties,
-    {
-      ...signatureEventProperty,
-      location,
-    },
-    'Signature Rejected event properties do not match',
+  assertSignatureRequestedMetrics(
+    events,
+    signatureEventProperty,
+    withAnonEvents,
   );
+
+  assertEventPropertiesMatch(events, 'Signature Rejected', {
+    ...signatureEventProperty,
+    location,
+    ...expectedProps,
+  });
+
+  if (withAnonEvents) {
+    assertEventPropertiesMatch(events, 'Signature Rejected Anon', {
+      ...signatureEventProperty,
+      ...signatureAnonProperties,
+    });
+  }
 }
 
 export async function assertAccountDetailsMetrics(
@@ -138,19 +181,29 @@ export async function assertAccountDetailsMetrics(
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
 
-  assert.equal(events[1].event, 'Account Details Opened');
+  assertEventPropertiesMatch(events, 'Account Details Opened', {
+    action: 'Confirm Screen',
+    location: 'signature_confirmation',
+    signature_type: type,
+    category: 'Confirmations',
+    locale: 'en',
+    chain_id: '0x539',
+    environment_type: 'notification',
+  });
+}
+
+function assertEventPropertiesMatch(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  events: any[],
+  eventName: string,
+  expectedProperties: object,
+) {
+  const event = events.find((e) => e.event === eventName);
+  assert(event, `${eventName} event not found`);
   assert.deepStrictEqual(
-    events[1].properties,
-    {
-      action: 'Confirm Screen',
-      location: 'signature_confirmation',
-      signature_type: type,
-      category: 'Confirmations',
-      locale: 'en',
-      chain_id: '0x539',
-      environment_type: 'notification',
-    },
-    'Account Details Metrics do not match',
+    event.properties,
+    expectedProperties,
+    `${eventName} event properties do not match`,
   );
 }
 

@@ -205,9 +205,6 @@
   "delete": {
     "message": "ಅಳಿಸಿ"
   },
-  "deleteNetwork": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಅಳಿಸುವುದೇ?"
-  },
   "details": {
     "message": "ವಿವರಗಳು"
   },
@@ -228,9 +225,6 @@
   },
   "editContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ಸಂಪಾದಿಸಿ"
-  },
-  "ensRegistrationError": {
-    "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
   },
   "enterPasswordContinue": {
     "message": "ಮುಂದುವರೆಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
@@ -354,12 +348,6 @@
   "invalidAddressRecipient": {
     "message": "ಸ್ವೀಕೃತಿದಾರರ ವಿಳಾಸವು ಅಮಾನ್ಯವಾಗಿದೆ"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH ನೆಟ್‌ವರ್ಕ್‌ಗಳಿಲ್ಲ, ಸಣ್ಣಕ್ಷರಕ್ಕೆ ಹೊಂದಿಸಲಾಗಿದೆ"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "ಅಮಾನ್ಯವಾದ RPC URL"
   },
@@ -459,9 +447,6 @@
   "next": {
     "message": "ಮುಂದೆ"
   },
-  "noAddressForName": {
-    "message": "ಈ ಹೆಸರಿಗೆ ಯಾವುದೇ ವಿಳಾಸವನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ."
-  },
   "noConversionRateAvailable": {
     "message": "ಯಾವುದೇ ಪರಿವರ್ತನೆ ದರ ಲಭ್ಯವಿಲ್ಲ"
   },
@@ -544,9 +529,6 @@
   },
   "readdToken": {
     "message": "ನಿಮ್ಮ ಖಾತೆಗಳ ಆಯ್ಕೆಗಳ ಮೆನುವಿನಲ್ಲಿ \"ಟೋಕನ್ ಸೇರಿಸು\" ಗೆ ಹೋಗುವ ಮೂಲಕ ನೀವು ಈ ಟೋಕನ್ ಅನ್ನು ಭವಿಷ್ಯದಲ್ಲಿ ಮರಳಿ ಸೇರಿಸಬಹುದು."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "ಸಾರ್ವಜನಿಕ ವಿಳಾಸ (0x) ಅಥವಾ ENS ಹುಡುಕಿ"
   },
   "reject": {
     "message": "ತಿರಸ್ಕರಿಸಿ"

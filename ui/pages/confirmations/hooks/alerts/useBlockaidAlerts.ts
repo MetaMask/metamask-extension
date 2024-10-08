@@ -17,14 +17,15 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../selectors';
 import {
-  currentConfirmationSelector,
-  currentSignatureRequestSecurityResponseSelector,
-} from '../../selectors';
-import { SecurityAlertResponse } from '../../types/confirm';
-import {
-  REDESIGN_DEV_TRANSACTION_TYPES,
   SIGNATURE_TRANSACTION_TYPES,
+  REDESIGN_DEV_TRANSACTION_TYPES,
 } from '../../utils';
+import {
+  SecurityAlertResponse,
+  SignatureRequestType,
+} from '../../types/confirm';
+import { useConfirmContext } from '../../context/confirm';
+import useCurrentSignatureSecurityAlertResponse from '../useCurrentSignatureSecurityAlertResponse';
 import { normalizeProviderAlert } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
@@ -49,22 +50,17 @@ type SecurityAlertResponsesState = {
 
 const useBlockaidAlerts = (): Alert[] => {
   const t = useI18nContext();
-
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ) as Record<string, any>;
-
+  const { currentConfirmation } = useConfirmContext();
   const selectorChainId = useSelector(getCurrentChainId);
 
-  const securityAlertId = currentConfirmation?.securityAlertResponse
-    ?.securityAlertId as string;
+  const securityAlertId = (
+    currentConfirmation?.securityAlertResponse as SecurityAlertResponse
+  )?.securityAlertId as string;
 
   const transactionType = currentConfirmation?.type as TransactionType;
 
-  const signatureSecurityAlertResponse = useSelector(
-    currentSignatureRequestSecurityResponseSelector,
-  );
+  const signatureSecurityAlertResponse =
+    useCurrentSignatureSecurityAlertResponse();
 
   const transactionSecurityAlertResponse = useSelector(
     (state: SecurityAlertResponsesState) =>
@@ -95,7 +91,8 @@ const useBlockaidAlerts = (): Alert[] => {
       reason,
       result_type: resultType,
     } = securityAlertResponse as SecurityAlertResponse;
-    const { chainId, msgParams, origin, type, txParams } = currentConfirmation;
+    const { chainId, msgParams, origin, type, txParams } =
+      currentConfirmation as SignatureRequestType & TransactionMeta;
 
     const isFailedResultType = resultType === BlockaidResultType.Errored;
 

@@ -5,7 +5,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { Box, Text } from '../../../../components/component-library';
-import Typography from '../../../../components/ui/typography/typography';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
@@ -19,7 +18,6 @@ import {
   FontWeight,
   TextColor,
   TextVariant,
-  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   GAS_FORM_ERRORS,
@@ -28,6 +26,7 @@ import {
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
+import { isMMI } from '../../../../helpers/utils/build-types';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
@@ -113,13 +112,14 @@ export default function GasTiming({
     gasWarnings?.maxFee === GAS_FORM_ERRORS.MAX_FEE_TOO_LOW
   ) {
     return (
-      <Typography
-        variant={TypographyVariant.H7}
+      <Text
+        variant={TextVariant.bodySm}
         fontWeight={FontWeight.Bold}
+        color={TextColor.textAlternative}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
         {t('editGasTooLow')}
-      </Typography>
+      </Text>
     );
   }
 
@@ -132,7 +132,7 @@ export default function GasTiming({
 
   const estimateToUse =
     estimateUsed || transactionData.userFeeLevel || 'medium';
-  const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
+  const estimateEmoji = isMMI() ? '' : PRIORITY_LEVEL_ICON_MAP[estimateToUse];
   let text = `${estimateEmoji} ${t(estimateToUse)}`;
   let time = '';
 

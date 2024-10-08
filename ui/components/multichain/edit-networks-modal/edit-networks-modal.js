@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNonTestNetworks, getTestNetworks } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../selectors';
 import {
   Modal,
   ModalOverlay,
@@ -14,11 +14,28 @@ import {
   Box,
 } from '../../component-library';
 import { NetworkListItem } from '..';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 
 export const EditNetworksModal = ({ onClose }) => {
   const t = useI18nContext();
-  const nonTestNetworks = useSelector(getNonTestNetworks);
-  const testNetworks = useSelector(getTestNetworks);
+
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const [nonTestNetworks, testNetworks] = useMemo(
+    () =>
+      Object.entries(networkConfigurations).reduce(
+        ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
+          const isTest = TEST_CHAINS.includes(chainId);
+          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          return [nonTestNetworksList, testNetworksList];
+        },
+        [[], []],
+      ),
+    [networkConfigurations],
+  );
+
   return (
     <Modal
       isOpen
@@ -47,11 +64,11 @@ export const EditNetworksModal = ({ onClose }) => {
         </Box>
         {nonTestNetworks.map((network) => (
           <NetworkListItem
-            name={network.nickname}
-            iconSrc={network?.rpcPrefs?.imageUrl}
-            key={network.id}
+            name={network.name}
+            iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+            key={network.chainId}
             onClick={() => {
-              console.log(network.id);
+              console.log(network.chainId);
             }}
             startAccessory={<Checkbox isChecked />}
           />
@@ -61,11 +78,11 @@ export const EditNetworksModal = ({ onClose }) => {
         </Box>
         {testNetworks.map((network) => (
           <NetworkListItem
-            name={network.nickname}
-            iconSrc={network?.rpcPrefs?.imageUrl}
-            key={network.id}
+            name={network.name}
+            iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+            key={network.chainId}
             onClick={() => {
-              console.log(network.id);
+              console.log(network.chainId);
             }}
             startAccessory={<Checkbox isChecked />}
             showEndAccessory={false}

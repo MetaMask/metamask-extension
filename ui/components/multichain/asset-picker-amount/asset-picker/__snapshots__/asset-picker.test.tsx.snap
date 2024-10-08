@@ -3,11 +3,11 @@
 exports[`AssetPicker matches snapshot 1`] = `
 <DocumentFragment>
   <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-md asset-picker mm-button-primary mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-transparent mm-box--rounded-pill"
+    class="mm-box mm-text mm-button-base mm-button-base--size-md asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-pill"
     data-testid="asset-picker-button"
   >
     <span
-      class="mm-box mm-text mm-text--inherit mm-box--color-primary-inverse"
+      class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--align-items-center"
@@ -42,7 +42,9 @@ exports[`AssetPicker matches snapshot 1`] = `
             </div>
           </div>
         </div>
-        <div>
+        <div
+          class="mm-box"
+        >
           <div
             aria-describedby="tippy-tooltip-1"
             class=""
@@ -71,13 +73,13 @@ exports[`AssetPicker matches snapshot 1`] = `
 exports[`AssetPicker render if disabled 1`] = `
 <div>
   <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled asset-picker mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-transparent mm-box--rounded-pill"
+    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-pill"
     data-testid="asset-picker-button"
     disabled=""
     title="[swapTokenNotAvailable]"
   >
     <span
-      class="mm-box mm-text mm-text--inherit mm-box--color-primary-inverse"
+      class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--align-items-center"
@@ -104,7 +106,9 @@ exports[`AssetPicker render if disabled 1`] = `
             </div>
           </div>
         </div>
-        <div>
+        <div
+          class="mm-box"
+        >
           <div
             class=""
             style="display: inline;"

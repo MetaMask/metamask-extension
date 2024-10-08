@@ -25,13 +25,13 @@ const chartUp = (
   >
     <path
       d="M9.75 3.8125L6.25 7.4875L4.91667 5.3875L2.25 8.1875"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M8.08398 3.8125H9.75065V5.5625"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -46,13 +46,13 @@ const chartDown = (
   >
     <path
       d="M9.75 8.1875L6.25 4.5125L4.91667 6.6125L2.25 3.8125"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M8.08398 8.1875H9.75065V6.4375"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

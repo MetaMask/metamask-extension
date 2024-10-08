@@ -13,7 +13,7 @@ import { isEqual } from 'lodash';
 import classnames from 'classnames';
 import { captureException } from '@sentry/browser';
 import PropTypes from 'prop-types';
-
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
@@ -78,7 +78,6 @@ import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -118,6 +117,7 @@ import {
 import {
   BannerAlert,
   ButtonLink,
+  ButtonLinkSize,
   Text,
 } from '../../../components/component-library';
 import {
@@ -133,12 +133,13 @@ import {
   calcTokenAmount,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import {
   calcTokenValue,
   calculateMaxGasLimit,
 } from '../../../../shared/lib/swaps-utils';
-import { GAS_FEES_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -240,36 +241,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     }
     return '';
   });
-
-  /* istanbul ignore next */
-  const getTranslatedNetworkName = () => {
-    switch (chainId) {
-      case CHAIN_IDS.MAINNET:
-        return t('networkNameEthereum');
-      case CHAIN_IDS.BSC:
-        return t('networkNameBSC');
-      case CHAIN_IDS.POLYGON:
-        return t('networkNamePolygon');
-      case CHAIN_IDS.LOCALHOST:
-        return t('networkNameTestnet');
-      case CHAIN_IDS.GOERLI:
-        return t('networkNameGoerli');
-      case CHAIN_IDS.AVALANCHE:
-        return t('networkNameAvalanche');
-      case CHAIN_IDS.OPTIMISM:
-        return t('networkNameOpMainnet');
-      case CHAIN_IDS.ARBITRUM:
-        return t('networkNameArbitrum');
-      case CHAIN_IDS.ZKSYNC_ERA:
-        return t('networkNameZkSyncEra');
-      case CHAIN_IDS.LINEA_MAINNET:
-        return t('networkNameLinea');
-      case CHAIN_IDS.BASE:
-        return t('networkNameBase');
-      default:
-        throw new Error('This network is not supported for token swaps');
-    }
-  };
 
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {
@@ -1191,33 +1162,26 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               <InfoTooltip
                 position="left"
                 contentText={
-                  <>
-                    <p className="fee-card__info-tooltip-paragraph">
-                      {t('swapGasFeesSummary', [getTranslatedNetworkName()])}
-                    </p>
-                    <p className="fee-card__info-tooltip-paragraph">
-                      {t('swapGasFeesDetails')}
-                    </p>
-                    <p className="fee-card__info-tooltip-paragraph">
-                      <a
-                        className="fee-card__link"
+                  <p className="fee-card__info-tooltip-paragraph">
+                    {t('swapGasFeesExplanation', [
+                      <ButtonLink
+                        key="learn-more-gas-link"
+                        size={ButtonLinkSize.Inherit}
+                        href={ZENDESK_URLS.GAS_FEES}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        externalLink
                         onClick={() => {
-                          /* istanbul ignore next */
                           trackEvent({
                             event: 'Clicked "Gas Fees: Learn More" Link',
                             category: MetaMetricsEventCategory.Swaps,
                           });
-                          global.platform.openTab({
-                            url: GAS_FEES_LEARN_MORE_URL,
-                          });
                         }}
-                        target="_blank"
-                        rel="noopener noreferrer"
                       >
-                        {t('swapGasFeesLearnMore')}
-                      </a>
-                    </p>
-                  </>
+                        {t('swapGasFeesExplanationLinkText')}
+                      </ButtonLink>,
+                    ])}
+                  </p>
                 }
               />
             </Box>

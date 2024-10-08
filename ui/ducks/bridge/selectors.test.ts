@@ -63,12 +63,22 @@ describe('Bridge selectors', () => {
     it('uses config from allNetworks if network is in both FEATURED_RPCS and allNetworks', () => {
       const addedFeaturedNetwork = {
         ...FEATURED_RPCS[FEATURED_RPCS.length - 1],
-        id: 'testid',
       };
+
       const state = {
         ...createBridgeMockStore(),
         metamask: {
           networkConfigurations: [addedFeaturedNetwork],
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+            {
+              ...FEATURED_RPCS[FEATURED_RPCS.length - 1],
+              id: 'testid',
+              blockExplorerUrl: 'https://basescan.org',
+              rpcUrl: 'https://mainnet.base.org',
+            },
+          ),
         },
       };
       const result = getAllBridgeableNetworks(state as never);
@@ -81,28 +91,31 @@ describe('Bridge selectors', () => {
         expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       );
       expect(result[2]).toStrictEqual({
-        ...addedFeaturedNetwork,
-        removable: true,
-        blockExplorerUrl: 'https://basescan.org',
+        blockExplorerUrls: addedFeaturedNetwork.blockExplorerUrls,
+        chainId: addedFeaturedNetwork.chainId,
+        defaultBlockExplorerUrlIndex:
+          addedFeaturedNetwork.defaultBlockExplorerUrlIndex,
+        defaultRpcEndpointIndex: addedFeaturedNetwork.defaultRpcEndpointIndex,
+        name: addedFeaturedNetwork.name,
+        nativeCurrency: addedFeaturedNetwork.nativeCurrency,
+        rpcEndpoints: [
+          {
+            networkClientId: 'testid',
+            ...addedFeaturedNetwork.rpcEndpoints[0],
+          },
+        ],
       });
       expect(result.slice(3)).toStrictEqual(FEATURED_RPCS.slice(0, -1));
     });
 
     it('returns network if included in ALLOWED_BRIDGE_CHAIN_IDS', () => {
-      const addedFeaturedNetwork = {
-        chainId: '0x11212131241523151',
-        nickname: 'scroll',
-        rpcUrl: 'https://a',
-        ticker: 'ETH',
-        rpcPrefs: {
-          blockExplorerUrl: 'https://a',
-          imageUrl: 'https://a',
-        },
-      };
       const state = {
         ...createBridgeMockStore(),
         metamask: {
-          networkConfigurations: [addedFeaturedNetwork],
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+          ),
         },
       };
       const result = getAllBridgeableNetworks(state as never);

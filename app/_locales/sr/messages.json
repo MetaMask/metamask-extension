@@ -202,9 +202,6 @@
   "delete": {
     "message": "Избриши"
   },
-  "deleteNetwork": {
-    "message": "Da li želite da obrišete mrežu?"
-  },
   "details": {
     "message": "Детаљи"
   },
@@ -225,9 +222,6 @@
   },
   "editContact": {
     "message": "Izmeni kontakt"
-  },
-  "ensRegistrationError": {
-    "message": "Greška u registraciji ENS imena."
   },
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
@@ -351,12 +345,6 @@
   "invalidAddressRecipient": {
     "message": "Adresa primaoca nije važeća"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nije ETH mreža, podešeno na mala slova"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nevažeći Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Nevažeći RPC URL"
   },
@@ -450,9 +438,6 @@
   "next": {
     "message": "Даље"
   },
-  "noAddressForName": {
-    "message": "Za ovo ime nije podešena adresa."
-  },
   "noConversionRateAvailable": {
     "message": "Nije dostupan kurs za konverziju"
   },
@@ -535,9 +520,6 @@
   },
   "readdToken": {
     "message": "U budućnosti možete vratiti ovaj token tako što ćete otvoriti „Dodaj token“ u meniju opcija vašeg naloga."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Pretraga, javna adresa (0x) ili ENS"
   },
   "reject": {
     "message": "Одбиј"
