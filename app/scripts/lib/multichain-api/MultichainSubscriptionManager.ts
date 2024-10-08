@@ -165,4 +165,15 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
       }
     });
   }
+
+  unsubscribeByOriginAndTabId(origin: string, tabId?: string) {
+    this.#subscriptions.forEach((subscriptionEntry) => {
+      if (
+        subscriptionEntry.origin === origin &&
+        subscriptionEntry.tabId === tabId
+      ) {
+        this.unsubscribe(subscriptionEntry);
+      }
+    });
+  }
 }
