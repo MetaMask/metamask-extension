@@ -20,12 +20,12 @@ import { I18nContext } from '../../contexts/i18n';
 
 import {
   getSelectedAccount,
-  getCurrentChainId,
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
 } from '../../selectors/selectors';
+import { getCurrentChainId } from '../../selectors/networks';
 import {
   getQuotes,
   clearSwapsState,

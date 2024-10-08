@@ -106,7 +106,7 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 // eslint-disable-next-line import/no-restricted-paths
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
-import { getProviderConfig } from './networks';
+import { getCurrentChainId, getProviderConfig } from './networks';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -130,11 +130,6 @@ export function getNetworkIdentifier(state) {
   const { type, nickname, rpcUrl } = getProviderConfig(state);
 
   return nickname || rpcUrl || type;
-}
-
-export function getCurrentChainId(state) {
-  const { chainId } = getProviderConfig(state);
-  return chainId;
 }
 
 export function getMetaMetricsId(state) {

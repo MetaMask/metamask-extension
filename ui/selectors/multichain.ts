@@ -27,10 +27,10 @@ import {
   getProviderConfig,
   NetworkState,
   getNetworkConfigurationsByChainId,
+  getCurrentChainId,
 } from './networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
   getIsMainnet,
   getMaybeSelectedInternalAccount,

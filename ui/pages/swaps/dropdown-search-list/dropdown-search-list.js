@@ -23,9 +23,9 @@ import ImportToken from '../import-token';
 import {
   isHardwareWallet,
   getHardwareWalletType,
-  getCurrentChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors/selectors';
+import { getCurrentChainId } from '../../../selectors/networks';
 import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
