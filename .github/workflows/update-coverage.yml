@@ -24,7 +24,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
       - name: Update coverage
         run: |
