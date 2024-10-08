@@ -9,8 +9,8 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Remove Account Snap @no-mmi', function (this: Suite) {
-  it('disable a snap and remove it', async function () {
+describe('Create and remove Snap Account @no-mmi', function (this: Suite) {
+  it('create snap account and remove it by removing snap', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
