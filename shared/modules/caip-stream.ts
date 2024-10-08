@@ -65,9 +65,10 @@ export class CaipStream extends Duplex {
 export const createCaipStream = (portStream: Duplex): Duplex => {
   const caipStream = new CaipStream();
 
-  pipeline(portStream, caipStream, portStream, (err: Error) =>
-    console.log('MetaMask CAIP stream', err),
-  );
+  pipeline(portStream, caipStream, portStream, (err: Error) => {
+    caipStream.substream.end();
+    console.log('MetaMask CAIP stream', err);
+  });
 
   return caipStream.substream;
 };
