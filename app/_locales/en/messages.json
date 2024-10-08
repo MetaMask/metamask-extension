@@ -1639,10 +1639,6 @@
   "disconnectAllAccountsText": {
     "message": "accounts"
   },
-  "disconnectAllDescription": {
-    "message": "If you disconnect from $1, you’ll need to reconnect your accounts and networks to use this site again.",
-    "description": "$1 represents the website hostname"
-  },
   "disconnectAllDescriptionText": {
     "message": "If you disconnect from this site, you’ll need to reconnect your accounts and networks to use this site again."
   },
@@ -3307,9 +3303,6 @@
   },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Select an account you want to use on this site to continue."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"

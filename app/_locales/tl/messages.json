@@ -3061,9 +3061,6 @@
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
-  "noConnectedAccountDescription": {
-    "message": "Pumili ng account na gusto mong gamitin sa site na ito para magpatuloy."
-  },
   "noConnectedAccountTitle": {
     "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
   },

@@ -3061,9 +3061,6 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noConnectedAccountDescription": {
-    "message": "Chọn tài khoản mà bạn muốn sử dụng trên trang web này để tiếp tục."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
   },
