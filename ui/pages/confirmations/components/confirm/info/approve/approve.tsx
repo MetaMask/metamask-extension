@@ -8,6 +8,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
+import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { ApproveDetails } from './approve-details/approve-details';
 import { ApproveStaticSimulation } from './approve-static-simulation/approve-static-simulation';
@@ -38,7 +39,7 @@ const ApproveInfo = () => {
     transactionMeta.txParams.data,
   );
 
-  const { spendingCap } = useApproveTokenSimulation(
+  const { spendingCap, pending } = useApproveTokenSimulation(
     transactionMeta,
     decimals || '0',
   );
@@ -49,6 +50,10 @@ const ApproveInfo = () => {
 
   if (!transactionMeta?.txParams) {
     return null;
+  }
+
+  if (pending) {
+    return <ConfirmLoader />;
   }
 
   return (
