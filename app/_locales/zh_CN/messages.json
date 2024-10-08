@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "更新燃料选项"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "多个提醒！"
-  },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
   },

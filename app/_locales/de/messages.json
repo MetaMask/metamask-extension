@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Gas-Optionen aktualisieren"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Wenn Sie diese Anfrage genehmigen, könnten Dritte, die für Betrügereien bekannt sind, alle Ihre Assets an sich reißen."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Mehrere Benachrichtigungen!"
-  },
   "alertDisableTooltip": {
     "message": "Dies kann in „Einstellungen > Benachrichtigungen“ geändert werden."
   },

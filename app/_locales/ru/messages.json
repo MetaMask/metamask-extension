@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Обновить параметры газа"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Если вы одобрите этот запрос, третья сторона, которая, как известно, совершала мошеннические действия, может похитить все ваши активы."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Множественные оповещения!"
-  },
   "alertDisableTooltip": {
     "message": "Это можно изменить в разделе «Настройки» > «Оповещения»"
   },

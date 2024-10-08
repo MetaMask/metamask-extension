@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Ενημέρωση επιλογών των τελών συναλλαγών"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Εάν εγκρίνετε αυτό το αίτημα, ένας τρίτος που είναι γνωστός για απάτες μπορεί να αποκτήσει όλα τα περιουσιακά σας στοιχεία."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Πολλαπλές ειδοποιήσεις!"
-  },
   "alertDisableTooltip": {
     "message": "Αυτό μπορεί να αλλάξει στις \"Ρυθμίσεις > Ειδοποιήσεις\""
   },
