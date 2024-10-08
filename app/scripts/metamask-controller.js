@@ -5034,7 +5034,7 @@ export default class MetamaskController extends EventEmitter {
   // Figure out what needs to be done with the middleware/subscription logic
   removeNetwork(chainId) {
     const scope = `eip155:${parseInt(chainId, 16)}`;
-    this.multichainSubscriptionManager.unsubscribeScope(scope);
+    this.multichainSubscriptionManager.unsubscribeByScope(scope);
     this.multichainMiddlewareManager.removeMiddlewareByScope(scope);
 
     this.removeAllChainIdPermissions(chainId);
