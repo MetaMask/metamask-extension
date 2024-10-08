@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { uniqBy, isEqual } from 'lodash';
+import { uniqBy, isEqual, isEmpty } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
@@ -52,6 +52,7 @@ import {
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
+  getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -190,9 +191,19 @@ export default function PrepareSwapPage({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
+  const usedQuote = useSelector(getUsedQuote, isEqual)
   const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const numberOfQuotes = Object.keys(quotes).length;
-  const areQuotesPresent = numberOfQuotes > 0;
+  const areQuotesPresent =
+    numberOfQuotes > 0 &&
+    Object.keys(quotes).filter((quote) => !isEmpty(quote)).length > 0 &&
+    usedQuote;
+  console.log({
+    test1: numberOfQuotes > 0,
+    test2: Object.keys(quotes).filter((quote) => !isEmpty(quote)).length > 0,
+    test3: usedQuote,
+    test4: quotes,
+  });
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
   const transactionSettingsOpened = useSelector(
