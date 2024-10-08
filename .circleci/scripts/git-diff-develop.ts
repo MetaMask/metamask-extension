@@ -7,6 +7,7 @@ import { promisify } from 'util';
 const exec = promisify(execCallback);
 
 const MAIN_BRANCH = 'develop';
+const MASTER_BRANCH = 'master-copy';
 
 /**
  * Get the target branch for the given pull request.
@@ -96,6 +97,11 @@ async function gitDiff(): Promise<string> {
  */
 async function storeGitDiffOutput() {
   try {
+    if (process.env.CIRCLE_BRANCH === MASTER_BRANCH) {
+      console.log("Not a PR, skipping git diff");
+      return;
+    }
+
     // Create the directory
     // This is done first because our CirleCI config requires that this directory is present,
     // even if we want to skip this step.
