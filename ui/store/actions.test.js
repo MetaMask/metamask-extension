@@ -518,7 +518,9 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.getHardwareDeviceName()),
+        store.dispatch(
+          actions.getHardwareDeviceName('ledger', "m/44'/60'/0'/0/0"),
+        ),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
