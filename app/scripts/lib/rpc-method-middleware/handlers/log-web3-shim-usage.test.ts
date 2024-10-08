@@ -1,4 +1,4 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type { JsonRpcEngineEndCallback } from 'json-rpc-engine';
 import { PendingJsonRpcResponse } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { HandlerRequestType as LogWeb3ShimUsageHandlerRequest } from './types';
