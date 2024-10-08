@@ -80,11 +80,11 @@
     },
     "NetworkController": {
       "selectedNetworkClientId": "string",
+      "networkConfigurations": "object",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
       },
-      "providerConfig": "object",
-      "networkConfigurations": "object"
+      "providerConfig": "object"
     },
     "OnboardingController": {
       "completedOnboarding": true,
@@ -114,8 +114,9 @@
         "smartTransactionsOptInStatus": false,
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+        "showConfirmationAdvancedDetails": false,
+        "tokenSortConfig": "object",
         "showMultiRpcModal": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean"
       },
