@@ -148,7 +148,7 @@ import {
   setTheme,
   showOnboardingHeader,
 } from './isolated';
-import { renderToasts, updateNewPrivacyPolicyToastDate } from './toasts';
+import { ToastMaster, updateNewPrivacyPolicyToastDate } from './toast-master';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -216,7 +216,6 @@ export default class Routes extends Component {
     totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
-    showSurveyToast: PropTypes.bool.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
@@ -607,7 +606,7 @@ export default class Routes extends Component {
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
-        {renderToasts(this.props, this.context)}
+        <ToastMaster props={this.props} context={this.context} />
       </div>
     );
   }

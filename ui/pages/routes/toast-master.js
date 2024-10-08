@@ -25,14 +25,19 @@ import {
 } from '../../helpers/constants/routes';
 import { getURLHost } from '../../helpers/utils/util';
 import { getShowAutoNetworkSwitchTest } from './isolated';
+import { useSelector } from 'react-redux';
+import {
+  SURVEY_DATE,
+  SURVEY_END_TIME,
+  SURVEY_START_TIME,
+} from '../../helpers/constants/survey';
 
-export function renderToasts(props, context) {
+export function ToastMaster({ props, context }) {
   const { t } = context;
   const {
     account,
     activeTabOrigin,
     addPermittedAccount,
-    showSurveyToast,
     showConnectAccountToast,
     showPrivacyPolicyToast,
     newPrivacyPolicyToastShownDate,
@@ -56,6 +61,8 @@ export function renderToasts(props, context) {
   const isEvmAccount = isEvmAccountType(account?.type);
   const autoHideToastDelay = 5 * SECOND;
   const safeEncodedHost = encodeURIComponent(activeTabOrigin);
+
+  const showSurveyToast = useSelector(getShowSurveyToast);
 
   const onAutoHideToast = () => {
     setHideNftEnablementToast(false);
@@ -230,4 +237,22 @@ export function getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate) {
 function onHomeScreen(props) {
   const { location } = props;
   return location.pathname === DEFAULT_ROUTE;
+}
+
+/**
+ * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
+ *
+ * @param {*} state - The application state containing the necessary survey data.
+ * @returns {boolean} True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
+ */
+function getShowSurveyToast(state) {
+  if (state.metamask.surveyLinkLastClickedOrClosed) {
+    return false;
+  }
+
+  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
+  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
+  const now = Date.now();
+
+  return now > startTime && now < endTime;
 }
