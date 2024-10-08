@@ -5,6 +5,7 @@ import { zeroAddress } from 'ethereumjs-util';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -175,13 +176,10 @@ export const submitBridgeTransaction = (
 
       if (networkAndAccountSupports1559) {
         const gasFeeEstimates = getGasFeeEstimates(state);
-        const {
-          high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
-          // estimatedBaseFee = '0',
-        } = gasFeeEstimates;
-        // decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
-        maxFeePerGas = decGWEIToHexWEI(suggestedMaxFeePerGas);
-        maxPriorityFeePerGas = decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+        // decEstimatedBaseFee = gasFeeEstimates.high.estimatedBaseFee;
+        maxFeePerGas = gasFeeEstimates?.high?.suggestedMaxFeePerGas;
+        maxPriorityFeePerGas =
+          gasFeeEstimates?.high?.suggestedMaxPriorityFeePerGas;
         // baseAndPriorityFeePerGas = addHexes(
         //   decEstimatedBaseFee,
         //   maxPriorityFeePerGas,
@@ -422,17 +420,25 @@ export const submitBridgeTransaction = (
         .toPrefixedHexString()
         .toLowerCase() as `0x${string}`;
       const networkConfigurations = getNetworkConfigurationsByChainId(state);
-      const destNetworkConfig = networkConfigurations[hexDestChainId];
+      const foundDestNetworkConfig: NetworkConfiguration | undefined =
+        networkConfigurations[hexDestChainId];
+      let addedDestNetworkConfig: NetworkConfiguration | undefined;
 
       // If user has not added the network in MetaMask, add it for them silently
-      if (!destNetworkConfig) {
+      if (!foundDestNetworkConfig) {
         const featuredRpc = FEATURED_RPCS.find(
           (rpc) => rpc.chainId === hexDestChainId,
         );
         if (!featuredRpc) {
           throw new Error('No featured RPC found');
         }
-        await dispatch(addNetwork(featuredRpc));
+        addedDestNetworkConfig = await dispatch(addNetwork(featuredRpc));
+      }
+
+      const destNetworkConfig =
+        foundDestNetworkConfig || addedDestNetworkConfig;
+      if (!destNetworkConfig) {
+        throw new Error('No destination network configuration found');
       }
 
       // Add the token after network is guaranteed to exist
