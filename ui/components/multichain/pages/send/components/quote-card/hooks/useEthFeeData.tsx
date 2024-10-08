@@ -6,10 +6,10 @@ import {
   getConversionRate,
   getGasFeeEstimates,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../../../../../../../ducks/metamask/metamask';
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import {
-  getCurrentCurrency,
   checkNetworkAndAccountSupports1559,
   getIsSwapsChain,
 } from '../../../../../../../selectors/selectors';

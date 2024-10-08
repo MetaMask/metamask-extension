@@ -21,6 +21,7 @@ import reduceMetamask, {
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
   isNotEIP1559Network,
+  getCurrentCurrency,
 } from './metamask';
 
 jest.mock('@metamask/transaction-controller', () => ({
@@ -381,6 +382,13 @@ describe('MetaMask Reducers', () => {
             },
           }),
         ).toStrictEqual('GoerliETH');
+      });
+    });
+
+    describe('getCurrentCurrency', () => {
+      it('should return the `currentCurrency`', () => {
+        const currentCurrency = getCurrentCurrency(mockState);
+        expect(currentCurrency).toStrictEqual('usd');
       });
     });
 
