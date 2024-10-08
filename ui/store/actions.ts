@@ -514,7 +514,7 @@ export function getHardwareDeviceName(
 
     let result;
     try {
-      result = submitRequestToBackground('getHardwareDeviceName', [
+      result = await submitRequestToBackground('getHardwareDeviceName', [
         deviceName,
         hdPath,
       ]);
