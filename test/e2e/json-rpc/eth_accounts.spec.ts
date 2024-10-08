@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { withFixtures, defaultGanacheOptions } from '../helpers';
+import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { Ganache } from '../seeder/ganache';
 import FixtureBuilder from '../fixture-builder';
