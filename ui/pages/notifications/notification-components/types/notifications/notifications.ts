@@ -53,7 +53,7 @@ type FooterFeatureAnnouncement<N = Notification> = {
 type FooterSnapNotification<N = Notification> = {
   type: 'footer_snap_notification';
   Link: NotificationFC<N>;
-}
+};
 
 /**
  * This is the object shape that contains all the components of the particular notification.
