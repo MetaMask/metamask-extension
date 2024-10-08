@@ -134,37 +134,41 @@ const Footer = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const onCancelClick = async (event) => {
+    await cancelDecryptMessage(txData, event);
+    trackEvent({
+      category: MetaMetricsEventCategory.Messages,
+      event: 'Cancel',
+      properties: {
+        action: 'Decrypt Message Request',
+        legacy_event: true,
+      },
+    });
+    clearConfirmTransaction();
+    history.push(mostRecentOverviewPage);
+  };
+
+  const onSubmitClick = async (event) => {
+    await decryptMessage(txData, event);
+    trackEvent({
+      category: MetaMetricsEventCategory.Messages,
+      event: 'Confirm',
+      properties: {
+        action: 'Decrypt Message Request',
+        legacy_event: true,
+      },
+    });
+    clearConfirmTransaction();
+    history.push(mostRecentOverviewPage);
+  };
+
   return (
     <PageContainerFooter
       cancelText={t('cancel')}
       submitText={t('decrypt')}
       disabled={isScrollable && !hasScrolledToBottom}
-      onCancel={async (event) => {
-        await cancelDecryptMessage(txData, event);
-        trackEvent({
-          category: MetaMetricsEventCategory.Messages,
-          event: 'Cancel',
-          properties: {
-            action: 'Decrypt Message Request',
-            legacy_event: true,
-          },
-        });
-        clearConfirmTransaction();
-        history.push(mostRecentOverviewPage);
-      }}
-      onSubmit={async (event) => {
-        await decryptMessage(txData, event);
-        trackEvent({
-          category: MetaMetricsEventCategory.Messages,
-          event: 'Confirm',
-          properties: {
-            action: 'Decrypt Message Request',
-            legacy_event: true,
-          },
-        });
-        clearConfirmTransaction();
-        history.push(mostRecentOverviewPage);
-      }}
+      onCancel={onCancelClick}
+      onSubmit={onSubmitClick}
     />
   );
 };
