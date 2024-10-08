@@ -21,10 +21,10 @@ import { SnapUIRenderer } from '../../../../components/app/snaps/snap-ui-rendere
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { ButtonVariant } from '../../../../components/component-library';
 import { isOfTypeNodeGuard } from '../node-guard';
-import { SNAP_TRIGGER } from '..';
+import { TRIGGER_TYPES } from '..';
 
 export const components: NotificationComponent<SnapNotification> = {
-  guardFn: isOfTypeNodeGuard([SNAP_TRIGGER.SNAP]),
+  guardFn: isOfTypeNodeGuard(['snap' as typeof TRIGGER_TYPES.SNAP]),
   item: ({ notification, onClick }) => {
     const dispatch = useDispatch();
     const history = useHistory();
