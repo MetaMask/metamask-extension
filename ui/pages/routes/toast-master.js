@@ -74,7 +74,7 @@ export function ToastMaster({ props, context }) {
   const account = useSelector(getSelectedAccount);
 
   // If the account has changed, allow the connect account toast again
-  if (account.address !== prevAccountAddress) {
+  if (account?.address !== prevAccountAddress) {
     prevAccountAddress = account.address;
     setHideConnectAccountToast(false);
   }
@@ -86,10 +86,6 @@ export function ToastMaster({ props, context }) {
   const showNftEnablementToast = useSelector(getNftDetectionEnablementToast);
   const useNftDetection = useSelector(getUseNftDetection);
 
-  if (!onHomeScreen(props)) {
-    return null;
-  }
-
   // If the privacy policy toast is shown, and there is no date set, set it
   if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
     setNewPrivacyPolicyToastShownDate(Date.now());
@@ -98,6 +94,10 @@ export function ToastMaster({ props, context }) {
   const isPermittedNetworkToastOpen = useSelector(
     (state) => state.appState.showPermittedNetworkToastOpen,
   );
+
+  if (!onHomeScreen(props)) {
+    return null;
+  }
 
   return (
     <ToastContainer>
