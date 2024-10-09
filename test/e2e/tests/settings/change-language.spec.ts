@@ -55,6 +55,9 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await changeLanguage(driver, languageIndex);
 
+        await driver.assertElementNotPresent('.loading-overlay__spinner');
+        await driver.waitForSelector(selectors.labelSpanish);
+
         // Validate the label changes to Spanish
         const isLanguageLabelChanged = await driver.isElementPresent(
           selectors.labelSpanish,
@@ -62,10 +65,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
         await driver.refresh();
-
         await driver.assertElementNotPresent('.loading-overlay__spinner');
-
-        await driver.findVisibleElement(selectors.labelSpanish);
 
         // Change back to English and verify that the word is correctly changed back to English
         languageIndex = 9;
