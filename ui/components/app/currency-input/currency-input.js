@@ -5,10 +5,8 @@ import { Box } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 import {
   getCurrentChainId,
   getCurrentCurrency,

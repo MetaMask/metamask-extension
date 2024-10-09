@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
 import { shallowEqual, useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../selectors';
+import { getSelectedInternalAccount, getProviderConfig } from '../selectors';
 import { SECOND } from '../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getProviderConfig } from '../ducks/metamask/metamask';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function useTokenTracker({

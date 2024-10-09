@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory, useParams } from 'react-router-dom';
-import { getProviderConfig, getTokens } from '../../ducks/metamask/metamask';
+import { getTokens } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../selectors/networks';
 import { getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Identicon from '../../components/ui/identicon';

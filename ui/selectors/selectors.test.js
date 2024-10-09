@@ -8,8 +8,8 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { getProviderConfig } from '../ducks/metamask/metamask';
 import { mockNetworkState } from '../../test/stub/networks';
+import { getProviderConfig } from './networks';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -627,45 +627,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkConfigurationsByChainId', () => {
-    it('returns networkConfigurationsByChainId', () => {
-      const networkConfigurationsByChainId = {
-        '0xtest': {
-          chainId: '0xtest',
-          nativeCurrency: 'TEST',
-          defaultRpcEndpointUrl: 'https://mock-rpc-url-1',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'testNetworkConfigurationId1',
-              url: 'https://mock-rpc-url-1',
-            },
-          ],
-        },
-        '0x1337': {
-          chainId: '0x1337',
-          nativeCurrency: 'RPC',
-          defaultRpcEndpointUrl: 'https://mock-rpc-url-2',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'testNetworkConfigurationId2',
-              url: 'https://mock-rpc-url-2',
-            },
-          ],
-        },
-      };
-
-      expect(
-        selectors.getNetworkConfigurationsByChainId({
-          metamask: {
-            networkConfigurationsByChainId,
-          },
-        }),
-      ).toStrictEqual(networkConfigurationsByChainId);
-    });
-  });
-
   describe('#getCurrentNetwork', () => {
     it('returns built-in network configuration', () => {
       const modifiedMockState = {
@@ -1207,24 +1168,6 @@ describe('Selectors', () => {
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
   });
 
-  it('#getInfuraBlocked', () => {
-    let isInfuraBlocked = selectors.getInfuraBlocked(mockState);
-    expect(isInfuraBlocked).toBe(false);
-
-    const modifiedMockState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        ...mockNetworkState({
-          chainId: CHAIN_IDS.GOERLI,
-          metadata: { status: 'blocked' },
-        }),
-      },
-    };
-    isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
-    expect(isInfuraBlocked).toBe(true);
-  });
-
   it('#getSnapRegistryData', () => {
     const mockSnapId = 'npm:@metamask/test-snap-bip44';
     expect(selectors.getSnapRegistryData(mockState, mockSnapId)).toStrictEqual(
@@ -1570,6 +1513,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
         metadata: {
+          importTime: 0,
           name: 'Test Account 2',
           keyring: {
             type: 'HD Key Tree',
@@ -1594,6 +1538,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '784225f4-d30b-4e77-a900-c8bbce735b88',
         metadata: {
+          importTime: 0,
           name: 'Test Account 3',
           keyring: {
             type: 'HD Key Tree',
@@ -1617,6 +1562,7 @@ describe('Selectors', () => {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
+          importTime: 0,
           name: 'Test Account',
           keyring: {
             type: 'HD Key Tree',
@@ -1642,6 +1588,7 @@ describe('Selectors', () => {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         id: '15e69915-2a1a-4019-93b3-916e11fd432f',
         metadata: {
+          importTime: 0,
           name: 'Ledger Hardware 2',
           keyring: {
             type: 'Ledger Hardware',
@@ -1669,8 +1616,10 @@ describe('Selectors', () => {
           keyring: {
             type: 'Snap Keyring',
           },
+          importTime: 0,
           name: 'Snap Account 1',
           snap: {
+            enabled: true,
             id: 'snap-id',
             name: 'snap-name',
           },
@@ -1691,6 +1640,7 @@ describe('Selectors', () => {
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
         metadata: {
+          importTime: 0,
           name: 'Test Account 4',
           keyring: {
             type: 'Custody test',

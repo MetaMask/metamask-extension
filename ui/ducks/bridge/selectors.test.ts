@@ -1,7 +1,7 @@
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { getProviderConfig } from '../metamask/metamask';
+import { getProviderConfig } from '../../selectors/networks';
 import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getAllBridgeableNetworks,

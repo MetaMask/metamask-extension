@@ -227,10 +227,10 @@ import {
 } from '../../shared/lib/transactions-controller-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../ui/selectors';
+import { getCurrentChainId } from '../../ui/selectors/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
+import { getProviderConfig } from '../../ui/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {

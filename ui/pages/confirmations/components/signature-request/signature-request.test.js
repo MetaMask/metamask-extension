@@ -6,10 +6,8 @@ import { EthAccountType } from '@metamask/keyring-api';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../selectors/networks';
 import {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,

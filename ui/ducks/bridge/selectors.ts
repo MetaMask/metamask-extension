@@ -1,4 +1,3 @@
-import { NetworkState } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
 import {
   getIsBridgeEnabled,
@@ -13,12 +12,12 @@ import {
 } from '../../../app/scripts/controllers/bridge/types';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { createDeepEqualSelector } from '../../selectors/util';
-import { getProviderConfig } from '../metamask/metamask';
+import { NetworkState, getProviderConfig } from '../../selectors/networks';
 import { BridgeState } from './bridge';
 
 // TODO add swaps state
-type BridgeAppState = {
-  metamask: NetworkState & { bridgeState: BridgeControllerState } & {
+type BridgeAppState = NetworkState & {
+  metamask: { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
   };
   bridge: BridgeState;

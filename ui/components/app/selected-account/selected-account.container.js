@@ -10,7 +10,7 @@ import {
   getCustodyAccountDetails,
   getIsCustodianSupportedChain,
 } from '../../../selectors/institutional/selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 ///: END:ONLY_INCLUDE_IF
 import SelectedAccount from './selected-account.component';
 

@@ -1,7 +1,7 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getAccountType } from '../selectors';
 import { getSelectedInternalAccount } from '../accounts';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { ProviderConfigState, getProviderConfig } from '../networks';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -165,11 +165,14 @@ export function getCustodianIconForAddress(state: State, address: string) {
   return custodianIcon;
 }
 
-export function getIsCustodianSupportedChain(state: State) {
+export function getIsCustodianSupportedChain(
+  state: State & ProviderConfigState,
+) {
   try {
     // @ts-expect-error state types don't match
     const selectedAccount = getSelectedInternalAccount(state);
     const accountType = getAccountType(state);
+
     const providerConfig = getProviderConfig(state);
 
     if (!selectedAccount || !accountType || !providerConfig) {

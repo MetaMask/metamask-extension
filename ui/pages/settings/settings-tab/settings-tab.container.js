@@ -14,7 +14,7 @@ import {
   getTheme,
   getSelectedInternalAccount,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state, ownProps) => {

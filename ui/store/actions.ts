@@ -78,10 +78,8 @@ import {
   SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import {
-  getProviderConfig,
-  getUnconnectedAccountAlertEnabledness,
-} from '../ducks/metamask/metamask';
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import { getProviderConfig } from '../selectors/networks';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,

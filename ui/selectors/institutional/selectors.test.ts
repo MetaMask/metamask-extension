@@ -4,7 +4,11 @@ import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+  NETWORK_TO_NAME_MAP,
+} from '../../../shared/constants/network';
 import {
   getConfiguredCustodians,
   getCustodianIconForAddress,
@@ -71,10 +75,15 @@ const custodianMock = {
 function buildState(overrides = {}) {
   const defaultState = {
     metamask: {
+      selectedNetworkClientId: '0x1',
       networkConfigurationsByChainId: {
-        [toHex(1)]: {
-          chainId: toHex(1),
-          rpcEndpoints: [{}],
+        [CHAIN_IDS.MAINNET]: {
+          chainId: CHAIN_IDS.MAINNET,
+          blockExplorerUrls: [],
+          defaultRpcEndpointIndex: 0,
+          name: NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET],
+          nativeCurrency: CURRENCY_SYMBOLS.ETH,
+          rpcEndpoints: [],
         },
       },
       internalAccounts: {

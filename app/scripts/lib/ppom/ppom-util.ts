@@ -135,7 +135,7 @@ export async function isChainSupported(chainId: Hex): Promise<boolean> {
       `Error fetching supported chains from security alerts API`,
     );
   }
-  return supportedChainIds.includes(chainId);
+  return supportedChainIds.includes(chainId as Hex);
 }
 
 function normalizePPOMRequest(

@@ -100,9 +100,9 @@ import {
 import {
   getGasEstimateType,
   getNativeCurrency,
-  getProviderConfig,
   getTokens,
 } from '../metamask/metamask';
+import { getProviderConfig } from '../../selectors/networks';
 
 import { resetDomainResolution } from '../domains';
 import {

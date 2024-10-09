@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId } from '@metamask/utils';
-import { ChainId } from '../../../../shared/constants/network';
+import type { Hex, CaipChainId } from '@metamask/utils';
 import {
   getCurrentChainId,
   getDataCollectionForMarketing,
@@ -10,8 +9,8 @@ import {
 } from '../../../selectors';
 
 type IUseRamps = {
-  openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => void;
-  getBuyURI: (chainId: ChainId | CaipChainId) => string;
+  openBuyCryptoInPdapp: (chainId?: Hex | CaipChainId) => void;
+  getBuyURI: (chainId: Hex | CaipChainId) => string;
 };
 
 export enum RampsMetaMaskEntry {
@@ -32,7 +31,7 @@ const useRamps = (
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const getBuyURI = useCallback(
-    (_chainId: ChainId | CaipChainId) => {
+    (_chainId: Hex | CaipChainId) => {
       const params = new URLSearchParams();
       params.set('metamaskEntry', metamaskEntry);
       params.set('chainId', _chainId);
@@ -50,7 +49,7 @@ const useRamps = (
   );
 
   const openBuyCryptoInPdapp = useCallback(
-    (_chainId?: ChainId | CaipChainId) => {
+    (_chainId?: Hex | CaipChainId) => {
       const buyUrl = getBuyURI(_chainId || chainId);
       global.platform.openTab({
         url: buyUrl,

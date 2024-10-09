@@ -24,10 +24,8 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
-import {
-  getProviderConfig,
-  isAddressLedger,
-} from '../../../../ducks/metamask/metamask';
+import { isAddressLedger } from '../../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../selectors/networks';
 import {
   sanitizeMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
