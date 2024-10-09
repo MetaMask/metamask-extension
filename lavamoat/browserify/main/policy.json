@@ -905,7 +905,7 @@
     "@metamask/eth-ledger-bridge-keyring": {
       "globals": {
         "addEventListener": true,
-        "console.log": true,
+        "console.error": true,
         "document.createElement": true,
         "document.head.appendChild": true,
         "fetch": true,
@@ -913,12 +913,158 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
-        "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
         "@metamask/eth-sig-util": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "browserify>buffer": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@ethersproject/abi": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/errors": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>axios": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": true,
+        "browserify>buffer": true,
+        "ethers>@ethersproject/rlp": true,
+        "semver": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
+      "packages": {
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service>axios": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service>axios": {
+      "globals": {
+        "Blob": true,
+        "FormData": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "console.warn": true,
+        "document": true,
+        "location.href": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "process": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/errors": {
+      "globals": {
+        "console.warn": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
+      "packages": {
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>axios": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>ethers": true,
+        "@metamask/ppom-validator>crypto-js": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "wait-on>rxjs": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>axios": {
+      "globals": {
+        "Blob": true,
+        "FormData": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "console.warn": true,
+        "document": true,
+        "location.href": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "process": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>ethers": {
+      "packages": {
+        "@ethersproject/abi": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/hash": true,
+        "@ethersproject/hdnode": true,
+        "@ethersproject/providers": true,
+        "@ethersproject/providers>@ethersproject/web": true,
+        "@ethersproject/wallet": true,
+        "ethers>@ethersproject/abstract-signer": true,
+        "ethers>@ethersproject/address": true,
+        "ethers>@ethersproject/base64": true,
+        "ethers>@ethersproject/basex": true,
+        "ethers>@ethersproject/constants": true,
+        "ethers>@ethersproject/json-wallets": true,
+        "ethers>@ethersproject/keccak256": true,
+        "ethers>@ethersproject/logger": true,
+        "ethers>@ethersproject/properties": true,
+        "ethers>@ethersproject/random": true,
+        "ethers>@ethersproject/rlp": true,
+        "ethers>@ethersproject/sha2": true,
+        "ethers>@ethersproject/signing-key": true,
+        "ethers>@ethersproject/solidity": true,
+        "ethers>@ethersproject/strings": true,
+        "ethers>@ethersproject/transactions": true,
+        "ethers>@ethersproject/units": true,
+        "ethers>@ethersproject/wordlists": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": {
+      "globals": {
+        "__ledgerLogsListen": "write",
+        "console.error": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>axios": {
+      "globals": {
+        "Blob": true,
+        "FormData": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "console.warn": true,
+        "document": true,
+        "location.href": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "process": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
       }
     },
     "@metamask/eth-query": {
@@ -5518,6 +5664,17 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "wait-on>rxjs": {
+      "globals": {
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setInterval.apply": true,
+        "setTimeout.apply": true
       }
     },
     "web3": {
