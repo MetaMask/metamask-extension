@@ -1,4 +1,6 @@
+import { Contract } from '@ethersproject/contracts';
 import { Hex, add0x } from '@metamask/utils';
+import { TransactionParams } from '@metamask/transaction-controller';
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
@@ -8,6 +10,8 @@ import {
 import {
   BRIDGE_API_BASE_URL,
   BRIDGE_CLIENT_ID,
+  ETH_USDT_ADDRESS,
+  METABRIDGE_ETHEREUM_ADDRESS,
 } from '../../../shared/constants/bridge';
 import { MINUTE } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -25,6 +29,8 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { ETHEREUM_USDT_APPROVALS_ABI } from './EthUsdtApprovalsAbi';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
@@ -34,12 +40,19 @@ enum BridgeFlag {
   EXTENSION_SUPPORT = 'extension-support',
   NETWORK_SRC_ALLOWLIST = 'src-network-allowlist',
   NETWORK_DEST_ALLOWLIST = 'dest-network-allowlist',
+  APPROVAL_GAS_MULTIPLIER = 'approval-gas-multiplier',
+  BRIDGE_GAS_MULTIPLIER = 'bridge-gas-multiplier',
 }
+
+type DecChainId = string;
+type GasMultiplierByDecChainId = Record<DecChainId, number>;
 
 export type FeatureFlagResponse = {
   [BridgeFlag.EXTENSION_SUPPORT]: boolean;
   [BridgeFlag.NETWORK_SRC_ALLOWLIST]: number[];
   [BridgeFlag.NETWORK_DEST_ALLOWLIST]: number[];
+  [BridgeFlag.APPROVAL_GAS_MULTIPLIER]: GasMultiplierByDecChainId;
+  [BridgeFlag.BRIDGE_GAS_MULTIPLIER]: GasMultiplierByDecChainId;
 };
 // End of copied types
 
@@ -90,11 +103,45 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
               (i) => typeof i === 'number',
             ),
         },
+        {
+          property: BridgeFlag.APPROVAL_GAS_MULTIPLIER,
+          type: 'object',
+          validator: (v): v is GasMultiplierByDecChainId =>
+            Object.values(v as { [s: DecChainId]: unknown }).every(
+              (i) => typeof i === 'number',
+            ),
+        },
+        {
+          property: BridgeFlag.BRIDGE_GAS_MULTIPLIER,
+          type: 'object',
+          validator: (v): v is GasMultiplierByDecChainId =>
+            Object.values(v as { [s: DecChainId]: unknown }).every(
+              (i) => typeof i === 'number',
+            ),
+        },
       ],
       rawFeatureFlags,
       url,
     )
   ) {
+    const approvalGasMultiplier = Object.keys(
+      rawFeatureFlags[BridgeFlag.APPROVAL_GAS_MULTIPLIER],
+    ).reduce<GasMultiplierByDecChainId>((acc, decChainId) => {
+      const hexChainId = add0x(decimalToHex(decChainId));
+      acc[hexChainId] =
+        rawFeatureFlags[BridgeFlag.APPROVAL_GAS_MULTIPLIER][decChainId];
+      return acc;
+    }, {});
+
+    const bridgeGasMultiplier = Object.keys(
+      rawFeatureFlags[BridgeFlag.BRIDGE_GAS_MULTIPLIER],
+    ).reduce<GasMultiplierByDecChainId>((acc, decChainId) => {
+      const hexChainId = add0x(decimalToHex(decChainId));
+      acc[hexChainId] =
+        rawFeatureFlags[BridgeFlag.BRIDGE_GAS_MULTIPLIER][decChainId];
+      return acc;
+    }, {});
+
     return {
       [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]:
         rawFeatureFlags[BridgeFlag.EXTENSION_SUPPORT],
@@ -104,6 +151,8 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
       [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: rawFeatureFlags[
         BridgeFlag.NETWORK_DEST_ALLOWLIST
       ].map((chainIdDec) => add0x(decimalToHex(chainIdDec))),
+      [BridgeFeatureFlagsKey.APPROVAL_GAS_MULTIPLIER]: approvalGasMultiplier,
+      [BridgeFeatureFlagsKey.BRIDGE_GAS_MULTIPLIER]: bridgeGasMultiplier,
     };
   }
 
@@ -114,6 +163,8 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
     // TODO set default to ALLOWED_BRIDGE_CHAIN_IDS once bridging is live
     [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
+    [BridgeFeatureFlagsKey.APPROVAL_GAS_MULTIPLIER]: {},
+    [BridgeFeatureFlagsKey.BRIDGE_GAS_MULTIPLIER]: {},
   };
 }
 
@@ -159,3 +210,29 @@ export async function fetchBridgeTokens(
   });
   return transformedTokens;
 }
+
+/**
+ * A function to return tx for setting allowance to 0 for USDT on Ethereum
+ *
+ * @param approval - The original transaction params for the required allowance
+ * @returns Modified approval transaction params that will reset allowance to 0
+ */
+export const getEthUsdtApproveResetTxParams = (approval: TransactionParams) => {
+  const UsdtContractInterface = new Contract(
+    ETH_USDT_ADDRESS,
+    ETHEREUM_USDT_APPROVALS_ABI,
+  ).interface;
+  const data = UsdtContractInterface.encodeFunctionData('approve', [
+    METABRIDGE_ETHEREUM_ADDRESS,
+    '0',
+  ]);
+
+  return {
+    ...approval,
+    data,
+  };
+};
+
+export const isEthUsdt = (chainId: Hex, address: string) =>
+  chainId === CHAIN_IDS.MAINNET &&
+  address.toLowerCase() === ETH_USDT_ADDRESS.toLowerCase();

@@ -8,6 +8,8 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getAllBridgeableNetworks,
+  getApprovalGasMultipliers,
+  getBridgeGasMultipliers,
   getFromAmount,
   getFromChain,
   getFromChains,
@@ -489,6 +491,61 @@ describe('Bridge selectors', () => {
       const result = getFromTopAssets(state as never);
 
       expect(result).toStrictEqual([{ address: '0x00', symbol: 'TEST' }]);
+    });
+  });
+
+  describe('getApprovalGasMultipliers', () => {
+    it('returns approval gas multipliers when present', () => {
+      const state = createBridgeMockStore(
+        {
+          approvalGasMultiplier: {
+            [CHAIN_IDS.MAINNET]: 1.1,
+            [CHAIN_IDS.LINEA_MAINNET]: 1.2,
+          },
+        },
+        {},
+        {},
+        {},
+      );
+      const result = getApprovalGasMultipliers(state as never);
+      expect(result).toEqual({
+        [CHAIN_IDS.MAINNET]: 1.1,
+        [CHAIN_IDS.LINEA_MAINNET]: 1.2,
+      });
+    });
+
+    it('returns an empty object when approval gas multipliers are not present', () => {
+      const state = createBridgeMockStore();
+      const result = getApprovalGasMultipliers(state as never);
+      expect(result).toEqual({});
+    });
+  });
+
+  describe('getBridgeGasMultipliers', () => {
+    it('should return bridge gas multipliers when present', () => {
+      const state = createBridgeMockStore(
+        {
+          bridgeGasMultiplier: {
+            [CHAIN_IDS.MAINNET]: 1.1,
+            [CHAIN_IDS.LINEA_MAINNET]: 1.2,
+          },
+        },
+        {},
+        {},
+        {},
+      );
+
+      const result = getBridgeGasMultipliers(state as never);
+      expect(result).toEqual({
+        [CHAIN_IDS.MAINNET]: 1.1,
+        [CHAIN_IDS.LINEA_MAINNET]: 1.2,
+      });
+    });
+
+    it('should return an empty object when bridge gas multipliers are not present', () => {
+      const state = createBridgeMockStore();
+      const result = getBridgeGasMultipliers(state as never);
+      expect(result).toEqual({});
     });
   });
 });

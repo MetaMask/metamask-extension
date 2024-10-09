@@ -2097,6 +2097,7 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: [],
     });
     this.bridgeController = new BridgeController({
+      provider: this.provider,
       messenger: bridgeControllerMessenger,
     });
 
@@ -3894,6 +3895,11 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
+        ),
+      [BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE}`,
         ),
       [BridgeUserAction.SELECT_SRC_NETWORK]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
