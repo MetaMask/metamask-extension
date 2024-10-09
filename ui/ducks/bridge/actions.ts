@@ -167,25 +167,18 @@ export const submitBridgeTransaction = (
     const calcFeePerGas = () => {
       let maxFeePerGas: undefined | string;
       let maxPriorityFeePerGas: undefined | string;
-      // let baseAndPriorityFeePerGas;
-      // let decEstimatedBaseFee;
 
       const networkAndAccountSupports1559 =
         checkNetworkAndAccountSupports1559(state);
 
       if (networkAndAccountSupports1559) {
         const gasFeeEstimates = getGasFeeEstimates(state);
-        // decEstimatedBaseFee = gasFeeEstimates.high.estimatedBaseFee;
         maxFeePerGas = decGWEIToHexWEI(
           gasFeeEstimates?.high?.suggestedMaxFeePerGas,
         );
         maxPriorityFeePerGas = decGWEIToHexWEI(
           gasFeeEstimates?.high?.suggestedMaxPriorityFeePerGas,
         );
-        // baseAndPriorityFeePerGas = addHexes(
-        //   decEstimatedBaseFee,
-        //   maxPriorityFeePerGas,
-        // );
       }
 
       return {
@@ -302,7 +295,6 @@ export const submitBridgeTransaction = (
         // @ts-expect-error Need TransactionController v37+, TODO add this type
         type: 'bridgeApproval', // TransactionType.bridgeApproval,
 
-        // TODO update TransactionController to change this to a bridge field
         // swaps.meta is of type Partial<TransactionMeta>, will get merged with TransactionMeta by the TransactionController
         swaps: {
           hasApproveTx: true,
