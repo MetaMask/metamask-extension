@@ -41,7 +41,7 @@ function transformState(
       state.PhishingController as PhishingControllerState;
 
     phishingController.phishingLists = phishingController.phishingLists.filter(
-      (list) => list.name === 'MetaMask',
+      (list) => list.name === ListNames.MetaMask,
     );
 
     state.PhishingController = phishingController;
