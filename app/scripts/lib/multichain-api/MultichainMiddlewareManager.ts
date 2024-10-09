@@ -91,7 +91,7 @@ export default class MultichainMiddlewareManager {
     });
   }
 
-  generateMiddlewareForOriginAndTabId(origin: string, tabId?: number) {
+  generateMultichainMiddlewareForOriginAndTabId(origin: string, tabId?: number) {
     const middleware: ExtendedJsonRpcMiddleware = (req, res, next, end) => {
       const r = req as unknown as {
         scope: string;
