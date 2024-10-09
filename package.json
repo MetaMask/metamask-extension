@@ -266,7 +266,9 @@
     "@metamask/network-controller@npm:^17.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^20.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
-    "path-to-regexp": "1.9.0"
+    "path-to-regexp": "1.9.0",
+    "@ledgerhq/hw-app-eth@npm:^6.39.0": "patch:@ledgerhq/hw-app-eth@npm%3A6.39.0#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.39.0-866309bbbe.patch",
+    "@ledgerhq/evm-tools@npm:^1.2.3": "patch:@ledgerhq/evm-tools@npm%3A1.2.3#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.2.3-414f44baa9.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
