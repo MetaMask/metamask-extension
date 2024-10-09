@@ -50,6 +50,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
  * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
+ * @property {string} extensionId - the ID that the extension can be found at via externally_connectable.
  */
 
 /**
