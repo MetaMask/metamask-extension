@@ -54,6 +54,7 @@ import { ETH_USDT_ADDRESS, FeeType } from '../../../shared/constants/bridge';
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { bridgeSlice } from './bridge';
 import {
+  BridgeAppState,
   getApprovalGasMultipliers,
   getBridgeGasMultipliers,
   getQuotes,
@@ -148,7 +149,7 @@ export const submitBridgeTransaction = (
 ) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
+    getState: () => MetaMaskReduxState & BridgeAppState,
   ) => {
     const state = getState();
     const isBridgeEnabled = getIsBridgeEnabled(state);
