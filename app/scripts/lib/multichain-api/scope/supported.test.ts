@@ -13,6 +13,7 @@ import {
 
 describe('Scope Support', () => {
   describe('isSupportedNotification', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(Object.entries(KnownNotifications))(
       'returns true for each %s scope method',
       (scopeString: ScopeString, notifications: string[]) => {
@@ -33,6 +34,7 @@ describe('Scope Support', () => {
   });
 
   describe('isSupportedMethod', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(Object.entries(KnownRpcMethods))(
       'returns true for each %s scoped method',
       (scopeString: ScopeString, methods: string[]) => {
@@ -48,6 +50,7 @@ describe('Scope Support', () => {
       });
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(Object.entries(KnownWalletNamespaceRpcMethods))(
       'returns true for each wallet:%s scoped method',
       (scopeString: ScopeString, methods: string[]) => {

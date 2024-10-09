@@ -402,7 +402,9 @@ describe('migration #131', () => {
     'the currently selected network client is %s',
     (
       _type: string,
-      NetworkController: Record<string, unknown>,
+      NetworkController: {
+        networkConfigurations: Record<string, unknown>;
+      } & Record<string, unknown>,
       chainId: string,
     ) => {
       const baseData = () => ({

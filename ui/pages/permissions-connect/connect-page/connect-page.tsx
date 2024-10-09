@@ -43,6 +43,10 @@ import PermissionsConnectFooter from '../../../components/app/permissions-connec
 export type ConnectPageRequest = {
   id: string;
   origin: string;
+  permissions?: Record<
+    string,
+    { caveats: { type: string; value: string[] }[] }
+  >;
 };
 
 type ConnectPageProps = {
