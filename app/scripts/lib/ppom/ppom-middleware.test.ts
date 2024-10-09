@@ -41,7 +41,7 @@ const REQUEST_MOCK = {
 
 const createMiddleware = (
   options: {
-    chainId?: Hex;
+    chainId?: Hex | null;
     error?: Error;
     securityAlertsEnabled?: boolean;
     // TODO: Replace `any` with type
@@ -71,7 +71,10 @@ const createMiddleware = (
   }
 
   const networkController = {
-    state: mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
+    state: {
+      ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
+      ...(chainId === null ? { providerConfig: {} } : undefined),
+    },
   };
 
   const appStateController = {
@@ -189,6 +192,28 @@ describe('PPOMMiddleware', () => {
 
     // @ts-expect-error Passing in invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
+
+    expect(req.securityAlertResponse).toBeUndefined();
+    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
+  });
+
+  it('does not do validation if unable to get the chainId from the network provider config', async () => {
+    isChainSupportedMock.mockResolvedValue(false);
+    const middlewareFunction = createMiddleware({
+      chainId: null,
+    });
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
 
     expect(req.securityAlertResponse).toBeUndefined();
     expect(validateRequestWithPPOM).not.toHaveBeenCalled();

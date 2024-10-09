@@ -79,9 +79,14 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const { chainId } = getProviderConfig({
-        metamask: networkController.state,
-      });
+      const { chainId } =
+        getProviderConfig({
+          metamask: networkController.state,
+        }) ?? {};
+      if (!chainId) {
+        return;
+      }
+
       const isSupportedChain = await isChainSupported(chainId);
 
       if (
