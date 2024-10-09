@@ -36,11 +36,14 @@ function transformState(
   if (
     hasProperty(state, 'PhishingController') &&
     isObject(state.PhishingController) &&
-    hasProperty(state.PhishingController, 'phishingLists') &&
-    Array.isArray(state.PhishingController.phishingLists)
+    hasProperty(state.PhishingController, 'phishingLists')
   ) {
     const phishingController =
       state.PhishingController as PhishingControllerState;
+    
+    if (!Array.isArray(phishingController.phishingLists)) {
+      return state;
+    }
 
     phishingController.phishingLists = phishingController.phishingLists.filter(
       (list) => list.name === ListNames.MetaMask,
