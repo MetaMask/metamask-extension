@@ -229,7 +229,6 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
-    "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
