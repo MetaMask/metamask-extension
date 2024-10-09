@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import TokenTransferInfo from './token-transfer';
+import { NameOrAddressDisplay } from './name-or-address-display';
 
 jest.mock(
   '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -13,20 +13,12 @@ jest.mock(
   }),
 );
 
-jest.mock('../../../../../../store/actions', () => ({
-  ...jest.requireActual('../../../../../../store/actions'),
-  getGasFeeTimeEstimate: jest.fn().mockResolvedValue({
-    lowerTimeBound: 0,
-    upperTimeBound: 60000,
-  }),
-}));
-
-describe('TokenTransferInfo', () => {
+describe('NameOrAddressDisplay', () => {
   it('renders correctly', () => {
     const state = getMockTokenTransferConfirmState({});
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(
-      <TokenTransferInfo />,
+      <NameOrAddressDisplay address="0x388C818CA8B9251b393131C08a736A67ccB19297" />,
       mockStore,
     );
     expect(container).toMatchSnapshot();

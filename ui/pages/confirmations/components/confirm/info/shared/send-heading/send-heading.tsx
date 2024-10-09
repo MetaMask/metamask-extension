@@ -73,7 +73,7 @@ const SendHeading = () => {
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
-      paddingTop={4}
+      padding={4}
     >
       {TokenImage}
       {TokenValue}
