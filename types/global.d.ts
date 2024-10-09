@@ -239,6 +239,7 @@ type HttpProvider = {
 };
 
 type StateHooks = {
+  customTraces?: { [name: string]: number };
   getCleanAppState?: () => Promise<any>;
   getLogs?: () => any[];
   getMostRecentPersistedState?: () => any;

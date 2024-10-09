@@ -1227,11 +1227,6 @@ class Driver {
     });
   }
 
-  async addConsoleListener(fn) {
-    const cdpConnection = await this.driver.createCDPConnection('page');
-    this.driver.onLogEvent(cdpConnection, fn);
-  }
-
   #flushEventProcessingStack() {
     let completeErrorText = '';
 
@@ -1318,7 +1313,10 @@ function collectMetrics() {
       });
     });
 
-  return results;
+  return {
+    ...results,
+    ...window.stateHooks.customTraces,
+  };
 }
 
 module.exports = { Driver, PAGES };

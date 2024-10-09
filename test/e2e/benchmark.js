@@ -16,7 +16,6 @@ const FixtureBuilder = require('./fixture-builder');
 
 const DEFAULT_NUM_SAMPLES = 20;
 const ALL_PAGES = Object.values(PAGES);
-const CUSTOM_TRACE_LOG_MESSAGE = 'Custom Trace';
 
 const CUSTOM_TRACES = {
   backgroundConnect: 'Background Connect',
@@ -36,19 +35,6 @@ async function measurePage(pageName) {
       disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
-      const customTraces = {};
-
-      await driver.addConsoleListener((event) => {
-        const firstArg = event.args?.[0]?.value;
-
-        if (firstArg === CUSTOM_TRACE_LOG_MESSAGE) {
-          const name = event.args?.[1]?.value;
-          const value = event.args?.[2]?.value;
-
-          customTraces[name] = value;
-        }
-      });
-
       await driver.delay(tinyDelayMs);
       await unlockWallet(driver, {
         waitLoginSuccess: false,
@@ -57,12 +43,7 @@ async function measurePage(pageName) {
       await driver.navigate(pageName);
       await driver.delay(1000);
 
-      const automatedMetrics = await driver.collectMetrics();
-
-      metrics = {
-        ...automatedMetrics,
-        ...customTraces,
-      };
+      metrics = await driver.collectMetrics();
     },
   );
   return metrics;
@@ -109,7 +90,7 @@ async function profilePageLoad(pages, numSamples, retries) {
       runResults.push(result);
     }
 
-    if (runResults.some((result) => result.navigation.lenth > 1)) {
+    if (runResults.some((result) => result.navigation.length > 1)) {
       throw new Error(`Multiple navigations not supported`);
     } else if (
       runResults.some((result) => result.navigation[0].type !== 'navigate')
