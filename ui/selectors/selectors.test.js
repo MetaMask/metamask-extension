@@ -1,21 +1,19 @@
-import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
   BtcAccountType,
   EthAccountType,
   EthMethod,
 } from '@metamask/keyring-api';
+import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import mockState from '../../test/data/mock-state.json';
-import { KeyringType } from '../../shared/constants/keyring';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
-import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
-import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
-import { createMockInternalAccount } from '../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
-import { getProviderConfig } from '../ducks/metamask/metamask';
-import { mockNetworkState } from '../../test/stub/networks';
+import { KeyringType } from '../../shared/constants/keyring';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
+import mockState from '../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({

@@ -2,7 +2,7 @@
 
 import { isEvmAccountType } from '@metamask/keyring-api';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { PRIVACY_POLICY_LINK, SURVEY_LINK } from '../../../shared/lib/ui-utils';
 import {
@@ -29,6 +29,7 @@ import { getURLHost } from '../../helpers/utils/util';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAccount,
+  getUseNftDetection,
 } from '../../selectors';
 import { getShowAutoNetworkSwitchTest } from './isolated';
 import {
@@ -53,10 +54,11 @@ export function ToastMaster({ props, context }) {
     setSurveyLinkLastClickedOrClosed,
     setSwitchedNetworkNeverShowMessage,
     switchedNetworkDetails,
-    useNftDetection,
     isPermittedNetworkToastOpen,
     currentNetwork,
   } = props;
+
+  const dispatch = useDispatch();
 
   const showAutoNetworkSwitchToast = getShowAutoNetworkSwitchTest(props);
   console.log('switchedNetworkDetails', switchedNetworkDetails);
@@ -84,6 +86,7 @@ export function ToastMaster({ props, context }) {
   );
 
   const showNftEnablementToast = useSelector(getNftDetectionEnablementToast);
+  const useNftDetection = useSelector(getUseNftDetection);
 
   if (!onHomeScreen(props)) {
     return null;
@@ -197,7 +200,9 @@ export function ToastMaster({ props, context }) {
           borderRadius={BorderRadius.LG}
           textVariant={TextVariant.bodyMd}
           autoHideTime={autoHideToastDelay}
-          onAutoHideToast={() => setShowNftDetectionEnablementToast(false)}
+          onAutoHideToast={() =>
+            dispatch(setShowNftDetectionEnablementToast(false))
+          }
         />
       )}
 
