@@ -1,16 +1,14 @@
-const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  DAPP_URL,
   DAPP_ONE_URL,
-  regularDelayMs,
-  WINDOW_TITLES,
+  DAPP_URL,
   defaultGanacheOptions,
   largeDelayMs,
-  switchToNotificationWindow,
+  openDapp,
+  unlockWallet,
+  WINDOW_TITLES,
+  withFixtures,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -52,9 +50,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
-        await driver.delay(regularDelayMs);
-
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
           text: 'Connect',
@@ -90,9 +86,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
-        await driver.delay(regularDelayMs);
-
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
           text: 'Connect',
@@ -101,54 +95,61 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         // Dapp 1 send 2 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.delay(largeDelayMs);
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x53a',
+        });
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
 
-        await driver.delay(largeDelayMs);
+        await driver.waitUntilXWindowHandles(4);
 
         // Dapp 2 send 2 tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await driver.delay(largeDelayMs);
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x53a',
+        });
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
-
+        // We cannot wait for the dialog, since it is already opened from before
         await driver.delay(largeDelayMs);
 
         // Dapp 1 send 1 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.delay(largeDelayMs);
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x53a',
+        });
         await driver.clickElement('#sendButton');
+        // We cannot switch directly, as the dialog is sometimes closed and re-opened
+        await driver.delay(largeDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver, 4);
-
-        let navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
+        await driver.waitForSelector(
+          By.xpath("//div[normalize-space(.)='1 of 2']"),
         );
-
-        let navigationText = await navigationElement.getText();
-
-        assert.equal(navigationText.includes('1 of 2'), true);
 
         // Reject All Transactions
         await driver.clickElement('.page-container__footer-secondary a');
 
-        await driver.clickElement({ text: 'Reject all', tag: 'button' }); // TODO: Do we want to confirm here?
+        // TODO: Do we want to confirm here?
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Reject all',
+          tag: 'button',
+        });
 
-        // Wait for confirmations to close and transactions from the second dapp to open
-        // Large delays to wait for confirmation spam opening/closing bug.
-        await driver.delay(largeDelayMs);
+        await driver.switchToWindowWithUrl(DAPP_URL);
 
         // Wait for new confirmations queued from second dapp to open
-        await switchToNotificationWindow(driver, 4);
+        // We need a big delay to make sure dialog is not invalidated
+        // TODO: find a better way to handle different dialog ids
+        await driver.delay(2000);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
+        await driver.waitForSelector(
+          By.xpath("//div[normalize-space(.)='1 of 2']"),
         );
-
-        navigationText = await navigationElement.getText();
-
-        assert.equal(navigationText.includes('1 of 2'), true);
 
         // Check correct network on confirm tx.
         await driver.findElement({
@@ -159,12 +160,17 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         // Reject All Transactions
         await driver.clickElement('.page-container__footer-secondary a');
 
-        await driver.clickElement({ text: 'Reject all', tag: 'button' });
-
-        await driver.delay(largeDelayMs);
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Reject all',
+          tag: 'button',
+        });
 
         // Wait for new confirmations queued from second dapp to open
-        await switchToNotificationWindow(driver, 4);
+        // We need a big delay to make sure dialog is not invalidated
+        // TODO: find a better way to handle different dialog ids
+        await driver.delay(2000);
+        await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
       },
     );
   });
