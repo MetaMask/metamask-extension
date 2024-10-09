@@ -408,6 +408,7 @@
     "localforage": "^1.9.0",
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
+    "lottie-web": "^5.12.2",
     "luxon": "^3.2.1",
     "nanoid": "^2.1.6",
     "pify": "^5.0.0",
