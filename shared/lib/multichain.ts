@@ -1,14 +1,5 @@
+import { CaipNamespace, KnownCaipNamespace } from '@metamask/utils';
 import { validate, Network } from 'bitcoin-address-validation';
-
-/**
- * Multi-chain family type.
- */
-export enum MultichainType {
-  // Bitcoin-like:
-  Bip122 = 'bip122',
-  // Ethereum:
-  Eip155 = 'eip155',
-}
 
 /**
  * Returns whether an address is on the Bitcoin mainnet.
@@ -43,10 +34,10 @@ export function isBtcTestnetAddress(address: string): boolean {
  * @param address - The address to check.
  * @returns The chain's type for that address.
  */
-export function getMultichainTypeFromAddress(address: string): MultichainType {
+export function getCaipNamespaceFromAddress(address: string): CaipNamespace {
   if (isBtcMainnetAddress(address) || isBtcTestnetAddress(address)) {
-    return MultichainType.Bip122;
+    return KnownCaipNamespace.Bip122;
   }
   // Defaults to "Ethereum" for all other cases for now.
-  return MultichainType.Eip155;
+  return KnownCaipNamespace.Eip155;
 }

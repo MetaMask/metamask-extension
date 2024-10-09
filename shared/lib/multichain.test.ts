@@ -1,6 +1,6 @@
+import { KnownCaipNamespace } from '@metamask/utils';
 import {
-  MultichainType,
-  getMultichainTypeFromAddress,
+  getCaipNamespaceFromAddress,
   isBtcMainnetAddress,
   isBtcTestnetAddress,
 } from './multichain';
@@ -66,8 +66,8 @@ describe('multichain', () => {
     it.each([...BTC_MAINNET_ADDRESSES, ...BTC_TESTNET_ADDRESSES])(
       'returns ChainType.Bitcoin for bitcoin address: %s',
       (address: string) => {
-        expect(getMultichainTypeFromAddress(address)).toBe(
-          MultichainType.Bip122,
+        expect(getCaipNamespaceFromAddress(address)).toBe(
+          KnownCaipNamespace.Bip122,
         );
       },
     );
@@ -76,8 +76,8 @@ describe('multichain', () => {
     it.each(ETH_ADDRESSES)(
       'returns ChainType.Ethereum for ethereum address: %s',
       (address: string) => {
-        expect(getMultichainTypeFromAddress(address)).toBe(
-          MultichainType.Eip155,
+        expect(getCaipNamespaceFromAddress(address)).toBe(
+          KnownCaipNamespace.Eip155,
         );
       },
     );
@@ -86,8 +86,8 @@ describe('multichain', () => {
     it.each(SOL_ADDRESSES)(
       'returns ChainType.Ethereum for non-supported address: %s',
       (address: string) => {
-        expect(getMultichainTypeFromAddress(address)).toBe(
-          MultichainType.Eip155,
+        expect(getCaipNamespaceFromAddress(address)).toBe(
+          KnownCaipNamespace.Eip155,
         );
       },
     );

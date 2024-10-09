@@ -361,7 +361,7 @@
     "@metamask/snaps-utils": "^8.1.1",
     "@metamask/transaction-controller": "^37.2.0",
     "@metamask/user-operation-controller": "^13.0.0",
-    "@metamask/utils": "^9.1.0",
+    "@metamask/utils": "^9.3.0",
     "@ngraveio/bc-ur": "^1.1.12",
     "@noble/hashes": "^1.3.3",
     "@popperjs/core": "^2.4.0",

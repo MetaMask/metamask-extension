@@ -7,8 +7,7 @@ import type { PolymorphicRef } from '../box';
 
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import {
-  MultichainType,
-  getMultichainTypeFromAddress,
+  getCaipNamespaceFromAddress,
 } from '../../../../shared/lib/multichain';
 import {
   AvatarAccountDiameter,
@@ -17,12 +16,15 @@ import {
   AvatarAccountComponent,
   AvatarAccountProps,
 } from './avatar-account.types';
+import { KnownCaipNamespace } from '@metamask/utils';
 
 function getJazziconNamespace(address: string): string | undefined {
-  switch (getMultichainTypeFromAddress(address)) {
-    case MultichainType.Bip122:
-      return 'bip122';
-    case MultichainType.Eip155:
+  const namespace = getCaipNamespaceFromAddress(address);
+
+  switch (namespace) {
+    case KnownCaipNamespace.Bip122:
+      return namespace;
+    case KnownCaipNamespace.Eip155:
       return undefined; // Falls back to default Jazzicon behavior
     default:
       return undefined;
