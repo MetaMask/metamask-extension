@@ -5,10 +5,10 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   detectNfts,
   setOpenSeaEnabled,
-  setShowNftDetectionEnablementToast,
   setUseNftDetection,
 } from '../../../../../store/actions';
 import { getOpenSeaEnabled } from '../../../../../selectors';
+import { setShowNftDetectionEnablementToast } from '../../../../../pages/routes/toast-master-selectors';
 
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
