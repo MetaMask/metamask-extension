@@ -1047,6 +1047,7 @@
       "globals": {
         "Blob": true,
         "FormData": true,
+        "URLSearchParams": true,
         "XMLHttpRequest": true,
         "btoa": true,
         "console.warn": true,
@@ -1056,6 +1057,7 @@
         "setTimeout": true
       },
       "packages": {
+        "axios>form-data": true,
         "browserify>buffer": true,
         "process": true
       }
@@ -1086,6 +1088,7 @@
       "globals": {
         "Blob": true,
         "FormData": true,
+        "URLSearchParams": true,
         "XMLHttpRequest": true,
         "btoa": true,
         "console.warn": true,
@@ -1095,6 +1098,7 @@
         "setTimeout": true
       },
       "packages": {
+        "axios>form-data": true,
         "browserify>buffer": true,
         "process": true
       }
@@ -1140,6 +1144,7 @@
       "globals": {
         "Blob": true,
         "FormData": true,
+        "URLSearchParams": true,
         "XMLHttpRequest": true,
         "btoa": true,
         "console.warn": true,
@@ -1149,6 +1154,7 @@
         "setTimeout": true
       },
       "packages": {
+        "axios>form-data": true,
         "browserify>buffer": true,
         "process": true
       }
@@ -3585,6 +3591,11 @@
       "packages": {
         "browserify>timers-browserify": true,
         "process": true
+      }
+    },
+    "axios>form-data": {
+      "globals": {
+        "FormData": true
       }
     },
     "base32-encode": {
