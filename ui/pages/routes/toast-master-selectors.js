@@ -70,12 +70,6 @@ function getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate) {
   const toastWasShownLessThanADayAgo =
     currentDate - newPrivacyPolicyToastShownDateObj < oneDayInMilliseconds;
 
-  console.log(
-    'newPrivacyPolicyToastShownDateObj',
-    newPrivacyPolicyToastShownDateObj,
-  );
-  console.log('toastWasShownLessThanADayAgo', toastWasShownLessThanADayAgo);
-
   return toastWasShownLessThanADayAgo;
 }
 

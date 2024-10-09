@@ -61,8 +61,6 @@ export function ToastMaster({ props, context }) {
   const dispatch = useDispatch();
 
   const showAutoNetworkSwitchToast = getShowAutoNetworkSwitchTest(props);
-  console.log('switchedNetworkDetails', switchedNetworkDetails);
-  console.log('showAutoNetworkSwitchToast', showAutoNetworkSwitchToast);
 
   const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
     useSelector(getShowPrivacyPolicyToast);
