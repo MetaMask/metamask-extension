@@ -204,8 +204,6 @@ export default class Routes extends Component {
     switchedNetworkDetails: PropTypes.object,
     useNftDetection: PropTypes.bool,
     currentNetwork: PropTypes.object,
-    showNftEnablementToast: PropTypes.bool,
-    setHideNftEnablementToast: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,

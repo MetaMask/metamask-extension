@@ -2761,15 +2761,6 @@ export function showNftStillFetchingIndication(): Action {
   };
 }
 
-export function setShowNftDetectionEnablementToast(
-  value: boolean,
-): PayloadAction<string | ReactFragment | undefined> {
-  return {
-    type: actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
-    payload: value,
-  };
-}
-
 export function setHardwareWalletDefaultHdPath({
   device,
   path,

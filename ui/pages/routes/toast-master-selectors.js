@@ -4,6 +4,7 @@ import {
   SURVEY_START_TIME,
   SURVEY_END_TIME,
 } from '../../helpers/constants/survey';
+import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../store/actionConstants';
 import {
   callBackgroundMethod,
   submitRequestToBackground,
@@ -89,3 +90,23 @@ export function setNewPrivacyPolicyToastShownDate(time) {
 export function setNewPrivacyPolicyToastClickedOrClosed() {
   submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
 }
+
+export function getNftDetectionEnablementToast(state) {
+  return state.appState.showNftDetectionEnablementToast;
+}
+
+export function setShowNftDetectionEnablementToast(value) {
+  return {
+    type: SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
+    payload: value,
+  };
+}
+
+// export function setShowNftDetectionEnablementToast(
+//   value: boolean,
+// ): PayloadAction<string | ReactFragment | undefined> {
+//   return {
+//     type: actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
+//     payload: value,
+//   };
+// }
