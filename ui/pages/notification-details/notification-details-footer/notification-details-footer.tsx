@@ -7,7 +7,10 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import type { NotificationComponent } from '../../notifications/notification-components/types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../../notifications/notification-components/types/notifications/notifications';
 
 type Notification = NotificationServicesController.Types.INotification;
 
@@ -29,20 +32,14 @@ export const NotificationDetailsFooter = ({
       padding={4}
       gap={4}
     >
-      {footer.type === 'footer_onchain_notification' && (
-        <>
-          <footer.ScanLink notification={notification} />
-        </>
+      {footer.type === NotificationComponentType.OnChainFooter && (
+        <footer.ScanLink notification={notification} />
       )}
-      {footer.type === 'footer_feature_announcement' && (
-        <>
-          <footer.ExtensionLink notification={notification} />
-        </>
+      {footer.type === NotificationComponentType.AnnouncementFooter && (
+        <footer.ExtensionLink notification={notification} />
       )}
-      {footer.type === 'footer_snap_notification' && (
-        <>
-          <footer.Link notification={notification} />
-        </>
+      {footer.type === NotificationComponentType.SnapFooter && (
+        <footer.Link notification={notification} />
       )}
     </Box>
   );

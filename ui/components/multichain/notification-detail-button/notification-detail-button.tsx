@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -12,13 +11,9 @@ import {
   IconName,
 } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
-import { SnapNotification } from '../../../pages/notifications/snap/types/types';
 import { TRIGGER_TYPES } from '../../../pages/notifications/notification-components';
 import useSnapNavigation from '../../../hooks/snaps/useSnapNavigation';
-
-type Notification =
-  | NotificationServicesController.Types.INotification
-  | SnapNotification;
+import { type Notification } from '../../../pages/notifications/notification-components/types/notifications/notifications';
 
 type NotificationDetailButtonProps = {
   notification: Notification;
@@ -74,7 +69,7 @@ export const NotificationDetailButton = ({
   return (
     <Button
       key={id}
-      {...(!isMetaMaskUrl && { href })}
+      href={!isMetaMaskUrl && href}
       variant={variant}
       externalLink={!isMetaMaskUrl}
       size={ButtonSize.Lg}

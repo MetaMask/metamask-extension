@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-api';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import log from 'loglevel';
 
 import {
@@ -11,11 +10,8 @@ import {
   enableMetamaskNotifications,
   disableMetamaskNotifications,
 } from '../../store/actions';
-import { SnapNotification } from '../../pages/notifications/snap/types/types';
+import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
 
-type Notification =
-  | NotificationServicesController.Types.INotification
-  | SnapNotification;
 export type MarkAsReadNotificationsParam = Pick<
   Notification,
   'id' | 'type' | 'isRead'

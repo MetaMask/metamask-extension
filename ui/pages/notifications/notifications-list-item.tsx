@@ -1,6 +1,5 @@
 import React, { useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -19,11 +18,7 @@ import {
   TRIGGER_TYPES,
   hasNotificationComponents,
 } from './notification-components';
-import { SnapNotification } from './snap/types/types';
-
-type Notification =
-  | NotificationServicesController.Types.INotification
-  | SnapNotification;
+import { type Notification } from './notification-components/types/notifications/notifications';
 
 export function NotificationsListItem({
   notification,

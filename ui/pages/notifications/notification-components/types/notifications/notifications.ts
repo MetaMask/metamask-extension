@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { SnapNotification } from '../../../snap/types/types';
 
-type Notification =
+export type Notification =
   | NotificationServicesController.Types.INotification
   | SnapNotification;
 
@@ -14,8 +14,17 @@ type NotificationFC<N = Notification> = FC<{
   onClick?: () => void;
 }>;
 
+export enum NotificationComponentType {
+  AnnouncementBody = 'body_feature_announcement',
+  AnnouncementFooter = 'footer_feature_announcement',
+  OnChainBody = 'body_onchain_notification',
+  OnChainFooter = 'footer_onchain_notification',
+  SnapBody = 'body_snap_notification',
+  SnapFooter = 'footer_snap_notification',
+}
+
 type BodyOnChainNotification<N = Notification> = {
-  type: 'body_onchain_notification';
+  type: NotificationComponentType.OnChainBody;
   Image?: NotificationFC<N>;
   From?: NotificationFC<N>;
   To?: NotificationFC<N>;
@@ -30,28 +39,28 @@ type BodyOnChainNotification<N = Notification> = {
 };
 
 type BodyFeatureAnnouncement<N = Notification> = {
-  type: 'body_feature_announcement';
+  type: NotificationComponentType.AnnouncementBody;
   Image: NotificationFC<N>;
   Description: NotificationFC<N>;
 };
 
 type BodySnapNotification<N = Notification> = {
-  type: 'body_snap_notification';
+  type: NotificationComponentType.SnapBody;
   Content: NotificationFC<N>;
 };
 
 type FooterOnChainNotification<N = Notification> = {
-  type: 'footer_onchain_notification';
+  type: NotificationComponentType.OnChainFooter;
   ScanLink: NotificationFC<N>;
 };
 
 type FooterFeatureAnnouncement<N = Notification> = {
-  type: 'footer_feature_announcement';
+  type: NotificationComponentType.AnnouncementFooter;
   ExtensionLink: NotificationFC<N>;
 };
 
 type FooterSnapNotification<N = Notification> = {
-  type: 'footer_snap_notification';
+  type: NotificationComponentType.SnapFooter;
   Link: NotificationFC<N>;
 };
 

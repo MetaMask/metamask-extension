@@ -1,7 +1,10 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 
 import {
@@ -70,7 +73,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
         />
       ),
       body: {
-        type: 'body_feature_announcement',
+        type: NotificationComponentType.AnnouncementBody,
         Image: ({ notification }) => (
           <Box
             display={Display.Block}
@@ -104,7 +107,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
       },
     },
     footer: {
-      type: 'footer_feature_announcement',
+      type: NotificationComponentType.AnnouncementFooter,
       ExtensionLink: ({ notification }) =>
         notification.data.extensionLink ? (
           <NotificationDetailButton

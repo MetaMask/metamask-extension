@@ -15,7 +15,10 @@ import type { SnapNotification } from '../../snap/types/types';
 import { getSnapsMetadata } from '../../../../selectors';
 import { markNotificationsAsRead } from '../../../../store/actions';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
-import { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponent,
+  NotificationComponentType,
+} from '../types/notifications/notifications';
 import { formatIsoDateString } from '../../../../helpers/utils/notification.util';
 import { SnapUIRenderer } from '../../../../components/app/snaps/snap-ui-renderer';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
@@ -44,6 +47,7 @@ export const components: NotificationComponent<SnapNotification> = {
       });
       history.push(getSnapRoute(notification.data.origin));
     };
+
     return (
       <NotificationListItemSnap
         id={notification.id}
@@ -53,7 +57,7 @@ export const components: NotificationComponent<SnapNotification> = {
         title={{
           items: [
             {
-              text: snapsNameGetter(notification.data.origin) || 'Snap',
+              text: snapsNameGetter(notification.data.origin) ?? 'Unknown Snap',
             },
           ],
         }}
@@ -71,7 +75,7 @@ export const components: NotificationComponent<SnapNotification> = {
       />
     ),
     body: {
-      type: 'body_snap_notification',
+      type: NotificationComponentType.SnapBody,
       Content: ({ notification }) => (
         <SnapUIRenderer
           snapId={notification.data.origin}
@@ -83,7 +87,7 @@ export const components: NotificationComponent<SnapNotification> = {
     },
   },
   footer: {
-    type: 'footer_snap_notification',
+    type: NotificationComponentType.SnapFooter,
     Link: ({ notification }) =>
       notification.data.expandedView?.footerLink ? (
         <NotificationDetailButton
