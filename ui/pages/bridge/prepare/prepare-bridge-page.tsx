@@ -17,7 +17,6 @@ import {
   getFromTokens,
   getFromTopAssets,
   getQuoteRequest,
-  getToAmount,
   getToChain,
   getToChains,
   getToToken,
@@ -35,6 +34,7 @@ import { TokenBucketPriority } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
+import useBridgeQuotes from '../../../hooks/bridge/useBridgeQuotes';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -56,7 +56,7 @@ const PrepareBridgePage = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const toAmount = useSelector(getToAmount);
+  const { toAmount } = useBridgeQuotes();
 
   const { isValid: isQuoteRequestValid } = useSelector(getQuoteRequest);
 

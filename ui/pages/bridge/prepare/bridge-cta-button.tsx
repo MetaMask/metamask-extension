@@ -5,11 +5,11 @@ import {
   getFromAmount,
   getFromChain,
   getFromToken,
-  getToAmount,
   getToChain,
   getToToken,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import useBridgeQuotes from '../../../hooks/bridge/useBridgeQuotes';
 
 export const BridgeCTAButton = () => {
   const t = useI18nContext();
@@ -20,7 +20,7 @@ export const BridgeCTAButton = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const toAmount = useSelector(getToAmount);
+  const { toAmount } = useBridgeQuotes();
 
   const isTxSubmittable =
     fromToken && toToken && fromChain && toChain && fromAmount && toAmount;

@@ -758,6 +758,7 @@ export const fetchTokenExchangeRates = async (
       chainId,
     });
   } catch (err) {
+    console.error(err);
     return {};
   }
 };

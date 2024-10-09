@@ -87,6 +87,11 @@ export const setToToken = (
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(setToToken_(payload));
+    console.log('====setToToken', payload);
+    // dispatch(
+    //   callBridgeControllerMethod(BridgeBackgroundAction.SET_DEST_TOKEN_BALANCE),
+    //   [payload.networkClientId, payload?.address],
+    // );
     dispatch(
       updateQuoteRequestParams<Pick<QuoteRequest, 'destTokenAddress'>>({
         destTokenAddress: payload.address ?? zeroAddress(),

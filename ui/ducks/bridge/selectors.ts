@@ -3,7 +3,6 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
-import { createSelector } from 'reselect';
 import {
   getNetworkConfigurationsByChainId,
   getIsBridgeEnabled,
@@ -20,7 +19,6 @@ import {
 import { createDeepEqualSelector } from '../../selectors/util';
 import { getProviderConfig } from '../metamask/metamask';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
@@ -94,8 +92,9 @@ export const getToChains = createDeepEqualSelector(
 export const getToChain = createDeepEqualSelector(
   getToChains,
   (state: BridgeAppState) => state.bridge.toChainId,
-  (toChains, toChainId): NetworkConfiguration | undefined =>
-    toChains.find(({ chainId }) => chainId === toChainId),
+  (toChains, toChainId): NetworkConfiguration | undefined => {
+    return toChains.find(({ chainId }) => chainId === toChainId);
+  },
 );
 
 export const getFromTokens = (state: BridgeAppState) => {
@@ -122,11 +121,10 @@ export const getFromToken = (
     : getSwapsDefaultToken(state);
 };
 
-export const getToToken = (
-  state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken | null => {
-  return state.bridge.toToken;
-};
+export const getToToken = createDeepEqualSelector(
+  (state: BridgeAppState) => state.bridge.toToken,
+  (toToken) => toToken,
+);
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
@@ -140,29 +138,10 @@ export const getBridgeQuotes = (state: BridgeAppState) => {
   };
 };
 
-export const getRecommendedQuote = createSelector(
-  getBridgeQuotes,
-  ({ quotes }) => {
-    // TODO implement sorting
-    return quotes[0];
-  },
-);
-
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask.bridgeState;
   return { isValid: isValidQuoteRequest(quoteRequest), ...quoteRequest };
 };
-
-export const getToAmount = createSelector(getRecommendedQuote, (quote) =>
-  quote
-    ? calcTokenAmount(
-        quote.quote.destTokenAmount,
-        quote.quote.destAsset.decimals,
-      )
-        .toFixed(3)
-        .toString()
-    : undefined,
-);
 
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,
