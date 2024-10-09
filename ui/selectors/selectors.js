@@ -163,15 +163,43 @@ export function getCurrentChainId(state) {
     return chainId;
   }
 
-  const pageChainId =
+  const networkClientId =
     state.metamask.domains[state.activeTab?.origin || ORIGIN_METAMASK];
-  if (pageChainId === undefined) {
+  if (!networkClientId) {
     console.info(
-      `[getCurrentChainId] no page chainID found, returning global chainId (${chainId})`,
+      `[getCurrentChainId] no networkClientId found, returning global chainId (${chainId})`,
       state.metamask.domains || '(no domains)',
       state.activeTab?.origin || '(no origin)',
     );
     return chainId;
+  }
+
+  // Search for chainId based on networkClientId
+  let pageChainId = null;
+  Object.keys(state.metamask.networkConfigurationsByChainId).forEach((key) => {
+    console.log(
+      key,
+      state.metamask.networkConfigurationsByChainId,
+      state.metamask.networkConfigurationsByChainId[key],
+    );
+    state.metamask.networkConfigurationsByChainId[key].rpcEndpoints.forEach(
+      (endpoint) => {
+        if (endpoint.networkClientId === networkClientId) {
+          pageChainId = key;
+        }
+      },
+    );
+  });
+
+  if (pageChainId === null) {
+    console.info(
+      `[getCurrentChainId] no pageChainId found for ${networkClientId}`,
+      state.metamask.networkConfigurationsByChainId,
+    );
+  } else {
+    console.info(
+      `[getCurrentChainId] FOUND chainId ${pageChainId} for networkClientId ${networkClientId}`,
+    );
   }
 
   return pageChainId;
