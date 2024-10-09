@@ -16,26 +16,34 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
+  getCurrentNetwork,
   getIpfsGateway,
   getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
+import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
+import { getNftImageAlt } from '../../../helpers/utils/nfts';
 
-export const NftItem = ({
-  alt,
-  name,
-  src,
-  networkName,
-  networkSrc,
-  tokenId,
-  onClick,
-  clickable,
-  isIpfsURL,
-  badgeWrapperClassname,
-}) => {
+export const NftItem = ({ nft, onClick, clickable, badgeWrapperClassname }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
+
+  const { image, imageOriginal, name, tokenId } = nft;
+
+  const ipfsGateway = useSelector(getIpfsGateway);
+  const currentChain = useSelector(getCurrentNetwork);
+  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
+
+  const nftImageAlt = getNftImageAlt(nft);
+  const nftSrcUrl = imageOriginal ?? image;
+  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+  const isImageHosted = image?.startsWith('https:');
+
+  const src = isImageHosted ? image : nftImageURL;
+  const alt = image ? nftImageAlt : '';
+  const networkName = currentChain.nickname ?? '';
+  const networkSrc = currentChain.rpcPrefs?.imageUrl;
 
   const ipfsImageIsRenderable = isIpfsEnabled && isIpfsURL && src;
   const openseaImageIsRenderable = openSeaEnabled && src && !isIpfsURL;
@@ -105,27 +113,7 @@ NftItem.propTypes = {
   /**
    * NFT media source
    */
-  src: PropTypes.string,
-  /**
-   * Alt text for the NFT
-   */
-  alt: PropTypes.string.isRequired,
-  /**
-   * The NFT's name
-   */
-  name: PropTypes.string,
-  /**
-   * Name of the network the NFT lives on
-   */
-  networkName: PropTypes.string.isRequired,
-  /**
-   * Image that represents the network
-   */
-  networkSrc: PropTypes.string,
-  /**
-   * Token ID of the NFT
-   */
-  tokenId: PropTypes.string.isRequired,
+  nft: PropTypes.object,
   /**
    * Executes when the NFT is clicked
    */

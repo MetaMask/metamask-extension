@@ -20,17 +20,14 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import {
-  getCurrentChainId,
   getIpfsGateway,
   getSelectedInternalAccount,
-  getCurrentNetwork,
 } from '../../../../../selectors';
 import {
   ASSET_ROUTE,
   SEND_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { updateNftDropDownState } from '../../../../../store/actions';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../../../ducks/metamask/metamask';
@@ -47,7 +44,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { getMultichainCurrentChainId } from '../../../../../selectors/multichain';
 import { CollectionImageComponent } from './collection-image.component';
 
 const width = (isModal) => {
@@ -77,12 +74,9 @@ export default function NftsItems({
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const previousCollectionKeys = usePrevious(collectionsKeys);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const chainId = useSelector(getCurrentChainId);
-  const currentChain = useSelector(getCurrentNetwork);
+  const chainId = useSelector(getMultichainCurrentChainId);
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
-
-  const [updatedNfts, setUpdatedNfts] = useState([]);
 
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
@@ -203,19 +197,6 @@ export default function NftsItems({
     if (!nfts.length) {
       return null;
     }
-    const getSource = (isImageHosted, nft) => {
-      if (!isImageHosted) {
-        const found = updatedNfts.find(
-          (elm) =>
-            elm.tokenId === nft.tokenId &&
-            isEqualCaseInsensitive(elm.address, nft.address),
-        );
-        if (found) {
-          return found.ipfsImageUpdated;
-        }
-      }
-      return nft.image;
-    };
 
     const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
     return (
@@ -262,19 +243,7 @@ export default function NftsItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {nfts.map((nft, i) => {
-              const { image, address, tokenId, name, imageOriginal, tokenURI } =
-                nft;
-              const nftImageAlt = getNftImageAlt(nft);
-              const isImageHosted =
-                image?.startsWith('https:') || image?.startsWith('http:');
-
-              const source = getSource(isImageHosted, nft);
-
-              const isIpfsURL = (
-                imageOriginal ??
-                image ??
-                tokenURI
-              )?.startsWith('ipfs:');
+              const { address, tokenId } = nft;
               const handleImageClick = () => {
                 if (isModal) {
                   return onSendNft(nft);
@@ -288,17 +257,7 @@ export default function NftsItems({
                   key={`nft-${i}`}
                   className="nfts-items__item-wrapper"
                 >
-                  <NftItem
-                    alt={nftImageAlt}
-                    src={source}
-                    name={name}
-                    tokenId={tokenId}
-                    networkName={currentChain.nickname}
-                    networkSrc={currentChain.rpcPrefs?.imageUrl}
-                    onClick={handleImageClick}
-                    isIpfsURL={isIpfsURL}
-                    clickable
-                  />
+                  <NftItem nft={{...nft, chainId}} onClick={handleImageClick} clickable />
                   {showTokenId ? <Text>{`${t('id')}: ${tokenId}`}</Text> : null}
                 </Box>
               );

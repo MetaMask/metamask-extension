@@ -19,12 +19,10 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getCurrentCurrency,
   getCurrentNetwork,
-  getIpfsGateway,
 } from '../../../../../selectors';
 import {
   ASSET_ROUTE,
@@ -72,7 +70,6 @@ import { Numeric } from '../../../../../../shared/modules/Numeric';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
-import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -81,8 +78,6 @@ const MAX_TOKEN_ID_LENGTH = 15;
 
 export default function NftDetails({ nft }: { nft: Nft }) {
   const {
-    image,
-    imageOriginal,
     name,
     description,
     address,
@@ -99,21 +94,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const ipfsGateway = useSelector(getIpfsGateway);
-  const currentNetwork = useSelector(getCurrentChainId);
-  const currentChain = useSelector(getCurrentNetwork);
+  const chainId = useSelector(getCurrentChainId);
+  const currentNetwork = useSelector(getCurrentNetwork);
   const trackEvent = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
-
-  const nftImageAlt = getNftImageAlt(nft);
-  const nftSrcUrl = imageOriginal ?? image;
-  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
-  const isImageHosted =
-    image?.startsWith('https:') || image?.startsWith('http:');
-  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
@@ -142,8 +129,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
         topBid?.price?.amount?.native,
         collection?.topBid?.price?.amount?.native,
       );
-      const currentChainSymbol = currentChain.ticker;
-      return `${topBidValue}${currentChainSymbol}`;
+      const currentNetworkSymbol = currentNetwork.ticker;
+      return `${topBidValue}${currentNetworkSymbol}`;
     }
     // return the one that is available
     const topBidValue =
@@ -152,8 +139,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     if (!topBidValue) {
       return undefined;
     }
-    const currentChainSymbol = currentChain.ticker;
-    return `${topBidValue}${currentChainSymbol}`;
+    const currentNetworkSymbol = currentNetwork.ticker;
+    return `${topBidValue}${currentNetworkSymbol}`;
   };
 
   const getTopBidSourceDomain = () => {
@@ -164,8 +151,6 @@ export default function NftDetails({ nft }: { nft: Nft }) {
         : undefined)
     );
   };
-
-  const { chainId } = currentChain;
 
   useEffect(() => {
     trackEvent({
@@ -197,7 +182,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
           tokenId: tokenId.toString(),
           asset_type: AssetType.NFT,
           token_standard: standard,
-          chain_id: currentNetwork,
+          chain_id: chainId,
           isSuccessful: isSuccessfulEvent,
         },
       });
@@ -213,7 +198,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   }, [nft, prevNft]);
 
   const getOpenSeaLink = () => {
-    switch (currentNetwork) {
+    switch (chainId) {
       case CHAIN_IDS.MAINNET:
         return `https://opensea.io/assets/ethereum/${address}/${tokenId}`;
       case CHAIN_IDS.POLYGON:
@@ -342,17 +327,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
           marginTop={1}
         >
           <Box className="nft-details__nft-item">
-            <NftItem
-              src={isImageHosted ? image : nftImageURL}
-              alt={image ? nftImageAlt : ''}
-              name={name}
-              tokenId={tokenId}
-              networkName={currentChain.nickname ?? ''}
-              networkSrc={currentChain.rpcPrefs?.imageUrl}
-              isIpfsURL={isIpfsURL}
-              onClick={handleImageClick}
-              clickable
-            />
+            <NftItem nft={nft} onClick={handleImageClick} clickable />
           </Box>
         </Box>
         <Box>

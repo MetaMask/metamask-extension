@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 
 import {
   Box,
@@ -22,7 +20,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
-import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { getCurrentChainId } from '../../../../../selectors';
 
 export default function NftFullImage() {
   const t = useI18nContext();
@@ -34,16 +32,9 @@ export default function NftFullImage() {
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 
-  const { image, imageOriginal, name, tokenId } = nft;
+  // TODO: Remove this when NFTs have a native chainId on their objects
+  const chainId = useSelector(getCurrentChainId);
 
-  const ipfsGateway = useSelector(getIpfsGateway);
-  const currentChain = useSelector(getCurrentNetwork);
-  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
-
-  const nftImageAlt = getNftImageAlt(nft);
-  const nftSrcUrl = imageOriginal ?? image;
-  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
-  const isImageHosted = image?.startsWith('https:');
   const history = useHistory();
 
   const [visible, setVisible] = useState(false);
@@ -78,16 +69,7 @@ export default function NftFullImage() {
             paddingTop={4}
           >
             <Box>
-              <NftItem
-                src={isImageHosted ? image : nftImageURL}
-                alt={image ? nftImageAlt : ''}
-                name={name}
-                tokenId={tokenId}
-                networkName={currentChain.nickname ?? ''}
-                networkSrc={currentChain.rpcPrefs?.imageUrl}
-                isIpfsURL={isIpfsURL}
-                badgeWrapperClassname="badge-wrapper"
-              />
+              <NftItem nft={{...nft, chainId}} badgeWrapperClassname="badge-wrapper" />
             </Box>
           </Box>
         </Content>
