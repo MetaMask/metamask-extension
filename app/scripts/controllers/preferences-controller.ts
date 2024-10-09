@@ -115,10 +115,19 @@ export type Preferences = {
   showMultiRpcModal: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
+  tokenSortConfig: {
+    key: string;
+    order: string;
+    sortCallback: string;
+  };
   shouldShowAggregatedBalancePopover: boolean;
 };
 
-export type PreferencesControllerState = PreferencesState & {
+// Omitting showTestNetworks and smartTransactionsOptInStatus, as they already exists here in Preferences type
+export type PreferencesControllerState = Omit<
+  PreferencesState,
+  'showTestNetworks' | 'smartTransactionsOptInStatus'
+> & {
   useBlockie: boolean;
   useNonceField: boolean;
   usePhishDetect: boolean;
@@ -207,6 +216,11 @@ export const getDefaultPreferencesControllerState =
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
+      tokenSortConfig: {
+        key: 'tokenFiatAmount',
+        order: 'dsc',
+        sortCallback: 'stringNumeric',
+      },
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -253,8 +267,6 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
-    showTestNetworks: false,
-    smartTransactionsOptInStatus: false,
   });
 
 /**
@@ -423,8 +435,6 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
-  showTestNetworks: { persist: true, anonymous: true },
-  smartTransactionsOptInStatus: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
