@@ -109,11 +109,11 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
           css: '[id="chainId"]',
           text: '0x1',
         });
-        await driver.clickElement('#revokeAccountsPermission');
 
         // Confirmation will close then reopen
-        await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.clickElement('#revokeAccountsPermission');
+        // TODO: find a better way to handle different dialog ids
+        await driver.delay(3000);
 
         // Check correct network on confirm tx.
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
