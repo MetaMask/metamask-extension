@@ -32,6 +32,10 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 
+export function countDecimalDigits(numberString: string) {
+  return numberString.split('.')[1]?.length || 0;
+}
+
 export const EditSpendingCapModal = ({
   isOpenEditSpendingCapModal,
   setIsOpenEditSpendingCapModal,
@@ -116,10 +120,14 @@ export const EditSpendingCapModal = ({
     setCustomSpendingCapInputValue(formattedSpendingCap.toString());
   }, [customSpendingCapInputValue, formattedSpendingCap]);
 
+  const showDecimalError =
+    decimals &&
+    parseInt(decimals, 10) < countDecimalDigits(customSpendingCapInputValue);
+
   return (
     <Modal
       isOpen={isOpenEditSpendingCapModal}
-      onClose={() => setIsOpenEditSpendingCapModal(false)}
+      onClose={handleCancel}
       isClosedOnEscapeKey
       isClosedOnOutsideClick
       className="edit-spending-cap-modal"
@@ -154,6 +162,15 @@ export const EditSpendingCapModal = ({
             style={{ width: '100%' }}
             inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
           />
+          {showDecimalError && (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.errorDefault}
+              paddingTop={1}
+            >
+              {t('editSpendingCapError', [decimals])}
+            </Text>
+          )}
           <Text
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
@@ -168,7 +185,11 @@ export const EditSpendingCapModal = ({
         <ModalFooter
           onSubmit={handleSubmit}
           onCancel={handleCancel}
-          submitButtonProps={{ children: t('save'), loading: isModalSaving }}
+          submitButtonProps={{
+            children: t('save'),
+            loading: isModalSaving,
+            disabled: showDecimalError,
+          }}
         />
       </ModalContent>
     </Modal>
