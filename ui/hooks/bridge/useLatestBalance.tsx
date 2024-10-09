@@ -1,16 +1,14 @@
 import { useSelector } from 'react-redux';
-import { zeroAddress } from 'ethereumjs-util';
-import { Web3Provider } from '@ethersproject/providers';
 import { Hex } from '@metamask/utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { DEFAULT_PRECISION } from '../useCurrencyDisplay';
-import { fetchTokenBalance } from '../../../shared/lib/token-util';
 import {
   getCurrentChainId,
   getSelectedInternalAccount,
   SwapsEthToken,
 } from '../../selectors';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
+import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
 
 /**
@@ -27,23 +25,28 @@ const useLatestBalance = (
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const currentChainId = useSelector(getCurrentChainId);
 
-  const { value: latestBalance } = useAsyncResult<string>(async () => {
-    if (token && chainId && currentChainId === chainId) {
-      if (!token.address || token.address === zeroAddress()) {
-        const ethersProvider = new Web3Provider(global.ethereumProvider);
-        return (await ethersProvider.getBalance(selectedAddress)).toString();
-      }
+  const { value: latestBalance } = useAsyncResult<
+    string | undefined
+  >(async () => {
+    if (token?.address && chainId && currentChainId === chainId) {
       return (
-        await fetchTokenBalance(
-          token.address,
-          selectedAddress,
+        await calcLatestSrcBalance(
           global.ethereumProvider,
+          selectedAddress,
+          token.address,
+          chainId,
         )
-      ).toString();
+      )?.toString();
     }
     // TODO implement fetching balance on non-active chain
-    return {};
-  }, [token, selectedAddress, global.ethereumProvider]);
+    return undefined;
+  }, [
+    chainId,
+    currentChainId,
+    token,
+    selectedAddress,
+    global.ethereumProvider,
+  ]);
 
   return {
     formattedBalance:

@@ -69,7 +69,7 @@ export const BridgeInputGroup = ({
   token: SwapsTokenObject | SwapsEthToken | null;
   amountFieldProps?: Pick<
     React.ComponentProps<typeof TextField>,
-    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled'
+    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
   >;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,

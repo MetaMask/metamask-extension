@@ -11,6 +11,7 @@
   flex-flow: column;
   flex: 1;
   width: 100%;
+  gap: 24px;
 
   &__content {
     display: flex;
@@ -20,8 +21,7 @@
     border: 1px solid var(--color-border-muted);
   }
 
-  &__from,
-  &__to {
+  .bridge-box {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -56,8 +56,35 @@
       }
     }
 
+    .defined {
+      opacity: 1;
+
+      & > .mm-input--disabled {
+        opacity: 1;
+      }
+    }
+
     .amount-tooltip {
 
+    }
+  }
+
+  .amount-input {
+    border: none;
+
+    input {
+      text-align: right;
+      padding-right: 0px;
+      font-size: 24px;
+      font-weight: 700;
+
+      &:focus, &:focus-visible {
+        outline: none;
+      }
+    }
+
+    .mm-text-field--focused {
+      outline: none
     }
   }
 
@@ -100,25 +127,25 @@
     }
   }
 
-  .amount-input {
-    border: none;
+  // .amount-input {
+  //   border: none;
 
-    input {
-      text-align: right;
-      padding-right: 0;
-      font-size: 24px;
-      font-weight: 700;
+  //   input {
+  //     text-align: right;
+  //     padding-right: 0;
+  //     font-size: 24px;
+  //     font-weight: 700;
 
-      &:focus,
-      &:focus-visible {
-        outline: none;
-      }
-    }
+  //     &:focus,
+  //     &:focus-visible {
+  //       outline: none;
+  //     }
+  //   }
 
-    .mm-text-field--focused {
-      outline: none;
-    }
-  }
+  //   .mm-text-field--focused {
+  //     outline: none;
+  //   }
+  // }
 
   &__switch-tokens {
     display: flex;

@@ -26,9 +26,11 @@ const bridgeSlice = createSlice({
     ...swapsSlice.reducer,
     setToChainId: (state, action) => {
       state.toChainId = action.payload;
+      state.toToken = null;
     },
     setFromToken: (state, action) => {
       state.fromToken = action.payload;
+      state.fromTokenInputValue = null;
     },
     setToToken: (state, action) => {
       state.toToken = action.payload;
@@ -39,7 +41,7 @@ const bridgeSlice = createSlice({
     resetInputFields: () => ({
       ...initialState,
     }),
-    switchToAndFromTokens: (state, { payload }) => ({
+    switchToAndFromInputs: (state, { payload }) => ({
       toChainId: payload,
       fromToken: state.toToken,
       toToken: state.fromToken,

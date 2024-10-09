@@ -152,6 +152,16 @@ export default function configureStore(preloadedState: any) {
          * performance due to the Redux state growing larger.
          */
         immutableCheck: false,
+      }).concat((store) => (next) => (action) => {
+        console.groupCollapsed(action.type);
+        console.log('dispatching', action);
+        const result = next(action);
+        console.log('next state', {
+          bridgeState: store.getState().metamask.bridgeState,
+          bridge: store.getState().bridge,
+        });
+        console.groupEnd(action.type);
+        return result;
       }),
     devTools: false,
     enhancers,
