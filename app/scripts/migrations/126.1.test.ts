@@ -1,14 +1,8 @@
-import { List } from '@material-ui/core';
 import { migrate, version } from './126.1';
-import {
-  PhishingControllerState,
-  PhishingListState,
-  ListNames,
-} from '@metamask/phishing-controller';
 
 const oldVersion = 126.1;
 
-const mockPhishingListMetaMask: PhishingListState = {
+const mockPhishingListMetaMask = {
   allowlist: [],
   blocklist: ['malicious1.com'],
   c2DomainBlocklist: ['malicious2.com'],
@@ -16,10 +10,10 @@ const mockPhishingListMetaMask: PhishingListState = {
   tolerance: 0,
   version: 1,
   lastUpdated: Date.now(),
-  name: ListNames.MetaMask,
+  name: 'MetaMask',
 };
 
-const mockPhishingListPhishfort: PhishingListState = {
+const mockPhishingListPhishfort = {
   allowlist: [],
   blocklist: ['phishfort1.com'],
   c2DomainBlocklist: ['phishfort2.com'],
@@ -27,7 +21,7 @@ const mockPhishingListPhishfort: PhishingListState = {
   tolerance: 0,
   version: 1,
   lastUpdated: Date.now(),
-  name: 'Phishfort' as ListNames,
+  name: 'Phishfort',
 };
 
 describe(`migration #${version}`, () => {
@@ -50,7 +44,7 @@ describe(`migration #${version}`, () => {
         hotlistLastFetched: 0,
         stalelistLastFetched: 0,
         c2DomainBlocklistLastFetched: 0,
-      } as PhishingControllerState,
+      },
     };
 
     const transformedState = await migrate({
@@ -59,7 +53,7 @@ describe(`migration #${version}`, () => {
     });
 
     const updatedPhishingController = transformedState.data
-      .PhishingController as PhishingControllerState;
+      .PhishingController as Record<string, unknown>;
 
     expect(updatedPhishingController.phishingLists).toStrictEqual([
       mockPhishingListMetaMask,
@@ -74,7 +68,7 @@ describe(`migration #${version}`, () => {
         hotlistLastFetched: 0,
         stalelistLastFetched: 0,
         c2DomainBlocklistLastFetched: 0,
-      } as PhishingControllerState,
+      },
     };
 
     const transformedState = await migrate({
@@ -83,7 +77,7 @@ describe(`migration #${version}`, () => {
     });
 
     const updatedPhishingController = transformedState.data
-      .PhishingController as PhishingControllerState;
+      .PhishingController as Record<string, unknown>;
 
     expect(updatedPhishingController.phishingLists).toStrictEqual([]);
   });
@@ -96,7 +90,7 @@ describe(`migration #${version}`, () => {
         hotlistLastFetched: 0,
         stalelistLastFetched: 0,
         c2DomainBlocklistLastFetched: 0,
-      } as PhishingControllerState,
+      },
     };
 
     const transformedState = await migrate({
@@ -105,7 +99,7 @@ describe(`migration #${version}`, () => {
     });
 
     const updatedPhishingController = transformedState.data
-      .PhishingController as PhishingControllerState;
+      .PhishingController as Record<string, unknown>;
 
     expect(updatedPhishingController.phishingLists).toStrictEqual([]);
   });

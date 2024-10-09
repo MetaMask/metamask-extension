@@ -1,9 +1,5 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-import {
-  PhishingControllerState,
-  ListNames,
-} from '@metamask/phishing-controller';
 
 type VersionedData = {
   meta: { version: number };
@@ -38,15 +34,14 @@ function transformState(
     isObject(state.PhishingController) &&
     hasProperty(state.PhishingController, 'phishingLists')
   ) {
-    const phishingController =
-      state.PhishingController as PhishingControllerState;
-    
+    const phishingController = state.PhishingController;
+
     if (!Array.isArray(phishingController.phishingLists)) {
       return state;
     }
 
     phishingController.phishingLists = phishingController.phishingLists.filter(
-      (list) => list.name === ListNames.MetaMask,
+      (list) => list.name === 'MetaMask',
     );
 
     state.PhishingController = phishingController;
