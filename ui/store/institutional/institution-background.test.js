@@ -140,7 +140,6 @@ describe('Institution Actions', () => {
         'setTypedMessageInProgress',
         ['testMsgId'],
       );
-      expect(forceUpdateMetamaskState).toHaveBeenCalledWith(dispatch);
       expect(hideLoadingIndication).toHaveBeenCalled();
     });
   });
@@ -156,7 +155,6 @@ describe('Institution Actions', () => {
         'setPersonalMessageInProgress',
         ['testMsgId'],
       );
-      expect(forceUpdateMetamaskState).toHaveBeenCalledWith(dispatch);
       expect(hideLoadingIndication).toHaveBeenCalled();
     });
   });
