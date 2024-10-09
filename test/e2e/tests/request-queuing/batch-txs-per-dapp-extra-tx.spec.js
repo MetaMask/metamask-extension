@@ -8,7 +8,6 @@ const {
   DAPP_ONE_URL,
   WINDOW_TITLES,
   defaultGanacheOptions,
-  veryLargeDelayMs,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -102,7 +101,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
 
-        await driver.waitUntilXWindowHandles(3);
+        await driver.waitUntilXWindowHandles(4);
 
         // Dapp 2 send 2 tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -139,7 +138,9 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.switchToWindowWithUrl(DAPP_URL);
 
         // Wait for new confirmations queued from second dapp to open
-        await driver.delay(veryLargeDelayMs);
+        // We need a big delay to make sure dialog is not invalidated
+        // TODO: find a better way to handle different dialog ids
+        await driver.delay(2000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
@@ -161,7 +162,9 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         });
 
         // Wait for new confirmations queued from second dapp to open
-        await driver.delay(veryLargeDelayMs);
+        // We need a big delay to make sure dialog is not invalidated
+        // TODO: find a better way to handle different dialog ids
+        await driver.delay(2000);
         await driver.switchToWindowWithUrl(DAPP_URL);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
       },
