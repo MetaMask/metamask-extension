@@ -191,8 +191,6 @@ export default class Routes extends Component {
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
-    isPermittedNetworkToastOpen: PropTypes.bool.isRequired,
-    hidePermittedNetworkToast: PropTypes.func.isRequired,
     isIpfsModalOpen: PropTypes.bool.isRequired,
     isBasicConfigurationModalOpen: PropTypes.bool.isRequired,
     hideIpfsModal: PropTypes.func.isRequired,
