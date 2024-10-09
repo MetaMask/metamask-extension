@@ -113,7 +113,7 @@ describe('useTokenValues', () => {
     await waitForNextUpdate();
 
     expect(result.current).toEqual({
-      fiatDisplayValue: undefined,
+      fiatDisplayValue: null,
       tokenBalance: '1',
     });
   });

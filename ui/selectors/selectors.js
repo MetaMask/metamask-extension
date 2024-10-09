@@ -108,6 +108,7 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 // eslint-disable-next-line import/no-restricted-paths
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -123,7 +124,6 @@ import {
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -542,7 +542,7 @@ export const getWatchedToken = (transactionMeta) =>
   createSelector(
     [getSelectedAccount, getAllTokens],
     (selectedAccount, detectedTokens) => {
-      const chainId = transactionMeta.chainId;
+      const { chainId } = transactionMeta;
 
       const selectedToken = detectedTokens?.[chainId]?.[
         selectedAccount.address

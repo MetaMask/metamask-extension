@@ -1,7 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-controller-utils';
 import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
+import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useTokenTracker } from '../../../../../../hooks/useTokenTracker';
@@ -33,7 +34,7 @@ export const useTokenValues = (
 
   fetchTokenBalances();
 
-  const [exchangeRate, setExchangeRate] = useState<any>();
+  const [exchangeRate, setExchangeRate] = useState<Numeric | undefined>();
   const fetchExchangeRate = async () => {
     const result = await useTokenExchangeRate(transactionMeta?.txParams?.to);
 

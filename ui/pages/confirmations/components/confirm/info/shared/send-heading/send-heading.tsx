@@ -18,6 +18,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getWatchedToken } from '../../../../../../../selectors';
+import { MultichainState } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenImage } from '../../hooks/use-token-image';
 import { useTokenValues } from '../../hooks/use-token-values';
@@ -26,7 +27,7 @@ const SendHeading = () => {
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const selectedToken = useSelector((state: any) =>
+  const selectedToken = useSelector((state: MultichainState) =>
     getWatchedToken(transactionMeta)(state),
   );
   const { tokenImage } = useTokenImage(transactionMeta, selectedToken);
@@ -57,7 +58,7 @@ const SendHeading = () => {
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
         marginTop={3}
-      >{`${tokenBalance} ${selectedToken?.symbol || t('unknown')}`}</Text>
+      >{`${tokenBalance || ''} ${selectedToken?.symbol || t('unknown')}`}</Text>
       {fiatDisplayValue && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
           {fiatDisplayValue}

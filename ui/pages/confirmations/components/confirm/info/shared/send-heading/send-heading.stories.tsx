@@ -3,6 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { getMockTokenTransferConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
+import { ConfirmContextProvider } from '../../../../../context/confirm';
 import SendHeading from './send-heading';
 
 const store = configureStore(getMockTokenTransferConfirmState({}));
@@ -19,6 +20,10 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => <SendHeading />;
+export const DefaultStory = () => (
+  <ConfirmContextProvider>
+    <SendHeading />
+  </ConfirmContextProvider>
+);
 
 DefaultStory.storyName = 'Default';
