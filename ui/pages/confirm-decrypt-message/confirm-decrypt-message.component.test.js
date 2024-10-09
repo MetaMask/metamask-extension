@@ -11,8 +11,8 @@ import {
   cancelDecryptMsg,
 } from '../../store/actions';
 import { useScrollRequired } from '../../hooks/useScrollRequired';
-import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
 const messageData = {
   domain: {
