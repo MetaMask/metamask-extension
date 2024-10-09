@@ -7,15 +7,14 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  PUBLIC_KEY,
-} from '../../accounts/common';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Snap Account Transfers', function (this: Suite) {
 /*   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
@@ -38,14 +37,13 @@ describe('Snap Account Transfers', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_accountLabel('SSK Account');
 
-        // send 1 ETH from snap account to another account
+        // send 1 ETH from snap account to account 1
         await sendTransactionWithSnapAccount(
           driver,
-          PUBLIC_KEY,
+          DEFAULT_FIXTURE_ACCOUNT,
           '1',
           '0.000042',
           '1.000042',
-          true,
         );
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
@@ -56,14 +54,12 @@ describe('Snap Account Transfers', function (this: Suite) {
         await accountList.check_accountBalanceDisplayed('24');
       },
     );
-  }); */
+  });
 
    it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withPermissionControllerConnectedToTestDapp({
-          restrictReturnedAccounts: false,
-        }).build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
@@ -80,29 +76,62 @@ describe('Snap Account Transfers', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_accountLabel('SSK Account');
 
-        // send 1 ETH from snap account to another account
+        // send 1 ETH from snap account to account 1 and approve the transaction
         await sendTransactionWithSnapAccount(
           driver,
-          PUBLIC_KEY,
+          DEFAULT_FIXTURE_ACCOUNT,
           '1',
           '0.000042',
           '1.000042',
           false,
         );
+        await headerNavbar.openAccountMenu();
+        const accountList = new AccountListPage(driver);
+        await accountList.check_pageIsLoaded();
 
-
-      },
-    );
-  });
-
-/*  it('can import a private key and transfer 1 ETH (async flow reject)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test?.fullTitle()),
-      async ({ driver }: { driver: Driver }) => {
-        await importPrivateKeyAndTransfer1ETH(driver, 'reject');
+        //check the balance of the 2 accounts are updated
+        await accountList.check_accountBalanceDisplayed('26');
+        await accountList.check_accountBalanceDisplayed('24');
       },
     );
   }); */
+
+  it('can import a private key and transfer 1 ETH (async flow reject)', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: multipleGanacheOptions,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
+        await installSnapSimpleKeyring(driver, false);
+        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
+
+        // Import snap account with private key on snap simple keyring page.
+        await snapSimpleKeyringPage.importAccountWithPrivateKey(PRIVATE_KEY_TWO);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_accountLabel('SSK Account');
+
+        // send 1 ETH from snap account to account 1 and reject the transaction
+        await sendTransactionWithSnapAccount(
+          driver,
+          DEFAULT_FIXTURE_ACCOUNT,
+          '1',
+          '0.000042',
+          '1.000042',
+          false,
+          false,
+        );
+        const homepage = new HomePage(driver);
+        await homepage.check_pageIsLoaded();
+        await homepage.check_failedTxNumberDisplayedInActivity();
+      },
+    );
+  });
 
 /*   async function importPrivateKeyAndTransfer1ETH(
     driver: Driver,

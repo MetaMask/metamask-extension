@@ -6,36 +6,34 @@ import HeaderNavbar from './header-navbar';
 class HomePage {
   private driver: Driver;
 
-  private sendButton: string;
+  private readonly sendButton = '[data-testid="eth-overview-send"]' ;
 
-  private activityTab: string;
+  private readonly activityTab = '[data-testid="account-overview__activity-tab"]';
 
-  private tokensTab: string;
+  private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
 
-  private balance: string;
+  private readonly balance = '[data-testid="eth-overview__primary-currency"]';
 
-  private completedTransactions: string;
+  private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
-  private confirmedTransactions: object;
+  private readonly confirmedTransactions = {
+    text: 'Confirmed',
+    css: '.transaction-status-label--confirmed',
+  };
 
-  private transactionAmountsInActivity: string;
+  private readonly transactionAmountsInActivity =
+    '[data-testid="transaction-list-item-primary-currency"]';
 
   public headerNavbar: HeaderNavbar;
+
+  private readonly failedTransactions = {
+    text: 'Failed',
+    css: '.transaction-status-label--failed',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
-    this.sendButton = '[data-testid="eth-overview-send"]';
-    this.activityTab = '[data-testid="account-overview__activity-tab"]';
-    this.tokensTab = '[data-testid="account-overview__asset-tab"]';
-    this.confirmedTransactions = {
-      text: 'Confirmed',
-      css: '.transaction-status-label--confirmed',
-    };
-    this.balance = '[data-testid="eth-overview__primary-currency"]';
-    this.completedTransactions = '[data-testid="activity-list-item"]';
-    this.transactionAmountsInActivity =
-      '[data-testid="transaction-list-item-primary-currency"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -108,6 +106,30 @@ class HomePage {
       `${expectedNumber} completed transactions found in activity list on homepage`,
     );
   }
+
+    /**
+   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+   *
+   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   */
+    async check_failedTxNumberDisplayedInActivity(
+      expectedNumber: number = 1,
+    ): Promise<void> {
+      console.log(
+        `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+      );
+      await this.driver.wait(async () => {
+        const failedTxs = await this.driver.findElements(
+          this.failedTransactions,
+        );
+        return failedTxs.length === expectedNumber;
+      }, 10000);
+      console.log(
+        `${expectedNumber} failed transactions found in activity list on homepage`,
+      );
+    }
 
   async check_expectedBalanceIsDisplayed(
     expectedBalance: string,

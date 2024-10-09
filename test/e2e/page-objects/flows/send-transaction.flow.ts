@@ -46,6 +46,7 @@ export const sendTransaction = async (
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
  *
  * @param isSyncFlow - Indicates whether synchronous approval option is on for the snap. Defaults to true.
+ * @param approveTransaction - Indicates whether the transaction should be approved. Defaults to true.
  */
 export const sendTransactionWithSnapAccount = async (
   driver: Driver,
@@ -54,9 +55,10 @@ export const sendTransactionWithSnapAccount = async (
   gasfee: string,
   totalfee: string,
   isSyncFlow: boolean = true,
+  approveTransaction: boolean = true,
 ): Promise<void> => {
   await sendTransaction(driver, recipientAddress, amount, gasfee, totalfee);
   if (!isSyncFlow) {
-    await new SnapSimpleKeyringPage(driver).approveSnapAccountTransaction();
+    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(approveTransaction);
   }
 }
