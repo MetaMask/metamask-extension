@@ -6,10 +6,10 @@ import {
   MetaMaskOpenRPCDocument,
 } from '@metamask/api-specs';
 
-import { ContentDescriptorObject, MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
+import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
-import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
+import { IOptions } from '@open-rpc/test-coverage/build/coverage';
 import { ScopeString } from '../../app/scripts/lib/multichain-api/scope';
 import { Driver, PAGES } from './webdriver/driver';
 
@@ -25,7 +25,6 @@ import {
   unlockWallet,
   DAPP_URL,
   ACCOUNT_1,
-  Fixtures,
 } from './helpers';
 import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
 import transformOpenRPCDocument from './api-specs/transform';
@@ -45,7 +44,13 @@ async function main() {
       disableGanache: true,
       title: 'api-specs coverage',
     },
-    async ({ driver, extensionId }: any) => {
+    async ({
+      driver,
+      extensionId,
+    }: {
+      driver: Driver;
+      extensionId: string;
+    }) => {
       await unlockWallet(driver);
 
       // Navigate to extension home screen
