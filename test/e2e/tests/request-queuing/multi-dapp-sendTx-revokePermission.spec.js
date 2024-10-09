@@ -102,6 +102,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
           text: '0x53a',
         });
         await driver.clickElement('#sendButton');
+        await driver.waitUntilXWindowHandles(4);
 
         // Dapp 1 revokePermissions
         await driver.switchToWindowWithUrl(DAPP_URL);
