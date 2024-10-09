@@ -30,7 +30,7 @@ export function isConfirmTransactionRoute(pathname) {
   );
 }
 
-export function getThemeFromRawTheme(theme) {
+function getThemeFromRawTheme(theme) {
   if (theme === ThemeType.os) {
     if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
       return ThemeType.dark;
@@ -46,16 +46,6 @@ export function setTheme(theme) {
     getThemeFromRawTheme(theme),
   );
 }
-
-// function onSwapsPage(props) {
-//   const { location } = props;
-//   return Boolean(
-//     matchPath(location.pathname, {
-//       path: SWAPS_ROUTE,
-//       exact: false,
-//     }),
-//   );
-// }
 
 function onConfirmPage(props) {
   const { location } = props;
@@ -84,20 +74,6 @@ export function showOnboardingHeader(location) {
       exact: false,
     }),
   );
-}
-
-export function toggleMetamaskActive(props) {
-  if (props.isUnlocked) {
-    // currently active: deactivate
-    props.lockMetaMask();
-  } else {
-    // currently inactive: redirect to password box
-    const passwordBox = document.querySelector('input[type=password]');
-    if (!passwordBox) {
-      return;
-    }
-    passwordBox.focus();
-  }
 }
 
 export function getConnectingLabel(loadingMessage, props, context) {
