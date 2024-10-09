@@ -1,14 +1,11 @@
 import { PRIVACY_POLICY_DATE } from '../../helpers/constants/privacy-policy';
 import {
   SURVEY_DATE,
-  SURVEY_START_TIME,
   SURVEY_END_TIME,
+  SURVEY_START_TIME,
 } from '../../helpers/constants/survey';
 import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../store/actionConstants';
-import {
-  callBackgroundMethod,
-  submitRequestToBackground,
-} from '../../store/background-connection';
+import { submitRequestToBackground } from '../../store/background-connection';
 
 /**
  * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
@@ -40,8 +37,7 @@ export function getShowPrivacyPolicyToast(state) {
   const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
   const currentDate = new Date(Date.now());
 
-  const newPrivacyPolicyToastShownDate =
-    state.metamask.newPrivacyPolicyToastShownDate;
+  const { newPrivacyPolicyToastShownDate } = state.metamask;
 
   const showPrivacyPolicyToast =
     !newPrivacyPolicyToastClickedOrClosed &&

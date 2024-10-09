@@ -202,7 +202,6 @@ export default class Routes extends Component {
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
     switchedNetworkDetails: PropTypes.object,
-    useNftDetection: PropTypes.bool,
     currentNetwork: PropTypes.object,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,

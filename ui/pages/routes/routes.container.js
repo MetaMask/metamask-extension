@@ -22,7 +22,6 @@ import {
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
   getUseRequestQueue,
-  getUseNftDetection,
   getCurrentNetwork,
 } from '../../selectors';
 import {
@@ -73,8 +72,6 @@ function mapStateToProps(state) {
     getNetworkToAutomaticallySwitchTo(state);
   const switchedNetworkDetails = getSwitchedNetworkDetails(state);
 
-  const useNftDetection = getUseNftDetection(state);
-
   return {
     alertOpen,
     alertMessage,
@@ -112,7 +109,6 @@ function mapStateToProps(state) {
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     isPermittedNetworkToastOpen: state.appState.showPermittedNetworkToastOpen,
     switchedNetworkDetails,
-    useNftDetection,
     networkToAutomaticallySwitchTo,
     currentNetwork,
     totalUnapprovedConfirmationCount:
