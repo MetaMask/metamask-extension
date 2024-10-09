@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Actualizar opciones de gas"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Si aprueba esta solicitud, un tercero conocido por estafas podría quedarse con todos sus activos."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "¡Alertas múltiples!"
-  },
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
   },
@@ -969,12 +963,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Soy consciente de la alerta y aun así deseo continuar"
   },
-  "confirmAlertModalDetails": {
-    "message": "Si inicia sesión, un tercero conocido por estafas podría quedarse con todos sus activos. Revise las alertas antes de continuar."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Sus activos podrían estar en riesgo"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Lo redirigiremos a $1 al hacer clic en continuar."
   },
@@ -1001,9 +989,6 @@
   },
   "confirmTitleDescSIWESignature": {
     "message": "Un sitio quiere que inicie sesión para demostrar que es el propietario de esta cuenta."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Solo confirme este mensaje si aprueba el contenido y confía en el sitio solicitante."
   },
   "confirmTitlePermitTokens": {
     "message": "Solicitud de límite de gasto"
@@ -1878,10 +1863,6 @@
   },
   "feeDetails": {
     "message": "Detalles de la tarifa"
-  },
-  "fiat": {
-    "message": "Fiduciaria",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? Haga clic aquí.",
@@ -2864,10 +2845,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Esta red no coincide con su ID de cadena o nombre asociado. Muchos tokens populares usan el nombre $1, lo que los convierte en blanco de estafas. Los estafadores pueden engañarlo para que les envíe dinero más valioso a cambio. Verifique todo antes de continuar.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Esto es una estafa potencial"
+    "message": "Esto es una estafa potencial",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "¿Necesita ayuda? Comuníquese con $1",
@@ -3096,9 +3078,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask no está conectado a este sitio"
-  },
-  "noConversionDateAvailable": {
-    "message": "No hay fecha de conversión de moneda disponible"
   },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
@@ -3919,12 +3898,6 @@
   },
   "priceUnavailable": {
     "message": "precio no disponible"
-  },
-  "primaryCurrencySetting": {
-    "message": "Moneda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Seleccione Nativa para dar prioridad a mostrar los valores en la moneda nativa de la cadena (p. ej., ETH). Seleccione Fiduciaria para dar prioridad a mostrar los valores en la moneda fiduciaria seleccionada."
   },
   "primaryType": {
     "message": "Tipo principal"
@@ -4752,13 +4725,6 @@
   "smartTransactionSuccess": {
     "message": "Su transacción está completa"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Disculpe la espera"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Si su transacción no finaliza en $1, se cancelará y no se le cobrará el gas.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Transacciones inteligentes"
   },
@@ -5174,10 +5140,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Intente su swap nuevamente. Estaremos aquí para protegerlo contra riesgos similares la próxima vez."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Finalización estimada en < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Error al intercambiar"
@@ -6089,9 +6051,6 @@
   },
   "updateRequest": {
     "message": "Solicitud de actualización"
-  },
-  "updatedWithDate": {
-    "message": "$1 actualizado"
   },
   "uploadDropFile": {
     "message": "Ingrese su archivo aquí"

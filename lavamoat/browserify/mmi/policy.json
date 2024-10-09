@@ -1443,24 +1443,9 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/utils": true,
         "@metamask/scure-bip39": true,
+        "@metamask/utils": true,
         "browserify>buffer": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring": {
@@ -1468,24 +1453,9 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
         "crypto-browserify>randombytes": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
@@ -2158,6 +2128,7 @@
         "Event": true,
         "Headers": true,
         "TextDecoder": true,
+        "TextEncoder": true,
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
@@ -2169,6 +2140,8 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
         "@metamask/message-signing-snap>@noble/ciphers": true,
         "@metamask/profile-sync-controller>siwe": true,
         "@noble/hashes": true,
@@ -3066,7 +3039,7 @@
     },
     "@sentry/browser": {
       "globals": {
-        "PerformanceObserver.supportedEntryTypes.includes": true,
+        "PerformanceObserver.supportedEntryTypes": true,
         "Request": true,
         "URL": true,
         "XMLHttpRequest.prototype": true,
@@ -3163,7 +3136,8 @@
         "innerWidth": true,
         "location.href": true,
         "location.origin": true,
-        "parent": true
+        "parent": true,
+        "setTimeout": true
       },
       "packages": {
         "@sentry/browser>@sentry-internal/browser-utils": true,
@@ -4629,6 +4603,14 @@
         "define": true
       }
     },
+    "history": {
+      "globals": {
+        "console": true,
+        "define": true,
+        "document.defaultView": true,
+        "document.querySelector": true
+      }
+    },
     "https-browserify": {
       "packages": {
         "browserify>url": true,
@@ -4717,6 +4699,33 @@
         "localStorage": true,
         "log": "write",
         "navigator": true
+      }
+    },
+    "lottie-web": {
+      "globals": {
+        "Blob": true,
+        "Howl": true,
+        "OffscreenCanvas": true,
+        "URL.createObjectURL": true,
+        "Worker": true,
+        "XMLHttpRequest": true,
+        "bodymovin": "write",
+        "clearInterval": true,
+        "console": true,
+        "define": true,
+        "document.body": true,
+        "document.createElement": true,
+        "document.createElementNS": true,
+        "document.getElementsByClassName": true,
+        "document.getElementsByTagName": true,
+        "document.querySelectorAll": true,
+        "document.readyState": true,
+        "location.origin": true,
+        "location.pathname": true,
+        "navigator": true,
+        "requestAnimationFrame": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "luxon": {
@@ -5182,6 +5191,58 @@
         "react-router-dom>tiny-warning": true
       }
     },
+    "react-router-dom-v5-compat": {
+      "globals": {
+        "FormData": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "__reactRouterVersion": "write",
+        "addEventListener": true,
+        "confirm": true,
+        "define": true,
+        "document": true,
+        "history.scrollRestoration": true,
+        "location.href": true,
+        "removeEventListener": true,
+        "scrollTo": true,
+        "scrollY": true,
+        "sessionStorage.getItem": true,
+        "sessionStorage.setItem": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "history": true,
+        "react": true,
+        "react-dom": true,
+        "react-router-dom": true,
+        "react-router-dom-v5-compat>@remix-run/router": true,
+        "react-router-dom-v5-compat>react-router": true
+      }
+    },
+    "react-router-dom-v5-compat>@remix-run/router": {
+      "globals": {
+        "AbortController": true,
+        "DOMException": true,
+        "FormData": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "console": true,
+        "document.defaultView": true
+      }
+    },
+    "react-router-dom-v5-compat>react-router": {
+      "globals": {
+        "console.error": true,
+        "define": true
+      },
+      "packages": {
+        "react": true,
+        "react-router-dom-v5-compat>@remix-run/router": true
+      }
+    },
     "react-router-dom>history": {
       "globals": {
         "addEventListener": true,
@@ -5205,37 +5266,10 @@
         "prop-types>react-is": true,
         "react": true,
         "react-redux>hoist-non-react-statics": true,
-        "react-router-dom>react-router>history": true,
-        "react-router-dom>react-router>mini-create-react-context": true,
+        "react-router-dom>history": true,
         "react-router-dom>tiny-invariant": true,
         "react-router-dom>tiny-warning": true,
         "serve-handler>path-to-regexp": true
-      }
-    },
-    "react-router-dom>react-router>history": {
-      "globals": {
-        "addEventListener": true,
-        "confirm": true,
-        "document": true,
-        "history": true,
-        "location": true,
-        "navigator.userAgent": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "react-router-dom>history>resolve-pathname": true,
-        "react-router-dom>history>value-equal": true,
-        "react-router-dom>tiny-invariant": true,
-        "react-router-dom>tiny-warning": true
-      }
-    },
-    "react-router-dom>react-router>mini-create-react-context": {
-      "packages": {
-        "@babel/runtime": true,
-        "prop-types": true,
-        "react": true,
-        "react-router-dom>react-router>mini-create-react-context>gud": true,
-        "react-router-dom>tiny-warning": true
       }
     },
     "react-router-dom>tiny-warning": {

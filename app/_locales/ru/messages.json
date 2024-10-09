@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Обновить параметры газа"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Если вы одобрите этот запрос, третья сторона, которая, как известно, совершала мошеннические действия, может похитить все ваши активы."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Множественные оповещения!"
-  },
   "alertDisableTooltip": {
     "message": "Это можно изменить в разделе «Настройки» > «Оповещения»"
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Я подтвердил(-а) получение предупреждения и все еще хочу продолжить"
   },
-  "confirmAlertModalDetails": {
-    "message": "Если вы войдете, третья сторона, которая, как известно, совершала мошеннические действия, может похитиь твсе ваши активы. Прежде чем продолжить, просмотрите оповещения."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Ваши активы могут быть в опасности"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Мы перенаправим вас на $1 после нажатия кнопки «Продолжить»."
   },
@@ -1004,9 +992,6 @@
   },
   "confirmTitleDescSIWESignature": {
     "message": "Сайт требует, чтобы вы вошли в систему и доказали, что вы являетесь владельцем этого счета."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Подтверждайте это сообщение только в том случае, если вы одобряете его содержание и доверяете запрашивающему сайту."
   },
   "confirmTitlePermitTokens": {
     "message": "Запрос лимита расходов"
@@ -1881,10 +1866,6 @@
   },
   "feeDetails": {
     "message": "Сведения о комиссии"
-  },
-  "fiat": {
-    "message": "Фиатная",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
@@ -2867,10 +2848,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Эта сеть не соответствует ID или имени связанного с ней блокчейна. Многие популярные токены используют название $1, что делает его объектом мошенничества. Мошенники могут обманом заставить вас отправить им взамен более ценную валюту. Проверьте все, прежде чем продолжить.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Это потенциальное мошенничество"
+    "message": "Это потенциальное мошенничество",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Нужна помощь? Обратитесь в $1",
@@ -3099,9 +3081,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
-  },
-  "noConversionDateAvailable": {
-    "message": "Дата обмена валюты недоступна"
   },
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
@@ -3922,12 +3901,6 @@
   },
   "priceUnavailable": {
     "message": "цена недоступна"
-  },
-  "primaryCurrencySetting": {
-    "message": "Основная валюта"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Выберите «собственная», чтобы установить приоритет отображения значений в собственной валюте блокчейна (например, ETH). Выберите «Фиатная», чтобы установить приоритет отображения значений в выбранной фиатной валюте."
   },
   "primaryType": {
     "message": "Основной тип"
@@ -4755,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "Ваша транзакция завершена"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Извините за ожидание"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Если ваша транзакция не будет завершена в течение $1, она будет отменена и с вас не будет взиматься плата за газ.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Умные транзакции"
   },
@@ -5177,10 +5143,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Попробуйте выполнить своп еще раз. Мы готовы защитить вас от подобных рисков в следующий раз."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Предполагаемое завершение через < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Своп не удался"
@@ -6092,9 +6054,6 @@
   },
   "updateRequest": {
     "message": "Запрос обновления"
-  },
-  "updatedWithDate": {
-    "message": "Обновлено $1"
   },
   "uploadDropFile": {
     "message": "Переместите свой файл сюда"

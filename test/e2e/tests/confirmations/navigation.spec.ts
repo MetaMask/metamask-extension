@@ -1,12 +1,11 @@
-import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
+import { By } from 'selenium-webdriver';
 import {
   DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
   openDapp,
-  regularDelayMs,
   unlockWallet,
+  WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from './helpers';
@@ -68,7 +67,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         );
 
         // Verify Transaction Sending ETH is displayed
-        await verifyTransaction(driver, 'SENDING ETH');
+        await verifyTransaction(driver, 'Sending ETH');
 
         await driver.clickElement('[data-testid="next-page"]');
 
@@ -80,7 +79,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         );
 
         // Verify Sign Typed Data v3 confirmation is displayed
-        await verifyTransaction(driver, 'SENDING ETH');
+        await verifyTransaction(driver, 'Sending ETH');
 
         await driver.clickElement('[data-testid="previous-page"]');
 
@@ -98,11 +97,11 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await unlockWallet(driver);
         await openDapp(driver);
         await queueSignatures(driver);
-        await driver.delay(regularDelayMs);
 
-        await driver.clickElement('[data-testid="confirm-nav__reject-all"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="confirm-nav__reject-all"]',
+        );
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await verifyRejectionResults(driver, '#signTypedDataResult');
@@ -114,95 +113,79 @@ describe('Navigation Signature - Different signature types', function (this: Sui
 });
 
 async function verifySignTypedData(driver: Driver) {
-  const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const message = await driver.findElement({ text: 'Hi, Alice!' });
-
-  // Verify Sign Typed Data confirmation is displayed
-  assert.ok(origin, 'origin');
-  assert.ok(message, 'message');
+  await driver.waitForSelector({ text: DAPP_HOST_ADDRESS });
+  await driver.waitForSelector({ text: 'Hi, Alice!' });
 }
 
 async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
-  const rejectionResult = await driver.findElement(verifyResultId);
-  assert.equal(
-    await rejectionResult.getText(),
-    'Error: User rejected the request.',
-  );
+  await driver.waitForSelector({
+    css: verifyResultId,
+    text: 'Error: User rejected the request.',
+  });
 }
 
 async function verifySignedTypeV3Confirmation(driver: Driver) {
-  const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const fromAddress = driver.findElement({
+  await driver.waitForSelector({ text: DAPP_HOST_ADDRESS });
+  await driver.waitForSelector({
     css: '.name__value',
     text: '0xCD2a3...DD826',
   });
-  const toAddress = driver.findElement({
+  await driver.waitForSelector({
     css: '.name__value',
     text: '0xbBbBB...bBBbB',
   });
-  const contents = driver.findElement({ text: 'Hello, Bob!' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await fromAddress, 'fromAddress');
-  assert.ok(await toAddress, 'toAddress');
-  assert.ok(await contents, 'contents');
+  await driver.waitForSelector({ text: 'Hello, Bob!' });
 }
 
 async function verifySignedTypeV4Confirmation(driver: Driver) {
   verifySignedTypeV3Confirmation(driver);
-  const attachment = driver.findElement({ text: '0x' });
-  assert.ok(await attachment, 'attachment');
+  await driver.waitForSelector({ text: '0x' });
 }
 
 async function queueSignatures(driver: Driver) {
   // There is a race condition which changes the order in which signatures are displayed (#25251)
   // We fix it deterministically by waiting for an element in the screen for each signature
   await driver.clickElement('#signTypedData');
-  await driver.waitUntilXWindowHandles(3);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.findElement({ text: 'Hi, Alice!' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV3');
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.findElement({ text: 'Reject all' });
-
+  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 2']"));
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV4');
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 3']"));
 }
 
 async function queueSignaturesAndTransactions(driver: Driver) {
   await driver.clickElement('#signTypedData');
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000); // Delay needed due to a race condition
-  // To be fixed in https://github.com/MetaMask/metamask-extension/issues/25251
-
-  await driver.waitUntilXWindowHandles(3);
+  await driver.waitForSelector({
+    tag: 'p',
+    text: 'Hi, Alice!',
+  });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
   await driver.clickElement('#sendButton');
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000);
+  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 2']"));
 
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
   await driver.clickElement('#signTypedDataV3');
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000);
+  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 3']"));
 }
 
 async function verifyTransaction(
   driver: Driver,
   expectedTransactionType: string,
 ) {
-  const transactionType = await driver.findElement(
-    '.confirm-page-container-summary__action__name',
-  );
-  assert.equal(await transactionType.getText(), expectedTransactionType);
+  await driver.waitForSelector({
+    tag: 'span',
+    text: expectedTransactionType,
+  });
 }

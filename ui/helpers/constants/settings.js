@@ -34,9 +34,9 @@ const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('general'),
-    sectionMessage: (t) => t('primaryCurrencySetting'),
-    descriptionMessage: (t) => t('primaryCurrencySettingDescription'),
-    route: `${GENERAL_ROUTE}#primary-currency`,
+    sectionMessage: (t) => t('showNativeTokenAsMainBalance'),
+    descriptionMessage: (t) => t('showNativeTokenAsMainBalance'),
+    route: `${GENERAL_ROUTE}#show-native-token-as-main-balance`,
     iconName: IconName.Setting,
   },
   {
@@ -322,6 +322,13 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('dataCollectionForMarketing'),
     descriptionMessage: (t) => t('dataCollectionForMarketingDescription'),
     route: `${SECURITY_ROUTE}#dataCollectionForMarketing`,
+    icon: 'fa fa-lock',
+  },
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('deleteMetaMetricsData'),
+    descriptionMessage: (t) => t('deleteMetaMetricsDataDescription'),
+    route: `${SECURITY_ROUTE}#delete-metametrics-data`,
     icon: 'fa fa-lock',
   },
   {

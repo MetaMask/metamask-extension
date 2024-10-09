@@ -61,19 +61,6 @@ describe('ConfirmDecryptMessage Component', () => {
     ).toMatchInlineSnapshot(`"966.987986 ABC"`);
   });
 
-  it('should match snapshot when preference is Fiat currency', () => {
-    const { container } = renderWithProvider(
-      <ConfirmEncryptionPublicKey {...baseProps} conversionRate={1572.88} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
-    expect(
-      container.querySelector('.request-encryption-public-key__balance-value')
-        .textContent,
-    ).toMatchInlineSnapshot(`"1520956.064158 DEF"`);
-  });
-
   it('should match snapshot when there is no txData', () => {
     const newProps = {
       ...baseProps,
