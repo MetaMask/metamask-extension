@@ -125,7 +125,6 @@ import {
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
