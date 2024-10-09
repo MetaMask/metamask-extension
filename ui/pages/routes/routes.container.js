@@ -23,7 +23,6 @@ import {
   getNumberOfAllUnapprovedTransactionsAndMessages,
   getUseRequestQueue,
   getUseNftDetection,
-  getNftDetectionEnablementToast,
   getCurrentNetwork,
 } from '../../selectors';
 import {
@@ -41,7 +40,6 @@ import {
   automaticallySwitchNetwork,
   clearSwitchedNetworkDetails,
   neverShowSwitchedNetworkMessage,
-  setShowNftDetectionEnablementToast,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
@@ -76,7 +74,6 @@ function mapStateToProps(state) {
   const switchedNetworkDetails = getSwitchedNetworkDetails(state);
 
   const useNftDetection = getUseNftDetection(state);
-  const showNftEnablementToast = getNftDetectionEnablementToast(state);
 
   return {
     alertOpen,
@@ -116,7 +113,6 @@ function mapStateToProps(state) {
     isPermittedNetworkToastOpen: state.appState.showPermittedNetworkToastOpen,
     switchedNetworkDetails,
     useNftDetection,
-    showNftEnablementToast,
     networkToAutomaticallySwitchTo,
     currentNetwork,
     totalUnapprovedConfirmationCount:
@@ -160,8 +156,6 @@ function mapDispatchToProps(dispatch) {
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),
     ///: END:ONLY_INCLUDE_IF
-    setHideNftEnablementToast: (value) =>
-      dispatch(setShowNftDetectionEnablementToast(value)),
   };
 }
 

@@ -32,10 +32,12 @@ import {
 } from '../../selectors';
 import { getShowAutoNetworkSwitchTest } from './isolated';
 import {
+  getNftDetectionEnablementToast,
   getShowPrivacyPolicyToast,
   getShowSurveyToast,
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
+  setShowNftDetectionEnablementToast,
 } from './toast-master-selectors';
 
 // Allow comparison with a previous value, in order to detect changes
@@ -52,8 +54,6 @@ export function ToastMaster({ props, context }) {
     setSwitchedNetworkNeverShowMessage,
     switchedNetworkDetails,
     useNftDetection,
-    showNftEnablementToast,
-    setHideNftEnablementToast,
     isPermittedNetworkToastOpen,
     currentNetwork,
   } = props;
@@ -83,9 +83,8 @@ export function ToastMaster({ props, context }) {
     getShowConnectAccountToast(state, account),
   );
 
-  const onAutoHideToast = () => {
-    setHideNftEnablementToast(false);
-  };
+  const showNftEnablementToast = useSelector(getNftDetectionEnablementToast);
+
   if (!onHomeScreen(props)) {
     return null;
   }
@@ -168,7 +167,7 @@ export function ToastMaster({ props, context }) {
           onClose={setNewPrivacyPolicyToastClickedOrClosed}
         />
       )}
-      {showAutoNetworkSwitchToast ? (
+      {showAutoNetworkSwitchToast && (
         <Toast
           key="switched-network-toast"
           startAdornment={
@@ -187,8 +186,8 @@ export function ToastMaster({ props, context }) {
           onActionClick={() => setSwitchedNetworkNeverShowMessage()}
           onClose={() => clearSwitchedNetworkDetails()}
         />
-      ) : null}
-      {showNftEnablementToast && useNftDetection ? (
+      )}
+      {showNftEnablementToast && useNftDetection && (
         <Toast
           key="enabled-nft-auto-detection"
           startAdornment={
@@ -198,9 +197,9 @@ export function ToastMaster({ props, context }) {
           borderRadius={BorderRadius.LG}
           textVariant={TextVariant.bodyMd}
           autoHideTime={autoHideToastDelay}
-          onAutoHideToast={onAutoHideToast}
+          onAutoHideToast={() => setShowNftDetectionEnablementToast(false)}
         />
-      ) : null}
+      )}
 
       {process.env.CHAIN_PERMISSIONS && isPermittedNetworkToastOpen ? (
         <Toast
