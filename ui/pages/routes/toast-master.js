@@ -40,6 +40,7 @@ import {
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
 } from './toast-master-selectors';
+import { hidePermittedNetworkToast } from '../../store/actions';
 
 // Allow comparison with a previous value, in order to detect changes
 // (This pattern only works if ToastMaster is a singleton)
@@ -54,7 +55,6 @@ export function ToastMaster({ props, context }) {
     setSurveyLinkLastClickedOrClosed,
     setSwitchedNetworkNeverShowMessage,
     switchedNetworkDetails,
-    isPermittedNetworkToastOpen,
     currentNetwork,
   } = props;
 
@@ -96,6 +96,10 @@ export function ToastMaster({ props, context }) {
   if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
     setNewPrivacyPolicyToastShownDate(Date.now());
   }
+
+  const isPermittedNetworkToastOpen = useSelector(
+    (state) => state.appState.showPermittedNetworkToastOpen,
+  );
 
   return (
     <ToastContainer>
@@ -205,8 +209,7 @@ export function ToastMaster({ props, context }) {
           }
         />
       )}
-
-      {process.env.CHAIN_PERMISSIONS && isPermittedNetworkToastOpen ? (
+      {process.env.CHAIN_PERMISSIONS && isPermittedNetworkToastOpen && (
         <Toast
           key="switched-permitted-network-toast"
           startAdornment={
@@ -223,12 +226,12 @@ export function ToastMaster({ props, context }) {
           ])}
           actionText={t('editPermissions')}
           onActionClick={() => {
-            props.hidePermittedNetworkToast();
+            dispatch(hidePermittedNetworkToast());
             props.history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
           }}
-          onClose={() => props.hidePermittedNetworkToast()}
+          onClose={() => dispatch(hidePermittedNetworkToast())}
         />
-      ) : null}
+      )}
     </ToastContainer>
   );
 }

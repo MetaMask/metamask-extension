@@ -43,7 +43,6 @@ import {
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
   setEditedNetwork,
-  hidePermittedNetworkToast,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -107,7 +106,6 @@ function mapStateToProps(state) {
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
-    isPermittedNetworkToastOpen: state.appState.showPermittedNetworkToastOpen,
     switchedNetworkDetails,
     networkToAutomaticallySwitchTo,
     currentNetwork,
@@ -135,7 +133,6 @@ function mapDispatchToProps(dispatch) {
     toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
     hideImportNftsModal: () => dispatch(hideImportNftsModal()),
     hideIpfsModal: () => dispatch(hideIpfsModal()),
-    hidePermittedNetworkToast: () => dispatch(hidePermittedNetworkToast()),
     hideImportTokensModal: () => dispatch(hideImportTokensModal()),
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),
     addPermittedAccount: (activeTabOrigin, address) =>
