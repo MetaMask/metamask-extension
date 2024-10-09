@@ -123,6 +123,22 @@ describe('ConfirmDecryptMessage Component', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('matches snapshot if no unapproved decrypt messages', () => {
+    const stateWithoutUnapprovedDecryptMsgs = merge({}, mockState);
+    stateWithoutUnapprovedDecryptMsgs.metamask.unapprovedDecryptMsgs = [];
+    stateWithoutUnapprovedDecryptMsgs.metamask.transactions = [];
+
+    const storeWithoutUnapprovedDecryptMsgs = configureMockStore()(
+      stateWithoutUnapprovedDecryptMsgs,
+    );
+
+    const { container } = renderWithProvider(
+      <ConfirmDecryptMessage />,
+      storeWithoutUnapprovedDecryptMsgs,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('shows error on decrypt inline error', async () => {
     mockDecryptMsgInline.mockReturnValue({
       error: 'Decrypt inline error',

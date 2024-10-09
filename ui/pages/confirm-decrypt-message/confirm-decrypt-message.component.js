@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useContext, forwardRef } from 'react';
+import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
 import log from 'loglevel';
@@ -93,6 +94,13 @@ const Account = ({ fromAccount, nativeCurrency }) => {
   );
 };
 
+Account.propTypes = {
+  fromAccount: PropTypes.shape({
+    balance: PropTypes.string.isRequired,
+  }).isRequired,
+  nativeCurrency: PropTypes.string.isRequired,
+};
+
 const VisualSection = ({ name, notice, targetSubjectMetadata }) => (
   <div className="request-decrypt-message__visual">
     <section>
@@ -111,6 +119,14 @@ const VisualSection = ({ name, notice, targetSubjectMetadata }) => (
     </section>
   </div>
 );
+
+VisualSection.propTypes = {
+  name: PropTypes.string.isRequired,
+  notice: PropTypes.string.isRequired,
+  targetSubjectMetadata: PropTypes.shape({
+    iconUrl: PropTypes.string,
+  }),
+};
 
 const ScrollToBottomButton = ({
   isScrollable,
@@ -144,6 +160,14 @@ const ScrollToBottomButton = ({
   );
 };
 
+ScrollToBottomButton.propTypes = {
+  isScrollable: PropTypes.bool.isRequired,
+  isScrolledToBottom: PropTypes.bool.isRequired,
+  hasDecrypted: PropTypes.bool.isRequired,
+  hasError: PropTypes.bool.isRequired,
+  scrollToBottom: PropTypes.func.isRequired,
+};
+
 const MessageBody = forwardRef(
   (
     {
@@ -153,7 +177,7 @@ const MessageBody = forwardRef(
       rawMessage,
       scrollToBottom,
       setRawMessage,
-      txData,
+      messageData,
     },
     ref,
   ) => {
@@ -184,8 +208,8 @@ const MessageBody = forwardRef(
     const onDecryptMessage = async (event) => {
       event.stopPropagation(event);
 
-      const params = txData.msgParams;
-      params.metamaskId = txData.id;
+      const params = messageData.msgParams;
+      params.metamaskId = messageData.id;
 
       const result = await dispatch(decryptMsgInline(params));
       if (result.error) {
@@ -205,7 +229,9 @@ const MessageBody = forwardRef(
             ref={ref}
             onScroll={onScroll}
           >
-            {!hasDecrypted && !hasError ? txData.msgParams.data : rawMessage}
+            {!hasDecrypted && !hasError
+              ? messageData.msgParams.data
+              : rawMessage}
             {hasError ? errorMessage : ''}
           </div>
           <div
@@ -273,11 +299,28 @@ const MessageBody = forwardRef(
 );
 MessageBody.displayName = 'MessageBody';
 
+MessageBody.propTypes = {
+  isScrollable: PropTypes.bool.isRequired,
+  isScrolledToBottom: PropTypes.bool.isRequired,
+  onScroll: PropTypes.func.isRequired,
+  rawMessage: PropTypes.string.isRequired,
+  scrollToBottom: PropTypes.func.isRequired,
+  setRawMessage: PropTypes.func.isRequired,
+  messageData: PropTypes.shape({
+    msgParams: PropTypes.shape({
+      data: PropTypes.string.isRequired,
+      from: PropTypes.string.isRequired,
+      origin: PropTypes.string.isRequired,
+    }).isRequired,
+    id: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
 const Footer = ({
   hasScrolledToBottom,
   isScrollable,
   mostRecentOverviewPage,
-  txData,
+  messageData,
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -287,7 +330,7 @@ const Footer = ({
   const onCancelClick = async (event) => {
     event.stopPropagation(event);
 
-    await dispatch(cancelDecryptMsg(txData));
+    await dispatch(cancelDecryptMsg(messageData));
     trackEvent({
       category: MetaMetricsEventCategory.Messages,
       event: 'Cancel',
@@ -302,8 +345,8 @@ const Footer = ({
 
   const onSubmitClick = async (event) => {
     event.stopPropagation(event);
-    const params = txData.msgParams;
-    params.metamaskId = txData.id;
+    const params = messageData.msgParams;
+    params.metamaskId = messageData.id;
 
     await dispatch(decryptMsg(params));
     trackEvent({
@@ -329,6 +372,20 @@ const Footer = ({
   );
 };
 
+Footer.propTypes = {
+  hasScrolledToBottom: PropTypes.bool.isRequired,
+  isScrollable: PropTypes.bool.isRequired,
+  mostRecentOverviewPage: PropTypes.string.isRequired,
+  messageData: PropTypes.shape({
+    msgParams: PropTypes.shape({
+      data: PropTypes.string.isRequired,
+      from: PropTypes.string.isRequired,
+      origin: PropTypes.string.isRequired,
+    }).isRequired,
+    id: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
 const ConfirmDecryptMessage = () => {
   const t = useI18nContext();
   const [rawMessage, setRawMessage] = useState('');
@@ -338,10 +395,10 @@ const ConfirmDecryptMessage = () => {
   const unconfirmedTransactions = useSelector(
     unconfirmedTransactionsListSelector,
   );
-  const txData = cloneDeep(unconfirmedTransactions[0]);
+  const messageData = cloneDeep(unconfirmedTransactions[0]);
 
   const fromAccount = useSelector((state) =>
-    getTargetAccountWithSendEtherInfo(state, txData?.msgParams?.from),
+    getTargetAccountWithSendEtherInfo(state, messageData?.msgParams?.from),
   );
 
   const subjectMetadata = useSelector(
@@ -359,14 +416,14 @@ const ConfirmDecryptMessage = () => {
     offsetPxFromBottom: 0,
   });
 
-  if (!txData) {
-    log.warn('ConfirmDecryptMessage Page: Missing txData prop.');
+  if (!messageData) {
+    log.warn('ConfirmDecryptMessage Page: Missing messageData prop.');
     return null;
   }
 
-  const targetSubjectMetadata = subjectMetadata[txData.msgParams.origin];
-  const name = targetSubjectMetadata?.name || txData.msgParams.origin;
-  const notice = t('decryptMessageNotice', [txData.msgParams.origin]);
+  const targetSubjectMetadata = subjectMetadata[messageData.msgParams.origin];
+  const name = targetSubjectMetadata?.name || messageData.msgParams.origin;
+  const notice = t('decryptMessageNotice', [messageData.msgParams.origin]);
 
   return (
     <div className="request-decrypt-message__container">
@@ -386,14 +443,14 @@ const ConfirmDecryptMessage = () => {
           ref={ref}
           scrollToBottom={scrollToBottom}
           setRawMessage={setRawMessage}
-          txData={txData}
+          messageData={messageData}
         />
       </div>
       <Footer
         hasScrolledToBottom={hasScrolledToBottom}
         isScrollable={isScrollable}
         mostRecentOverviewPage={mostRecentOverviewPage}
-        txData={txData}
+        messageData={messageData}
       />
     </div>
   );

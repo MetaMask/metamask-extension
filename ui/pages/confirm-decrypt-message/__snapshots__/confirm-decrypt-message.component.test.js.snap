@@ -190,6 +190,8 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
 </div>
 `;
 
+exports[`ConfirmDecryptMessage Component matches snapshot if no unapproved decrypt messages 1`] = `<div />`;
+
 exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`] = `
 <div>
   <div
