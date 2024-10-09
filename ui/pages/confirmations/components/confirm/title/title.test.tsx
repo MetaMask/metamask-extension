@@ -1,53 +1,69 @@
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { TransactionType } from '@metamask/transaction-controller';
-
 import {
-  permitSignatureMsg,
-  unapprovedTypedSignMsgV4,
-} from '../../../../../../test/data/confirmations/typed_sign';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import { Confirmation } from '../../../types/confirm';
-import { Severity } from '../../../../../helpers/constants/design-system';
+  getMockApproveConfirmState,
+  getMockContractInteractionConfirmState,
+  getMockPersonalSignConfirmState,
+  getMockPersonalSignConfirmStateForRequest,
+  getMockSetApprovalForAllConfirmState,
+  getMockTypedSignConfirmState,
+  getMockTypedSignConfirmStateForRequest,
+} from '../../../../../../test/data/confirmations/helper';
+import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
+import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import {
   Alert,
   ConfirmAlertsState,
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import ConfirmTitle from './title';
 
-const genMockState = (confirmationOverride: Partial<Confirmation> = {}) => ({
-  confirm: {
-    currentConfirmation: {
-      type: TransactionType.personalSign,
-      ...confirmationOverride,
-    },
-  },
-  confirmAlerts: {
-    alerts: {},
-    confirmed: {},
-  },
-});
+jest.mock('../info/approve/hooks/use-approve-token-simulation', () => ({
+  useApproveTokenSimulation: jest.fn(() => ({
+    spendingCap: '1000',
+    formattedSpendingCap: '1000',
+    value: '1000',
+  })),
+}));
+
+jest.mock('../../../hooks/useAssetDetails', () => ({
+  useAssetDetails: jest.fn(() => ({
+    decimals: 18,
+    userBalance: '1000000',
+    tokenSymbol: 'TST',
+  })),
+}));
+
+jest.mock('../info/approve/hooks/use-is-nft', () => ({
+  useIsNFT: jest.fn(() => ({ isNFT: true })),
+}));
 
 describe('ConfirmTitle', () => {
   it('should render the title and description for a personal signature', () => {
-    const mockStore = configureMockStore([])(
-      genMockState({ type: TransactionType.personalSign }),
+    const mockStore = configureMockStore([])(getMockPersonalSignConfirmState);
+    const { getByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
     );
-    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
     expect(getByText('Signature request')).toBeInTheDocument();
     expect(
-      getByText(
-        'Only confirm this message if you approve the content and trust the requesting site.',
-      ),
+      getByText('Review request details before you confirm.'),
     ).toBeInTheDocument();
   });
 
   it('should render the title and description for a permit signature', () => {
     const mockStore = configureMockStore([])(
-      genMockState(permitSignatureMsg as Confirmation),
+      getMockTypedSignConfirmStateForRequest(permitSignatureMsg),
     );
-    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
+    const { getByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
 
     expect(getByText('Spending cap request')).toBeInTheDocument();
     expect(
@@ -56,75 +72,145 @@ describe('ConfirmTitle', () => {
   });
 
   it('should render the title and description for typed signature', () => {
-    const mockStore = configureMockStore([])(
-      genMockState(unapprovedTypedSignMsgV4 as Confirmation),
+    const mockStore = configureMockStore([])(getMockTypedSignConfirmState());
+    const { getByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
     );
-    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
     expect(getByText('Signature request')).toBeInTheDocument();
     expect(
-      getByText(
-        'Only confirm this message if you approve the content and trust the requesting site.',
-      ),
+      getByText('Review request details before you confirm.'),
     ).toBeInTheDocument();
   });
 
   it('should render the title and description for a contract interaction transaction', () => {
     const mockStore = configureMockStore([])(
-      genMockState({ type: TransactionType.contractInteraction }),
+      getMockContractInteractionConfirmState(),
     );
-    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
+    const { getByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
 
-    expect(getByText('Transaction request')).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleTransaction') as string),
+    ).toBeInTheDocument();
+  });
+
+  it('should render the title and description for a approval transaction for NFTs', () => {
+    const mockStore = configureMockStore([])(getMockApproveConfirmState());
+    const { getByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(
+      getByText(tEn('confirmTitleApproveTransaction') as string),
+    ).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescApproveTransaction') as string),
+    ).toBeInTheDocument();
+  });
+
+  it('should render the title and description for a approval transaction for erc20 tokens', () => {
+    const mockedUseIsNFT = jest.mocked(useIsNFT);
+
+    mockedUseIsNFT.mockImplementation(() => ({
+      isNFT: false,
+      pending: false,
+    }));
+
+    const mockStore = configureMockStore([])(getMockApproveConfirmState());
+    const { getByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(
+      getByText(tEn('confirmTitlePermitTokens') as string),
+    ).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescERC20ApproveTransaction') as string),
+    ).toBeInTheDocument();
+  });
+
+  it('should render the title and description for a setApprovalForAll transaction', async () => {
+    const mockStore = configureMockStore([])(
+      getMockSetApprovalForAllConfirmState(),
+    );
+    const { getByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(
+        getByText(tEn('setApprovalForAllRedesignedTitle') as string),
+      ).toBeInTheDocument();
+
+      expect(
+        getByText(tEn('confirmTitleDescApproveTransaction') as string),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('Alert banner', () => {
-    const CONFIRMATION_ID_MOCK = '123';
     const alertMock = {
       severity: Severity.Danger,
       message: 'mock message',
       reason: 'mock reason',
       key: 'mock key',
     };
-    const mockAlertState = (state: Partial<ConfirmAlertsState> = {}) => ({
-      confirm: {
-        currentConfirmation: {
-          type: TransactionType.personalSign,
-          id: CONFIRMATION_ID_MOCK,
-        },
-      },
-      confirmAlerts: {
-        alerts: {
-          [CONFIRMATION_ID_MOCK]: [alertMock, alertMock, alertMock],
-        },
-        confirmed: {
-          [CONFIRMATION_ID_MOCK]: {
-            [alertMock.key]: false,
+
+    const alertMock2 = {
+      ...alertMock,
+      key: 'mock key 2',
+      reason: 'mock reason 2',
+    };
+    const mockAlertState = (state: Partial<ConfirmAlertsState> = {}) =>
+      getMockPersonalSignConfirmStateForRequest(unapprovedPersonalSignMsg, {
+        metamask: {},
+        confirmAlerts: {
+          alerts: {
+            [unapprovedPersonalSignMsg.id]: [alertMock, alertMock2],
           },
+          confirmed: {
+            [unapprovedPersonalSignMsg.id]: {
+              [alertMock.key]: false,
+              [alertMock2.key]: false,
+            },
+          },
+          ...state,
         },
-        ...state,
-      },
-    });
+      });
     it('renders an alert banner if there is a danger alert', () => {
       const mockStore = configureMockStore([])(
         mockAlertState({
           alerts: {
-            [CONFIRMATION_ID_MOCK]: [alertMock as Alert],
+            [unapprovedPersonalSignMsg.id]: [alertMock as Alert],
           },
         }),
       );
-      const { queryByText } = renderWithProvider(<ConfirmTitle />, mockStore);
+      const { queryByText } = renderWithConfirmContextProvider(
+        <ConfirmTitle />,
+        mockStore,
+      );
 
       expect(queryByText(alertMock.reason)).toBeInTheDocument();
       expect(queryByText(alertMock.message)).toBeInTheDocument();
     });
 
-    it('renders alert banner when there are multiple alerts', () => {
+    it('renders multiple alert banner when there are multiple alerts', () => {
       const mockStore = configureMockStore([])(mockAlertState());
 
-      const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
+      const { getByText } = renderWithConfirmContextProvider(
+        <ConfirmTitle />,
+        mockStore,
+      );
 
-      expect(getByText('Multiple alerts!')).toBeInTheDocument();
+      expect(getByText(alertMock.reason)).toBeInTheDocument();
+      expect(getByText(alertMock2.reason)).toBeInTheDocument();
     });
   });
 });

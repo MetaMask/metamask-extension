@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import {
   Box,
   Button,
@@ -15,6 +14,7 @@ import {
 } from '../../../component-library';
 import {
   AlignItems,
+  Severity,
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -87,11 +87,10 @@ function ConfirmDetails({
     <>
       <Box alignItems={AlignItems.center} textAlign={TextAlign.Center}>
         <Text variant={TextVariant.bodyMd}>
-          {t('confirmAlertModalDetails')}
+          {t('confirmationAlertModalDetails')}
         </Text>
         <ButtonLink
-          paddingTop={5}
-          paddingBottom={5}
+          marginTop={4}
           size={ButtonLinkSize.Inherit}
           textProps={{
             variant: TextVariant.bodyMd,
@@ -101,13 +100,9 @@ function ConfirmDetails({
           onClick={onAlertLinkClick}
           target="_blank"
           rel="noopener noreferrer"
-          data-testid={'confirm-alert-modal-review-all-alerts'}
+          data-testid="confirm-alert-modal-review-all-alerts"
         >
-          <Icon
-            name={IconName.SecuritySearch}
-            size={IconSize.Inherit}
-            marginLeft={1}
-          />
+          <Icon name={IconName.SecuritySearch} size={IconSize.Inherit} />
           {t('alertModalReviewAllAlerts')}
         </ButtonLink>
       </Box>
@@ -122,23 +117,32 @@ export function ConfirmAlertModal({
   ownerId,
 }: ConfirmAlertModalProps) {
   const t = useI18nContext();
-  const { alerts, unconfirmedDangerAlerts } = useAlerts(ownerId);
+  const { fieldAlerts, alerts, hasUnconfirmedFieldDangerAlerts } =
+    useAlerts(ownerId);
 
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
 
-  // if there are multiple alerts, show the multiple alert modal
+  const hasDangerBlockingAlerts = fieldAlerts.some(
+    (alert) => alert.severity === Severity.Danger && alert.isBlocking,
+  );
+
+  // if there are unconfirmed danger alerts, show the multiple alert modal
   const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
-    useState<boolean>(unconfirmedDangerAlerts.length > 1);
+    useState<boolean>(hasUnconfirmedFieldDangerAlerts);
 
   const handleCloseMultipleAlertModal = useCallback(
     (request?: { recursive?: boolean }) => {
       setMultipleAlertModalVisible(false);
 
-      if (request?.recursive) {
+      if (
+        request?.recursive ||
+        hasUnconfirmedFieldDangerAlerts ||
+        hasDangerBlockingAlerts
+      ) {
         onClose();
       }
     },
-    [onClose],
+    [onClose, hasUnconfirmedFieldDangerAlerts, hasDangerBlockingAlerts],
   );
 
   const handleOpenMultipleAlertModal = useCallback(() => {
@@ -155,6 +159,7 @@ export function ConfirmAlertModal({
         ownerId={ownerId}
         onFinalAcknowledgeClick={handleCloseMultipleAlertModal}
         onClose={handleCloseMultipleAlertModal}
+        showCloseIcon={false}
       />
     );
   }
@@ -171,13 +176,9 @@ export function ConfirmAlertModal({
       onAcknowledgeClick={onClose}
       alertKey={selectedAlert.key}
       onClose={onClose}
-      customTitle={t('confirmAlertModalTitle')}
+      customTitle={t('confirmationAlertModalTitle')}
       customDetails={
-        selectedAlert.provider === SecurityProvider.Blockaid ? (
-          SecurityProvider.Blockaid
-        ) : (
-          <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
-        )
+        <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
       }
       customAcknowledgeCheckbox={
         <AcknowledgeCheckboxBase
@@ -185,7 +186,7 @@ export function ConfirmAlertModal({
           isConfirmed={confirmCheckbox}
           onCheckboxClick={handleConfirmCheckbox}
           label={
-            selectedAlert?.provider === SecurityProvider.Blockaid
+            alerts.length === 1
               ? t('confirmAlertModalAcknowledgeSingle')
               : t('confirmAlertModalAcknowledgeMultiple')
           }
@@ -198,7 +199,6 @@ export function ConfirmAlertModal({
           isConfirmed={confirmCheckbox}
         />
       }
-      enableProvider={false}
     />
   );
 }

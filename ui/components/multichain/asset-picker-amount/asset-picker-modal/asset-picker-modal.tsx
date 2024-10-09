@@ -59,7 +59,6 @@ import {
 } from './types';
 import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
-
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 

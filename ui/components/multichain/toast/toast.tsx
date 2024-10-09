@@ -65,11 +65,12 @@ export const Toast = ({
       data-theme={theme === ThemeType.light ? ThemeType.dark : ThemeType.light}
       onClose={onClose}
       borderRadius={borderRadius}
+      data-testid={dataTestId ? `${dataTestId}-banner-base` : undefined}
     >
       <Box display={Display.Flex} gap={4} data-testid={dataTestId}>
         {startAdornment}
         <Box>
-          <Text className={'toast-text'} variant={textVariant}>
+          <Text className="toast-text" variant={textVariant}>
             {text}
           </Text>
           {actionText && onActionClick ? (

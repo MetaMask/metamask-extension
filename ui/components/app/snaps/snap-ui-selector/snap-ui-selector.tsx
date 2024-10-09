@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+  MouseEvent as ReactMouseEvent,
+} from 'react';
 import {
   Box,
   ButtonBase,
@@ -98,12 +102,15 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue !== undefined && initialValue !== null) {
       setSelectedOption(initialValue);
     }
   }, [initialValue]);
 
-  const handleModalOpen = () => setIsModalOpen(true);
+  const handleModalOpen = (event: ReactMouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    setIsModalOpen(true);
+  };
 
   const handleModalClose = () => setIsModalOpen(false);
 

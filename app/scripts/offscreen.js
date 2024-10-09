@@ -1,6 +1,30 @@
 import { captureException } from '@sentry/browser';
-import { OffscreenCommunicationTarget } from '../../shared/constants/offscreen-communication';
+import {
+  OFFSCREEN_LOAD_TIMEOUT,
+  OffscreenCommunicationTarget,
+} from '../../shared/constants/offscreen-communication';
 import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
+
+/**
+ * Returns whether the offscreen document already exists or not.
+ *
+ * See https://developer.chrome.com/docs/extensions/reference/api/offscreen#before_chrome_116_check_if_an_offscreen_document_is_open
+ *
+ * @returns True if the offscreen document already is has been opened, otherwise false.
+ */
+async function hasOffscreenDocument() {
+  const { chrome, clients } = globalThis;
+  // getContexts is only available in Chrome 116+
+  if ('getContexts' in chrome.runtime) {
+    const contexts = await chrome.runtime.getContexts({
+      contextTypes: ['OFFSCREEN_DOCUMENT'],
+    });
+    return contexts.length > 0;
+  }
+  const matchedClients = await clients.matchAll();
+  const url = chrome.runtime.getURL('offscreen.html');
+  return matchedClients.some((client) => client.url === url);
+}
 
 /**
  * Creates an offscreen document that can be used to load additional scripts
@@ -38,6 +62,14 @@ export async function createOffscreen() {
   });
 
   try {
+    const offscreenExists = await hasOffscreenDocument();
+
+    // In certain cases the offscreen document may already exist during boot, if it does, we close it and recreate it.
+    if (offscreenExists) {
+      console.debug('Found existing offscreen document, closing.');
+      await chrome.offscreen.closeDocument();
+    }
+
     await chrome.offscreen.createDocument({
       url: './offscreen.html',
       reasons: ['IFRAME_SCRIPTING'],
@@ -48,24 +80,16 @@ export async function createOffscreen() {
     if (offscreenDocumentLoadedListener) {
       chrome.runtime.onMessage.removeListener(offscreenDocumentLoadedListener);
     }
-    if (
-      error?.message?.startsWith(
-        'Only a single offscreen document may be created',
-      )
-    ) {
-      console.debug('Offscreen document already exists; skipping creation');
-    } else {
-      // Report unrecongized errors without halting wallet initialization
-      // Failures to create the offscreen document does not compromise wallet data integrity or
-      // core functionality, it's just needed for specific features.
-      captureException(error);
-    }
+    // Report unrecongized errors without halting wallet initialization
+    // Failures to create the offscreen document does not compromise wallet data integrity or
+    // core functionality, it's just needed for specific features.
+    captureException(error);
     return;
   }
 
   // In case we are in a bad state where the offscreen document is not loading, timeout and let execution continue.
   const timeoutPromise = new Promise((resolve) => {
-    setTimeout(resolve, 5000);
+    setTimeout(resolve, OFFSCREEN_LOAD_TIMEOUT);
   });
 
   await Promise.race([loadPromise, timeoutPromise]);

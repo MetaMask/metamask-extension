@@ -61,7 +61,7 @@ export const container: UIComponentFactory<BoxElement> = ({
         className: 'snap-ui-renderer__footer-centered',
       },
       children: {
-        element: 'SnapFooterButton',
+        element: 'SnapUIFooterButton',
         key: 'default-button',
         props: {
           onCancel,
@@ -80,6 +80,10 @@ export const container: UIComponentFactory<BoxElement> = ({
       flexDirection: FlexDirection.Column,
       height: BlockSize.Full,
       className: 'snap-ui-renderer__container',
+      style: {
+        overflowY: 'auto',
+        paddingBottom: useFooter ? '80px' : 'initial',
+      },
     },
   };
 };

@@ -108,9 +108,7 @@ const baseStore = {
       chainId: CHAIN_IDS.GOERLI,
     }),
     tokens: [],
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-    },
+    preferences: {},
     currentCurrency: 'USD',
     currencyRates: {},
     featureFlags: {
@@ -163,6 +161,8 @@ const baseStore = {
     tokenList: {},
     ensResolutionsByAddress: {},
     snaps: {},
+    useNonceField: true,
+    customNonceValue: '70',
   },
   confirmTransaction: {
     txData: {

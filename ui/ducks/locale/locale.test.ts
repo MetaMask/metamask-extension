@@ -1,3 +1,5 @@
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../app/_locales/index.json';
 import { getIntlLocale } from './locale';
 

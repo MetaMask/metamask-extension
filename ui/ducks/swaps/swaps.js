@@ -435,7 +435,14 @@ export const getPendingSmartTransactions = (state) => {
 };
 
 export const getSmartTransactionFees = (state) => {
-  return state.metamask.smartTransactionsState?.fees;
+  const usedQuote = getUsedQuote(state);
+  if (!usedQuote?.isGasIncludedTrade) {
+    return state.metamask.smartTransactionsState?.fees;
+  }
+  return {
+    approvalTxFees: usedQuote.approvalTxFees,
+    tradeTxFees: usedQuote.tradeTxFees,
+  };
 };
 
 export const getSmartTransactionEstimatedGas = (state) => {
@@ -780,6 +787,8 @@ export const fetchQuotesAndSetQuoteState = (
             fromAddress: selectedAccount.address,
             balanceError,
             sourceDecimals: fromTokenDecimals,
+            enableGasIncludedQuotes:
+              currentSmartTransactionsEnabled && smartTransactionsOptInStatus,
           },
           {
             sourceTokenInfo,
@@ -933,6 +942,7 @@ export const signAndSendSwapsSmartTransaction = ({
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
+      gas_included: usedQuote.isGasIncludedTrade,
       ...additionalTrackingParams,
     };
     trackEvent({
@@ -964,15 +974,21 @@ export const signAndSendSwapsSmartTransaction = ({
           value: '0x0',
         };
       }
-      const fees = await dispatch(
-        fetchSwapsSmartTransactionFees({
-          unsignedTransaction,
-          approveTxParams: updatedApproveTxParams,
-          fallbackOnNotEnoughFunds: true,
-        }),
-      );
+      let fees;
+      if (usedQuote.isGasIncludedTrade) {
+        fees = getSmartTransactionFees(state);
+      } else {
+        fees = await dispatch(
+          fetchSwapsSmartTransactionFees({
+            unsignedTransaction,
+            approveTxParams: updatedApproveTxParams,
+            fallbackOnNotEnoughFunds: true,
+          }),
+        );
+      }
       if (!fees) {
         log.error('"fetchSwapsSmartTransactionFees" failed');
+        dispatch(setSwapsSTXSubmitLoading(false));
         dispatch(setCurrentSmartTransactionsError(StxErrorTypes.unavailable));
         return;
       }
@@ -1025,6 +1041,7 @@ export const signAndSendSwapsSmartTransaction = ({
         );
       }
       history.push(SMART_TRANSACTION_STATUS_ROUTE);
+      dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
       dispatch(setSwapsSTXSubmitLoading(false));
@@ -1035,8 +1052,6 @@ export const signAndSendSwapsSmartTransaction = ({
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch(setCurrentSmartTransactionsError(errorObj?.error));
       }
-    } finally {
-      dispatch(setSwapsSTXSubmitLoading(false));
     }
   };
 };

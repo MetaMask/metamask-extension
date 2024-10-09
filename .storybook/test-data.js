@@ -2,7 +2,10 @@ import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../shared/constants/network';
+import {
+  CHAIN_IDS,
+  LINEA_MAINNET_DISPLAY_NAME,
+} from '../shared/constants/network';
 import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
@@ -673,7 +676,12 @@ const state = {
     welcomeScreenSeen: false,
     currentLocale: 'en',
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: true,
+      tokenSortConfig: {
+        key: 'token-sort-key',
+        order: 'dsc',
+        sortCallback: 'stringNumeric',
+      },
     },
     incomingTransactionsPreferences: {
       [CHAIN_IDS.MAINNET]: true,
@@ -1218,23 +1226,37 @@ const state = {
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
       },
     ],
-    ...mockNetworkState({
+    ...mockNetworkState(
+      {
         id: 'test-networkConfigurationId-1',
         rpcUrl: 'https://testrpc.com',
         chainId: '0x1',
         nickname: 'mainnet',
+        name: 'mainnet',
         blockExplorerUrl: 'https://etherscan.io',
         metadata: {
           EIPS: { 1559: true },
           status: NetworkStatus.Available,
-        }
-      }, {
+        },
+      },
+      {
         id: 'test-networkConfigurationId-2',
+        rpcUrl: 'https://testrpc2.com',
+        chainId: '0xe708',
+        nickname: LINEA_MAINNET_DISPLAY_NAME,
+        name: LINEA_MAINNET_DISPLAY_NAME,
+        blockExplorerUrl: 'https://lineascan.build',
+        metadata: { EIPS: { 1559: true }, status: NetworkStatus.Available },
+      },
+      {
+        id: 'test-networkConfigurationId-3',
         rpcUrl: 'http://localhost:8545',
         chainId: '0x539',
+        name: 'test network',
         ticker: 'ETH',
         nickname: 'Localhost 8545',
-      }),
+      },
+    ),
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [
@@ -1278,6 +1300,7 @@ const state = {
     ipfsGateway: 'dweb.link',
     migratedPrivacyMode: false,
     selectedAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+    selectedNetworkClientId: 'test-networkConfigurationId-1',
     metaMetricsId:
       '0xc2377d11fec1c3b7dd88c4854240ee5e3ed0d9f63b00456d98d80320337b827f',
     currentCurrency: 'usd',

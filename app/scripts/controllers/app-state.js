@@ -7,6 +7,8 @@ import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { isBeta } from '../../../ui/helpers/utils/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
@@ -55,6 +57,7 @@ export default class AppStateController extends EventEmitter {
       trezorModel: null,
       currentPopupId: undefined,
       onboardingDate: null,
+      lastViewedUserSurvey: null,
       newPrivacyPolicyToastClickedOrClosed: null,
       newPrivacyPolicyToastShownDate: null,
       // This key is only used for checking if the user had set advancedGasFee
@@ -193,6 +196,12 @@ export default class AppStateController extends EventEmitter {
   setOnboardingDate() {
     this.store.updateState({
       onboardingDate: Date.now(),
+    });
+  }
+
+  setLastViewedUserSurvey(id) {
+    this.store.updateState({
+      lastViewedUserSurvey: id,
     });
   }
 
@@ -528,6 +537,12 @@ export default class AppStateController extends EventEmitter {
   setCustodianDeepLink({ fromAddress, custodyId }) {
     this.store.updateState({
       custodianDeepLink: { fromAddress, custodyId },
+    });
+  }
+
+  setNoteToTraderMessage(message) {
+    this.store.updateState({
+      noteToTraderMessage: message,
     });
   }
 

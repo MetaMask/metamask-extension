@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "QR donanım cüzdanınızı bağlayın"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Giriş talebindeki adres, giriş yapmak için kullandığınız hesapla uyumlu değil."
   },
@@ -186,14 +183,14 @@
   "addANetwork": {
     "message": "Ağ ekle"
   },
-  "addANetworkManually": {
-    "message": "Manuel olarak bir ağ ekle"
-  },
   "addANickname": {
     "message": "Takma ad ekle"
   },
   "addAccount": {
     "message": "Hesap ekleyin"
+  },
+  "addAccountToMetaMask": {
+    "message": "MetaMask'e hesap ekle"
   },
   "addAcquiredTokens": {
     "message": "MetaMask kullanarak elde ettiğiniz tokenleri ekleyin"
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "Güvendiğiniz arkadaşlarınızı ve adresleri ekleyin"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "Popüler ağlar listesinden ekle veya manuel olarak bir ağ ekle. Yalnızca güvendiğin varlıklarla etkileşim kur."
-  },
   "addHardwareWallet": {
     "message": "Donanım cüzdanı ekleyin"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "Not ekleyin"
   },
-  "addMoreNetworks": {
-    "message": "manuel olarak daha fazla ağ ekleyin"
-  },
   "addNetwork": {
     "message": "Ağ ekle"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "Bu ağ bağlantısı üçüncü taraflara dayalıdır. Bu bağlantı daha az güvenli olabilir veya üçüncü tarafların aktiviteleri takip etmesine olanak sağlayabilir. $1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "Yeni bir Ethereum hesabı ekle"
@@ -320,6 +307,9 @@
   "addUrl": {
     "message": "URL ekle"
   },
+  "addingAccount": {
+    "message": "Hesap ekleniyor"
+  },
   "addingCustomNetwork": {
     "message": "Ağ Ekleniyor"
   },
@@ -328,9 +318,6 @@
   },
   "additionalNetworks": {
     "message": "İlave ağlar"
-  },
-  "additionalRpcUrl": {
-    "message": "Diğer RPC URL"
   },
   "address": {
     "message": "Adres"
@@ -393,12 +380,6 @@
   },
   "alertActionUpdateGasFeeLevel": {
     "message": "Gaz seçeneklerini güncelle"
-  },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Bu talebi onaylarsanız dolandırıcılıkla bilinen üçüncü bir taraf tüm varlıklarınızı çalabilir."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Çoklu uyarı!"
   },
   "alertDisableTooltip": {
     "message": "\"Ayarlar > Uyarılar\" kısmında değiştirilebilir"
@@ -663,9 +644,6 @@
   "back": {
     "message": "Geri"
   },
-  "backup": {
-    "message": "Yedekle"
-  },
   "backupApprovalInfo": {
     "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
   },
@@ -677,12 +655,6 @@
   },
   "backupNow": {
     "message": "Şimdi yedekle"
-  },
-  "backupUserData": {
-    "message": "Verilerini yedekle"
-  },
-  "backupUserDataDescription": {
-    "message": "Kişileriniz ve tercihleriniz gibi verileri yedekleyebilirsiniz."
   },
   "balance": {
     "message": "Bakiye"
@@ -994,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Uyarıyı kabul ediyor ve yine de ilerlemek istiyorum"
   },
-  "confirmAlertModalDetails": {
-    "message": "Oturum açarsanız dolandırıcıklarla bilinen üçüncü bir taraf tüm varlıklarınızı ele geçirebilir. İlerlemeden önce lütfen uyarıları inceleyin."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Varlıklarınız risk altında olabilir"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Devam et düğmesine tıkladığınızda sizi şuraya yönlendireceğiz: $1."
   },
@@ -1008,9 +974,6 @@
   },
   "confirmConnectionTitle": {
     "message": "$1 ile bağlantıyı onayla"
-  },
-  "confirmDeletion": {
-    "message": "Silme işlemini onayla"
   },
   "confirmFieldPaymaster": {
     "message": "Ücreti ödeyen taraf"
@@ -1024,19 +987,13 @@
   "confirmRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini Onayla"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "RPC URL adresini silmek istediğinizden emin misiniz? Bilgileriniz bu ağ için kaydedilmeyecektir."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Bu site token'lerinizi harcamak için izin istiyor."
   },
   "confirmTitleDescSIWESignature": {
     "message": "Bir site bu hesabın sahibi olduğunuzu kanıtlamak için giriş yapmanızı istiyor."
   },
-  "confirmTitleDescSignature": {
-    "message": "Bu mesajı sadece içeriği onaylıyorsanız ve talepte bulunan siteye güveniyorsanız onaylayın."
-  },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Harcama üst limiti talebi"
   },
   "confirmTitleSIWESignature": {
@@ -1377,9 +1334,6 @@
   "custom": {
     "message": "Gelişmiş"
   },
-  "customContentSearch": {
-    "message": "Önceden eklenmiş bir ağı ara"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Gaz fiyatını özelleştirmek için $1 kullanın. Bu, bilgi sahibi değilseniz kafa karıştırıcı olabilir. Riski size ait olmak üzere kullanın.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1499,18 +1453,12 @@
   "deleteContact": {
     "message": "Kişiyi sil"
   },
-  "deleteNetwork": {
-    "message": "Ağı Sil?"
-  },
   "deleteNetworkIntro": {
     "message": "Bu ağı silerseniz bu ağdaki varlıklarınızı görüntülemek için bu ağı tekrar eklemeniz gerekecek"
   },
   "deleteNetworkTitle": {
     "message": "$1 ağını sil?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "RPC URL'sini sil"
   },
   "deposit": {
     "message": "Para Yatır"
@@ -1536,6 +1484,9 @@
   },
   "details": {
     "message": "Ayrıntılar"
+  },
+  "developerOptions": {
+    "message": "Geliştirici Seçenekleri"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Orijinal gaz ücretinden minimum %10'luk bir artışı karşılamadığı için \"$1\" devre dışı bırakıldı.",
@@ -1602,9 +1553,6 @@
   },
   "domain": {
     "message": "Alan"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "Ağ alan aramasını desteklemiyor"
   },
   "done": {
     "message": "Bitti"
@@ -1779,12 +1727,6 @@
   "ensDomainsSettingTitle": {
     "message": "ENS alanlarını adres çubuğunda göster"
   },
-  "ensIllegalCharacter": {
-    "message": "ENS için uygun olmayan karakter."
-  },
-  "ensRegistrationError": {
-    "message": "ENS adı kaydında hata"
-  },
   "ensUnknownError": {
     "message": "ENS arama başarısız oldu."
   },
@@ -1879,8 +1821,8 @@
   "existingChainId": {
     "message": "Girdiğiniz bilgiler mevcut bir zincir kimliği ile ilişkilidir."
   },
-  "existingRpcUrl": {
-    "message": "Bu URL adresi başka bir zincir kimliği ile ilişkilidir."
+  "existingRequestsBannerAlertDesc": {
+    "message": "En son talebinizi görüntülemek ve onaylamak için önce mevcut taleplerinizi onaylamanız veya reddetmeniz gereklidir."
   },
   "expandView": {
     "message": "Görünümü genişlet"
@@ -1913,9 +1855,6 @@
   "failedToFetchChainId": {
     "message": "Zincir kimliği alınamadı. RPC URL adresiniz doğru mu?"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "Ticker sembolü doğrulama verileri şu anda mevcut değil, girdiğin sembolün doğru olduğundan emin ol. Bu ağ için gördüğün dönüşüm oranlarını etkileyecektir"
-  },
   "failureMessage": {
     "message": "Bir şeyler ters gitti ve işlemi tamamlayamadık"
   },
@@ -1928,16 +1867,9 @@
   "feeDetails": {
     "message": "Ücret bilgileri"
   },
-  "fiat": {
-    "message": "Fiat Para",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "Doğrusunu şurada bulabilirsiniz:"
   },
   "flaskWelcomeUninstall": {
     "message": "bu uzantıyı kaldırmalısın",
@@ -2425,14 +2357,8 @@
   "invalidAddressRecipient": {
     "message": "Alıcı adresi geçersiz"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH ağı yok, küçük harfle başlayın"
-  },
   "invalidAssetType": {
     "message": "Bu varlık bir NFT'dir ve NFT'ler sekmesi altında bulunan NFT'leri İçe Aktar sayfasına yeniden eklenmesi gerekir"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URL adresi geçersiz"
   },
   "invalidChainIdTooBig": {
     "message": "Zincir kimliği geçersiz. Zincir kimliği çok büyük."
@@ -2905,6 +2831,10 @@
     "message": "Bir takma ad seçin...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 sizden şunun için onay istiyor:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Bu sitenin aşağıdakileri yapmasına izin vermek istiyor musunuz?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -2918,10 +2848,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Bu ağ, ilişkili zincir kimliği veya adı ile uyumlu değil. Pek çok popüler token $1 adını kullanarak bunu dolandırıcılar için hedef haline getirir. Dolandırıcılar, karşılığında kendilerine daha değerli para birimi göndermek üzere sizi kandırabilir. Devam etmeden önce her şeyi doğrulayın.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Bu potansiyel bir dolandırıcılıktır"
+    "message": "Bu potansiyel bir dolandırıcılıktır",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Yardıma mı ihtiyacınız var? $1 bölümüne ulaşın",
@@ -2948,9 +2879,6 @@
   },
   "network": {
     "message": "Ağ:"
-  },
-  "networkAddedSuccessfully": {
-    "message": "Ağ başarılı bir şekilde eklendi!"
   },
   "networkDetails": {
     "message": "Ağ bilgileri"
@@ -3011,9 +2939,6 @@
   },
   "networkProvider": {
     "message": "Ağ sağlayıcısı"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "İşlemlerin imzalanması için kullanılan zincir kimliği. Ağ tarafından yanıt olarak sunulan zincir kimliği ile uyumlu olmalıdır. Bir ondalık ya da \"0x\" ön ekli on altılı sayı girebilirsiniz ancak biz sayıyı ondalık olarak gösteririz."
   },
   "networkStatus": {
     "message": "Ağ durumu"
@@ -3151,17 +3076,11 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noAddressForName": {
-    "message": "Bu isim için adres tanımlanmamış."
-  },
   "noConnectedAccountDescription": {
     "message": "Devam etmek için bu sitede kullanmak istediğiniz bir hesap seçin."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
-  },
-  "noConversionDateAvailable": {
-    "message": "Para birimi dönüşüm tarihi mevcut değil"
   },
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
@@ -3466,9 +3385,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "IPFS ağ geçidi URL adresi geçerli"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "Özel ağ ekle"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Ethereum verilerine mümkün olan en güvenilir ve gizli erişimi sunmak amacıyla uzak yordam çağrısı (RPC) sağlayıcısı olarak Infura kullanırız. Kendi RPC'nizi seçebilirsiniz ancak tüm RPC'lerin işlemleri gerçekleştirmek için IP adresinizi ve Ethereum cüzdanınızı alacağını unutmayın. Infura'nın verileri nasıl kullandığı hakkında daha fazla bilgi edinmek için $1 bölümümüzü okuyun."
   },
@@ -3497,9 +3413,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Gizlilik Politikası"
   },
-  "onboardingMetametricsModalTitle": {
-    "message": "Özel ağ ekle"
-  },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 uygulama üzerindeki tıklamalar ve görüntülemeler depolanır ancak diğer bilgiler (genel adresiniz gibi) depolanmaz.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
@@ -3520,6 +3433,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "İsteğe bağlı:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Profiliniz için kullanım verilerini toplarken gizliliğinizi nasıl koruduğumuzu öğrenin."
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask'i iyileştirmemize yardımcı olun"
@@ -3589,9 +3505,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "Kötü amaçlı bir ağ sağlayıcı blokzinciri durumu hakkında yalan söyleyebilir ve ağ aktivitenizi kaydedebilir. Sadece güvendiğiniz özel ağları ekleyin."
-  },
   "onlyConnectTrust": {
     "message": "Sadece güvendiğiniz sitelere bağlayın. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3615,9 +3528,6 @@
   },
   "optional": {
     "message": "İsteğe bağlı"
-  },
-  "optionalWithParanthesis": {
-    "message": "(İsteğe bağlı)"
   },
   "options": {
     "message": "Seçenekler"
@@ -3970,9 +3880,6 @@
     "message": "+ $1 tane daha",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "popularCustomNetworks": {
-    "message": "Popüler özel ağlar"
-  },
   "popularNetworkAddToolTip": {
     "message": "Bu ağların bazıları üçüncü taraflara dayalıdır. Bağlantılar daha az güvenilir olabilir veya üçüncü tarafların aktiviteleri takip etmesine olanak sağlayabilir. $1",
     "description": "$1 is Learn more link"
@@ -3994,12 +3901,6 @@
   },
   "priceUnavailable": {
     "message": "fiyat mevcut değil"
-  },
-  "primaryCurrencySetting": {
-    "message": "Öncelikli para birimi"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Değerlerin zincirin yerli para biriminde (ör. ETH) görüntülenmesini önceliklendirmek için yerli seçimi yapın. Seçtiğiniz fiat parada değerlerin gösterilmesini önceliklendirmek için Fiat Para seçin."
   },
   "primaryType": {
     "message": "Öncelikli tür"
@@ -4162,12 +4063,6 @@
   "receive": {
     "message": "Al"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Genel adres (0x) veya ENS adı girin"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Genel adres (0x) veya alan adı girin"
-  },
   "recommendedGasLabel": {
     "message": "Önerilen"
   },
@@ -4200,6 +4095,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "İmza taleplerini geliştirilmiş bir biçimde görmek için bunu açın."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "İşlem talepleri iyileştirildi"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "İşlem taleplerini gelişmiş bir biçimde görmek için bunu açın."
   },
   "refreshList": {
     "message": "Listeyi yenile"
@@ -4337,9 +4238,6 @@
   "restoreUserData": {
     "message": "Kullanıcı verilerini geri yükle"
   },
-  "restoreUserDataDescription": {
-    "message": "Kişiler ve tercihler gibi verileri yedek bir dosyadan geri yükleyebilirsiniz."
-  },
   "resultPageError": {
     "message": "Hata"
   },
@@ -4400,6 +4298,9 @@
   },
   "reviewAlerts": {
     "message": "Uyarıları incele"
+  },
+  "reviewPermissions": {
+    "message": "İzinleri incele"
   },
   "revokeAllTokensTitle": {
     "message": "Tüm $1 için izin erişim ve transfer izni geri çekilsin mi?",
@@ -4827,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "İşleminiz tamamlandı"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Beklettiğimiz için özür dileriz"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "İşleminiz $1 dahilinde sonuçlanmazsa iptal edilir ve sizden gaz ücreti alınmaz.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Akıllı İşlemler"
   },
@@ -5250,10 +5144,6 @@
   "stxCancelledSubDescription": {
     "message": "Swap işlemini tekrar deneyin. Bir dahaki sefere sizi benzer risklere karşı korumak için burada olacağız."
   },
-  "stxEstimatedCompletion": {
-    "message": "Tamamlanmasına kalan tahmini süre $1 altında",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
-  },
   "stxFailure": {
     "message": "Swap başarısız oldu"
   },
@@ -5308,9 +5198,6 @@
   },
   "suggestedTokenName": {
     "message": "Önerilen isim:"
-  },
-  "suggestedTokenSymbol": {
-    "message": "Önerilen ticker sembolü:"
   },
   "support": {
     "message": "Destek"
@@ -5800,9 +5687,6 @@
   "termsOfUseTitle": {
     "message": "Kullanım Şartları bölümümüz güncellendi"
   },
-  "testNetworks": {
-    "message": "Test ağları"
-  },
   "theme": {
     "message": "Tema"
   },
@@ -6114,9 +5998,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "Kayıtlarımıza göre bu URL adresi bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
-  },
   "unapproved": {
     "message": "Onaylanmadı"
   },
@@ -6174,9 +6055,6 @@
   "updateRequest": {
     "message": "Talebi güncelle"
   },
-  "updatedWithDate": {
-    "message": "$1 güncellendi"
-  },
   "uploadDropFile": {
     "message": "Dosyanızı buraya sürükleyin"
   },
@@ -6185,9 +6063,6 @@
   },
   "urlErrorMsg": {
     "message": "URL adresleri için uygun HTTP/HTTPS ön eki gerekir."
-  },
-  "urlExistsErrorMsg": {
-    "message": "Bu URL şu anda $1 ağı tarafından kullanılıyor."
   },
   "use4ByteResolution": {
     "message": "Akıllı sözleşmelerin şifresini çöz"
@@ -6398,9 +6273,6 @@
   "whatsThis": {
     "message": "Bu nedir?"
   },
-  "wrongChainId": {
-    "message": "Bu zincir kimliği ağ adı ile uyumlu değil."
-  },
   "wrongNetworkName": {
     "message": "Kayıtlarımıza göre ağ adı bu zincir kimliği ile doğru şekilde eşleşmiyor olabilir."
   },
@@ -6413,10 +6285,6 @@
   },
   "you": {
     "message": "Siz"
-  },
-  "youHaveAddedAll": {
-    "message": "Tüm popüler ağları eklediniz. $1 daha fazla ağ gekşefedebilir veya $2 seçeneğini seçebilirsiniz",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bu özelliği kullanmak için kamera erişimine izin vermeniz gerekir."

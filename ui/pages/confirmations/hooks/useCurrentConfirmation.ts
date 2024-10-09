@@ -1,40 +1,39 @@
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
   getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
   getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
-  latestPendingConfirmationSelector,
+  oldestPendingConfirmationSelector,
   selectPendingApproval,
 } from '../../../selectors';
+import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
   REDESIGN_APPROVAL_TYPES,
   REDESIGN_DEV_TRANSACTION_TYPES,
   REDESIGN_USER_TRANSACTION_TYPES,
 } from '../utils';
-import { selectUnapprovedMessage } from '../../../selectors/signatures';
-import { isMMI } from '../../../helpers/utils/build-types';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
  *
  * DO NOT USE within a redesigned confirmation.
- * Instead use currentConfirmationSelector to read the current confirmation directly from the Redux state.
+ * Instead use ConfirmContext to read the current confirmation.
  *
  * @returns The current confirmation data.
  */
 const useCurrentConfirmation = () => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
-  const latestPendingApproval = useSelector(latestPendingConfirmationSelector);
-  const confirmationId = paramsConfirmationId ?? latestPendingApproval?.id;
+  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
+  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
 
   const isRedesignedSignaturesUserSettingEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
@@ -95,8 +94,7 @@ const useCurrentConfirmation = () => {
   // `REDESIGN_USER_TRANSACTION_TYPES` or `REDESIGN_DEV_TRANSACTION_TYPES`
   // respectively).
   const shouldUseRedesign =
-    shouldUseRedesignForSignatures ||
-    (!isMMI() && shouldUseRedesignForTransactions);
+    shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {

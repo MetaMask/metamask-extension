@@ -40,9 +40,10 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/plus-minus.svg');"
             />
           </div>
@@ -57,9 +58,10 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/stake.svg');"
             />
           </div>
@@ -74,9 +76,10 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/diagram.svg');"
             />
           </div>
@@ -93,9 +96,10 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
           </div>
@@ -111,9 +115,10 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
           </div>
@@ -129,9 +134,10 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
@@ -147,9 +153,10 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/scan-barcode.svg');"
             />
           </div>
@@ -229,7 +236,7 @@ exports[`AssetPage should render a native asset 1`] = `
                   data-testid="multichain-token-list-item-secondary-value"
                 />
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-value"
                 >
                   0 TEST
@@ -342,9 +349,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/plus-minus.svg');"
             />
           </div>
@@ -360,9 +368,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/stake.svg');"
             />
           </div>
@@ -378,9 +387,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/diagram.svg');"
             />
           </div>
@@ -396,9 +406,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
@@ -413,9 +424,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
           </div>
@@ -431,9 +443,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
           </div>
@@ -502,7 +515,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                   class="mm-box mm-box--display-flex"
                 >
                   <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
                     data-testid="token-increase-decrease-percentage-0x309375769E79382beFDEc5bdab51063AeBDC4936"
                   />
                 </div>
@@ -515,7 +528,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                   data-testid="multichain-token-list-item-secondary-value"
                 />
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-value"
                 >
                   0
@@ -819,9 +832,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/plus-minus.svg');"
             />
           </div>
@@ -837,9 +851,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/stake.svg');"
             />
           </div>
@@ -855,9 +870,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/diagram.svg');"
             />
           </div>
@@ -873,9 +889,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
@@ -890,9 +907,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
           </div>
@@ -908,9 +926,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
           </div>
@@ -979,7 +998,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                   class="mm-box mm-box--display-flex"
                 >
                   <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
                     data-testid="token-increase-decrease-percentage-0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55"
                   />
                 </div>
@@ -992,7 +1011,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                   data-testid="multichain-token-list-item-secondary-value"
                 />
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-value"
                 >
                   0
