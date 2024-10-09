@@ -1,12 +1,18 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { merge } from 'lodash';
+import copyToClipboard from 'copy-to-clipboard';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { flushPromises } from '../../../test/lib/timer-helpers';
-import { decryptMsgInline } from '../../store/actions';
+import {
+  decryptMsg,
+  decryptMsgInline,
+  cancelDecryptMsg,
+} from '../../store/actions';
 import { useScrollRequired } from '../../hooks/useScrollRequired';
 import ConfirmDecryptMessage from './confirm-decrypt-message.component';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 
 const messageData = {
   domain: {
@@ -46,17 +52,19 @@ const mockUseScrollRequiredResult = {
   },
 };
 
-jest.mock('../../store/background-connection', () => ({
-  ...jest.requireActual('../../store/background-connection'),
-  submitRequestToBackground: jest.fn(),
-}));
-
 jest.mock('../../hooks/useScrollRequired', () => ({
   useScrollRequired: jest.fn(),
 }));
 
 jest.mock('../../store/actions', () => ({
+  cancelDecryptMsg: jest.fn(),
+  decryptMsg: jest.fn(),
   decryptMsgInline: jest.fn(),
+}));
+
+jest.mock('copy-to-clipboard', () => ({
+  __esModule: true,
+  default: jest.fn(),
 }));
 
 const state = merge({}, mockState, {
@@ -69,24 +77,40 @@ const state = merge({}, mockState, {
 });
 
 describe('ConfirmDecryptMessage Component', () => {
-  const mockedDecryptMsgInline = jest.mocked(decryptMsgInline);
-  const mockedUseScrollRequiredResult = jest.mocked(useScrollRequired);
+  const mockCopyToClipboard = jest.mocked(copyToClipboard);
+  const mockCancelDecryptMsg = jest.mocked(cancelDecryptMsg);
+  const mockDecryptMsgInline = jest.mocked(decryptMsgInline);
+  const mockDecryptMsg = jest.mocked(decryptMsg);
+  const mockUseScrollRequired = jest.mocked(useScrollRequired);
+  const mockTrackEvent = jest.fn();
 
   let store;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     store = configureMockStore()(state);
 
-    mockedDecryptMsgInline.mockReturnValue({
+    mockDecryptMsgInline.mockReturnValue({
       rawSig: mockRawSignatureMessage,
+      type: 'DECRYPT_MESSAGE_INLINE',
+    });
+    mockDecryptMsg.mockReturnValue({
       type: 'DECRYPT_MESSAGE',
     });
+    mockCancelDecryptMsg.mockReturnValue({
+      type: 'CANCEL_DECRYPT_MESSAGE',
+    });
 
-    mockedUseScrollRequiredResult.mockReturnValue(mockUseScrollRequiredResult);
+    mockUseScrollRequired.mockReturnValue(mockUseScrollRequiredResult);
   });
 
   const renderAndUnlockMessage = async () => {
-    const result = renderWithProvider(<ConfirmDecryptMessage />, store);
+    const result = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <ConfirmDecryptMessage />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
 
     const unlockButton = result.getByTestId('message-lock');
     unlockButton.click();
@@ -99,6 +123,49 @@ describe('ConfirmDecryptMessage Component', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('shows error on decrypt inline error', async () => {
+    mockDecryptMsgInline.mockReturnValue({
+      error: 'Decrypt inline error',
+      type: 'DECRYPT_MESSAGE_INLINE',
+    });
+
+    const { container } = await renderAndUnlockMessage();
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('decrypt button calls decrypt action and calls metric event', async () => {
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <ConfirmDecryptMessage />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    const confirmButton = getByText('Decrypt');
+    confirmButton.click();
+    await flushPromises();
+
+    expect(mockDecryptMsg).toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalled();
+  });
+
+  it('cancel button calls cancel action and calls metric event', async () => {
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <ConfirmDecryptMessage />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    const confirmButton = getByText('Cancel');
+    confirmButton.click();
+    await flushPromises();
+
+    expect(mockCancelDecryptMsg).toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalled();
+  });
+
   it('shows the correct message data', async () => {
     const { container, getByText } = await renderAndUnlockMessage();
 
@@ -106,16 +173,27 @@ describe('ConfirmDecryptMessage Component', () => {
     expect(getByText(mockRawSignatureMessage)).toBeInTheDocument();
   });
 
+  it('shows the copy button after decrypting inline and calls copy to clipboard on click', async () => {
+    const { getByTestId } = await renderAndUnlockMessage();
+
+    const copyButton = getByTestId('message-copy');
+    expect(copyButton).toBeInTheDocument();
+
+    copyButton.click();
+    expect(mockCopyToClipboard).toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalled();
+  });
+
   describe('on long message', () => {
     beforeEach(() => {
-      mockedDecryptMsgInline.mockReturnValue({
+      mockDecryptMsgInline.mockReturnValue({
         rawSig: mockRawSignatureLongMessage,
-        type: 'DECRYPT_MESSAGE',
+        type: 'DECRYPT_MESSAGE_INLINE',
       });
     });
 
     it('shows scroll to bottom button', async () => {
-      mockedUseScrollRequiredResult.mockReturnValue(
+      mockUseScrollRequired.mockReturnValue(
         merge({}, mockUseScrollRequiredResult, { isScrollable: true }),
       );
 
@@ -126,7 +204,7 @@ describe('ConfirmDecryptMessage Component', () => {
     });
 
     it('confirm action is disabled if scroll not finished', async () => {
-      mockedUseScrollRequiredResult.mockReturnValue(
+      mockUseScrollRequired.mockReturnValue(
         merge({}, mockUseScrollRequiredResult, { isScrollable: true }),
       );
 
@@ -138,7 +216,7 @@ describe('ConfirmDecryptMessage Component', () => {
 
     it('scroll to bottom button click calls scroll to bottom action', async () => {
       const spyScrollToBottomAction = jest.fn();
-      mockedUseScrollRequiredResult.mockReturnValue(
+      mockUseScrollRequired.mockReturnValue(
         merge({}, mockUseScrollRequiredResult, {
           isScrollable: true,
           scrollToBottom: spyScrollToBottomAction,
@@ -154,7 +232,7 @@ describe('ConfirmDecryptMessage Component', () => {
     });
 
     it('enables confirm action if scrolled to bottom', async () => {
-      mockedUseScrollRequiredResult.mockReturnValue(
+      mockUseScrollRequired.mockReturnValue(
         merge({}, mockUseScrollRequiredResult, {
           isScrollable: true,
           hasScrolledToBottom: true,

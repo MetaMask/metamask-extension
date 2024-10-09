@@ -190,6 +190,196 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
 </div>
 `;
 
+exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`] = `
+<div>
+  <div
+    class="request-decrypt-message__container"
+  >
+    <div
+      class="request-decrypt-message__header"
+    >
+      <div
+        class="request-decrypt-message__header-background"
+      />
+      <div
+        class="request-decrypt-message__header__text"
+      >
+        Decrypt request
+      </div>
+      <div
+        class="request-decrypt-message__header__tip-container"
+      >
+        <div
+          class="request-decrypt-message__header__tip"
+        />
+      </div>
+    </div>
+    <div
+      class="request-decrypt-message__body"
+    >
+      <div
+        class="request-decrypt-message__account-info"
+      >
+        <div
+          class="request-decrypt-message__account"
+        >
+          <div
+            class="request-decrypt-message__account-text"
+          >
+            Account:
+          </div>
+          <div
+            class="request-decrypt-message__account-item"
+          >
+            <div
+              class="account-list-item undefined"
+              data-testid="account-list-item"
+            >
+              <div
+                class="account-list-item__top-row"
+              >
+                <div
+                  class=""
+                >
+                  <div
+                    class="identicon account-list-item__identicon"
+                    style="height: 18px; width: 18px; border-radius: 9px;"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(250, 58, 0);"
+                    >
+                      <svg
+                        height="18"
+                        width="18"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#18CDF2"
+                          height="18"
+                          transform="translate(-0.5897213458840913 -1.8586597890715306) rotate(328.9 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#035E56"
+                          height="18"
+                          transform="translate(-10.292884711218024 5.9582598028585885) rotate(176.2 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#F26602"
+                          height="18"
+                          transform="translate(9.375661135250958 -7.990391094185859) rotate(468.9 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="account-list-item__account-name"
+                >
+                  Test Account
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="request-decrypt-message__balance"
+        >
+          <div
+            class="request-decrypt-message__balance-text"
+          >
+            Balance:
+          </div>
+          <div
+            class="request-decrypt-message__balance-value"
+          >
+            966.987986 ETH
+          </div>
+        </div>
+      </div>
+      <div
+        class="request-decrypt-message__visual"
+      >
+        <section>
+          <i
+            class="request-decrypt-message__visual-identicon--default"
+          >
+            T
+          </i>
+          <div
+            class="request-decrypt-message__notice"
+          >
+            test would like to read this message to complete your action
+          </div>
+        </section>
+      </div>
+      <div
+        class="request-decrypt-message__message-container"
+      >
+        <div
+          class="request-decrypt-message__message"
+        >
+          <div
+            class="request-decrypt-message__message-text"
+          >
+            
+            This message cannot be decrypted due to error: Decrypt inline error
+          </div>
+          <div
+            class="request-decrypt-message__message-cover request-decrypt-message__message-lock--pressed"
+          />
+          <div
+            class="request-decrypt-message__message-lock request-decrypt-message__message-lock--pressed"
+            data-testid="message-lock"
+          >
+            <div
+              class="request-decrypt-message__message-lock__container"
+            >
+              <i
+                class="fa fa-lock fa-lg request-decrypt-message__message-lock__container__icon"
+              />
+              <div
+                class="request-decrypt-message__message-lock__container__text"
+              >
+                Decrypt message
+              </div>
+            </div>
+          </div>
+        </div>
+        <div />
+      </div>
+    </div>
+    <div
+      class="page-container__footer"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          data-testid="page-container-footer-cancel"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+        >
+          Decrypt
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
 <div>
   <div
@@ -357,6 +547,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
         </div>
         <div
           class="request-decrypt-message__message-copy"
+          data-testid="message-copy"
         >
           <div
             class="request-decrypt-message__message-copy-tooltip"

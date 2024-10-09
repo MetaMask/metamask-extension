@@ -247,6 +247,7 @@ const MessageBody = forwardRef(
             onClick={copyMessage}
             onMouseDown={() => setCopyToClipboardPressed(true)}
             onMouseUp={() => setCopyToClipboardPressed(false)}
+            data-testid="message-copy"
           >
             <Tooltip
               position="bottom"
