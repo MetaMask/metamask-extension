@@ -1,15 +1,15 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
-import { AppSliceState } from '../../ducks/app/app';
-import { PRIVACY_POLICY_DATE } from '../../helpers/constants/privacy-policy';
+import { AppSliceState } from '../../../ducks/app/app';
+import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
   SURVEY_DATE,
   SURVEY_END_TIME,
   SURVEY_START_TIME,
-} from '../../helpers/constants/survey';
-import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../store/actionConstants';
-import { submitRequestToBackground } from '../../store/background-connection';
-import { MetaMaskReduxState } from '../../store/store';
+} from '../../../helpers/constants/survey';
+import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
+import { submitRequestToBackground } from '../../../store/background-connection';
+import { MetaMaskReduxState } from '../../../store/store';
 
 // TODO: get this into one of the larger definitions of state type
 type State = AppSliceState & {

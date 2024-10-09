@@ -3,35 +3,39 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { MILLISECOND, SECOND } from '../../../shared/constants/time';
-import { PRIVACY_POLICY_LINK, SURVEY_LINK } from '../../../shared/lib/ui-utils';
+import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
+import {
+  PRIVACY_POLICY_LINK,
+  SURVEY_LINK,
+} from '../../../../shared/lib/ui-utils';
+import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
+import {
+  BorderColor,
+  BorderRadius,
+  IconColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import {
+  DEFAULT_ROUTE,
+  REVIEW_PERMISSIONS,
+} from '../../../helpers/constants/routes';
+import { getURLHost } from '../../../helpers/utils/util';
+import { getShowAutoNetworkSwitchTest } from '../../../pages/routes/routes-helpers';
+import {
+  getPermittedAccountsForCurrentTab,
+  getSelectedAccount,
+  getUseNftDetection,
+} from '../../../selectors';
+import { hidePermittedNetworkToast } from '../../../store/actions';
 import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarNetwork,
   Icon,
   IconName,
-} from '../../components/component-library';
-import { Toast, ToastContainer } from '../../components/multichain';
-import { SurveyToast } from '../../components/ui/survey-toast';
-import { getAlertEnabledness } from '../../ducks/metamask/metamask';
-import {
-  BorderColor,
-  BorderRadius,
-  IconColor,
-  TextVariant,
-} from '../../helpers/constants/design-system';
-import {
-  DEFAULT_ROUTE,
-  REVIEW_PERMISSIONS,
-} from '../../helpers/constants/routes';
-import { getURLHost } from '../../helpers/utils/util';
-import {
-  getPermittedAccountsForCurrentTab,
-  getSelectedAccount,
-  getUseNftDetection,
-} from '../../selectors';
-import { hidePermittedNetworkToast } from '../../store/actions';
+} from '../../component-library';
+import { Toast, ToastContainer } from '../../multichain';
+import { SurveyToast } from '../../ui/survey-toast';
 import {
   getNftDetectionEnablementToast,
   getShowPrivacyPolicyToast,
@@ -40,7 +44,6 @@ import {
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
 } from './toast-master-selectors';
-import { getShowAutoNetworkSwitchTest } from './isolated';
 
 // Allow comparison with a previous value, in order to detect changes
 // (This pattern only works if ToastMaster is a singleton)
