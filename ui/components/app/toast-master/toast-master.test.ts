@@ -17,7 +17,7 @@ describe('#getShowSurveyToast', () => {
       new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
     const result = getShowSurveyToast({
       metamask: {
-        surveyLinkLastClickedOrClosed: null,
+        surveyLinkLastClickedOrClosed: undefined,
       },
     });
     expect(result).toStrictEqual(true);
@@ -39,7 +39,7 @@ describe('#getShowSurveyToast', () => {
       new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
     const result = getShowSurveyToast({
       metamask: {
-        surveyLinkLastClickedOrClosed: null,
+        surveyLinkLastClickedOrClosed: undefined,
       },
     });
     expect(result).toStrictEqual(false);
@@ -50,7 +50,7 @@ describe('#getShowSurveyToast', () => {
       new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
     const result = getShowSurveyToast({
       metamask: {
-        surveyLinkLastClickedOrClosed: null,
+        surveyLinkLastClickedOrClosed: undefined,
       },
     });
     expect(result).toStrictEqual(false);
@@ -77,13 +77,13 @@ describe('#getShowPrivacyPolicyToast', () => {
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
       const result = getShowPrivacyPolicyToast({
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: null,
+          newPrivacyPolicyToastClickedOrClosed: false,
           onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
             new Date(PRIVACY_POLICY_DATE).getDate() - 2,
           ),
         },
       });
-      expect(result).toBe(true);
+      expect(result.showPrivacyPolicyToast).toBe(true);
     });
 
     it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
@@ -95,17 +95,17 @@ describe('#getShowPrivacyPolicyToast', () => {
           ),
         },
       });
-      expect(result).toBe(false);
+      expect(result.showPrivacyPolicyToast).toBe(false);
     });
 
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
       const result = getShowPrivacyPolicyToast({
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: null,
-          onboardingDate: null,
+          newPrivacyPolicyToastClickedOrClosed: false,
+          onboardingDate: undefined,
         },
       });
-      expect(result).toBe(true);
+      expect(result.showPrivacyPolicyToast).toBe(true);
     });
   });
 
@@ -123,13 +123,13 @@ describe('#getShowPrivacyPolicyToast', () => {
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
       const result = getShowPrivacyPolicyToast({
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: null,
+          newPrivacyPolicyToastClickedOrClosed: false,
           onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
             new Date(PRIVACY_POLICY_DATE).getDate() - 2,
           ),
         },
       });
-      expect(result).toBe(true);
+      expect(result.showPrivacyPolicyToast).toBe(true);
     });
 
     it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
@@ -141,17 +141,17 @@ describe('#getShowPrivacyPolicyToast', () => {
           ),
         },
       });
-      expect(result).toBe(false);
+      expect(result.showPrivacyPolicyToast).toBe(false);
     });
 
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
       const result = getShowPrivacyPolicyToast({
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: null,
-          onboardingDate: null,
+          newPrivacyPolicyToastClickedOrClosed: false,
+          onboardingDate: undefined,
         },
       });
-      expect(result).toBe(true);
+      expect(result.showPrivacyPolicyToast).toBe(true);
     });
   });
 
@@ -172,23 +172,23 @@ describe('#getShowPrivacyPolicyToast', () => {
     it('does not show the privacy policy toast before the policy date', () => {
       const result = getShowPrivacyPolicyToast({
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: null,
+          newPrivacyPolicyToastClickedOrClosed: false,
           onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
             new Date(PRIVACY_POLICY_DATE).getDate() - 2,
           ),
         },
       });
-      expect(result).toBe(false);
+      expect(result.showPrivacyPolicyToast).toBe(false);
     });
 
     it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
       const result = getShowPrivacyPolicyToast({
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: null,
-          onboardingDate: null,
+          newPrivacyPolicyToastClickedOrClosed: false,
+          onboardingDate: undefined,
         },
       });
-      expect(result).toBe(false);
+      expect(result.showPrivacyPolicyToast).toBe(false);
     });
   });
 });

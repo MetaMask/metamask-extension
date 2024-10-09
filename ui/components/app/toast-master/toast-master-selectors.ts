@@ -1,6 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
-import { AppSliceState } from '../../../ducks/app/app';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
   SURVEY_DATE,
@@ -9,16 +8,18 @@ import {
 } from '../../../helpers/constants/survey';
 import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { MetaMaskReduxState } from '../../../store/store';
 
 // TODO: get this into one of the larger definitions of state type
-type State = AppSliceState & {
-  metamask: MetaMaskReduxState & {
-    newPrivacyPolicyToastClickedOrClosed: boolean;
-    newPrivacyPolicyToastShownDate: number;
-    onboardingDate: Date;
-    showNftDetectionEnablementToast: boolean;
-    surveyLinkLastClickedOrClosed: number;
+type State = {
+  appState?: {
+    showNftDetectionEnablementToast?: boolean;
+  };
+  metamask?: {
+    newPrivacyPolicyToastClickedOrClosed?: boolean;
+    newPrivacyPolicyToastShownDate?: number;
+    onboardingDate?: number;
+    showNftDetectionEnablementToast?: boolean;
+    surveyLinkLastClickedOrClosed?: number;
   };
 };
 
@@ -29,7 +30,7 @@ type State = AppSliceState & {
  * @returns True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
  */
 export function getShowSurveyToast(state: State): boolean {
-  if (state.metamask.surveyLinkLastClickedOrClosed) {
+  if (state.metamask?.surveyLinkLastClickedOrClosed) {
     return false;
   }
 
@@ -48,14 +49,15 @@ export function getShowSurveyToast(state: State): boolean {
  */
 export function getShowPrivacyPolicyToast(state: State): {
   showPrivacyPolicyToast: boolean;
-  newPrivacyPolicyToastShownDate: number;
+  newPrivacyPolicyToastShownDate?: number;
 } {
-  const { newPrivacyPolicyToastClickedOrClosed, onboardingDate } =
-    state.metamask;
+  const {
+    newPrivacyPolicyToastClickedOrClosed,
+    newPrivacyPolicyToastShownDate,
+    onboardingDate,
+  } = state.metamask || {};
   const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
   const currentDate = new Date(Date.now());
-
-  const { newPrivacyPolicyToastShownDate } = state.metamask;
 
   const showPrivacyPolicyToast =
     !newPrivacyPolicyToastClickedOrClosed &&
@@ -64,7 +66,7 @@ export function getShowPrivacyPolicyToast(state: State): {
     // users who onboarded before the privacy policy date should see the notice
     // and
     // old users who don't have onboardingDate set should see the notice
-    (onboardingDate < newPrivacyPolicyDate || !onboardingDate);
+    (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf());
 
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
 }
@@ -76,7 +78,7 @@ export function getShowPrivacyPolicyToast(state: State): {
  * @returns true if the privacy policy toast was shown either never, or less than a day ago
  */
 function getIsPrivacyToastRecent(
-  newPrivacyPolicyToastShownDate: number,
+  newPrivacyPolicyToastShownDate?: number,
 ): boolean {
   if (!newPrivacyPolicyToastShownDate) {
     return true;
@@ -103,7 +105,7 @@ export function setNewPrivacyPolicyToastClickedOrClosed() {
 }
 
 export function getNftDetectionEnablementToast(state: State): boolean {
-  return state.appState.showNftDetectionEnablementToast;
+  return Boolean(state.appState?.showNftDetectionEnablementToast);
 }
 
 export function setShowNftDetectionEnablementToast(
