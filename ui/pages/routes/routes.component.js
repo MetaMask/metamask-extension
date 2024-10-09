@@ -120,7 +120,7 @@ import {
   isConfirmTransactionRoute,
   setTheme,
   showOnboardingHeader,
-} from './isolated';
+} from './routes-helpers';
 import { ToastMaster } from './toast-master';
 
 export default class Routes extends Component {
