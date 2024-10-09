@@ -1,3 +1,4 @@
+import { Provider } from '@metamask/network-controller';
 import nock from 'nock';
 import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -22,11 +23,30 @@ const messengerMock = {
   publish: jest.fn(),
 } as unknown as jest.Mocked<BridgeControllerMessenger>;
 
+const providerMock = {} as Provider;
+
+jest.mock('@ethersproject/contracts', () => {
+  return {
+    Contract: jest.fn(() => ({
+      allowance: jest.fn(() => '100000000000000000000'),
+    })),
+  };
+});
+
+jest.mock('@ethersproject/providers', () => {
+  return {
+    Web3Provider: jest.fn(),
+  };
+});
+
 describe('BridgeController', function () {
   let bridgeController: BridgeController;
 
   beforeAll(function () {
-    bridgeController = new BridgeController({ messenger: messengerMock });
+    bridgeController = new BridgeController({
+      messenger: messengerMock,
+      provider: providerMock,
+    });
   });
 
   beforeEach(() => {
@@ -541,5 +561,16 @@ describe('BridgeController', function () {
           DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
       }),
     );
+  });
+
+  describe('getBridgeERC20Allowance', () => {
+    it('should return the atomic allowance of the ERC20 token contract', async () => {
+      const allowance = await bridgeController.getBridgeERC20Allowance(
+        '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        '0x0000000000000000000000000000000000000000',
+        '0xa',
+      );
+      expect(allowance).toBe('100000000000000000000');
+    });
   });
 });
