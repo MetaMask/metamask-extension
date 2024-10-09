@@ -121,6 +121,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
+import { getSelectedInternalAccount } from './accounts';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
@@ -355,11 +356,6 @@ export function getMaybeSelectedInternalAccount(state) {
   return accountId
     ? state.metamask.internalAccounts?.accounts[accountId]
     : undefined;
-}
-
-export function getSelectedInternalAccount(state) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
 }
 
 export function checkIfMethodIsEnabled(state, methodName) {

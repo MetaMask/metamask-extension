@@ -4,7 +4,7 @@ import { ICustodianType } from '@metamask-institutional/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { hideModal } from '../../../store/actions';
-import { getSelectedInternalAccount } from '../../../selectors/selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   Box,

@@ -1,6 +1,6 @@
 import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthMethod } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -8,7 +8,6 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
@@ -58,49 +57,6 @@ describe('Selectors', () => {
       expect(
         selectors.getSelectedAddress({ metamask: { internalAccounts } }),
       ).toStrictEqual(mockInternalAccount.address);
-    });
-  });
-
-  describe('#getSelectedInternalAccount', () => {
-    it('returns undefined if selectedAccount is undefined', () => {
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {},
-              selectedAccount: '',
-            },
-          },
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns selectedAccount', () => {
-      const mockInternalAccount = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        metadata: {
-          name: 'Test Account',
-          keyring: {
-            type: 'HD Key Tree',
-          },
-        },
-        options: {},
-        methods: ETH_EOA_METHODS,
-        type: EthAccountType.Eoa,
-      };
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {
-                [mockInternalAccount.id]: mockInternalAccount,
-              },
-              selectedAccount: mockInternalAccount.id,
-            },
-          },
-        }),
-      ).toStrictEqual(mockInternalAccount);
     });
   });
 
@@ -956,28 +912,6 @@ describe('Selectors', () => {
     });
   });
 
-  it('returns selected internalAccount', () => {
-    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Test Account',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
-    });
-  });
-
   it('returns selected account', () => {
     const account = selectors.getSelectedAccount(mockState);
     expect(account.balance).toStrictEqual('0x346ba7725f412cbfdb');
@@ -1645,6 +1579,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
         metadata: {
+          importTime: 0,
           name: 'Test Account 2',
           keyring: {
             type: 'HD Key Tree',
@@ -1669,6 +1604,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '784225f4-d30b-4e77-a900-c8bbce735b88',
         metadata: {
+          importTime: 0,
           name: 'Test Account 3',
           keyring: {
             type: 'HD Key Tree',
@@ -1692,6 +1628,7 @@ describe('Selectors', () => {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
+          importTime: 0,
           name: 'Test Account',
           keyring: {
             type: 'HD Key Tree',
@@ -1717,6 +1654,7 @@ describe('Selectors', () => {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         id: '15e69915-2a1a-4019-93b3-916e11fd432f',
         metadata: {
+          importTime: 0,
           name: 'Ledger Hardware 2',
           keyring: {
             type: 'Ledger Hardware',
@@ -1744,8 +1682,10 @@ describe('Selectors', () => {
           keyring: {
             type: 'Snap Keyring',
           },
+          importTime: 0,
           name: 'Snap Account 1',
           snap: {
+            enabled: true,
             id: 'snap-id',
             name: 'snap-name',
           },
@@ -1766,6 +1706,7 @@ describe('Selectors', () => {
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
         metadata: {
+          importTime: 0,
           name: 'Test Account 4',
           keyring: {
             type: 'Custody test',
