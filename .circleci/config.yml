@@ -877,7 +877,7 @@ jobs:
           at: .
       - run:
           name: Build extension for testing
-          command: BARAD_DUR=1 yarn build:test
+          command: CHAIN_PERMISSIONS=1 BARAD_DUR=1 yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test
