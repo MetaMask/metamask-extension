@@ -80,7 +80,7 @@ describe('Regular Expressions used in Fitness Functions', (): void => {
       'file.ts',
       'path/file.ts',
       'much/longer/path/file.tsx',
-      // any js files outside the app, offscreen, shared, and ui directories
+      // any JS or JSX files outside the app, offscreen, shared, and ui directories
       'test/longer/path/file.js',
       'random/longer/path/file.jsx',
     ];
