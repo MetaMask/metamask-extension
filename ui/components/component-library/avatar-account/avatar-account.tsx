@@ -7,29 +7,12 @@ import type { PolymorphicRef } from '../box';
 
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import {
-  getCaipNamespaceFromAddress,
-} from '../../../../shared/lib/multichain';
-import {
   AvatarAccountDiameter,
   AvatarAccountVariant,
   AvatarAccountSize,
   AvatarAccountComponent,
   AvatarAccountProps,
 } from './avatar-account.types';
-import { KnownCaipNamespace } from '@metamask/utils';
-
-function getJazziconNamespace(address: string): string | undefined {
-  const namespace = getCaipNamespaceFromAddress(address);
-
-  switch (namespace) {
-    case KnownCaipNamespace.Bip122:
-      return namespace;
-    case KnownCaipNamespace.Eip155:
-      return undefined; // Falls back to default Jazzicon behavior
-    default:
-      return undefined;
-  }
-}
 
 export const AvatarAccount: AvatarAccountComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
@@ -52,7 +35,6 @@ export const AvatarAccount: AvatarAccountComponent = React.forwardRef(
         <Jazzicon
           className={classnames('mm-avatar-account__jazzicon')}
           address={address}
-          namespace={getJazziconNamespace(address)}
           diameter={AvatarAccountDiameter[size]}
         />
       ) : (
