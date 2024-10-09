@@ -8,13 +8,14 @@ import {
 } from '../../../helpers/constants/survey';
 import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { MetaMaskReduxState } from '../../../store/store';
 
 // TODO: get this into one of the larger definitions of state type
-type State = {
-  appState?: {
+type State = Omit<MetaMaskReduxState, 'appState'> & {
+  appState: {
     showNftDetectionEnablementToast?: boolean;
   };
-  metamask?: {
+  metamask: {
     newPrivacyPolicyToastClickedOrClosed?: boolean;
     newPrivacyPolicyToastShownDate?: number;
     onboardingDate?: number;
