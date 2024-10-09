@@ -6427,7 +6427,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(
-      this.multichainMiddlewareManager.generateMiddlewareForOriginAndTabId(
+      this.multichainMiddlewareManager.generateMultichainMiddlewareForOriginAndTabId(
         origin,
         tabId,
       ),
