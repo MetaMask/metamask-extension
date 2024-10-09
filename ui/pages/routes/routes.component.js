@@ -1,28 +1,14 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, lazy } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import { isEvmAccountType } from '@metamask/keyring-api';
 
-import Swaps from '../swaps';
-import ConfirmTransaction from '../confirmations/confirm-transaction';
-import Home from '../home';
-import {
-  PermissionsPage,
-  Connections,
-  ReviewPermissions,
-} from '../../components/multichain/pages';
-import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import Lock from '../lock';
-import PermissionsConnect from '../permissions-connect';
-import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
-import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
-import CreateAccountPage from '../create-account/create-account.component';
-import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
@@ -40,17 +26,7 @@ import {
 } from '../../components/multichain';
 import { SurveyToast } from '../../components/ui/survey-toast';
 import UnlockPage from '../unlock-page';
-import Alerts from '../../components/app/alerts';
-import Asset from '../asset';
-import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-import TokenDetailsPage from '../token-details';
-import Notifications from '../notifications';
-import NotificationsSettings from '../notifications-settings';
-import NotificationDetails from '../notification-details';
-import SnapList from '../snaps/snaps-list';
-import SnapView from '../snaps/snap-view';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
 import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
 import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
@@ -105,7 +81,6 @@ import { NETWORK_TYPES } from '../../../shared/constants/network';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import ConfirmationPage from '../confirmations/confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
@@ -126,7 +101,6 @@ import { BasicConfigurationModal } from '../../components/app/basic-configuratio
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
 
-import { SendPage } from '../../components/multichain/pages/send';
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { getURLHost } from '../../helpers/utils/util';
 import {
@@ -138,8 +112,93 @@ import {
 import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
-import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
-import CrossChainSwap from '../bridge';
+import { trace } from '../../../shared/lib/trace';
+
+const lazy2 = (name, fn) => lazy(() => trace({ name }, fn));
+
+const Settings = lazy2('Settings', () => import('../settings'));
+
+const NotificationsSettings = lazy2('NotificationsSettings', () =>
+  import('../notifications-settings'),
+);
+
+const NotificationDetails = lazy2('NotificationDetails', () =>
+  import('../notification-details'),
+);
+
+const Notifications = lazy2('Notifications', () => import('../notifications'));
+const SnapList = lazy2('SnapList', () => import('../snaps/snaps-list'));
+const SnapView = lazy2('SnapView', () => import('../snaps/snap-view'));
+
+const ConfirmTransaction = lazy2('ConfirmTransaction', () =>
+  import('../confirmations/confirm-transaction'),
+);
+
+const SendPage = lazy2('SendPage', () =>
+  import('../../components/multichain/pages/send/send'),
+);
+
+const Swaps = lazy2('Swaps', () => import('../swaps'));
+
+const TokenDetailsPage = lazy2('TokenDetailsPage', () =>
+  import('../token-details'),
+);
+
+const ConfirmAddSuggestedTokenPage = lazy2('ConfirmAddSuggestedTokenPage', () =>
+  import('../confirm-add-suggested-token'),
+);
+
+const ConfirmAddSuggestedNftPage = lazy2('ConfirmAddSuggestedNftPage', () =>
+  import('../confirm-add-suggested-nft'),
+);
+
+const ConfirmationPage = lazy2('ConfirmationPage', () =>
+  import('../confirmations/confirmation'),
+);
+
+const CrossChainSwap = lazy2('CrossChainSwap', () => import('../bridge'));
+
+const InstitutionalEntityDonePage = lazy2('InstitutionalEntityDonePage', () =>
+  import('../institutional/institutional-entity-done-page'),
+);
+
+const PermissionsConnect = lazy2('PermissionsConnect', () =>
+  import('../permissions-connect'),
+);
+
+const NftFullImage = lazy2('NftFullImage', () =>
+  import('../../components/app/assets/nfts/nft-details/nft-full-image'),
+);
+
+const Connections = lazy2('Connections', () =>
+  import('../../components/multichain/pages/connections'),
+);
+
+const ReviewPermissions = lazy2('ReviewPermissions', () =>
+  import('../../components/multichain/pages/review-permissions-page'),
+);
+
+const PermissionsPage = lazy2('PermissionsPage', () =>
+  import('../../components/multichain/pages/permissions-page/permissions-page'),
+);
+
+const CreateAccountPage = lazy2('CreateAccountPage', () =>
+  import('../create-account/create-account.component'),
+);
+
+const Asset = lazy2('Asset', () => import('../asset'));
+
+const Home = lazy2('Home', () => import('../home'));
+
+const RestoreVaultPage = lazy2('RestoreVaultPage', () =>
+  import('../keychains/restore-vault'),
+);
+
+const OnboardingAppHeader = lazy2('OnboardingAppHeader', () =>
+  import('../onboarding-flow/onboarding-app-header/onboarding-app-header'),
+);
+
+const Alerts = lazy2('Alerts', () => import('../../components/app/alerts'));
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
