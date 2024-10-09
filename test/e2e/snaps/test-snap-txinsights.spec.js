@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -37,22 +36,18 @@ describe('Test Snap TxInsights', function () {
         await driver.clickElement('#connecttransaction-insights');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
-
-        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -62,8 +57,8 @@ describe('Test Snap TxInsights', function () {
         await driver.clickElement('#getAccounts');
 
         // switch back to MetaMask window and deal with dialogs
-        await switchToNotificationWindow(driver, 2);
-        await driver.clickElement({
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
@@ -74,11 +69,8 @@ describe('Test Snap TxInsights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         await driver.delay(2000);
-        await switchToNotificationWindow(driver, 2);
-        await driver.waitForSelector({
-          text: 'Insights Example Snap',
-          tag: 'button',
-        });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
         await driver.clickElement({
           text: 'Insights Example Snap',
           tag: 'button',
