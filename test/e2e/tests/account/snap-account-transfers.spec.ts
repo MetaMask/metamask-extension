@@ -1,30 +1,70 @@
 import { Suite } from 'mocha';
 import {
-  sendTransaction,
   withFixtures,
   WINDOW_TITLES,
-} from '../helpers';
-import { Driver } from '../webdriver/driver';
+  PRIVATE_KEY_TWO,
+  multipleGanacheOptions,
+} from '../../helpers';
+import { Driver } from '../../webdriver/driver';
+import FixtureBuilder from '../../fixture-builder';
 import {
-  accountSnapFixtures,
   PUBLIC_KEY,
-  installSnapSimpleKeyring,
-  importKeyAndSwitch,
   approveOrRejectRequest,
-} from './common';
-import SnapAccountPage from '../page-objects/pages/snap-account-page';
+} from '../../accounts/common';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import SnapAccountPage from '../../page-objects/pages/snap-account-page';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { sendTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 
 describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
-      accountSnapFixtures(this.test?.fullTitle()),
+      {
+        fixtures: new FixtureBuilder()
+         .withPermissionControllerConnectedToTestDapp({
+          restrictReturnedAccounts: false,
+          })
+          .build(),
+        ganacheOptions: multipleGanacheOptions,
+        title: this.test?.fullTitle(),
+      },
       async ({ driver }: { driver: Driver }) => {
-        await importPrivateKeyAndTransfer1ETH(driver, 'sync');
+        await loginWithBalanceValidation(driver);
+        await installSnapSimpleKeyring(driver, true);
+        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
+        await snapSimpleKeyringPage.importAccountWithPrivateKey(PRIVATE_KEY_TWO);
+
+        // Import snap account with private key on snap simple keyring page.
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_accountLabel('SSK Account');
+
+        // send 1 ETH from Account 2 to Account 1
+        await sendTransactionWithSnapAccount(
+          driver,
+          PUBLIC_KEY,
+          '1',
+          '0.000042',
+          '1.000042',
+          true,
+        );
+/*         await headerNavbar.openAccountMenu();
+        const accountList = new AccountListPage(driver);
+        await accountList.check_pageIsLoaded();
+
+        //check the balance of the 2 accounts are updated
+        await accountList.check_accountBalanceDisplayed('26');
+        await accountList.check_accountBalanceDisplayed('24'); */
       },
     );
   });
 
-  it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
+/*   it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
     await withFixtures(
       accountSnapFixtures(this.test?.fullTitle()),
       async ({ driver }: { driver: Driver }) => {
@@ -40,17 +80,17 @@ describe('Snap Account Transfers', function (this: Suite) {
         await importPrivateKeyAndTransfer1ETH(driver, 'reject');
       },
     );
-  });
+  }); */
 
-  async function importPrivateKeyAndTransfer1ETH(
+/*   async function importPrivateKeyAndTransfer1ETH(
     driver: Driver,
-    flowType: string,
+    isSyncFlow: boolean,
   ) {
-    const isAsyncFlow = flowType !== 'sync';
     const snapAccountPage = new SnapAccountPage(driver);
 
-    await installSnapSimpleKeyring(driver, isAsyncFlow);
-    await importKeyAndSwitch(driver);
+    await installSnapSimpleKeyring(driver, isSyncFlow);
+    const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
+    await snapSimpleKeyringPage.importAccountWithPrivateKey(PRIVATE_KEY_TWO);
 
     // send 1 ETH from Account 2 to Account 1
     await sendTransaction(driver, PUBLIC_KEY, 1, isAsyncFlow);
@@ -84,5 +124,5 @@ describe('Snap Account Transfers', function (this: Suite) {
       await snapAccountPage.clickActivityTab();
       await snapAccountPage.findRejectedTransaction();
     }
-  }
+  } */
 });

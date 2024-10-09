@@ -3,26 +3,20 @@ import { Driver } from '../../webdriver/driver';
 class HeaderNavbar {
   private driver: Driver;
 
-  private accountMenuButton: string;
+  private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private accountOptionMenu: string;
+  private readonly accountOptionMenu = '[data-testid="account-options-menu-button"]';
 
-  private lockMetaMaskButton: string;
+  private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
-  private mmiPortfolioButton: string;
+  private readonly mmiPortfolioButton = '[data-testid="global-menu-mmi-portfolio"]';
 
-  private settingsButton: string;
+  private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
-  private accountSnapButton: object;
+  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.accountMenuButton = '[data-testid="account-menu-icon"]';
-    this.accountOptionMenu = '[data-testid="account-options-menu-button"]';
-    this.lockMetaMaskButton = '[data-testid="global-menu-lock"]';
-    this.mmiPortfolioButton = '[data-testid="global-menu-mmi-portfolio"]';
-    this.settingsButton = '[data-testid="global-menu-settings"]';
-    this.accountSnapButton = { text: 'Snaps', tag: 'div' };
   }
 
   async lockMetaMask(): Promise<void> {

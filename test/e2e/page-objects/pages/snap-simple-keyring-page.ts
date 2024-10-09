@@ -54,6 +54,18 @@ class SnapSimpleKeyringPage {
 
   private readonly createSnapAccountName = '#account-name';
 
+  private readonly importAccountSection = {
+    text: 'Import account',
+    tag: 'div',
+  };
+
+  private readonly importAccountButton = {
+    text: 'Import Account',
+    tag: 'button',
+  };
+
+  private readonly importAccountPrivateKeyInput = '#import-account-private-key';
+
   private readonly installationCompleteMessage = {
     text: 'Installation complete',
     tag: 'h2',
@@ -96,13 +108,9 @@ class SnapSimpleKeyringPage {
   }
 
   /**
-   * Creates a new account on the Snap Simple Keyring page and checks the account is created.
+   * Confirms the add account dialog on the Snap Simple Keyring page.
    */
-  async createNewAccount(): Promise<void> {
-    console.log('Create new account on Snap Simple Keyring page');
-    await this.driver.clickElement(this.createAccountSection);
-    await this.driver.clickElement(this.createAccountButton);
-
+  async confirmAddAccountDialog(): Promise<void> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.createAccountMessage);
     await this.driver.clickElement(this.confirmationSubmitButton);
@@ -119,6 +127,30 @@ class SnapSimpleKeyringPage {
     );
     await this.check_accountSupportedMethodsDisplayed();
   }
+
+  async approveOnConfirmationScreen(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmationSubmitButton);
+  }
+
+  /**
+   * Creates a new account on the Snap Simple Keyring page and checks the account is created.
+   */
+  async createNewAccount(): Promise<void> {
+    console.log('Create new account on Snap Simple Keyring page');
+    await this.driver.clickElement(this.createAccountSection);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.confirmAddAccountDialog();
+  }
+
+  async importAccountWithPrivateKey(privateKey: string): Promise<void> {
+    console.log('Import account with private key on Snap Simple Keyring page');
+    await this.driver.clickElement(this.importAccountSection);
+    await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
+    await this.driver.clickElement(this.importAccountButton);
+    await this.confirmAddAccountDialog();
+  }
+
+
 
   /**
    * Installs the Simple Keyring Snap and checks the snap is connected.

@@ -11,6 +11,8 @@ class AccountListPage {
 
   private readonly accountNameInput = '#account-name';
 
+  private readonly accountListBalance = '[data-testid="second-currency-display"]';
+
   private readonly accountOptionsMenuButton =
     '[data-testid="account-list-item-menu-button"]';
 
@@ -154,6 +156,14 @@ class AccountListPage {
   async unpinAccount(): Promise<void> {
     console.log(`Unpin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
+  }
+
+  async check_accountBalanceDisplayed(expectedBalance: string): Promise<void> {
+    console.log(`Check that account balance ${expectedBalance} is displayed in account list`);
+    await this.driver.waitForSelector({
+      css: this.accountListBalance,
+      text: expectedBalance,
+    });
   }
 
   async check_accountDisplayedInAccountList(
