@@ -2198,63 +2198,6 @@ export function clearPendingTokens(): Action {
 }
 
 /**
- * Action to switch globally selected network and set switched network details
- * for the purpose of displaying the user a toast about the network change
- *
- * @param networkClientIdForThisDomain - Thet network client ID last used by the origin
- * @param selectedTabOrigin - Origin of the current tab
- */
-export function automaticallySwitchNetwork(
-  networkClientIdForThisDomain: string,
-  selectedTabOrigin: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
-    await dispatch(
-      setSwitchedNetworkDetails({
-        networkClientId: networkClientIdForThisDomain,
-        origin: selectedTabOrigin,
-      }),
-    );
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-/**
- * Action to store details about the switched-to network in the background state
- *
- * @param switchedNetworkDetails - Object containing networkClientId and origin
- * @param switchedNetworkDetails.networkClientId
- * @param switchedNetworkDetails.selectedTabOrigin
- */
-export function setSwitchedNetworkDetails(switchedNetworkDetails: {
-  networkClientId: string;
-  selectedTabOrigin: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setSwitchedNetworkDetails', [
-      switchedNetworkDetails,
-    ]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-/**
- * Action to clear details about the switched-to network in the background state
- */
-export function clearSwitchedNetworkDetails(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('clearSwitchedNetworkDetails', []);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-/**
  * Update the currentPopupid generated when the user opened the popup
  *
  * @param id - The Snap interface ID.
@@ -4909,12 +4852,6 @@ export function hideAccountBanner() {
 
 export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
-}
-
-export function neverShowSwitchedNetworkMessage() {
-  return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
-    true,
-  ]);
 }
 
 /**

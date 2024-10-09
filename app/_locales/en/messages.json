@@ -5953,13 +5953,6 @@
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
-  "switchedNetworkToastDecline": {
-    "message": "Don't show again"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 is now active on $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
   "switchedTo": {
     "message": "You're now using"
   },

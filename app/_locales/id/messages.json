@@ -5535,13 +5535,6 @@
   "switchToThisAccount": {
     "message": "Beralih ke akun ini"
   },
-  "switchedNetworkToastDecline": {
-    "message": "Jangan tampilkan lagi"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 kini telah aktif di $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
   "switchedTo": {
     "message": "Saat ini Anda menggunakan"
   },

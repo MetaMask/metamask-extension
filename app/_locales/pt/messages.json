@@ -5535,13 +5535,6 @@
   "switchToThisAccount": {
     "message": "Alternar para esta conta"
   },
-  "switchedNetworkToastDecline": {
-    "message": "Não exibir novamente"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 agora está ativa na $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
   "switchedTo": {
     "message": "Você alternou para"
   },

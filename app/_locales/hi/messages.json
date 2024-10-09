@@ -5535,13 +5535,6 @@
   "switchToThisAccount": {
     "message": "इस अकाउंट पर स्विच करें"
   },
-  "switchedNetworkToastDecline": {
-    "message": "इसे दोबारा न दिखाएं"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 अब $2 पर एक्टिव है",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
   "switchedTo": {
     "message": "आप अब इस्तेमाल कर रहे हैं"
   },

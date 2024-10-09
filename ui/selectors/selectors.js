@@ -14,7 +14,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
+import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   MAINNET_DISPLAY_NAME,
@@ -84,7 +84,6 @@ import {
   isEIP1559Network,
   getLedgerTransportType,
   isAddressLedger,
-  getIsUnlocked,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -103,7 +102,6 @@ import {
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
-import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -111,7 +109,6 @@ import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/type
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
-  getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
@@ -701,16 +698,6 @@ export function getGasIsLoading(state) {
   return state.appState.gasIsLoading;
 }
 
-/**
- * Retrieves user preference to never see the "Switched Network" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function getNeverShowSwitchedNetworkMessage(state) {
-  return state.metamask.switchedNetworkNeverShowMessage;
-}
-
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (state) => state.metamask.networkConfigurationsByChainId,
   /**
@@ -738,35 +725,6 @@ export function getRequestingNetworkInfo(state, chainIds) {
       !TEST_CHAINS.includes(network.chainId) &&
       flattenedChainIds.includes(network.chainId),
   );
-}
-
-/**
- * Provides information about the last network change if present
- *
- * @param state - Redux state object.
- * @returns An object with information about the network with the given networkClientId
- */
-export function getSwitchedNetworkDetails(state) {
-  const { switchedNetworkDetails } = state.metamask;
-  const networkConfigurations = getNetworkConfigurationsByChainId(state);
-
-  if (switchedNetworkDetails) {
-    const switchedNetwork = Object.values(networkConfigurations).find(
-      (network) =>
-        network.rpcEndpoints.some(
-          (rpcEndpoint) =>
-            rpcEndpoint.networkClientId ===
-            switchedNetworkDetails.networkClientId,
-        ),
-    );
-    return {
-      nickname: switchedNetwork?.name,
-      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[switchedNetwork?.chainId],
-      origin: switchedNetworkDetails?.origin,
-    };
-  }
-
-  return null;
 }
 
 export function getAppIsLoading(state) {
@@ -1845,27 +1803,6 @@ export function getShowRecoveryPhraseReminder(state) {
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
 
-/**
- * Retrieves the number of unapproved transactions and messages
- *
- * @param state - Redux state object.
- * @returns Number of unapproved transactions
- */
-export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getAllUnapprovedTransactions(state);
-  const queuedRequestCount = getQueuedRequestCount(state);
-
-  const allUnapprovedMessages = {
-    ...unapprovedTxs,
-    ...state.metamask.unapprovedDecryptMsgs,
-    ...state.metamask.unapprovedPersonalMsgs,
-    ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
-    ...state.metamask.unapprovedTypedMessages,
-  };
-  const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages + queuedRequestCount;
-}
-
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -1936,46 +1873,6 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
     return sitesList;
   },
 );
-
-/**
- * Returns the network client ID of the network that should be auto-switched to
- * based on the current tab origin and its last network connected to
- *
- * @param state - Redux state object.
- * @returns Network ID to switch to
- */
-export function getNetworkToAutomaticallySwitchTo(state) {
-  const numberOfUnapprovedTx =
-    getNumberOfAllUnapprovedTransactionsAndMessages(state);
-
-  // This block autoswitches chains based on the last chain used
-  // for a given dapp, when there are no pending confimrations
-  // This allows the user to be connected on one chain
-  // for one dapp, and automatically change for another
-  const selectedTabOrigin = getOriginOfCurrentTab(state);
-  const useRequestQueue = getUseRequestQueue(state);
-  if (
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-    getIsUnlocked(state) &&
-    useRequestQueue &&
-    selectedTabOrigin &&
-    numberOfUnapprovedTx === 0
-  ) {
-    const domainNetworks = getAllDomains(state);
-    const networkIdForThisDomain = domainNetworks[selectedTabOrigin];
-    const currentNetwork = getCurrentNetwork(state);
-
-    // If we have a match, "silently" switch networks if the network differs
-    // from the current network
-    if (
-      networkIdForThisDomain &&
-      currentNetwork.id !== networkIdForThisDomain
-    ) {
-      return networkIdForThisDomain;
-    }
-  }
-  return null;
-}
 
 export function getShowTermsOfUse(state) {
   const { termsOfUseLastAgreed } = state.metamask;

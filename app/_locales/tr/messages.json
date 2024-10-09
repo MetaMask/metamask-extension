@@ -5535,13 +5535,6 @@
   "switchToThisAccount": {
     "message": "Bu hesaba geç"
   },
-  "switchedNetworkToastDecline": {
-    "message": "Tekrar gösterme"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1, $2 üzerinde aktif",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
   "switchedTo": {
     "message": "Şu anda kullandığınız ağ"
   },
