@@ -114,7 +114,6 @@ describe('bridge/actions', () => {
     it('executes bridge transaction', async () => {
       // Setup
       const mockAddTransactionAndWaitForPublish = jest.fn(() => {
-        console.log('mockAddTransactionAndWaitForPublish');
         return {
           id: 'txMetaId-01',
         };
@@ -169,7 +168,6 @@ describe('bridge/actions', () => {
     it('executes approval transaction if it exists', async () => {
       // Setup
       const mockAddTransactionAndWaitForPublish = jest.fn(() => {
-        console.log('mockAddTransactionAndWaitForPublish');
         return {
           id: 'txMetaId-01',
         };
@@ -281,7 +279,6 @@ describe('bridge/actions', () => {
       const history = makeMockHistory();
 
       const mockAddTransactionAndWaitForPublish = jest.fn(() => {
-        console.log('mockAddTransactionAndWaitForPublish');
         return {
           id: 'txMetaId-01',
         };
@@ -346,7 +343,6 @@ describe('bridge/actions', () => {
       const history = makeMockHistory();
 
       const mockAddTransactionAndWaitForPublish = jest.fn(() => {
-        console.log('mockAddTransactionAndWaitForPublish');
         return {
           id: 'txMetaId-01',
         };
@@ -380,7 +376,6 @@ describe('bridge/actions', () => {
       const history = makeMockHistory();
 
       const mockAddTransactionAndWaitForPublish = jest.fn(() => {
-        console.log('mockAddTransactionAndWaitForPublish');
         return {
           id: 'txMetaId-01',
         };
