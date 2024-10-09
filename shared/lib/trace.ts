@@ -31,7 +31,7 @@ const OP_DEFAULT = 'custom';
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
 
-if (process.env.IN_TEST) {
+if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
 }
 
