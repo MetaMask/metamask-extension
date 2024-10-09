@@ -233,13 +233,11 @@ describe('Request Queueing chainId proxy sync', function () {
           assert.equal(chainIdBeforeConnectAfterManualSwitch, '0x1');
 
           // Connect to dapp
-          await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-          await driver.clickElement('#connectButton');
+          await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-          await driver.delay(regularDelayMs);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          await switchToNotificationWindow(driver);
-          await driver.clickElement({
+          await driver.clickElementAndWaitForWindowToClose({
             text: 'Connect',
             tag: 'button',
           });
@@ -252,6 +250,10 @@ describe('Request Queueing chainId proxy sync', function () {
 
           // should still be on the same chainId as the wallet after connecting
           assert.equal(chainIdAfterConnect, '0x1');
+          await driver.waitForSelector({
+            css: '[id="chainId"]',
+            text: '0x1',
+          });
 
           const switchEthereumChainRequest = JSON.stringify({
             jsonrpc: '2.0',
@@ -263,13 +265,12 @@ describe('Request Queueing chainId proxy sync', function () {
             `window.ethereum.request(${switchEthereumChainRequest})`,
           );
 
-          await switchToNotificationWindow(driver);
-          await driver.findClickableElements({
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          await driver.clickElementAndWaitForWindowToClose({
             text: 'Confirm',
             tag: 'button',
           });
-
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -280,6 +281,10 @@ describe('Request Queueing chainId proxy sync', function () {
           // should be on the new chainId that was requested
           assert.equal(chainIdAfterDappSwitch, '0x539'); // 1337
 
+          await driver.waitForSelector({
+            css: '[id="chainId"]',
+            text: '0x539',
+          });
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
