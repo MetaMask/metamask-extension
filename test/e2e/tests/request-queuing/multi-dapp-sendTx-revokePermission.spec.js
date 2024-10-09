@@ -79,7 +79,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
@@ -108,6 +108,10 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         await driver.findElement({
           css: '[id="chainId"]',
           text: '0x1',
+        });
+        await driver.assertElementNotPresent({
+          css: '[id="chainId"]',
+          text: '0x53a',
         });
 
         // Confirmation will close then reopen
