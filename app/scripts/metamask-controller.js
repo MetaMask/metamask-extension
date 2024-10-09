@@ -1695,17 +1695,6 @@ export default class MetamaskController extends EventEmitter {
         return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
       preferencesControllerState: this.preferencesController.state,
-      onboardingController: this.onboardingController,
-      controllerMessenger: this.controllerMessenger.getRestricted({
-        name: 'AccountTracker',
-        allowedActions: ['AccountsController:getSelectedAccount'],
-        allowedEvents: [
-          'AccountsController:selectedEvmAccountChange',
-          'OnboardingController:stateChange',
-          'KeyringController:accountRemoved',
-        ],
-      }),
-      initState: { accounts: {} },
     });
 
     // start and stop polling for balances based on activeControllerConnections
