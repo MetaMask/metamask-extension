@@ -35,7 +35,9 @@ function transformState(
 ): Record<string, unknown> {
   if (
     hasProperty(state, 'PhishingController') &&
-    isObject(state.PhishingController)
+    isObject(state.PhishingController) &&
+    hasProperty(state.PhishingController, 'phishingLists') &&
+    Array.isArray(state.PhishingController.phishingLists)
   ) {
     const phishingController =
       state.PhishingController as PhishingControllerState;
