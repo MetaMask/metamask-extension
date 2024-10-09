@@ -29,8 +29,6 @@ describe('Switch ethereum chain', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        const windowHandles = await driver.getAllWindowHandles();
-
         await openDapp(driver);
 
         await driver.clickElement({
@@ -38,14 +36,9 @@ describe('Switch ethereum chain', function () {
           text: 'Add Localhost 8546',
         });
 
-        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           tag: 'button',
           text: 'Approve',
         });
