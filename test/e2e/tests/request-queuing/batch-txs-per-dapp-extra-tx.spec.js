@@ -1,13 +1,14 @@
 const { By } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  DAPP_ONE_URL,
+  DAPP_URL,
+  defaultGanacheOptions,
+  largeDelayMs,
   openDapp,
   unlockWallet,
-  DAPP_URL,
-  DAPP_ONE_URL,
   WINDOW_TITLES,
-  defaultGanacheOptions,
+  withFixtures,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -111,6 +112,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         });
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
+        // We cannot wait for the dialog, since it is already opened from before
+        await driver.delay(largeDelayMs);
 
         // Dapp 1 send 1 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
