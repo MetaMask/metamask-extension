@@ -122,7 +122,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
           text: '0x53a',
         });
         await driver.clickElement('#sendButton');
-
+        // We cannot switch directly, as the dialog is sometimes closed and re-opened
+        await driver.delay(largeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
