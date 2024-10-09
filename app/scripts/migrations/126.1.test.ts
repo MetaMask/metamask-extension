@@ -120,4 +120,23 @@ describe(`migration #${version}`, () => {
 
     expect(transformedState.data).toStrictEqual(oldState);
   });
+
+  it('does nothing if phishingLists is not an array (null)', async () => {
+    const oldState: Record<string, unknown> = {
+      PhishingController: {
+        phishingLists: null,
+        whitelist: [],
+        hotlistLastFetched: 0,
+        stalelistLastFetched: 0,
+        c2DomainBlocklistLastFetched: 0,
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toStrictEqual(oldState);
+  });
 });
