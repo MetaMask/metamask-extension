@@ -37,7 +37,7 @@ function transformState(
     const phishingController = state.PhishingController;
 
     if (!Array.isArray(phishingController.phishingLists)) {
-      console.error(`Migration ${version}: Invalid PhishingController.phishingLists state`,)
+      console.error(`Migration ${version}: Invalid PhishingController.phishingLists state`)
       return state;
     }
 
