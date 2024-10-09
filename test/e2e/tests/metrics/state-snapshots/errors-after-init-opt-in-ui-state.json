@@ -45,7 +45,7 @@
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
-    "isMultiAccountBalancesEnabled": "boolean",
+    "isMultiAccountBalancesEnabled": true,
     "showIncomingTransactions": "object",
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
