@@ -4398,7 +4398,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/evm-tools@npm:^1.2.3":
+"@ledgerhq/evm-tools@npm:1.2.3":
   version: 1.2.3
   resolution: "@ledgerhq/evm-tools@npm:1.2.3"
   dependencies:
@@ -4411,7 +4411,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-app-eth@npm:^6.39.0":
+"@ledgerhq/evm-tools@patch:@ledgerhq/evm-tools@npm%3A1.2.3#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.2.3-414f44baa9.patch":
+  version: 1.2.3
+  resolution: "@ledgerhq/evm-tools@patch:@ledgerhq/evm-tools@npm%3A1.2.3#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.2.3-414f44baa9.patch::version=1.2.3&hash=1deaa9"
+  dependencies:
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.0"
+    "@ledgerhq/live-env": "npm:^2.3.0"
+    axios: "npm:1.7.7"
+    crypto-js: "npm:4.2.0"
+    ethers: "npm:5.7.2"
+  checksum: 10/c7d79c691f681376efc6c44d16a00f6349301091a82a7a8ad264475562896bf8a9b4e922080f4f6f541bb62483ad9efeeec87910fa6f15d9db3e1d22820548c8
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-app-eth@npm:6.39.0":
   version: 6.39.0
   resolution: "@ledgerhq/hw-app-eth@npm:6.39.0"
   dependencies:
@@ -4429,6 +4442,27 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     semver: "npm:^7.3.5"
   checksum: 10/5b50aac35989e09704557523efe5b6b29a1f31f5279088ecceb90164e32e05860f3ff20c32a084003a69723ed08165ae140c2987424657245f088c3f9a908cd6
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-app-eth@patch:@ledgerhq/hw-app-eth@npm%3A6.39.0#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.39.0-866309bbbe.patch":
+  version: 6.39.0
+  resolution: "@ledgerhq/hw-app-eth@patch:@ledgerhq/hw-app-eth@npm%3A6.39.0#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.39.0-866309bbbe.patch::version=6.39.0&hash=f5404c"
+  dependencies:
+    "@ethersproject/abi": "npm:^5.5.0"
+    "@ethersproject/rlp": "npm:^5.5.0"
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.0"
+    "@ledgerhq/domain-service": "npm:^1.2.6"
+    "@ledgerhq/errors": "npm:^6.19.1"
+    "@ledgerhq/evm-tools": "npm:^1.2.3"
+    "@ledgerhq/hw-transport": "npm:^6.31.4"
+    "@ledgerhq/hw-transport-mocker": "npm:^6.29.4"
+    "@ledgerhq/logs": "npm:^6.12.0"
+    "@ledgerhq/types-live": "npm:^6.52.0"
+    axios: "npm:1.7.7"
+    bignumber.js: "npm:^9.1.2"
+    semver: "npm:^7.3.5"
+  checksum: 10/fb270eee2b2d0886462908b4c511262da0c884f0b72ab50225407608d197ece71b05b4fdc07e628c75ab3ae573e49ed5c3ccf3b2f40a28e4663a28788d46b4dd
   languageName: node
   linkType: hard
 
@@ -13115,17 +13149,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.7.7, axios@npm:^1.1.3":
-  version: 1.7.7
-  resolution: "axios@npm:1.7.7"
-  dependencies:
-    follow-redirects: "npm:^1.15.6"
-    form-data: "npm:^4.0.0"
-    proxy-from-env: "npm:^1.1.0"
-  checksum: 10/7f875ea13b9298cd7b40fd09985209f7a38d38321f1118c701520939de2f113c4ba137832fe8e3f811f99a38e12c8225481011023209a77b0c0641270e20cde1
-  languageName: node
-  linkType: hard
-
 "axios@npm:^0.21.1":
   version: 0.21.4
   resolution: "axios@npm:0.21.4"
@@ -13142,6 +13165,17 @@ __metadata:
     follow-redirects: "npm:^1.14.9"
     form-data: "npm:^4.0.0"
   checksum: 10/2efaf18dd0805f7bc772882bc86f004abd92d51007b54c5081f74db0d08ce3593e2c010261896d25a14318eeaa2e966fd825e34f810e8a3339dc64b9d177cf70
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.1.3":
+  version: 1.7.7
+  resolution: "axios@npm:1.7.7"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10/7f875ea13b9298cd7b40fd09985209f7a38d38321f1118c701520939de2f113c4ba137832fe8e3f811f99a38e12c8225481011023209a77b0c0641270e20cde1
   languageName: node
   linkType: hard
 
@@ -19799,13 +19833,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.9, follow-redirects@npm:^1.15.6":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.9":
   version: 1.15.6
   resolution: "follow-redirects@npm:1.15.6"
   peerDependenciesMeta:
     debug:
       optional: true
   checksum: 10/70c7612c4cab18e546e36b991bbf8009a1a41cf85354afe04b113d1117569abf760269409cb3eb842d9f7b03d62826687086b081c566ea7b1e6613cf29030bf7
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.15.6":
+  version: 1.15.9
+  resolution: "follow-redirects@npm:1.15.9"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 10/e3ab42d1097e90d28b913903841e6779eb969b62a64706a3eb983e894a5db000fbd89296f45f08885a0e54cd558ef62e81be1165da9be25a6c44920da10f424c
   languageName: node
   linkType: hard
 
