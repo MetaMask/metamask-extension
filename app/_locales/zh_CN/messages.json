@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "更新燃料选项"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "多个提醒！"
-  },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
   },
@@ -4734,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "您的交易已完成"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "抱歉让您久等"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "如果您的交易在 $1 内未完成，则会取消，您无需支付燃料费。",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "智能交易"
   },
@@ -5156,10 +5143,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "再次尝试进行交换。下次我们会在这里保护您免受类似风险。 "
-  },
-  "stxEstimatedCompletion": {
-    "message": "预计将在 $1 内完成",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "交换失败"
