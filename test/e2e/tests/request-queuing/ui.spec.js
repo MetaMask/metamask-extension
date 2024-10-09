@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Browser, until } = require('selenium-webdriver');
+const { Browser } = require('selenium-webdriver');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
