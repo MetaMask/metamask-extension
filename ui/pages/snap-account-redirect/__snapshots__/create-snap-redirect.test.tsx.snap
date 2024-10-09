@@ -107,7 +107,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                     class="mm-box mm-text mm-text--body-md mm-box--padding-2 mm-box--color-primary-default"
                     data-testid="snap-account-redirect-url-display-box"
                   >
-                    https://metamask.github.io/snap-simple-keyring/1.1.2/
+                    https://metamask.github.io/snap-simple-keyring/1.1.6/
                   </p>
                   <button
                     aria-label=""

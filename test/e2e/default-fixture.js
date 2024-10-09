@@ -127,6 +127,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             srcNetworkAllowlist: ['0x1', '0xa', '0xe708'],
             destNetworkAllowlist: ['0x1', '0xa', '0xe708'],
           },
+          destTokens: {},
+          destTopAssets: [],
+          srcTokens: {},
+          srcTopAssets: [],
         },
       },
       CurrencyController: {
@@ -211,6 +215,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+          tokenSortConfig: {
+            key: 'tokenFiatAmount',
+            order: 'dsc',
+            sortCallback: 'stringNumeric',
+          },
           shouldShowAggregatedBalancePopover: true,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',

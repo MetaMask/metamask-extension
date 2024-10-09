@@ -77,6 +77,11 @@ function onboardingFixture() {
           showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+          tokenSortConfig: {
+            key: 'tokenFiatAmount',
+            order: 'dsc',
+            sortCallback: 'stringNumeric',
+          },
           shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
@@ -400,6 +405,10 @@ class FixtureBuilder {
           extensionSupport: false,
           srcNetworkAllowlist: [],
         },
+        destTokens: {},
+        destTopAssets: [],
+        srcTokens: {},
+        srcTopAssets: [],
       },
     };
     return this;

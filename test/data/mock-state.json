@@ -372,7 +372,12 @@
       "showFiatInTestnets": false,
       "showNativeTokenAsMainBalance": true,
       "showTestNetworks": true,
-      "smartTransactionsOptInStatus": false
+      "smartTransactionsOptInStatus": false,
+      "tokenSortConfig": {
+        "key": "tokenFiatAmount",
+        "order": "dsc",
+        "sortCallback": "stringNumeric"
+      }
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
@@ -616,8 +621,8 @@
         "developer": "Metamask",
         "website": "https://www.consensys.io/",
         "auditUrls": ["auditUrl1", "auditUrl2"],
-        "version": "1.0.0",
-        "lastUpdated": "April 20, 2023"
+        "version": "1.1.6",
+        "lastUpdated": "September 26, 2024"
       }
     },
     "notifications": {
