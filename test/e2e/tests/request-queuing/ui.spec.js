@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Browser, until } = require('selenium-webdriver');
+const { Browser } = require('selenium-webdriver');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -33,10 +33,7 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   await openDapp(driver, undefined, dappUrl);
 
   // Connect to the dapp
-  await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-  await driver.clickElement('#connectButton');
-  await driver.delay(regularDelayMs);
-
+  await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.clickElementAndWaitForWindowToClose({
@@ -85,7 +82,9 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
       await driver.findClickableElement(
         '[data-testid="page-container-footer-next"]',
       );
-      await driver.clickElement('[data-testid="page-container-footer-next"]');
+      await driver.clickElementAndWaitForWindowToClose(
+        '[data-testid="page-container-footer-next"]',
+      );
 
       // Switch back to the dapp
       await driver.switchToWindowWithUrl(dappUrl);
@@ -478,12 +477,10 @@ describe('Request-queue UI changes', function () {
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Ensure the dapp starts on the correct network
-        await driver.wait(
-          until.elementTextContains(
-            await driver.findElement('#chainId'),
-            '0x539',
-          ),
-        );
+        await driver.waitForSelector({
+          css: '[id="chainId"]',
+          text: '0x539',
+        });
 
         // Open the popup with shimmed activeTabOrigin
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
@@ -495,12 +492,10 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithUrl(DAPP_URL);
 
         // Check to make sure the dapp network changed
-        await driver.wait(
-          until.elementTextContains(
-            await driver.findElement('#chainId'),
-            '0x1',
-          ),
-        );
+        await driver.waitForSelector({
+          css: '[id="chainId"]',
+          text: '0x1',
+        });
       },
     );
   });
