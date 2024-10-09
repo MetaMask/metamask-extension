@@ -20,35 +20,39 @@ const SOL_ADDRESSES = [
 ];
 
 describe('multichain', () => {
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(BTC_MAINNET_ADDRESSES)(
-    'returns true if address is compatible with BTC mainnet: %s',
-    (address: string) => {
-      expect(isBtcMainnetAddress(address)).toBe(true);
-    },
-  );
+  describe('isBtcMainnetAddress', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(BTC_MAINNET_ADDRESSES)(
+      'returns true if address is compatible with BTC mainnet: %s',
+      (address: string) => {
+        expect(isBtcMainnetAddress(address)).toBe(true);
+      },
+    );
 
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each([...BTC_TESTNET_ADDRESSES, ...ETH_ADDRESSES, ...SOL_ADDRESSES])(
-    'returns false if address is not compatible with BTC mainnet: %s',
-    (address: string) => {
-      expect(isBtcMainnetAddress(address)).toBe(false);
-    },
-  );
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([...BTC_TESTNET_ADDRESSES, ...ETH_ADDRESSES, ...SOL_ADDRESSES])(
+      'returns false if address is not compatible with BTC mainnet: %s',
+      (address: string) => {
+        expect(isBtcMainnetAddress(address)).toBe(false);
+      },
+    );
+  });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(BTC_TESTNET_ADDRESSES)(
-    'returns true if address is compatible with BTC testnet: %s',
-    (address: string) => {
-      expect(isBtcTestnetAddress(address)).toBe(true);
-    },
-  );
+  describe('isBtcTestnetAddress', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(BTC_TESTNET_ADDRESSES)(
+      'returns true if address is compatible with BTC testnet: %s',
+      (address: string) => {
+        expect(isBtcTestnetAddress(address)).toBe(true);
+      },
+    );
 
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each([...BTC_MAINNET_ADDRESSES, ...ETH_ADDRESSES, ...SOL_ADDRESSES])(
-    'returns false if address is compatible with BTC testnet: %s',
-    (address: string) => {
-      expect(isBtcTestnetAddress(address)).toBe(false);
-    },
-  );
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([...BTC_MAINNET_ADDRESSES, ...ETH_ADDRESSES, ...SOL_ADDRESSES])(
+      'returns false if address is compatible with BTC testnet: %s',
+      (address: string) => {
+        expect(isBtcTestnetAddress(address)).toBe(false);
+      },
+    );
+  });
 });
