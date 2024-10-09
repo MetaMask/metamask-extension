@@ -6,7 +6,7 @@ import {
   MetaMaskOpenRPCDocument,
 } from '@metamask/api-specs';
 
-import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
+import { ContentDescriptorObject, MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
@@ -173,6 +173,22 @@ async function main() {
       );
       server.start();
 
+      const getSession = doc.methods.find(
+        (m) => (m as MethodObject).name === 'wallet_getSession',
+      );
+      (getSession as MethodObject).examples = [
+        {
+          name: 'wallet_getSessionExample',
+          description: 'Example of a provider authorization request.',
+          params: [],
+          result: {
+            name: 'wallet_getSessionResultExample',
+            value: {
+              sessionScopes: {},
+            },
+          },
+        },
+      ];
 
       const testCoverageResults = await testCoverage({
         openrpcDocument: doc,
@@ -180,13 +196,10 @@ async function main() {
         reporters: ['console-streaming'],
         skip: ['wallet_invokeMethod'],
         rules: [
-          // new ExamplesRule({
-          //   skip: [],
-          //   only: [
-          //     'wallet_getSession',
-          //     'wallet_revokeSession'
-          //   ],
-          // }),
+          new ExamplesRule({
+            skip: [],
+            only: ['wallet_getSession', 'wallet_revokeSession'],
+          }),
           new MultichainAuthorizationConfirmation({
             driver,
           }),
