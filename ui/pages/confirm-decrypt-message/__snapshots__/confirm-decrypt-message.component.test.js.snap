@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ConfirmDecryptMessage Component should match snapshot 1`] = `
+exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
 <div>
   <div
     class="request-decrypt-message__container"
@@ -190,7 +190,7 @@ exports[`ConfirmDecryptMessage Component should match snapshot 1`] = `
 </div>
 `;
 
-exports[`ConfirmDecryptMessage Component should show the correct message data 1`] = `
+exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
 <div>
   <div
     class="request-decrypt-message__container"
