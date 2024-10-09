@@ -10,16 +10,17 @@ import {
   Box,
   ButtonLink,
   ButtonLinkSize,
+  TextField,
 } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
-import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
+  AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
   TextVariant,
-  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   ExportableContentType,
@@ -202,7 +203,7 @@ export default class AdvancedTab extends PureComponent {
     const { smartTransactionsOptInStatus, setSmartTransactionsOptInStatus } =
       this.props;
 
-    const learMoreLink = (
+    const learnMoreLink = (
       <ButtonLink
         size={ButtonLinkSize.Inherit}
         textProps={{
@@ -231,7 +232,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('smartTransactions')}</span>
           <div className="settings-page__content-description">
-            {t('stxOptInDescription', [learMoreLink])}
+            {t('stxOptInDescription', [learnMoreLink])}
           </div>
         </div>
 
@@ -450,7 +451,7 @@ export default class AdvancedTab extends PureComponent {
               value={this.state.autoLockTimeLimitBeforeNormalization}
               onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
-              fullWidth
+              width={BlockSize.Full}
               margin="dense"
               min={0}
             />

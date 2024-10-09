@@ -524,7 +524,7 @@ export default class ConfirmTransactionBase extends Component {
               min={0}
               placeholder={nextNonceValue}
               onChange={handleNonceChange}
-              fullWidth
+              width={BlockSize.Full}
               margin="dense"
               value={customNonceValue ?? ''}
             />

@@ -2,9 +2,8 @@ import { isValidMnemonic } from '@ethersproject/hdnode';
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import TextField from '../../ui/text-field';
 import { clearClipboard } from '../../../helpers/utils/util';
-import { BannerAlert, Text } from '../../component-library';
+import { BannerAlert, Text, TextField } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {

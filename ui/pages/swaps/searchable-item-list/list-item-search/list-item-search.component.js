@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import log from 'loglevel';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '../../../../components/ui/text-field';
+import { TextField } from '../../../../components/component-library/';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { fetchToken } from '../../swaps.util';
 import { getCurrentChainId } from '../../../../selectors/selectors';
 import SearchIcon from '../../../../components/ui/icon/search-icon';
 
-const renderAdornment = () => (
+const renderStartAccessory = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>
     <SearchIcon size={20} color="var(--color-icon-muted)" />
   </InputAdornment>
@@ -123,8 +123,8 @@ export default function ListItemSearch({
       value={searchQuery}
       onChange={(e) => handleSearch(e.target.value)}
       error={error}
-      fullWidth
-      startAdornment={renderAdornment()}
+      width={BlockSize.Full}
+      startAccessory={renderStartAccessory()}
       autoComplete="off"
       autoFocus
     />

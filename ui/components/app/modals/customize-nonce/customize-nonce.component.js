@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../modal';
-import TextField from '../../../ui/text-field';
 import {
   TextVariant,
   AlignItems,
@@ -18,6 +17,7 @@ import {
   ButtonLink,
   IconName,
   Text,
+  TextField,
 } from '../../../component-library';
 
 const CustomizeNonce = ({
@@ -114,7 +114,7 @@ const CustomizeNonce = ({
               onChange={(e) => {
                 setCustomNonce(e.target.value);
               }}
-              fullWidth
+              width={BlockSize.Full}
               margin="dense"
               value={customNonce}
               id="custom-nonce-id"

@@ -1,10 +1,13 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '../../components/component-library';
-import { TextVariant, TextColor } from '../../helpers/constants/design-system';
+import { Text, TextField } from '../../components/component-library';
+import {
+  BlockSize,
+  TextColor,
+  TextVariant,
+} from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
-import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -200,7 +203,7 @@ export default class UnlockPage extends Component {
               autoFocus
               autoComplete="current-password"
               theme="material"
-              fullWidth
+              width={BlockSize.Full}
             />
           </form>
           {this.renderSubmitButton()}

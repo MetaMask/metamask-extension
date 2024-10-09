@@ -32,8 +32,8 @@ import {
   IconName,
   Box,
   Text,
+  TextField,
 } from '../../../components/component-library';
-import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
 import Popover from '../../../components/ui/popover';
 import {
@@ -594,7 +594,7 @@ export default class SecurityTab extends PureComponent {
                 value={this.state.ipfsGateway}
                 onChange={(e) => handleIpfsGatewayChange(e.target.value)}
                 error={this.state.ipfsGatewayError}
-                fullWidth
+                width={BlockSize.Full}
                 margin="dense"
               />
             </div>
