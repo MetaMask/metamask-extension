@@ -865,7 +865,7 @@
     "@metamask/eth-ledger-bridge-keyring": {
       "globals": {
         "addEventListener": true,
-        "console.log": true,
+        "console.error": true,
         "document.createElement": true,
         "document.head.appendChild": true,
         "fetch": true,
@@ -5616,6 +5616,17 @@
         "msCrypto": true
       }
     },
+    "wait-on>rxjs": {
+      "globals": {
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setInterval.apply": true,
+        "setTimeout.apply": true
+      }
+    },
     "web3": {
       "globals": {
         "XMLHttpRequest": true
@@ -5651,4 +5662,3 @@
       }
     }
   }
-}
