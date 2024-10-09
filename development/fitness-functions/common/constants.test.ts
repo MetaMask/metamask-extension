@@ -61,12 +61,14 @@ describe('Regular Expressions used in Fitness Functions', (): void => {
 
   describe(`JS_REGEX "${JS_REGEX}"`, (): void => {
     const PATHS_IT_SHOULD_MATCH = [
-      'file.js',
-      'webpack/path/file.js',
-      'development/much/longer/path/file.js',
-      'test/file.jsx',
-      'lib/path/file.jsx',
+      'app/much/longer/path/file.js',
       'app/much/longer/path/file.jsx',
+      'offscreen/path/file.js',
+      'offscreen/path/file.jsx',
+      'shared/file.js',
+      'shared/file.jsx',
+      'ui/much/longer/path/file.js',
+      'ui/much/longer/path/file.jsx',
     ];
 
     const PATHS_IT_SHOULD_NOT_MATCH = [
@@ -78,6 +80,9 @@ describe('Regular Expressions used in Fitness Functions', (): void => {
       'file.ts',
       'path/file.ts',
       'much/longer/path/file.tsx',
+      // any js files outside the app, offscreen, shared, and ui directories
+      'test/longer/path/file.js',
+      'random/longer/path/file.jsx',
     ];
 
     describe('included paths', (): void => {
