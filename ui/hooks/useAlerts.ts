@@ -24,8 +24,8 @@ const useAlerts = (ownerId: string) => {
     selectConfirmedAlertKeys(state as AlertsState, ownerId),
   );
 
-  const generalAlerts = useSelector((state) =>
-    selectGeneralAlerts(state as AlertsState, ownerId),
+  const generalAlerts = sortAlertsBySeverity(
+    useSelector((state) => selectGeneralAlerts(state as AlertsState, ownerId)),
   );
 
   const fieldAlerts = sortAlertsBySeverity(

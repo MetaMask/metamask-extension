@@ -1,10 +1,12 @@
 import { shallowEqual, useSelector } from 'react-redux';
+import { toChecksumAddress } from 'ethereumjs-util';
 import {
   getAllTokens,
   getCurrentChainId,
   getCurrentCurrency,
   getMetaMaskCachedBalances,
   getTokenExchangeRates,
+  getConfirmationExchangeRates,
   getNativeCurrencyImage,
   getTokenList,
 } from '../selectors';
@@ -19,7 +21,7 @@ import {
 } from '../ducks/metamask/metamask';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
 import { useTokenTracker } from './useTokenTracker';
 
 export const useAccountTotalFiatBalance = (
@@ -34,6 +36,7 @@ export const useAccountTotalFiatBalance = (
     getTokenExchangeRates,
     shallowEqual,
   );
+  const confirmationExchangeRates = useSelector(getConfirmationExchangeRates);
 
   const cachedBalances = useSelector(getMetaMaskCachedBalances);
   const balance = cachedBalances?.[account?.address] ?? 0;
@@ -59,15 +62,14 @@ export const useAccountTotalFiatBalance = (
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });
 
+  const mergedRates = {
+    ...contractExchangeRates,
+    ...confirmationExchangeRates,
+  };
+
   // Create fiat values for token balances
   const tokenFiatBalances = tokensWithBalances.map((token) => {
-    const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
-      (key) => isEqualCaseInsensitive(key, token.address),
-    );
-    const tokenExchangeRate =
-      (contractExchangeTokenKey &&
-        contractExchangeRates[contractExchangeTokenKey]) ??
-      0;
+    const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
 
     const totalFiatValue = getTokenFiatAmount(
       tokenExchangeRate,
@@ -136,6 +138,29 @@ export const useAccountTotalFiatBalance = (
     ...tokenFiatBalances,
   ).toString(10);
 
+  // we need to append some values to tokensWithBalance for UI
+  // this code was ported from asset-list
+  tokensWithBalances.forEach((token) => {
+    // token.string is the balance displayed in the TokenList UI
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+  });
+
+  // to sort by fiat balance, we need to compute this at this level
+  tokensWithBalances.forEach((token) => {
+    const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
+
+    token.tokenFiatAmount =
+      getTokenFiatAmount(
+        tokenExchangeRate,
+        conversionRate,
+        currentCurrency,
+        token.string, // tokenAmount
+        token.symbol, // tokenSymbol
+        false, // no currency symbol prefix
+        false, // no ticker symbol suffix
+      ) || '0';
+  });
+
   // Fiat balance formatted in user's desired currency (ex: "$8.90")
   const formattedFiat = formatCurrency(totalFiatBalance, currentCurrency);
 
@@ -160,5 +185,6 @@ export const useAccountTotalFiatBalance = (
     tokensWithBalances,
     loading,
     orderedTokenList,
+    mergedRates,
   };
 };
