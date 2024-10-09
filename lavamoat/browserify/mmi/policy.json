@@ -3668,6 +3668,11 @@
         "process": true
       }
     },
+    "axios>form-data": {
+      "globals": {
+        "FormData": true
+      }
+    },
     "base32-encode": {
       "packages": {
         "base32-encode>to-data-view": true
