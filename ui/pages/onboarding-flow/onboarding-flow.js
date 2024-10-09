@@ -28,7 +28,6 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
-  setOnboardingDate,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -72,8 +71,8 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
 
   useEffect(() => {
-    dispatch(setOnboardingDate());
-  }, [dispatch]);
+    setOnboardingDate();
+  }, []);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
@@ -239,4 +238,8 @@ export default function OnboardingFlow() {
       )}
     </div>
   );
+}
+
+function setOnboardingDate() {
+  submitRequestToBackground('setOnboardingDate');
 }

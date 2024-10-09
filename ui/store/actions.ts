@@ -4254,12 +4254,6 @@ export function setLastViewedUserSurvey(id: number) {
   };
 }
 
-export function setOnboardingDate() {
-  return async () => {
-    await submitRequestToBackground('setOnboardingDate');
-  };
-}
-
 export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
     await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
