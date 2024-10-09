@@ -9,8 +9,9 @@ const RULES: IRule[] = [
       'https://github.com/MetaMask/metamask-extension/blob/develop/docs/testing.md#favor-jest-instead-of-mocha',
   },
   {
-    name: "Don't add JS or JSX files to the `shared` directory",
+    name: "Don't add JS or JSX files",
     fn: preventJavaScriptFileAdditions,
+    docURL: '[WIP] No documentation exists for this rule yet.',
   },
 ];
 

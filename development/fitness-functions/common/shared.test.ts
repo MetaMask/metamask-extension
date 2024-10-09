@@ -13,7 +13,7 @@ describe('filterDiffLineAdditions()', (): void => {
     const testFileDiff = generateCreateFileDiff(testFilePath, testAddition);
 
     const actualResult = filterDiffLineAdditions(testFileDiff);
-    const expectedResult = `+${testAddition}`;
+    const expectedResult = `  +${testAddition}`;
 
     expect(actualResult).toStrictEqual(expectedResult);
   });
@@ -30,7 +30,7 @@ describe('filterDiffFileCreations()', (): void => {
     const actualResult = filterDiffFileCreations(testFileDiff);
 
     expect(actualResult).toMatchInlineSnapshot(`
-      "diff --git a/old-file.js b/old-file.js
+    "diff --git a/old-file.js b/old-file.js
       new file mode 100644
       index 000000000..30d74d258
       --- /dev/null
@@ -44,9 +44,9 @@ describe('filterDiffFileCreations()', (): void => {
 describe('hasNumberOfCodeBlocksIncreased()', (): void => {
   it('should show which code blocks have increased', (): void => {
     const testDiffFragment = `
-    +foo
-    +bar
-    +baz`;
+      +foo
+      +bar
+      +baz`;
     const testCodeBlocks = ['code block 1', 'foo', 'baz'];
 
     const actualResult = hasNumberOfCodeBlocksIncreased(
@@ -69,93 +69,85 @@ describe('filterDiffByFilePath()', (): void => {
   it('should return the right diff for a generic matcher', (): void => {
     const actualResult = filterDiffByFilePath(
       testFileDiff,
-      '.*/.*.(js|ts)$|.*.(js|ts)$',
+      /^(.*\/)?.*\.(jsx)$/u, // Exclude jsx files
     );
 
     expect(actualResult).toMatchInlineSnapshot(`
       "diff --git a/new-file.ts b/new-file.ts
-      index 57d5de75c..808d8ba37 100644
-      --- a/new-file.ts
-      +++ b/new-file.ts
-      @@ -1,3 +1,8 @@
-      +foo
-      @@ -34,33 +39,4 @@
-      -bar
+          index 57d5de75c..808d8ba37 100644
+          --- a/new-file.ts
+          +++ b/new-file.ts
+          @@ -1,3 +1,8 @@
+        +foo
+          @@ -34,33 +39,4 @@
+        -bar
       diff --git a/old-file.js b/old-file.js
-      index 57d5de75c..808d8ba37 100644
-      --- a/old-file.js
-      +++ b/old-file.js
-      @@ -1,3 +1,8 @@
-      +ping
-      @@ -34,33 +39,4 @@
-      -pong"
+          index 57d5de75c..808d8ba37 100644
+          --- a/old-file.js
+          +++ b/old-file.js
+          @@ -1,3 +1,8 @@
+        +ping
+          @@ -34,33 +39,4 @@
+        -pong"
     `);
   });
 
   it('should return the right diff for a specific file in any dir matcher', (): void => {
-    const actualResult = filterDiffByFilePath(testFileDiff, '.*old-file.js$');
+    const actualResult = filterDiffByFilePath(testFileDiff, /.*old-file\.js$/u); // Exclude old-file.js
 
     expect(actualResult).toMatchInlineSnapshot(`
-      "diff --git a/old-file.js b/old-file.js
-      index 57d5de75c..808d8ba37 100644
-      --- a/old-file.js
-      +++ b/old-file.js
-      @@ -1,3 +1,8 @@
-      +ping
-      @@ -34,33 +39,4 @@
-      -pong"
+      "diff --git a/new-file.ts b/new-file.ts
+          index 57d5de75c..808d8ba37 100644
+          --- a/new-file.ts
+          +++ b/new-file.ts
+          @@ -1,3 +1,8 @@
+        +foo
+          @@ -34,33 +39,4 @@
+        -bar
+      diff --git a/old-file.jsx b/old-file.jsx
+          index 57d5de75c..808d8ba37 100644
+          --- a/old-file.jsx
+          +++ b/old-file.jsx
+          @@ -1,3 +1,8 @@
+        +yin
+          @@ -34,33 +39,4 @@
+        -yang"
     `);
   });
 
   it('should return the right diff for a multiple file extension (OR) matcher', (): void => {
     const actualResult = filterDiffByFilePath(
       testFileDiff,
-      '^(./)*old-file.(js|ts|jsx)$',
+      /^(\.\/)*old-file\.(js|ts|jsx)$/u, // Exclude files named old-file that have js, ts, or jsx extensions
     );
 
     expect(actualResult).toMatchInlineSnapshot(`
-      "diff --git a/old-file.js b/old-file.js
-      index 57d5de75c..808d8ba37 100644
-      --- a/old-file.js
-      +++ b/old-file.js
-      @@ -1,3 +1,8 @@
-      +ping
-      @@ -34,33 +39,4 @@
-      -pong
-      diff --git a/old-file.jsx b/old-file.jsx
-      index 57d5de75c..808d8ba37 100644
-      --- a/old-file.jsx
-      +++ b/old-file.jsx
-      @@ -1,3 +1,8 @@
-      +yin
-      @@ -34,33 +39,4 @@
-      -yang"
+      "diff --git a/new-file.ts b/new-file.ts
+          index 57d5de75c..808d8ba37 100644
+          --- a/new-file.ts
+          +++ b/new-file.ts
+          @@ -1,3 +1,8 @@
+        +foo
+          @@ -34,33 +39,4 @@
+        -bar"
     `);
   });
 
   it('should return the right diff for a file name negation matcher', (): void => {
     const actualResult = filterDiffByFilePath(
       testFileDiff,
-      '^(?!.*old-file.js$).*.[a-zA-Z]+$',
+      /^(?!.*old-file\.js$).*\.[a-zA-Z]+$/u, // Exclude files that do not end with old-file.js but include all other file extensions
     );
 
     expect(actualResult).toMatchInlineSnapshot(`
-      "diff --git a/new-file.ts b/new-file.ts
-      index 57d5de75c..808d8ba37 100644
-      --- a/new-file.ts
-      +++ b/new-file.ts
-      @@ -1,3 +1,8 @@
-      +foo
-      @@ -34,33 +39,4 @@
-      -bar
-      diff --git a/old-file.jsx b/old-file.jsx
-      index 57d5de75c..808d8ba37 100644
-      --- a/old-file.jsx
-      +++ b/old-file.jsx
-      @@ -1,3 +1,8 @@
-      +yin
-      @@ -34,33 +39,4 @@
-      -yang"
-    `);
+        "diff --git a/old-file.js b/old-file.js
+            index 57d5de75c..808d8ba37 100644
+            --- a/old-file.js
+            +++ b/old-file.js
+            @@ -1,3 +1,8 @@
+          +ping
+            @@ -34,33 +39,4 @@
+          -pong"
+      `);
   });
 });
