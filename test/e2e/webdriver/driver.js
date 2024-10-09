@@ -1315,7 +1315,7 @@ function collectMetrics() {
 
   return {
     ...results,
-    ...window.stateHooks.customTraces,
+    ...window.stateHooks.getCustomTraces(),
   };
 }
 

@@ -29,6 +29,11 @@ const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
+const durationsByName: { [name: string]: number } = {};
+
+if (process.env.IN_TEST) {
+  globalThis.stateHooks.getCustomTraces = () => durationsByName;
+}
 
 type PendingTrace = {
   end: (timestamp?: number) => void;
@@ -174,8 +179,7 @@ function logTrace(
   const { name } = request;
 
   if (process.env.IN_TEST) {
-    globalThis.stateHooks.customTraces ??= {};
-    globalThis.stateHooks.customTraces[name] = duration;
+    durationsByName[name] = duration;
   }
 
   log('Finished trace', name, duration, { request, error });
