@@ -41,7 +41,7 @@ export class MultichainAuthorizationConfirmation implements Rule {
           try {
             await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            const text = 'Next';
+            const text = 'Connect';
 
             await this.driver.findClickableElements({
               text,
@@ -56,17 +56,6 @@ export class MultichainAuthorizationConfirmation implements Rule {
             });
             await this.driver.clickElement({ text, tag: 'button' });
 
-            const screenshotConfirm = await this.driver.driver.takeScreenshot();
-            call.attachments.push({
-              type: 'image',
-              data: `data:image/png;base64,${screenshotConfirm}`,
-            });
-
-            await this.driver.findClickableElements({
-              text: 'Confirm',
-              tag: 'button',
-            });
-            await this.driver.clickElement({ text: 'Confirm', tag: 'button' });
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
             await switchToOrOpenDapp(this.driver);
           } catch (e) {
