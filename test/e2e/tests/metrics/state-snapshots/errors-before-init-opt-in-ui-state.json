@@ -130,7 +130,6 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "useRequestQueue": true,
-      "isMultiAccountBalancesEnabled": true,
       "showIncomingTransactions": "object"
     },
     "QueuedRequestController": { "queuedRequestCount": 0 },
