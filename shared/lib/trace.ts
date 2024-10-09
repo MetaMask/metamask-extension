@@ -269,7 +269,7 @@ function initScope(scope: Sentry.Scope, request: TraceRequest) {
 
   for (const [key, value] of Object.entries(tags)) {
     if (typeof value !== 'number') {
-      scope.setTag(key, value);
+      // scope.setTag(key, value);
     }
   }
 }
