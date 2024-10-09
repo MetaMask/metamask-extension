@@ -45,6 +45,7 @@ import ExperimentalArea from '../../components/app/flask/experimental-area';
 import OnboardingSuccessful from '../institutional/onboarding-successful/onboarding-successful';
 import { RemindSRP } from '../institutional/remind-srp/remind-srp';
 ///: END:ONLY_INCLUDE_IF
+import { submitRequestToBackground } from '../../store/background-connection';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
