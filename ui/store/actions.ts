@@ -4257,12 +4257,6 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
   };
 }
 
-export function setNewPrivacyPolicyToastClickedOrClosed() {
-  return async () => {
-    await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
-  };
-}
-
 export function setLastViewedUserSurvey(id: number) {
   return async () => {
     await submitRequestToBackground('setLastViewedUserSurvey', [id]);
@@ -4272,14 +4266,6 @@ export function setLastViewedUserSurvey(id: number) {
 export function setOnboardingDate() {
   return async () => {
     await submitRequestToBackground('setOnboardingDate');
-  };
-}
-
-export function setNewPrivacyPolicyToastShownDate(time: number) {
-  return async () => {
-    await submitRequestToBackground('setNewPrivacyPolicyToastShownDate', [
-      time,
-    ]);
   };
 }
 
