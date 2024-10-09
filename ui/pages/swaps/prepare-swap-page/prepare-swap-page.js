@@ -191,19 +191,10 @@ export default function PrepareSwapPage({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
-  const usedQuote = useSelector(getUsedQuote, isEqual)
+  const usedQuote = useSelector(getUsedQuote, isEqual);
   const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const numberOfQuotes = Object.keys(quotes).length;
-  const areQuotesPresent =
-    numberOfQuotes > 0 &&
-    Object.keys(quotes).filter((quote) => !isEmpty(quote)).length > 0 &&
-    usedQuote;
-  console.log({
-    test1: numberOfQuotes > 0,
-    test2: Object.keys(quotes).filter((quote) => !isEmpty(quote)).length > 0,
-    test3: usedQuote,
-    test4: quotes,
-  });
+  const areQuotesPresent = numberOfQuotes > 0 && usedQuote;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
   const transactionSettingsOpened = useSelector(
