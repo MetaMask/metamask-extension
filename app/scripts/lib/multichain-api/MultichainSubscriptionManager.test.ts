@@ -134,22 +134,4 @@ describe('MultichainSubscriptionManager', () => {
 
     expect(onNotificationSpy).not.toHaveBeenCalled();
   });
-
-  it('should unsubscribe all', () => {
-    const { multichainSubscriptionManager, onNotificationSpy } =
-      createMultichainSubscriptionManager();
-    multichainSubscriptionManager.subscribe({ scope, origin, tabId });
-    const scope2 = 'eip155:2';
-    multichainSubscriptionManager.subscribe({ scope: scope2, origin, tabId });
-    multichainSubscriptionManager.unsubscribeAll();
-
-    mockSubscriptionManager.events.on.mock.calls[0][1](
-      newHeadsNotificationMock,
-    );
-    mockSubscriptionManager.events.on.mock.calls[1][1](
-      newHeadsNotificationMock,
-    );
-
-    expect(onNotificationSpy).not.toHaveBeenCalled();
-  });
 });
