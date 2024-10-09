@@ -1,10 +1,9 @@
-const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  defaultGanacheOptions,
-  unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+import { strict as assert } from 'assert';
+import { defaultGanacheOptions, withFixtures } from '../helpers';
+import { Driver } from '../webdriver/driver';
+import { Ganache } from '../seeder/ganache';
+import FixtureBuilder from '../fixture-builder';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
 describe('eth_accounts', function () {
   it('executes a eth_accounts json rpc call', async function () {
@@ -18,10 +17,16 @@ describe('eth_accounts', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // eth_accounts
         await driver.openNewPage(`http://127.0.0.1:8080`);
@@ -31,7 +36,7 @@ describe('eth_accounts', function () {
           method: 'eth_accounts',
         });
 
-        const accounts = await driver.executeScript(
+        const accounts: string[] = await driver.executeScript(
           `return window.ethereum.request(${accountsRequest})`,
         );
 

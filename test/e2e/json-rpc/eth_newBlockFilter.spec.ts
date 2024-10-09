@@ -1,13 +1,12 @@
-const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  defaultGanacheOptions,
-  unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+import { strict as assert } from 'assert';
+import { defaultGanacheOptions, withFixtures } from '../helpers';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import FixtureBuilder from '../fixture-builder';
+import { Driver } from '../webdriver/driver';
+import { Ganache } from '../seeder/ganache';
 
 describe('eth_newBlockFilter', function () {
-  const ganacheOptions = {
+  const ganacheOptions: typeof defaultGanacheOptions & { blockTime: number } = {
     blockTime: 0.1,
     ...defaultGanacheOptions,
   };
@@ -19,10 +18,16 @@ describe('eth_newBlockFilter', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // eth_newBlockFilter
         await driver.openNewPage(`http://127.0.0.1:8080`);
@@ -32,9 +37,9 @@ describe('eth_newBlockFilter', function () {
           method: 'eth_newBlockFilter',
         });
 
-        const newBlockFilter = await driver.executeScript(
+        const newBlockFilter = (await driver.executeScript(
           `return window.ethereum.request(${newBlockfilterRequest})`,
-        );
+        )) as string;
 
         assert.strictEqual(newBlockFilter, '0x01');
 
@@ -52,13 +57,13 @@ describe('eth_newBlockFilter', function () {
           method: 'eth_getBlockByNumber',
           params: ['latest', false],
         });
-        const blockByHash = await driver.executeScript(
+        const blockByHash = (await driver.executeScript(
           `return window.ethereum.request(${blockByHashRequest})`,
-        );
+        )) as { hash: string };
 
-        const filterChanges = await driver.executeScript(
+        const filterChanges = (await driver.executeScript(
           `return window.ethereum.request(${getFilterChangesRequest})`,
-        );
+        )) as string[];
 
         assert.strictEqual(filterChanges.includes(blockByHash.hash), true);
 
@@ -69,9 +74,9 @@ describe('eth_newBlockFilter', function () {
           params: ['0x01'],
         });
 
-        const uninstallFilter = await driver.executeScript(
+        const uninstallFilter = (await driver.executeScript(
           `return window.ethereum.request(${uninstallFilterRequest})`,
-        );
+        )) as boolean;
 
         assert.strictEqual(uninstallFilter, true);
       },

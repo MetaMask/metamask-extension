@@ -56,7 +56,6 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
         await assertSignatureConfirmedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
@@ -81,10 +80,9 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
           SignatureType.SignTypedDataV3,
         );
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
-        await driver.delay(1000);
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -141,16 +139,13 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle('E2E Test Dapp');
   await driver.clickElement('#signTypedDataV3Verify');
-  await driver.delay(500);
+  await driver.waitForSelector({
+    css: '#signTypedDataV3Result',
+    text: '0x0a22f7796a2a70c8dc918e7e6eb8452c8f2999d1a1eb5ad714473d36270a40d6724472e5609948c778a07216bd082b60b6f6853d6354c731fd8ccdd3a2f4af261b',
+  });
 
-  const verifyResult = await driver.findElement('#signTypedDataV3Result');
-  const verifyRecoverAddress = await driver.findElement(
-    '#signTypedDataV3VerifyResult',
-  );
-
-  assert.equal(
-    await verifyResult.getText(),
-    '0x0a22f7796a2a70c8dc918e7e6eb8452c8f2999d1a1eb5ad714473d36270a40d6724472e5609948c778a07216bd082b60b6f6853d6354c731fd8ccdd3a2f4af261b',
-  );
-  assert.equal(await verifyRecoverAddress.getText(), publicAddress);
+  await driver.waitForSelector({
+    css: '#signTypedDataV3VerifyResult',
+    text: publicAddress,
+  });
 }
