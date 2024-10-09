@@ -18,6 +18,7 @@ import {
   setToToken,
   setFromChain,
   resetInputFields,
+  switchToAndFromTokens,
 } from './actions';
 
 const middleware = [thunk];
@@ -131,6 +132,34 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         fromToken: null,
         toToken: null,
+        fromTokenInputValue: null,
+      });
+    });
+  });
+
+  describe('switchToAndFromTokens', () => {
+    it('switches to and from input values', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const bridgeStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore(
+          {},
+          {
+            toChainId: CHAIN_IDS.MAINNET,
+            fromToken: { symbol: 'WETH', address: '0x13341432' },
+            toToken: { symbol: 'USDC', address: '0x13341431' },
+            fromTokenInputValue: '10',
+          },
+        ),
+      );
+      const state = bridgeStore.getState().bridge;
+      bridgeStore.dispatch(switchToAndFromTokens(CHAIN_IDS.POLYGON));
+      const actions = bridgeStore.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/switchToAndFromTokens');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState).toStrictEqual({
+        toChainId: CHAIN_IDS.POLYGON,
+        fromToken: { symbol: 'USDC', address: '0x13341431' },
+        toToken: { symbol: 'WETH', address: '0x13341432' },
         fromTokenInputValue: null,
       });
     });
