@@ -14,6 +14,7 @@ import {
 } from '../../components/component-library';
 import { Toast, ToastContainer } from '../../components/multichain';
 import { SurveyToast } from '../../components/ui/survey-toast';
+import { getAlertEnabledness } from '../../ducks/metamask/metamask';
 import {
   BorderColor,
   BorderRadius,
@@ -26,16 +27,16 @@ import {
 } from '../../helpers/constants/routes';
 import { getURLHost } from '../../helpers/utils/util';
 import {
-  SURVEY_DATE,
-  SURVEY_END_TIME,
-  SURVEY_START_TIME,
-} from '../../helpers/constants/survey';
-import { getAlertEnabledness } from '../../ducks/metamask/metamask';
-import {
   getPermittedAccountsForCurrentTab,
   getSelectedAccount,
 } from '../../selectors';
 import { getShowAutoNetworkSwitchTest } from './isolated';
+import {
+  getShowPrivacyPolicyToast,
+  getShowSurveyToast,
+  setNewPrivacyPolicyToastClickedOrClosed,
+  setNewPrivacyPolicyToastShownDate,
+} from './toast-master-selectors';
 
 // Allow comparison with a previous value, in order to detect changes
 // (This pattern only works if ToastMaster is a singleton)
@@ -46,11 +47,8 @@ export function ToastMaster({ props, context }) {
   const {
     activeTabOrigin,
     addPermittedAccount,
-    showPrivacyPolicyToast,
-    newPrivacyPolicyToastShownDate,
     clearSwitchedNetworkDetails,
     setSurveyLinkLastClickedOrClosed,
-    setNewPrivacyPolicyToastClickedOrClosed,
     setSwitchedNetworkNeverShowMessage,
     switchedNetworkDetails,
     useNftDetection,
@@ -64,10 +62,9 @@ export function ToastMaster({ props, context }) {
   console.log('switchedNetworkDetails', switchedNetworkDetails);
   console.log('showAutoNetworkSwitchToast', showAutoNetworkSwitchToast);
 
-  const isPrivacyToastRecent = getIsPrivacyToastRecent(
-    props.newPrivacyPolicyToastShownDate,
-  );
-  const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
+  const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
+    useSelector(getShowPrivacyPolicyToast);
+
   const autoHideToastDelay = 5 * SECOND;
   const safeEncodedHost = encodeURIComponent(activeTabOrigin);
 
@@ -91,6 +88,11 @@ export function ToastMaster({ props, context }) {
   };
   if (!onHomeScreen(props)) {
     return null;
+  }
+
+  // If the privacy policy toast is shown, and there is no date set, set it
+  if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
+    setNewPrivacyPolicyToastShownDate(Date.now());
   }
 
   return (
@@ -149,27 +151,23 @@ export function ToastMaster({ props, context }) {
           }}
         />
       )}
-      {showPrivacyPolicyToast &&
-        (isPrivacyToastRecent || isPrivacyToastNotShown) && (
-          <Toast
-            key="privacy-policy-toast"
-            startAdornment={
-              <Icon name={IconName.Info} color={IconColor.iconDefault} />
-            }
-            text={t('newPrivacyPolicyTitle')}
-            actionText={t('newPrivacyPolicyActionButton')}
-            onActionClick={() => {
-              global.platform.openTab({
-                url: PRIVACY_POLICY_LINK,
-              });
-              setNewPrivacyPolicyToastClickedOrClosed();
-            }}
-            onClose={() => {
-              setNewPrivacyPolicyToastClickedOrClosed();
-            }}
-          />
-        )}
-      {/* TODO fix showAutoNetworkSwitchToast */}
+      {showPrivacyPolicyToast && (
+        <Toast
+          key="privacy-policy-toast"
+          startAdornment={
+            <Icon name={IconName.Info} color={IconColor.iconDefault} />
+          }
+          text={t('newPrivacyPolicyTitle')}
+          actionText={t('newPrivacyPolicyActionButton')}
+          onActionClick={() => {
+            global.platform.openTab({
+              url: PRIVACY_POLICY_LINK,
+            });
+            setNewPrivacyPolicyToastClickedOrClosed();
+          }}
+          onClose={setNewPrivacyPolicyToastClickedOrClosed}
+        />
+      )}
       {showAutoNetworkSwitchToast ? (
         <Toast
           key="switched-network-toast"
@@ -231,52 +229,9 @@ export function ToastMaster({ props, context }) {
   );
 }
 
-export function updateNewPrivacyPolicyToastDate(props) {
-  const {
-    showPrivacyPolicyToast,
-    newPrivacyPolicyToastShownDate,
-    setNewPrivacyPolicyToastShownDate,
-  } = props;
-
-  if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
-    setNewPrivacyPolicyToastShownDate(Date.now());
-  }
-}
-
-export function getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate) {
-  const currentDate = new Date();
-  const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-  const newPrivacyPolicyToastShownDateObj = new Date(
-    newPrivacyPolicyToastShownDate,
-  );
-  const toastWasShownLessThanADayAgo =
-    currentDate - newPrivacyPolicyToastShownDateObj < oneDayInMilliseconds;
-
-  return toastWasShownLessThanADayAgo;
-}
-
 function onHomeScreen(props) {
   const { location } = props;
   return location.pathname === DEFAULT_ROUTE;
-}
-
-/**
- * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
- * (This function is exported only so the test can access it.)
- *
- * @param {*} state - The application state containing the necessary survey data.
- * @returns {boolean} True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
- */
-export function getShowSurveyToast(state) {
-  if (state.metamask.surveyLinkLastClickedOrClosed) {
-    return false;
-  }
-
-  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
-  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
-  const now = Date.now();
-
-  return now > startTime && now < endTime;
 }
 
 // If there is more than one connected account to activeTabOrigin,

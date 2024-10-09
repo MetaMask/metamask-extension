@@ -97,7 +97,6 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
-import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 // TODO: Remove restricted import
@@ -1985,27 +1984,6 @@ export function getShowTermsOfUse(state) {
   );
 }
 
-/**
- * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
- *
- * @param {*} state - The application state containing the privacy policy data.
- * @returns {boolean} True if the current date is on or after the new privacy policy date and the privacy policy toast was not clicked or closed. False otherwise.
- */
-export function getShowPrivacyPolicyToast(state) {
-  const { newPrivacyPolicyToastClickedOrClosed, onboardingDate } =
-    state.metamask;
-  const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
-  const currentDate = new Date(Date.now());
-  return (
-    !newPrivacyPolicyToastClickedOrClosed &&
-    currentDate >= newPrivacyPolicyDate &&
-    // users who onboarded before the privacy policy date should see the notice
-    // and
-    // old users who don't have onboardingDate set should see the notice
-    (onboardingDate < newPrivacyPolicyDate || !onboardingDate)
-  );
-}
-
 export function getLastViewedUserSurvey(state) {
   return state.metamask.lastViewedUserSurvey;
 }
@@ -2017,10 +1995,6 @@ export function getShowOutdatedBrowserWarning(state) {
   }
   const currentTime = new Date().getTime();
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
-}
-
-export function getNewPrivacyPolicyToastShownDate(state) {
-  return state.metamask.newPrivacyPolicyToastShownDate;
 }
 
 export function getOnboardingDate(state) {
