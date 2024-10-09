@@ -7,8 +7,8 @@ import type { PolymorphicRef } from '../box';
 
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import {
-  isBtcMainnetAddress,
-  isBtcTestnetAddress,
+  MultichainType,
+  getMultichainTypeFromAddress,
 } from '../../../../shared/lib/multichain';
 import {
   AvatarAccountDiameter,
@@ -18,19 +18,15 @@ import {
   AvatarAccountProps,
 } from './avatar-account.types';
 
-// TODO: This might not scale well with our new multichain initiative since it would require
-// future account's type to be added here too. The best approach might be to use
-// `InternalAccount` type rather than plain addresses. This way we could use the account's
-// type to "infer" the namespace.
-// For now, keep keep this simple.
 function getJazziconNamespace(address: string): string | undefined {
-  if (isBtcMainnetAddress(address) || isBtcTestnetAddress(address)) {
-    // TODO: Add this to @metamask/utils `KnownCaipNamespaces` and use it here:
-    return 'bip122';
+  switch (getMultichainTypeFromAddress(address)) {
+    case MultichainType.Bip122:
+      return 'bip122';
+    case MultichainType.Eip155:
+      return undefined; // Falls back to default Jazzicon behavior
+    default:
+      return undefined;
   }
-  // We leave it `undefined` to fallback to the default jazzicon behavior (even for
-  // ethereum).
-  return undefined;
 }
 
 export const AvatarAccount: AvatarAccountComponent = React.forwardRef(
