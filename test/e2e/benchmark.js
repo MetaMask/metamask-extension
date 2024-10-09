@@ -19,8 +19,13 @@ const ALL_PAGES = Object.values(PAGES);
 const CUSTOM_TRACE_LOG_MESSAGE = 'Custom Trace';
 
 const CUSTOM_TRACES = {
+  backgroundConnect: 'Background Connect',
+  firstReactRender: 'First Render',
+  getState: 'Get State',
+  initialActions: 'Initial Actions',
   loadScripts: 'Load Scripts',
-  startup: 'UI Startup',
+  setupStore: 'Setup Store',
+  uiStartup: 'UI Startup',
 };
 
 async function measurePage(pageName) {
