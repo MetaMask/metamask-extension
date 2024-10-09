@@ -121,7 +121,7 @@ import {
   setTheme,
   showOnboardingHeader,
 } from './routes-helpers';
-import { ToastMaster } from './toast-master';
+import { ToastMaster } from '../../components/app/toast-master/toast-master';
 
 export default class Routes extends Component {
   static propTypes = {

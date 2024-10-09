@@ -1,8 +1,8 @@
-import { PRIVACY_POLICY_DATE } from '../../helpers/constants/privacy-policy';
-import { SURVEY_DATE, SURVEY_GMT } from '../../helpers/constants/survey';
+import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
+import { SURVEY_DATE, SURVEY_GMT } from '../../../helpers/constants/survey';
 import {
-  getShowSurveyToast,
   getShowPrivacyPolicyToast,
+  getShowSurveyToast,
 } from './toast-master-selectors';
 
 describe('#getShowSurveyToast', () => {
