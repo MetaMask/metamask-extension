@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Ενημέρωση επιλογών των τελών συναλλαγών"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Εάν εγκρίνετε αυτό το αίτημα, ένας τρίτος που είναι γνωστός για απάτες μπορεί να αποκτήσει όλα τα περιουσιακά σας στοιχεία."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Πολλαπλές ειδοποιήσεις!"
-  },
   "alertDisableTooltip": {
     "message": "Αυτό μπορεί να αλλάξει στις \"Ρυθμίσεις > Ειδοποιήσεις\""
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Έχω ενημερωθεί για την ειδοποίηση και εξακολουθώ να θέλω να συνεχίσω"
   },
-  "confirmAlertModalDetails": {
-    "message": "Εάν συνδεθείτε, ένας τρίτος που είναι γνωστός για απάτες μπορεί να αποκτήσει όλα τα περιουσιακά σας στοιχεία. Ελέγξτε τις ειδοποιήσεις πριν συνεχίσετε."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Τα περιουσιακά σας στοιχεία μπορεί να κινδυνεύουν"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Θα σας ανακατευθύνουμε στο $1 όταν κάνετε κλικ για να συνεχίσετε."
   },
@@ -1004,9 +992,6 @@
   },
   "confirmTitleDescSIWESignature": {
     "message": "Ένας ιστότοπος θέλει να συνδεθείτε για να αποδείξετε ότι είστε ο κάτοχος αυτού του λογαριασμού."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Επιβεβαιώστε αυτό το μήνυμα μόνο εάν εγκρίνετε το περιεχόμενο και εμπιστεύεστε τον ιστότοπο που το ζητάει."
   },
   "confirmTitlePermitTokens": {
     "message": "Αίτημα ανώτατου ορίου δαπανών"
@@ -1881,10 +1866,6 @@
   },
   "feeDetails": {
     "message": "Λεπτομέρειες χρεώσεων"
-  },
-  "fiat": {
-    "message": "Εντολή",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
@@ -2867,10 +2848,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Αυτό το δίκτυο δεν ταιριάζει με το αναγνωριστικό ή το όνομα της σχετικής αλυσίδας. Πολλά δημοφιλή tokens χρησιμοποιούν το όνομα $1, καθιστώντας το στόχο για απάτες. Οι απατεώνες μπορεί να σας ξεγελάσουν για να τους στείλετε πιο πολύτιμα νομίσματα σε αντάλλαγμα. Επαληθεύστε τα πάντα προτού συνεχίσετε.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Πρόκειται για πιθανή απάτη"
+    "message": "Πρόκειται για πιθανή απάτη",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Χρειάζεστε βοήθεια; Επικοινωνήστε με $1",
@@ -3099,9 +3081,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
-  },
-  "noConversionDateAvailable": {
-    "message": "Δεν υπάρχει διαθέσιμη ημερομηνία μετατροπής νομίσματος"
   },
   "noConversionRateAvailable": {
     "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
@@ -3922,12 +3901,6 @@
   },
   "priceUnavailable": {
     "message": "μη διαθέσιμη τιμή"
-  },
-  "primaryCurrencySetting": {
-    "message": "Κύριο νόμισμα"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Επιλέξτε εγχώριο για να δώσετε προτεραιότητα στην εμφάνιση των τιμών στο νόμισμα της αλυσίδας (π.χ. ETH). Επιλέξτε Παραστατικό για να δώσετε προτεραιότητα στην εμφάνιση τιμών στο επιλεγμένο παραστατικό νόμισμα."
   },
   "primaryType": {
     "message": "Βασικός τύπος"
@@ -4755,13 +4728,6 @@
   "smartTransactionSuccess": {
     "message": "Η συναλλαγή σας ολοκληρώθηκε"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Συγγνώμη για την αναμονή"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Εάν η συναλλαγή σας δεν ολοκληρωθεί εντός $1, θα ακυρωθεί και δεν θα χρεωθείτε με τέλη συναλλαγών.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Έξυπνες συναλλαγές"
   },
@@ -5177,10 +5143,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Προσπαθήστε ξανά να κάνετε ανταλλαγή. Θα είμαστε εδώ για να σας προστατεύσουμε από παρόμοιους κινδύνους και την επόμενη φορά."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Εκτιμώμενη ολοκλήρωση σε < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Η ανταλλαγή απέτυχε"
@@ -6092,9 +6054,6 @@
   },
   "updateRequest": {
     "message": "Αίτημα ενημέρωσης"
-  },
-  "updatedWithDate": {
-    "message": "Ενημερώθηκε $1"
   },
   "uploadDropFile": {
     "message": "Αφήστε το αρχείο σας εδώ"

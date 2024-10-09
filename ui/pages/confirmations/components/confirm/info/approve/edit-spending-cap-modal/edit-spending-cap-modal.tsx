@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
@@ -64,18 +64,28 @@ export const EditSpendingCapModal = ({
   );
 
   const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =
-    useState('');
+    useState(formattedSpendingCap.toString());
+
+  useEffect(() => {
+    if (formattedSpendingCap) {
+      setCustomSpendingCapInputValue(formattedSpendingCap.toString());
+    }
+  }, [formattedSpendingCap]);
 
   const handleCancel = useCallback(() => {
     setIsOpenEditSpendingCapModal(false);
-    setCustomSpendingCapInputValue('');
-  }, [setIsOpenEditSpendingCapModal, setCustomSpendingCapInputValue]);
+    setCustomSpendingCapInputValue(formattedSpendingCap.toString());
+  }, [
+    setIsOpenEditSpendingCapModal,
+    setCustomSpendingCapInputValue,
+    formattedSpendingCap,
+  ]);
 
   const [isModalSaving, setIsModalSaving] = useState(false);
 
   const handleSubmit = useCallback(async () => {
     setIsModalSaving(true);
-    const parsedValue = parseInt(customSpendingCapInputValue, 10);
+    const parsedValue = parseInt(String(customSpendingCapInputValue), 10);
 
     const customTxParamsData = getCustomTxParamsData(
       transactionMeta?.txParams?.data,
@@ -103,8 +113,8 @@ export const EditSpendingCapModal = ({
 
     setIsModalSaving(false);
     setIsOpenEditSpendingCapModal(false);
-    setCustomSpendingCapInputValue('');
-  }, [customSpendingCapInputValue]);
+    setCustomSpendingCapInputValue(formattedSpendingCap.toString());
+  }, [customSpendingCapInputValue, formattedSpendingCap]);
 
   return (
     <Modal

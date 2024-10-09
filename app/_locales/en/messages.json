@@ -162,6 +162,10 @@
   "accountOptions": {
     "message": "Account options"
   },
+  "accountPermissionToast": {
+    "message": "Account permissions updated for $1",
+    "description": "$1 represents connected dapp"
+  },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
@@ -173,6 +177,12 @@
   },
   "accountsConnected": {
     "message": "Accounts connected"
+  },
+  "accountsPermissionsTitle": {
+    "message": "See your accounts and suggest transactions"
+  },
+  "accountsSmallCase": {
+    "message": "accounts"
   },
   "active": {
     "message": "Active"
@@ -392,6 +402,10 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
+  "aggregatedBalancePopover": {
+    "message": "This reflects the value of all tokens you own on a given network. If you prefer seeing this value in ETH or other currencies, go to $1.",
+    "description": "$1 represents the settings page"
+  },
   "agreeTermsOfUse": {
     "message": "I agree to MetaMask's $1",
     "description": "$1 is the `terms` link"
@@ -413,12 +427,6 @@
   },
   "alertActionUpdateGasFeeLevel": {
     "message": "Update gas options"
-  },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "If you approve this request, a third party known for scams might take all your assets."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Multiple alerts!"
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
@@ -1014,12 +1022,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
-  "confirmAlertModalDetails": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Your assets may be at risk"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
   },
@@ -1062,20 +1064,32 @@
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
   },
-  "confirmTitleDescSignature": {
-    "message": "Only confirm this message if you approve the content and trust the requesting site."
+  "confirmTitleDescSign": {
+    "message": "Review request details before you confirm."
   },
   "confirmTitlePermitTokens": {
     "message": "Spending cap request"
   },
+  "confirmTitleRevokeApproveTransaction": {
+    "message": "Remove permission"
+  },
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
+  },
+  "confirmTitleSetApprovalForAllRevokeTransaction": {
+    "message": "Remove permission"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
   },
   "confirmTitleTransaction": {
     "message": "Transaction request"
+  },
+  "confirmationAlertModalDetails": {
+    "message": "To protect your assets and login information, we suggest you reject the request."
+  },
+  "confirmationAlertModalTitle": {
+    "message": "This request is suspicious"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -1169,6 +1183,18 @@
   "connectedWith": {
     "message": "Connected with"
   },
+  "connectedWithAccount": {
+    "message": "$1 accounts connected",
+    "description": "$1 represents account length"
+  },
+  "connectedWithAccountName": {
+    "message": "Connected with $1",
+    "description": "$1 represents account name"
+  },
+  "connectedWithNetworks": {
+    "message": "$1 networks connected",
+    "description": "$1 represents network length"
+  },
   "connecting": {
     "message": "Connecting"
   },
@@ -1195,6 +1221,9 @@
   },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
+  },
+  "connectionDescription": {
+    "message": "This site wants to"
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -1316,7 +1345,7 @@
     "message": "CryptoCompare"
   },
   "currencyConversion": {
-    "message": "Currency conversion"
+    "message": "Currency"
   },
   "currencyRateCheckToggle": {
     "message": "Show balance and token price checker"
@@ -1534,6 +1563,29 @@
   "deleteContact": {
     "message": "Delete contact"
   },
+  "deleteMetaMetricsData": {
+    "message": "Delete MetaMetrics data"
+  },
+  "deleteMetaMetricsDataDescription": {
+    "message": "This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our $1.",
+    "description": "$1 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataErrorDesc": {
+    "message": "This request can't be completed right now due to an analytics system server issue, please try again later"
+  },
+  "deleteMetaMetricsDataErrorTitle": {
+    "message": "We are unable to delete this data right now"
+  },
+  "deleteMetaMetricsDataModalDesc": {
+    "message": "We are about to remove all your MetaMetrics data. Are you sure?"
+  },
+  "deleteMetaMetricsDataModalTitle": {
+    "message": "Delete MetaMetrics data?"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "You initiated this action on $1. This process can take up to 30 days. View the $2",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
   "deleteNetworkIntro": {
     "message": "If you delete this network, you will need to add it again to view your assets in this network"
   },
@@ -1588,6 +1640,10 @@
   "disconnectAllAccountsText": {
     "message": "accounts"
   },
+  "disconnectAllDescription": {
+    "message": "If you disconnect from $1, you’ll need to reconnect your accounts and networks to use this site again.",
+    "description": "$1 represents the website hostname"
+  },
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
@@ -1598,6 +1654,10 @@
   "disconnectAllTitle": {
     "message": "Disconnect all $1",
     "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
+  },
+  "disconnectMessage": {
+    "message": "This will disconnect you from $1",
+    "description": "$1 is the name of the dapp"
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
@@ -1762,6 +1822,9 @@
   },
   "editPermission": {
     "message": "Edit permission"
+  },
+  "editPermissions": {
+    "message": "Edit permissions"
   },
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
@@ -1990,10 +2053,6 @@
   "feeDetails": {
     "message": "Fee details"
   },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
@@ -2078,6 +2137,9 @@
   "gasDisplayDappWarning": {
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
+  },
+  "gasFee": {
+    "message": "Gas fee"
   },
   "gasIsETH": {
     "message": "Gas is $1 "
@@ -2392,6 +2454,9 @@
   },
   "inYourSettings": {
     "message": "in your Settings"
+  },
+  "included": {
+    "message": "included"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
@@ -2825,6 +2890,9 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metaMetricsIdNotAvailableError": {
+    "message": "Since you've never opted into MetaMetrics, there's no data to delete here."
+  },
   "metadataModalSourceTooltip": {
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -2900,6 +2968,14 @@
   },
   "more": {
     "message": "more"
+  },
+  "moreAccounts": {
+    "message": "+ $1 more accounts",
+    "description": "$1 is the number of accounts"
+  },
+  "moreNetworks": {
+    "message": "+ $1 more networks",
+    "description": "$1 is the number of networks"
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
@@ -2986,11 +3062,16 @@
     "message": "Edit network details"
   },
   "nativeTokenScamWarningDescription": {
-    "message": "This network doesn't match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
-    "description": "$1 represents the currency name"
+    "message": "The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered $1 while the expected token symbol is $2. Please verify you are connected to the correct chain.",
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
+  },
+  "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
+    "message": "something else",
+    "description": "graceful fallback for when token symbol isn't found"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "This is a potential scam"
+    "message": "Unexpected Native Token Symbol",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Need help? Contact $1",
@@ -3078,6 +3159,10 @@
   "networkOptions": {
     "message": "Network options"
   },
+  "networkPermissionToast": {
+    "message": "Network permissions updated for $1",
+    "description": "$1 represents connected dapp"
+  },
   "networkProvider": {
     "message": "Network provider"
   },
@@ -3115,6 +3200,9 @@
   },
   "networks": {
     "message": "Networks"
+  },
+  "networksSmallCase": {
+    "message": "networks"
   },
   "nevermind": {
     "message": "Nevermind"
@@ -3233,9 +3321,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
-  },
-  "noConversionDateAvailable": {
-    "message": "No currency conversion date available"
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
@@ -3773,6 +3858,9 @@
   "permissionFor": {
     "message": "Permission for"
   },
+  "permissionFrom": {
+    "message": "Permission from"
+  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -4020,6 +4108,9 @@
   "permitSimulationDetailInfo": {
     "message": "You're giving the spender permission to spend this many tokens from your account."
   },
+  "permittedChainToastUpdate": {
+    "message": "$1 has been given access to $2."
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -4070,12 +4161,6 @@
   },
   "priceUnavailable": {
     "message": "price unavailable"
-  },
-  "primaryCurrencySetting": {
-    "message": "Primary currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
   "primaryType": {
     "message": "Primary type"
@@ -4389,6 +4474,13 @@
   "requestNotVerifiedError": {
     "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
   },
+  "requestingFor": {
+    "message": "Requesting for"
+  },
+  "requestingForAccount": {
+    "message": "Requesting for $1",
+    "description": "Name of Account"
+  },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
   },
@@ -4477,6 +4569,12 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "review": {
+    "message": "Review"
+  },
+  "reviewAlert": {
+    "message": "Review alert"
+  },
   "reviewAlerts": {
     "message": "Review alerts"
   },
@@ -4501,6 +4599,9 @@
   },
   "revokePermission": {
     "message": "Revoke permission"
+  },
+  "revokeSimulationDetailsDesc": {
+    "message": "You're removing someone's permission to spend tokens from your account."
   },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
@@ -4795,6 +4896,9 @@
   "showMore": {
     "message": "Show more"
   },
+  "showNativeTokenAsMainBalance": {
+    "message": "Show native token as main balance"
+  },
   "showNft": {
     "message": "Show NFT"
   },
@@ -4857,6 +4961,9 @@
   },
   "simulationDetailsOutgoingHeading": {
     "message": "You send"
+  },
+  "simulationDetailsRevokeSetApprovalForAllDesc": {
+    "message": "You're removing someone else's permission to withdraw NFTs from your account."
   },
   "simulationDetailsSetApprovalForAllDesc": {
     "message": "You're giving permission for someone else to withdraw NFTs from your account."
@@ -4932,17 +5039,10 @@
     "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
   },
   "smartTransactionPending": {
-    "message": "Submitting your transaction"
+    "message": "Your transaction was submitted"
   },
   "smartTransactionSuccess": {
     "message": "Your transaction is complete"
-  },
-  "smartTransactionTakingTooLong": {
-    "message": "Sorry for the wait"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "If your transaction is not finalized within $1, it will be canceled and you will not be charged for gas.",
-    "description": "$1 is remaining time in seconds"
   },
   "smartTransactions": {
     "message": "Smart Transactions"
@@ -5144,6 +5244,16 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "sortBy": {
+    "message": "Sort by"
+  },
+  "sortByAlphabetically": {
+    "message": "Alphabetically (A-Z)"
+  },
+  "sortByDecliningBalance": {
+    "message": "Declining balance ($1 high-low)",
+    "description": "Indicates a descending order based on token fiat balance. $1 is the preferred currency symbol"
   },
   "source": {
     "message": "Source"
@@ -5369,10 +5479,6 @@
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
   },
-  "stxEstimatedCompletion": {
-    "message": "Estimated completion in < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
-  },
   "stxFailure": {
     "message": "Swap failed"
   },
@@ -5581,11 +5687,21 @@
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
+  "swapGasIncludedTooltipExplanation": {
+    "message": "This quote incorporates gas fees by adjusting the token amount sent or received. You may receive ETH in a separate transaction on your activity list."
+  },
+  "swapGasIncludedTooltipExplanationLinkText": {
+    "message": "Learn more about gas fees"
+  },
   "swapHighSlippage": {
     "message": "High slippage"
   },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."
+  },
+  "swapIncludesGasAndMetaMaskFee": {
+    "message": "Includes gas and a $1% MetaMask fee",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",
@@ -6317,9 +6433,6 @@
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
   },
-  "updatedWithDate": {
-    "message": "Updated $1"
-  },
   "uploadDropFile": {
     "message": "Drop your file here"
   },
@@ -6575,6 +6688,9 @@
   },
   "yourBalance": {
     "message": "Your balance"
+  },
+  "yourBalanceIsAggregated": {
+    "message": "Your balance is aggregated"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
