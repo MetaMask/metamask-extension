@@ -3,7 +3,7 @@
 const EXCLUDE_E2E_TESTS_REGEX =
   /^(?!test\/e2e)(?!development\/fitness|development\/webpack).*.(js|ts|jsx|tsx)$/u;
 
-// include JS and JSX files only under the app, offscreen, shared, and ui directories
+// include JS and JSX files only in the app, offscreen, shared, and ui directories
 const JS_REGEX = /^(app|offscreen|shared|ui)\/.*\.(js|jsx)$/u;
 
 enum AUTOMATION_TYPE {
