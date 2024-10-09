@@ -4093,6 +4093,10 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
         ),
+      deleteAccountSyncingDataFromUserStorage:
+        userStorageController.performDeleteStorageAllFeatureEntries.bind(
+          userStorageController,
+        ),
 
       // NotificationServicesController
       checkAccountsPresence:
@@ -4895,14 +4899,12 @@ export default class MetamaskController extends EventEmitter {
     const accountsMissingIdentities = accounts.filter(
       (address) =>
         !internalAccounts.some(
-          (account) =>
-            account.address.toLowerCase() === address.toLowerCase(),
+          (account) => account.address.toLowerCase() === address.toLowerCase(),
         ),
     );
-    const keyringTypesWithMissingIdentities =
-      accountsMissingIdentities.map((address) =>
-        this.keyringController.getAccountKeyringType(address),
-      );
+    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
+      (address) => this.keyringController.getAccountKeyringType(address),
+    );
 
     const internalAccountCount = internalAccounts.length;
 
@@ -5122,6 +5124,7 @@ export default class MetamaskController extends EventEmitter {
     transactionParams,
     transactionOptions,
     dappRequest,
+    ...otherParams
   }) {
     return {
       internalAccounts: this.accountsController.listAccounts(),
@@ -5141,6 +5144,7 @@ export default class MetamaskController extends EventEmitter {
       securityAlertsEnabled:
         this.preferencesController.store.getState()?.securityAlertsEnabled,
       updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
+      ...otherParams,
     };
   }
 

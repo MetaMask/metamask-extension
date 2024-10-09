@@ -1,4 +1,3 @@
-import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -24,7 +23,8 @@ export async function walletGetSessionHandler(
   }
 
   if (!caveat) {
-    return end(new EthereumRpcError(5501, 'No active sessions'));
+    response.result = { sessionScopes: {} };
+    return end();
   }
 
   response.result = {
