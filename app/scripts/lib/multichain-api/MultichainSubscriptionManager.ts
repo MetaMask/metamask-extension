@@ -128,12 +128,6 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     this.#removeSubscriptionEntry(subscriptionKey);
   }
 
-  unsubscribeAll() {
-    this.#subscriptions.forEach((subscriptionEntry) => {
-      this.unsubscribe(subscriptionEntry);
-    });
-  }
-
   unsubscribeByScope(scope: ScopeString) {
     this.#subscriptions.forEach((subscriptionEntry) => {
       if (subscriptionEntry.scope === scope) {
