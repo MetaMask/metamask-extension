@@ -20,7 +20,6 @@ export const sendTransaction = async (
   amount: string,
   gasfee: string,
   totalfee: string,
-  isSyncFlow: boolean = false,
 ): Promise<void> => {
   console.log(
     `Start flow to send amount ${amount} to recipient ${recipientAddress} on home screen`,
@@ -56,8 +55,8 @@ export const sendTransactionWithSnapAccount = async (
   totalfee: string,
   isSyncFlow: boolean = true,
 ): Promise<void> => {
-  sendTransaction(driver, recipientAddress, amount, gasfee, totalfee);
-  if (isSyncFlow) {
-    await new SnapSimpleKeyringPage(driver).approveOnConfirmationScreen();
+  await sendTransaction(driver, recipientAddress, amount, gasfee, totalfee);
+  if (!isSyncFlow) {
+    await new SnapSimpleKeyringPage(driver).approveSnapAccountTransaction();
   }
 }

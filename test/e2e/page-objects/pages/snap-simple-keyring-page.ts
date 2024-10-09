@@ -71,6 +71,16 @@ class SnapSimpleKeyringPage {
     tag: 'h2',
   };
 
+  private readonly listRequestsButton = {
+    text: 'List Requests',
+    tag: 'button',
+  };
+
+  private readonly listRequestsSection = {
+    text: 'List Requests',
+    tag: 'div',
+  };
+
   private readonly pageTitle = {
     text: 'Snap Simple Keyring',
     tag: 'p',
@@ -107,6 +117,46 @@ class SnapSimpleKeyringPage {
     console.log('Snap Simple Keyring page is loaded');
   }
 
+  async approveSnapAccountTransaction(): Promise<void> {
+    console.log('Approve snap account transaction on Snap Simple Keyring page');
+    await this.driver.clickElementAndWaitToDisappear(this.confirmationSubmitButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
+
+    await this.driver.clickElementUsingMouseMove(this.listRequestsSection);
+    await this.driver.clickElement(this.listRequestsButton);
+
+
+
+  // get the JSON from the screen
+  const requestJSON = await (
+    await this.driver.findElement({
+      text: '"scopexxx":',
+      tag: 'div',
+    })
+  ).getText();
+
+  const requestID = JSON.parse(requestJSON)[0].id;
+
+
+    await this.driver.clickElementUsingMouseMove({
+      text: 'Approve request',
+      tag: 'div',
+    });
+
+    await this.driver.fill('#approve-request-request-id', requestID);
+
+    await this.driver.clickElement({
+      text: 'Approve Request',
+      tag: 'button',
+    });
+
+
+  // Close the SnapSimpleKeyringDapp, so that 6 of the same tab doesn't pile up
+  //await driver.closeWindow();
+
+  await this.driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  }
+
   /**
    * Confirms the add account dialog on the Snap Simple Keyring page.
    */
@@ -126,10 +176,6 @@ class SnapSimpleKeyringPage {
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
     await this.check_accountSupportedMethodsDisplayed();
-  }
-
-  async approveOnConfirmationScreen(): Promise<void> {
-    await this.driver.clickElementAndWaitForWindowToClose(this.confirmationSubmitButton);
   }
 
   /**
