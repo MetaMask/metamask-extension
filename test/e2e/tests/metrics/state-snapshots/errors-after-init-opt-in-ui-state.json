@@ -124,6 +124,7 @@
     "forgottenPassword": false,
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
