@@ -14,7 +14,7 @@ describe('MultichainMiddlewareManager', () => {
       middlewareSpy,
     );
     multichainMiddlewareManager.middleware(
-      { scope: 'eip155:1' } as unknown as JsonRpcRequest,
+      { jsonrpc: '2.0', id: 0, scope: 'eip155:1' } as unknown as JsonRpcRequest,
       { jsonrpc: '2.0', id: 0 },
       () => {
         //
@@ -34,7 +34,7 @@ describe('MultichainMiddlewareManager', () => {
     multichainMiddlewareManager.removeMiddleware(scope, domain);
     const endSpy = jest.fn();
     multichainMiddlewareManager.middleware(
-      { scope } as unknown as JsonRpcRequest,
+      { jsonrpc: '2.0', id: 0, scope } as unknown as JsonRpcRequest,
       { jsonrpc: '2.0', id: 0 },
       () => {
         //
@@ -54,7 +54,7 @@ describe('MultichainMiddlewareManager', () => {
     multichainMiddlewareManager.removeAllMiddleware();
     const endSpy = jest.fn();
     multichainMiddlewareManager.middleware(
-      { scope } as unknown as JsonRpcRequest,
+      { jsonrpc: '2.0', id: 0, scope } as unknown as JsonRpcRequest,
       { jsonrpc: '2.0', id: 0 },
       () => {
         //

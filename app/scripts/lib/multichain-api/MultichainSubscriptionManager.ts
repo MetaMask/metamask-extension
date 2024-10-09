@@ -1,9 +1,8 @@
 import EventEmitter from 'events';
 import { NetworkController } from '@metamask/network-controller';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import { Hex, parseCaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex, parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { ScopeString } from './scope';
 
 export type SubscriptionManager = {
   events: EventEmitter;
@@ -52,7 +51,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
   }
 
   onNotification(
-    scopeString: ScopeString,
+    scopeString: CaipChainId,
     domain: string,
     { method, params }: SubscriptionNotificationEvent,
   ) {
@@ -65,7 +64,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     });
   }
 
-  subscribe(scopeString: ScopeString, domain: string) {
+  subscribe(scopeString: CaipChainId, domain: string) {
     let subscriptionManager;
     if (this.subscriptionManagerByChain[scopeString]) {
       subscriptionManager = this.subscriptionManagerByChain[scopeString];
@@ -96,7 +95,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     return subscriptionManager;
   }
 
-  unsubscribe(scopeString: ScopeString, domain: string) {
+  unsubscribe(scopeString: CaipChainId, domain: string) {
     const subscriptionManager: SubscriptionManager =
       this.subscriptionManagerByChain[scopeString];
     if (subscriptionManager && this.subscriptionsByChain[scopeString][domain]) {
@@ -124,13 +123,13 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     Object.entries(this.subscriptionsByChain).forEach(
       ([scopeString, domainObject]) => {
         Object.entries(domainObject).forEach(([domain]) => {
-          this.unsubscribe(scopeString as ScopeString, domain);
+          this.unsubscribe(scopeString as CaipChainId, domain);
         });
       },
     );
   }
 
-  unsubscribeScope(scopeString: ScopeString) {
+  unsubscribeScope(scopeString: CaipChainId) {
     Object.entries(this.subscriptionsByChain).forEach(
       ([_scopeString, domainObject]) => {
         if (scopeString === _scopeString) {
@@ -147,7 +146,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
       ([scopeString, domainObject]) => {
         Object.entries(domainObject).forEach(([_domain]) => {
           if (domain === _domain) {
-            this.unsubscribe(scopeString as ScopeString, domain);
+            this.unsubscribe(scopeString as CaipChainId, domain);
           }
         });
       },
