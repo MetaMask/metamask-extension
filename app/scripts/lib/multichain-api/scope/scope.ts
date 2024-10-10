@@ -20,11 +20,6 @@ export const KnownWalletRpcMethods: string[] = [
 ];
 const WalletEip155Methods = [
   'wallet_addEthereumChain',
-  'personal_sign',
-  'eth_signTypedData',
-  'eth_signTypedData_v1',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
 ];
 
 const Eip155Methods = MetaMaskOpenRPCDocument.methods

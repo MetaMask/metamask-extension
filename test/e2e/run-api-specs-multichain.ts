@@ -72,8 +72,6 @@ async function main() {
       ];
       const walletEip155Methods = [
         'wallet_addEthereumChain',
-        'personal_sign',
-        'eth_signTypedData_v4',
       ];
 
       const ignoreMethods = [
