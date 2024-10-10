@@ -67,6 +67,15 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
+export const getUnapprovedTransactionsAll = createDeepEqualSelector(
+  (state) => {
+    const currentNetworkTransactions = getTransactions(state);
+    return filterAndShapeUnapprovedTransactions(currentNetworkTransactions);
+  },
+  (transactions) => transactions,
+);
+
+
 export const getUnapprovedTransactions = createDeepEqualSelector(
   (state) => {
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
