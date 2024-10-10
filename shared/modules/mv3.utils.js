@@ -11,7 +11,7 @@ const runtimeManifest =
  */
 const isManifestV3 = runtimeManifest
   ? runtimeManifest.manifest_version === 3
-  : global.manifest_version === 3;
+  : process.env.ENABLE_MV3 === 'true';
 
 /**
  * A boolean indicating whether the browser supports the offscreen document api.
