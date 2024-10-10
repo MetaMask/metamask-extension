@@ -70,7 +70,11 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
-import { sendMultichainTransaction } from '../../../store/actions';
+import {
+  sendMultichainTransaction,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 
 const CoinButtons = ({
   chainId,
@@ -238,8 +242,12 @@ const CoinButtons = ({
   const handleSendOnClick = useCallback(async () => {
     switch (account.type) {
       case BtcAccountType.P2wpkh: {
-        await sendMultichainTransaction(account.id, chainId as CaipChainId);
-
+        dispatch(setDefaultHomeActiveTabName('activity'));
+        await sendMultichainTransaction(
+          BITCOIN_WALLET_SNAP_ID,
+          account.id,
+          chainId as CaipChainId,
+        );
         break;
       }
       default: {

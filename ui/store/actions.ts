@@ -141,6 +141,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { HandlerType } from '@metamask/snaps-utils';
 
 type CustomGasSettings = {
   gas?: string;
@@ -5783,19 +5784,20 @@ function applyPatches(
 }
 
 export async function sendMultichainTransaction(
+  snapId: string,
   accountId: string,
-  chainId: string,
+  scope: string,
 ) {
-  const client = new KeyringClient(new BitcoinWalletSnapSender());
-
-  await client.submitRequest({
-    id: uuidv4(),
-    scope: chainId as CaipChainId,
-    account: accountId,
+  await handleSnapRequest({
+    snapId,
+    origin: 'metamask',
+    handler: HandlerType.OnRpcRequest,
     request: {
-      method: BtcMethod.SendMany,
-      params: {},
+      method: 'startSendTransactionFlow',
+      params: {
+        accountId,
+        scope,
+      },
     },
   });
-  console.log('refreshed');
 }
