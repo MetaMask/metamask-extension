@@ -4,6 +4,7 @@ import { captureException } from '@sentry/browser';
 import {
   CUSTODIAN_TYPES,
   CustodyKeyring,
+  IApiCallLogEntry,
   MmiConfigurationController,
 } from '@metamask-institutional/custody-keyring';
 import {
@@ -13,12 +14,13 @@ import {
 import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
+  API_REQUEST_LOG_EVENT,
 } from '@metamask-institutional/sdk';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { SignatureController } from '@metamask/signature-controller';
 import {
   OriginalRequest,
@@ -303,6 +305,10 @@ export default class MMIController extends EventEmitter {
             );
           },
         );
+
+        keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+          this.logAndStoreApiRequest(logData);
+        });
 
         // store the supported chains for this custodian type
         const accounts = await keyring.getAccounts();
@@ -883,5 +889,15 @@ export default class MMIController extends EventEmitter {
     await this.appStateController.getUnlockPromise(true);
     this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
     return true;
+  }
+
+  async logAndStoreApiRequest(logData: IApiCallLogEntry) {
+    try {
+      const logs = await this.custodyController.sanitizeAndLogApiCall(logData);
+      return logs;
+    } catch (error) {
+      log.error('Error fetching extension request logs:', error);
+      throw error;
+    }
   }
 }
