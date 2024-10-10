@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const fs = require('node:fs/promises');
+const path = require('node:path');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
@@ -80,17 +82,19 @@ async function start() {
     ]);
   }
 
-  const additionalUploadArgs = [];
+  let distDirectory = 'dist';
+  if (buildType !== loadBuildTypesConfig().default) {
+    distDirectory = dist ? `dist-${buildType}-${dist}` : `dist-${buildType}`;
+  } else if (dist) {
+    distDirectory = `dist-${dist}`;
+  }
+
+  const absoluteDistDirectory = path.resolve(__dirname, '../', distDirectory);
+  await assertIsNonEmptyDirectory(absoluteDistDirectory);
+
+  const additionalUploadArgs = ['--dist-directory', distDirectory];
   if (dist) {
     additionalUploadArgs.push('--dist', dist);
-  }
-  if (buildType !== loadBuildTypesConfig().default) {
-    additionalUploadArgs.push(
-      '--dist-directory',
-      dist ? `dist-${buildType}-${dist}` : `dist-${buildType}`,
-    );
-  } else if (dist) {
-    additionalUploadArgs.push('--dist-directory', `dist-${dist}`);
   }
   // upload sentry source and sourcemaps
   await runInShell('./development/sentry-upload-artifacts.sh', [
@@ -119,6 +123,41 @@ async function doesNotFail(asyncFn) {
   } catch (error) {
     if (error.message === `Exited with code '1'`) {
       return false;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Assert that the given path exists, and is a non-empty directory.
+ *
+ * @param {string} directoryPath - The path to check.
+ */
+async function assertIsNonEmptyDirectory(directoryPath) {
+  await assertIsDirectory(directoryPath);
+
+  const files = await fs.readdir(directoryPath);
+  if (!files.length) {
+    throw new Error(`Directory empty: '${directoryPath}'`);
+  }
+}
+
+/**
+ * Assert that the given path exists, and is a directory.
+ *
+ * @param {string} directoryPath - The path to check.
+ */
+async function assertIsDirectory(directoryPath) {
+  try {
+    const directoryStats = await fs.stat(directoryPath);
+    if (!directoryStats.isDirectory()) {
+      throw new Error(`Invalid path '${directoryPath}'; must be a directory`);
+    }
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      throw new Error(`Directory '${directoryPath}' not found`, {
+        cause: error,
+      });
     }
     throw error;
   }
