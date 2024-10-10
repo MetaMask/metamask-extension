@@ -1088,9 +1088,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask được kết nối với trang web này, nhưng chưa có tài khoản nào được kết nối"
   },
-  "connectedWith": {
-    "message": "Đã kết nối với"
-  },
   "connecting": {
     "message": "Đang kết nối"
   },
@@ -1506,14 +1503,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snap"
-  },
-  "disconnectAllText": {
-    "message": "Nếu bạn ngắt kết nối $1 khỏi $2, bạn sẽ cần kết nối lại để sử dụng lại.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Ngắt kết nối tất cả $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "Ngắt kết nối $1"
@@ -2834,10 +2823,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 đang yêu cầu sự chấp thuận của bạn cho:",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "Bạn có muốn trang web này thực hiện những điều sau không?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "Token gốc của mạng này là $1. Token này được dùng làm phí gas.",

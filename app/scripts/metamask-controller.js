@@ -232,6 +232,8 @@ import { getCurrentChainId } from '../../ui/selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
 import { endTrace, trace } from '../../shared/lib/trace';
+// eslint-disable-next-line import/no-restricted-paths
+import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -5745,7 +5747,7 @@ export default class MetamaskController extends EventEmitter {
             { origin },
             {
               eth_accounts: {},
-              ...(process.env.CHAIN_PERMISSIONS && {
+              ...(!isSnapId(origin) && {
                 [PermissionNames.permittedChains]: {},
               }),
             },
@@ -5780,10 +5782,12 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             {
-              ...(process.env.CHAIN_PERMISSIONS &&
-                requestedPermissions[RestrictedMethods.eth_accounts] && {
-                  [PermissionNames.permittedChains]: {},
-                }),
+              ...(requestedPermissions[PermissionNames.eth_accounts] && {
+                [PermissionNames.permittedChains]: {},
+              }),
+              ...(requestedPermissions[PermissionNames.permittedChains] && {
+                [PermissionNames.eth_accounts]: {},
+              }),
               ...requestedPermissions,
             },
           ),
@@ -5819,8 +5823,6 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
-        getChainPermissionsFeatureFlag: () =>
-          Boolean(process.env.CHAIN_PERMISSIONS),
         // network configuration-related
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);

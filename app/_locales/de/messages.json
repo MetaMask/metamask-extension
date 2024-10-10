@@ -1088,9 +1088,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask ist mit dieser Seite verbunden, aber es sind noch keine Konten verbunden"
   },
-  "connectedWith": {
-    "message": "Verbunden mit"
-  },
   "connecting": {
     "message": "Verbinden"
   },
@@ -1506,14 +1503,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snaps"
-  },
-  "disconnectAllText": {
-    "message": "Wenn Sie die Verbindung zwischen $1 und $2 unterbrechen, müssen Sie die Verbindung wiederherstellen, um sie erneut zu verwenden.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Alle $1 trennen",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "$1 trennen"
@@ -2834,10 +2823,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 bittet um Ihre Zustimmung zu:",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "Möchten Sie, dass diese Website Folgendes tut?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "Das native Token dieses Netzwerks ist $1. Dieses Token wird für die Gas-Gebühr verwendet. ",
