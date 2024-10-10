@@ -1,12 +1,12 @@
-const { strict: assert } = require('assert');
-const { keccak } = require('ethereumjs-util');
-const {
-  withFixtures,
-  unlockWallet,
-  defaultGanacheOptions,
-} = require('../helpers');
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
+import { strict as assert } from 'assert';
+import { keccak } from 'ethereumjs-util';
+import { defaultGanacheOptions, withFixtures } from '../helpers';
+import { Driver } from '../webdriver/driver';
+import FixtureBuilder from '../fixture-builder';
+import { Ganache } from '../seeder/ganache';
+import GanacheContractAddressRegistry from '../seeder/ganache-contract-address-registry';
+import { SMART_CONTRACTS } from '../seeder/smart-contracts';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
 describe('eth_call', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -19,11 +19,19 @@ describe('eth_call', function () {
           .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver, _, contractRegistry }) => {
+      async ({
+        driver,
+        ganacheServer,
+        contractRegistry,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+        contractRegistry: GanacheContractAddressRegistry;
+      }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);

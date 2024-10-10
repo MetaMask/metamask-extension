@@ -278,10 +278,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           dispatch(setActiveNetwork(networkClientId));
           dispatch(toggleNetworkMenu());
 
-          if (
-            process.env.CHAIN_PERMISSIONS &&
-            permittedAccountAddresses.length > 0
-          ) {
+          if (permittedAccountAddresses.length > 0) {
             grantPermittedChain(selectedTabOrigin, network.chainId);
             if (!permittedChainIds.includes(network.chainId)) {
               dispatch(showPermittedNetworkToast());

@@ -1088,9 +1088,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "Το MetaMask είναι συνδεδεμένο σε αυτόν τον ιστότοπο, αλλά δεν έχουν συνδεθεί ακόμα λογαριασμοί"
   },
-  "connectedWith": {
-    "message": "Συνδέεται με"
-  },
   "connecting": {
     "message": "Σύνδεση"
   },
@@ -1506,14 +1503,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snaps"
-  },
-  "disconnectAllText": {
-    "message": "Αν αποσυνδέσετε τo $1 από τo $2, θα πρέπει να επανασυνδεθείτε για να τα χρησιμοποιήσετε ξανά.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Αποσύνδεση όλων των $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "Αποσύνδεση $1"
@@ -2834,10 +2823,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "Το $1 ζητάει την έγκρισή σας για:",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "Θέλετε αυτός ο ιστότοπος να κάνει τα εξής;",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "Το αρχικό token σε αυτό το δίκτυο είναι το $1. Είναι το token που χρησιμοποιείται για τα τέλη συναλλαγών.",
