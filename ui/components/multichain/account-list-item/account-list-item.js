@@ -504,8 +504,7 @@ AccountListItemComponent.propTypes = {
   startAccessory: PropTypes.node,
 };
 
-AccountListItemComponent.displayName = 'AccountListItem';
-
 const AccountListItem = React.memo(AccountListItemComponent);
+AccountListItem.displayName = 'AccountListItem';
 
-export { AccountListItem };
+export default AccountListItem;
