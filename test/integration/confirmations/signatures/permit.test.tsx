@@ -73,7 +73,7 @@ describe('Permit Confirmation', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
       }),
     );
   });

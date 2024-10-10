@@ -11,7 +11,6 @@ import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-ut
 import { sanitizeString } from '../../../../../helpers/utils/util';
 import { Box } from '../../../../../components/component-library';
 import { BlockSize } from '../../../../../helpers/constants/design-system';
-import { useAsyncResult } from '../../../../../hooks/useAsyncResult';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   ConfirmInfoRow,
@@ -20,7 +19,7 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
-import { fetchErc20Decimals } from '../../../utils/token';
+import useGetTokenStandardAndDetails from '../../../hooks/useGetTokenStandardAndDetails';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -78,9 +77,9 @@ const NONE_DATE_VALUE = -1;
  *
  * @param dataTreeData
  */
-const getTokenDecimalsOfDataTree = async (
+const getTokenContractInDataTree = (
   dataTreeData: Record<string, TreeData> | TreeData[],
-): Promise<void | number> => {
+): Hex | undefined => {
   if (Array.isArray(dataTreeData)) {
     return undefined;
   }
@@ -91,7 +90,7 @@ const getTokenDecimalsOfDataTree = async (
     return undefined;
   }
 
-  return await fetchErc20Decimals(tokenContract);
+  return tokenContract;
 };
 
 export const DataTree = ({
@@ -103,13 +102,10 @@ export const DataTree = ({
   primaryType?: PrimaryType;
   tokenDecimals?: number;
 }) => {
-  const { value: decimalsResponse } = useAsyncResult(
-    async () => await getTokenDecimalsOfDataTree(data),
-    [data],
-  );
-
+  const tokenContract = getTokenContractInDataTree(data);
+  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
   const tokenDecimals =
-    typeof decimalsResponse === 'number' ? decimalsResponse : tokenDecimalsProp;
+    typeof decimalsNumber === 'number' ? decimalsNumber : tokenDecimalsProp;
 
   return (
     <Box width={BlockSize.Full}>
