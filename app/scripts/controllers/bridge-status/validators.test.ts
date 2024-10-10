@@ -1,4 +1,3 @@
-import { describe, it } from '@jest/globals';
 import { validateResponse } from '../../../../ui/pages/bridge/bridge.util';
 import { StatusResponse } from './types';
 import { validators } from './validators';
