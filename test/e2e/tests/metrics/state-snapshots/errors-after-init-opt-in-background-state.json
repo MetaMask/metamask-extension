@@ -215,7 +215,7 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "showMultiRpcModal": "boolean",
+      "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",

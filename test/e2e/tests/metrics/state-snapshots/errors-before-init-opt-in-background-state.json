@@ -131,8 +131,9 @@
         "smartTransactionsOptInStatus": false,
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+        "showConfirmationAdvancedDetails": false,
+        "tokenSortConfig": "object",
         "showMultiRpcModal": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean"
       },

@@ -5,22 +5,16 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-x: hidden;
 
   @include design-system.screen-sm-max {
     margin-bottom: 24px;
   }
 
-  @include design-system.screen-sm-min {
-    margin-bottom: 40px;
-  }
-
   &__header {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    max-width: 500px;
-    margin: 24px;
+    a {
+      color: var(--color-primary-default);
+    }
   }
 
   &__settings {
@@ -28,11 +22,6 @@
     flex-direction: column;
     max-width: 620px;
     margin-bottom: 20px;
-
-    @include design-system.screen-sm-min {
-      margin-inline-start: 48px;
-      margin-inline-end: 48px;
-    }
 
     a {
       color: var(--color-primary-default);
@@ -63,6 +52,36 @@
       font-size: 14px !important;
       padding: 8px !important;
     }
+  }
+
+  .container {
+    display: flex;
+    width: 100%;
+    transition: transform 0.5s ease;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .categories-item {
+    cursor: pointer;
+  }
+
+  .list-view,
+  .detail-view {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  /* slide in show the detail view */
+  .container.show-detail {
+    transform: translateX(-100%);
+  }
+
+  /* slide back to show the list view */
+  .container.show-list {
+    transform: translateX(0%);
   }
 
   &__customizable-network:hover {
