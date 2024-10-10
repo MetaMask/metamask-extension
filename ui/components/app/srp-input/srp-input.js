@@ -168,7 +168,7 @@ export default function SrpInput({ onChange, srpText }) {
               </label>
               <TextField
                 id={id}
-                data-testid={id}
+                testId={id}
                 type={showSrp[index] ? 'text' : 'password'}
                 onChange={(e) => {
                   e.preventDefault();

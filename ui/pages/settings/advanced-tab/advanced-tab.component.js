@@ -446,7 +446,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <TextField
               id="autoTimeout"
-              data-testid="auto-lockout-time"
+              testId="auto-lockout-time"
               placeholder="0"
               value={this.state.autoLockTimeLimitBeforeNormalization}
               onChange={(e) => this.handleLockChange(e.target.value)}

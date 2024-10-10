@@ -105,7 +105,7 @@ const CustomizeNonce = ({
           <div className="customize-nonce-modal__input">
             <TextField
               type="number"
-              data-testid="custom-nonce-input"
+              testId="custom-nonce-input"
               min="0"
               placeholder={
                 customNonceValue ||

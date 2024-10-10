@@ -160,7 +160,7 @@ export const EditSpendingCapModal = ({
             }
             placeholder={`${formattedSpendingCap} ${tokenSymbol}`}
             style={{ width: '100%' }}
-            inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
+            testId="custom-spending-cap-input"
           />
           {showDecimalError && (
             <Text

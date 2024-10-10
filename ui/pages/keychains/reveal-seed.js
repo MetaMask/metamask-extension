@@ -124,9 +124,7 @@ export default function RevealSeedPage() {
       <form onSubmit={handleSubmit}>
         <Label htmlFor="password-box">{t('enterPasswordContinue')}</Label>
         <TextField
-          inputProps={{
-            'data-testid': 'input-password',
-          }}
+          testId="input-password"
           type={TextFieldType.Password}
           placeholder={t('makeSureNoOneWatching')}
           id="password-box"
