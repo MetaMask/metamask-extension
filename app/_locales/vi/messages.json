@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Khi các giao dịch của bạn được đưa vào khối, mọi phần chênh lệch giữa phí cơ sở tối đa và phí cơ sở thực tế đều sẽ được hoàn lại. Tổng số tiền sẽ được tính bằng phí cơ sở tối đa (theo GWEI) * hạn mức phí gas."
   },
-  "advancedConfiguration": {
-    "message": "Cấu hình nâng cao"
-  },
   "advancedDetailsDataDesc": {
     "message": "Dữ liệu"
   },
@@ -446,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Tài khoản không đúng"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Đang duyệt trang web khi chọn một tài khoản không được kết nối"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Cảnh báo này hiển thị trong cửa sổ bật lên khi bạn đang duyệt một trang web đã được kết nối trên web3, nhưng tài khoản đang chọn không được kết nối."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Khi một trang web cố dùng API window.web3 đã bị xóa"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Cảnh báo này hiển thị trong cửa sổ bật lên khi bạn đang duyệt một trang web cố sử dụng API window.web3 đã bị xóa nên có thể bị lỗi."
   },
   "alerts": {
     "message": "Cảnh báo"
@@ -711,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Điều khoản sử dụng phiên bản Beta"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask Beta không thể khôi phục Cụm từ khôi phục bí mật của bạn."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask Beta sẽ không bao giờ hỏi về Cụm từ khôi phục bí mật của bạn."
   },
   "billionAbbreviation": {
     "message": "Tỷ",
@@ -2412,9 +2391,6 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "Tập tin JSON",
     "description": "format for importing an account"
@@ -3464,10 +3440,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "Ghim MetaMask Institutional"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Thông báo phát hiện dấu hiệu lừa đảo tùy thuộc vào quá trình truyền tin với $1. jsDeliver sẽ có quyền truy cập vào địa chỉ IP của bạn. Xem $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1 Ngày",
     "description": "Shortened form of '1 day'"
@@ -4108,9 +4080,6 @@
   "rejected": {
     "message": "Đã từ chối"
   },
-  "remember": {
-    "message": "Ghi nhớ:"
-  },
   "remove": {
     "message": "Xóa"
   },
@@ -4517,9 +4486,6 @@
   },
   "sepolia": {
     "message": "Mạng thử nghiệm Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask sử dụng các dịch vụ của bên thứ ba đáng tin cậy này để nâng cao sự hữu ích và an toàn của sản phẩm."
   },
   "setApprovalForAll": {
     "message": "Thiết lập chấp thuận tất cả"
@@ -6171,26 +6137,6 @@
   },
   "walletConnectionGuide": {
     "message": "hướng dẫn của chúng tôi về cách kết nối ví cứng"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Bạn đã bảo vệ thành công ví của mình. Hãy đảm bảo an toàn và bí mật cho Cụm từ khôi phục bí mật của bạn -- đây là trách nhiệm của bạn!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask không thể khôi phục Cụm từ khôi phục bí mật của bạn."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask sẽ không bao giờ hỏi về Cụm từ khôi phục bí mật của bạn."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 với bất kỳ ai, nếu không bạn sẽ có nguy cơ bị mất tiền",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Không bao giờ chia sẻ Cụm từ khôi phục bí mật của bạn",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Tạo ví thành công"
   },
   "wantToAddThisNetwork": {
     "message": "Bạn muốn thêm mạng này?"
