@@ -1,34 +1,93 @@
-import { validHex } from '../../../../shared/lib/swaps-utils';
+import { validHex, validateData } from '../../../../shared/lib/swaps-utils';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { Asset, BridgeId, ChainStatus, StatusTypes } from './types';
 
+type Validator<ExpectedResponse, DataToValidate> = {
+  property: keyof ExpectedResponse | string;
+  type: string;
+  validator: (value: DataToValidate) => boolean;
+};
+
+export const validateResponse = <ExpectedResponse, DataToValidate>(
+  validators: Validator<ExpectedResponse, DataToValidate>[],
+  data: unknown,
+  urlUsed: string,
+): data is ExpectedResponse => {
+  if (data === null || data === undefined) {
+    return false;
+  }
+  return validateData(validators, data, urlUsed);
+};
+
+const assetValidators = [
+  {
+    property: 'chainId',
+    type: 'number',
+    validator: (v: unknown): v is number => typeof v === 'number',
+  },
+  {
+    property: 'address',
+    type: 'string',
+    validator: (v: unknown): v is string => isValidHexAddress(v as string),
+  },
+  {
+    property: 'symbol',
+    type: 'string',
+    validator: (v: unknown): v is string => typeof v === 'string',
+  },
+  {
+    property: 'name',
+    type: 'string',
+    validator: (v: unknown): v is string => typeof v === 'string',
+  },
+  {
+    property: 'decimals',
+    type: 'number',
+    validator: (v: unknown): v is number => typeof v === 'number',
+  },
+  {
+    property: 'icon',
+    type: 'string|undefined',
+    validator: (v: unknown): v is string | undefined =>
+      typeof v === 'string' || v === undefined,
+  },
+];
+
 const assetValidator = (v: unknown): v is Asset =>
-  typeof v === 'object' &&
-  v !== null &&
-  'chainId' in v &&
-  typeof v.chainId === 'number' &&
-  'address' in v &&
-  typeof v.address === 'string' &&
-  isValidHexAddress(v.address) &&
-  'symbol' in v &&
-  typeof v.symbol === 'string' &&
-  'name' in v &&
-  typeof v.name === 'string' &&
-  'decimals' in v &&
-  typeof v.decimals === 'number' &&
-  (!('icon' in v) || v.icon === undefined || typeof v.icon === 'string');
+  validateResponse<Asset, unknown>(assetValidators, v, 'dummyurl.com');
+
+const chainStatusValidators = [
+  {
+    property: 'chainId',
+    // For some reason, API returns destChain.chainId as a string, it's a number everywhere else
+    type: 'number|string',
+    validator: (v: unknown): v is number | string =>
+      typeof v === 'number' || typeof v === 'string',
+  },
+  {
+    property: 'txHash',
+    type: 'string',
+    validator: validHex,
+  },
+  {
+    property: 'amount',
+    type: 'string|undefined',
+    validator: (v: unknown): v is string | undefined =>
+      typeof v === 'string' || v === undefined,
+  },
+  {
+    property: 'token',
+    type: 'object|undefined',
+    validator: assetValidator,
+  },
+];
 
 const chainStatusValidator = (v: unknown): v is ChainStatus =>
-  typeof v === 'object' &&
-  v !== null &&
-  'chainId' in v &&
-  typeof v.chainId === 'number' &&
-  'txHash' in v &&
-  validHex(v.txHash) &&
-  (!('amount' in v) ||
-    v.amount === undefined ||
-    typeof v.amount === 'string') &&
-  (!('token' in v) || v.token === undefined || assetValidator(v.token));
+  validateResponse<ChainStatus, unknown>(
+    chainStatusValidators,
+    v,
+    'dummyurl.com',
+  );
 
 export const validators = [
   {
@@ -55,14 +114,17 @@ export const validators = [
   },
   {
     property: 'isExpectedToken',
-    type: 'boolean',
-    validator: (v: unknown) => typeof v === 'boolean',
+    type: 'boolean|undefined',
+    validator: (v: unknown): v is boolean | undefined =>
+      typeof v === 'boolean' || v === undefined,
   },
   {
     property: 'isUnrecognizedRouterAddress',
-    type: 'boolean',
-    validator: (v: unknown) => typeof v === 'boolean',
+    type: 'boolean|undefined',
+    validator: (v: unknown): v is boolean | undefined =>
+      typeof v === 'boolean' || v === undefined,
   },
+  // TODO: add refuel validator
   // {
   //   property: 'refuel',
   //   type: 'object',
