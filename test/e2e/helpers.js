@@ -552,7 +552,7 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
  */
 const onboardingCompleteWalletCreation = async (driver) => {
   // complete
-  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  await driver.findElement({ text: 'Congratulations', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
 
@@ -560,7 +560,7 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   // wait for h2 to appear
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   // opt-out from third party API
-  await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await driver.clickElement({ text: 'Manage default settings', tag: 'a' });
   await driver.clickElement(
     '[data-testid="basic-functionality-toggle"] .toggle-button',
   );
