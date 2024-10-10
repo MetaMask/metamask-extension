@@ -318,7 +318,7 @@
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^4.3.6",
     "@metamask/eth-token-tracker": "^8.0.0",
-    "@metamask/eth-trezor-keyring": "^3.1.3",
+    "@metamask/eth-trezor-keyring": "^4.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/ethjs": "^0.6.0",
     "@metamask/ethjs-contract": "^0.4.1",
