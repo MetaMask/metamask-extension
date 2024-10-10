@@ -2128,6 +2128,7 @@
         "Event": true,
         "Headers": true,
         "TextDecoder": true,
+        "TextEncoder": true,
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
