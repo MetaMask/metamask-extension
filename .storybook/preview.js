@@ -184,7 +184,6 @@ const withColorScheme = (Story, context) => {
       <div
         {...props}
         style={{
-          display: 'flex',
           padding: '1rem',
           backgroundColor: 'var(--color-background-default)',
           color: 'var(--color-text-default)',
