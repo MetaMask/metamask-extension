@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "機密情報を非表示"
   },
-  "hideToken": {
-    "message": "トークンを非表示"
-  },
   "hideTokenPrompt": {
     "message": "トークンを非表示にしますか？"
   },
@@ -5700,9 +5697,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "トークンの小数点以下の桁数が必要です。確認はこちら: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "トークンの小数桁数:"
   },
   "tokenDetails": {
     "message": "トークンの詳細"

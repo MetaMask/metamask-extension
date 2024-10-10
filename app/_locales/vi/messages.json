@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Ẩn thông tin nhạy cảm"
   },
-  "hideToken": {
-    "message": "Ẩn token"
-  },
   "hideTokenPrompt": {
     "message": "Ẩn token?"
   },
@@ -5700,9 +5697,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Yêu cầu số thập phân của token. Tìm trên: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Số thập phân của token:"
   },
   "tokenDetails": {
     "message": "Chi tiết token"

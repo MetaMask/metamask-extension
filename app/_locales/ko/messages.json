@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "민감한 정보 숨기기"
   },
-  "hideToken": {
-    "message": "토큰 숨기기"
-  },
   "hideTokenPrompt": {
     "message": "토큰을 숨기겠습니까?"
   },
@@ -5700,9 +5697,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "토큰 십진수가 필요합니다. $1에서 찾아보세요"
-  },
-  "tokenDecimalTitle": {
-    "message": "토큰 소수점:"
   },
   "tokenDetails": {
     "message": "토큰 상세 정보"

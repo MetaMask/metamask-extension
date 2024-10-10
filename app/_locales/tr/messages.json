@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Hassas bilgileri gizle"
   },
-  "hideToken": {
-    "message": "Tokeni gizle"
-  },
   "hideTokenPrompt": {
     "message": "Tokeni gizle?"
   },
@@ -5700,9 +5697,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Token ondalığı gereklidir. Şurada bulabilirsiniz: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Token ondalığı:"
   },
   "tokenDetails": {
     "message": "Token bilgileri"

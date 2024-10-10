@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Ocultar informações confidenciais"
   },
-  "hideToken": {
-    "message": "Ocultar token"
-  },
   "hideTokenPrompt": {
     "message": "Ocultar token?"
   },
@@ -5700,9 +5697,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "É necessário o decimal do token. Encontre-o em: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Decimal do token:"
   },
   "tokenDetails": {
     "message": "Dados do token"

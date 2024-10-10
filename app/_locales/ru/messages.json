@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Скрыть конфиденциальную информацию"
   },
-  "hideToken": {
-    "message": "Скрыть токен"
-  },
   "hideTokenPrompt": {
     "message": "Скрыть токен?"
   },
@@ -5700,9 +5697,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Требуется десятичный токен. Найдите его здесь: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Десятичный токен:"
   },
   "tokenDetails": {
     "message": "Сведения о токене"
