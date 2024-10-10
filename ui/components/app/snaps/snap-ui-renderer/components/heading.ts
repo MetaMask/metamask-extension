@@ -8,7 +8,7 @@ import { UIComponentFactory } from './types';
 export const generateSize = (size: HeadingElement['props']['size']) => {
   switch (size) {
     case 'md':
-      return TextVariant.headingSm;
+      return TextVariant.headingMd;
     case 'lg':
       return TextVariant.headingLg;
     default:
