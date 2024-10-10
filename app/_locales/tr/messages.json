@@ -447,18 +447,6 @@
   "alertReasonWrongAccount": {
     "message": "Yanlış hesap"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Bağlı olmayan bir hesap ile bir web sitesine göz atma seçildi"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Bu uyarı, bağlı bir web3 sitesinde gezdiğinizde gösterilir ancak şu anda seçili hesap bağlı değildir."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Bir web sitesi kaldırılmış window.web3 API'sini kullanmaya çalıştığında"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Bu uyarı, kaldırılmış window.web3 API kullanmaya çalışan bir ve bunun sonucu olarak bozulmuş olabilen bir sitede gezindiğinizde açılır pencerede gösterilir."
-  },
   "alerts": {
     "message": "Uyarılar"
   },

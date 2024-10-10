@@ -447,18 +447,6 @@
   "alertReasonWrongAccount": {
     "message": "Cuenta incorrecta"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Explorando un sitio web con una cuenta no conectada seleccionada"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Esta alerta aparece en la ventana emergente cuando explora un sitio conectado de Web3, pero la cuenta actualmente seleccionada no está conectada."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Cuando un sitio web intenta utilizar la API de window.web3 que se eliminó"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Esta alerta aparece en la ventana emergente cuando explora un sitio que intenta utilizar la API de window.web3 que se eliminó y que puede que no funcione."
-  },
   "alerts": {
     "message": "Alertas"
   },

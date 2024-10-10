@@ -447,18 +447,6 @@
   "alertReasonWrongAccount": {
     "message": "Falsches Konto"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Eine Webseite mit einem nicht verknüpften Konto durchsuchen"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Diese Warnung wird im Popup angezeigt, wenn Sie eine verbundene Webseite durchsuchen, aber das aktuell ausgewählte Konto ist nicht verbunden."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Wenn eine Webseite versucht, die entfernte window.web3 API zu verwenden"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Diese Benachrichtigung wird in einem Popup-Fenster angezeigt, wenn Sie eine Website besuchen, die versucht, die entfernte window.web3-API zu verwenden, und die dadurch möglicherweise beschädigt wird."
-  },
   "alerts": {
     "message": "Benachrichtigungen"
   },
