@@ -6,6 +6,7 @@ import { MINUTE } from '../../../../shared/constants/time';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { validateResponse } from '../../../../ui/pages/bridge/bridge.util';
 import { StatusRequest, StatusResponse } from './types';
+import { validators } from './validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
@@ -21,7 +22,14 @@ export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
   });
 
   // Validate
-  validateResponse<StatusResponse, unknown>([], rawTxStatus, url);
+  const isValid = validateResponse<StatusResponse, unknown>(
+    validators,
+    rawTxStatus,
+    url,
+  );
+  if (!isValid) {
+    throw new Error('Invalid response from bridge');
+  }
 
   // Convert to Extension format
 
