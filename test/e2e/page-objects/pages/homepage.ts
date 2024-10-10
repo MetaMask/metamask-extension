@@ -107,32 +107,13 @@ class HomePage {
     );
   }
 
-    /**
-   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
-   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+  /**
+   * Checks if the expected balance is displayed on homepage.
    *
-   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
    */
-    async check_failedTxNumberDisplayedInActivity(
-      expectedNumber: number = 1,
-    ): Promise<void> {
-      console.log(
-        `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
-      );
-      await this.driver.wait(async () => {
-        const failedTxs = await this.driver.findElements(
-          this.failedTransactions,
-        );
-        return failedTxs.length === expectedNumber;
-      }, 10000);
-      console.log(
-        `${expectedNumber} failed transactions found in activity list on homepage`,
-      );
-    }
-
   async check_expectedBalanceIsDisplayed(
-    expectedBalance: string,
+    expectedBalance: string = '0',
   ): Promise<void> {
     try {
       await this.driver.waitForSelector({
@@ -148,6 +129,30 @@ class HomePage {
     }
     console.log(
       `Expected balance ${expectedBalance} ETH is displayed on homepage`,
+    );
+  }
+
+  /**
+   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+   *
+   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   */
+  async check_failedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const failedTxs = await this.driver.findElements(
+        this.failedTransactions,
+      );
+      return failedTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} failed transactions found in activity list on homepage`,
     );
   }
 
