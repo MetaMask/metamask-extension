@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "Để tiếp tục giao dịch này, bạn cần tăng giới hạn phí gas lên 21000 hoặc cao hơn."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Bạn không có đủ ETH trong tài khoản để thanh toán phí giao dịch."
-  },
   "alertMessageNetworkBusy": {
     "message": "Phí gas cao và ước tính kém chính xác hơn."
   },

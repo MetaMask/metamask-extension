@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "इस ट्रांसेक्शन को जारी रखने के लिए, आपको गैस लिमिट को 21000 या अधिक तक बढ़ाना होगा।"
   },
-  "alertMessageInsufficientBalance": {
-    "message": "ट्रांसेक्शन फीस का भुगतान करने के लिए आपके अकाउंट में पर्याप्त ETH नहीं है।"
-  },
   "alertMessageNetworkBusy": {
     "message": "गैस प्राइसें अधिक हैं और अनुमान कम सटीक हैं।"
   },

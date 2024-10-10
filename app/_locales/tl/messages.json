@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 21000 o mas mataas."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Wala kang sapat na ETH sa iyong account para bayaran ang mga bayad sa transaksyon."
-  },
   "alertMessageNetworkBusy": {
     "message": "Ang mga presyo ng gas ay mataas at ang pagtantiya ay hindi gaanong tumpak."
   },
