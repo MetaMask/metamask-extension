@@ -31,7 +31,6 @@ type SiteCellProps = {
   onSelectChainIds: (chainIds: Hex[]) => void;
   selectedAccountAddresses: string[];
   selectedChainIds: string[];
-  activeTabOrigin: string;
   isConnectFlow?: boolean;
 };
 
@@ -43,7 +42,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   onSelectChainIds,
   selectedAccountAddresses,
   selectedChainIds,
-  activeTabOrigin,
   isConnectFlow,
 }) => {
   const t = useI18nContext();
@@ -122,7 +120,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       </Box>
       {showEditAccountsModal && (
         <EditAccountsModal
-          activeTabOrigin={activeTabOrigin}
           accounts={accounts}
           defaultSelectedAccountAddresses={selectedAccountAddresses}
           onClose={() => setShowEditAccountsModal(false)}
@@ -132,7 +129,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
       {showEditNetworksModal && (
         <EditNetworksModal
-          activeTabOrigin={activeTabOrigin}
           nonTestNetworks={nonTestNetworks}
           testNetworks={testNetworks}
           defaultSelectedChainIds={selectedChainIds}
