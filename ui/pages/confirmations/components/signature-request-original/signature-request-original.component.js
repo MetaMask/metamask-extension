@@ -15,7 +15,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
-import SiteOrigin from '../../../../components/ui/site-origin';
 import Typography from '../../../../components/ui/typography/typography';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import {
@@ -33,14 +32,17 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
 import {
+  TagUrl,
   ButtonLink,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Box,
   Icon,
   IconName,
   Text,
+
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
+
 
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
@@ -186,15 +188,15 @@ export default class SignatureRequestOriginal extends Component {
                 marginRight={4}
               />
             ) : (
-              <SiteOrigin
-                title={txData.msgParams.origin}
-                siteOrigin={txData.msgParams.origin}
-                iconSrc={targetSubjectMetadata?.iconUrl}
-                iconName={
-                  getURLHostName(targetSubjectMetadata?.origin) ||
-                  targetSubjectMetadata?.origin
-                }
-                chip
+              <TagUrl
+                label={txData.msgParams.origin}
+                src={targetSubjectMetadata?.iconUrl}
+                actionButtonLabel="Click"
+                actionButtonProps={{
+                  externalLink: true,
+                  href:`${txData.msgParams.origin}`
+                }}
+                
               />
             )
           }
