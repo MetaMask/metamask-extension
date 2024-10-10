@@ -1,9 +1,6 @@
 import { AccountsController } from '@metamask/accounts-controller';
 import { PPOMController } from '@metamask/ppom-validator';
-import {
-  NetworkClientId,
-  NetworkController,
-} from '@metamask/network-controller';
+import { NetworkController } from '@metamask/network-controller';
 import {
   Json,
   JsonRpcParams,
@@ -17,6 +14,8 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import PreferencesController from '../../controllers/preferences-controller';
 import { AppStateController } from '../../controllers/app-state';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+// eslint-disable-next-line import/no-restricted-paths
+import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
@@ -35,7 +34,6 @@ const CONFIRMATION_METHODS = Object.freeze([
 export type PPOMMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
 > = Required<JsonRpcRequest<Params>> & {
-  networkClientId: NetworkClientId;
   securityAlertResponse?: SecurityAlertResponse | undefined;
   traceContext?: TraceContext;
 };
@@ -81,13 +79,14 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      // This will always exist as the SelectedNetworkMiddleware
-      // adds networkClientId to the request before this middleware runs
       const { chainId } =
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        networkController.getNetworkConfigurationByNetworkClientId(
-          req.networkClientId,
-        )!;
+        getProviderConfig({
+          metamask: networkController.state,
+        }) ?? {};
+      if (!chainId) {
+        return;
+      }
+
       const isSupportedChain = await isChainSupported(chainId);
 
       if (
