@@ -92,14 +92,14 @@ describe('Nft detection event @no-mmi', function () {
           account_type: 'metamask',
           category: 'Onboarding',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: '1337',
           environment_type: 'fullscreen',
         });
         assert.deepStrictEqual(events[1].properties, {
           method: 'create',
           category: 'Onboarding',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: '1337',
           environment_type: 'fullscreen',
           is_profile_syncing_enabled: null,
         });
@@ -107,7 +107,7 @@ describe('Nft detection event @no-mmi', function () {
           nft_autodetection_enabled: true,
           category: 'Onboarding',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: '1337',
           environment_type: 'background',
         });
       },

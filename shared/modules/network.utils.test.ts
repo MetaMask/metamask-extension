@@ -3,6 +3,7 @@ import {
   isSafeChainId,
   isPrefixedFormattedHexString,
   isTokenDetectionEnabledForNetwork,
+  nonHexChainId,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -81,6 +82,19 @@ describe('network utils', () => {
 
     it('returns false given undefined', () => {
       expect(isTokenDetectionEnabledForNetwork(undefined)).toBe(false);
+    });
+  });
+
+  describe('nonHexChainId', () => {
+    it('returns decimal value of chainID  given a string that matches a hex number formatted as a "0x"-prefixed string', () => {
+      expect(nonHexChainId('0x1')).toBe('1');
+      expect(nonHexChainId('0xa')).toBe('10');
+      expect(nonHexChainId('0xabc123')).toBe('11256099');
+      expect(nonHexChainId('0xABC123')).toBe('11256099');
+    });
+    it('returns chainId passed as parameter if it is a non-hex value', () => {
+      expect(nonHexChainId('20')).toBe('20');
+      expect(nonHexChainId('eip155:1')).toBe('eip155:1');
     });
   });
 });

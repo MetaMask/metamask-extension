@@ -1,6 +1,7 @@
 import { isStrictHexString } from '@metamask/utils';
 import { convertHexToDecimal } from '@metamask/controller-utils';
 import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
+import { hexToDecimal } from './conversion.utils';
 
 /**
  * Checks whether the given number primitive chain ID is safe.
@@ -91,3 +92,16 @@ export function convertNetworkId(value: unknown): string {
   }
   throw new Error(`Cannot parse as a valid network ID: '${value}'`);
 }
+
+/**
+ * Converting a hex chainId to decimal
+ *
+ * @param chainId - The chainId to be converted
+ * @returns The chainId passed as parameter if it is a non-hex value else the corresponding decimal value.
+ */
+export const nonHexChainId = (chainId: string) => {
+  if (chainId.startsWith('0x')) {
+    return hexToDecimal(chainId);
+  }
+  return chainId;
+};
