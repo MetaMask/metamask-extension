@@ -9,7 +9,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  BUILD_QUOTE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -66,17 +65,13 @@ export const AppHeader = ({ location }) => {
   const isSwapsPage = Boolean(
     matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
   );
-  const isSwapsBuildQuotePage = Boolean(
-    matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
-  );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
 
-  const disableAccountPicker =
-    isConfirmationPage || (isSwapsPage && !isSwapsBuildQuotePage);
+  const disableAccountPicker = isConfirmationPage || isSwapsPage;
 
   const disableNetworkPicker =
     isSwapsPage ||

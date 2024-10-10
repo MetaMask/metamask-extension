@@ -64,8 +64,6 @@ describe('Bridge', () => {
 
   it('renders the component with initial props', async () => {
     const swapsMockStore = createBridgeMockStore({ extensionSupport: true });
-    swapsMockStore.metamask.swapsState.swapsFeatureFlags.swapRedesign.extensionActive =
-      true;
     const store = configureMockStore(middleware)(swapsMockStore);
 
     const { container, getByText } = renderWithProvider(

@@ -22,7 +22,7 @@ jest.mock('react-router-dom', () => ({
   }),
   useLocation: jest.fn(() => {
     return {
-      pathname: '/swaps/build-quote',
+      pathname: '/swaps/prepare-swap-page',
     };
   }),
 }));
@@ -81,12 +81,10 @@ describe('Swap', () => {
 
   it('renders the component with initial props', async () => {
     const swapsMockStore = createSwapsMockStore();
-    swapsMockStore.metamask.swapsState.swapsFeatureFlags.swapRedesign.extensionActive = false;
     const store = configureMockStore(middleware)(swapsMockStore);
     const { container, getByText } = renderWithProvider(<Swap />, store);
     await waitFor(() => expect(featureFlagsNock.isDone()).toBe(true));
     expect(getByText('Swap')).toBeInTheDocument();
-    expect(getByText('Cancel')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

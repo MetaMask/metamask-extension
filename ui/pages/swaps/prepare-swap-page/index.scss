@@ -27,12 +27,6 @@
     margin-top: 16px;
     position: relative;
 
-    .dropdown-input-pair__input {
-      input {
-        text-align: right;
-      }
-    }
-
     .MuiInputBase-root {
       padding-right: 0;
     }
@@ -120,98 +114,6 @@
       div:last-of-type {
         font-weight: normal;
         color: var(--color-text-alternative);
-      }
-    }
-  }
-
-  .dropdown-search-list {
-    background-color: var(--color-background-alternative);
-    border-radius: 100px;
-
-    &__select-default {
-      color: var(--color-text-default);
-    }
-
-    &__labels {
-      flex: auto;
-      max-width: 110px;
-
-      &--with-icon {
-        max-width: 95px;
-      }
-    }
-
-    &__closed-primary-label {
-      font-weight: 500;
-    }
-
-    &__selector-closed-container {
-      border: 0;
-      border-radius: 100px;
-      height: 32px;
-      max-height: 32px;
-      max-width: 165px;
-      width: auto;
-    }
-
-    &__selector-closed-icon {
-      width: 24px;
-      height: 24px;
-      margin-right: 8px;
-    }
-
-    &__selector-closed {
-      height: 32px;
-      max-width: 140px;
-
-      div {
-        display: flex;
-      }
-
-      &__item-labels {
-        width: 100%;
-        margin-left: 0;
-      }
-    }
-  }
-
-  .dropdown-input-pair {
-    height: 32px;
-    width: auto;
-
-    &__selector--closed {
-      height: 32px;
-      border-top-right-radius: 100px;
-      border-bottom-right-radius: 100px;
-    }
-
-    .searchable-item-list {
-      &__item--add-token {
-        display: none;
-      }
-    }
-
-    &__to {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .searchable-item-list {
-        &__item--add-token {
-          display: flex;
-        }
-      }
-    }
-
-    &__input {
-      div {
-        border: 0;
-      }
-    }
-
-    &__two-line-input {
-      input {
-        padding-bottom: 0;
       }
     }
   }
@@ -306,12 +208,6 @@
     width: 100%;
   }
 
-  .main-quote-summary {
-    &__exchange-rate-display {
-      width: auto;
-    }
-  }
-
   &::after { // Hide preloaded images.
     position: absolute;
     width: 0;
@@ -364,6 +260,10 @@
 
   &__edit-limit {
     white-space: nowrap;
+  }
+
+  &__exchange-rate-display {
+    color: var(--color-text-alternative);
   }
 }
 
