@@ -176,7 +176,7 @@ class SnapSimpleKeyringPage {
     );
 
     // Get the first request from the requests list on simple keyring snap page
-    await this.driver.clickElementUsingMouseMove(this.listRequestsSection);
+    await this.driver.clickElement(this.listRequestsSection);
     await this.driver.clickElement(this.listRequestsButton);
     const requestJSON = await (
       await this.driver.waitForSelector(this.requestMessage)
@@ -196,7 +196,7 @@ class SnapSimpleKeyringPage {
       console.log(
         'Reject snap account transaction on Snap Simple Keyring page',
       );
-      await this.driver.clickElement(this.rejectRequestSection);
+      await this.driver.clickElementUsingMouseMove(this.rejectRequestSection);
       await this.driver.fill(
         this.rejectRequestIdInput,
         JSON.parse(requestJSON)[0].id,
