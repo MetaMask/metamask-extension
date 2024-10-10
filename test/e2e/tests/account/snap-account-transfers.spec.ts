@@ -1,20 +1,21 @@
 import { Suite } from 'mocha';
 import {
-  withFixtures,
-  WINDOW_TITLES,
-  PRIVATE_KEY_TWO,
   multipleGanacheOptions,
+  PRIVATE_KEY_TWO,
+  WINDOW_TITLES,
+  withFixtures,
 } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { Driver } from '../../webdriver/driver';
+import { Ganache } from '../../seeder/ganache';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import FixtureBuilder from '../../fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import HomePage from '../../page-objects/pages/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HomePage from '../../page-objects/pages/homepage';
 
 describe('Snap Account Transfers @no-mmi', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
@@ -24,9 +25,15 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
         ganacheOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-        await installSnapSimpleKeyring(driver, true);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
+        await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
         // import snap account with private key on snap simple keyring page.
@@ -47,6 +54,7 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
           '0.000042',
           '1.000042',
         );
+        await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.check_pageIsLoaded();
@@ -65,8 +73,14 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
         ganacheOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
@@ -89,6 +103,7 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
           '1.000042',
           false,
         );
+        await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.check_pageIsLoaded();
@@ -108,8 +123,14 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 

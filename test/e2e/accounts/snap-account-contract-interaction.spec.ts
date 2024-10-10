@@ -45,7 +45,7 @@ describe('Snap Account Contract interaction', function () {
         ganacheServer,
       }: TestSuiteArguments) => {
         // Install Snap Simple Keyring and import key
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, ganacheServer);
         await installSnapSimpleKeyring(driver);
         await importKeyAndSwitch(driver);
 

@@ -8,6 +8,8 @@ class HeaderNavbar {
   private readonly accountOptionMenu =
     '[data-testid="account-options-menu-button"]';
 
+  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
+
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
   private readonly mmiPortfolioButton =
@@ -15,10 +17,21 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
-  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.accountMenuButton,
+        this.accountOptionMenu,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for header navbar to be loaded', e);
+      throw e;
+    }
+    console.log('Header navbar is loaded');
   }
 
   async lockMetaMask(): Promise<void> {

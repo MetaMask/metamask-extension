@@ -6,12 +6,10 @@ import HeaderNavbar from './header-navbar';
 class HomePage {
   private driver: Driver;
 
-  private readonly sendButton = '[data-testid="eth-overview-send"]';
+  public headerNavbar: HeaderNavbar;
 
   private readonly activityTab =
     '[data-testid="account-overview__activity-tab"]';
-
-  private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
 
   private readonly balance = '[data-testid="eth-overview__primary-currency"]';
 
@@ -22,15 +20,17 @@ class HomePage {
     css: '.transaction-status-label--confirmed',
   };
 
-  private readonly transactionAmountsInActivity =
-    '[data-testid="transaction-list-item-primary-currency"]';
-
-  public headerNavbar: HeaderNavbar;
-
   private readonly failedTransactions = {
     text: 'Failed',
     css: '.transaction-status-label--failed',
   };
+
+  private readonly sendButton = '[data-testid="eth-overview-send"]';
+
+  private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
+
+  private readonly transactionAmountsInActivity =
+    '[data-testid="transaction-list-item-primary-currency"]';
 
   constructor(driver: Driver) {
     this.driver = driver;

@@ -41,13 +41,13 @@ export const sendTransaction = async (
 };
 
 /**
- * This function initiates the steps required to send a transaction from snap account from homepage to final confirmation.
+ * This function initiates the steps required to send a transaction from snap account on homepage to final confirmation.
  *
- * @param driver
- * @param recipientAddress
- * @param amount
- * @param gasfee
- * @param totalfee
+ * @param driver - The webdriver instance.
+ * @param recipientAddress - The recipient address.
+ * @param amount - The amount of the asset to be sent in the transaction.
+ * @param gasfee - The expected transaction gas fee.
+ * @param totalfee - The expected total transaction fee.
  * @param isSyncFlow - Indicates whether synchronous approval option is on for the snap. Defaults to true.
  * @param approveTransaction - Indicates whether the transaction should be approved. Defaults to true.
  */
