@@ -194,7 +194,7 @@ export default class UnlockPage extends Component {
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
-              data-testid="unlock-password"
+              testId="unlock-password"
               label={t('password')}
               type="password"
               value={password}
