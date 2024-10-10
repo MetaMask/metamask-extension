@@ -205,7 +205,7 @@ describe('rampsSlice', () => {
     });
 
     it('should return true when Bitcoin is buyable and current chain is Bitcoin', () => {
-      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(true);
       const mockBuyableChains = [
         { chainId: MultichainNetworks.BITCOIN, active: true },
@@ -219,7 +219,7 @@ describe('rampsSlice', () => {
     });
 
     it('should return false when Bitcoin is not buyable and current chain is Bitcoin', () => {
-      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(true);
       const mockBuyableChains = [
         { chainId: MultichainNetworks.BITCOIN, active: false },
