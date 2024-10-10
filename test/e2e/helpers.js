@@ -858,7 +858,7 @@ const sendScreenToConfirmScreen = async (
 ) => {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
+  await driver.fill('[data-testid="currency-input"]', quantity);
 
   // check if element exists and click it
   await driver.clickElementSafe({
