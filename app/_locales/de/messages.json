@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 21.000 oder mehr erhöhen."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Sie haben nicht genug ETH auf Ihrem Konto, um die Transaktionsgebühren zu bezahlen."
-  },
   "alertMessageNetworkBusy": {
     "message": "Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
   },

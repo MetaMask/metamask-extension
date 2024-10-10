@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "Чтобы продолжить эту транзакцию, вам необходимо увеличить лимит газа до 21 000 или выше."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "На вашем счету недостаточно ETH для оплаты комиссий за транзакцию."
-  },
   "alertMessageNetworkBusy": {
     "message": "Цены газа высоки, а оценки менее точны."
   },

@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "要继续此交易，您需要将燃料限制提高到 21000 或更高。"
   },
-  "alertMessageInsufficientBalance": {
-    "message": "您的账户中没有足够的 ETH 来支付交易费用。"
-  },
   "alertMessageNetworkBusy": {
     "message": "燃料价格很高，估算不太准确。"
   },

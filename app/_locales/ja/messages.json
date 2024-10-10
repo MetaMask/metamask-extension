@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "このトランザクションを続行するには、ガスリミットを21000以上に上げる必要があります。"
   },
-  "alertMessageInsufficientBalance": {
-    "message": "アカウントにトランザクション手数料を支払うのに十分なETHがありません。"
-  },
   "alertMessageNetworkBusy": {
     "message": "ガス価格が高く、見積もりはあまり正確ではありません。"
   },
