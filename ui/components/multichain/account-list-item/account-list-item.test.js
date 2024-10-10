@@ -237,7 +237,7 @@ describe('AccountListItem', () => {
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
-      it('renders fiat for EVM account', () => {
+      it('renders fiat for EVM account when showNativeTokenAsMainBalance is false', () => {
         const { container } = render(
           {
             account: mockAccount,
@@ -251,6 +251,7 @@ describe('AccountListItem', () => {
               }),
               preferences: {
                 showFiatInTestnets: true,
+                showNativeTokenAsMainBalance: false,
               },
             },
           },
@@ -273,6 +274,47 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
+        expect(secondCurrencyDisplay.textContent).toContain('');
+        expect(avatarGroup).not.toBeInTheDocument();
+      });
+
+      it('renders token for EVM account when showNativeTokenAsMainBalance is true', () => {
+        const { container } = render(
+          {
+            account: mockAccount,
+          },
+          {
+            metamask: {
+              ...mockNetworkState({
+                chainId: CHAIN_IDS.SEPOLIA,
+                nickname: SEPOLIA_DISPLAY_NAME,
+                ticker: 'ETH',
+              }),
+              preferences: {
+                showFiatInTestnets: true,
+                showNativeTokenAsMainBalance: true,
+              },
+            },
+          },
+        );
+
+        const firstCurrencyDisplay = container.querySelector(
+          '[data-testid="first-currency-display"]',
+        );
+        const secondCurrencyDisplay = container.querySelector(
+          '[data-testid="second-currency-display"]',
+        );
+        const avatarGroup = container.querySelector(
+          '[data-testid="avatar-group"]',
+        );
+
+        const expectedBalance = '0.006';
+
+        expect(firstCurrencyDisplay).toBeInTheDocument();
+        expect(firstCurrencyDisplay.firstChild.textContent).toContain(
+          expectedBalance,
+        );
+        expect(firstCurrencyDisplay.lastChild.textContent).toContain('ETH');
         expect(secondCurrencyDisplay.textContent).toContain('');
         expect(avatarGroup).not.toBeInTheDocument();
       });
