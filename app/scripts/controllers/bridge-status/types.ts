@@ -7,9 +7,20 @@ import BridgeStatusController from './bridge-status-controller';
 import { Hex } from '@metamask/utils';
 
 type HexChainId = Hex;
+type DecChainId = number;
+
+export interface StatusRequest {
+  bridgeId: string; //lifi, socket, squid
+  srcTxHash: string; //lifi, socket, squid
+  bridge: string; //lifi, socket, squid
+  srcChainId: HexChainId; //lifi, socket, squid
+  destChainId: HexChainId; //lifi, socket, squid
+  quote?: Quote; //squid
+  refuel?: boolean; //lifi
+}
 
 export interface Asset {
-  chainId: HexChainId;
+  chainId: DecChainId;
   address: string;
   symbol: string;
   name: string;
@@ -18,7 +29,7 @@ export interface Asset {
 }
 
 export interface ChainStatus {
-  chainId: HexChainId;
+  chainId: DecChainId;
   txHash: string;
   amount?: string;
   token?: Asset;

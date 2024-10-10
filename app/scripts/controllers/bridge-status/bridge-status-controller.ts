@@ -8,7 +8,7 @@ import {
   BridgeStatusControllerState,
   BridgeStatusControllerMessenger,
 } from './types';
-import { dummyFetchBridgeStatus } from './utils';
+import { fetchBridgeTxStatus } from './utils';
 
 const metadata: StateMetadata<{
   bridgeStatusState: BridgeStatusControllerState;
@@ -61,7 +61,7 @@ export default class BridgeStatusController extends BaseController<
   getBridgeTxStatus = async () => {
     const { bridgeStatusState } = this.state;
 
-    const bridgeStatus = await dummyFetchBridgeStatus();
+    const bridgeStatus = await fetchBridgeTxStatus();
     this.update((_state) => {
       _state.bridgeStatusState = { ...bridgeStatusState, bridgeStatus };
     });

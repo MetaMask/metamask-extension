@@ -60,7 +60,7 @@ type Validator<ExpectedResponse, DataToValidate> = {
   validator: (value: DataToValidate) => boolean;
 };
 
-const validateResponse = <ExpectedResponse, DataToValidate>(
+export const validateResponse = <ExpectedResponse, DataToValidate>(
   validators: Validator<ExpectedResponse, DataToValidate>[],
   data: unknown,
   urlUsed: string,
