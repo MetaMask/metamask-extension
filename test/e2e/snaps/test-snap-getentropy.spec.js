@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -28,29 +27,38 @@ describe('Test Snap getEntropy', function () {
           tag: 'h2',
         });
 
+        // scroll to get entropy snap
         const snapButton = await driver.findElement('#connectGetEntropySnap');
         await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectGetEntropySnap');
         await driver.clickElement('#connectGetEntropySnap');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for confirm selector
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click confirm button
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElement({
           text: 'OK',
           tag: 'button',
@@ -73,7 +81,7 @@ describe('Test Snap getEntropy', function () {
         await driver.clickElement('#signEntropyMessage');
 
         // Switch to approve signature message window and approve
-        await switchToNotificationWindow(driver, 2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Approve',
           tag: 'button',
