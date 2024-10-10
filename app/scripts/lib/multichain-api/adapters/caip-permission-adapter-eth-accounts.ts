@@ -49,13 +49,24 @@ const setEthAccountsForScopesObject = (
   const updatedScopesObject: ScopesObject = {};
 
   Object.entries(scopesObject).forEach(([scopeString, scopeObject]) => {
-    if (!isEip155ScopeString(scopeString as ScopeString)) {
+    const { namespace, reference } = parseScopeString(scopeString);
+
+    const isWalletNamespace =
+      namespace === KnownCaipNamespace.Wallet && reference === undefined;
+
+    if (
+      !isEip155ScopeString(scopeString as ScopeString) &&
+      !isWalletNamespace
+    ) {
       updatedScopesObject[scopeString as ScopeString] = scopeObject;
       return;
     }
 
     const caipAccounts = accounts.map(
-      (account) => `${scopeString}:${account}` as CaipAccountId,
+      (account) =>
+        (isWalletNamespace
+          ? `wallet:eip155:${account}`
+          : `${scopeString}:${account}`) as CaipAccountId,
     );
 
     updatedScopesObject[scopeString as ScopeString] = {

@@ -158,7 +158,7 @@ async function main() {
                   notifications: [],
                 },
                 wallet: {
-                  accounts: [],
+                  accounts: [`wallet:eip155:${ACCOUNT_1}`],
                   methods: walletRpcMethods,
                   notifications: [],
                 },
