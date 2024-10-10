@@ -123,10 +123,10 @@ export function setManifestFlags(flags: ManifestFlags = {}) {
   fs.writeFileSync(`${folder}/manifest.json`, JSON.stringify(manifest));
 }
 
-export function getManifestVersion(): string {
+export function getManifestVersion(): number {
   readManifest();
 
-  return manifest.manifest_version;
+  return parseInt(manifest.manifest_version, 10);
 }
 
 function readManifest() {

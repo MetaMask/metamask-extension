@@ -1,5 +1,8 @@
 /* eslint-disable import/unambiguous -- Not an external module and not of concern */
+
+///: BEGIN:ONLY_INCLUDE_IF(not-the-extension)
 const { getManifestVersion } = require('../../test/e2e/set-manifest-flags');
+///: END:ONLY_INCLUDE_IF
 
 const runtimeManifest =
   global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();
