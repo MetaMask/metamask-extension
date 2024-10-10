@@ -31,25 +31,23 @@ exports[`Unlock Page should match snapshot 1`] = `
         class="unlock-page__form"
       >
         <div
-          class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+          class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+          theme="material"
         >
           <label
-            class="MuiFormLabel-root MuiInputLabel-root TextField-materialLabel-1 MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink Mui-focused Mui-focused TextField-materialFocused-2"
-            data-shrink="true"
+            class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
             for="password"
-            id="password-label"
           >
             Password
           </label>
           <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline TextField-materialUnderline-3 MuiInputBase-fullWidth MuiInput-fullWidth Mui-focused Mui-focused MuiInputBase-formControl MuiInput-formControl"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
           >
             <input
-              aria-invalid="false"
-              autocomplete="current-password"
-              class="MuiInputBase-input MuiInput-input"
+              autocomplete="on"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
               data-testid="unlock-password"
-              dir="auto"
+              focused="true"
               id="password"
               type="password"
               value=""

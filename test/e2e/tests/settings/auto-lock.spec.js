@@ -28,13 +28,16 @@ describe('Auto-Lock Timer', function () {
         await driver.scrollToElement(autoLockTimerInput);
         await autoLockTimerInput.fill(10081);
         await driver.waitForSelector({
-          css: '[data-testid="auto-lockout-time"] p',
+          css: 'p',
           text: 'Lock time must be a number between 0 and 10080',
         });
         await autoLockTimerInput.fill(sixSecsInMins);
 
         await driver.assertElementNotPresent(
-          '[data-testid="auto-lockout-time"] p',
+          {
+            css: 'p',
+            text: 'Lock time must be a number between 0 and 10080',
+          },
           {
             waitAtLeastGuard: 100, // A findElementGuard is not possible here, because only this element changes, but a waitAtLeast of 100ms should be sufficient
           },

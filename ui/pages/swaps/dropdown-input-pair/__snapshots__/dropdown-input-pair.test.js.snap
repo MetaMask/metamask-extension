@@ -2,19 +2,15 @@
 
 exports[`DropdownInputPair renders the component with initial props 1`] = `
 <div
-  class="MuiFormControl-root MuiTextField-root dropdown-input-pair__input MuiFormControl-marginDense MuiFormControl-fullWidth"
+  class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate dropdown-input-pair__input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
 >
-  <div
-    class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
-  >
-    <input
-      aria-invalid="false"
-      class="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
-      dir="auto"
-      placeholder="0"
-      type="text"
-      value=""
-    />
-  </div>
+  <input
+    autocomplete="off"
+    class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+    focused="false"
+    placeholder="0"
+    type="text"
+    value=""
+  />
 </div>
 `;

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, TextField } from '../../components/component-library';
+import { FormTextField, Text } from '../../components/component-library';
 import {
   BlockSize,
   TextColor,
@@ -192,14 +192,15 @@ export default class UnlockPage extends Component {
           </Text>
           <div>{t('unlockMessage')}</div>
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
-            <TextField
+            <FormTextField
               id="password"
-              testId="unlock-password"
+              inputProps={{ 'data-testid': 'unlock-password' }}
               label={t('password')}
               type="password"
               value={password}
               onChange={(event) => this.handleInputChange(event)}
               error={error}
+              helpText={error}
               autoFocus
               autoComplete="current-password"
               theme="material"

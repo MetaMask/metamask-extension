@@ -5,7 +5,7 @@ import {
   ButtonVariant,
   Button,
   Checkbox,
-  TextField,
+  FormTextField,
 } from '../../component-library';
 import SrpInput from '../srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
@@ -102,26 +102,28 @@ export default function CreateNewVault({
     <form className="create-new-vault__form" onSubmit={onImport}>
       <SrpInput onChange={setSeedPhrase} srpText={t('secretRecoveryPhrase')} />
       <div className="create-new-vault__create-password">
-        <TextField
-          testId="create-vault-password"
+        <FormTextField
+          inputProps={{ 'data-testid': 'create-vault-password' }}
           id="password"
           label={t('newPassword')}
           type="password"
           value={password}
           onChange={(event) => onPasswordChange(event.target.value)}
           error={passwordError}
+          helpText={passwordError}
           autoComplete="new-password"
           margin="normal"
           largeLabel
         />
-        <TextField
-          testId="create-vault-confirm-password"
+        <FormTextField
+          inputProps={{ 'data-testid': 'create-vault-confirm-password' }}
           id="confirm-password"
           label={t('confirmPassword')}
           type="password"
           value={confirmPassword}
           onChange={(event) => onConfirmPasswordChange(event.target.value)}
           error={confirmPasswordError}
+          helpText={confirmPasswordError}
           autoComplete="new-password"
           margin="normal"
           largeLabel

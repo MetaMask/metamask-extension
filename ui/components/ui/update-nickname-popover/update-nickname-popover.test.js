@@ -24,6 +24,6 @@ const render = () => {
 describe('UpdateNicknamePopover', () => {
   it('renders UpdateNicknamePopover component and shows This is a memo text', () => {
     render();
-    expect(screen.getByText('This is a memo')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('This is a memo')).toBeInTheDocument();
   });
 });

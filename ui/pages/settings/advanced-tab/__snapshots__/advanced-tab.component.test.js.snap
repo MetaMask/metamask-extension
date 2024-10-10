@@ -498,18 +498,18 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root MuiFormControl-marginDense MuiFormControl-fullWidth"
+            class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            min="0"
           >
             <div
-              class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
             >
               <input
-                aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                 data-testid="auto-lockout-time"
-                dir="auto"
+                focused="false"
                 id="autoTimeout"
-                min="0"
                 placeholder="0"
                 type="text"
                 value="0"
