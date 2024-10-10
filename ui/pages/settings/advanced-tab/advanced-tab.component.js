@@ -10,7 +10,7 @@ import {
   Box,
   ButtonLink,
   ButtonLinkSize,
-  TextField,
+  FormTextField,
 } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -444,13 +444,14 @@ export default class AdvancedTab extends PureComponent {
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
-            <TextField
+            <FormTextField
               id="autoTimeout"
-              testId="auto-lockout-time"
+              data-testid="auto-lockout-time"
               placeholder="0"
               value={this.state.autoLockTimeLimitBeforeNormalization}
               onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
+              helpText={lockTimeError}
               width={BlockSize.Full}
               margin="dense"
               min={0}

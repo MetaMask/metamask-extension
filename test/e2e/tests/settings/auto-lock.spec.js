@@ -28,18 +28,19 @@ describe('Auto-Lock Timer', function () {
         await driver.scrollToElement(autoLockTimerInput);
         await autoLockTimerInput.fill(10081);
         await driver.waitForSelector({
-          css: '#autoTimeout-helper-text',
+          css: '[data-testid="auto-lockout-time"] p',
           text: 'Lock time must be a number between 0 and 10080',
         });
         await autoLockTimerInput.fill(sixSecsInMins);
 
-        await driver.assertElementNotPresent('#autoTimeout-helper-text', {
-          waitAtLeastGuard: 100, // A findElementGuard is not possible here, because only this element changes, but a waitAtLeast of 100ms should be sufficient
-        });
-
-        await driver.clickElement(
-          '[data-testid="advanced-setting-auto-lock"] button',
+        await driver.assertElementNotPresent(
+          '[data-testid="auto-lockout-time"] p',
+          {
+            waitAtLeastGuard: 100, // A findElementGuard is not possible here, because only this element changes, but a waitAtLeast of 100ms should be sufficient
+          },
         );
+
+        await driver.clickElement('[data-testid="auto-lockout-button"]');
         // Verify the wallet is locked
         const pageTitle = await driver.findElement(
           '[data-testid="unlock-page-title"]',
