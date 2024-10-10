@@ -49,4 +49,4 @@ function filterE2eChangedFiles() {
   return {e2eChangedFiles, hasOnlyMdOrCsvFiles};
 }
 
-module.exports = { filterE2eChangedFiles, readChangedFiles, hasOnlyMdOrCsvFiles };
+module.exports = { filterE2eChangedFiles, readChangedFiles };
