@@ -35,9 +35,15 @@ export const NotificationDetailsFooter = ({
         </>
       )}
       {footer.type === 'footer_feature_announcement' && (
-        <>
+        <Box
+          display={Display.Flex}
+          gap={4}
+          flexDirection={FlexDirection.Row}
+          width={BlockSize.Full}
+        >
+          <footer.ExternalLink notification={notification} />
           <footer.ExtensionLink notification={notification} />
-        </>
+        </Box>
       )}
     </Box>
   );
