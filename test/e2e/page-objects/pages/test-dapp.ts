@@ -15,6 +15,8 @@ class TestDapp {
 
   private erc1155RevokeSetApprovalForAllButton: RawLocator;
 
+  private erc20WatchAssetButton: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
 
@@ -22,6 +24,7 @@ class TestDapp {
     this.erc1155SetApprovalForAllButton = '#setApprovalForAllERC1155Button';
     this.erc721RevokeSetApprovalForAllButton = '#revokeButton';
     this.erc1155RevokeSetApprovalForAllButton = '#revokeERC1155Button';
+    this.erc20WatchAssetButton = '#watchAssets';
   }
 
   async open({
@@ -61,6 +64,10 @@ class TestDapp {
 
   public async clickERC1155RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc1155RevokeSetApprovalForAllButton);
+  }
+
+  public async clickERC20WatchAssetButton() {
+    await this.driver.clickElement(this.erc20WatchAssetButton);
   }
 }
 

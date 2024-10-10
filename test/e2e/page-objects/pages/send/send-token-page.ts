@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
+import { RawLocator } from '../../common';
 
 class SendTokenPage {
   private driver: Driver;
@@ -18,6 +19,10 @@ class SendTokenPage {
 
   private ensResolvedAddress: string;
 
+  private assetPickerButton: RawLocator;
+
+  private tokenListButton: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.inputAmount = '[data-testid="currency-input"]';
@@ -32,6 +37,8 @@ class SendTokenPage {
       text: 'Continue',
       tag: 'button',
     };
+    this.assetPickerButton = '[data-testid="asset-picker-button"]';
+    this.tokenListButton = '[data-testid="multichain-token-list-button"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -124,6 +131,15 @@ class SendTokenPage {
     console.log(
       `ENS domain '${ensDomain}' resolved to address '${address}' and can be used as recipient on send token screen.`,
     );
+  }
+
+  async click_assetPickerButton() {
+    await this.driver.clickElement(this.assetPickerButton);
+  }
+
+  async click_secondTokenListButton() {
+    const elements = await this.driver.findElements(this.tokenListButton);
+    await elements[1].click();
   }
 }
 
