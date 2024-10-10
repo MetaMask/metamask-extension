@@ -50,6 +50,9 @@ export const MultichainConfirmTransactionPage = () => {
   const selectedAccount = useSelector((state) =>
     getInternalAccount(state, transaction.transactionParams.sender.id),
   );
+
+  const confirmDisabled = transaction.transactionParams.fee.isLoading;
+
   const { fee: estimateFee } = transaction.transactionParams;
 
   const onCancel = () => {
@@ -122,6 +125,7 @@ export const MultichainConfirmTransactionPage = () => {
         onSubmit={async () => await confirmTranasction()}
         submitText={t('confirm')}
         submitButtonType={'primary'}
+        disabled={confirmDisabled}
       ></PageContainerFooter>
     </Page>
   );
