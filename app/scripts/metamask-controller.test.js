@@ -46,6 +46,7 @@ import {
 import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
+import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -61,6 +62,7 @@ const browserPolyfillMock = {
       addListener: jest.fn(),
     },
     getPlatformInfo: jest.fn().mockResolvedValue('mac'),
+    setUninstallURL: () => undefined,
   },
   storage: {
     session: {
@@ -1220,6 +1222,121 @@ describe('MetaMaskController', () => {
       });
       it('should call keyring.destroy', async () => {
         expect(mockKeyring.destroy).toHaveBeenCalledTimes(1);
+      });
+    });
+    describe('#setupPhishingCommunication', () => {
+      beforeEach(() => {
+        jest.spyOn(metamaskController, 'safelistPhishingDomain');
+        jest.spyOn(metamaskController, 'backToSafetyPhishingWarning');
+        metamaskController.preferencesController.setUsePhishDetect(true);
+      });
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('creates a phishing stream with safelistPhishingDomain and backToSafetyPhishingWarning handler', async () => {
+        const safelistPhishingDomainRequest = {
+          name: 'metamask-phishing-safelist',
+          data: {
+            id: 1,
+            method: 'safelistPhishingDomain',
+            params: ['mockHostname'],
+          },
+        };
+        const backToSafetyPhishingWarningRequest = {
+          name: 'metamask-phishing-safelist',
+          data: { id: 2, method: 'backToSafetyPhishingWarning', params: [] },
+        };
+
+        const { promise, resolve } = deferredPromise();
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.name !== 'metamask-phishing-safelist') {
+            cb();
+            return;
+          }
+          resolve();
+          cb(null, chunk);
+        });
+
+        metamaskController.setupPhishingCommunication({
+          connectionStream: streamTest,
+        });
+
+        streamTest.write(safelistPhishingDomainRequest, null, () => {
+          expect(
+            metamaskController.safelistPhishingDomain,
+          ).toHaveBeenCalledWith('mockHostname');
+        });
+        streamTest.write(backToSafetyPhishingWarningRequest, null, () => {
+          expect(
+            metamaskController.backToSafetyPhishingWarning,
+          ).toHaveBeenCalled();
+        });
+
+        await promise;
+        streamTest.end();
+      });
+    });
+
+    describe('#setUpCookieHandlerCommunication', () => {
+      let localMetaMaskController;
+      beforeEach(() => {
+        localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            MetaMetricsController: {
+              metaMetricsId: 'MOCK_METRICS_ID',
+              participateInMetaMetrics: true,
+              dataCollectionForMarketing: true,
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+        jest.spyOn(localMetaMaskController, 'getCookieFromMarketingPage');
+      });
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('creates a cookie handler communication stream with getCookieFromMarketingPage handler', async () => {
+        const attrinutionRequest = {
+          name: METAMASK_COOKIE_HANDLER,
+          data: {
+            id: 1,
+            method: 'getCookieFromMarketingPage',
+            params: [{ ga_client_id: 'XYZ.ABC' }],
+          },
+        };
+
+        const { promise, resolve } = deferredPromise();
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.name !== METAMASK_COOKIE_HANDLER) {
+            cb();
+            return;
+          }
+          resolve();
+          cb(null, chunk);
+        });
+
+        localMetaMaskController.setUpCookieHandlerCommunication({
+          connectionStream: streamTest,
+        });
+
+        streamTest.write(attrinutionRequest, null, () => {
+          expect(
+            localMetaMaskController.getCookieFromMarketingPage,
+          ).toHaveBeenCalledWith({ ga_client_id: 'XYZ.ABC' });
+        });
+
+        await promise;
+        streamTest.end();
       });
     });
 
