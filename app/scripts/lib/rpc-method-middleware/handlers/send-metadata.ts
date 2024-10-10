@@ -3,25 +3,24 @@ import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from 'json-rpc-engine';
-import {
-  Json,
-  JsonRpcParams,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
+import { isObject } from '@metamask/utils';
 import {
   PermissionSubjectMetadata,
   SubjectType,
 } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper } from './types';
+import {
+  HandlerWrapper,
+  HandlerRequestType as SendMetadataHandlerRequest,
+} from './types';
 
 type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   name?: string | null;
   subjectType?: SubjectType | null;
   extensionId?: string | null;
   iconUrl?: string | null;
-} & Record<string, Json>;
+};
 
 type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
 
@@ -30,9 +29,11 @@ type SendMetadataOptions = {
   subjectType: SubjectType;
 };
 
-type SendMetadataConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
+type SendMetadataConstraint<
+  Params extends SubjectMetadataToAdd = SubjectMetadataToAdd,
+> = {
   implementation: (
-    req: JsonRpcRequest<Params>,
+    req: SendMetadataHandlerRequest<Params>,
     res: PendingJsonRpcResponse<true>,
     _next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,
@@ -64,15 +65,17 @@ export default sendMetadata;
  * metadata, bound to the requesting origin.
  * @param options.subjectType - The type of the requesting origin / subject.
  */
-function sendMetadataHandler<Params extends JsonRpcParams = JsonRpcParams>(
-  req: JsonRpcRequest<Params>,
+function sendMetadataHandler<
+  Params extends SubjectMetadataToAdd = SubjectMetadataToAdd,
+>(
+  req: SendMetadataHandlerRequest<Params>,
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   { addSubjectMetadata, subjectType }: SendMetadataOptions,
 ): void {
   const { origin, params } = req;
-  if (params && typeof params === 'object' && !Array.isArray(params)) {
+  if (isObject(params)) {
     const { icon = null, name = null, ...remainingParams } = params;
 
     addSubjectMetadata({
