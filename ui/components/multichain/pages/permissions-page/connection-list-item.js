@@ -88,9 +88,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {connection.addresses.length} {t('accountsSmallCase')}&nbsp;
-              •&nbsp;
-              {connectedNetworks.length} {t('networksSmallCase')}
+              {connection.addresses.length} {t('accountsSmallCase')} •&nbsp;
             </Text>
           </Box>
         )}

@@ -19,7 +19,6 @@ export enum DisconnectType {
 }
 
 export const DisconnectAllModal = ({
-  hostname,
   onClick,
   onClose,
 }: {
@@ -35,9 +34,7 @@ export const DisconnectAllModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>{t('disconnect')}</ModalHeader>
-        <ModalBody>
-          {<Text>{t('disconnectAllDescription', [hostname])}</Text>}
-        </ModalBody>
+        <ModalBody>{<Text>{t('disconnectAllDescription')}</Text>}</ModalBody>
         <ModalFooter>
           <Button
             onClick={onClick}
