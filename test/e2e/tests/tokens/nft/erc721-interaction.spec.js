@@ -51,6 +51,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
+        await driver.delay(1000);
         const transactionItem = await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
@@ -58,6 +59,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         assert.equal(await transactionItem.isDisplayed(), true);
 
         // verify the mint transaction has finished
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const nftsMintStatus = await driver.findElement({
           css: '#nftsStatus',
@@ -65,6 +67,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         });
         assert.equal(await nftsMintStatus.isDisplayed(), true);
 
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -123,6 +126,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         assert.equal(await transactionItem.isDisplayed(), true);
 
         // verify the mint transaction has finished
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const nftsMintStatus = await driver.findElement({
           css: '#nftsStatus',
@@ -239,6 +243,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
+        await driver.delay(1000);
         const transactionItem = await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
