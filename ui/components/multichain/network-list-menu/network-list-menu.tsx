@@ -344,7 +344,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     if (actionMode === ACTION_MODES.LIST) {
       return (
         <>
-          <Box className="multichain-network-list-menu">
+          <Box className="multichain-network-list-menu" data-testid='multichain-network-list-menu'>
             <NetworkListSearch
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
@@ -470,7 +470,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               ) : null}
 
               {showTestNetworks || currentlyOnTestNetwork ? (
-                <Box className="multichain-network-list-menu">
+                <Box className="multichain-network-list-menu" data-testid='multichain-network-list-menu-test-networks'>
                   {searchedTestNetworks.map((network) =>
                     generateNetworkListItem(network),
                   )}
