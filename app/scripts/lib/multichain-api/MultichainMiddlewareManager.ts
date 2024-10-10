@@ -50,7 +50,7 @@ export default class MultichainMiddlewareManager {
     }
   }
 
-  removeMiddleware(middlewareKey: MiddlewareKey) {
+  #removeMiddleware(middlewareKey: MiddlewareKey) {
     const existingMiddlewareEntry = this.#getMiddlewareEntry(middlewareKey);
     if (!existingMiddlewareEntry) {
       return;
@@ -64,7 +64,7 @@ export default class MultichainMiddlewareManager {
   removeMiddlewareByScope(scope: ExternalScopeString) {
     this.#middlewares.forEach((middlewareEntry) => {
       if (middlewareEntry.scope === scope) {
-        this.removeMiddleware(middlewareEntry);
+        this.#removeMiddleware(middlewareEntry);
       }
     });
   }
@@ -75,7 +75,7 @@ export default class MultichainMiddlewareManager {
         middlewareEntry.scope === scope &&
         middlewareEntry.origin === origin
       ) {
-        this.removeMiddleware(middlewareEntry);
+        this.#removeMiddleware(middlewareEntry);
       }
     });
   }
@@ -86,7 +86,7 @@ export default class MultichainMiddlewareManager {
         middlewareEntry.origin === origin &&
         middlewareEntry.tabId === tabId
       ) {
-        this.removeMiddleware(middlewareEntry);
+        this.#removeMiddleware(middlewareEntry);
       }
     });
   }

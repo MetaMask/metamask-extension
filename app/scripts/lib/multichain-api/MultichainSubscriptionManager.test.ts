@@ -83,19 +83,6 @@ describe('MultichainSubscriptionManager', () => {
     });
   });
 
-  it('should unsubscribe from a scope, origin, and tabId', () => {
-    const { multichainSubscriptionManager, onNotificationSpy } =
-      createMultichainSubscriptionManager();
-    multichainSubscriptionManager.subscribe({ scope, origin, tabId });
-    multichainSubscriptionManager.unsubscribe({ scope, origin, tabId });
-
-    mockSubscriptionManager.events.on.mock.calls[0][1](
-      newHeadsNotificationMock,
-    );
-
-    expect(onNotificationSpy).not.toHaveBeenCalled();
-  });
-
   it('should unsubscribe from a scope', () => {
     const { multichainSubscriptionManager, onNotificationSpy } =
       createMultichainSubscriptionManager();

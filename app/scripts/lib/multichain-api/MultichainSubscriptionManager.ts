@@ -116,7 +116,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     return subscriptionManager;
   }
 
-  unsubscribe(subscriptionKey: SubscriptionKey) {
+  #unsubscribe(subscriptionKey: SubscriptionKey) {
     const existingSubscriptionEntry =
       this.#getSubscriptionEntry(subscriptionKey);
     if (!existingSubscriptionEntry) {
@@ -131,7 +131,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
   unsubscribeByScope(scope: ScopeString) {
     this.#subscriptions.forEach((subscriptionEntry) => {
       if (subscriptionEntry.scope === scope) {
-        this.unsubscribe(subscriptionEntry);
+        this.#unsubscribe(subscriptionEntry);
       }
     });
   }
@@ -142,7 +142,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
         subscriptionEntry.scope === scope &&
         subscriptionEntry.origin === origin
       ) {
-        this.unsubscribe(subscriptionEntry);
+        this.#unsubscribe(subscriptionEntry);
       }
     });
   }
@@ -153,7 +153,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
         subscriptionEntry.origin === origin &&
         subscriptionEntry.tabId === tabId
       ) {
-        this.unsubscribe(subscriptionEntry);
+        this.#unsubscribe(subscriptionEntry);
       }
     });
   }
