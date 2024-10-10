@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
-import TextField from '../../../../components/ui/text-field';
+import { TextField } from '../../../../components/component-library';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
 import { isValidDomainName } from '../../../../helpers/utils/util';
 import DomainInput from '../../../confirmations/send/send-content/add-recipient/domain-input';
@@ -12,6 +12,7 @@ import {
 } from '../../../../../shared/modules/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send/send.constants';
 import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components';
+import { BlockSize } from '../../../../helpers/constants/design-system';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
@@ -123,7 +124,7 @@ export default class AddContact extends PureComponent {
               id="nickname"
               value={this.state.newName}
               onChange={(e) => this.setState({ newName: e.target.value })}
-              fullWidth
+              width={BlockSize.Full}
               margin="dense"
             />
           </div>

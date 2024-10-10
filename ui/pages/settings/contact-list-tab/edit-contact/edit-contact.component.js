@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import Button from '../../../../components/ui/button/button.component';
-import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
   isBurnAddress,
@@ -13,6 +12,7 @@ import {
   AvatarAccountSize,
   Box,
   Text,
+  TextField,
 } from '../../../../components/component-library';
 
 import {
@@ -119,7 +119,7 @@ export default class EditContact extends PureComponent {
               placeholder={this.context.t('addAlias')}
               value={this.state.newName}
               onChange={(e) => this.setState({ newName: e.target.value })}
-              fullWidth
+              width={BlockSize.Full}
               margin="dense"
             />
           </div>
@@ -134,7 +134,7 @@ export default class EditContact extends PureComponent {
               value={this.state.newAddress}
               error={this.state.error}
               onChange={(e) => this.setState({ newAddress: e.target.value })}
-              fullWidth
+              width={BlockSize.Full}
               multiline
               rows={4}
               margin="dense"
@@ -156,7 +156,7 @@ export default class EditContact extends PureComponent {
               placeholder={memo}
               value={this.state.newMemo}
               onChange={(e) => this.setState({ newMemo: e.target.value })}
-              fullWidth
+              width={BlockSize.Full}
               margin="dense"
               multiline
               rows={3}

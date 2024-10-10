@@ -2,15 +2,15 @@ import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
   Icon,
   IconName,
   IconSize,
+  TextField,
 } from '../../../components/component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
+import { BlockSize, IconColor } from '../../../helpers/constants/design-system';
 
 export default function SettingsSearch({
   onSearch,
@@ -57,7 +57,7 @@ export default function SettingsSearch({
     onSearch({ searchQuery: sanitizedSearchQuery, results });
   };
 
-  const renderStartAdornment = () => {
+  const renderStartAccessory = () => {
     return (
       <InputAdornment position="start" style={{ marginRight: '12px' }}>
         <Icon
@@ -69,7 +69,7 @@ export default function SettingsSearch({
     );
   };
 
-  const renderEndAdornment = () => {
+  const renderEndAccessory = () => {
     return (
       <>
         {searchQuery && (
@@ -98,11 +98,11 @@ export default function SettingsSearch({
       value={searchQuery}
       onChange={(e) => handleSearch(e.target.value)}
       error={error}
-      fullWidth
+      width={BlockSize.Full}
       autoFocus
       autoComplete="off"
-      startAdornment={renderStartAdornment()}
-      endAdornment={renderEndAdornment()}
+      startAccessory={renderStartAccessory()}
+      endAccessory={renderEndAccessory()}
       theme="bordered"
     />
   );

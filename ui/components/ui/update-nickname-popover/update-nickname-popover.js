@@ -1,15 +1,13 @@
+import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-
-import Popover from '../popover';
-import Button from '../button';
-import TextField from '../text-field';
-
 import { I18nContext } from '../../../contexts/i18n';
-
-import Identicon from '../identicon';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import { getTokenList } from '../../../selectors';
+import { TextField } from '../../component-library';
+import Button from '../button';
+import Identicon from '../identicon';
+import Popover from '../popover';
 
 export default function UpdateNicknamePopover({
   address,
@@ -92,7 +90,7 @@ export default function UpdateNicknamePopover({
           value={nicknameInput}
           onChange={handleNicknameChange}
           placeholder={t('addANickname')}
-          fullWidth
+          width={BlockSize.Full}
         />
         <div className="update-nickname__content__label--capitalized">
           {t('memo')}
@@ -103,7 +101,7 @@ export default function UpdateNicknamePopover({
           value={memoInput}
           onChange={handleMemoChange}
           placeholder={t('addMemo')}
-          fullWidth
+          width={BlockSize.Full}
           margin="dense"
           multiline
           rows={3}

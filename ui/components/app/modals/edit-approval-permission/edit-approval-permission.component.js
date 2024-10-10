@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
 import Modal from '../../modal';
 import Identicon from '../../../ui/identicon';
-import TextField from '../../../ui/text-field';
 import {
   calcTokenAmount,
   toPrecisionWithoutTrailingZeros,
@@ -14,7 +13,9 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  TextField,
 } from '../../../component-library';
+import { BlockSize } from '../../../../helpers/constants/design-system';
 
 const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
 
@@ -180,7 +181,7 @@ export default class EditApprovalPermission extends PureComponent {
                       this.setState({ selectedOptionIsUnlimited: false });
                     }
                   }}
-                  fullWidth
+                  width={BlockSize.Full}
                   margin="dense"
                   value={this.state.customSpendLimit}
                   error={error}

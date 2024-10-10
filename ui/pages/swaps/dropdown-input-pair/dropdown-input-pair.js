@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import DropdownSearchList from '../dropdown-search-list';
-import TextField from '../../../components/ui/text-field';
+import { TextField } from '../../../components/component-library';
+import { BlockSize } from '../../../helpers/constants/design-system';
 
 const characterWidthMap = {
   1: 5.86,
@@ -101,7 +102,7 @@ export default function DropdownInputPair({
           type="text"
           placeholder="0"
           onChange={onTextFieldChange}
-          fullWidth
+          width={BlockSize.Full}
           margin="dense"
           value={inputValue}
           autoFocus={autoFocus}
