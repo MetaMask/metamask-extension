@@ -5,6 +5,9 @@ import { ManifestFlags } from '../../app/scripts/lib/manifestFlags';
 
 export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
+type ManifestType = { _flags?: ManifestFlags; manifest_version: string };
+let manifest: ManifestType;
+
 function parseIntOrUndefined(value: string | undefined): number | undefined {
   return value ? parseInt(value, 10) : undefined;
 }
@@ -113,11 +116,23 @@ export function setManifestFlags(flags: ManifestFlags = {}) {
     }
   }
 
-  const manifest = JSON.parse(
-    fs.readFileSync(`${folder}/manifest.json`).toString(),
-  );
+  readManifest();
 
   manifest._flags = flags;
 
   fs.writeFileSync(`${folder}/manifest.json`, JSON.stringify(manifest));
+}
+
+export function getManifestVersion(): string {
+  readManifest();
+
+  return manifest.manifest_version;
+}
+
+function readManifest() {
+  if (!manifest) {
+    manifest = JSON.parse(
+      fs.readFileSync(`${folder}/manifest.json`).toString(),
+    );
+  }
 }
