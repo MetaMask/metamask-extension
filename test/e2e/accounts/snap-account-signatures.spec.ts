@@ -4,11 +4,9 @@ import {
   withFixtures,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
 import {
   accountSnapFixtures,
+  installSnapSimpleKeyring,
   makeNewAccountAndSwitch,
   signData,
 } from './common';
@@ -25,17 +23,10 @@ describe('Snap Account Signatures', function (this: Suite) {
     it(title, async () => {
       await withFixtures(
         accountSnapFixtures(title),
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          driver: Driver;
-          ganacheServer?: Ganache;
-        }) => {
-          const isSyncFlow = flowType === 'sync';
+        async ({ driver }: { driver: Driver }) => {
+          const isAsyncFlow = flowType !== 'sync';
 
-          await loginWithBalanceValidation(driver, ganacheServer);
-          await installSnapSimpleKeyring(driver, isSyncFlow);
+          await installSnapSimpleKeyring(driver, isAsyncFlow);
 
           const newPublicKey = await makeNewAccountAndSwitch(driver);
 

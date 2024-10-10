@@ -186,7 +186,7 @@ class SnapSimpleKeyringPage {
       console.log(
         'Approve snap account transaction on Snap Simple Keyring page',
       );
-      await this.driver.clickElement(this.approveRequestSection);
+      await this.driver.clickElementUsingMouseMove(this.approveRequestSection);
       await this.driver.fill(
         this.approveRequestIdInput,
         JSON.parse(requestJSON)[0].id,

@@ -6,10 +6,8 @@ import {
   tempToggleSettingRedesignedConfirmations,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
-import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import {
+  installSnapSimpleKeyring,
   makeNewAccountAndSwitch,
   connectAccountToTestDapp,
   disconnectFromTestDapp,
@@ -25,17 +23,11 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         ganacheOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
+      async ({ driver }: { driver: Driver }) => {
         const flowType = 'approve';
+        const isAsyncFlow = true;
 
-        await loginWithBalanceValidation(driver, ganacheServer);
-        await installSnapSimpleKeyring(driver, false);
+        await installSnapSimpleKeyring(driver, isAsyncFlow);
 
         const newPublicKey = await makeNewAccountAndSwitch(driver);
 
