@@ -217,16 +217,19 @@ export default function ConfirmationPage({
   );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
-  const [currentPendingConfirmation, setCurrentPendingConfirmation] =
-    useState(0);
   const { id } = useParams();
-  const pendingRoutedConfirmation = pendingConfirmations.find(
+  const pendingRoutedConfirmation = pendingConfirmations.findIndex(
     (confirmation) => confirmation.id === id,
   );
-  // Confirmations that are directly routed to get priority and will be shown above the current queue.
-  const pendingConfirmation =
-    pendingRoutedConfirmation ??
-    pendingConfirmations[currentPendingConfirmation];
+
+  const isRoutedConfirmation = id && pendingRoutedConfirmation !== -1;
+
+  const [currentPendingConfirmation, setCurrentPendingConfirmation] = useState(
+    // Confirmations that are directly routed to get priority and will be initially shown above the current queue.
+    isRoutedConfirmation ? pendingRoutedConfirmation : 0,
+  );
+
+  const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
 
   const [matchedChain, setMatchedChain] = useState({});
   const [chainFetchComplete, setChainFetchComplete] = useState(false);
