@@ -3,64 +3,171 @@ import MultichainMiddlewareManager, {
   ExtendedJsonRpcMiddleware,
 } from './MultichainMiddlewareManager';
 
+const scope = 'eip155:1';
+const origin = 'example.com';
+const tabId = 123;
+
 describe('MultichainMiddlewareManager', () => {
-  it('should add middleware and get called for the scope', () => {
+  it('should add middleware and get called for the scope, origin, and tabId', () => {
     const multichainMiddlewareManager = new MultichainMiddlewareManager();
     const middlewareSpy = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
-    const domain = 'example.com';
-    multichainMiddlewareManager.addMiddleware(
-      'eip155:1',
-      domain,
-      middlewareSpy,
-    );
-    multichainMiddlewareManager.middleware(
-      { scope: 'eip155:1' } as unknown as JsonRpcRequest<unknown>,
-      { jsonrpc: '2.0', id: 0 },
-      () => {
-        //
-      },
-      () => {
-        //
-      },
-    );
-    expect(middlewareSpy).toHaveBeenCalled();
-  });
-  it('should remove middleware', () => {
-    const multichainMiddlewareManager = new MultichainMiddlewareManager();
-    const middlewareMock = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
-    const scope = 'eip155:1';
-    const domain = 'example.com';
-    multichainMiddlewareManager.addMiddleware(scope, domain, middlewareMock);
-    multichainMiddlewareManager.removeMiddleware(scope, domain);
+    multichainMiddlewareManager.addMiddleware({
+      scope,
+      origin,
+      tabId,
+      middleware: middlewareSpy,
+    });
+
+    const middleware =
+      multichainMiddlewareManager.generateMultichainMiddlewareForOriginAndTabId(
+        origin,
+        123,
+      );
+
+    const nextSpy = jest.fn();
     const endSpy = jest.fn();
-    multichainMiddlewareManager.middleware(
-      { scope: 'eip155:1' } as unknown as JsonRpcRequest<unknown>,
+
+    middleware(
+      { scope } as unknown as JsonRpcRequest<unknown>,
       { jsonrpc: '2.0', id: 0 },
-      () => {
-        //
-      },
+      nextSpy,
       endSpy,
     );
+    expect(middlewareSpy).toHaveBeenCalledWith(
+      { scope } as unknown as JsonRpcRequest<unknown>,
+      { jsonrpc: '2.0', id: 0 },
+      nextSpy,
+      endSpy,
+    );
+    expect(nextSpy).not.toHaveBeenCalled();
     expect(endSpy).not.toHaveBeenCalled();
   });
-  it('should remove all middleware', () => {
+
+  it('should remove middleware by origin and tabId when the multiplexing middleware is destroyed', () => {
     const multichainMiddlewareManager = new MultichainMiddlewareManager();
-    const middlewareMock = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
-    const scope = 'eip155:1';
-    const scope2 = 'eip155:2';
-    const domain = 'example.com';
-    multichainMiddlewareManager.addMiddleware(scope, domain, middlewareMock);
-    multichainMiddlewareManager.addMiddleware(scope2, domain, middlewareMock);
-    multichainMiddlewareManager.removeAllMiddleware();
+    const middlewareSpy = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
+    multichainMiddlewareManager.addMiddleware({
+      scope,
+      origin,
+      tabId,
+      middleware: middlewareSpy,
+    });
+
+    const middleware =
+      multichainMiddlewareManager.generateMultichainMiddlewareForOriginAndTabId(
+        origin,
+        123,
+      );
+
+    middleware.destroy?.();
+
+    const nextSpy = jest.fn();
     const endSpy = jest.fn();
-    multichainMiddlewareManager.middleware(
-      { scope: 'eip155:1' } as unknown as JsonRpcRequest<unknown>,
+
+    middleware(
+      { scope } as unknown as JsonRpcRequest<unknown>,
       { jsonrpc: '2.0', id: 0 },
-      () => {
-        //
-      },
+      nextSpy,
       endSpy,
     );
+    expect(middlewareSpy).not.toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalled();
+    expect(endSpy).not.toHaveBeenCalled();
+  });
+
+  it('should remove middleware by scope', () => {
+    const multichainMiddlewareManager = new MultichainMiddlewareManager();
+    const middlewareSpy = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
+    multichainMiddlewareManager.addMiddleware({
+      scope,
+      origin,
+      tabId,
+      middleware: middlewareSpy,
+    });
+
+    multichainMiddlewareManager.removeMiddlewareByScope(scope);
+
+    const middleware =
+      multichainMiddlewareManager.generateMultichainMiddlewareForOriginAndTabId(
+        origin,
+        123,
+      );
+
+    const nextSpy = jest.fn();
+    const endSpy = jest.fn();
+
+    middleware(
+      { scope } as unknown as JsonRpcRequest<unknown>,
+      { jsonrpc: '2.0', id: 0 },
+      nextSpy,
+      endSpy,
+    );
+    expect(middlewareSpy).not.toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalled();
+    expect(endSpy).not.toHaveBeenCalled();
+  });
+
+  it('should remove middleware by scope and origin', () => {
+    const multichainMiddlewareManager = new MultichainMiddlewareManager();
+    const middlewareSpy = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
+    multichainMiddlewareManager.addMiddleware({
+      scope,
+      origin,
+      tabId,
+      middleware: middlewareSpy,
+    });
+
+    multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(scope, origin);
+
+    const middleware =
+      multichainMiddlewareManager.generateMultichainMiddlewareForOriginAndTabId(
+        origin,
+        123,
+      );
+
+    const nextSpy = jest.fn();
+    const endSpy = jest.fn();
+
+    middleware(
+      { scope } as unknown as JsonRpcRequest<unknown>,
+      { jsonrpc: '2.0', id: 0 },
+      nextSpy,
+      endSpy,
+    );
+    expect(middlewareSpy).not.toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalled();
+    expect(endSpy).not.toHaveBeenCalled();
+  });
+
+  it('should remove middleware by origin and tabId', () => {
+    const multichainMiddlewareManager = new MultichainMiddlewareManager();
+    const middlewareSpy = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
+    multichainMiddlewareManager.addMiddleware({
+      scope,
+      origin,
+      tabId,
+      middleware: middlewareSpy,
+    });
+
+    multichainMiddlewareManager.removeMiddlewareByOriginAndTabId(origin, tabId);
+
+    const middleware =
+      multichainMiddlewareManager.generateMultichainMiddlewareForOriginAndTabId(
+        origin,
+        123,
+      );
+
+    const nextSpy = jest.fn();
+    const endSpy = jest.fn();
+
+    middleware(
+      { scope } as unknown as JsonRpcRequest<unknown>,
+      { jsonrpc: '2.0', id: 0 },
+      nextSpy,
+      endSpy,
+    );
+    expect(middlewareSpy).not.toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalled();
     expect(endSpy).not.toHaveBeenCalled();
   });
 });

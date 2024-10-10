@@ -1,8 +1,9 @@
 import EventEmitter from 'events';
 import { NetworkController } from '@metamask/network-controller';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import { CaipChainId, Hex, parseCaipChainId } from '@metamask/utils';
+import { Hex, parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
+import { ExternalScopeString, ScopeString } from './scope';
 
 export type SubscriptionManager = {
   events: EventEmitter;
@@ -18,6 +19,15 @@ type SubscriptionNotificationEvent = {
   };
 };
 
+type SubscriptionKey = {
+  scope: ExternalScopeString;
+  origin: string;
+  tabId?: number;
+};
+type SubscriptionEntry = SubscriptionKey & {
+  subscriptionManager: SubscriptionManager;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const createSubscriptionManager = require('@metamask/eth-json-rpc-filters/subscriptionManager');
 
@@ -27,129 +37,124 @@ type MultichainSubscriptionManagerOptions = {
 };
 
 export default class MultichainSubscriptionManager extends SafeEventEmitter {
-  private subscriptionsByChain: {
-    [scope: string]: {
-      [domain: string]: (message: SubscriptionNotificationEvent) => void;
-    };
-  };
+  #findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
 
-  private findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
+  #getNetworkClientById: NetworkController['getNetworkClientById'];
 
-  private getNetworkClientById: NetworkController['getNetworkClientById'];
-
-  public subscriptionManagerByChain: { [scope: string]: SubscriptionManager };
-
-  private subscriptionsCountByScope: { [scope: string]: number };
+  #subscriptions: SubscriptionEntry[] = [];
 
   constructor(options: MultichainSubscriptionManagerOptions) {
     super();
-    this.findNetworkClientIdByChainId = options.findNetworkClientIdByChainId;
-    this.getNetworkClientById = options.getNetworkClientById;
-    this.subscriptionManagerByChain = {};
-    this.subscriptionsByChain = {};
-    this.subscriptionsCountByScope = {};
+    this.#findNetworkClientIdByChainId = options.findNetworkClientIdByChainId;
+    this.#getNetworkClientById = options.getNetworkClientById;
   }
 
   onNotification(
-    scopeString: CaipChainId,
-    domain: string,
+    { scope, origin, tabId }: SubscriptionKey,
     { method, params }: SubscriptionNotificationEvent,
   ) {
-    this.emit('notification', domain, {
+    this.emit('notification', origin, tabId, {
       method: 'wallet_notify',
       params: {
-        scope: scopeString,
+        scope,
         notification: { method, params },
       },
     });
   }
 
-  subscribe(scopeString: CaipChainId, domain: string) {
-    let subscriptionManager;
-    if (this.subscriptionManagerByChain[scopeString]) {
-      subscriptionManager = this.subscriptionManagerByChain[scopeString];
-    } else {
-      const networkClientId = this.findNetworkClientIdByChainId(
-        toHex(parseCaipChainId(scopeString).reference),
+  #getSubscriptionEntry({
+    scope,
+    origin,
+    tabId,
+  }: SubscriptionKey): SubscriptionEntry | undefined {
+    return this.#subscriptions.find((subscriptionEntry) => {
+      return (
+        subscriptionEntry.scope === scope &&
+        subscriptionEntry.origin === origin &&
+        subscriptionEntry.tabId === tabId
       );
-      const networkClient = this.getNetworkClientById(networkClientId);
-      subscriptionManager = createSubscriptionManager({
-        blockTracker: networkClient.blockTracker,
-        provider: networkClient.provider,
-      });
-      this.subscriptionManagerByChain[scopeString] = subscriptionManager;
+    });
+  }
+
+  #removeSubscriptionEntry({ scope, origin, tabId }: SubscriptionKey) {
+    this.#subscriptions = this.#subscriptions.filter((subscriptionEntry) => {
+      return (
+        subscriptionEntry.scope !== scope ||
+        subscriptionEntry.origin !== origin ||
+        subscriptionEntry.tabId !== tabId
+      );
+    });
+  }
+
+  subscribe(subscriptionKey: SubscriptionKey) {
+    const subscriptionEntry = this.#getSubscriptionEntry(subscriptionKey);
+    if (subscriptionEntry) {
+      return subscriptionEntry.subscriptionManager;
     }
-    this.subscriptionsByChain[scopeString] =
-      this.subscriptionsByChain[scopeString] || {};
-    this.subscriptionsByChain[scopeString][domain] = (
-      message: SubscriptionNotificationEvent,
-    ) => {
-      this.onNotification(scopeString, domain, message);
-    };
+
+    const networkClientId = this.#findNetworkClientIdByChainId(
+      toHex(parseCaipChainId(subscriptionKey.scope).reference),
+    );
+    const networkClient = this.#getNetworkClientById(networkClientId);
+    const subscriptionManager = createSubscriptionManager({
+      blockTracker: networkClient.blockTracker,
+      provider: networkClient.provider,
+    });
+
     subscriptionManager.events.on(
       'notification',
-      this.subscriptionsByChain[scopeString][domain],
+      (message: SubscriptionNotificationEvent) => {
+        this.onNotification(subscriptionKey, message);
+      },
     );
-    this.subscriptionsCountByScope[scopeString] ??= 0;
-    this.subscriptionsCountByScope[scopeString] += 1;
+
+    this.#subscriptions.push({
+      ...subscriptionKey,
+      subscriptionManager,
+    });
+
     return subscriptionManager;
   }
 
-  unsubscribe(scopeString: CaipChainId, domain: string) {
-    const subscriptionManager: SubscriptionManager =
-      this.subscriptionManagerByChain[scopeString];
-    if (subscriptionManager && this.subscriptionsByChain[scopeString][domain]) {
-      subscriptionManager.events.off(
-        'notification',
-        this.subscriptionsByChain[scopeString][domain],
-      );
-      delete this.subscriptionsByChain[scopeString][domain];
+  #unsubscribe(subscriptionKey: SubscriptionKey) {
+    const existingSubscriptionEntry =
+      this.#getSubscriptionEntry(subscriptionKey);
+    if (!existingSubscriptionEntry) {
+      return;
     }
-    if (this.subscriptionsCountByScope[scopeString]) {
-      this.subscriptionsCountByScope[scopeString] -= 1;
-      if (this.subscriptionsCountByScope[scopeString] === 0) {
-        // might be destroyed already
-        if (subscriptionManager.destroy) {
-          subscriptionManager.destroy();
-        }
-        delete this.subscriptionsCountByScope[scopeString];
-        delete this.subscriptionManagerByChain[scopeString];
-        delete this.subscriptionsByChain[scopeString];
+
+    existingSubscriptionEntry.subscriptionManager.destroy?.();
+
+    this.#removeSubscriptionEntry(subscriptionKey);
+  }
+
+  unsubscribeByScope(scope: ScopeString) {
+    this.#subscriptions.forEach((subscriptionEntry) => {
+      if (subscriptionEntry.scope === scope) {
+        this.#unsubscribe(subscriptionEntry);
       }
-    }
+    });
   }
 
-  unsubscribeAll() {
-    Object.entries(this.subscriptionsByChain).forEach(
-      ([scopeString, domainObject]) => {
-        Object.entries(domainObject).forEach(([domain]) => {
-          this.unsubscribe(scopeString as CaipChainId, domain);
-        });
-      },
-    );
+  unsubscribeByScopeAndOrigin(scope: ScopeString, origin: string) {
+    this.#subscriptions.forEach((subscriptionEntry) => {
+      if (
+        subscriptionEntry.scope === scope &&
+        subscriptionEntry.origin === origin
+      ) {
+        this.#unsubscribe(subscriptionEntry);
+      }
+    });
   }
 
-  unsubscribeScope(scopeString: CaipChainId) {
-    Object.entries(this.subscriptionsByChain).forEach(
-      ([_scopeString, domainObject]) => {
-        if (scopeString === _scopeString) {
-          Object.entries(domainObject).forEach(([domain]) => {
-            this.unsubscribe(scopeString, domain);
-          });
-        }
-      },
-    );
-  }
-
-  unsubscribeDomain(domain: string) {
-    Object.entries(this.subscriptionsByChain).forEach(
-      ([scopeString, domainObject]) => {
-        Object.entries(domainObject).forEach(([_domain]) => {
-          if (domain === _domain) {
-            this.unsubscribe(scopeString as CaipChainId, domain);
-          }
-        });
-      },
-    );
+  unsubscribeByOriginAndTabId(origin: string, tabId?: number) {
+    this.#subscriptions.forEach((subscriptionEntry) => {
+      if (
+        subscriptionEntry.origin === origin &&
+        subscriptionEntry.tabId === tabId
+      ) {
+        this.#unsubscribe(subscriptionEntry);
+      }
+    });
   }
 }

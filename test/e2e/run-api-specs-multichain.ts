@@ -70,9 +70,7 @@ async function main() {
         'wallet_registerOnboarding',
         'wallet_scanQRCode',
       ];
-      const walletEip155Methods = [
-        'wallet_addEthereumChain',
-      ];
+      const walletEip155Methods = ['wallet_addEthereumChain'];
 
       const ignoreMethods = [
         'wallet_switchEthereumChain',

@@ -73,19 +73,6 @@ const createMockedHandler = () => {
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
   const addNetwork = jest.fn().mockResolvedValue();
   const removeNetwork = jest.fn();
-  const multichainMiddlewareManager = {
-    addMiddleware: jest.fn(),
-    removeMiddleware: jest.fn(),
-    removeAllMiddleware: jest.fn(),
-    removeAllMiddlewareForDomain: jest.fn(),
-  };
-  const multichainSubscriptionManager = {
-    subscribe: jest.fn(),
-    unsubscribe: jest.fn(),
-    unsubscribeAll: jest.fn(),
-    unsubscribeDomain: jest.fn(),
-    unsubscribeScope: jest.fn(),
-  };
   const sendMetrics = jest.fn();
   const metamaskState = {
     permissionHistory: {},
@@ -105,8 +92,6 @@ const createMockedHandler = () => {
       grantPermissions,
       addNetwork,
       removeNetwork,
-      multichainMiddlewareManager,
-      multichainSubscriptionManager,
       metamaskState,
       sendMetrics,
       listAccounts,
@@ -121,8 +106,6 @@ const createMockedHandler = () => {
     grantPermissions,
     addNetwork,
     removeNetwork,
-    multichainMiddlewareManager,
-    multichainSubscriptionManager,
     metamaskState,
     sendMetrics,
     listAccounts,
