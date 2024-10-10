@@ -1,5 +1,4 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
-import { ApprovalType } from '@metamask/controller-utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -166,17 +165,16 @@ export async function switchChain(
   end,
   origin,
   chainId,
-  requestData,
   networkClientId,
   approvalFlowId,
   {
     isAddFlow,
     setActiveNetwork,
     endApprovalFlow,
-    requestUserApproval,
     getCaveat,
     requestPermissionApprovalForOrigin,
     updateCaveat,
+    grantPermissions,
   },
 ) {
   try {
@@ -225,10 +223,38 @@ export async function switchChain(
         );
       }
     } else {
-      await requestUserApproval({
-        origin,
-        type: ApprovalType.SwitchEthereumChain,
-        requestData,
+      if (!isAddFlow) {
+        await requestPermissionApprovalForOrigin({
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: [chainId],
+              },
+            ],
+          },
+        });
+      }
+
+      let caveatValue = {
+        requiredScopes: {},
+        optionalScopes: {},
+        isMultichainOrigin: false,
+      };
+      caveatValue = addPermittedEthChainId(caveatValue, chainId);
+
+      grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: caveatValue,
+              },
+            ],
+          },
+        },
       });
     }
 

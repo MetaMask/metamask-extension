@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "Bu işlemle devam etmek için gaz limitini 21000 veya üzeri olacak şekilde artırmanız gerekecek."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Hesabınızda işlem ücretlerini ödemek için yeterli ETH yok."
-  },
   "alertMessageNetworkBusy": {
     "message": "Gaz fiyatları yüksektir ve tahmin daha az kesindir."
   },
@@ -1088,9 +1085,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask bu siteye bağlı ancak henüz bağlı hesap yok"
   },
-  "connectedWith": {
-    "message": "Şununla bağlanıldı:"
-  },
   "connecting": {
     "message": "Bağlanıyor"
   },
@@ -1506,14 +1500,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snap'ler"
-  },
-  "disconnectAllText": {
-    "message": "$1 ile $2 bağlantısını keserseniz onları tekrar kullanmak için tekrar bağlamanız gerekir.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Tüm $1 bağlantısını kes",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "$1 bağlantısını kes"
@@ -2834,10 +2820,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 sizden şunun için onay istiyor:",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "Bu sitenin aşağıdakileri yapmasına izin vermek istiyor musunuz?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "Bu ağdaki yerli token $1. Bu, gaz ücretleri için kullanılan tokendir. ",

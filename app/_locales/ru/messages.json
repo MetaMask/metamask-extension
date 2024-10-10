@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "Чтобы продолжить эту транзакцию, вам необходимо увеличить лимит газа до 21 000 или выше."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "На вашем счету недостаточно ETH для оплаты комиссий за транзакцию."
-  },
   "alertMessageNetworkBusy": {
     "message": "Цены газа высоки, а оценки менее точны."
   },
@@ -1088,9 +1085,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask подключен к этому сайту, но счета пока не подключены"
   },
-  "connectedWith": {
-    "message": "Подключен(-а) к"
-  },
   "connecting": {
     "message": "Подключение..."
   },
@@ -1506,14 +1500,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snaps"
-  },
-  "disconnectAllText": {
-    "message": "Если вы отключите свои $1 от $2, вам придется повторно подключиться, чтобы использовать их снова.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Отключить все $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "Отключить $1"
@@ -2834,10 +2820,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 запрашивает ваше одобрение на:",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "Вы хотите, чтобы этот сайт делал следующее?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "Нативный токен этой сети — $1. Этот токен используется для внесения платы за газ. ",

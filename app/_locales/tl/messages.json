@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 21000 o mas mataas."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Wala kang sapat na ETH sa iyong account para bayaran ang mga bayad sa transaksyon."
-  },
   "alertMessageNetworkBusy": {
     "message": "Ang mga presyo ng gas ay mataas at ang pagtantiya ay hindi gaanong tumpak."
   },
@@ -1088,9 +1085,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "Konektado ang MetaMask sa site na ito, ngunit wala pang mga account ang konektado"
   },
-  "connectedWith": {
-    "message": "Nakakonekta sa"
-  },
   "connecting": {
     "message": "Kumokonekta"
   },
@@ -1506,14 +1500,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Mga Snap"
-  },
-  "disconnectAllText": {
-    "message": "Kapag idiniskonekta mo ang iyong $1 mula sa $2, kailangan mong muling ikonekta para gamitin muli.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Idiskonekta ang lahat ng $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "Idiskonekta $1"
@@ -2834,10 +2820,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "Ang $1 ay humihiling ng iyong pag-apruba para:",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "Gusto mo bang gawin ng site na ito ang mga sumusunod?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "Ang native token sa network na ito ay $1. Ito ang token na ginagamit para sa mga gas fee. ",

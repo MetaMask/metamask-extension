@@ -92,13 +92,6 @@ describe('Deprecated networks', function () {
           text: 'Approve',
         });
 
-        const switchNetworkBtn = await driver.findElement({
-          tag: 'button',
-          text: 'Switch network',
-        });
-
-        await switchNetworkBtn.click();
-
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         const deprecationWarningText =
@@ -178,13 +171,6 @@ describe('Deprecated networks', function () {
           text: 'Approve',
         });
 
-        const switchNetworkBtn = await driver.findElement({
-          tag: 'button',
-          text: 'Switch network',
-        });
-
-        await switchNetworkBtn.click();
-
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         const deprecationWarningText =
@@ -263,13 +249,6 @@ describe('Deprecated networks', function () {
           tag: 'button',
           text: 'Approve',
         });
-
-        const switchNetworkBtn = await driver.findElement({
-          tag: 'button',
-          text: 'Switch network',
-        });
-
-        await switchNetworkBtn.click();
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);

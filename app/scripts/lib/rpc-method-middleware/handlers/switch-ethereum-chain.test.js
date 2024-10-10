@@ -13,10 +13,6 @@ jest.mock('./ethereum-chain-utils', () => ({
 
 const NON_INFURA_CHAIN_ID = '0x123456789';
 
-const mockRequestUserApproval = ({ requestData }) => {
-  return Promise.resolve(requestData.toNetworkConfiguration);
-};
-
 const createMockMainnetConfiguration = () => ({
   chainId: CHAIN_IDS.MAINNET,
   defaultRpcEndpointIndex: 0,
@@ -47,9 +43,9 @@ const createMockedHandler = () => {
     setActiveNetwork: jest.fn(),
     getCaveat: jest.fn(),
     getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
-    requestUserApproval: jest.fn().mockImplementation(mockRequestUserApproval),
     requestPermissionApprovalForOrigin: jest.fn(),
     updateCaveat: jest.fn(),
+    grantPermissions: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -127,19 +123,15 @@ describe('switchEthereumChainHandler', () => {
       end,
       'example.com',
       '0xdeadbeef',
-      {
-        fromNetworkConfiguration: createMockLineaMainnetConfiguration(),
-        toNetworkConfiguration: createMockMainnetConfiguration(),
-      },
       'mainnet',
       null,
       {
         setActiveNetwork: mocks.setActiveNetwork,
-        requestUserApproval: mocks.requestUserApproval,
         getCaveat: mocks.getCaveat,
         updateCaveat: mocks.updateCaveat,
         requestPermissionApprovalForOrigin:
           mocks.requestPermissionApprovalForOrigin,
+        grantPermissions: mocks.grantPermissions,
       },
     );
   });

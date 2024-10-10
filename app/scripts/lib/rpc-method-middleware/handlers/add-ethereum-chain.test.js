@@ -80,6 +80,7 @@ const createMockedHandler = () => {
       rpcEndpoints: [{ networkClientId: 123 }],
     }),
     updateCaveat: jest.fn(),
+    grantPermissions: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -128,13 +129,6 @@ describe('addEthereumChainHandler', () => {
       end,
       'example.com',
       NON_INFURA_CHAIN_ID,
-      {
-        fromNetworkConfiguration: undefined,
-        toNetworkConfiguration: {
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [{ networkClientId: 123 }],
-        },
-      },
       123,
       'approvalFlowId',
       {
@@ -143,9 +137,9 @@ describe('addEthereumChainHandler', () => {
         getCaveat: mocks.getCaveat,
         requestPermissionApprovalForOrigin:
           mocks.requestPermissionApprovalForOrigin,
-        requestUserApproval: mocks.requestUserApproval,
         setActiveNetwork: mocks.setActiveNetwork,
         updateCaveat: mocks.updateCaveat,
+        grantPermissions: mocks.grantPermissions,
       },
     );
   });
@@ -178,13 +172,6 @@ describe('addEthereumChainHandler', () => {
           end,
           'example.com',
           '0x1',
-          {
-            fromNetworkConfiguration: undefined,
-            toNetworkConfiguration: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [{ networkClientId: 123 }],
-            },
-          },
           123,
           'approvalFlowId',
           {
@@ -193,9 +180,9 @@ describe('addEthereumChainHandler', () => {
             getCaveat: mocks.getCaveat,
             requestPermissionApprovalForOrigin:
               mocks.requestPermissionApprovalForOrigin,
-            requestUserApproval: mocks.requestUserApproval,
             setActiveNetwork: mocks.setActiveNetwork,
             updateCaveat: mocks.updateCaveat,
+            grantPermissions: mocks.grantPermissions,
           },
         );
       });
@@ -232,10 +219,6 @@ describe('addEthereumChainHandler', () => {
         end,
         'example.com',
         '0xa',
-        {
-          fromNetworkConfiguration: createMockOptimismConfiguration(),
-          toNetworkConfiguration: createMockOptimismConfiguration(),
-        },
         createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
         undefined,
         {
@@ -244,9 +227,9 @@ describe('addEthereumChainHandler', () => {
           getCaveat: mocks.getCaveat,
           requestPermissionApprovalForOrigin:
             mocks.requestPermissionApprovalForOrigin,
-          requestUserApproval: mocks.requestUserApproval,
           setActiveNetwork: mocks.setActiveNetwork,
           updateCaveat: mocks.updateCaveat,
+          grantPermissions: mocks.grantPermissions,
         },
       );
     });
