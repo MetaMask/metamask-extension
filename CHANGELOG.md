@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.4.1]
+### Fixed
+- Fixed try to access an undefined object in swaps review quote component([27708](https://github.com/MetaMask/metamask-extension/pull/27708))
 
 ## [12.4.0]
 ### Added
