@@ -25,6 +25,8 @@
     "build:dev": "node development/build/index.js",
     "start:test": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
     "start:test:flask": "yarn start:test --build-type flask --apply-lavamoat=false",
+    "start:test:mv2:flask": "ENABLE_MV3=false yarn start:test:flask --apply-lavamoat=false --snow=false",
+    "start:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn start:test --apply-lavamoat=false --snow=false",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/benchmark.js",
     "mv3:stats:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/mv3-perf-stats/index.js",
     "user-actions-benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/user-actions-benchmark.js",
