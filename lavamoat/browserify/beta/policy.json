@@ -442,6 +442,10 @@
         "console.warn": true,
         "document": true,
         "navigation": true
+      },
+      "packages": {
+        "react": true
+      }
     },
     "@material-ui/core": {
       "globals": {
