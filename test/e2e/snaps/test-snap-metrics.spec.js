@@ -886,7 +886,7 @@ describe('Test Snap Metrics', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
 
-        await driver.delay(1000);
+        await driver.delay(2000);
         await driver.closeAlertPopup();
 
         // switch to metamask popup and update
