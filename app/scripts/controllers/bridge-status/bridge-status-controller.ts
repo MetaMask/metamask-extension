@@ -42,8 +42,8 @@ export default class BridgeStatusController extends BaseController<
 
     // Register action handlers
     this.messagingSystem.registerActionHandler(
-      `${BRIDGE_STATUS_CONTROLLER_NAME}:getBridgeStatus`,
-      this.getBridgeStatus.bind(this),
+      `${BRIDGE_STATUS_CONTROLLER_NAME}:getBridgeTxStatus`,
+      this.getBridgeTxStatus.bind(this),
     );
 
     // Assign vars
@@ -58,7 +58,7 @@ export default class BridgeStatusController extends BaseController<
     });
   };
 
-  getBridgeStatus = async () => {
+  getBridgeTxStatus = async () => {
     const { bridgeStatusState } = this.state;
 
     const bridgeStatus = await dummyFetchBridgeStatus();
