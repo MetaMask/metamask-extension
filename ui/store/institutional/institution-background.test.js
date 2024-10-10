@@ -1,7 +1,6 @@
 import {
   hideLoadingIndication,
   showLoadingIndication,
-  forceUpdateMetamaskState,
 } from '../actions';
 import { submitRequestToBackground } from '../background-connection';
 import {
