@@ -241,7 +241,9 @@
   "SmartTransactionsController": {
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     }
   },

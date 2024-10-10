@@ -401,6 +401,7 @@ export default function SmartTransactionStatusPage() {
           </Box>
         )}
         <Text
+          data-testid="swap-smart-transaction-status-header"
           color={TextColor.textDefault}
           variant={TextVariant.headingSm}
           as="h4"
@@ -424,6 +425,7 @@ export default function SmartTransactionStatusPage() {
         )}
         {description && (
           <Text
+            data-testid="swap-smart-transaction-status-description"
             variant={TextVariant.bodySm}
             as="h6"
             marginTop={blockExplorerUrl && 1}

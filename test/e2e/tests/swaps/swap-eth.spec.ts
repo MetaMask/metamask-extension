@@ -1,35 +1,22 @@
-const { withFixtures, unlockWallet } = require('../../helpers');
-const { SWAP_TEST_ETH_DAI_TRADES_MOCK } = require('../../../data/mock-data');
-const {
+import { unlockWallet, withFixtures } from '../../helpers';
+import {
   withFixturesOptions,
   buildQuote,
   reviewQuote,
   waitForTransactionToComplete,
   checkActivityTransaction,
   changeExchangeRate,
-} = require('./shared');
-
-async function mockEthDaiTrade(mockServer) {
-  return [
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: SWAP_TEST_ETH_DAI_TRADES_MOCK,
-        };
-      }),
-  ];
-}
+  mockEthDaiTrade,
+} from './shared';
 
 describe('Swap Eth for another Token @no-mmi', function () {
   it('Completes second Swaps while first swap is processing', async function () {
-    withFixturesOptions.ganacheOptions.blockTime = 10;
+    withFixturesOptions.ganacheOptions.miner.blockTime = 10;
 
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -70,12 +57,13 @@ describe('Swap Eth for another Token @no-mmi', function () {
       },
     );
   });
+
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     await withFixtures(
       {
         ...withFixturesOptions,
         testSpecificMock: mockEthDaiTrade,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
