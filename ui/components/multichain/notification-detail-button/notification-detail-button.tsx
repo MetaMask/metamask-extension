@@ -69,7 +69,7 @@ export const NotificationDetailButton = ({
   return (
     <Button
       key={id}
-      href={!isMetaMaskUrl && href}
+      href={!isMetaMaskUrl && href ? href : undefined}
       variant={variant}
       externalLink={!isMetaMaskUrl}
       size={ButtonSize.Lg}
