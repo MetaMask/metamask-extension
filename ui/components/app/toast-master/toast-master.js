@@ -210,7 +210,7 @@ export function ToastMaster({ props, context }) {
           }
         />
       )}
-      {process.env.CHAIN_PERMISSIONS && isPermittedNetworkToastOpen && (
+      {isPermittedNetworkToastOpen && (
         <Toast
           key="switched-permitted-network-toast"
           startAdornment={
