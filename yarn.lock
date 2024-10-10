@@ -4294,32 +4294,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-core@npm:0.0.10":
-  version: 0.0.10
-  resolution: "@lavamoat/lavadome-core@npm:0.0.10"
-  checksum: 10/79011976d5643112b3930210d56f933a575102ff200338c1436c102f5f0f3f6efea9cd44ef673f5859e0832980b83ad7a2162d95db299f5877e8a408cf16bd6c
-  languageName: node
-  linkType: hard
-
-"@lavamoat/lavadome-core@npm:^0.0.17":
-  version: 0.0.17
-  resolution: "@lavamoat/lavadome-core@npm:0.0.17"
+"@lavamoat/lavadome-core@npm:0.0.19, @lavamoat/lavadome-core@npm:^0.0.19":
+  version: 0.0.19
+  resolution: "@lavamoat/lavadome-core@npm:0.0.19"
   dependencies:
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
-  checksum: 10/9628bc4662a495c4213d82b4651642670558e29e6d614cd92bcc4eba9356834030216309adabad0ad7870bb770206bde05d584e605297486ab9bab53e83e7ecb
+  checksum: 10/993da60609b149e794f55766cae768d9678e3e9f331bd364d907c5022d07261b0e0a26090c993e18e87973b161bcaa0741618a9a0f703c6d93cba9d201d7d30b
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-react@npm:0.0.17":
-  version: 0.0.17
-  resolution: "@lavamoat/lavadome-react@npm:0.0.17"
+"@lavamoat/lavadome-react@npm:0.0.19":
+  version: 0.0.19
+  resolution: "@lavamoat/lavadome-react@npm:0.0.19"
   dependencies:
-    "@lavamoat/lavadome-core": "npm:^0.0.17"
+    "@lavamoat/lavadome-core": "npm:^0.0.19"
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
   peerDependencies:
-    react: ^16.12.0
-    react-dom: ^16.12.0
-  checksum: 10/62c1047115f7b566af87abb1c21364236af9d79ad655f280ac5424c3e839efd9f120cbf042123a88e59c7b98660ad6ea0e9a54e9143f853b372419e5efa92835
+    react: ^16.12.0 || ^17.0.2 || ^18.2.0
+    react-dom: ^16.12.0 || ^17.0.2 || ^18.2.0
+  checksum: 10/7a51451dd7c31f95d599f51095c53e5c7f8dba6197395693eaeb9373e8124b9ef7bf6404ed8ec3e0360d6bea051c5f8f0a6eda9e9a03584ab3fe964f3fd5c0ac
   languageName: node
   linkType: hard
 
@@ -26103,8 +26096,8 @@ __metadata:
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
-    "@lavamoat/lavadome-core": "npm:0.0.10"
-    "@lavamoat/lavadome-react": "npm:0.0.17"
+    "@lavamoat/lavadome-core": "npm:0.0.19"
+    "@lavamoat/lavadome-react": "npm:0.0.19"
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.2"
     "@lgbot/madge": "npm:^6.2.0"

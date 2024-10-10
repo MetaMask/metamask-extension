@@ -283,7 +283,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@keystonehq/bc-ur-registry-eth": "^0.19.1",
     "@keystonehq/metamask-airgapped-keyring": "^0.13.1",
-    "@lavamoat/lavadome-react": "0.0.17",
+    "@lavamoat/lavadome-react": "0.0.19",
     "@lavamoat/snow": "^2.0.2",
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "^0.2.31",
@@ -462,7 +462,7 @@
     "@babel/preset-typescript": "^7.23.2",
     "@babel/register": "^7.22.15",
     "@lavamoat/allow-scripts": "^3.0.4",
-    "@lavamoat/lavadome-core": "0.0.10",
+    "@lavamoat/lavadome-core": "0.0.19",
     "@lavamoat/lavapack": "^6.1.0",
     "@lgbot/madge": "^6.2.0",
     "@lydell/node-pty": "^1.0.1",
@@ -767,5 +767,5 @@
       "level>classic-level": false
     }
   },
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.5.0"
 }
