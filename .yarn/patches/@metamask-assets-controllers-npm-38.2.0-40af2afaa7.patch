@@ -1,5 +1,5 @@
 diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
-index e90a1b6767bc8ac54b7a4d580035cf5db6861dca..2662df7869e9079f9379c4dd1ded40b5af4e71f2 100644
+index e90a1b6767bc8ac54b7a4d580035cf5db6861dca..a5e0f03d2541b4e3540431ef2e6e4b60fb7ae9fe 100644
 --- a/dist/assetsUtil.cjs
 +++ b/dist/assetsUtil.cjs
 @@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -15,21 +15,20 @@ index e90a1b6767bc8ac54b7a4d580035cf5db6861dca..2662df7869e9079f9379c4dd1ded40b5
      const cid = index !== -1 ? url.substring(0, index) : url;
      const path = index !== -1 ? url.substring(index) : undefined;
 -    const { CID } = await import("multiformats");
-+    const { CID } = await Promise.resolve().then(() => _interopRequireWildcard(require("multiformats")));
++    const { CID } = _interopRequireWildcard(require("multiformats"));
      // We want to ensure that the CID is v1 (https://docs.ipfs.io/concepts/content-addressing/#identifier-formats)
      // because most cid v0s appear to be incompatible with IPFS subdomains
      return {
 diff --git a/dist/token-prices-service/codefi-v2.mjs b/dist/token-prices-service/codefi-v2.mjs
-index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..416dab35e83334f0cafe23c9bd34d0a0380145b2 100644
+index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..b89849c0caf7e5db3b53cf03dd5746b6b1433543 100644
 --- a/dist/token-prices-service/codefi-v2.mjs
 +++ b/dist/token-prices-service/codefi-v2.mjs
-@@ -12,8 +12,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+@@ -12,8 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
  var _CodefiTokenPricesServiceV2_tokenPricePolicy;
  import { handleFetch } from "@metamask/controller-utils";
  import { hexToNumber } from "@metamask/utils";
 -import $cockatiel from "cockatiel";
 -const { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } = $cockatiel;
-+
 +import { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } from "cockatiel";
  /**
   * The list of currencies that can be supplied as the `vsCurrency` parameter to
