@@ -91,9 +91,7 @@ const SnapAuthorshipHeader = ({
           display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          style={{
-            maxWidth: '236px',
-          }}
+          style={{ overflow: 'hidden' }}
         >
           <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} />
           <Text
