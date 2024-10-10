@@ -2117,7 +2117,8 @@
         "chokidar>normalize-path": true,
         "chokidar>readdirp": true,
         "del>is-glob": true,
-        "eslint>glob-parent": true
+        "eslint>glob-parent": true,
+        "tsx>fsevents": true
       }
     },
     "chokidar>anymatch": {
@@ -3681,7 +3682,7 @@
         "gulp-livereload>tiny-lr>body": true,
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
-        "react>object-assign": true
+        "react-dom>object-assign": true
       }
     },
     "gulp-livereload>tiny-lr>body": {
@@ -4071,7 +4072,7 @@
       "packages": {
         "gulp-sourcemaps>debug-fabulous>debug": true,
         "gulp-sourcemaps>debug-fabulous>memoizee": true,
-        "react>object-assign": true
+        "react-dom>object-assign": true
       }
     },
     "gulp-sourcemaps>debug-fabulous>debug": {
@@ -4235,7 +4236,7 @@
         "gulp-watch>slash": true,
         "gulp-watch>vinyl-file": true,
         "gulp-zip>plugin-error": true,
-        "react>object-assign": true,
+        "react-dom>object-assign": true,
         "vinyl": true
       }
     },
@@ -7506,7 +7507,7 @@
       },
       "packages": {
         "prop-types>react-is": true,
-        "react>object-assign": true
+        "react-dom>object-assign": true
       }
     },
     "prop-types>react-is": {
@@ -8887,6 +8888,13 @@
         "tslib": true,
         "typescript": true
       }
+    },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
     },
     "typescript": {
       "builtin": {
