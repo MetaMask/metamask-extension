@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -46,11 +45,10 @@ async function decryptMessage(driver) {
 
 async function verifyDecryptedMessageMM(driver, message) {
   await driver.clickElement({ text: 'Decrypt message', tag: 'div' });
-  const notificationMessage = await driver.isElementPresent({
+  await driver.waitForSelector({
     text: message,
     tag: 'div',
   });
-  assert.equal(notificationMessage, true);
   await driver.clickElement({ text: 'Decrypt', tag: 'button' });
 }
 
@@ -91,10 +89,10 @@ describe('Encrypt Decrypt', function () {
         await decryptMessage(driver);
 
         // Account balance is converted properly
-        const decryptAccountBalanceLabel = await driver.findElement(
-          '.request-decrypt-message__balance-value',
-        );
-        assert.equal(await decryptAccountBalanceLabel.getText(), '25 ETH');
+        await driver.waitForSelector({
+          css: '.request-decrypt-message__balance-value',
+          text: '25 ETH',
+        });
         // Verify message in MetaMask Notification
         await verifyDecryptedMessageMM(driver, message);
 
@@ -187,10 +185,10 @@ describe('Encrypt Decrypt', function () {
           text: 'Request encryption public key',
         });
         // Account balance is converted properly
-        const accountBalanceLabel = await driver.findElement(
-          '.request-encryption-public-key__balance-value',
-        );
-        assert.equal(await accountBalanceLabel.getText(), '25 ETH');
+        await driver.waitForSelector({
+          css: '.request-encryption-public-key__balance-value',
+          text: '25 ETH',
+        });
       },
     );
   });
@@ -230,10 +228,10 @@ describe('Encrypt Decrypt', function () {
         });
 
         // Account balance is converted properly
-        const accountBalanceLabel = await driver.findElement(
-          '.request-encryption-public-key__balance-value',
-        );
-        assert.equal(await accountBalanceLabel.getText(), '25 ETH');
+        await driver.waitForSelector({
+          css: '.request-encryption-public-key__balance-value',
+          text: '25 ETH',
+        });
       },
     );
   });

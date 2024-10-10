@@ -106,6 +106,11 @@ export type Preferences = {
   showMultiRpcModal: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
+  tokenSortConfig: {
+    key: string;
+    order: string;
+    sortCallback: string;
+  };
   shouldShowAggregatedBalancePopover: boolean;
 };
 
@@ -237,6 +242,11 @@ export default class PreferencesController {
         showMultiRpcModal: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
+        tokenSortConfig: {
+          key: 'tokenFiatAmount',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
         shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       },
       // ENS decentralized website resolution
