@@ -615,7 +615,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
   const trackAllAvailableQuotesOpened = () => {
     trackEvent({
-      event: 'All Available Quotes Opened',
+      event: MetaMetricsEventName.AllAvailableQuotesOpened,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
@@ -655,7 +655,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   };
   const trackBestQuoteReviewedEvent = useCallback(() => {
     trackEvent({
-      event: 'Best Quote Reviewed',
+      event: MetaMetricsEventName.BestQuoteReviewed,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,

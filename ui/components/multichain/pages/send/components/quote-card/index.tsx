@@ -87,7 +87,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     if (bestQuote) {
       trackEvent(
         {
-          event: MetaMetricsEventName.sendSwapQuoteFetched,
+          event: MetaMetricsEventName.sendSwapQuoteReceived,
           category: MetaMetricsEventCategory.Send,
           properties: {
             is_first_fetch: isQuoteJustLoaded,
@@ -110,6 +110,16 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     }
 
     if (timeLeft <= 0) {
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteRequested,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
       dispatch(updateSendQuote(false, true));
     }
 

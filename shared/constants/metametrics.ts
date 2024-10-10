@@ -680,10 +680,13 @@ export enum MetaMetricsEventName {
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
+  ViewQuotePageLoaded = 'View Quote Page Loaded',
   QuotesRequested = 'Quotes Requested',
   QuotesReceived = 'Quotes Received',
   BestQuoteReviewed = 'Best Quote Reviewed',
+  QuoteDetailsOpened = 'Quote Details Opened',
   AllAvailableQuotesOpened = 'All Available Quotes Opened',
+  EditSpendLimitOpened = 'Edit Spend Limit Opened',
   SwapStarted = 'Swap Started',
   TransactionAdded = 'Transaction Added',
   TransactionSubmitted = 'Transaction Submitted',
@@ -738,7 +741,8 @@ export enum MetaMetricsEventName {
   sendFlowExited = 'Send Flow Exited',
   sendRecipientSelected = 'Send Recipient Selected',
   sendSwapQuoteError = 'Send Swap Quote Error',
-  sendSwapQuoteFetched = 'Send Swap Quote Fetched',
+  sendSwapQuoteRequested = 'Send Swap Quote Requested',
+  sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
 }
 

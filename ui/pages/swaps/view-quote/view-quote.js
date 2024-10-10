@@ -123,6 +123,7 @@ import {
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 let intervalId;
 
@@ -575,7 +576,7 @@ export default function ViewQuote() {
 
   const trackAllAvailableQuotesOpened = () => {
     trackEvent({
-      event: 'All Available Quotes Opened',
+      event: MetaMetricsEventName.AllAvailableQuotesOpened,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
@@ -589,7 +590,7 @@ export default function ViewQuote() {
   };
   const trackQuoteDetailsOpened = () => {
     trackEvent({
-      event: 'Quote Details Opened',
+      event: MetaMetricsEventName.QuoteDetailsOpened,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
@@ -603,7 +604,7 @@ export default function ViewQuote() {
   };
   const trackEditSpendLimitOpened = () => {
     trackEvent({
-      event: 'Edit Spend Limit Opened',
+      event: MetaMetricsEventName.EditSpendLimitOpened,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
@@ -615,7 +616,7 @@ export default function ViewQuote() {
   };
   const trackBestQuoteReviewedEvent = useCallback(() => {
     trackEvent({
-      event: 'Best Quote Reviewed',
+      event: MetaMetricsEventName.BestQuoteReviewed,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
@@ -625,7 +626,7 @@ export default function ViewQuote() {
   }, [trackEvent, eventObjectBase, feeInFiat]);
   const trackViewQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
-      event: 'View Quote Page Loaded',
+      event: MetaMetricsEventName.ViewQuotePageLoaded,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
