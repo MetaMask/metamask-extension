@@ -1,5 +1,5 @@
 /* eslint-disable import/unambiguous -- Not an external module and not of concern */
-import { getManifestVersion } from '../../test/e2e/set-manifest-flags';
+const { getManifestVersion } = require('../../test/e2e/set-manifest-flags');
 
 const runtimeManifest =
   global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();
@@ -7,9 +7,8 @@ const runtimeManifest =
 /**
  * A boolean indicating whether the manifest of the current extension is set to manifest version 3.
  *
- * We have found that when this is run early in a service worker process, the runtime manifest is
- * unavailable. That's why we have a fallback using the ENABLE_MV3 constant. The fallback is also
- * used in unit tests.
+ * If this function is running in the Extension, it will use the runtime manifest.
+ * If this function is running in Node, it will `fs.readFileSync` the manifest.json file.
  */
 const isManifestV3 = runtimeManifest
   ? runtimeManifest.manifest_version === 3
