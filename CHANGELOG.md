@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.4.1]
 ### Fixed
-- Fix crash on swaps review page ([27708](https://github.com/MetaMask/metamask-extension/pull/27708))
+- Fix crash on swaps review page ([#27708](https://github.com/MetaMask/metamask-extension/pull/27708))
+- Fix bug that could prevent the phishing detection feature from having the most up to date info on which web pages to block ([#27743](https://github.com/MetaMask/metamask-extension/pull/27743))
 
 ## [12.4.0]
 ### Added
