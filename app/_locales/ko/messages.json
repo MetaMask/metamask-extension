@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "이 트랜잭션을 계속 진행하려면, 가스 한도를 21000 이상으로 늘려야 합니다."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "계정에 트랜잭션 수수료를 지불할 수 있는 이더리움이 충분하지 않습니다."
-  },
   "alertMessageNetworkBusy": {
     "message": "가스비가 높고 견적의 정확도도 떨어집니다."
   },

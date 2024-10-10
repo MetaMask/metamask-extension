@@ -393,9 +393,6 @@
   "alertMessageGasTooLow": {
     "message": "Bu işlemle devam etmek için gaz limitini 21000 veya üzeri olacak şekilde artırmanız gerekecek."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Hesabınızda işlem ücretlerini ödemek için yeterli ETH yok."
-  },
   "alertMessageNetworkBusy": {
     "message": "Gaz fiyatları yüksektir ve tahmin daha az kesindir."
   },

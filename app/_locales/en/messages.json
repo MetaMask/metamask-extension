@@ -163,8 +163,7 @@
     "message": "Account options"
   },
   "accountPermissionToast": {
-    "message": "Account permissions updated for $1",
-    "description": "$1 represents connected dapp"
+    "message": "Account permissions updated"
   },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
@@ -443,8 +442,8 @@
   "alertMessageGasTooLow": {
     "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "You do not have enough ETH in your account to pay for transaction fees."
+  "alertMessageInsufficientBalance2": {
+    "message": "You do not have enough ETH in your account to pay for network fees."
   },
   "alertMessageNetworkBusy": {
     "message": "Gas prices are high and estimates are less accurate."
@@ -869,6 +868,9 @@
   },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
+  },
+  "bridgeSelectNetwork": {
+    "message": "Select network"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -3148,8 +3150,7 @@
     "message": "Network options"
   },
   "networkPermissionToast": {
-    "message": "Network permissions updated for $1",
-    "description": "$1 represents connected dapp"
+    "message": "Network permissions updated"
   },
   "networkProvider": {
     "message": "Network provider"
@@ -4097,7 +4098,7 @@
     "message": "You're giving the spender permission to spend this many tokens from your account."
   },
   "permittedChainToastUpdate": {
-    "message": "$1 has been given access to $2."
+    "message": "$1 has access to $2."
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
