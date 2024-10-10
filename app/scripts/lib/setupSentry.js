@@ -115,15 +115,26 @@ function getTracesSampleRate(sentryTarget) {
 
   const flags = getManifestFlags();
 
+  // Grab the tracesSampleRate that may have come in from a git message
+  // 0 is a valid value, so must explicitly check for undefined
+  if (flags.sentry?.tracesSampleRate !== undefined) {
+    return flags.sentry.tracesSampleRate;
+  }
+
   if (flags.circleci) {
-    return 0.003;
+    // Report very frequently on develop branch, and never on other branches
+    // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
+    if (flags.circleci.branch === 'develop') {
+      return 0.03;
+    }
+    return 0;
   }
 
   if (METAMASK_DEBUG) {
     return 1.0;
   }
 
-  return 0.01;
+  return 0.02;
 }
 
 /**
@@ -227,7 +238,7 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
-    getManifestFlags().doNotForceSentryForThisTest ||
+    !getManifestFlags().sentry?.forceEnable ||
     (process.env.IN_TEST && !SENTRY_DSN_DEV)
   ) {
     return SENTRY_DSN_FAKE;
@@ -261,7 +272,7 @@ async function getMetaMetricsEnabled() {
 
   if (
     METAMASK_BUILD_TYPE === 'mmi' ||
-    (flags.circleci && !flags.doNotForceSentryForThisTest)
+    (flags.circleci && flags.sentry.forceEnable)
   ) {
     return true;
   }
@@ -291,7 +302,7 @@ async function getMetaMetricsEnabled() {
 
 function setSentryClient() {
   const clientOptions = getClientOptions();
-  const { dsn, environment, release } = clientOptions;
+  const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
@@ -311,6 +322,7 @@ function setSentryClient() {
     environment,
     dsn,
     release,
+    tracesSampleRate,
   });
 
   Sentry.registerSpanErrorInstrumentation();

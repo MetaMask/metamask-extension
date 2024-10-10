@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Обновить параметры газа"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Если вы одобрите этот запрос, третья сторона, которая, как известно, совершала мошеннические действия, может похитить все ваши активы."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Множественные оповещения!"
-  },
   "alertDisableTooltip": {
     "message": "Это можно изменить в разделе «Настройки» > «Оповещения»"
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Я подтвердил(-а) получение предупреждения и все еще хочу продолжить"
   },
-  "confirmAlertModalDetails": {
-    "message": "Если вы войдете, третья сторона, которая, как известно, совершала мошеннические действия, может похитиь твсе ваши активы. Прежде чем продолжить, просмотрите оповещения."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Ваши активы могут быть в опасности"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Мы перенаправим вас на $1 после нажатия кнопки «Продолжить»."
   },
@@ -1099,9 +1087,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask подключен к этому сайту, но счета пока не подключены"
-  },
-  "connectedWith": {
-    "message": "Подключен(-а) к"
   },
   "connecting": {
     "message": "Подключение..."
@@ -1519,14 +1504,6 @@
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
-  "disconnectAllText": {
-    "message": "Если вы отключите свои $1 от $2, вам придется повторно подключиться, чтобы использовать их снова.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Отключить все $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "Отключить $1"
   },
@@ -1878,10 +1855,6 @@
   },
   "feeDetails": {
     "message": "Сведения о комиссии"
-  },
-  "fiat": {
-    "message": "Фиатная",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
@@ -2851,10 +2824,6 @@
     "message": "$1 запрашивает ваше одобрение на:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Вы хотите, чтобы этот сайт делал следующее?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "Нативный токен этой сети — $1. Этот токен используется для внесения платы за газ. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3066,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
-  },
-  "noConversionDateAvailable": {
-    "message": "Дата обмена валюты недоступна"
   },
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
@@ -3920,12 +3886,6 @@
   },
   "priceUnavailable": {
     "message": "цена недоступна"
-  },
-  "primaryCurrencySetting": {
-    "message": "Основная валюта"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Выберите «собственная», чтобы установить приоритет отображения значений в собственной валюте блокчейна (например, ETH). Выберите «Фиатная», чтобы установить приоритет отображения значений в выбранной фиатной валюте."
   },
   "primaryType": {
     "message": "Основной тип"
@@ -4753,13 +4713,6 @@
   "smartTransactionSuccess": {
     "message": "Ваша транзакция завершена"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Извините за ожидание"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Если ваша транзакция не будет завершена в течение $1, она будет отменена и с вас не будет взиматься плата за газ.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Умные транзакции"
   },
@@ -5175,10 +5128,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Попробуйте выполнить своп еще раз. Мы готовы защитить вас от подобных рисков в следующий раз."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Предполагаемое завершение через < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Своп не удался"
@@ -6090,9 +6039,6 @@
   },
   "updateRequest": {
     "message": "Запрос обновления"
-  },
-  "updatedWithDate": {
-    "message": "Обновлено $1"
   },
   "uploadDropFile": {
     "message": "Переместите свой файл сюда"

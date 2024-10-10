@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "가스 옵션 업데이트"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "이 요청을 승인하면 스캠을 목적으로 하는 제3자가 회원님의 자산을 모두 가져갈 수 있습니다."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "여러 경고!"
-  },
   "alertDisableTooltip": {
     "message": "\"설정 > 경고\"에서 변경할 수 있습니다"
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "경고를 인지했으며, 계속 진행합니다"
   },
-  "confirmAlertModalDetails": {
-    "message": "로그인하면 스캠을 목적으로 하는 제3자가 회원님의 자산을 모두 가져갈 수 있습니다. 계속하기 전에 경고를 검토하세요."
-  },
-  "confirmAlertModalTitle": {
-    "message": "자산이 위험할 수 있습니다"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "계속을 클릭하면 $1(으)로 리디렉션됩니다."
   },
@@ -1099,9 +1087,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask는 이 사이트와 연결되어 있지만, 아직 연결된 계정이 없습니다"
-  },
-  "connectedWith": {
-    "message": "연결 대상:"
   },
   "connecting": {
     "message": "연결 중"
@@ -1519,14 +1504,6 @@
   "disconnectAllSnapsText": {
     "message": "Snap"
   },
-  "disconnectAllText": {
-    "message": "$2에서 $1의 연결을 끊은 경우, 다시 사용하려면 다시 연결해야 합니다.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "모든 $1 연결 해제",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "$1 연결 해제"
   },
@@ -1878,10 +1855,6 @@
   },
   "feeDetails": {
     "message": "수수료 세부 정보"
-  },
-  "fiat": {
-    "message": "명목",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
@@ -2851,10 +2824,6 @@
     "message": "$1에서 다음 승인을 요청합니다:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "이 사이트가 다음을 수행하기 원하십니까?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "이 네트워크의 네이티브 토큰은 $1입니다. 이는 가스비 지불에 사용하는 토큰입니다. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3066,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
-  },
-  "noConversionDateAvailable": {
-    "message": "사용 가능한 통화 변환 날짜 없음"
   },
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
@@ -3920,12 +3886,6 @@
   },
   "priceUnavailable": {
     "message": "가격 사용 불가"
-  },
-  "primaryCurrencySetting": {
-    "message": "기본 통화"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "체인의 고유 통화(예: ETH)로 값을 우선 표시하려면 고유를 선택합니다. 선택한 명목 통화로 값을 우선 표시하려면 명목을 선택합니다."
   },
   "primaryType": {
     "message": "기본 유형"
@@ -4753,13 +4713,6 @@
   "smartTransactionSuccess": {
     "message": "트랜잭션 완료"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "기다리게 해서 죄송합니다"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "$1 이내에 트랜잭션이 완료되지 않으면 트랜잭션이 취소되고 가스비가 부과되지 않습니다.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "스마트 트랜잭션"
   },
@@ -5175,10 +5128,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "스왑을 다시 진행하세요. 다음에도 유사한 위험이 발생한다면 보호해 드리겠습니다."
-  },
-  "stxEstimatedCompletion": {
-    "message": "예상 잔여 시간: <$1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "스왑 실패"
@@ -6090,9 +6039,6 @@
   },
   "updateRequest": {
     "message": "업데이트 요청"
-  },
-  "updatedWithDate": {
-    "message": "$1에 업데이트됨"
   },
   "uploadDropFile": {
     "message": "여기에 파일을 드롭"

@@ -109,8 +109,13 @@ class HomePage {
     );
   }
 
+  /**
+   * Checks if the expected balance is displayed on homepage.
+   *
+   * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
+   */
   async check_expectedBalanceIsDisplayed(
-    expectedBalance: string,
+    expectedBalance: string = '0',
   ): Promise<void> {
     try {
       await this.driver.waitForSelector({

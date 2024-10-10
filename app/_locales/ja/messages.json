@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "ガスオプションを更新"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "複数アラート！"
-  },
   "alertDisableTooltip": {
     "message": "これは「設定」>「アラート」で変更できます"
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "アラートを確認したうえで続行します"
   },
-  "confirmAlertModalDetails": {
-    "message": "サインインすると、詐欺が判明しているサードパーティにすべての資産を奪われる可能性があります。続ける前にアラートを確認してください。"
-  },
-  "confirmAlertModalTitle": {
-    "message": "資産が危険にさらされている可能性があります"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "「続行」をクリックすると、$1にリダイレクトされます。"
   },
@@ -1099,9 +1087,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMaskはこのサイトに接続されていますが、まだアカウントは接続されていません"
-  },
-  "connectedWith": {
-    "message": "接続先"
   },
   "connecting": {
     "message": "接続中..."
@@ -1519,14 +1504,6 @@
   "disconnectAllSnapsText": {
     "message": "Snap"
   },
-  "disconnectAllText": {
-    "message": "$1と$2の接続を解除した場合、再び使用するには再度接続する必要があります。",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "すべての$1の接続を解除",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "$1を接続解除"
   },
@@ -1878,10 +1855,6 @@
   },
   "feeDetails": {
     "message": "手数料の詳細"
-  },
-  "fiat": {
-    "message": "法定通貨",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
@@ -2851,10 +2824,6 @@
     "message": "$1が次の承認を求めています:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "このサイトに次のことを希望しますか？",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "このネットワークのネイティブトークンは$1です。ガス代にもこのトークンが使用されます。",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3066,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMaskはこのサイトに接続されていません"
-  },
-  "noConversionDateAvailable": {
-    "message": "通貨換算日がありません"
   },
   "noConversionRateAvailable": {
     "message": "利用可能な換算レートがありません"
@@ -3920,12 +3886,6 @@
   },
   "priceUnavailable": {
     "message": "価格が利用できません"
-  },
-  "primaryCurrencySetting": {
-    "message": "プライマリ通貨"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "チェーンのネイティブ通貨 (ETHなど) による値の表示を優先するには、「ネイティブ」を選択します。選択した法定通貨による値の表示を優先するには、「法定通貨」を選択します。"
   },
   "primaryType": {
     "message": "基本型"
@@ -4753,13 +4713,6 @@
   "smartTransactionSuccess": {
     "message": "トランザクションが完了しました"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "お待たせして申し訳ございません"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "$1以内にトランザクションが完了しない場合はキャンセルされ、ガス代は請求されません。",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "スマートトランザクション"
   },
@@ -5175,10 +5128,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "もう一度スワップをお試しください。次回は同様のリスクを避けられるようサポートします。"
-  },
-  "stxEstimatedCompletion": {
-    "message": "$1未満で完了予定",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "スワップに失敗しました"
@@ -6090,9 +6039,6 @@
   },
   "updateRequest": {
     "message": "更新リクエスト"
-  },
-  "updatedWithDate": {
-    "message": "$1が更新されました"
   },
   "uploadDropFile": {
     "message": "ここにファイルをドロップします"

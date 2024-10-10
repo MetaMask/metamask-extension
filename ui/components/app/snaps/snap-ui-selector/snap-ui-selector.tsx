@@ -102,7 +102,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue !== undefined && initialValue !== null) {
       setSelectedOption(initialValue);
     }
   }, [initialValue]);

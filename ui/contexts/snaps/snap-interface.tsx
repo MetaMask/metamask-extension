@@ -42,11 +42,15 @@ export type HandleFileChange = (
   form?: string,
 ) => void;
 
+export type SetCurrentInputFocus = (name: string | null) => void;
+
 export type SnapInterfaceContextType = {
   handleEvent: HandleEvent;
   getValue: GetValue;
   handleInputChange: HandleInputChange;
   handleFileChange: HandleFileChange;
+  setCurrentFocusedInput: SetCurrentInputFocus;
+  focusedInput: string | null;
   snapId: string;
 };
 
@@ -80,6 +84,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   // UI. It's kept in a ref to avoid useless re-rendering of the entire tree of
   // components.
   const internalState = useRef<InterfaceState>(initialState ?? {});
+  const focusedInput = useRef<string | null>(null);
 
   // Since the internal state is kept in a reference, it won't update when the
   // interface is updated. We have to manually update it.
@@ -230,12 +235,15 @@ export const SnapInterfaceContextProvider: FunctionComponent<
       ? (initialState[form] as FormState)?.[name]
       : (initialState as FormState)?.[name];
 
-    if (value) {
+    if (value !== undefined && value !== null) {
       return value;
     }
 
     return undefined;
   };
+
+  const setCurrentFocusedInput: SetCurrentInputFocus = (name) =>
+    (focusedInput.current = name);
 
   return (
     <SnapInterfaceContext.Provider
@@ -244,6 +252,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         getValue,
         handleInputChange,
         handleFileChange,
+        setCurrentFocusedInput,
+        focusedInput: focusedInput.current,
         snapId,
       }}
     >

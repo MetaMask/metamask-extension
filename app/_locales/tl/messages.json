@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "I-update ang mga opsyon sa gas"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Kung aaprubahan mo ang kahilingang ito, maaaring kunin ng third party na kilala sa mga panloloko ang lahat asset mo."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Iba't ibang alerto!"
-  },
   "alertDisableTooltip": {
     "message": "Puwede itong baguhin sa \"Mga Setting > Mga Alerto\""
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Kinikilala ko ang mga alerto at nais ko pa rin magpatuloy"
   },
-  "confirmAlertModalDetails": {
-    "message": "Kung mag-sign in ka, maaaring kunin ng third party na kilala sa mga panloloko ang lahat ng iyong mga asset. Mangyaring suriin ang mga alerto bago ka magpatuloy."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Maaaring nasa panganib ang iyong mga asset"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Ire-redirect ka namin sa $1 sa pagpindot ng magpatuloy."
   },
@@ -1099,9 +1087,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "Konektado ang MetaMask sa site na ito, ngunit wala pang mga account ang konektado"
-  },
-  "connectedWith": {
-    "message": "Nakakonekta sa"
   },
   "connecting": {
     "message": "Kumokonekta"
@@ -1519,14 +1504,6 @@
   "disconnectAllSnapsText": {
     "message": "Mga Snap"
   },
-  "disconnectAllText": {
-    "message": "Kapag idiniskonekta mo ang iyong $1 mula sa $2, kailangan mong muling ikonekta para gamitin muli.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Idiskonekta ang lahat ng $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "Idiskonekta $1"
   },
@@ -1878,10 +1855,6 @@
   },
   "feeDetails": {
     "message": "Mga detalye ng singil"
-  },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
@@ -2851,10 +2824,6 @@
     "message": "Ang $1 ay humihiling ng iyong pag-apruba para:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Gusto mo bang gawin ng site na ito ang mga sumusunod?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "Ang native token sa network na ito ay $1. Ito ang token na ginagamit para sa mga gas fee. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3066,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
-  },
-  "noConversionDateAvailable": {
-    "message": "Walang available na petsa sa pagpapapalit ng currency"
   },
   "noConversionRateAvailable": {
     "message": "Hindi available ang rate ng palitan"
@@ -3920,12 +3886,6 @@
   },
   "priceUnavailable": {
     "message": "hindi available ang presyo"
-  },
-  "primaryCurrencySetting": {
-    "message": "Pangunahing Currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Piliin ang native para maisapriyoridad ang pagpapakita ng mga value sa native na currency ng chain (hal. ETH). Piliin ang Fiat para maisapriyoridad ang pagpapakita ng mga value sa napili mong fiat na salapi."
   },
   "primaryType": {
     "message": "Pangunahing uri"
@@ -4753,13 +4713,6 @@
   "smartTransactionSuccess": {
     "message": "Nakumpleto ang transaksyon mo"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Paumanhin sa paghihintay"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Kung ang transaksyon mo ay hindi natapos sa loob ng $1, ito ay kakanselahin at hindi ka sisingilin para sa gas.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Mga Smart Transaction"
   },
@@ -5175,10 +5128,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Subukan muli ang pag-swap. Narito kami para protektahan ka sa mga katulad na panganib sa susunod."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Tinatayang pagkumpleto sa loob ng < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Nabigo ang pag-swap"
@@ -6090,9 +6039,6 @@
   },
   "updateRequest": {
     "message": "Hiling sa pag-update"
-  },
-  "updatedWithDate": {
-    "message": "Na-update noong $1"
   },
   "uploadDropFile": {
     "message": "I-drop ang file mo rito"

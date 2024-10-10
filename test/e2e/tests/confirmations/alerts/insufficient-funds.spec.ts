@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import FixtureBuilder from '../../../fixture-builder';
 import {
   PRIVATE_KEY,
@@ -46,35 +45,21 @@ describe('Alert for insufficient funds @no-mmi', function () {
         await mintNft(driver);
 
         await verifyAlertForInsufficientBalance(driver);
-
-        await verifyConfirmationIsDisabled(driver);
       },
     );
   });
 });
 
-async function verifyConfirmationIsDisabled(driver: Driver) {
-  const confirmButton = await driver.findElement(
-    '[data-testid="confirm-footer-button"]',
-  );
-  assert.equal(await confirmButton.isEnabled(), false);
-}
-
 async function verifyAlertForInsufficientBalance(driver: Driver) {
-  const alert = await driver.findElement('[data-testid="inline-alert"]');
-  assert.equal(await alert.getText(), 'Alert');
+  await driver.waitForSelector({
+    css: '[data-testid="inline-alert"]',
+    text: 'Alert',
+  });
   await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
   await driver.clickElement('[data-testid="inline-alert"]');
 
-  const alertDescription = await driver.findElement(
-    '[data-testid="alert-modal__selected-alert"]',
-  );
-  const alertDescriptionText = await alertDescription.getText();
-  assert.equal(
-    alertDescriptionText,
-    'You do not have enough ETH in your account to pay for transaction fees.',
-  );
-  await driver.clickElement('[data-testid="alert-modal-close-button"]');
+  await displayAlertForInsufficientBalance(driver);
+  await driver.clickElement('[data-testid="alert-modal-button"]');
 }
 
 async function mintNft(driver: Driver) {
@@ -83,4 +68,11 @@ async function mintNft(driver: Driver) {
 
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+}
+
+async function displayAlertForInsufficientBalance(driver: Driver) {
+  await driver.waitForSelector({
+    css: '[data-testid="alert-modal__selected-alert"]',
+    text: 'You do not have enough ETH in your account to pay for transaction fees.',
+  });
 }

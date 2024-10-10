@@ -28,6 +28,10 @@ import {
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
+import { ENVIRONMENT } from '../../../development/build/constants';
+///: END:ONLY_INCLUDE_IF
+
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
 export const overrideAnonymousEventNames = {
@@ -484,8 +488,10 @@ export default class MetaMetricsController {
       this.setMarketingCampaignCookieId(null);
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+    if (this.environment !== ENVIRONMENT.DEVELOPMENT) {
+      this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+    }
     ///: END:ONLY_INCLUDE_IF
 
     return metaMetricsId;
@@ -846,8 +852,8 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
-      [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
-        metamaskState.useNativeCurrencyAsPrimaryCurrency,
+      [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
+        metamaskState.showNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
@@ -862,6 +868,8 @@ export default class MetaMetricsController {
         metamaskState.participateInMetaMetrics,
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
+      [MetaMetricsUserTrait.TokenSortPreference]:
+        metamaskState.tokenSortConfig?.key || '',
     };
 
     if (!previousUserTraits) {

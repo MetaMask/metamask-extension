@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Gaz seçeneklerini güncelle"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Bu talebi onaylarsanız dolandırıcılıkla bilinen üçüncü bir taraf tüm varlıklarınızı çalabilir."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Çoklu uyarı!"
-  },
   "alertDisableTooltip": {
     "message": "\"Ayarlar > Uyarılar\" kısmında değiştirilebilir"
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Uyarıyı kabul ediyor ve yine de ilerlemek istiyorum"
   },
-  "confirmAlertModalDetails": {
-    "message": "Oturum açarsanız dolandırıcıklarla bilinen üçüncü bir taraf tüm varlıklarınızı ele geçirebilir. İlerlemeden önce lütfen uyarıları inceleyin."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Varlıklarınız risk altında olabilir"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Devam et düğmesine tıkladığınızda sizi şuraya yönlendireceğiz: $1."
   },
@@ -1099,9 +1087,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask bu siteye bağlı ancak henüz bağlı hesap yok"
-  },
-  "connectedWith": {
-    "message": "Şununla bağlanıldı:"
   },
   "connecting": {
     "message": "Bağlanıyor"
@@ -1519,14 +1504,6 @@
   "disconnectAllSnapsText": {
     "message": "Snap'ler"
   },
-  "disconnectAllText": {
-    "message": "$1 ile $2 bağlantısını keserseniz onları tekrar kullanmak için tekrar bağlamanız gerekir.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Tüm $1 bağlantısını kes",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "$1 bağlantısını kes"
   },
@@ -1878,10 +1855,6 @@
   },
   "feeDetails": {
     "message": "Ücret bilgileri"
-  },
-  "fiat": {
-    "message": "Fiat Para",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
@@ -2851,10 +2824,6 @@
     "message": "$1 sizden şunun için onay istiyor:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Bu sitenin aşağıdakileri yapmasına izin vermek istiyor musunuz?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "Bu ağdaki yerli token $1. Bu, gaz ücretleri için kullanılan tokendir. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3066,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
-  },
-  "noConversionDateAvailable": {
-    "message": "Para birimi dönüşüm tarihi mevcut değil"
   },
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
@@ -3920,12 +3886,6 @@
   },
   "priceUnavailable": {
     "message": "fiyat mevcut değil"
-  },
-  "primaryCurrencySetting": {
-    "message": "Öncelikli para birimi"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Değerlerin zincirin yerli para biriminde (ör. ETH) görüntülenmesini önceliklendirmek için yerli seçimi yapın. Seçtiğiniz fiat parada değerlerin gösterilmesini önceliklendirmek için Fiat Para seçin."
   },
   "primaryType": {
     "message": "Öncelikli tür"
@@ -4753,13 +4713,6 @@
   "smartTransactionSuccess": {
     "message": "İşleminiz tamamlandı"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Beklettiğimiz için özür dileriz"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "İşleminiz $1 dahilinde sonuçlanmazsa iptal edilir ve sizden gaz ücreti alınmaz.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Akıllı İşlemler"
   },
@@ -5175,10 +5128,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Swap işlemini tekrar deneyin. Bir dahaki sefere sizi benzer risklere karşı korumak için burada olacağız."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Tamamlanmasına kalan tahmini süre $1 altında",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Swap başarısız oldu"
@@ -6090,9 +6039,6 @@
   },
   "updateRequest": {
     "message": "Talebi güncelle"
-  },
-  "updatedWithDate": {
-    "message": "$1 güncellendi"
   },
   "uploadDropFile": {
     "message": "Dosyanızı buraya sürükleyin"

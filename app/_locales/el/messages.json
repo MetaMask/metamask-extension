@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Ενημέρωση επιλογών των τελών συναλλαγών"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Εάν εγκρίνετε αυτό το αίτημα, ένας τρίτος που είναι γνωστός για απάτες μπορεί να αποκτήσει όλα τα περιουσιακά σας στοιχεία."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Πολλαπλές ειδοποιήσεις!"
-  },
   "alertDisableTooltip": {
     "message": "Αυτό μπορεί να αλλάξει στις \"Ρυθμίσεις > Ειδοποιήσεις\""
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Έχω ενημερωθεί για την ειδοποίηση και εξακολουθώ να θέλω να συνεχίσω"
   },
-  "confirmAlertModalDetails": {
-    "message": "Εάν συνδεθείτε, ένας τρίτος που είναι γνωστός για απάτες μπορεί να αποκτήσει όλα τα περιουσιακά σας στοιχεία. Ελέγξτε τις ειδοποιήσεις πριν συνεχίσετε."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Τα περιουσιακά σας στοιχεία μπορεί να κινδυνεύουν"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Θα σας ανακατευθύνουμε στο $1 όταν κάνετε κλικ για να συνεχίσετε."
   },
@@ -1099,9 +1087,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "Το MetaMask είναι συνδεδεμένο σε αυτόν τον ιστότοπο, αλλά δεν έχουν συνδεθεί ακόμα λογαριασμοί"
-  },
-  "connectedWith": {
-    "message": "Συνδέεται με"
   },
   "connecting": {
     "message": "Σύνδεση"
@@ -1519,14 +1504,6 @@
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
-  "disconnectAllText": {
-    "message": "Αν αποσυνδέσετε τo $1 από τo $2, θα πρέπει να επανασυνδεθείτε για να τα χρησιμοποιήσετε ξανά.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Αποσύνδεση όλων των $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "Αποσύνδεση $1"
   },
@@ -1878,10 +1855,6 @@
   },
   "feeDetails": {
     "message": "Λεπτομέρειες χρεώσεων"
-  },
-  "fiat": {
-    "message": "Εντολή",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
@@ -2851,10 +2824,6 @@
     "message": "Το $1 ζητάει την έγκρισή σας για:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Θέλετε αυτός ο ιστότοπος να κάνει τα εξής;",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "Το αρχικό token σε αυτό το δίκτυο είναι το $1. Είναι το token που χρησιμοποιείται για τα τέλη συναλλαγών.",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3066,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
-  },
-  "noConversionDateAvailable": {
-    "message": "Δεν υπάρχει διαθέσιμη ημερομηνία μετατροπής νομίσματος"
   },
   "noConversionRateAvailable": {
     "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
@@ -3920,12 +3886,6 @@
   },
   "priceUnavailable": {
     "message": "μη διαθέσιμη τιμή"
-  },
-  "primaryCurrencySetting": {
-    "message": "Κύριο νόμισμα"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Επιλέξτε εγχώριο για να δώσετε προτεραιότητα στην εμφάνιση των τιμών στο νόμισμα της αλυσίδας (π.χ. ETH). Επιλέξτε Παραστατικό για να δώσετε προτεραιότητα στην εμφάνιση τιμών στο επιλεγμένο παραστατικό νόμισμα."
   },
   "primaryType": {
     "message": "Βασικός τύπος"
@@ -4753,13 +4713,6 @@
   "smartTransactionSuccess": {
     "message": "Η συναλλαγή σας ολοκληρώθηκε"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Συγγνώμη για την αναμονή"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Εάν η συναλλαγή σας δεν ολοκληρωθεί εντός $1, θα ακυρωθεί και δεν θα χρεωθείτε με τέλη συναλλαγών.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Έξυπνες συναλλαγές"
   },
@@ -5175,10 +5128,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Προσπαθήστε ξανά να κάνετε ανταλλαγή. Θα είμαστε εδώ για να σας προστατεύσουμε από παρόμοιους κινδύνους και την επόμενη φορά."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Εκτιμώμενη ολοκλήρωση σε < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Η ανταλλαγή απέτυχε"
@@ -6090,9 +6039,6 @@
   },
   "updateRequest": {
     "message": "Αίτημα ενημέρωσης"
-  },
-  "updatedWithDate": {
-    "message": "Ενημερώθηκε $1"
   },
   "uploadDropFile": {
     "message": "Αφήστε το αρχείο σας εδώ"

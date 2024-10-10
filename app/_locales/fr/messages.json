@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Mettre à jour les options de gaz"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Plusieurs alertes !"
-  },
   "alertDisableTooltip": {
     "message": "Vous pouvez modifier ceci dans « Paramètres > Alertes »"
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "J’ai pris connaissance de l’alerte, mais je souhaite quand même continuer"
   },
-  "confirmAlertModalDetails": {
-    "message": "Si vous vous connectez, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs. Veuillez examiner les alertes avant de continuer."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Vous risquez de perdre tout ou partie de vos actifs"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Nous vous redirigerons vers $1 une fois que vous cliquerez sur « Continuer »."
   },
@@ -1099,9 +1087,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask est connecté à ce site, mais aucun compte n’est encore connecté"
-  },
-  "connectedWith": {
-    "message": "Connecté avec"
   },
   "connecting": {
     "message": "Connexion…"
@@ -1519,14 +1504,6 @@
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
-  "disconnectAllText": {
-    "message": "Si vous déconnectez vos $1 de $2, vous devrez vous reconnecter pour les utiliser à nouveau.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Déconnecter tous les $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "Déconnecter $1"
   },
@@ -1878,10 +1855,6 @@
   },
   "feeDetails": {
     "message": "Détails des frais"
-  },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
@@ -2851,10 +2824,6 @@
     "message": "$1 vous demande votre approbation pour :",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Voulez-vous que ce site fasse ce qui suit ?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "Le jeton natif de ce réseau est $1. C’est le jeton utilisé pour les frais de gaz. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3066,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask n’est pas connecté à ce site"
-  },
-  "noConversionDateAvailable": {
-    "message": "Aucune date de conversion des devises n’est disponible"
   },
   "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
@@ -3920,12 +3886,6 @@
   },
   "priceUnavailable": {
     "message": "prix non disponible"
-  },
-  "primaryCurrencySetting": {
-    "message": "Devise principale"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Sélectionnez « natif » pour donner la priorité à l’affichage des valeurs dans la devise native de la chaîne (par ex. ETH). Sélectionnez « fiduciaire » pour donner la priorité à l’affichage des valeurs dans la devise de votre choix."
   },
   "primaryType": {
     "message": "Type principal"
@@ -4753,13 +4713,6 @@
   "smartTransactionSuccess": {
     "message": "Votre transaction est terminée"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Désolé de vous avoir fait attendre"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Si votre transaction n’est pas finalisée dans un délai de $1, elle sera annulée et les frais de gaz ne vous seront pas facturés.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Transactions intelligentes"
   },
@@ -5175,10 +5128,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Réessayez le swap. Nous serons là pour vous protéger contre des risques similaires la prochaine fois."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Délai estimé < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Échec du swap"
@@ -6090,9 +6039,6 @@
   },
   "updateRequest": {
     "message": "Demande de mise à jour"
-  },
-  "updatedWithDate": {
-    "message": "Mis à jour $1"
   },
   "uploadDropFile": {
     "message": "Déposez votre fichier ici"

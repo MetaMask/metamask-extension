@@ -491,6 +491,24 @@ export function getAllTokens(state) {
 }
 
 /**
+ * Get a flattened list of all ERC-20 tokens owned by the user.
+ * Includes all tokens from all chains and accounts.
+ *
+ * @returns {object[]} All ERC-20 tokens owned by the user in a flat array.
+ */
+export const selectAllTokensFlat = createSelector(
+  getAllTokens,
+  (tokensByAccountByChain) => {
+    const tokensByAccountArray = Object.values(tokensByAccountByChain);
+
+    return tokensByAccountArray.reduce((acc, tokensByAccount) => {
+      const tokensArray = Object.values(tokensByAccount);
+      return acc.concat(...tokensArray);
+    }, []);
+  },
+);
+
+/**
  * Selector to return an origin to network ID map
  *
  * @param state - Redux state object.
@@ -1307,6 +1325,10 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+export function getShowPermittedNetworkToastOpen(state) {
+  return state.appState.showPermittedNetworkToastOpen;
+}
+
 /**
  * Returns a memoized selector that gets the internal accounts from the Redux store.
  *
@@ -1473,6 +1495,11 @@ export const getConnectedSitesList = createDeepEqualSelector(
     return sitesList;
   },
 );
+
+export function getShouldShowAggregatedBalancePopover(state) {
+  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
+  return shouldShowAggregatedBalancePopover;
+}
 
 export const getConnectedSnapsList = createDeepEqualSelector(
   getSnapsList,
@@ -1958,6 +1985,10 @@ export function getShowPrivacyPolicyToast(state) {
     // old users who don't have onboardingDate set should see the notice
     (onboardingDate < newPrivacyPolicyDate || !onboardingDate)
   );
+}
+
+export function getLastViewedUserSurvey(state) {
+  return state.metamask.lastViewedUserSurvey;
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -2546,6 +2577,26 @@ export function getEthereumAddressNames(state) {
 
 export function getNameSources(state) {
   return state.metamask.nameSources || {};
+}
+
+export function getShowDeleteMetaMetricsDataModal(state) {
+  return state.appState.showDeleteMetaMetricsDataModal;
+}
+
+export function getShowDataDeletionErrorModal(state) {
+  return state.appState.showDataDeletionErrorModal;
+}
+
+export function getMetaMetricsDataDeletionId(state) {
+  return state.metamask.metaMetricsDataDeletionId;
+}
+
+export function getMetaMetricsDataDeletionTimestamp(state) {
+  return state.metamask.metaMetricsDataDeletionTimestamp;
+}
+
+export function getMetaMetricsDataDeletionStatus(state) {
+  return state.metamask.metaMetricsDataDeletionStatus;
 }
 
 /**

@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "更新燃料选项"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "多个提醒！"
-  },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "我已知晓提醒并仍想继续"
   },
-  "confirmAlertModalDetails": {
-    "message": "如果您登录，以欺诈闻名的第三方可能会拿走您的所有资产。在继续操作之前，请查看提醒。"
-  },
-  "confirmAlertModalTitle": {
-    "message": "您的资产可能面临风险"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "点击“继续”后，我们会将您重定向到 $1。"
   },
@@ -1099,9 +1087,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask 已连接到此网站，但尚未连接任何账户"
-  },
-  "connectedWith": {
-    "message": "已连接"
   },
   "connecting": {
     "message": "连接中……"
@@ -1519,14 +1504,6 @@
   "disconnectAllSnapsText": {
     "message": "Snap"
   },
-  "disconnectAllText": {
-    "message": "如果您将 $1 与 $2 断开连接，则需要重新连接才能再次使用。",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "断开连接所有 $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "断开连接 $1"
   },
@@ -1878,10 +1855,6 @@
   },
   "feeDetails": {
     "message": "费用详情"
-  },
-  "fiat": {
-    "message": "法币",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
@@ -2851,10 +2824,6 @@
     "message": "$1 请求您的批准，以便：",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "您希望此网站执行以下操作吗？",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "此网络上的原生代币为 $1。它是用于燃料费的代币。 ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3066,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask 未连接到此站点"
-  },
-  "noConversionDateAvailable": {
-    "message": "没有可用的货币转换日期"
   },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
@@ -3920,12 +3886,6 @@
   },
   "priceUnavailable": {
     "message": "价格不可用"
-  },
-  "primaryCurrencySetting": {
-    "message": "主要货币"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "选择原生以优先显示链的原生货币（例如 ETH）的值。选择法币以优先显示以您所选法币显示的值。"
   },
   "primaryType": {
     "message": "主要类型"
@@ -4753,13 +4713,6 @@
   "smartTransactionSuccess": {
     "message": "您的交易已完成"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "抱歉让您久等"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "如果您的交易在 $1 内未完成，则会取消，您无需支付燃料费。",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "智能交易"
   },
@@ -5175,10 +5128,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "再次尝试进行交换。下次我们会在这里保护您免受类似风险。 "
-  },
-  "stxEstimatedCompletion": {
-    "message": "预计将在 $1 内完成",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "交换失败"
@@ -6090,9 +6039,6 @@
   },
   "updateRequest": {
     "message": "更新请求"
-  },
-  "updatedWithDate": {
-    "message": "已于 $1 更新"
   },
   "uploadDropFile": {
     "message": "将您的文件放在此处"

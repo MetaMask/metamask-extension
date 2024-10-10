@@ -381,12 +381,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Gas-Optionen aktualisieren"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Wenn Sie diese Anfrage genehmigen, könnten Dritte, die für Betrügereien bekannt sind, alle Ihre Assets an sich reißen."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Mehrere Benachrichtigungen!"
-  },
   "alertDisableTooltip": {
     "message": "Dies kann in „Einstellungen > Benachrichtigungen“ geändert werden."
   },
@@ -972,12 +966,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Ich habe die Benachrichtigung zur Kenntnis genommen und möchte trotzdem fortfahren"
   },
-  "confirmAlertModalDetails": {
-    "message": "Wenn Sie sich anmelden, könnten Dritte, die für Betrügereien bekannt sind, all Ihre Assets an sich reißen. Lesen Sie bitte die Benachrichtigungen, bevor Sie fortfahren."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Ihre Assets könnten gefährdet sein"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Sobald Sie auf „Weiter“ klicken, leiten wir Sie weiter zu $1."
   },
@@ -1099,9 +1087,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask ist mit dieser Seite verbunden, aber es sind noch keine Konten verbunden"
-  },
-  "connectedWith": {
-    "message": "Verbunden mit"
   },
   "connecting": {
     "message": "Verbinden"
@@ -1519,14 +1504,6 @@
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
-  "disconnectAllText": {
-    "message": "Wenn Sie die Verbindung zwischen $1 und $2 unterbrechen, müssen Sie die Verbindung wiederherstellen, um sie erneut zu verwenden.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Alle $1 trennen",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "$1 trennen"
   },
@@ -1878,10 +1855,6 @@
   },
   "feeDetails": {
     "message": "Details zur Gebühr"
-  },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
@@ -2851,10 +2824,6 @@
     "message": "$1 bittet um Ihre Zustimmung zu:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Möchten Sie, dass diese Website Folgendes tut?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "Das native Token dieses Netzwerks ist $1. Dieses Token wird für die Gas-Gebühr verwendet. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3066,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask ist nicht mit dieser Website verbunden"
-  },
-  "noConversionDateAvailable": {
-    "message": "Kein Umrechnungskursdaten verfügbar"
   },
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
@@ -3920,12 +3886,6 @@
   },
   "priceUnavailable": {
     "message": "Preis nicht verfügbar"
-  },
-  "primaryCurrencySetting": {
-    "message": "Hauptwährung"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Wählen Sie 'Nativ', um dem Anzeigen von Werten in der nativen Währung der Chain (z. B. ETH) Vorrang zu geben. Wählen Sie 'Fiat', um dem Anzeigen von Werten in Ihrer gewählten Fiat-Währung Vorrang zu geben."
   },
   "primaryType": {
     "message": "Primärer Typ"
@@ -4753,13 +4713,6 @@
   "smartTransactionSuccess": {
     "message": "Ihre Transaktion ist abgeschlossen"
   },
-  "smartTransactionTakingTooLong": {
-    "message": "Entschuldigung für die Wartezeit"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Wenn Ihre Transaktion nicht innerhalb von $1 abgeschlossen wird, wird sie storniert und Ihnen wird kein Gas berechnet.",
-    "description": "$1 is remaining time in seconds"
-  },
   "smartTransactions": {
     "message": "Smart Transactions"
   },
@@ -5175,10 +5128,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Versuchen Sie Ihren Swap erneut. Wir werden hier sein, um Sie beim nächsten Mal vor ähnlichen Risiken zu schützen."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Geschätzter Abschluss in < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Swap fehlgeschlagen"
@@ -6090,9 +6039,6 @@
   },
   "updateRequest": {
     "message": "Aktualisierungsanfrage"
-  },
-  "updatedWithDate": {
-    "message": "$1 aktualisiert"
   },
   "uploadDropFile": {
     "message": "Legen Sie Ihre Datei hier ab"
