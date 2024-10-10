@@ -18,6 +18,8 @@ const BaseTransactionInfo = () => {
     selectConfirmationAdvancedDetailsOpen,
   );
 
+  const simulationData = transactionMeta?.simulationData;
+
   if (!transactionMeta?.txParams) {
     return null;
   }
@@ -25,11 +27,13 @@ const BaseTransactionInfo = () => {
   return (
     <>
       <ConfirmInfoSection noPadding>
-        <SimulationDetails
-          simulationData={transactionMeta.simulationData}
-          transactionId={transactionMeta.id}
-          isTransactionsRedesign
-        />
+        {simulationData && (
+          <SimulationDetails
+            simulationData={simulationData}
+            transactionId={transactionMeta.id}
+            isTransactionsRedesign
+          />
+        )}
       </ConfirmInfoSection>
       <TransactionDetails />
       <GasFeesSection />
