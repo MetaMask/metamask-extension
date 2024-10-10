@@ -1821,6 +1821,9 @@
   "editSpendingCapDesc": {
     "message": "Enter the amount that you feel comfortable being spent on your behalf."
   },
+  "editSpendingCapError": {
+    "message": "The spending cap can’t exceed $1 decimal digits. Remove decimal digits to continue."
+  },
   "enable": {
     "message": "Enable"
   },
