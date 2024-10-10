@@ -4294,25 +4294,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-core@npm:0.0.19, @lavamoat/lavadome-core@npm:^0.0.19":
-  version: 0.0.19
-  resolution: "@lavamoat/lavadome-core@npm:0.0.19"
+"@lavamoat/lavadome-core@npm:0.0.20, @lavamoat/lavadome-core@npm:^0.0.20":
+  version: 0.0.20
+  resolution: "@lavamoat/lavadome-core@npm:0.0.20"
   dependencies:
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
-  checksum: 10/993da60609b149e794f55766cae768d9678e3e9f331bd364d907c5022d07261b0e0a26090c993e18e87973b161bcaa0741618a9a0f703c6d93cba9d201d7d30b
+  checksum: 10/3940e4ba5ea03a9313cdc4bbb757632f586cb4f3c42dfe67a5c5073efc80f48cc9c6f2c6fc2142717a66489b29b4ffde9edb31bea7ac2e8cf3a4decdf8f2dd06
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-react@npm:0.0.19":
-  version: 0.0.19
-  resolution: "@lavamoat/lavadome-react@npm:0.0.19"
+"@lavamoat/lavadome-react@npm:0.0.20":
+  version: 0.0.20
+  resolution: "@lavamoat/lavadome-react@npm:0.0.20"
   dependencies:
-    "@lavamoat/lavadome-core": "npm:^0.0.19"
+    "@lavamoat/lavadome-core": "npm:^0.0.20"
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
   peerDependencies:
     react: ^16.12.0 || ^17.0.2 || ^18.2.0
     react-dom: ^16.12.0 || ^17.0.2 || ^18.2.0
-  checksum: 10/7a51451dd7c31f95d599f51095c53e5c7f8dba6197395693eaeb9373e8124b9ef7bf6404ed8ec3e0360d6bea051c5f8f0a6eda9e9a03584ab3fe964f3fd5c0ac
+  checksum: 10/acef4a279d6897272562f293e7b755581ea4d300b23b2341e3818d27236de47aa4a7c7615d3a3414dc2c6e62c7fb1e345e5d07f6d1998a4e03cda508d7ba1473
   languageName: node
   linkType: hard
 
@@ -26067,8 +26067,8 @@ __metadata:
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
-    "@lavamoat/lavadome-core": "npm:0.0.19"
-    "@lavamoat/lavadome-react": "npm:0.0.19"
+    "@lavamoat/lavadome-core": "npm:0.0.20"
+    "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.2"
     "@lgbot/madge": "npm:^6.2.0"
