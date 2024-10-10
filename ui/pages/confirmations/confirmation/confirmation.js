@@ -225,7 +225,7 @@ export default function ConfirmationPage({
   const isRoutedConfirmation = id && pendingRoutedConfirmation !== -1;
 
   const [currentPendingConfirmation, setCurrentPendingConfirmation] = useState(
-    // Confirmations that are directly routed to get priority and will be shown above the current queue.
+    // Confirmations that are directly routed to get priority and will be initially shown above the current queue.
     isRoutedConfirmation ? pendingRoutedConfirmation : 0,
   );
 
