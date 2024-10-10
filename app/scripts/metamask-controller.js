@@ -292,7 +292,7 @@ import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import PreferencesController from './controllers/preferences-controller';
 import AppStateController from './controllers/app-state';
-import AlertController from './controllers/alert';
+import { AlertController } from './controllers/alert-controller';
 import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
@@ -1768,8 +1768,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.alertController = new AlertController({
-      initState: initState.AlertController,
-      preferencesStore: this.preferencesController.store,
+      state: initState.AlertController,
       controllerMessenger: this.controllerMessenger.getRestricted({
         name: 'AlertController',
         allowedEvents: ['AccountsController:selectedAccountChange'],
