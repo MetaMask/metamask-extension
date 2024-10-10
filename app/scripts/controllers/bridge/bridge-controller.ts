@@ -59,10 +59,14 @@ export default class BridgeController extends BaseController<
 
   setBridgeFeatureFlags = async () => {
     const { bridgeState } = this.state;
-    const bridgeFeatureFlags = await fetchBridgeFeatureFlags();
-    this.update((_state) => {
-      _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
-    });
+    try {
+      const bridgeFeatureFlags = await fetchBridgeFeatureFlags();
+      this.update((_state) => {
+        _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
+      });
+    } catch (error) {
+      console.error('Failed to fetch Bridge feature flags.', error);
+    }
   };
 
   selectSrcNetwork = async (chainId: Hex) => {
