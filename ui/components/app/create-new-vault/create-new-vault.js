@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   FormTextField,
+  FormTextFieldSize,
 } from '../../component-library';
 import SrpInput from '../srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
@@ -111,9 +112,9 @@ export default function CreateNewVault({
           onChange={(event) => onPasswordChange(event.target.value)}
           error={passwordError}
           helpText={passwordError}
-          autoComplete="new-password"
-          margin="normal"
-          largeLabel
+          autoComplete
+          size={FormTextFieldSize.Lg}
+          marginBottom={4}
         />
         <FormTextField
           inputProps={{ 'data-testid': 'create-vault-confirm-password' }}
@@ -124,9 +125,8 @@ export default function CreateNewVault({
           onChange={(event) => onConfirmPasswordChange(event.target.value)}
           error={confirmPasswordError}
           helpText={confirmPasswordError}
-          autoComplete="new-password"
-          margin="normal"
-          largeLabel
+          autoComplete
+          size={FormTextFieldSize.Lg}
         />
       </div>
       {includeTerms ? (
