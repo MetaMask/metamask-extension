@@ -135,6 +135,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
     currentChainId,
   );
+
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
       Object.entries(networkConfigurations).reduce(
@@ -284,6 +285,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               dispatch(showPermittedNetworkToast());
             }
           }
+
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
           // network has changed due to user action

@@ -141,6 +141,8 @@ import NetworkConfirmationPopover from '../../components/multichain/network-list
 import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
 import CrossChainSwap from '../bridge';
 
+const RPC_TIMEOUT = 10000;
+
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
     matchPath(pathname, {
@@ -216,6 +218,8 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
+    showRPCTimeoutToast: PropTypes.bool.isRequired,
+    setShowRPCTimeoutToast: PropTypes.func.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
@@ -268,6 +272,8 @@ export default class Routes extends Component {
       isUnlocked,
       useRequestQueue,
       currentExtensionPopupId,
+      isNetworkLoading,
+      setShowRPCTimeoutToast,
     } = this.props;
     if (theme !== prevProps.theme) {
       this.setTheme();
@@ -302,6 +308,25 @@ export default class Routes extends Component {
       currentExtensionPopupId !== global.metamask.id
     ) {
       window.close();
+    }
+
+    console.log('TIMEOUT > isNetworkLoading', isNetworkLoading);
+    console.log('TIMEOUT > prevProps', prevProps.isNetworkLoading);
+
+    // Check if the network loading state has changed
+    if (isNetworkLoading && !prevProps.isNetworkLoading) {
+      // Start the timeout if the network starts loading
+      this.networkLoadingTimeout = setTimeout(() => {
+        console.log('TIMEOUT > setup timeout');
+        if (this.props.isNetworkLoading) {
+          console.log('TIMEOUT > show toast');
+          setShowRPCTimeoutToast(true);
+        }
+      }, RPC_TIMEOUT);
+    } else if (!isNetworkLoading && prevProps.isNetworkLoading) {
+      console.log('TIMEOUT > clear timeout');
+      // Clear the timeout if the network stops loading
+      clearTimeout(this.networkLoadingTimeout);
     }
   }
 
@@ -646,6 +671,8 @@ export default class Routes extends Component {
       activeTabOrigin,
       addPermittedAccount,
       showSurveyToast,
+      showRPCTimeoutToast,
+      setShowRPCTimeoutToast,
       showConnectAccountToast,
       showPrivacyPolicyToast,
       newPrivacyPolicyToastShownDate,
@@ -714,6 +741,25 @@ export default class Routes extends Component {
             onClose={() => this.setState({ hideConnectAccountToast: true })}
           />
         ) : null}
+        {showRPCTimeoutToast && (
+          <Toast
+            key="rpc-timeout-toast"
+            startAdornment={
+              <Icon name={IconName.Warning} color={IconColor.warningDefault} />
+            }
+            text={t('rpcTimeoutToastMessage', ['<rpc-name>', '<network name>'])} // TODO: replace with actual values
+            actionText={t('rpcTimeoutToastAction')}
+            onActionClick={() => {
+              console.log('TIMEOUT> TODO: open network editor');
+              // global.platform.openTab({
+              //   url: 'https://metamask.io/rpc-timeout/',
+              // });
+            }}
+            onClose={() => {
+              setShowRPCTimeoutToast(false);
+            }}
+          />
+        )}
         {showSurveyToast && (
           <Toast
             key="survey-toast"
