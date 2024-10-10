@@ -157,7 +157,7 @@ async function main() {
                   notifications: ['eth_subscription'],
                 },
                 'wallet:eip155': {
-                  accounts: [],
+                  accounts: [`wallet:eip155:${ACCOUNT_1}`],
                   methods: walletEip155Methods,
                   notifications: [],
                 },
