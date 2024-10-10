@@ -17,17 +17,11 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
   getSelectedAccount,
-  getPermittedAccountsForCurrentTab,
   getSwitchedNetworkDetails,
   getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  getShowSurveyToast,
-  getNewPrivacyPolicyToastShownDate,
-  getShowPrivacyPolicyToast,
   getUseRequestQueue,
-  getUseNftDetection,
-  getNftDetectionEnablementToast,
   getCurrentNetwork,
 } from '../../selectors';
 import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
@@ -43,23 +37,18 @@ import {
   hideDeprecatedNetworkModal,
   addPermittedAccount,
   setSurveyLinkLastClickedOrClosed,
-  setNewPrivacyPolicyToastClickedOrClosed,
-  setNewPrivacyPolicyToastShownDate,
   automaticallySwitchNetwork,
   clearSwitchedNetworkDetails,
   neverShowSwitchedNetworkMessage,
-  setShowNftDetectionEnablementToast,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
   setEditedNetwork,
-  hidePermittedNetworkToast,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
 import {
-  getAlertEnabledness,
   getIsUnlocked,
   getProviderConfig,
 } from '../../ducks/metamask/metamask';
@@ -75,31 +64,18 @@ function mapStateToProps(state) {
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
-  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
   const account = getSelectedAccount(state);
   const activeTabOrigin = activeTab?.origin;
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
   const currentNetwork = getCurrentNetwork(state);
-  const showConnectAccountToast = Boolean(
-    allowShowAccountSetting &&
-      account &&
-      activeTabOrigin &&
-      connectedAccounts.length > 0 &&
-      !connectedAccounts.find((address) => address === account.address),
-  );
 
   const networkToAutomaticallySwitchTo =
     getNetworkToAutomaticallySwitchTo(state);
   const switchedNetworkDetails = getSwitchedNetworkDetails(state);
 
-  const useNftDetection = getUseNftDetection(state);
-  const showNftEnablementToast = getNftDetectionEnablementToast(state);
-
   return {
     alertOpen,
     alertMessage,
     account,
-    showConnectAccountToast,
     activeTabOrigin,
     textDirection: state.metamask.textDirection,
     isLoading,
@@ -132,10 +108,7 @@ function mapStateToProps(state) {
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
-    isPermittedNetworkToastOpen: state.appState.showPermittedNetworkToastOpen,
     switchedNetworkDetails,
-    useNftDetection,
-    showNftEnablementToast,
     networkToAutomaticallySwitchTo,
     currentNetwork,
     totalUnapprovedConfirmationCount:
@@ -143,9 +116,6 @@ function mapStateToProps(state) {
     neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
     useRequestQueue: getUseRequestQueue(state),
-    newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
-    showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
-    showSurveyToast: getShowSurveyToast(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
@@ -165,7 +135,6 @@ function mapDispatchToProps(dispatch) {
     toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
     hideImportNftsModal: () => dispatch(hideImportNftsModal()),
     hideIpfsModal: () => dispatch(hideIpfsModal()),
-    hidePermittedNetworkToast: () => dispatch(hidePermittedNetworkToast()),
     hideImportTokensModal: () => dispatch(hideImportTokensModal()),
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),
     addPermittedAccount: (activeTabOrigin, address) =>
@@ -177,17 +146,11 @@ function mapDispatchToProps(dispatch) {
       dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
     setSurveyLinkLastClickedOrClosed: (time) =>
       dispatch(setSurveyLinkLastClickedOrClosed(time)),
-    setNewPrivacyPolicyToastClickedOrClosed: () =>
-      dispatch(setNewPrivacyPolicyToastClickedOrClosed()),
-    setNewPrivacyPolicyToastShownDate: (date) =>
-      dispatch(setNewPrivacyPolicyToastShownDate(date)),
     clearEditedNetwork: () => dispatch(setEditedNetwork()),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),
     ///: END:ONLY_INCLUDE_IF
-    setHideNftEnablementToast: (value) =>
-      dispatch(setShowNftDetectionEnablementToast(value)),
   };
 }
 
