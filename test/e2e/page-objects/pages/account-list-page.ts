@@ -11,7 +11,8 @@ class AccountListPage {
 
   private readonly accountNameInput = '#account-name';
 
-  private readonly accountListBalance = '[data-testid="second-currency-display"]';
+  private readonly accountListBalance =
+    '[data-testid="second-currency-display"]';
 
   private readonly accountOptionsMenuButton =
     '[data-testid="account-list-item-menu-button"]';
@@ -159,7 +160,9 @@ class AccountListPage {
   }
 
   async check_accountBalanceDisplayed(expectedBalance: string): Promise<void> {
-    console.log(`Check that account balance ${expectedBalance} is displayed in account list`);
+    console.log(
+      `Check that account balance ${expectedBalance} is displayed in account list`,
+    );
     await this.driver.waitForSelector({
       css: this.accountListBalance,
       text: expectedBalance,

@@ -16,7 +16,7 @@ import { sendTransactionWithSnapAccount } from '../../page-objects/flows/send-tr
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/homepage';
 
-describe('Snap Account Transfers', function (this: Suite) {
+describe('Snap Account Transfers @no-mmi', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {
@@ -30,7 +30,9 @@ describe('Snap Account Transfers', function (this: Suite) {
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
         // import snap account with private key on snap simple keyring page.
-        await snapSimpleKeyringPage.importAccountWithPrivateKey(PRIVATE_KEY_TWO);
+        await snapSimpleKeyringPage.importAccountWithPrivateKey(
+          PRIVATE_KEY_TWO,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -56,7 +58,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     );
   });
 
-   it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
+  it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -69,7 +71,9 @@ describe('Snap Account Transfers', function (this: Suite) {
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
         // import snap account with private key on snap simple keyring page.
-        await snapSimpleKeyringPage.importAccountWithPrivateKey(PRIVATE_KEY_TWO);
+        await snapSimpleKeyringPage.importAccountWithPrivateKey(
+          PRIVATE_KEY_TWO,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -110,7 +114,9 @@ describe('Snap Account Transfers', function (this: Suite) {
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
         // Import snap account with private key on snap simple keyring page.
-        await snapSimpleKeyringPage.importAccountWithPrivateKey(PRIVATE_KEY_TWO);
+        await snapSimpleKeyringPage.importAccountWithPrivateKey(
+          PRIVATE_KEY_TWO,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

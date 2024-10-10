@@ -5,11 +5,13 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private readonly accountOptionMenu = '[data-testid="account-options-menu-button"]';
+  private readonly accountOptionMenu =
+    '[data-testid="account-options-menu-button"]';
 
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
-  private readonly mmiPortfolioButton = '[data-testid="global-menu-mmi-portfolio"]';
+  private readonly mmiPortfolioButton =
+    '[data-testid="global-menu-mmi-portfolio"]';
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 

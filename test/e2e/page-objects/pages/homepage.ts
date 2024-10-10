@@ -6,9 +6,10 @@ import HeaderNavbar from './header-navbar';
 class HomePage {
   private driver: Driver;
 
-  private readonly sendButton = '[data-testid="eth-overview-send"]' ;
+  private readonly sendButton = '[data-testid="eth-overview-send"]';
 
-  private readonly activityTab = '[data-testid="account-overview__activity-tab"]';
+  private readonly activityTab =
+    '[data-testid="account-overview__activity-tab"]';
 
   private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
 
@@ -146,9 +147,7 @@ class HomePage {
       `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const failedTxs = await this.driver.findElements(
-        this.failedTransactions,
-      );
+      const failedTxs = await this.driver.findElements(this.failedTransactions);
       return failedTxs.length === expectedNumber;
     }, 10000);
     console.log(

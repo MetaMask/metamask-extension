@@ -11,7 +11,6 @@ import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
  * @param recipientAddress - The recipient address.
  * @param amount - The amount of the asset to be sent in the transaction.
  * @param gasfee - The expected transaction gas fee.
- * @param isSyncFlow - Indicates whether synchronous approval option is on for the snap. Defaults to true.
  * @param totalfee - The expected total transaction fee.
  */
 export const sendTransaction = async (
@@ -41,10 +40,14 @@ export const sendTransaction = async (
   await confirmTxPage.confirmTx();
 };
 
-
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
  *
+ * @param driver
+ * @param recipientAddress
+ * @param amount
+ * @param gasfee
+ * @param totalfee
  * @param isSyncFlow - Indicates whether synchronous approval option is on for the snap. Defaults to true.
  * @param approveTransaction - Indicates whether the transaction should be approved. Defaults to true.
  */
@@ -59,6 +62,8 @@ export const sendTransactionWithSnapAccount = async (
 ): Promise<void> => {
   await sendTransaction(driver, recipientAddress, amount, gasfee, totalfee);
   if (!isSyncFlow) {
-    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(approveTransaction);
+    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+      approveTransaction,
+    );
   }
-}
+};
