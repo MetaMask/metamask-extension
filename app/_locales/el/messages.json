@@ -2401,6 +2401,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Μη έγκυρη εισαγωγή! Η Μυστική σας Φράση Ανάκτησης κάνει διάκριση πεζών/κεφαλαίων."
   },
+  "invalidSymbolLength": {
+    "message": "Το σύμβολο πρέπει να αποτελείται από $1 ή λιγότερους χαρακτήρες."
+  },
   "ipfsGateway": {
     "message": "Πύλη IPFS"
   },
@@ -5665,9 +5668,6 @@
   },
   "symbol": {
     "message": "Σύμβολο"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Το σύμβολο πρέπει να αποτελείται από 11 ή λιγότερους χαρακτήρες."
   },
   "tenPercentIncreased": {
     "message": "10% αύξηση"

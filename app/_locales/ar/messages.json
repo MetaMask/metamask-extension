@@ -354,6 +354,9 @@
   "invalidSeedPhrase": {
     "message": "عبارة أمان غير صحيحة"
   },
+  "invalidSymbolLength": {
+    "message": "يجب أن يكون الرمز $1 حرفًا أو أقل."
+  },
   "jsonFile": {
     "message": "ملف JSON ",
     "description": "format for importing an account"
@@ -659,9 +662,6 @@
   },
   "symbol": {
     "message": "رمز"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "يجب أن يكون الرمز 11 حرفًا أو أقل."
   },
   "terms": {
     "message": "شروط الاستخدام"
