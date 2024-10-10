@@ -2757,10 +2757,13 @@ export default class MetamaskController extends EventEmitter {
               args.message,
             ),
           showInAppNotification: (origin, args) => {
-            const notificationArgs = { ...args };
-            notificationArgs.interfaceId = notificationArgs.content;
-            delete notificationArgs.content;
-            delete notificationArgs.type;
+            const { message, title, footerLink } = args;
+            const notificationArgs = {
+              interfaceId: args.content,
+              message,
+              title,
+              footerLink,
+            };
             this.controllerMessenger.call(
               'RateLimitController:call',
               origin,
