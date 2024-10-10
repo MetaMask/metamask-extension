@@ -17,7 +17,7 @@ export async function installSnapSimpleKeyring(
   const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
   await snapSimpleKeyringPage.check_pageIsLoaded();
   await snapSimpleKeyringPage.installSnap();
-  if (isSyncFlow) {
+  if (!isSyncFlow) {
     await snapSimpleKeyringPage.toggleUseSyncApproval();
   }
 }
