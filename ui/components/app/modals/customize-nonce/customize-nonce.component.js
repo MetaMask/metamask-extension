@@ -18,6 +18,7 @@ import {
   IconName,
   Text,
   TextField,
+  TextFieldSize,
 } from '../../../component-library';
 
 const CustomizeNonce = ({
@@ -105,8 +106,10 @@ const CustomizeNonce = ({
           <div className="customize-nonce-modal__input">
             <TextField
               type="number"
-              testId="custom-nonce-input"
-              min="0"
+              inputProps={{
+                'data-testid': 'custom-nonce-input',
+                min: '0',
+              }}
               placeholder={
                 customNonceValue ||
                 (typeof nextNonce === 'number' && nextNonce.toString())
@@ -115,9 +118,9 @@ const CustomizeNonce = ({
                 setCustomNonce(e.target.value);
               }}
               width={BlockSize.Full}
-              margin="dense"
               value={customNonce}
               id="custom-nonce-id"
+              size={TextFieldSize.Lg}
             />
           </div>
         </Box>
