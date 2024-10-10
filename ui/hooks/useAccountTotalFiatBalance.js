@@ -1,5 +1,6 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import {
   getAllTokens,
   getCurrentChainId,
@@ -8,7 +9,6 @@ import {
   getTokenExchangeRates,
   getConfirmationExchangeRates,
   getNativeCurrencyImage,
-  getTokenList,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -49,9 +49,6 @@ export const useAccountTotalFiatBalance = (
 
   const detectedTokens = useSelector(getAllTokens);
   const tokens = detectedTokens?.[currentChainId]?.[account?.address] ?? [];
-  // This selector returns all the tokens, we need it to get the image of token
-  const allTokenList = useSelector(getTokenList);
-  const allTokenListValues = Object.values(allTokenList);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
 
@@ -91,39 +88,18 @@ export const useAccountTotalFiatBalance = (
     fiatBalance: nativeFiat,
   };
 
-  // To match the list of detected tokens with the entire token list to find the image for tokens
-  const findMatchingTokens = (array1, array2) => {
-    const result = [];
-
-    array2.forEach((token2) => {
-      const matchingToken = array1.find(
-        (token1) => token1.symbol === token2.symbol,
-      );
-
-      if (matchingToken) {
-        result.push({
-          ...matchingToken,
-          balance: token2.balance,
-          string: token2.string,
-          balanceError: token2.balanceError,
-        });
-      }
-    });
-
-    return result;
-  };
-
-  const matchingTokens = findMatchingTokens(
-    allTokenListValues,
-    tokensWithBalances,
-  );
-
   // Combine native token, detected token with image in an array
   const allTokensWithFiatValues = [
     nativeTokenValues,
-    ...matchingTokens.map((item, index) => ({
+    ...tokensWithBalances.map((item, index) => ({
       ...item,
       fiatBalance: tokenFiatBalances[index],
+      iconUrl:
+        item.image ??
+        formatIconUrlWithProxy({
+          chainId: currentChainId,
+          tokenAddress: item.address,
+        }),
     })),
   ];
 
