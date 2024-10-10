@@ -17,7 +17,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/homepage';
 
 describe('Snap Account Transfers', function (this: Suite) {
-/*   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
+  it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -94,7 +94,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         await accountList.check_accountBalanceDisplayed('24');
       },
     );
-  }); */
+  });
 
   it('can import a private key and transfer 1 ETH (async flow reject)', async function () {
     await withFixtures(
@@ -102,6 +102,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -132,48 +133,4 @@ describe('Snap Account Transfers', function (this: Suite) {
       },
     );
   });
-
-/*   async function importPrivateKeyAndTransfer1ETH(
-    driver: Driver,
-    isSyncFlow: boolean,
-  ) {
-    const snapAccountPage = new SnapAccountPage(driver);
-
-    await installSnapSimpleKeyring(driver, isSyncFlow);
-    const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
-    await snapSimpleKeyringPage.importAccountWithPrivateKey(PRIVATE_KEY_TWO);
-
-    // send 1 ETH from Account 2 to Account 1
-    await sendTransaction(driver, PUBLIC_KEY, 1, isAsyncFlow);
-
-    if (isAsyncFlow) {
-      await driver.assertElementNotPresent({
-        text: 'Please complete the transaction on the Snap.',
-      });
-      await driver.switchToWindowWithTitle(
-        WINDOW_TITLES.ExtensionInFullScreenView,
-      );
-      await driver.navigate();
-      await driver.delay(2000);
-      await driver.clickElement({
-        text: 'Go to site',
-        tag: 'button',
-      });
-
-      await driver.delay(1000);
-      await approveOrRejectRequest(driver, flowType);
-    }
-
-    if (flowType === 'sync' || flowType === 'approve') {
-      await snapAccountPage.clickAccountMenuIcon();
-
-      // ensure one account has 26 ETH and the other has 24 ETH
-      await snapAccountPage.findAccountBalance('26');
-      await snapAccountPage.findAccountBalance('24');
-    } else if (flowType === 'reject') {
-      // ensure the transaction was rejected by the Snap
-      await snapAccountPage.clickActivityTab();
-      await snapAccountPage.findRejectedTransaction();
-    }
-  } */
 });
