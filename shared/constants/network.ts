@@ -150,6 +150,8 @@ export const CHAIN_IDS = {
   ARBITRUM_SEPOLIA: '0x66eee',
   NEAR: '0x18d',
   NEAR_TESTNET: '0x18e',
+  B3: '0x208d',
+  B3_TESTNET: '0x7c9',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -205,6 +207,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   ZORA_MAINNET: '0x76adf1',
   FILECOIN: '0x13a',
   NUMBERS: '0x290b',
+  B3: '0x208d',
+  B3_TESTNET: '0x7c9',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -447,6 +451,7 @@ export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
 export const NEAR_IMAGE_URL = './images/near.svg';
+export const B3_IMAGE_URL = './images/b3.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -782,6 +787,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.NUMBERS]: NUMBERS_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SEI]: SEI_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.B3]: B3_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.B3_TESTNET]: B3_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -813,6 +820,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MOONRIVER]: MOONRIVER_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MOONBEAM]: MOONBEAM_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]: IOTEX_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.B3]: B3_IMAGE_URL,
+  [CHAIN_IDS.B3_TESTNET]: B3_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
