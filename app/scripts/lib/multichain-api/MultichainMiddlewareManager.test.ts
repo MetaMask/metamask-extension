@@ -1,4 +1,4 @@
-import { JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcRequest } from 'json-rpc-engine';
 import MultichainMiddlewareManager, {
   ExtendedJsonRpcMiddleware,
 } from './MultichainMiddlewareManager';
@@ -24,23 +24,23 @@ describe('MultichainMiddlewareManager', () => {
         123,
       );
 
-    const nextSpy = jest.fn()
-    const endSpy = jest.fn()
+    const nextSpy = jest.fn();
+    const endSpy = jest.fn();
 
     middleware(
-      { scope } as unknown as JsonRpcRequest,
+      { scope } as unknown as JsonRpcRequest<unknown>,
       { jsonrpc: '2.0', id: 0 },
       nextSpy,
       endSpy,
     );
     expect(middlewareSpy).toHaveBeenCalledWith(
-      { scope } as unknown as JsonRpcRequest,
+      { scope } as unknown as JsonRpcRequest<unknown>,
       { jsonrpc: '2.0', id: 0 },
       nextSpy,
       endSpy,
     );
-    expect(nextSpy).not.toHaveBeenCalled()
-    expect(endSpy).not.toHaveBeenCalled()
+    expect(nextSpy).not.toHaveBeenCalled();
+    expect(endSpy).not.toHaveBeenCalled();
   });
 
   it('should remove middleware by origin and tabId when the multiplexing middleware is destroyed', () => {
@@ -59,13 +59,13 @@ describe('MultichainMiddlewareManager', () => {
         123,
       );
 
-    middleware.destroy?.()
+    middleware.destroy?.();
 
-    const nextSpy = jest.fn()
-    const endSpy = jest.fn()
+    const nextSpy = jest.fn();
+    const endSpy = jest.fn();
 
     middleware(
-      { scope } as unknown as JsonRpcRequest,
+      { scope } as unknown as JsonRpcRequest<unknown>,
       { jsonrpc: '2.0', id: 0 },
       nextSpy,
       endSpy,
@@ -93,18 +93,18 @@ describe('MultichainMiddlewareManager', () => {
         123,
       );
 
-      const nextSpy = jest.fn()
-      const endSpy = jest.fn()
+    const nextSpy = jest.fn();
+    const endSpy = jest.fn();
 
-      middleware(
-        { scope } as unknown as JsonRpcRequest,
-        { jsonrpc: '2.0', id: 0 },
-        nextSpy,
-        endSpy,
-      );
-      expect(middlewareSpy).not.toHaveBeenCalled();
-      expect(nextSpy).toHaveBeenCalled();
-      expect(endSpy).not.toHaveBeenCalled();
+    middleware(
+      { scope } as unknown as JsonRpcRequest<unknown>,
+      { jsonrpc: '2.0', id: 0 },
+      nextSpy,
+      endSpy,
+    );
+    expect(middlewareSpy).not.toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalled();
+    expect(endSpy).not.toHaveBeenCalled();
   });
 
   it('should remove middleware by scope', () => {
@@ -125,18 +125,18 @@ describe('MultichainMiddlewareManager', () => {
         123,
       );
 
-      const nextSpy = jest.fn()
-      const endSpy = jest.fn()
+    const nextSpy = jest.fn();
+    const endSpy = jest.fn();
 
-      middleware(
-        { scope } as unknown as JsonRpcRequest,
-        { jsonrpc: '2.0', id: 0 },
-        nextSpy,
-        endSpy,
-      );
-      expect(middlewareSpy).not.toHaveBeenCalled();
-      expect(nextSpy).toHaveBeenCalled();
-      expect(endSpy).not.toHaveBeenCalled();
+    middleware(
+      { scope } as unknown as JsonRpcRequest<unknown>,
+      { jsonrpc: '2.0', id: 0 },
+      nextSpy,
+      endSpy,
+    );
+    expect(middlewareSpy).not.toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalled();
+    expect(endSpy).not.toHaveBeenCalled();
   });
 
   it('should remove middleware by scope and origin', () => {
@@ -157,18 +157,18 @@ describe('MultichainMiddlewareManager', () => {
         123,
       );
 
-      const nextSpy = jest.fn()
-      const endSpy = jest.fn()
+    const nextSpy = jest.fn();
+    const endSpy = jest.fn();
 
-      middleware(
-        { scope } as unknown as JsonRpcRequest,
-        { jsonrpc: '2.0', id: 0 },
-        nextSpy,
-        endSpy,
-      );
-      expect(middlewareSpy).not.toHaveBeenCalled();
-      expect(nextSpy).toHaveBeenCalled();
-      expect(endSpy).not.toHaveBeenCalled();
+    middleware(
+      { scope } as unknown as JsonRpcRequest<unknown>,
+      { jsonrpc: '2.0', id: 0 },
+      nextSpy,
+      endSpy,
+    );
+    expect(middlewareSpy).not.toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalled();
+    expect(endSpy).not.toHaveBeenCalled();
   });
 
   it('should remove middleware by origin and tabId', () => {
@@ -189,17 +189,17 @@ describe('MultichainMiddlewareManager', () => {
         123,
       );
 
-      const nextSpy = jest.fn()
-      const endSpy = jest.fn()
+    const nextSpy = jest.fn();
+    const endSpy = jest.fn();
 
-      middleware(
-        { scope } as unknown as JsonRpcRequest,
-        { jsonrpc: '2.0', id: 0 },
-        nextSpy,
-        endSpy,
-      );
-      expect(middlewareSpy).not.toHaveBeenCalled();
-      expect(nextSpy).toHaveBeenCalled();
-      expect(endSpy).not.toHaveBeenCalled();
+    middleware(
+      { scope } as unknown as JsonRpcRequest<unknown>,
+      { jsonrpc: '2.0', id: 0 },
+      nextSpy,
+      endSpy,
+    );
+    expect(middlewareSpy).not.toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalled();
+    expect(endSpy).not.toHaveBeenCalled();
   });
 });

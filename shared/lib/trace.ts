@@ -269,7 +269,7 @@ function initScope(scope: Sentry.Scope, request: TraceRequest) {
 
   for (const [key, value] of Object.entries(tags)) {
     if (typeof value !== 'number') {
-      // scope.setTag(key, value);
+      scope.setTag(key, value);
     }
   }
 }
@@ -352,7 +352,7 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
   if (!actual) {
     const scope = {
       // eslint-disable-next-line no-empty-function
-      setTags: () => {},
+      setTag: () => {},
     } as unknown as Sentry.Scope;
 
     return callback(scope);

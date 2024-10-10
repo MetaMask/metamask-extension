@@ -1,5 +1,7 @@
 import { Duplex, PassThrough } from 'readable-stream';
 import { createDeferredPromise } from '@metamask/utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { deferredPromise } from '../../app/scripts/lib/util';
 import { createCaipStream } from './caip-stream';
 
@@ -91,7 +93,7 @@ describe('CAIP Stream', () => {
 
       sourceStream.destroy();
 
-      await promise;
+      await expect(promise).resolves.toBe(undefined);
     });
   });
 });

@@ -5947,14 +5947,15 @@ export default class MetamaskController extends EventEmitter {
         requestPermissionApprovalForOrigin:
           this.requestPermissionApprovalForOrigin.bind(this, origin),
         requestPermissionsForOrigin: (requestedPermissions) =>
-          this.permissionController.requestPermissions.bind(
-            this.permissionController,
+          this.permissionController.requestPermissions(
             { origin },
             {
-              ...(process.env.CHAIN_PERMISSIONS &&
-                requestedPermissions[RestrictedMethods.eth_accounts] && {
-                  [PermissionNames.permittedChains]: {},
-                }),
+              ...(requestedPermissions[PermissionNames.eth_accounts] && {
+                [PermissionNames.permittedChains]: {},
+              }),
+              ...(requestedPermissions[PermissionNames.permittedChains] && {
+                [PermissionNames.eth_accounts]: {},
+              }),
               ...requestedPermissions,
             },
           ),
@@ -5990,7 +5991,6 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
-
         // network configuration-related
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);
@@ -6371,6 +6371,9 @@ export default class MetamaskController extends EventEmitter {
         requestPermissionApprovalForOrigin:
           this.requestPermissionApprovalForOrigin.bind(this, origin),
         updateCaveat: this.permissionController.updateCaveat.bind(
+          this.permissionController,
+        ),
+        grantPermissions: this.permissionController.grantPermissions.bind(
           this.permissionController,
         ),
       }),

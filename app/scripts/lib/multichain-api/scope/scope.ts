@@ -7,6 +7,7 @@ import {
   isCaipChainId,
   parseCaipChainId,
   KnownCaipNamespace,
+  CaipNamespace,
 } from '@metamask/utils';
 
 export type NonWalletKnownCaipNamespace = Exclude<
@@ -18,14 +19,7 @@ export const KnownWalletRpcMethods: string[] = [
   'wallet_registerOnboarding',
   'wallet_scanQRCode',
 ];
-const WalletEip155Methods = [
-  'wallet_addEthereumChain',
-  'personal_sign',
-  'eth_signTypedData',
-  'eth_signTypedData_v1',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-];
+const WalletEip155Methods = ['wallet_addEthereumChain'];
 
 const Eip155Methods = MetaMaskOpenRPCDocument.methods
   .map(({ name }) => name)
@@ -50,8 +44,7 @@ export const KnownNotifications: Record<NonWalletKnownCaipNamespace, string[]> =
 
 // These External prefixed types represent the CAIP-217
 // Scope and ScopeObject as defined in the spec.
-export type ExternalScope = CaipChainId | CaipReference;
-export type ExternalScopeString = CaipChainId | CaipReference;
+export type ExternalScopeString = CaipChainId | CaipNamespace;
 export type ExternalScopeObject = ScopeObject & {
   references?: CaipReference[];
 };
