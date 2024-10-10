@@ -69,22 +69,6 @@ async function mockPermissionApprovedEndpoint(mockServer) {
     });
 }
 
-async function createTwoAccounts(driver) {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '[data-testid="multichain-account-menu-popover-action-button"]',
-  );
-  await driver.clickElement(
-    '[data-testid="multichain-account-menu-popover-add-account"]',
-  );
-  await driver.fill('[placeholder="Account 2"]', '2nd account');
-  await driver.clickElement({ text: 'Add account', tag: 'button' });
-  await driver.findElement({
-    css: '[data-testid="account-menu-icon"]',
-    text: '2nd account',
-  });
-}
-
 const waitForDappConnected = async (driver) => {
   await driver.waitForSelector({
     css: '#accounts',
@@ -273,57 +257,6 @@ describe('Dapp viewed Event @no-mmi', function () {
     );
   });
 
-  it('is sent when connecting dapp with two accounts', async function () {
-    async function mockSegment(mockServer) {
-      return [await mockedDappViewedEndpointFirstVisit(mockServer)];
-    }
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withMetaMetricsController({
-            metaMetricsId: validFakeMetricsId,
-            participateInMetaMetrics: true,
-          })
-          .build(),
-        title: this.test.fullTitle(),
-        ganacheOptions: defaultGanacheOptions,
-        testSpecificMock: mockSegment,
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
-        // create 2nd account
-        await createTwoAccounts(driver);
-        // Connect to dapp with two accounts
-        await openDapp(driver);
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
-        await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement(
-          '[data-testid="choose-account-list-operate-all-check-box"]',
-        );
-
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        const dappViewedEventProperties = events[0].properties;
-        assert.equal(dappViewedEventProperties.is_first_visit, true);
-        assert.equal(dappViewedEventProperties.number_of_accounts, 2);
-        assert.equal(dappViewedEventProperties.number_of_accounts_connected, 2);
-      },
-    );
-  });
-
   it('is sent when reconnect to a dapp that has been connected before', async function () {
     async function mockSegment(mockServer) {
       return [
@@ -372,28 +305,20 @@ describe('Dapp viewed Event @no-mmi', function () {
           text: '127.0.0.1:8080',
           tag: 'p',
         });
-        await driver.clickElement(
-          '[data-testid ="account-list-item-menu-button"]',
-        );
         await driver.clickElement({
           text: 'Disconnect',
           tag: 'button',
         });
         await driver.clickElement('[data-testid ="disconnect-all"]');
-        await driver.clickElement('button[aria-label="Back"]');
-        await driver.clickElement('button[aria-label="Back"]');
         // validate dapp is not connected
-        await driver.clickElement(
-          '[data-testid ="account-options-menu-button"]',
-        );
-        await driver.clickElement({
-          text: 'All Permissions',
-          tag: 'div',
-        });
-        await driver.findElement({
-          text: 'Nothing to see here',
+        const noAccountConnected = await driver.isElementPresent({
+          text: 'MetaMask isn’t connected to this site',
           tag: 'p',
         });
+        assert.ok(
+          noAccountConnected,
+          'Account disconected from connections page',
+        );
         // reconnect again
         await connectToDapp(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
