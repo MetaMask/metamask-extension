@@ -1088,9 +1088,6 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask इस साइट से कनेक्टेड है, लेकिन अभी तक कोई अकाउंट कनेक्ट नहीं किया गया है"
   },
-  "connectedWith": {
-    "message": "से कनेक्ट किया गया"
-  },
   "connecting": {
     "message": "कनेक्ट किया जा रहा है"
   },
@@ -1506,14 +1503,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snaps"
-  },
-  "disconnectAllText": {
-    "message": "अगर आप अपने $1 को $2 से डिस्कनेक्ट करते हैं, तो आपको उन्हें दोबारा इस्तेमाल करने के लिए रिकनेक्ट करना होगा।",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "सभी $1 को डिस्कनेक्ट करें",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "$1 डिस्कनेक्ट करें"
@@ -2834,10 +2823,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 निम्नलिखित के लिए आपका एप्रूवल मांग रहा है:",
     "description": "$1 represents dapp name"
-  },
-  "nativePermissionRequestDescription": {
-    "message": "क्या आप चाहते हैं कि यह साइट निम्नलिखित कार्य करे?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "इस नेटवर्क पर ओरिजिनल टोकन $1 है। यह गैस फ़ीस के लिए इस्तेमाल किया जाने वाला टोकन है।",
