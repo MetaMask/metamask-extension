@@ -13,7 +13,7 @@ describe('filterDiffLineAdditions()', (): void => {
     const testFileDiff = generateCreateFileDiff(testFilePath, testAddition);
 
     const actualResult = filterDiffLineAdditions(testFileDiff);
-    const expectedResult = `  +${testAddition}`;
+    const expectedResult = `+${testAddition}`;
 
     expect(actualResult).toStrictEqual(expectedResult);
   });
@@ -31,12 +31,12 @@ describe('filterDiffFileCreations()', (): void => {
 
     expect(actualResult).toMatchInlineSnapshot(`
     "diff --git a/old-file.js b/old-file.js
-      new file mode 100644
-      index 000000000..30d74d258
-      --- /dev/null
-      +++ b/old-file.js
-      @@ -0,0 +1 @@
-      +ping"
+    new file mode 100644
+    index 000000000..30d74d258
+    --- /dev/null
+    +++ b/old-file.js
+    @@ -0,0 +1 @@
+    +ping"
     `);
   });
 });
@@ -74,21 +74,21 @@ describe('filterDiffByFilePath()', (): void => {
 
     expect(actualResult).toMatchInlineSnapshot(`
       "diff --git a/new-file.ts b/new-file.ts
-          index 57d5de75c..808d8ba37 100644
-          --- a/new-file.ts
-          +++ b/new-file.ts
-          @@ -1,3 +1,8 @@
-        +foo
-          @@ -34,33 +39,4 @@
-        -bar
+      index 57d5de75c..808d8ba37 100644
+      --- a/new-file.ts
+      +++ b/new-file.ts
+      @@ -1,3 +1,8 @@
+      +foo
+      @@ -34,33 +39,4 @@
+      -bar
       diff --git a/old-file.js b/old-file.js
-          index 57d5de75c..808d8ba37 100644
-          --- a/old-file.js
-          +++ b/old-file.js
-          @@ -1,3 +1,8 @@
-        +ping
-          @@ -34,33 +39,4 @@
-        -pong"
+      index 57d5de75c..808d8ba37 100644
+      --- a/old-file.js
+      +++ b/old-file.js
+      @@ -1,3 +1,8 @@
+      +ping
+      @@ -34,33 +39,4 @@
+      -pong"
     `);
   });
 
@@ -97,21 +97,21 @@ describe('filterDiffByFilePath()', (): void => {
 
     expect(actualResult).toMatchInlineSnapshot(`
       "diff --git a/new-file.ts b/new-file.ts
-          index 57d5de75c..808d8ba37 100644
-          --- a/new-file.ts
-          +++ b/new-file.ts
-          @@ -1,3 +1,8 @@
-        +foo
-          @@ -34,33 +39,4 @@
-        -bar
+      index 57d5de75c..808d8ba37 100644
+      --- a/new-file.ts
+      +++ b/new-file.ts
+      @@ -1,3 +1,8 @@
+      +foo
+      @@ -34,33 +39,4 @@
+      -bar
       diff --git a/old-file.jsx b/old-file.jsx
-          index 57d5de75c..808d8ba37 100644
-          --- a/old-file.jsx
-          +++ b/old-file.jsx
-          @@ -1,3 +1,8 @@
-        +yin
-          @@ -34,33 +39,4 @@
-        -yang"
+      index 57d5de75c..808d8ba37 100644
+      --- a/old-file.jsx
+      +++ b/old-file.jsx
+      @@ -1,3 +1,8 @@
+      +yin
+      @@ -34,33 +39,4 @@
+      -yang"
     `);
   });
 
@@ -123,13 +123,13 @@ describe('filterDiffByFilePath()', (): void => {
 
     expect(actualResult).toMatchInlineSnapshot(`
       "diff --git a/new-file.ts b/new-file.ts
-          index 57d5de75c..808d8ba37 100644
-          --- a/new-file.ts
-          +++ b/new-file.ts
-          @@ -1,3 +1,8 @@
-        +foo
-          @@ -34,33 +39,4 @@
-        -bar"
+      index 57d5de75c..808d8ba37 100644
+      --- a/new-file.ts
+      +++ b/new-file.ts
+      @@ -1,3 +1,8 @@
+      +foo
+      @@ -34,33 +39,4 @@
+      -bar"
     `);
   });
 
@@ -141,13 +141,13 @@ describe('filterDiffByFilePath()', (): void => {
 
     expect(actualResult).toMatchInlineSnapshot(`
         "diff --git a/old-file.js b/old-file.js
-            index 57d5de75c..808d8ba37 100644
-            --- a/old-file.js
-            +++ b/old-file.js
-            @@ -1,3 +1,8 @@
-          +ping
-            @@ -34,33 +39,4 @@
-          -pong"
+        index 57d5de75c..808d8ba37 100644
+        --- a/old-file.js
+        +++ b/old-file.js
+        @@ -1,3 +1,8 @@
+        +ping
+        @@ -34,33 +39,4 @@
+        -pong"
       `);
   });
 });
