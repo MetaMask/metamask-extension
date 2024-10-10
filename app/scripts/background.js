@@ -327,6 +327,24 @@ function maybeDetectPhishing(theController) {
   );
 }
 
+/**
+ * Overrides the Content-Security-Policy Header, acting as a workaround for an MV2 Firefox Bug.
+ */
+function overrideContentSecurityPolicyHeader() {
+  browser.webRequest.onHeadersReceived.addListener(
+    ({ responseHeaders }) => {
+      for (const header of responseHeaders) {
+        if (header.name.toLowerCase() === 'content-security-policy') {
+          header.value = '';
+        }
+      }
+      return { responseHeaders };
+    },
+    { urls: ['http://*/*', 'https://*/*'] },
+    ['blocking', 'responseHeaders'],
+  );
+}
+
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -473,6 +491,10 @@ async function initialize() {
 
     if (!isManifestV3) {
       await loadPhishingWarningPage();
+      const { name } = await browser.runtime.getBrowserInfo();
+      if (name === PLATFORM_FIREFOX) {
+        overrideContentSecurityPolicyHeader();
+      }
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
