@@ -12,6 +12,7 @@ import {
 } from '../../../../../shared/modules/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send/send.constants';
 import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components';
+import { BlockSize } from '../../../../helpers/constants/design-system';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {

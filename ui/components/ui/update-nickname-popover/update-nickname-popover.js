@@ -1,15 +1,13 @@
+import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-
-import Popover from '../popover';
-import Button from '../button';
-import { TextField } from '../../component-library';
-
 import { I18nContext } from '../../../contexts/i18n';
-
-import Identicon from '../identicon';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import { getTokenList } from '../../../selectors';
+import { TextField } from '../../component-library';
+import Button from '../button';
+import Identicon from '../identicon';
+import Popover from '../popover';
 
 export default function UpdateNicknamePopover({
   address,

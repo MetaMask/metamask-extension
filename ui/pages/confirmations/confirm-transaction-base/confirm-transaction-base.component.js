@@ -8,6 +8,7 @@ import ConfirmPageContainer from '../components/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
+  BlockSize,
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import DropdownSearchList from '../dropdown-search-list';
 import { TextField } from '../../../components/component-library';
+import { BlockSize } from '../../../helpers/constants/design-system';
 
 const characterWidthMap = {
   1: 5.86,

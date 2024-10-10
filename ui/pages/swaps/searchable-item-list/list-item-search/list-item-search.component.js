@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import log from 'loglevel';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { TextField } from '../../../../components/component-library/';
+import { TextField } from '../../../../components/component-library';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { fetchToken } from '../../swaps.util';
 import { getCurrentChainId } from '../../../../selectors/selectors';
 import SearchIcon from '../../../../components/ui/icon/search-icon';
+import { BlockSize } from '../../../../helpers/constants/design-system';
 
 const renderStartAccessory = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>
