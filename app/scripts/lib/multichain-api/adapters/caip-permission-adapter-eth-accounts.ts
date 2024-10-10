@@ -12,6 +12,16 @@ import {
   ScopeString,
 } from '../scope';
 
+const isEip155ScopeString = (scopeString: ScopeString) => {
+  const { namespace, reference } = parseScopeString(scopeString);
+
+  return (
+    namespace === KnownCaipNamespace.Eip155 ||
+    (namespace === KnownCaipNamespace.Wallet &&
+      reference === KnownCaipNamespace.Eip155)
+  );
+};
+
 export const getEthAccounts = (caip25CaveatValue: Caip25CaveatValue) => {
   const ethAccounts: string[] = [];
   const sessionScopes = mergeScopes(
@@ -21,12 +31,9 @@ export const getEthAccounts = (caip25CaveatValue: Caip25CaveatValue) => {
 
   Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
     accounts?.forEach((account) => {
-      const {
-        address,
-        chain: { namespace },
-      } = parseCaipAccountId(account);
+      const { address, chainId } = parseCaipAccountId(account);
 
-      if (namespace === KnownCaipNamespace.Eip155) {
+      if (isEip155ScopeString(chainId)) {
         ethAccounts.push(address);
       }
     });
@@ -42,9 +49,7 @@ const setEthAccountsForScopesObject = (
   const updatedScopesObject: ScopesObject = {};
 
   Object.entries(scopesObject).forEach(([scopeString, scopeObject]) => {
-    const { namespace } = parseScopeString(scopeString);
-
-    if (namespace !== KnownCaipNamespace.Eip155) {
+    if (!isEip155ScopeString(scopeString as ScopeString)) {
       updatedScopesObject[scopeString as ScopeString] = scopeObject;
       return;
     }

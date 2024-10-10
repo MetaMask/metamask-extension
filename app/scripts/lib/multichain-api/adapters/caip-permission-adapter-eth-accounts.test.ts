@@ -42,11 +42,23 @@ describe('CAIP-25 eth_accounts adapters', () => {
             notifications: [],
             accounts: ['eip155:100:0x100'],
           },
+          'wallet:eip155': {
+            methods: [],
+            notifications: [],
+            accounts: ['wallet:eip155:0x5'],
+          },
         },
         isMultichainOrigin: false,
       });
 
-      expect(ethAccounts).toStrictEqual(['0x1', '0x2', '0x4', '0x3', '0x100']);
+      expect(ethAccounts).toStrictEqual([
+        '0x1',
+        '0x2',
+        '0x4',
+        '0x3',
+        '0x100',
+        '0x5',
+      ]);
     });
   });
 
@@ -86,6 +98,10 @@ describe('CAIP-25 eth_accounts adapters', () => {
             methods: [],
             notifications: [],
             accounts: ['eip155:100:0x100'],
+          },
+          'wallet:eip155': {
+            methods: [],
+            notifications: [],
           },
         },
         isMultichainOrigin: false,
@@ -127,6 +143,15 @@ describe('CAIP-25 eth_accounts adapters', () => {
             methods: [],
             notifications: [],
             accounts: ['eip155:100:0x1', 'eip155:100:0x2', 'eip155:100:0x3'],
+          },
+          'wallet:eip155': {
+            methods: [],
+            notifications: [],
+            accounts: [
+              'wallet:eip155:0x1',
+              'wallet:eip155:0x2',
+              'wallet:eip155:0x3',
+            ],
           },
         },
         isMultichainOrigin: false,
