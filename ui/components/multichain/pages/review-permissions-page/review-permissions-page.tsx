@@ -265,14 +265,18 @@ export const ReviewPermissions = () => {
                 </Button>
               </Box>
             ) : (
-              <ButtonPrimary
-                size={ButtonPrimarySize.Lg}
-                block
-                data-test-id="no-connections-button"
-                onClick={requestAccountsAndChainPermissions}
-              >
-                {t('connectAccounts')}
-              </ButtonPrimary>
+              <>
+                {connectedAccountAddresses.length > 0 ? (
+                  <ButtonPrimary
+                    size={ButtonPrimarySize.Lg}
+                    block
+                    data-test-id="no-connections-button"
+                    onClick={requestAccountsAndChainPermissions}
+                  >
+                    {t('connectAccounts')}
+                  </ButtonPrimary>
+                ) : null}
+              </>
             )}
           </>
         </Footer>

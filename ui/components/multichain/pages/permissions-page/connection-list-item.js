@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
-import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -25,14 +24,10 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
-import { getPermittedChainsForSelectedTab } from '../../../../selectors';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const connectedNetworks = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, connection.origin),
-  );
 
   return (
     <Box
@@ -88,9 +83,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {connection.addresses.length} {t('accountsSmallCase')}&nbsp;
-              •&nbsp;
-              {connectedNetworks.length} {t('networksSmallCase')}
+              {connection.addresses.length} {t('accountsSmallCase')} •&nbsp;
             </Text>
           </Box>
         )}
