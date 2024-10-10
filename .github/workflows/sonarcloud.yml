@@ -1,3 +1,8 @@
+# This GitHub action will checkout and scan third party code.
+# Please ensure that any changes to this action do not perform
+# actions that may result in code from that branch being executed
+# such as installing dependencies or running build scripts.
+
 name: SonarCloud
 
 on:
