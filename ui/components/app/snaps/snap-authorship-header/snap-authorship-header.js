@@ -91,12 +91,16 @@ const SnapAuthorshipHeader = ({
           display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
+          style={{
+            maxWidth: '236px',
+          }}
         >
           <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} />
           <Text
             color={TextColor.textDefault}
             variant={TextVariant.bodyMdMedium}
             marginLeft={2}
+            title={snapName}
             ellipsis
           >
             {snapName}
