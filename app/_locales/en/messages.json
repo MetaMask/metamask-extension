@@ -163,8 +163,7 @@
     "message": "Account options"
   },
   "accountPermissionToast": {
-    "message": "Account permissions updated for $1",
-    "description": "$1 represents connected dapp"
+    "message": "Account permissions updated"
   },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
@@ -3151,8 +3150,7 @@
     "message": "Network options"
   },
   "networkPermissionToast": {
-    "message": "Network permissions updated for $1",
-    "description": "$1 represents connected dapp"
+    "message": "Network permissions updated"
   },
   "networkProvider": {
     "message": "Network provider"
@@ -4100,7 +4098,7 @@
     "message": "You're giving the spender permission to spend this many tokens from your account."
   },
   "permittedChainToastUpdate": {
-    "message": "$1 has been given access to $2."
+    "message": "$1 has access to $2."
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
