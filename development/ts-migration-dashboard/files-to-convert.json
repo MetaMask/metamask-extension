@@ -40,8 +40,6 @@
   "app/scripts/controllers/permissions/selectors.test.js",
   "app/scripts/controllers/permissions/specifications.js",
   "app/scripts/controllers/permissions/specifications.test.js",
-  "app/scripts/controllers/preferences.js",
-  "app/scripts/controllers/preferences.test.js",
   "app/scripts/controllers/swaps.js",
   "app/scripts/controllers/swaps.test.js",
   "app/scripts/controllers/transactions/index.js",
