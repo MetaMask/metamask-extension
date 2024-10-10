@@ -41,7 +41,7 @@ export const sendTransaction = async (
 };
 
 /**
- * This function initiates the steps required to send a transaction from the homepage to final confirmation.
+ * This function initiates the steps required to send a transaction from snap account from homepage to final confirmation.
  *
  * @param driver
  * @param recipientAddress

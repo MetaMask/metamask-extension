@@ -6,8 +6,9 @@ import {
   tempToggleSettingRedesignedConfirmations,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
+import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import {
-  installSnapSimpleKeyring,
   makeNewAccountAndSwitch,
   connectAccountToTestDapp,
   disconnectFromTestDapp,
@@ -25,9 +26,9 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         const flowType = 'approve';
-        const isAsyncFlow = true;
 
-        await installSnapSimpleKeyring(driver, isAsyncFlow);
+        await loginWithBalanceValidation(driver);
+        await installSnapSimpleKeyring(driver);
 
         const newPublicKey = await makeNewAccountAndSwitch(driver);
 

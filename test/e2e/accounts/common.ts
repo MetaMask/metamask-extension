@@ -7,13 +7,11 @@ import {
   WINDOW_TITLES,
   clickSignOnSignatureConfirmation,
   switchToOrOpenDapp,
-  unlockWallet,
   validateContractDetails,
   multipleGanacheOptions,
   regularDelayMs,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 import { retry } from '../../../development/lib/retry';
 
 /**
@@ -40,67 +38,6 @@ export const accountSnapFixtures = (title: string | undefined) => {
 export const PUBLIC_KEY = privateToAddress(
   Buffer.from(PRIVATE_KEY.slice(2), 'hex'),
 ).toString('hex');
-
-export async function installSnapSimpleKeyring(
-  driver: Driver,
-  isAsyncFlow: boolean,
-) {
-  await unlockWallet(driver);
-
-  // navigate to test Snaps page and connect
-  await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-
-  await driver.clickElement('#connectButton');
-
-  await driver.delay(500);
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await driver.delay(500);
-
-  await driver.clickElement({
-    text: 'Connect',
-    tag: 'button',
-  });
-
-  await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
-
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
-
-  await driver.waitForSelector({ text: 'Confirm' });
-
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-  });
-
-  await driver.waitForSelector({ text: 'OK' });
-
-  await driver.clickElement({
-    text: 'OK',
-    tag: 'button',
-  });
-
-  // Wait until popup is closed before proceeding
-  await driver.waitUntilXWindowHandles(2);
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
-
-  await driver.waitForSelector({
-    text: 'Connected',
-    tag: 'span',
-  });
-
-  if (isAsyncFlow) {
-    await toggleAsyncFlow(driver);
-  }
-}
-
-async function toggleAsyncFlow(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
-
-  await driver.clickElement('[data-testid="use-sync-flow-toggle"]');
-}
 
 export async function importKeyAndSwitch(driver: Driver) {
   await driver.clickElement({
