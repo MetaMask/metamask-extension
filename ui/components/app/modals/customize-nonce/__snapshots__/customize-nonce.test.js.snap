@@ -72,8 +72,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
             class="customize-nonce-modal__input"
           >
             <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
-              min="0"
+              class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
             >
               <input
                 autocomplete="off"
@@ -81,6 +80,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
                 data-testid="custom-nonce-input"
                 focused="false"
                 id="custom-nonce-id"
+                min="0"
                 placeholder="1"
                 type="number"
                 value=""
