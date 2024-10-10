@@ -131,6 +131,7 @@ features:
   keyring-snaps:
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
+  not-the-extension:
 
 # Env variables that are required for all types of builds
 #
