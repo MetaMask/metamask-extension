@@ -29,7 +29,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         await installSnapSimpleKeyring(driver, true);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
-        // Import snap account with private key on snap simple keyring page.
+        // import snap account with private key on snap simple keyring page.
         await snapSimpleKeyringPage.importAccountWithPrivateKey(PRIVATE_KEY_TWO);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -49,7 +49,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         await accountList.check_pageIsLoaded();
 
-        //check the balance of the 2 accounts are updated
+        // check the balance of the 2 accounts are updated
         await accountList.check_accountBalanceDisplayed('26');
         await accountList.check_accountBalanceDisplayed('24');
       },
@@ -68,7 +68,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
-        // Import snap account with private key on snap simple keyring page.
+        // import snap account with private key on snap simple keyring page.
         await snapSimpleKeyringPage.importAccountWithPrivateKey(PRIVATE_KEY_TWO);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -89,7 +89,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         await accountList.check_pageIsLoaded();
 
-        //check the balance of the 2 accounts are updated
+        // check the balance of the 2 accounts are updated
         await accountList.check_accountBalanceDisplayed('26');
         await accountList.check_accountBalanceDisplayed('24');
       },
@@ -127,6 +127,8 @@ describe('Snap Account Transfers', function (this: Suite) {
           false,
           false,
         );
+
+        // check the transaction is failed in MetaMask activity list
         const homepage = new HomePage(driver);
         await homepage.check_pageIsLoaded();
         await homepage.check_failedTxNumberDisplayedInActivity();
