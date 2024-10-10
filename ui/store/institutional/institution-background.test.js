@@ -1,7 +1,4 @@
-import {
-  hideLoadingIndication,
-  showLoadingIndication,
-} from '../actions';
+import { hideLoadingIndication, showLoadingIndication } from '../actions';
 import { submitRequestToBackground } from '../background-connection';
 import {
   mmiActionsFactory,
