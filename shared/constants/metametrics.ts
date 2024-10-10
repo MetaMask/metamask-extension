@@ -586,6 +586,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
+  OnboardingWalletSetupComplete = 'Wallet Setup Complete',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',

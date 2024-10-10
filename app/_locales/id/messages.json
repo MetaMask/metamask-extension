@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Saat transaksi Anda dimasukkan ke dalam blok, selisih antara biaya dasar maks dan biaya dasar aktual akan dikembalikan. Jumlah total dihitung sebagai biaya dasar maks (dalam GWEI) * batas gas."
   },
-  "advancedConfiguration": {
-    "message": "Konfigurasi lanjutan"
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "Untuk melanjutkan transaksi ini, Anda perlu meningkatkan batas gas menjadi 21000 atau lebih tinggi."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Anda tidak memiliki cukup ETH di akun untuk membayar biaya transaksi."
-  },
   "alertMessageNetworkBusy": {
     "message": "Harga gas tinggi dan estimasinya kurang akurat."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Akun salah"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Memilih untuk menjelajahi situs web dengan akun yang tidak terhubung"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Peringatan ini ditampilkan dalam sembulan saat Anda menelusuri situs web3 yang terhubung, tetapi akun yang baru saja dipilih tidak terhubung."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Saat situs web mencoba menggunakan API window.web3 yang dihapus"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Peringatan ini ditampilkan dalam sembulan saat Anda menelusuri situs yang mencoba menggunakan API window.web3 yang dihapus, dan bisa mengakibatkan kerusakan."
   },
   "alerts": {
     "message": "Peringatan"
@@ -714,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Ketentuan penggunaan Beta"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask Beta tidak dapat memulihkan Frasa Pemulihan Rahasia Anda."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask Beta tidak akan pernah menanyakan Frasa Pemulihan Rahasia Anda."
   },
   "billionAbbreviation": {
     "message": "M",
@@ -2415,9 +2391,6 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "File JSON",
     "description": "format for importing an account"
@@ -3467,10 +3440,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "Sematkan MetaMask Institutional"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Peringatan deteksi pengelabuan bergantung pada komunikasi dengan $1. jsDeliver akan mendapat akses ke alamat IP Anda. Lihat $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1H",
     "description": "Shortened form of '1 day'"
@@ -4111,9 +4080,6 @@
   "rejected": {
     "message": "Ditolak"
   },
-  "remember": {
-    "message": "Ingatlah:"
-  },
   "remove": {
     "message": "Hapus"
   },
@@ -4520,9 +4486,6 @@
   },
   "sepolia": {
     "message": "Jaringan uji Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask menggunakan layanan pihak ketiga tepercaya ini untuk meningkatkan kegunaan dan keamanan produk."
   },
   "setApprovalForAll": {
     "message": "Atur persetujuan untuk semua"
@@ -6174,26 +6137,6 @@
   },
   "walletConnectionGuide": {
     "message": "panduan koneksi dompet perangkat keras kami"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Anda telah berhasil melindungi dompet Anda. Jaga agar Frasa Pemulihan Rahasia tetap aman dan terlindungi. Ini merupakan tanggung jawab Anda!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask tidak dapat memulihkan Frasa Pemulihan Rahasia Anda."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask tidak akan pernah menanyakan Frasa Pemulihan Rahasia Anda."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 dengan siapa pun atau dana Anda berisiko dicuri",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Jangan pernah membagikan Frasa Pemulihan Rahasia Anda",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Dompet berhasil dibuat"
   },
   "wantToAddThisNetwork": {
     "message": "Ingin menambahkan jaringan ini?"
