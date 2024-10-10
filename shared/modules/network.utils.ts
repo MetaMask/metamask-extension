@@ -78,16 +78,16 @@ function isSafeInteger(value: unknown): value is number {
  * as either a number, a decimal string, or a 0x-prefixed hex string.
  *
  * @param value - The network ID to convert, in an unknown format.
- * @returns A valid network ID (as a decimal string)
- * @throws If the given value cannot be safely parsed.
+ * @returns A valid network ID (as a decimal string) or null if
+ * the given value cannot be parsed.
  */
-export function convertNetworkId(value: unknown): string {
-  if (typeof value === 'number' && !Number.isNaN(value)) {
+export function convertNetworkId(value: unknown): string | null {
+  if (typeof value === 'number' && Number.isInteger(value) && value >= 0) {
     return `${value}`;
   } else if (isStrictHexString(value)) {
     return `${convertHexToDecimal(value)}`;
   } else if (typeof value === 'string' && /^\d+$/u.test(value)) {
     return value;
   }
-  throw new Error(`Cannot parse as a valid network ID: '${value}'`);
+  return null;
 }
