@@ -1,5 +1,8 @@
 import { Duplex, PassThrough } from 'readable-stream';
 import { createDeferredPromise } from '@metamask/utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { deferredPromise } from '../../app/scripts/lib/util';
 import { createCaipStream } from './caip-stream';
 
 const writeToStream = async (stream: Duplex, message: unknown) => {
@@ -76,6 +79,21 @@ describe('CAIP Stream', () => {
       expect(sourceStream.chunks).toStrictEqual([
         { type: 'caip-x', data: { foo: 'bar' } },
       ]);
+    });
+
+    it('ends the substream when the source stream ends', async () => {
+      // using a fake stream here instead of PassThrough to prevent a loop
+      // when sourceStream gets written back to at the end of the CAIP pipeline
+      const sourceStream = new MockStream();
+
+      const providerStream = createCaipStream(sourceStream);
+
+      const { promise, resolve } = deferredPromise();
+      providerStream.on('close', () => resolve?.());
+
+      sourceStream.destroy();
+
+      await expect(promise).resolves.toBe(undefined);
     });
   });
 });

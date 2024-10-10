@@ -637,13 +637,8 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const permissions = controller.controllerMessenger.call(
-    'PermissionController:getPermissions',
-    origin,
-  );
-  const numberOfConnectedAccounts =
-    permissions?.eth_accounts?.caveats[0]?.value.length;
-  if (!numberOfConnectedAccounts) {
+  const numberOfConnectedAccounts = controller.getPermittedAccounts(origin);
+  if (numberOfConnectedAccounts.length === 0) {
     return;
   }
 
