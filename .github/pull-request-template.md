@@ -44,6 +44,8 @@ Fixes:
 - [ ] I’ve documented my code using [JSDoc](https://jsdoc.app/) format if applicable
 - [ ] I’ve applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/LABELING_GUIDELINES.md)). Not required for external contributors.
 
+_Each reviewer should include the following checklist in review feedbacks:_
+
 ## **Pre-merge reviewer checklist**
 
 - [ ] I've manually tested the PR (e.g. pull and build branch, run the app, test code being changed).
