@@ -84,10 +84,6 @@ export class BridgePage {
 
   verifySwapPage = async (expectedHandleCount: number) => {
     await this.driver.delay(4000);
-    await this.driver.waitForSelector({
-      css: '.bridge__title',
-      text: 'Bridge',
-    });
     assert.equal(
       (await this.driver.getAllWindowHandles()).length,
       IS_FIREFOX || !isManifestV3

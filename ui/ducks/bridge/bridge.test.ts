@@ -17,6 +17,8 @@ import {
   setToChain,
   setToToken,
   setFromChain,
+  resetInputFields,
+  switchToAndFromTokens,
 } from './actions';
 
 const middleware = [thunk];
@@ -43,9 +45,9 @@ describe('Ducks - Bridge', () => {
 
       // Check redux state
       const actions = store.getActions();
-      expect(actions[0].type).toBe('bridge/setToChainId');
+      expect(actions[0].type).toStrictEqual('bridge/setToChainId');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toChainId).toBe(actionPayload);
+      expect(newState.toChainId).toStrictEqual(actionPayload);
       // Check background state
       expect(mockSelectDestNetwork).toHaveBeenCalledTimes(1);
       expect(mockSelectDestNetwork).toHaveBeenCalledWith(
@@ -61,9 +63,9 @@ describe('Ducks - Bridge', () => {
       const actionPayload = { symbol: 'SYMBOL', address: '0x13341432' };
       store.dispatch(setFromToken(actionPayload));
       const actions = store.getActions();
-      expect(actions[0].type).toBe('bridge/setFromToken');
+      expect(actions[0].type).toStrictEqual('bridge/setFromToken');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.fromToken).toBe(actionPayload);
+      expect(newState.fromToken).toStrictEqual(actionPayload);
     });
   });
 
@@ -73,9 +75,9 @@ describe('Ducks - Bridge', () => {
       const actionPayload = { symbol: 'SYMBOL', address: '0x13341431' };
       store.dispatch(setToToken(actionPayload));
       const actions = store.getActions();
-      expect(actions[0].type).toBe('bridge/setToToken');
+      expect(actions[0].type).toStrictEqual('bridge/setToToken');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toToken).toBe(actionPayload);
+      expect(newState.toToken).toStrictEqual(actionPayload);
     });
   });
 
@@ -85,9 +87,9 @@ describe('Ducks - Bridge', () => {
       const actionPayload = '10';
       store.dispatch(setFromTokenInputValue(actionPayload));
       const actions = store.getActions();
-      expect(actions[0].type).toBe('bridge/setFromTokenInputValue');
+      expect(actions[0].type).toStrictEqual('bridge/setFromTokenInputValue');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.fromTokenInputValue).toBe(actionPayload);
+      expect(newState.fromTokenInputValue).toStrictEqual(actionPayload);
     });
   });
 
@@ -116,6 +118,50 @@ describe('Ducks - Bridge', () => {
         '0x1',
         expect.anything(),
       );
+    });
+  });
+
+  describe('resetInputFields', () => {
+    it('resets to initalState', async () => {
+      const state = store.getState().bridge;
+      store.dispatch(resetInputFields());
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState).toStrictEqual({
+        toChainId: null,
+        fromToken: null,
+        toToken: null,
+        fromTokenInputValue: null,
+      });
+    });
+  });
+
+  describe('switchToAndFromTokens', () => {
+    it('switches to and from input values', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const bridgeStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore(
+          {},
+          {
+            toChainId: CHAIN_IDS.MAINNET,
+            fromToken: { symbol: 'WETH', address: '0x13341432' },
+            toToken: { symbol: 'USDC', address: '0x13341431' },
+            fromTokenInputValue: '10',
+          },
+        ),
+      );
+      const state = bridgeStore.getState().bridge;
+      bridgeStore.dispatch(switchToAndFromTokens(CHAIN_IDS.POLYGON));
+      const actions = bridgeStore.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/switchToAndFromTokens');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState).toStrictEqual({
+        toChainId: CHAIN_IDS.POLYGON,
+        fromToken: { symbol: 'USDC', address: '0x13341431' },
+        toToken: { symbol: 'WETH', address: '0x13341432' },
+        fromTokenInputValue: null,
+      });
     });
   });
 });
