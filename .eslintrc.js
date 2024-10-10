@@ -7,6 +7,13 @@ const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
 
+// Allow TypeScript to be used in ESLint
+require('tsx/cjs/api').register(tsconfig);
+
+// Load the NPM package eslint-plugin-rulesdir
+const rulesDirPlugin = require('eslint-plugin-rulesdir');
+rulesDirPlugin.RULES_DIR = 'development/custom-rules';
+
 /**
  * @type {import('eslint').Linter.Config }
  */
@@ -18,7 +25,7 @@ module.exports = {
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
   // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
   parser: '@babel/eslint-parser',
-  plugins: ['@metamask/design-tokens'],
+  plugins: ['@metamask/design-tokens', 'rulesdir'],
   rules: {
     '@metamask/design-tokens/color-no-hex': 'warn',
     'import/no-restricted-paths': [
@@ -50,6 +57,10 @@ module.exports = {
           },
         ],
       },
+    ],
+    'rulesdir/illegalFunctionNames': [
+      'error',
+      { illegalFunctionNames: ['badFunction', 'worseFunction'] },
     ],
   },
   overrides: [
