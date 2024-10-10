@@ -41,6 +41,9 @@
   "QRHardwareWalletSteps1Title": {
     "message": "QR donanım cüzdanınızı bağlayın"
   },
+  "QRHardwareWalletSteps2Description": {
+    "message": "Ngrave Zero"
+  },
   "SIWEAddressInvalid": {
     "message": "Giriş talebindeki adres, giriş yapmak için kullandığınız hesapla uyumlu değil."
   },
@@ -133,6 +136,9 @@
   "accountActivityText": {
     "message": "Hakkında bildirim almak istediğiniz hesapları seçin:"
   },
+  "accountBalance": {
+    "message": "Hesap bakiyesi"
+  },
   "accountDetails": {
     "message": "Hesap bilgileri"
   },
@@ -168,6 +174,12 @@
   "accountsConnected": {
     "message": "Hesaplar bağlandı"
   },
+  "accountsPermissionsTitle": {
+    "message": "Hesaplarınızı görmek ve işlem önermek"
+  },
+  "accountsSmallCase": {
+    "message": "hesaplar"
+  },
   "active": {
     "message": "Aktif"
   },
@@ -180,11 +192,17 @@
   "add": {
     "message": "Ekle"
   },
+  "addACustomNetwork": {
+    "message": "Özel bir ağ ekle"
+  },
   "addANetwork": {
     "message": "Ağ ekle"
   },
   "addANickname": {
     "message": "Takma ad ekle"
+  },
+  "addAUrl": {
+    "message": "URL ekle"
   },
   "addAccount": {
     "message": "Hesap ekleyin"
@@ -200,6 +218,9 @@
   },
   "addBlockExplorer": {
     "message": "Bir blok gezgini ekle"
+  },
+  "addBlockExplorerUrl": {
+    "message": "Bir blok gezgini URL adresi ekle"
   },
   "addContact": {
     "message": "Kişi ekle"
@@ -246,6 +267,9 @@
   "addEthereumChainWarningModalTitle": {
     "message": "Ethereum Ana Ağı için yeni bir RPC sağlayıcısı ekliyorsunuz"
   },
+  "addEthereumWatchOnlyAccount": {
+    "message": "Bir Ethereum hesabını izle (Beta)"
+  },
   "addFriendsAndAddresses": {
     "message": "Güvendiğiniz arkadaşlarınızı ve adresleri ekleyin"
   },
@@ -263,6 +287,10 @@
   },
   "addNetwork": {
     "message": "Ağ ekle"
+  },
+  "addNetworkConfirmationTitle": {
+    "message": "$1 ekle",
+    "description": "$1 represents network name"
   },
   "addNewAccount": {
     "message": "Yeni bir Ethereum hesabı ekle"
@@ -325,6 +353,17 @@
   "addressCopied": {
     "message": "Adres kopyalandı!"
   },
+  "addressMismatch": {
+    "message": "Site adresi uyumsuzluğu"
+  },
+  "addressMismatchOriginal": {
+    "message": "Mevcut URL: $1",
+    "description": "$1 replaced by origin URL in confirmation request"
+  },
+  "addressMismatchPunycode": {
+    "message": "Punycode sürümü: $1",
+    "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
   "advanced": {
     "message": "Gelişmiş"
   },
@@ -380,6 +419,9 @@
   },
   "alertDisableTooltip": {
     "message": "\"Ayarlar > Uyarılar\" kısmında değiştirilebilir"
+  },
+  "alertMessageAddressMismatchWarning": {
+    "message": "Saldırganlar bazen site adresinde küçük değişiklikler yaparak siteleri taklit edebilir. Devam etmeden önce planladığınız site ile etkileşim kurduğunuzdan emin olun."
   },
   "alertMessageGasEstimateFailed": {
     "message": "Kesin bir ücret sunamıyoruz ve bu tahmin yüksek olabilir. Özel bir gaz limiti girmenizi öneririz ancak işlemin yine de başarısız olma riski vardır."
@@ -815,6 +857,12 @@
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCrypto": {
+    "message": "Kripto al"
+  },
+  "buyFirstCrypto": {
+    "message": "Banka kartı veya kredi kartı ile ilk kriptonuzu satın alın."
+  },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -963,23 +1011,53 @@
   "confirmRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini Onayla"
   },
+  "confirmTitleApproveTransaction": {
+    "message": "Ödenek talebi"
+  },
+  "confirmTitleDeployContract": {
+    "message": "Bir sözleşme kurulumu gerçekleştirin"
+  },
+  "confirmTitleDescApproveTransaction": {
+    "message": "Bu site NFT'lerinizi çekmek için izin istiyor"
+  },
+  "confirmTitleDescDeployContract": {
+    "message": "Bu site sözleşme kurulumu gerçekleştirmenizi istiyor"
+  },
+  "confirmTitleDescERC20ApproveTransaction": {
+    "message": "Bu site tokenlerinizi çekmek için izin istiyor"
+  },
   "confirmTitleDescPermitSignature": {
     "message": "Bu site token'lerinizi harcamak için izin istiyor."
   },
   "confirmTitleDescSIWESignature": {
     "message": "Bir site bu hesabın sahibi olduğunuzu kanıtlamak için giriş yapmanızı istiyor."
   },
+  "confirmTitleDescSign": {
+    "message": "Onaylamadan önce talep bilgilerini inceleyin."
+  },
   "confirmTitlePermitTokens": {
     "message": "Harcama üst limiti talebi"
   },
+  "confirmTitleRevokeApproveTransaction": {
+    "message": "İzni kaldır"
+  },
   "confirmTitleSIWESignature": {
     "message": "Giriş talebi"
+  },
+  "confirmTitleSetApprovalForAllRevokeTransaction": {
+    "message": "İzni kaldır"
   },
   "confirmTitleSignature": {
     "message": "İmza talebi"
   },
   "confirmTitleTransaction": {
     "message": "İşlem talebi"
+  },
+  "confirmationAlertModalDetails": {
+    "message": "Varlıklarınızı ve oturum açma bilgilerinizi korumak için talebi reddetmenizi öneririz."
+  },
+  "confirmationAlertModalTitle": {
+    "message": "Bu talep şüphelidir"
   },
   "confirmed": {
     "message": "Onaylandı"
@@ -1053,6 +1131,9 @@
   "connectedSites": {
     "message": "Bağlı siteler"
   },
+  "connectedSitesAndSnaps": {
+    "message": "Bağlı siteler ve Snap'ler"
+  },
   "connectedSitesDescription": {
     "message": "$1 bu sitelere bağlanmış. Bu siteler hesap adresinizi görüntüleyebilir.",
     "description": "$1 is the account name"
@@ -1063,6 +1144,21 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask bu siteye bağlı ancak henüz bağlı hesap yok"
+  },
+  "connectedSnaps": {
+    "message": "Bağlı Snap'ler"
+  },
+  "connectedWithAccount": {
+    "message": "$1 hesap bağlandı",
+    "description": "$1 represents account length"
+  },
+  "connectedWithAccountName": {
+    "message": "$1 ile bağlandı",
+    "description": "$1 represents account name"
+  },
+  "connectedWithNetworks": {
+    "message": "$1 ağ bağlandı",
+    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Bağlanıyor"
@@ -1090,6 +1186,9 @@
   },
   "connectingToSepolia": {
     "message": "Sepolia test ağına bağlanılıyor"
+  },
+  "connectionDescription": {
+    "message": "Bu site şunları yapmak istiyor:"
   },
   "connectionFailed": {
     "message": "Bağlantı başarısız oldu"
@@ -1170,6 +1269,9 @@
   },
   "copyAddress": {
     "message": "Adresi panoya kopyala"
+  },
+  "copyAddressShort": {
+    "message": "Adresi kopyala"
   },
   "copyPrivateKey": {
     "message": "Özel anahtarı kopyala"
@@ -1436,6 +1538,9 @@
   "deposit": {
     "message": "Para Yatır"
   },
+  "depositCrypto": {
+    "message": "Cüzdan adresi veya QR kodu ile başka bir hesaptan kripto yatırın."
+  },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Ethereum sistemindeki güncellemelerden dolayı Goerli test ağı yakında aşamalı olarak devre dışı bırakılacaktır."
   },
@@ -1477,8 +1582,16 @@
   "disconnectAllAccountsText": {
     "message": "hesaplar"
   },
+  "disconnectAllDescription": {
+    "message": "$1 ile bağlantınızı keserseniz bu siteyi tekrar kullanabilmek için hesaplarınızı ve ağlarınızı tekrar bağlamanız gerekecek.",
+    "description": "$1 represents the website hostname"
+  },
   "disconnectAllSnapsText": {
     "message": "Snap'ler"
+  },
+  "disconnectMessage": {
+    "message": "Bu, $1 ile bağlantınızı kesecektir",
+    "description": "$1 is the name of the dapp"
   },
   "disconnectPrompt": {
     "message": "$1 bağlantısını kes"
@@ -1548,6 +1661,9 @@
   },
   "editANickname": {
     "message": "Takma adı düzenle"
+  },
+  "editAccounts": {
+    "message": "Hesapları düzenle"
   },
   "editAddressNickname": {
     "message": "Adres takma adını düzenle"
@@ -1629,6 +1745,9 @@
   "editNetworkLink": {
     "message": "orijinal ağı düzenle"
   },
+  "editNetworksTitle": {
+    "message": "Ağları düzenle"
+  },
   "editNonceField": {
     "message": "Nonce'u düzenle"
   },
@@ -1638,8 +1757,20 @@
   "editPermission": {
     "message": "İzni düzenle"
   },
+  "editPermissions": {
+    "message": "İzinleri düzenle"
+  },
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Hızlandırma gaz ücretini düzenle"
+  },
+  "editSpendingCap": {
+    "message": "Harcama üst limitini düzenle"
+  },
+  "editSpendingCapAccountBalance": {
+    "message": "Hesap bakiyesi: $1 $2"
+  },
+  "editSpendingCapDesc": {
+    "message": "Sizin adınıza harcanması konusunda rahat hissedeceğiniz tutarı girin."
   },
   "enable": {
     "message": "Etkinleştir"
@@ -1695,8 +1826,14 @@
   "ensUnknownError": {
     "message": "ENS arama başarısız oldu."
   },
+  "enterANameToIdentifyTheUrl": {
+    "message": "URL adresini tanımlamak için bir ad girin"
+  },
   "enterANumber": {
     "message": "Bir sayı girin"
+  },
+  "enterChainId": {
+    "message": "Zincir kimliği girin"
   },
   "enterCustodianToken": {
     "message": "$1 tokeninizi girin veya yeni bir token ekleyin"
@@ -1704,11 +1841,20 @@
   "enterMaxSpendLimit": {
     "message": "Maks. harcama limiti gir"
   },
+  "enterNetworkName": {
+    "message": "Ağ adını girin"
+  },
   "enterOptionalPassword": {
     "message": "İsteğe bağlı şifreyi girin"
   },
   "enterPasswordContinue": {
     "message": "Devam etmek için şifre girin"
+  },
+  "enterRpcUrl": {
+    "message": "RPC URL adresi girin"
+  },
+  "enterSymbol": {
+    "message": "Sembol girin"
   },
   "enterTokenNameOrAddress": {
     "message": "Token adı girin veya adresi yapıştırın"
@@ -1794,6 +1940,15 @@
   },
   "experimental": {
     "message": "Deneysel"
+  },
+  "exportYourData": {
+    "message": "Verilerinizi dışa aktarın"
+  },
+  "exportYourDataButton": {
+    "message": "İndir"
+  },
+  "exportYourDataDescription": {
+    "message": "Kişileriniz ve tercihleriniz gibi verileri dışa aktarabilirsiniz."
   },
   "extendWalletWithSnaps": {
     "message": "web3 deneyiminizi kişiselleştirmek için topluluk tarafından oluşturulmuş Snapleri keşfedin",
@@ -1917,6 +2072,9 @@
     "message": "Bu gaz ücreti $1 tarafından önerilmiştir. Bu değerin başka bir değerle değiştirilmesi işleminizle ilgili bir soruna neden olabilir. Sorularınız olursa lütfen $1 ile iletişime geçin.",
     "description": "$1 represents the Dapp's origin"
   },
+  "gasFee": {
+    "message": "Gaz ücreti"
+  },
   "gasIsETH": {
     "message": "Gaz $1 "
   },
@@ -1989,6 +2147,12 @@
   },
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
+  },
+  "getStarted": {
+    "message": "Başlarken"
+  },
+  "getStartedByFundingWallet": {
+    "message": "Cüzdanınıza biraz kripto ekleyerek başlayın."
   },
   "getStartedWithNFTs": {
     "message": "NFT satın almak için $1 edinin",
@@ -2224,6 +2388,9 @@
   },
   "inYourSettings": {
     "message": "Ayarlar kısmında"
+  },
+  "included": {
+    "message": "dahil"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask blokzinciri ana bilgisayarına bağlanamıyor. $1 olası nedenleri inceleyin.",
@@ -2548,6 +2715,9 @@
   "link": {
     "message": "Bağlantı"
   },
+  "linkCentralizedExchanges": {
+    "message": "MetaMask'e ücretsiz kripto transferi yapmak için Coinbase veya Binance hesaplarınızı bağlayın."
+  },
   "links": {
     "message": "Bağlantılar"
   },
@@ -2727,6 +2897,17 @@
   "more": {
     "message": "daha fazla"
   },
+  "moreAccounts": {
+    "message": "+ $1 hesap daha",
+    "description": "$1 is the number of accounts"
+  },
+  "moreNetworks": {
+    "message": "+ $1 ağ daha",
+    "description": "$1 is the number of networks"
+  },
+  "multichainAddEthereumChainConfirmationDescription": {
+    "message": "Bu ağı MetaMask'e ekliyor ve bu siteye ağı kullanma izni veriyorsunuz."
+  },
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snap kullanmak istiyor",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2805,8 +2986,12 @@
     "message": "Ağ bilgilerini düzenle"
   },
   "nativeTokenScamWarningDescription": {
-    "message": "Bu ağ, ilişkili zincir kimliği veya adı ile uyumlu değil. Pek çok popüler token $1 adını kullanarak bunu dolandırıcılar için hedef haline getirir. Dolandırıcılar, karşılığında kendilerine daha değerli para birimi göndermek üzere sizi kandırabilir. Devam etmeden önce her şeyi doğrulayın.",
+    "message": "Yerel token sembolü, zincir kimliği ile ilişkili ağın yerel token'inin beklenen sembolü ile uyumlu değil. Sizin girdiğiniz $1 iken beklenen sembol $2 idi. Lütfen doğru zincire bağlandığınızdan emin olun.",
     "description": "$1 represents the currency name, $2 represents the expected currency symbol"
+  },
+  "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
+    "message": "başka bir şey",
+    "description": "graceful fallback for when token symbol isn't found"
   },
   "nativeTokenScamWarningTitle": {
     "message": "Bu potansiyel bir dolandırıcılıktır",
@@ -2840,6 +3025,9 @@
   },
   "networkDetails": {
     "message": "Ağ bilgileri"
+  },
+  "networkFee": {
+    "message": "Ağ ücreti"
   },
   "networkIsBusy": {
     "message": "Ağ meşgul. Gaz fiyatları yüksektir ve tahminler daha az doğrudur."
@@ -2916,14 +3104,25 @@
     "message": "$1 ağına bağlanamıyoruz",
     "description": "$1 represents the network name"
   },
+  "networkSwitchMessage": {
+    "message": "Ağ şuna geçti: $1",
+    "description": "$1 represents the network name"
+  },
   "networkURL": {
     "message": "Ağ URL adresi"
   },
   "networkURLDefinition": {
     "message": "Bu ağa erişim sağlamak için kullanılan URL adresi."
   },
+  "networkUrlErrorWarning": {
+    "message": "Saldırganlar bazen site adresinde küçük değişiklikler yaparak siteleri taklit edebilir. Devam etmeden önce planladığınız site ile etkileşim kurduğunuzdan emin olun. Punycode sürümü: $1",
+    "description": "$1 replaced by RPC URL for network"
+  },
   "networks": {
     "message": "Ağlar"
+  },
+  "networksSmallCase": {
+    "message": "ağ"
   },
   "nevermind": {
     "message": "Boşver"
@@ -2974,6 +3173,9 @@
   },
   "newPrivacyPolicyTitle": {
     "message": "Gizlilik politikamızı güncelledik"
+  },
+  "newRpcUrl": {
+    "message": "Yeni RPC URL adresi"
   },
   "newTokensImportedMessage": {
     "message": "$1 tokeni başarılı bir şekilde içe aktardın.",
@@ -3084,6 +3286,9 @@
   },
   "nonceFieldHeading": {
     "message": "Özel nonce"
+  },
+  "none": {
+    "message": "Yok"
   },
   "notBusy": {
     "message": "Meşgul değil"
@@ -3566,6 +3771,12 @@
   "permissionDetails": {
     "message": "İzin ayrıntıları"
   },
+  "permissionFor": {
+    "message": "Şunun için izin:"
+  },
+  "permissionFrom": {
+    "message": "Şuradan izin:"
+  },
   "permissionRequest": {
     "message": "İzin talebi"
   },
@@ -3646,6 +3857,14 @@
   "permission_getLocaleDescription": {
     "message": "$1 adlı bu snap'in MetaMask ayarlarınızdan tercih ettiğiniz dile erişim sağlamasına izin verin. $1 içeriğini dilinizi kullanarak yerelleştirmek ve görüntülemek için bu özellik kullanılabilir.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
+  },
+  "permission_getPreferences": {
+    "message": "Tercih ettiğiniz dil ve itibari para gibi bilgileri görün.",
+    "description": "The description for the `snap_getPreferences` permission"
+  },
+  "permission_getPreferencesDescription": {
+    "message": "$1 adlı snap'in MetaMask ayarlarınızda tercih ettiğiniz dil ve fiat para gibi bilgilere erişim sağlamasına izin verin. Bu durum $1 adlı snap'in sizin tercihlerinize uygun içerikler göstermesine yardımcı olur. ",
+    "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
     "message": "Özel bir ekran göster",
@@ -4017,6 +4236,12 @@
   "receive": {
     "message": "Al"
   },
+  "receiveCrypto": {
+    "message": "Kripto al"
+  },
+  "recipientAddressPlaceholderNew": {
+    "message": "Genel adres (0x) veya alan adı gir"
+  },
   "recommendedGasLabel": {
     "message": "Önerilen"
   },
@@ -4159,6 +4384,13 @@
   "requestNotVerifiedError": {
     "message": "Bu talep bir hatadan dolayı güvenlik sağlayıcısı tarafından doğrulanmadı. Dikkatli bir şekilde ilerleyin."
   },
+  "requestingFor": {
+    "message": "Talep:"
+  },
+  "requestingForAccount": {
+    "message": "$1 için talep ediliyor",
+    "description": "Name of Account"
+  },
   "requestsAwaitingAcknowledgement": {
     "message": "onaylanmayı bekleyen talepler"
   },
@@ -4247,6 +4479,12 @@
   "revealTheSeedPhrase": {
     "message": "Anahtar cümleyi göster"
   },
+  "review": {
+    "message": "İncele"
+  },
+  "reviewAlert": {
+    "message": "Uyarıyı incele"
+  },
   "reviewAlerts": {
     "message": "Uyarıları incele"
   },
@@ -4272,12 +4510,18 @@
   "revokePermission": {
     "message": "İzni geri al"
   },
+  "revokeSimulationDetailsDesc": {
+    "message": "Birisinin sizin hesabınızdan token harcama iznini kaldırıyorsunuz."
+  },
   "revokeSpendingCap": {
     "message": "$1 için harcama üst limitini iptal et",
     "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "Bu üçüncü taraf şimdiki ya da gelecekteki tokenlerinizi artık kullanamayacak."
+  },
+  "rpcNameOptional": {
+    "message": "RPC Adı (İsteğe Bağlı)"
   },
   "rpcUrl": {
     "message": "Yeni RPC URL adresi"
@@ -4334,6 +4578,10 @@
   "securityProviderPoweredBy": {
     "message": "$1 hizmetidir",
     "description": "The security provider that is providing data"
+  },
+  "seeAllPermissions": {
+    "message": "Tüm izinleri gör",
+    "description": "Used for revealing more content (e.g. permission list, etc.)"
   },
   "seeDetails": {
     "message": "Ayrıntılara bakın"
@@ -4416,6 +4664,9 @@
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "NFT medyasını göster seçeneğini açın"
   },
+  "selectFundingMethod": {
+    "message": "Para ekleme yöntemi seçin"
+  },
   "selectHdPath": {
     "message": "HD yolunu seç"
   },
@@ -4427,6 +4678,9 @@
   },
   "selectPathHelp": {
     "message": "Beklediğiniz hesapları görmüyorsanız HD yoluna veya geçerli seçilen ağa geçmeyi deneyin."
+  },
+  "selectRpcUrl": {
+    "message": "RPC URL adresini seçin"
   },
   "selectType": {
     "message": "Tür Seç"
@@ -4489,6 +4743,9 @@
   },
   "setApprovalForAll": {
     "message": "Tümüne onay ver"
+  },
+  "setApprovalForAllRedesignedTitle": {
+    "message": "Para çekme talebi"
   },
   "setApprovalForAllTitle": {
     "message": "$1 için harcama limiti olmadan onay ver",
@@ -4585,6 +4842,15 @@
   "signingInWith": {
     "message": "Şununla giriş yap:"
   },
+  "simulationApproveHeading": {
+    "message": "Çek"
+  },
+  "simulationDetailsApproveDesc": {
+    "message": "Bir başkasına hesabınızdan NFT çekme izni veriyorsunuz."
+  },
+  "simulationDetailsERC20ApproveDesc": {
+    "message": "Bir başkasına sizin hesabınızdan bu tutarı harcama izni veriyorsunuz."
+  },
   "simulationDetailsFailed": {
     "message": "Tahmininiz yüklenirken bir hata oldu."
   },
@@ -4599,6 +4865,12 @@
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Gönderdiğiniz"
+  },
+  "simulationDetailsRevokeSetApprovalForAllDesc": {
+    "message": "Bir başkasının sizin hesabınızdan NFT çekme iznini kaldırıyorsunuz."
+  },
+  "simulationDetailsSetApprovalForAllDesc": {
+    "message": "Bir başkasına sizin hesabınızdan NFT çekme izni veriyorsunuz."
   },
   "simulationDetailsTitle": {
     "message": "Tahmini değişiklikler"
@@ -4920,6 +5192,12 @@
   "spender": {
     "message": "Harcama Yapan Taraf"
   },
+  "spenderTooltipDesc": {
+    "message": "Bu, NFT'lerinizi çekebilecek adrestir."
+  },
+  "spenderTooltipERC20ApproveDesc": {
+    "message": "Bu, token'lerinizi sizin adınıza harcayabilecek adrestir."
+  },
   "spendingCap": {
     "message": "Harcama üst limiti"
   },
@@ -4932,6 +5210,9 @@
   },
   "spendingCapRequest": {
     "message": "$1 için harcama üst limiti talebi"
+  },
+  "spendingCapTooltipDesc": {
+    "message": "Bu, harcama yapan tarafın sizin adınıza erişim sağlayabileceği token miktarıdır."
   },
   "srpInputNumberOfWords": {
     "message": "$1 sözcükten oluşan bir ifadem var",
@@ -5144,6 +5425,9 @@
     "message": "$1 tarafından öneriliyor",
     "description": "$1 is the snap name"
   },
+  "suggestedCurrencySymbol": {
+    "message": "Önerilen para birimi sembolü:"
+  },
   "suggestedTokenName": {
     "message": "Önerilen isim:"
   },
@@ -5152,6 +5436,9 @@
   },
   "supportCenter": {
     "message": "Destek Merkezi bölümümüzü ziyaret et"
+  },
+  "supportMultiRpcInformation": {
+    "message": "Şu anda tek bir ağ için birden fazla RPC destekliyoruz. Çelişkili bilgileri çözmek amacıyla en son RPC'niz varsayılan olarak seçilmiştir."
   },
   "surveyConversion": {
     "message": "Anketimize katılın"
@@ -5276,6 +5563,14 @@
   "swapGasFeesDetails": {
     "message": "Gaz ücretleri tahmini olup ağ trafiği ve işlem karmaşıklığına göre dalgalanır."
   },
+  "swapGasFeesExplanation": {
+    "message": "MetaMask, gaz ücretlerinden para kazanmaz. Bu ücretler tahminlerdir ve ağın yoğunluğuna ve işlemin karmaşıklığına göre değişebilir. $1 daha fazla bilgi edinin.",
+    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
+  },
+  "swapGasFeesExplanationLinkText": {
+    "message": "Buradan",
+    "description": "Text for link in swapGasFeesExplanation"
+  },
   "swapGasFeesLearnMore": {
     "message": "Gaz ücretleri hakkında daha fazla bilgi edinin"
   },
@@ -5286,11 +5581,21 @@
     "message": "Gaz ücretleri, $1 ağında işlemleri gerçekleştiren kripto madencilerine ödenir. MetaMask gaz ücretlerinden herhangi bir kazanç elde etmemektedir.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
+  "swapGasIncludedTooltipExplanation": {
+    "message": "Bu teklif, gönderilen veya alınan token tutarını ayarlayarak gaz ücretlerini dahil eder. Aktivite listenizde ayrı bir işlemde ETH alabilirsiniz."
+  },
+  "swapGasIncludedTooltipExplanationLinkText": {
+    "message": "Gaz ücretleri hakkında daha fazla bilgi edinin"
+  },
   "swapHighSlippage": {
     "message": "Yüksek kayma"
   },
   "swapHighSlippageWarning": {
     "message": "Kayma tutarı çok yüksek."
+  },
+  "swapIncludesGasAndMetaMaskFee": {
+    "message": "Gaz ve %$1 MetaMask ücreti dahildir",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "%$1 MetaMask ücreti dahildir.",
@@ -5635,6 +5940,9 @@
   "termsOfUseTitle": {
     "message": "Kullanım Şartları bölümümüz güncellendi"
   },
+  "testnets": {
+    "message": "Testnet'ler"
+  },
   "theme": {
     "message": "Tema"
   },
@@ -5861,6 +6169,9 @@
   "transfer": {
     "message": "Transfer et"
   },
+  "transferCrypto": {
+    "message": "Kripto transfer et"
+  },
   "transferFrom": {
     "message": "Transfer kaynağı:"
   },
@@ -5955,6 +6266,9 @@
   "unknown": {
     "message": "Bilinmeyen"
   },
+  "unknownChainWarning": {
+    "message": "Özel ağları doğrulayamıyoruz. Kötü amaçlı sağlayıcıların ağ aktivitenizi kaydetmesini önlemek amacıyla sadece güvendiğiniz ağları ekleyin."
+  },
   "unknownCollection": {
     "message": "İsimsiz koleksiyon"
   },
@@ -5997,11 +6311,21 @@
   "update": {
     "message": "Güncelle"
   },
+  "updateEthereumChainConfirmationDescription": {
+    "message": "Bu site, varsayılan ağ URL adresinizi güncellemeyi talep ediyor. Varsayılanları ve ağ bilgilerini dilediğiniz zaman düzenleyebilirsiniz."
+  },
+  "updateNetworkConfirmationTitle": {
+    "message": "Güncelle: $1",
+    "description": "$1 represents network name"
+  },
   "updateOrEditNetworkInformations": {
     "message": "Bilgilerinizi güncelleyin veya"
   },
   "updateRequest": {
     "message": "Talebi güncelle"
+  },
+  "updatedRpcForNetworks": {
+    "message": "Ağ RPC'leri Güncellendi"
   },
   "uploadDropFile": {
     "message": "Dosyanızı buraya sürükleyin"
@@ -6155,6 +6479,13 @@
     "message": "$1 Üçüncü taraf, başkaca bildiri ya da rıza olmaksızın tüm token bakiyenizi harcayabilir. Düşük bir harcama limitini özelleştirerek kendinizi koruyun.",
     "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
+  "watchEthereumAccountsDescription": {
+    "message": "Bu seçeneği açtığınızda size genel adres veya ENS adı ile Ethereum hesaplarını izleme yeteneği verilir. Bu Beta özellik hakkında geri bildirim için lütfen bu $1 formunu doldurun.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "watchEthereumAccountsToggle": {
+    "message": "Ethereum Hesaplarını İzle (Beta)"
+  },
   "weak": {
     "message": "Zayıf"
   },
@@ -6200,6 +6531,9 @@
   },
   "whatsThis": {
     "message": "Bu nedir?"
+  },
+  "withdrawing": {
+    "message": "Çekiliyor"
   },
   "wrongNetworkName": {
     "message": "Kayıtlarımıza göre ağ adı bu zincir kimliği ile doğru şekilde eşleşmiyor olabilir."
