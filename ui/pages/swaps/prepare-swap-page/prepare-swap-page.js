@@ -1019,7 +1019,16 @@ export default function PrepareSwapPage({
             alignItems={AlignItems.stretch}
           >
             <div className="prepare-swap-page__balance-message">
-              {selectedToToken?.string && yourTokenToBalance}
+              {showReviewQuote ? (
+                <div>
+                  {t('swapTokenVerificationSources', [occurrences])}
+                  {t('verifyThisTokenOn', [
+                    <BlockExplorerLink key="block-explorer-link" />,
+                  ])}
+                </div>
+              ) : (
+                selectedToToken?.string && yourTokenToBalance
+              )}
             </div>
           </Box>
         </div>
