@@ -315,26 +315,17 @@ function setupStateHooks(store) {
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();
   const logs = window.stateHooks.getLogs();
-
-  try {
-    // Get the extension request logs from the background script
-    const response = await browser.runtime.sendMessage({
-      action: 'getExtensionRequestLogs',
+  browser.runtime
+    .getPlatformInfo()
+    .then((platform) => {
+      state.platform = platform;
+      state.logs = logs;
+      const stateString = JSON.stringify(state, null, 2);
+      cb(null, stateString);
+    })
+    .catch((err) => {
+      cb(err);
     });
-
-    if (response && response.logs) {
-      state.extensionRequestLogs = response.logs;
-    }
-
-    const platform = await browser.runtime.getPlatformInfo();
-    state.platform = platform;
-    state.logs = logs;
-
-    const stateString = JSON.stringify(state, null, 2);
-    return cb(null, stateString);
-  } catch (err) {
-    return cb(err);
-  }
 };
 
 window.logState = function (toClipboard) {

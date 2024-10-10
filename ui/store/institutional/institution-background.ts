@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { IApiCallLogEntry } from '@metamask-institutional/custody-keyring';
 import {
   forceUpdateMetamaskState,
   displayWarning,
@@ -103,6 +104,12 @@ export function setPersonalMessageInProgress(msgId: string) {
       dispatch(hideLoadingIndication());
     }
   };
+}
+
+export async function logAndStoreApiRequest(
+  logData: IApiCallLogEntry,
+): Promise<void> {
+  return await submitRequestToBackground('logAndStoreApiRequest', [logData]);
 }
 
 /**
