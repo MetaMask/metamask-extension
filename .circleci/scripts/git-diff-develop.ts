@@ -71,7 +71,7 @@ async function fetchUntilMergeBaseFound() {
     await fetchWithDepth(depth);
 
     try {
-      await exec(`git merge-base origin/HEAD HEAD`);
+      await exec(`git merge-base origin/${MAIN_BRANCH} HEAD`);
       return;
     } catch (error: unknown) {
       if (error instanceof Error && 'code' in error) {
