@@ -78,7 +78,6 @@ const CrossChainSwap = () => {
               iconName={IconName.Setting}
               size={ButtonIconSize.Sm}
               ariaLabel={t('settings')}
-              // onClick={TODO open advanced settings}
             />
           }
         >

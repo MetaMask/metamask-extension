@@ -65,7 +65,7 @@ export const useTokensWithFiltering = (
 
   const sortedErc20TokensWithBalances = useMemo(
     () =>
-      erc20TokensWithBalances.sort(
+      erc20TokensWithBalances.toSorted(
         (a, b) => Number(b.string) - Number(a.string),
       ),
     [erc20TokensWithBalances],
@@ -102,11 +102,8 @@ export const useTokensWithFiltering = (
         AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
       > {
         const balance = hexToBN(balanceOnActiveChain);
-        const nativeToken = buildTokenData({
-          ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-            chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-          ],
-          ...(sortOrder === TokenBucketPriority.owned
+        const srcBalanceFields =
+          sortOrder === TokenBucketPriority.owned
             ? {
                 balance: balanceOnActiveChain,
                 string: getValueFromWeiHex({
@@ -115,7 +112,12 @@ export const useTokensWithFiltering = (
                   toDenomination: EtherDenomination.ETH,
                 }),
               }
-            : {}),
+            : {};
+        const nativeToken = buildTokenData({
+          ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+            chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+          ],
+          ...srcBalanceFields,
         });
         if (nativeToken) {
           yield nativeToken;

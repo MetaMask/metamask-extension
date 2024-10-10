@@ -127,7 +127,6 @@ export const BridgeInputGroup = ({
             className="amount-input"
             placeholder="0"
             onChange={(e) => {
-              // TODO validate input
               onAmountChange?.(e.target.value);
             }}
             {...amountFieldProps}

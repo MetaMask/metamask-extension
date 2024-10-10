@@ -40,15 +40,17 @@ const useLatestBalance = (
         global.ethereumProvider,
       );
     }
-    // TODO implement fetching balance on non-active chain and update unit test
+
     return undefined;
   }, [token, selectedAddress, global.ethereumProvider]);
+
+  const tokenDecimals = token?.decimals ? Number(token.decimals) : 18;
 
   return {
     formattedBalance:
       token && latestBalance
         ? Numeric.from(latestBalance.toString(), 10)
-            .shiftedBy(token?.decimals ? Number(token.decimals) : 18)
+            .shiftedBy(tokenDecimals)
             .round(DEFAULT_PRECISION)
             .toString()
         : undefined,

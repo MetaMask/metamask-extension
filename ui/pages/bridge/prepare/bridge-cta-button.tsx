@@ -38,7 +38,7 @@ export const BridgeCTAButton = () => {
       data-testid="bridge-cta-button"
       onClick={() => {
         if (isTxSubmittable) {
-          // TODO - dispatch action to submit tx
+          // dispatch tx submission
         }
       }}
       disabled={!isTxSubmittable}

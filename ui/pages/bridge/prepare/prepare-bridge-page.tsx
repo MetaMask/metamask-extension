@@ -94,7 +94,6 @@ const PrepareBridgePage = () => {
                 ),
               );
               dispatch(setFromChain(networkConfig.chainId));
-              // TODO emit metric
             },
           }}
           customTokenListGenerator={
