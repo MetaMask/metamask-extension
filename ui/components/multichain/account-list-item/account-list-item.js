@@ -72,7 +72,7 @@ import { AccountListItemMenuTypes } from './account-list-item.types';
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
-const AccountListItem = ({
+const AccountListItemComponent = ({
   account,
   selected,
   onClick,
@@ -430,7 +430,7 @@ const AccountListItem = ({
   );
 };
 
-AccountListItem.propTypes = {
+AccountListItemComponent.propTypes = {
   /**
    * An account object that has name, address, and balance data
    */
@@ -504,6 +504,7 @@ AccountListItem.propTypes = {
   startAccessory: PropTypes.node,
 };
 
+const AccountListItem = React.memo(AccountListItemComponent);
 AccountListItem.displayName = 'AccountListItem';
 
-export default React.memo(AccountListItem);
+export default AccountListItem;

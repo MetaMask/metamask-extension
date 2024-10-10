@@ -1,6 +1,5 @@
 import React, { useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -16,11 +15,10 @@ import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import {
   NotificationComponents,
+  TRIGGER_TYPES,
   hasNotificationComponents,
 } from './notification-components';
-
-type Notification = NotificationServicesController.Types.INotification;
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+import { type Notification } from './notification-components/types/notifications/notifications';
 
 export function NotificationsListItem({
   notification,
@@ -39,9 +37,10 @@ export function NotificationsListItem({
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
-        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
-          chain_id: notification?.chain_id,
-        }),
+        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+          notification.type !== TRIGGER_TYPES.SNAP && {
+            chain_id: notification?.chain_id,
+          }),
         previously_read: notification.isRead,
       },
     });
@@ -52,6 +51,14 @@ export function NotificationsListItem({
         isRead: notification.isRead,
       },
     ]);
+
+    if (
+      notification.type === TRIGGER_TYPES.SNAP &&
+      !notification.data.expandedView
+    ) {
+      return;
+    }
+
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
   }, [notification, markNotificationAsRead, history]);
 

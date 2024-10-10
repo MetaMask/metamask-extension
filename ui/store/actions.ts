@@ -39,7 +39,6 @@ import {
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Patch } from 'immer';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -123,6 +122,7 @@ import {
   CaveatTypes,
   EndowmentTypes,
 } from '../../shared/constants/permissions';
+import { MarkAsReadNotificationsParam } from '../hooks/metamask-notifications/useNotifications';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -5501,7 +5501,7 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
  * @returns A thunk action that, when dispatched, attempts to mark MetaMask notifications as read.
  */
 export function markMetamaskNotificationsAsRead(
-  notifications: NotificationServicesController.Types.MarkAsReadNotificationsParam,
+  notifications: MarkAsReadNotificationsParam,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
