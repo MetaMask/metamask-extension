@@ -1033,9 +1033,6 @@
   "invalidSeedPhrase": {
     "message": "Frase secreta de recuperación no válida"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "Archivo JSON",
     "description": "format for importing an account"
@@ -1555,9 +1552,6 @@
   "rejected": {
     "message": "Rechazado"
   },
-  "remember": {
-    "message": "Recuerde:"
-  },
   "remove": {
     "message": "Quitar"
   },
@@ -1719,9 +1713,6 @@
   "sendingNativeAsset": {
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask utiliza estos servicios de terceros de confianza para mejorar la usabilidad y la seguridad de los productos."
   },
   "settings": {
     "message": "Configuración"
@@ -2441,26 +2432,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión de la cartera de hardware"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Ha protegido con éxito su cartera. Mantenga su frase secreta de recuperación a salvo y en secreto: ¡es su responsabilidad!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask no puede recuperar su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask nunca le pedirá su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 con nadie o se arriesga a que le roben los fondos",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Nunca comparta su frase secreta de recuperación",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Creación exitosa de la cartera"
   },
   "web3ShimUsageNotification": {
     "message": "Parece que el sitio web actual intentó utilizar la API de window.web3 que se eliminó. Si el sitio no funciona, haga clic en $1 para obtener más información.",

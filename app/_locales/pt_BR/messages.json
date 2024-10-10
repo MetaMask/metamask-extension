@@ -1033,9 +1033,6 @@
   "invalidSeedPhrase": {
     "message": "Frase de Recuperação Secreta inválida"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "Arquivo JSON",
     "description": "format for importing an account"
@@ -1392,10 +1389,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Os alertas de detecção de phishing dependem de comunicação com $1. O jsDeliver terá acesso ao seu endereço IP. Veja $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em que você confia.",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -1559,9 +1552,6 @@
   "rejected": {
     "message": "Rejeitada"
   },
-  "remember": {
-    "message": "Lembre-se:"
-  },
   "remove": {
     "message": "Remover"
   },
@@ -1723,9 +1713,6 @@
   "sendingNativeAsset": {
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "A MetaMask utiliza esses serviços terceirizados de confiança para aumentar a usabilidade e a segurança dos produtos."
   },
   "settings": {
     "message": "Configurações"
@@ -2445,26 +2432,6 @@
   },
   "walletConnectionGuide": {
     "message": "nosso guia de conexão com a carteira de hardware"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Você protegeu sua carteira com sucesso. Guarde sua Frase de Recuperação Secreta em segredo e em segurança — é sua responsabilidade!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "A MetaMask não é capaz de recuperar sua Frase de Recuperação Secreta."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "A equipe da MetaMask jamais pedirá sua Frase de Recuperação Secreta."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 com ninguém, senão seus fundos poderão ser roubados",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Nunca compartilhe a sua Frase de Recuperação Secreta",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Carteira criada com sucesso"
   },
   "web3ShimUsageNotification": {
     "message": "Percebemos que o site atual tentou usar a API window.web3 removida. Se o site parecer estar corrompido, clique em $1 para obter mais informações.",

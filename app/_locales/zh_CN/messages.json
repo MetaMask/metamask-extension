@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "当您的交易被包含在区块中时，您的最大基础费用与实际基础费用之间的任何差额将被退还。总金额按最大基础费用（以GWEI为单位）*燃料限制计算。"
   },
-  "advancedConfiguration": {
-    "message": "高级配置"
-  },
   "advancedDetailsDataDesc": {
     "message": "数据"
   },
@@ -699,12 +696,6 @@
   },
   "betaTerms": {
     "message": "测试版使用条款"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask 测试版无法恢复您的账户私钥助记词。"
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask 测试版绝对不会向您索要账户私钥助记词。"
   },
   "billionAbbreviation": {
     "message": "十亿",
@@ -2400,9 +2391,6 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "JSON 文件",
     "description": "format for importing an account"
@@ -3452,10 +3440,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "将MetaMask Institutional置顶"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "网络钓鱼检测提醒依赖于与 $1 的通信。jsDeliver 将有权访问您的 IP 地址。查看 $2。",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1 天",
     "description": "Shortened form of '1 day'"
@@ -4096,9 +4080,6 @@
   "rejected": {
     "message": "已拒绝"
   },
-  "remember": {
-    "message": "记住："
-  },
   "remove": {
     "message": "删除"
   },
@@ -4505,9 +4486,6 @@
   },
   "sepolia": {
     "message": "Sepolia测试网络"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask 使用这些可信的第三方服务来提高产品可用性和安全性。"
   },
   "setApprovalForAll": {
     "message": "设置批准所有"
@@ -6159,26 +6137,6 @@
   },
   "walletConnectionGuide": {
     "message": "我们的硬件钱包连接指南"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "您已经成功地保护了您的钱包。请确保您的账户私钥助记词安全和秘密——这是您的责任！"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask 无法恢复您的账户私钥助记词。"
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask 绝对不会索要您的账户私钥助记词。"
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "对任何人 $1，否则您的资金有被盗风险",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "切勿分享您的账户私钥助记词",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "钱包创建成功"
   },
   "wantToAddThisNetwork": {
     "message": "想要添加此网络吗？"

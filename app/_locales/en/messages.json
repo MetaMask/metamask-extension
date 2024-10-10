@@ -373,9 +373,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
   },
-  "advancedConfiguration": {
-    "message": "Advanced configuration"
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -638,6 +635,12 @@
   "assetOptions": {
     "message": "Asset options"
   },
+  "assets": {
+    "message": "Assets"
+  },
+  "assetsDescription": {
+    "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
+  },
   "attemptSendingAssets": {
     "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge."
   },
@@ -751,12 +754,6 @@
   },
   "betaTerms": {
     "message": "Beta Terms of use"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask Beta can’t recover your Secret Recovery Phrase."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
   "billionAbbreviation": {
     "message": "B",
@@ -1092,6 +1089,9 @@
   },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
+  },
+  "congratulations": {
+    "message": "Congratulations!"
   },
   "connect": {
     "message": "Connect"
@@ -1543,6 +1543,12 @@
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
+  },
+  "defaultSettingsSubTitle": {
+    "message": "MetaMask uses default settings to best balance safety and ease of use. Change these settings to further increase your privacy."
+  },
+  "defaultSettingsTitle": {
+    "message": "Default settings"
   },
   "delete": {
     "message": "Delete"
@@ -2193,6 +2199,9 @@
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
   },
+  "generalDescription": {
+    "message": "Sync settings across devices, select network preferences, and track token data"
+  },
   "genericExplorerView": {
     "message": "View account on $1"
   },
@@ -2355,6 +2364,10 @@
   },
   "id": {
     "message": "ID"
+  },
+  "ifYouGetLockedOut": {
+    "message": "If you get locked out of the app or get a new device, you will lose your funds. Be sure to back up your Secret Recovery Phrase in $1 ",
+    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Ignore all"
@@ -2606,12 +2619,13 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
+  },
+  "keepReminderOfSRP": {
+    "message": "Keep a reminder of your Secret Recovery Phrase somewhere safe. If you lose it, no one can help you get it back. Even worse, you won’t be able access to your wallet ever again. $1",
+    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Account name"
@@ -2671,12 +2685,18 @@
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
+  "learnHow": {
+    "message": "Learn how"
+  },
   "learnMore": {
     "message": "learn more"
   },
   "learnMoreAboutGas": {
     "message": "Want to $1 about gas?",
     "description": "$1 will be replaced by the learnMore translation key"
+  },
+  "learnMoreAboutPrivacy": {
+    "message": "Learn more about privacy best practices."
   },
   "learnMoreKeystone": {
     "message": "Learn More"
@@ -2828,6 +2848,9 @@
   "makeSureNoOneWatching": {
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
+  "manageDefaultSettings": {
+    "message": "Manage default settings"
   },
   "marketCap": {
     "message": "Market cap"
@@ -3702,10 +3725,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "Pin MetaMask Institutional"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1D",
     "description": "Shortened form of '1 day'"
@@ -4369,8 +4388,11 @@
   "rejected": {
     "message": "Rejected"
   },
-  "remember": {
-    "message": "Remember:"
+  "rememberSRPIfYouLooseAccess": {
+    "message": "Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet. $1 to keep this set of words safe so you can always access your funds."
+  },
+  "reminderSet": {
+    "message": "Reminder set!"
   },
   "remove": {
     "message": "Remove"
@@ -4642,6 +4664,12 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityDescription": {
+    "message": "Reduce your chances of joining unsafe networks and protect your accounts"
+  },
+  "securityPrivacyPath": {
+    "message": "Settings > Security & Privacy."
+  },
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
@@ -4808,9 +4836,6 @@
   "sepolia": {
     "message": "Sepolia test network"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
-  },
   "setApprovalForAll": {
     "message": "Set approval for all"
   },
@@ -4826,6 +4851,9 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "settingsOptimisedForEaseOfUseAndSecurity": {
+    "message": "Settings are optimised for ease of use and security. Change these any time."
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
@@ -6545,25 +6573,9 @@
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
-  "walletCreationSuccessDetail": {
-    "message": "You’ve successfully protected your wallet. Keep your Secret Recovery Phrase safe and secret -- it’s your responsibility!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask can’t recover your Secret Recovery Phrase."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask will never ask you for your Secret Recovery Phrase."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 with anyone or risk your funds being stolen",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Never share your Secret Recovery Phrase",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Wallet creation successful"
+  "walletProtectedAndReadyToUse": {
+    "message": "Your wallet is protected and ready to use. You can find your Secret Recovery Phrase in $1 ",
+    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
@@ -6680,6 +6692,9 @@
   },
   "yourTransactionJustConfirmed": {
     "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
+  },
+  "yourWalletIsReady": {
+    "message": "Your wallet is ready"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

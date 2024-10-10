@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Όταν η συναλλαγή σας συμπεριληφθεί στο μπλοκ, οποιαδήποτε διαφορά μεταξύ της μέγιστης βασικής χρέωσής σας και της πραγματικής βασικής χρέωσής θα επιστραφεί. Το συνολικό ποσό υπολογίζεται ως μέγιστο βασικό τέλος (σε GWEI) * όριο τελών συναλλαγής."
   },
-  "advancedConfiguration": {
-    "message": "Προηγμένη ρύθμιση παραμέτρων"
-  },
   "advancedDetailsDataDesc": {
     "message": "Δεδομένα"
   },
@@ -699,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Όροι Χρήσης της Δοκιμαστικής Έκδοσης"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "Η δοκιμαστική έκδοση του MetaMask δεν μπορεί να ανακτήσει τη Μυστική Φράση Ανάκτησής σας."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "Η δοκιμαστική έκδοση του MetaMask δεν θα σας ζητήσει ποτέ τη Μυστική Φράση Ανάκτησής σας."
   },
   "billionAbbreviation": {
     "message": "Δ",
@@ -2400,9 +2391,6 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "Αρχείο JSON",
     "description": "format for importing an account"
@@ -3452,10 +3440,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "Καρφιτσώστε το MetaMask Institutional"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Οι ειδοποιήσεις ανίχνευσης για phishing βασίζονται στην επικοινωνία με το $1. Το jsDeliver θα έχει πρόσβαση στη διεύθυνση IP σας. Δείτε $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1Η",
     "description": "Shortened form of '1 day'"
@@ -4096,9 +4080,6 @@
   "rejected": {
     "message": "Απορρίφθηκε"
   },
-  "remember": {
-    "message": "Να θυμάστε:"
-  },
   "remove": {
     "message": "Κατάργηση"
   },
@@ -4505,9 +4486,6 @@
   },
   "sepolia": {
     "message": "Δίκτυο δοκιμών Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "Το MetaMask χρησιμοποιεί αυτές τις αξιόπιστες υπηρεσίες τρίτων για να ενισχύσει τη χρηστικότητα και την ασφάλεια των προϊόντων."
   },
   "setApprovalForAll": {
     "message": "Ρύθμιση έγκρισης για όλους"
@@ -6159,26 +6137,6 @@
   },
   "walletConnectionGuide": {
     "message": "ο οδηγός μας σύνδεσης πορτοφολιού υλικού"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Προστατεύσατε με επιτυχία το πορτοφόλι σας. Διατηρήστε τη Μυστική Φράση Ανάκτησης ασφαλής και μυστική - είναι δική σας ευθύνη!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "Το MetaMask δεν μπορεί να ανακτήσει τη Μυστική Φράση Ανάκτησής σας."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "Το MetaMask δεν θα σας ζητήσει ποτέ τη Μυστική Φράση Ανάκτησής σας."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 με οποιονδήποτε ή να διακινδυνεύστε τα χρήματά σας να κλαπούν",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Ποτέ μην μοιράζεστε τη Μυστική Φράση Ανάκτησης σας",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Επιτυχής δημιουργία πορτοφολιού"
   },
   "wantToAddThisNetwork": {
     "message": "Θέλετε να προσθέσετε αυτό το δίκτυο;"
