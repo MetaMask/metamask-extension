@@ -3090,7 +3090,7 @@ export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }
 
-export function setTokenNetworkFilter(value: Record<string, string>) {
+export function setTokenNetworkFilter(value: Record<string, boolean>) {
   return setPreference('tokenNetworkFilter', value, false);
 }
 

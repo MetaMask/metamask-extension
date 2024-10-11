@@ -4,6 +4,8 @@ import { setTokenNetworkFilter } from '../../../../../store/actions';
 import { getCurrentChainId, getPreferences } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
+import { Box } from '../../../../component-library/box/box';
+import { Text } from '../../../../component-library/text/text';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -15,8 +17,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const chainId = useSelector(getCurrentChainId);
   const { tokenNetworkFilter } = useSelector(getPreferences);
 
-  const handleFilter = (chainFilters: Record<string, string>) => {
-    console.log('filter', chainFilters);
+  const handleFilter = (chainFilters: Record<string, boolean>) => {
     dispatch(setTokenNetworkFilter(chainFilters));
 
     // TODO Add metrics
@@ -25,14 +26,19 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
 
   return (
     <>
-      <SelectableListItem isSelected={false} onClick={() => handleFilter({})}>
-        All Networks
+      <SelectableListItem
+        isSelected={!Object.keys(tokenNetworkFilter).length}
+        onClick={() => handleFilter({})}
+      >
+        <Text>All Networks</Text>
+        <Text>12,000</Text>
       </SelectableListItem>
       <SelectableListItem
-        isSelected={false}
-        onClick={() => handleFilter({ chainId })}
+        isSelected={tokenNetworkFilter[chainId]}
+        onClick={() => handleFilter({ [chainId]: true })}
       >
-        Current Network
+        <Text>Current Network</Text>
+        <Text>2,000</Text>
       </SelectableListItem>
     </>
   );
