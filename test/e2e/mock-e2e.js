@@ -468,7 +468,7 @@ async function setupMocking(
             decimals: 18,
             name: 'Dai Stablecoin',
             iconUrl:
-              'https://crypto.com/price/coin-data/icon/DAI/color_icon.png',
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png',
             type: 'erc20',
             aggregators: [
               'aave',
@@ -495,7 +495,7 @@ async function setupMocking(
             decimals: 6,
             name: 'USD Coin',
             iconUrl:
-              'https://crypto.com/price/coin-data/icon/USDC/color_icon.png',
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
             type: 'erc20',
             aggregators: [
               'aave',
@@ -712,11 +712,6 @@ async function setupMocking(
   const portfolioRequestsMatcher = (request) =>
     request.headers.referer === 'https://portfolio.metamask.io/';
 
-  // Passthrough requests to ServerMochaToBackground's WebSocket server
-  // which is running on port 8111.
-  // TODO: forAnyWebSocket() is too broad, we should be able to more
-  // specifically target ServerMochaToBackground's WebSocket server
-  await server.forAnyWebSocket().thenPassThrough();
   /**
    * Listen for requests and add the hostname to the privacy report if it did
    * not previously exist. This is used to track which hosts are requested
