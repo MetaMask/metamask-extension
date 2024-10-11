@@ -25,6 +25,7 @@ import {
   BackgroundColor,
   Display,
   FlexDirection,
+  OverflowWrap,
 } from '../../../../helpers/constants/design-system';
 import {
   Box,
@@ -103,7 +104,9 @@ export const components: NotificationComponent<SnapNotification> = {
                 <SnapIcon snapId={snapId} avatarSize={IconSize.Xl} />
                 <Text paddingLeft={1}>{snapsNameGetter(snapId)}</Text>
               </Box>
-              <Text overflowWrap>{notification.data.message}</Text>
+              <Text overflowWrap={OverflowWrap.Normal}>
+                {notification.data.message}
+              </Text>
             </Box>
             <SnapUIRenderer
               snapId={notification.data.origin}
