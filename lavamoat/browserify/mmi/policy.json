@@ -2298,15 +2298,15 @@
       }
     },
     "@metamask/signature-controller": {
-      "globals": {
-        "console.info": true
-      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
-        "@metamask/message-manager": true,
-        "lodash": true,
+        "@metamask/message-manager>jsonschema": true,
+        "@metamask/utils": true,
+        "uuid": true,
         "webpack>events": true
       }
     },
