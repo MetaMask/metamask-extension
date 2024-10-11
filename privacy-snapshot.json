@@ -19,6 +19,7 @@
   "configuration.dev.metamask-institutional.io",
   "configuration.metamask-institutional.io",
   "connect.trezor.io",
+  "crypto.com",
   "customnetwork.test",
   "doesntexist.test",
   "etherscan.io",
@@ -61,5 +62,6 @@
   "unresponsive-rpc.test",
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
+  "verify.walletconnect.com",
   "www.4byte.directory"
 ]
