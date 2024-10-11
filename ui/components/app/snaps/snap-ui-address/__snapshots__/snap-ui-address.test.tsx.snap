@@ -44,11 +44,11 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
         </svg>
       </div>
     </div>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       128Lkh3...Mp8p6
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -65,11 +65,11 @@ exports[`SnapUIAddress renders Bitcoin address with blockie 1`] = `
       style="border-radius: 50%;"
       width="32"
     />
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       128Lkh3...Mp8p6
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -118,11 +118,11 @@ exports[`SnapUIAddress renders Cosmos address 1`] = `
         </svg>
       </div>
     </div>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       cosmos1...6hdc0
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -139,11 +139,11 @@ exports[`SnapUIAddress renders Cosmos address with blockie 1`] = `
       style="border-radius: 50%;"
       width="32"
     />
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       cosmos1...6hdc0
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -192,11 +192,11 @@ exports[`SnapUIAddress renders Ethereum address 1`] = `
         </svg>
       </div>
     </div>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       0xab16a...Bfcdb
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -213,11 +213,11 @@ exports[`SnapUIAddress renders Ethereum address with blockie 1`] = `
       style="border-radius: 50%;"
       width="32"
     />
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       0xab16a...Bfcdb
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -266,11 +266,11 @@ exports[`SnapUIAddress renders Hedera address 1`] = `
         </svg>
       </div>
     </div>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       0.0.123...zbhlt
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -287,11 +287,11 @@ exports[`SnapUIAddress renders Hedera address with blockie 1`] = `
       style="border-radius: 50%;"
       width="32"
     />
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       0.0.123...zbhlt
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -340,11 +340,11 @@ exports[`SnapUIAddress renders Polkadot address 1`] = `
         </svg>
       </div>
     </div>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       5hmuyxw...egmfy
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -361,11 +361,11 @@ exports[`SnapUIAddress renders Polkadot address with blockie 1`] = `
       style="border-radius: 50%;"
       width="32"
     />
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       5hmuyxw...egmfy
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -414,11 +414,11 @@ exports[`SnapUIAddress renders Starknet address 1`] = `
         </svg>
       </div>
     </div>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       0x02dd1...0ab57
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -435,11 +435,11 @@ exports[`SnapUIAddress renders Starknet address with blockie 1`] = `
       style="border-radius: 50%;"
       width="32"
     />
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       0x02dd1...0ab57
-    </p>
+    </span>
   </div>
 </div>
 `;
@@ -488,11 +488,11 @@ exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
         </svg>
       </div>
     </div>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    <span
+      class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
     >
       0xab16a...Bfcdb
-    </p>
+    </span>
   </div>
 </div>
 `;
