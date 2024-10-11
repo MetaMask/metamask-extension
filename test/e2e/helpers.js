@@ -546,7 +546,7 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
  */
 const onboardingCompleteWalletCreation = async (driver) => {
   // complete
-  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  await driver.findElement({ text: 'Congratulations', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
 
@@ -554,7 +554,7 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   // wait for h2 to appear
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   // opt-out from third party API
-  await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await driver.clickElement({ text: 'Manage default settings', tag: 'a' });
   await driver.clickElement(
     '[data-testid="basic-functionality-toggle"] .toggle-button',
   );
@@ -755,12 +755,19 @@ const connectToDapp = async (driver) => {
   });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[1].click();
+
   await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
+    text: 'Localhost 8545',
+    tag: 'p',
   });
+
+  await driver.clickElement('[data-testid="connect-more-chains-button"]');
+
   await driver.clickElementAndWaitForWindowToClose({
-    text: 'Confirm',
+    text: 'Connect',
     tag: 'button',
   });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

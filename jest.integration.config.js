@@ -18,6 +18,7 @@ module.exports = {
   ],
   restoreMocks: true,
   setupFiles: [
+    'jest-canvas-mock',
     '<rootDir>/test/integration/config/setup.js',
     '<rootDir>/test/integration/config/env.js',
   ],

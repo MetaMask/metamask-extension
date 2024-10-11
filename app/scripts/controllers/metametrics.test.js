@@ -1122,6 +1122,11 @@ describe('MetaMetricsController', function () {
             },
           },
         },
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
       });
 
       expect(traits).toStrictEqual({
@@ -1153,6 +1158,7 @@ describe('MetaMetricsController', function () {
         ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         [MetaMetricsUserTrait.PetnameAddressCount]: 3,
         ///: END:ONLY_INCLUDE_IF
+        [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
       });
     });
 
@@ -1181,6 +1187,11 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
         showNativeTokenAsMainBalance: true,
       });
 
@@ -1208,6 +1219,11 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
         showNativeTokenAsMainBalance: false,
       });
 
@@ -1245,6 +1261,11 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
         showNativeTokenAsMainBalance: true,
       });
 
@@ -1267,6 +1288,11 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
         showNativeTokenAsMainBalance: true,
       });
       expect(updatedTraits).toStrictEqual(null);

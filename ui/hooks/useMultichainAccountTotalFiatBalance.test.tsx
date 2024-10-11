@@ -141,6 +141,10 @@ describe('useMultichainAccountTotalFiatBalance', () => {
     expect(result.current).toStrictEqual({
       formattedFiat: '$9.41',
       loading: false,
+      mergedRates: {
+        '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': 3.304588,
+        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 0.0006189,
+      },
       totalWeiBalance: '14ba1e6a08a9ed',
       tokensWithBalances: mockTokenBalances,
       totalFiatBalance: '9.41',
