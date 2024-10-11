@@ -131,7 +131,7 @@ async function requestPermissionsImplementation(
 
     const permissions = getPermissionsForOrigin(origin) || {};
     let caip25Endowment = permissions[Caip25EndowmentPermissionName];
-    const existingCaveat = caip25Endowment?.caveats.find(
+    const existingCaveat = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
     );
     if (existingCaveat) {
