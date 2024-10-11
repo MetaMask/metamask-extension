@@ -101,9 +101,9 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import { HiddenAccountList } from './hidden-account-list';
 import { CreateEthAccount } from '../create-eth-account';
 import { ImportAccount } from '../import-account';
+import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
   // Displays the search box and account list
