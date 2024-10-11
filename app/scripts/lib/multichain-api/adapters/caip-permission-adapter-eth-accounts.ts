@@ -95,7 +95,7 @@ export const setEthAccounts = (
           methods: [],
           notifications: [],
         },
-        "wallet:eip155": {
+        'wallet:eip155': {
           methods: [],
           notifications: [],
         },
