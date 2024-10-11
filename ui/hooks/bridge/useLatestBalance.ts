@@ -44,7 +44,13 @@ const useLatestBalance = (
     return undefined;
   }, [token, selectedAddress, global.ethereumProvider]);
 
-  const tokenDecimals = token?.decimals ? Number(token.decimals) : 18;
+  if (token && !token.decimals) {
+    throw new Error(
+      `Failed to calculate latest balance - ${token.symbol} token is missing "decimals" value`,
+    );
+  }
+
+  const tokenDecimals = token?.decimals ? Number(token.decimals) : 1;
 
   return {
     formattedBalance:
