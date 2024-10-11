@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Απόκρυψη ευαίσθητων πληροφοριών"
   },
-  "hideToken": {
-    "message": "Απόκρυψη token"
-  },
   "hideTokenPrompt": {
     "message": "Απόκρυψη του token;"
   },
@@ -5700,9 +5697,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Απαιτείται δεκαδικό token. Βρείτε το σε: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Δεκαδικά Ψηφία του token:"
   },
   "tokenDetails": {
     "message": "Λεπτομέρειες του token"
