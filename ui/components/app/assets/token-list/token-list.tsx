@@ -11,6 +11,8 @@ import {
 import { TokenWithBalance } from '../asset-list/asset-list';
 import { sortAssets } from '../util/sort';
 import {
+  InternalAccountWithBalance,
+  getMetaMaskAccountsOrdered,
   getPreferences,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
@@ -19,6 +21,14 @@ import {
 import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainNativeCurrency,
+  getMultichainShouldShowFiat,
+} from '../../../../selectors/multichain';
+import { ETH_DEFAULT_DECIMALS } from '../../../../constants';
+import { EtherDenomination } from '../../../../../shared/constants/common';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;
