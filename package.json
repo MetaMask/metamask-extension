@@ -131,6 +131,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
+    "@metamask/eth-snap-keyring@^4.3.6": "npm:@metamask-previews/eth-snap-keyring@4.3.6-d5a036e",
     "chokidar": "^3.6.0",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
