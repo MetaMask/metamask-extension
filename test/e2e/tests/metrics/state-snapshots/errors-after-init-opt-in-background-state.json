@@ -233,6 +233,7 @@
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
+    "signatureRequests": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
     "unapprovedPersonalMsgCount": 0,
