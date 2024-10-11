@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { IApiCallLogEntry } from '@metamask-institutional/custody-keyring';
+import { IApiCallLogEntry } from '@metamask-institutional/types';
 import {
   forceUpdateMetamaskState,
   displayWarning,

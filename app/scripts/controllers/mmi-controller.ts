@@ -4,7 +4,6 @@ import { captureException } from '@sentry/browser';
 import {
   CUSTODIAN_TYPES,
   CustodyKeyring,
-  IApiCallLogEntry,
   MmiConfigurationController,
 } from '@metamask-institutional/custody-keyring';
 import {
@@ -18,6 +17,7 @@ import {
 } from '@metamask-institutional/sdk';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { CustodyController } from '@metamask-institutional/custody-controller';
+import { IApiCallLogEntry } from '@metamask-institutional/types';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
