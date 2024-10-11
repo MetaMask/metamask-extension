@@ -364,13 +364,6 @@ export function getSelectedInternalAccount(state) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
-export function getSelectedEvmInternalAccount(state) {
-  const [evmAccountSelected] = sortSelectedInternalAccounts(
-    getEvmInternalAccounts(state),
-  );
-  return evmAccountSelected;
-}
-
 export function checkIfMethodIsEnabled(state, methodName) {
   const internalAccount = getSelectedInternalAccount(state);
   return Boolean(internalAccount.methods.includes(methodName));
@@ -392,14 +385,26 @@ export function getInternalAccounts(state) {
   return Object.values(state.metamask.internalAccounts.accounts);
 }
 
-export function getEvmInternalAccounts(state) {
-  const accounts = Object.values(state.metamask.internalAccounts.accounts);
-  return accounts.filter((account) => isEvmAccountType(account.type));
-}
-
 export function getInternalAccount(state, accountId) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
+
+export const getEvmInternalAccounts = createSelector(
+  getInternalAccounts,
+  (accounts) => {
+    return accounts.filter((account) => isEvmAccountType(account.type));
+  },
+);
+
+export const getSelectedEvmInternalAccount = createSelector(
+  getEvmInternalAccounts,
+  (accounts) => {
+    // We should always have 1 EVM account (if not, it would be `undefined`, same
+    // as `getSelectedInternalAccount` selector.
+    const [evmAccountSelected] = sortSelectedInternalAccounts(accounts);
+    return evmAccountSelected;
+  },
+);
 
 /**
  * Returns an array of internal accounts sorted by keyring.
