@@ -3,15 +3,15 @@ import { MethodNames } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '../../lib/multichain-api/caip25permissions';
+} from '@metamask/multichain/caip25Permission';
 import {
   getEthAccounts,
   setEthAccounts,
-} from '../../lib/multichain-api/adapters/caip-permission-adapter-eth-accounts';
+} from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
 import {
   getPermittedEthChainIds,
   setPermittedEthChainIds,
-} from '../../lib/multichain-api/adapters/caip-permission-adapter-permittedChains';
+} from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionNames } from './specifications';
 

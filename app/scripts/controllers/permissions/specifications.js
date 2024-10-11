@@ -3,14 +3,14 @@ import {
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
 } from '@metamask/snaps-rpc-methods';
 import {
-  EndowmentTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
-import {
   Caip25CaveatFactoryFn,
   Caip25CaveatType,
   caip25EndowmentBuilder,
-} from '../../lib/multichain-api/caip25permissions';
+} from '@metamask/multichain/caip25Permission';
+import {
+  EndowmentTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 
 /**
  * This file contains the specifications of the permissions and caveats

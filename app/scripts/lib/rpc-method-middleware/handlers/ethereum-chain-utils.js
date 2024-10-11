@@ -1,20 +1,20 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain/caip25Permission';
+import {
+  getPermittedEthChainIds,
+  addPermittedEthChainId,
+} from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { getValidUrl } from '../../util';
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from '../../multichain-api/caip25permissions';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
-import {
-  getPermittedEthChainIds,
-  addPermittedEthChainId,
-} from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
 
 export function validateChainId(chainId) {
   const _chainId = typeof chainId === 'string' ? chainId.toLowerCase() : '';

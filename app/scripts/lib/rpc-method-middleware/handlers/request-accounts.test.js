@@ -1,21 +1,21 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { deferredPromise, shouldEmitDappViewedEvent } from '../../util';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '../../multichain-api/caip25permissions';
+} from '@metamask/multichain/caip25Permission';
+import PermittedChainsAdapters from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+import EthAccountsAdapters from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
+import { deferredPromise, shouldEmitDappViewedEvent } from '../../util';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
-import PermittedChainsAdapters from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
-import EthAccountsAdapters from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
 import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import requestEthereumAccounts from './request-accounts';
 
 jest.mock(
-  '../../multichain-api/adapters/caip-permission-adapter-permittedChains',
+  '@metamask/multichain/adapters/caip-permission-adapter-permittedChains',
   () => ({
     ...jest.requireActual(
-      '../../multichain-api/adapters/caip-permission-adapter-permittedChains',
+      '@metamask/multichain/adapters/caip-permission-adapter-permittedChains',
     ),
     setPermittedEthChainIds: jest.fn(),
   }),
@@ -23,10 +23,10 @@ jest.mock(
 const MockPermittedChainsAdapters = jest.mocked(PermittedChainsAdapters);
 
 jest.mock(
-  '../../multichain-api/adapters/caip-permission-adapter-eth-accounts',
+  '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts',
   () => ({
     ...jest.requireActual(
-      '../../multichain-api/adapters/caip-permission-adapter-eth-accounts',
+      '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts',
     ),
     setEthAccounts: jest.fn(),
   }),

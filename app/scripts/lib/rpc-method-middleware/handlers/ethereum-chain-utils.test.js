@@ -2,13 +2,13 @@ import { errorCodes } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '../../multichain-api/caip25permissions';
-import { CaveatTypes } from '../../../../../shared/constants/permissions';
-import { PermissionNames } from '../../../controllers/permissions';
+} from '@metamask/multichain/caip25Permission';
 import {
   KnownNotifications,
   KnownRpcMethods,
-} from '../../multichain-api/scope';
+} from '@metamask/multichain/scope/scope';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
 import * as EthChainUtils from './ethereum-chain-utils';
 
 describe('Ethereum Chain Utils', () => {

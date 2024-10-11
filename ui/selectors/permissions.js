@@ -4,15 +4,9 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  // TODO: move these into shared path
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../app/scripts/lib/multichain-api/caip25permissions';
-// TODO: move these into shared path
-// eslint-disable-next-line import/no-restricted-paths
-import { getEthAccounts } from '../../app/scripts/lib/multichain-api/adapters/caip-permission-adapter-eth-accounts';
-// TODO: move these into shared path
-// eslint-disable-next-line import/no-restricted-paths
-import { getPermittedEthChainIds } from '../../app/scripts/lib/multichain-api/adapters/caip-permission-adapter-permittedChains';
+} from '@metamask/multichain/caip25Permission';
+import { getEthAccounts } from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
+import { getPermittedEthChainIds } from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 import {

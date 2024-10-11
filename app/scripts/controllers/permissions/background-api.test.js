@@ -1,14 +1,14 @@
 import { MethodNames } from '@metamask/permission-controller';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '../../lib/multichain-api/caip25permissions';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
+} from '@metamask/multichain/caip25Permission';
 import {
   KnownNotifications,
   KnownRpcMethods,
-} from '../../lib/multichain-api/scope';
+} from '@metamask/multichain/scope/scope';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { getPermissionBackgroundApiMethods } from './background-api';
 import { PermissionNames } from './specifications';
 

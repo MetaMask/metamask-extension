@@ -1,4 +1,8 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain/caip25Permission';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import {
   validateAndFlattenScopes,
@@ -7,10 +11,6 @@ import {
   KnownRpcMethods,
   KnownNotifications,
 } from '../scope';
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from '../caip25permissions';
 import { shouldEmitDappViewedEvent } from '../../util';
 import { PermissionNames } from '../../../controllers/permissions';
 import { walletCreateSessionHandler } from './handler';

@@ -1,3 +1,7 @@
+import { parseScopeString } from '@metamask/multichain/scope/scope';
+import { KnownCaipNamespace } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
+import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 
 // can't be moved over because of validateAddEthereumChainParams
 export const validateScopedPropertyEip3085 = (

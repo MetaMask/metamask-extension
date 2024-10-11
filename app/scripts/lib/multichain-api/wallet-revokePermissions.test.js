@@ -1,10 +1,10 @@
 import { invalidParams } from '@metamask/permission-controller';
-import { PermissionNames } from '../../controllers/permissions';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from './caip25permissions';
+} from '@metamask/multichain/caip25Permission';
+import { PermissionNames } from '../../controllers/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { revokePermissionsHandler } from './wallet-revokePermissions';
 
 const baseRequest = {

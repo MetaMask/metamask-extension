@@ -1,18 +1,18 @@
 import { ethErrors } from 'eth-rpc-errors';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain/caip25Permission';
+import { setEthAccounts } from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
+import { setPermittedEthChainIds } from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from '../../multichain-api/caip25permissions';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
-import { setEthAccounts } from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
 import { PermissionNames } from '../../../controllers/permissions';
-import { setPermittedEthChainIds } from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the

@@ -1,19 +1,24 @@
 import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain/caip25Permission';
+import PermittedChainsAdapters from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import { PermissionNames } from '../../controllers/permissions';
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from './caip25permissions';
 import { getPermissionsHandler } from './wallet-getPermissions';
-import PermittedChainsAdapters from './adapters/caip-permission-adapter-permittedChains';
 
-jest.mock('./adapters/caip-permission-adapter-permittedChains', () => ({
-  ...jest.requireActual('./adapters/caip-permission-adapter-permittedChains'),
-  getPermittedEthChainIds: jest.fn(),
-}));
+jest.mock(
+  '@metamask/multichain/adapters/caip-permission-adapter-permittedChains',
+  () => ({
+    ...jest.requireActual(
+      '@metamask/multichain/adapters/caip-permission-adapter-permittedChains',
+    ),
+    getPermittedEthChainIds: jest.fn(),
+  }),
+);
 const MockPermittedChainsAdapters = jest.mocked(PermittedChainsAdapters);
 
 const baseRequest = {

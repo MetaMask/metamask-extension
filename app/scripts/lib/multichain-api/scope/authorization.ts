@@ -1,3 +1,10 @@
+import {
+  ScopedProperties,
+  ScopesObject,
+} from '@metamask/multichain/scope/scope';
+import { CaipChainId } from '@metamask/utils';
+import { validateScopedPropertyEip3085 } from './validation';
+
 // can't be moved over because of validateScopedPropertyEip3085
 export const processScopedProperties = (
   requiredScopes: ScopesObject,

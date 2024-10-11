@@ -1,29 +1,29 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { CaveatTypes } from '../../../../../shared/constants/permissions';
-import {
-  mergeScopes,
-  validateAndFlattenScopes,
-  processScopedProperties,
-  bucketScopes,
-} from '../scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '../caip25permissions';
-import { shouldEmitDappViewedEvent } from '../../util';
+} from '@metamask/multichain/caip25Permission';
+import {
+  getEthAccounts,
+  setEthAccounts,
+} from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
+import {
+  getPermittedEthChainIds,
+  setPermittedEthChainIds,
+} from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+import { mergeScopes } from '@metamask/multichain/scope/transform';
+import {
+  bucketScopes,
+  validateAndFlattenScopes,
+} from '@metamask/multichain/scope/authorization';
+import { PermissionNames } from '../../../controllers/permissions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { PermissionNames } from '../../../controllers/permissions';
-import {
-  getEthAccounts,
-  setEthAccounts,
-} from '../adapters/caip-permission-adapter-eth-accounts';
-import {
-  getPermittedEthChainIds,
-  setPermittedEthChainIds,
-} from '../adapters/caip-permission-adapter-permittedChains';
+import { shouldEmitDappViewedEvent } from '../../util';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
+import { processScopedProperties } from '../scope/authorization';
 import { validateAndAddEip3085 } from './helpers';
 
 export async function walletCreateSessionHandler(req, res, _next, end, hooks) {

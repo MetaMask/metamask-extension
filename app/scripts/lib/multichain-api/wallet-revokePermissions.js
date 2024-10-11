@@ -1,11 +1,11 @@
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
 import { isNonEmptyArray } from '@metamask/utils';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
-import { PermissionNames } from '../../controllers/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from './caip25permissions';
+} from '@metamask/multichain/caip25Permission';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../controllers/permissions';
 
 export const revokePermissionsHandler = {
   methodNames: [MethodNames.revokePermissions],

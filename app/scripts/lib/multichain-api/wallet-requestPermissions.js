@@ -2,16 +2,16 @@ import { pick } from 'lodash';
 import { isPlainObject } from '@metamask/controller-utils';
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
 import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain/caip25Permission';
+import { setEthAccounts } from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
+import { setPermittedEthChainIds } from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import { PermissionNames } from '../../controllers/permissions';
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from './caip25permissions';
-import { setEthAccounts } from './adapters/caip-permission-adapter-eth-accounts';
-import { setPermittedEthChainIds } from './adapters/caip-permission-adapter-permittedChains';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.requestPermissions],

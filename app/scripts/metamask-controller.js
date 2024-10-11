@@ -153,6 +153,20 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
+import { walletInvokeMethodHandler } from '@metamask/multichain/handlers/wallet-invokeMethod';
+import {
+  Caip25CaveatMutatorFactories,
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain/caip25Permission';
+import { multichainMethodCallValidatorMiddleware } from '@metamask/multichain/middlewares/multichainMethodCallValidator';
+import MultichainSubscriptionManager from '@metamask/multichain/middlewares/MultichainSubscriptionManager';
+import MultichainMiddlewareManager from '@metamask/multichain/middlewares/MultichainMiddlewareManager';
+import { walletRevokeSessionHandler } from '@metamask/multichain/handlers/wallet-revokeSession';
+import { walletGetSessionHandler } from '@metamask/multichain/handlers/wallet-getSession';
+import { mergeScopes } from '@metamask/multichain/scope/transforms';
+import { getEthAccounts } from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
+import { CaipPermissionAdapterMiddleware } from '@metamask/multichain/adapters/caip-permission-adapter-middleware';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -349,23 +363,8 @@ import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verific
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
-import { walletCreateSessionHandler } from './lib/multichain-api/wallet-createSession';
-import { walletInvokeMethodHandler } from './lib/multichain-api/wallet-invokeMethod';
-import {
-  Caip25CaveatMutatorFactories,
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from './lib/multichain-api/caip25permissions';
-import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import MultichainSubscriptionManager from './lib/multichain-api/MultichainSubscriptionManager';
-import MultichainMiddlewareManager from './lib/multichain-api/MultichainMiddlewareManager';
-import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
-import { walletGetSessionHandler } from './lib/multichain-api/wallet-getSession';
-import { mergeScopes } from './lib/multichain-api/scope';
-import { getEthAccounts } from './lib/multichain-api/adapters/caip-permission-adapter-eth-accounts';
-import { CaipPermissionAdapterMiddleware } from './lib/multichain-api/adapters/caip-permission-adapter-middleware';
 import {
   BridgeUserAction,
   BridgeBackgroundAction,
@@ -379,6 +378,7 @@ import {
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
+import { walletCreateSessionHandler } from './lib/multichain-api/wallet-createSession';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
