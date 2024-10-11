@@ -1,15 +1,8 @@
 import { Suite } from 'mocha';
-import {
-  tempToggleSettingRedesignedConfirmations,
-  withFixtures,
-} from '../helpers';
-import { Driver } from '../webdriver/driver';
-import {
-  accountSnapFixtures,
-  installSnapSimpleKeyring,
-  makeNewAccountAndSwitch,
-  signData,
-} from './common';
+import { withFixtures } from '../../helpers';
+import { Driver } from '../../webdriver/driver';
+import { accountSnapFixtures } from '../../accounts/common';
+import { SnapAccountPage } from '../../page-objects/snap-account-page';
 
 describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
@@ -24,13 +17,14 @@ describe('Snap Account Signatures', function (this: Suite) {
       await withFixtures(
         accountSnapFixtures(title),
         async ({ driver }: { driver: Driver }) => {
+          const snapAccountPage = new SnapAccountPage(driver);
           const isAsyncFlow = flowType !== 'sync';
 
-          await installSnapSimpleKeyring(driver, isAsyncFlow);
+          await snapAccountPage.installSnapSimpleKeyring(isAsyncFlow);
 
-          const newPublicKey = await makeNewAccountAndSwitch(driver);
+          const newPublicKey = await snapAccountPage.makeNewAccountAndSwitch();
 
-          await tempToggleSettingRedesignedConfirmations(driver);
+          await snapAccountPage.tempToggleSettingRedesignedConfirmations();
 
           // Run all 5 signature types
           const locatorIDs = [
@@ -42,7 +36,7 @@ describe('Snap Account Signatures', function (this: Suite) {
           ];
 
           for (const locatorID of locatorIDs) {
-            await signData(driver, locatorID, newPublicKey, flowType);
+            await snapAccountPage.signData(locatorID, newPublicKey, flowType);
           }
         },
       );
