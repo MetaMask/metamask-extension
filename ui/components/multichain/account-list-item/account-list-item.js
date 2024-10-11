@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu, AvatarGroup } from '..';
+import { AccountListItemMenu } from '../account-list-item-menu';
+import { AvatarGroup } from '../avatar-group';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
@@ -72,7 +73,7 @@ import { AccountListItemMenuTypes } from './account-list-item.types';
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
-const AccountListItemComponent = ({
+const AccountListItem = ({
   account,
   selected,
   onClick,
@@ -430,7 +431,7 @@ const AccountListItemComponent = ({
   );
 };
 
-AccountListItemComponent.propTypes = {
+AccountListItem.propTypes = {
   /**
    * An account object that has name, address, and balance data
    */
@@ -504,7 +505,6 @@ AccountListItemComponent.propTypes = {
   startAccessory: PropTypes.node,
 };
 
-const AccountListItem = React.memo(AccountListItemComponent);
 AccountListItem.displayName = 'AccountListItem';
 
-export default AccountListItem;
+export default React.memo(AccountListItem);
