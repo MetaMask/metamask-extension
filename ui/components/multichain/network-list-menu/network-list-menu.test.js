@@ -19,11 +19,15 @@ const mockSetShowTestNetworks = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 const mockSetNetworkClientIdForDomain = jest.fn();
 const mockSetActiveNetwork = jest.fn();
+const mockUpdateCustomNonce = jest.fn();
+const mockSetNextNonce = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setActiveNetwork: () => mockSetActiveNetwork,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
+  updateCustomNonce: () => mockUpdateCustomNonce,
+  setNextNonce: () => mockSetNextNonce,
   setNetworkClientIdForDomain: (network, id) =>
     mockSetNetworkClientIdForDomain(network, id),
 }));
