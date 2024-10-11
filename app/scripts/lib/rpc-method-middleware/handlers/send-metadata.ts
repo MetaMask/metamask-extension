@@ -15,14 +15,14 @@ import {
   HandlerRequestType as SendMetadataHandlerRequest,
 } from './types';
 
-type SubjectMetadataToAdd = PermissionSubjectMetadata & {
+export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   name?: string | null;
   subjectType?: SubjectType | null;
   extensionId?: string | null;
   iconUrl?: string | null;
 };
 
-type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
+export type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
 
 type SendMetadataOptions = {
   addSubjectMetadata: AddSubjectMetadata;
