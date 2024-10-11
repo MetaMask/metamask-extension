@@ -448,7 +448,6 @@
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
     "web3-stream-provider": "^5.0.0",
-    "webdriver-manager": "^12.1.9",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
@@ -524,7 +523,7 @@
     "@types/he": "^1",
     "@types/jest": "^29.5.12",
     "@types/luxon": "^3.4.2",
-    "@types/mocha": "^10.0.9",
+    "@types/mocha": "^10.0.3",
     "@types/node": "^20",
     "@types/path-browserify": "^1.0.2",
     "@types/pify": "^5.0.1",
