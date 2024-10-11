@@ -20,11 +20,19 @@ export type SnapUIAddressProps = {
   address: string;
   // This is not currently exposed to Snaps.
   avatarSize?: 'xs' | 'sm' | 'md' | 'lg';
+  diameter?: number;
+  truncate?: boolean;
+  displayName?: boolean;
+  avatar?: boolean;
 };
 
 export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
   address,
   avatarSize = 'md',
+  diameter = 32,
+  truncate = true,
+  displayName = false,
+  avatar = true,
 }) => {
   const caipIdentifier = useMemo(() => {
     if (isHexString(address)) {
@@ -41,10 +49,10 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
     [caipIdentifier],
   );
 
-  const displayName = useDisplayName(parsed);
+  const name = useDisplayName(parsed);
 
   const value =
-    displayName ??
+    name ??
     shortenAddress(
       parsed.chain.namespace === 'eip155'
         ? toChecksumHexAddress(parsed.address)
