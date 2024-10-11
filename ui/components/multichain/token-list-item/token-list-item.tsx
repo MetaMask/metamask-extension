@@ -81,6 +81,7 @@ type TokenListItemProps = {
   isStakeable?: boolean;
   address?: string | null;
   showPercentage?: boolean;
+  isPrimaryTokenSymbolHidden?: boolean;
 };
 
 export const TokenListItem = ({
@@ -93,6 +94,7 @@ export const TokenListItem = ({
   title,
   tooltipText,
   isOriginalTokenSymbol,
+  isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
   address = null,
@@ -379,7 +381,10 @@ export const TokenListItem = ({
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
+                  {primary}{' '}
+                  {isNativeCurrency || isPrimaryTokenSymbolHidden
+                    ? ''
+                    : tokenSymbol}
                 </Text>
               </Box>
             ) : (
@@ -405,7 +410,10 @@ export const TokenListItem = ({
                   variant={TextVariant.bodySmMedium}
                   textAlign={TextAlign.End}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
+                  {primary}{' '}
+                  {isNativeCurrency || isPrimaryTokenSymbolHidden
+                    ? ''
+                    : tokenSymbol}
                 </Text>
               </Box>
             )}
