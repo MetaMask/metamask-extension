@@ -36,10 +36,9 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import {
-  AccountListItem,
-  AccountListItemMenuTypes,
-} from '../account-list-item';
+import { AccountListItem } from '../account-list-item';
+import { AccountListItemMenuTypes } from '../account-list-item/account-list-item.types';
+
 import {
   AlignItems,
   BlockSize,
