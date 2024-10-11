@@ -21,7 +21,11 @@ import {
 } from '../types/notifications/notifications';
 import { formatIsoDateString } from '../../../../helpers/utils/notification.util';
 import { SnapUIRenderer } from '../../../../components/app/snaps/snap-ui-renderer';
-import { BackgroundColor, Display, FlexDirection } from '../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  Display,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
 import {
   Box,
   ButtonVariant,
