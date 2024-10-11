@@ -108,6 +108,7 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 // eslint-disable-next-line import/no-restricted-paths
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -536,6 +537,24 @@ export const getSelectedAccount = createDeepEqualSelector(
     return undefined;
   },
 );
+
+export const getWatchedToken = (transactionMeta) =>
+  createSelector(
+    [getSelectedAccount, getAllTokens],
+    (selectedAccount, detectedTokens) => {
+      const { chainId } = transactionMeta;
+
+      const selectedToken = detectedTokens?.[chainId]?.[
+        selectedAccount.address
+      ]?.find(
+        (token) =>
+          toChecksumHexAddress(token.address) ===
+          toChecksumHexAddress(transactionMeta.txParams.to),
+      );
+
+      return selectedToken;
+    },
+  );
 
 export function getTargetAccount(state, targetAddress) {
   const accounts = getMetaMaskAccounts(state);
@@ -1325,6 +1344,10 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+export function getShowPermittedNetworkToastOpen(state) {
+  return state.appState.showPermittedNetworkToastOpen;
+}
+
 /**
  * Returns a memoized selector that gets the internal accounts from the Redux store.
  *
@@ -1491,6 +1514,11 @@ export const getConnectedSitesList = createDeepEqualSelector(
     return sitesList;
   },
 );
+
+export function getShouldShowAggregatedBalancePopover(state) {
+  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
+  return shouldShowAggregatedBalancePopover;
+}
 
 export const getConnectedSnapsList = createDeepEqualSelector(
   getSnapsList,
@@ -1976,6 +2004,10 @@ export function getShowPrivacyPolicyToast(state) {
     // old users who don't have onboardingDate set should see the notice
     (onboardingDate < newPrivacyPolicyDate || !onboardingDate)
   );
+}
+
+export function getLastViewedUserSurvey(state) {
+  return state.metamask.lastViewedUserSurvey;
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -2564,6 +2596,26 @@ export function getEthereumAddressNames(state) {
 
 export function getNameSources(state) {
   return state.metamask.nameSources || {};
+}
+
+export function getShowDeleteMetaMetricsDataModal(state) {
+  return state.appState.showDeleteMetaMetricsDataModal;
+}
+
+export function getShowDataDeletionErrorModal(state) {
+  return state.appState.showDataDeletionErrorModal;
+}
+
+export function getMetaMetricsDataDeletionId(state) {
+  return state.metamask.metaMetricsDataDeletionId;
+}
+
+export function getMetaMetricsDataDeletionTimestamp(state) {
+  return state.metamask.metaMetricsDataDeletionTimestamp;
+}
+
+export function getMetaMetricsDataDeletionStatus(state) {
+  return state.metamask.metaMetricsDataDeletionStatus;
 }
 
 /**

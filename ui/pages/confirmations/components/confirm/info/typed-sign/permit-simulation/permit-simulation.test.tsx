@@ -5,7 +5,6 @@ import { act } from 'react-dom/test-utils';
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { permitSignatureMsg } from '../../../../../../../../test/data/confirmations/typed_sign';
-
 import PermitSimulation from './permit-simulation';
 
 jest.mock('../../../../../../../store/actions', () => {

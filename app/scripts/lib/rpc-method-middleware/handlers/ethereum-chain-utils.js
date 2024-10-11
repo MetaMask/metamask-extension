@@ -1,5 +1,4 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
-import { ApprovalType } from '@metamask/controller-utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -156,40 +155,34 @@ export function validateAddEthereumChainParams(params, end) {
 export async function switchChain(
   res,
   end,
-  origin,
   chainId,
-  requestData,
   networkClientId,
   approvalFlowId,
   {
-    getChainPermissionsFeatureFlag,
+    isAddFlow,
     setActiveNetwork,
     endApprovalFlow,
-    requestUserApproval,
     getCaveat,
     requestPermittedChainsPermission,
+    grantPermittedChainsPermissionIncremental,
   },
 ) {
   try {
-    if (getChainPermissionsFeatureFlag()) {
-      const { value: permissionedChainIds } =
-        getCaveat({
-          target: PermissionNames.permittedChains,
-          caveatType: CaveatTypes.restrictNetworkSwitching,
-        }) ?? {};
+    const { value: permissionedChainIds } =
+      getCaveat({
+        target: PermissionNames.permittedChains,
+        caveatType: CaveatTypes.restrictNetworkSwitching,
+      }) ?? {};
 
-      if (
-        permissionedChainIds === undefined ||
-        !permissionedChainIds.includes(chainId)
-      ) {
+    if (
+      permissionedChainIds === undefined ||
+      !permissionedChainIds.includes(chainId)
+    ) {
+      if (isAddFlow) {
+        await grantPermittedChainsPermissionIncremental([chainId]);
+      } else {
         await requestPermittedChainsPermission([chainId]);
       }
-    } else {
-      await requestUserApproval({
-        origin,
-        type: ApprovalType.SwitchEthereumChain,
-        requestData,
-      });
     }
 
     await setActiveNetwork(networkClientId);

@@ -65,7 +65,7 @@ export const ApproveStaticSimulation = () => {
     </Text>
   );
 
-  const simulationElements = (
+  const SpendingCapRow = (
     <ConfirmInfoRow
       label={t(isNFT ? 'simulationApproveHeading' : 'spendingCap')}
     >
@@ -87,11 +87,14 @@ export const ApproveStaticSimulation = () => {
           <Name
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
+            preferContractSymbol
           />
         </Box>
       </Box>
     </ConfirmInfoRow>
   );
+
+  const simulationElements = SpendingCapRow;
 
   return (
     <StaticSimulation

@@ -17,6 +17,10 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+} from '../../shared/constants/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -77,6 +81,10 @@ describe('Actions', () => {
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
     background.getStatePatches = sinon.stub().callsFake((cb) => cb(null, []));
+    background.removePermittedChain = sinon.stub();
+    background.requestAccountsAndChainPermissionsWithId = sinon.stub();
+    background.grantPermissions = sinon.stub();
+    background.grantPermissionsIncremental = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -2528,6 +2536,153 @@ describe('Actions', () => {
       expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
         true,
       );
+    });
+  });
+
+  describe('deleteAccountSyncingDataFromUserStorage', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls deleteAccountSyncingDataFromUserStorage in the background', async () => {
+      const store = mockStore();
+
+      const deleteAccountSyncingDataFromUserStorageStub = sinon
+        .stub()
+        .callsFake((_, cb) => {
+          return cb();
+        });
+
+      background.getApi.returns({
+        deleteAccountSyncingDataFromUserStorage:
+          deleteAccountSyncingDataFromUserStorageStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
+      expect(
+        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith('accounts'),
+      ).toBe(true);
+    });
+  });
+
+  describe('removePermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removePermittedChain in the background', async () => {
+      const store = mockStore();
+
+      background.removePermittedChain.callsFake((_, __, cb) => cb());
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.removePermittedChain('test.com', '0x1'));
+
+      expect(
+        background.removePermittedChain.calledWith(
+          'test.com',
+          '0x1',
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('requestAccountsAndChainPermissionsWithId', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls requestAccountsAndChainPermissionsWithId in the background', async () => {
+      const store = mockStore();
+
+      background.requestAccountsAndChainPermissionsWithId.callsFake((_, cb) =>
+        cb(),
+      );
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.requestAccountsAndChainPermissionsWithId('test.com'),
+      );
+
+      expect(
+        background.requestAccountsAndChainPermissionsWithId.calledWith(
+          'test.com',
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls grantPermissionsIncremental in the background', async () => {
+      const store = mockStore();
+
+      background.grantPermissionsIncremental.callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChain('test.com', '0x1');
+      expect(
+        background.grantPermissionsIncremental.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [EndowmentTypes.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x1'],
+                  },
+                ],
+              },
+            },
+          },
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChains', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls grantPermissions in the background', async () => {
+      const store = mockStore();
+
+      background.grantPermissions.callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChains('test.com', ['0x1', '0x2']);
+      expect(
+        background.grantPermissions.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [EndowmentTypes.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x1', '0x2'],
+                  },
+                ],
+              },
+            },
+          },
+          sinon.match.func,
+        ),
+      ).toBe(true);
+
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 });
