@@ -34,8 +34,7 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
-import { AccountListItem } from '../account-list-item';
-import { AccountListItemMenuTypes } from '..';
+import { AccountListItem, AccountListItemMenuTypes } from '../account-list-item';
 import { mergeAccounts } from './account-list-menu';
 
 export const HiddenAccountList = ({ onClose }) => {

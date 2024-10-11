@@ -39,9 +39,7 @@ import { TextFieldSearch } from '../../component-library/text-field-search/depre
 import {
   AccountListItem,
   AccountListItemMenuTypes,
-  CreateEthAccount,
-  ImportAccount,
-} from '..';
+} from '../account-list-item';
 import {
   AlignItems,
   BlockSize,
@@ -104,6 +102,8 @@ import {
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
 import { HiddenAccountList } from './hidden-account-list';
+import { CreateEthAccount } from '../create-eth-account';
+import { ImportAccount } from '../import-account';
 
 const ACTION_MODES = {
   // Displays the search box and account list
