@@ -106,10 +106,8 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         );
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-          windowHandles,
-        );
+        [extension] = windowHandles;
+        await driver.switchToWindow(extension);
         await driver.findClickableElement(
           '[data-testid="account-overview__nfts-tab"]',
         );
