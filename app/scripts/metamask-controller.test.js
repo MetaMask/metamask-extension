@@ -115,11 +115,11 @@ const rpcMethodMiddlewareMock = {
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
 
 jest.mock(
-  './controllers/preferences',
+  './controllers/preferences-controller',
   () =>
     function (...args) {
       const PreferencesController = jest.requireActual(
-        './controllers/preferences',
+        './controllers/preferences-controller',
       ).default;
       const controller = new PreferencesController(...args);
       // jest.spyOn gets hoisted to the top of this function before controller is initialized.
@@ -223,11 +223,9 @@ const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
-const POLYGON_RPC_URL_2 = 'https://polygon-rpc.com';
 
 const NETWORK_CONFIGURATION_ID_1 = 'networkConfigurationId1';
 const NETWORK_CONFIGURATION_ID_2 = 'networkConfigurationId2';
-const NETWORK_CONFIGURATION_ID_3 = 'networkConfigurationId3';
 
 const ETH = 'ETH';
 const MATIC = 'MATIC';
@@ -259,14 +257,6 @@ const firstTimeState = {
         ticker: MATIC,
         nickname: 'Polygon',
         id: NETWORK_CONFIGURATION_ID_2,
-        blockExplorerUrl: undefined,
-      },
-      {
-        rpcUrl: POLYGON_RPC_URL_2,
-        chainId: POLYGON_CHAIN_ID,
-        ticker: MATIC,
-        nickname: 'Alt Polygon',
-        id: NETWORK_CONFIGURATION_ID_3,
         blockExplorerUrl: undefined,
       },
     ),
@@ -527,6 +517,51 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#getAddTransactionRequest', () => {
+      it('formats the transaction for submission', () => {
+        const transactionParams = { from: '0xa', to: '0xb' };
+        const transactionOptions = { foo: true };
+        const result = metamaskController.getAddTransactionRequest({
+          transactionParams,
+          transactionOptions,
+        });
+        expect(result).toStrictEqual({
+          internalAccounts:
+            metamaskController.accountsController.listAccounts(),
+          dappRequest: undefined,
+          networkClientId:
+            metamaskController.networkController.state.selectedNetworkClientId,
+          selectedAccount:
+            metamaskController.accountsController.getAccountByAddress(
+              transactionParams.from,
+            ),
+          transactionController: expect.any(Object),
+          transactionOptions,
+          transactionParams,
+          userOperationController: expect.any(Object),
+          chainId: '0x1',
+          ppomController: expect.any(Object),
+          securityAlertsEnabled: expect.any(Boolean),
+          updateSecurityAlertResponse: expect.any(Function),
+        });
+      });
+      it('passes through any additional params to the object', () => {
+        const transactionParams = { from: '0xa', to: '0xb' };
+        const transactionOptions = { foo: true };
+        const result = metamaskController.getAddTransactionRequest({
+          transactionParams,
+          transactionOptions,
+          test: '123',
+        });
+
+        expect(result).toMatchObject({
+          transactionParams,
+          transactionOptions,
+          test: '123',
+        });
+      });
+    });
+
     describe('submitPassword', () => {
       it('removes any identities that do not correspond to known accounts.', async () => {
         const fakeAddress = '0xbad0';
@@ -709,7 +744,7 @@ describe('MetaMaskController', () => {
           });
 
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
         // Give account 2 a token
@@ -748,19 +783,23 @@ describe('MetaMaskController', () => {
     });
 
     describe('#getBalance', () => {
-      it('should return the balance known by accountTracker', async () => {
+      it('should return the balance known by accountTrackerController', async () => {
         const accounts = {};
         const balance = '0x14ced5122ce0a000';
         accounts[TEST_ADDRESS] = { balance };
 
-        metamaskController.accountTracker.store.putState({ accounts });
+        jest
+          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
+          .mockReturnValue({
+            accounts,
+          });
 
         const gotten = await metamaskController.getBalance(TEST_ADDRESS);
 
         expect(balance).toStrictEqual(gotten);
       });
 
-      it('should ask the network for a balance when not known by accountTracker', async () => {
+      it('should ask the network for a balance when not known by accountTrackerController', async () => {
         const accounts = {};
         const balance = '0x14ced5122ce0a000';
         const ethQuery = new EthQuery();
@@ -768,7 +807,11 @@ describe('MetaMaskController', () => {
           callback(undefined, balance);
         });
 
-        metamaskController.accountTracker.store.putState({ accounts });
+        jest
+          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
+          .mockReturnValue({
+            accounts,
+          });
 
         const gotten = await metamaskController.getBalance(
           TEST_ADDRESS,
@@ -1189,7 +1232,7 @@ describe('MetaMaskController', () => {
           false,
         );
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
         metamaskController.preferencesController.setUsePhishDetect(true);
       });
@@ -1580,7 +1623,7 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'triggerNetworkrequests')
           .mockImplementation();
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
         const mockControllerConnectionChangedHandler = jest.fn();
 
@@ -1697,21 +1740,27 @@ describe('MetaMaskController', () => {
 
       it('should do nothing if there are no keyrings in state', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
         await metamaskController._onKeyringControllerUpdate({ keyrings: [] });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).not.toHaveBeenCalled();
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('should sync addresses if there are keyrings in state', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
@@ -1724,14 +1773,17 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('should NOT update selected address if already unlocked', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
@@ -1745,14 +1797,17 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('filter out non-EVM addresses prior to calling syncWithAddresses', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
@@ -1769,7 +1824,7 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
@@ -2046,87 +2101,6 @@ describe('MetaMaskController', () => {
         expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
         expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
         expect(tokenDetails.balance).toStrictEqual(tokenData.balance);
-      });
-
-      describe('findNetworkConfigurationBy', () => {
-        it('returns null if passed an object containing a valid networkConfiguration key but no matching value is found', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              chainId: '0xnone',
-            }),
-          ).toStrictEqual(null);
-        });
-        it('returns null if passed an object containing an invalid networkConfiguration key', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              invalidKey: '0xnone',
-            }),
-          ).toStrictEqual(null);
-        });
-
-        it('returns matching networkConfiguration when passed a chainId that matches an existing configuration', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              chainId: MAINNET_CHAIN_ID,
-            }),
-          ).toStrictEqual({
-            chainId: MAINNET_CHAIN_ID,
-            nickname: 'Alt Mainnet',
-            id: NETWORK_CONFIGURATION_ID_1,
-            rpcUrl: ALT_MAINNET_RPC_URL,
-            ticker: ETH,
-          });
-        });
-
-        it('returns matching networkConfiguration when passed a ticker that matches an existing configuration', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              ticker: MATIC,
-            }),
-          ).toStrictEqual({
-            rpcUrl: POLYGON_RPC_URL,
-            chainId: POLYGON_CHAIN_ID,
-            ticker: MATIC,
-            nickname: 'Polygon',
-            id: NETWORK_CONFIGURATION_ID_2,
-          });
-        });
-
-        it('returns matching networkConfiguration when passed a nickname that matches an existing configuration', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              nickname: 'Alt Mainnet',
-            }),
-          ).toStrictEqual({
-            chainId: MAINNET_CHAIN_ID,
-            nickname: 'Alt Mainnet',
-            id: NETWORK_CONFIGURATION_ID_1,
-            rpcUrl: ALT_MAINNET_RPC_URL,
-            ticker: ETH,
-          });
-        });
-
-        it('returns null if passed an object containing mismatched networkConfiguration key/value combination', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              nickname: MAINNET_CHAIN_ID,
-            }),
-          ).toStrictEqual(null);
-        });
-
-        it('returns the first networkConfiguration added if passed an key/value combination for which there are multiple matching configurations', () => {
-          expect(
-            metamaskController.findNetworkConfigurationBy({
-              chainId: POLYGON_CHAIN_ID,
-            }),
-          ).toStrictEqual({
-            rpcUrl: POLYGON_RPC_URL,
-            chainId: POLYGON_CHAIN_ID,
-            ticker: MATIC,
-            nickname: 'Polygon',
-            id: NETWORK_CONFIGURATION_ID_2,
-          });
-        });
       });
     });
 

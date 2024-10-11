@@ -74,13 +74,17 @@
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": null,
+      "metaMetricsDataDeletionTimestamp": 0
+    },
     "NetworkController": {
       "selectedNetworkClientId": "string",
+      "networkConfigurations": "object",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
       },
-      "providerConfig": "object",
-      "networkConfigurations": "object"
+      "providerConfig": "object"
     },
     "OnboardingController": {
       "completedOnboarding": true,
@@ -108,10 +112,13 @@
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
-        "useNativeCurrencyAsPrimaryCurrency": true,
+        "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+        "tokenSortConfig": "object",
+        "showMultiRpcModal": "boolean",
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -147,7 +154,11 @@
             "1": "string",
             "2": "string"
           }
-        }
+        },
+        "destTokens": {},
+        "destTopAssets": {},
+        "srcTokens": {},
+        "srcTopAssets": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

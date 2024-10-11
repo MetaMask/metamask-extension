@@ -1,15 +1,18 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureApproved,
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -30,6 +33,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -42,11 +46,6 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
-        await assertAccountDetailsMetrics(
-          driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-        );
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
@@ -55,6 +54,12 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
+
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData_v4',
+        );
 
         await assertSignatureConfirmedMetrics({
           driver,
@@ -66,12 +71,14 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await assertVerifiedResults(driver, publicAddress);
       },
+      mockSignatureApproved,
     );
   });
 
   it('initiates and rejects and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -87,11 +94,10 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement('#signPermitResult');
-        assert.equal(
-          await rejectionResult.getText(),
-          'Error: User rejected the request.',
-        );
+        await driver.waitForSelector({
+          tag: 'span',
+          text: 'Error: User rejected the request.',
+        });
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -102,6 +108,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           location: 'confirmation',
         });
       },
+      mockSignatureRejected,
     );
   });
 });
@@ -119,7 +126,7 @@ async function assertInfoValues(driver: Driver) {
     css: '.name__value',
     text: '0x5B38D...eddC4',
   });
-  const value = driver.findElement({ text: '3,000' });
+  const value = driver.findElement({ text: '<0.000001' });
   const nonce = driver.findElement({ text: '0' });
   const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
 
@@ -138,31 +145,32 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signPermitVerify');
 
-  const verifyResult = await driver.findElement('#signPermitResult');
-  const verifyResultR = await driver.findElement('#signPermitResultR');
-  const verifyResultS = await driver.findElement('#signPermitResultS');
-  const verifyResultV = await driver.findElement('#signPermitResultV');
-
   await driver.waitForSelector({
     css: '#signPermitVerifyResult',
     text: publicAddress,
   });
-  const verifyRecoverAddress = await driver.findElement(
-    '#signPermitVerifyResult',
-  );
 
-  assert.equal(
-    await verifyResult.getText(),
-    '0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee1c',
-  );
-  assert.equal(
-    await verifyResultR.getText(),
-    'r: 0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f',
-  );
-  assert.equal(
-    await verifyResultS.getText(),
-    's: 0x43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee',
-  );
-  assert.equal(await verifyResultV.getText(), 'v: 28');
-  assert.equal(await verifyRecoverAddress.getText(), publicAddress);
+  await driver.waitForSelector({
+    css: '#signPermitResult',
+    text: '0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee1c',
+  });
+
+  await driver.waitForSelector({
+    css: '#signPermitResultR',
+    text: 'r: 0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f',
+  });
+
+  await driver.waitForSelector({
+    css: '#signPermitResultS',
+    text: 's: 0x43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee',
+  });
+
+  await driver.waitForSelector({
+    css: '#signPermitResultV',
+    text: 'v: 28',
+  });
+  await driver.waitForSelector({
+    css: '#signPermitVerifyResult',
+    text: publicAddress,
+  });
 }

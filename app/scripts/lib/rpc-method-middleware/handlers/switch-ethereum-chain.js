@@ -1,7 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  findExistingNetwork,
   validateSwitchEthereumChainParams,
   switchChain,
 } from './ethereum-chain-utils';
@@ -10,13 +9,12 @@ const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
   hookNames: {
-    findNetworkConfigurationBy: true,
+    getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
     getCaveat: true,
     requestPermittedChainsPermission: true,
     getCurrentChainIdForDomain: true,
-    requestUserApproval: true,
-    getChainPermissionsFeatureFlag: true,
+    grantPermittedChainsPermissionIncremental: true,
   },
 };
 
@@ -28,13 +26,12 @@ async function switchEthereumChainHandler(
   _next,
   end,
   {
-    findNetworkConfigurationBy,
+    getNetworkConfigurationByChainId,
     setActiveNetwork,
     requestPermittedChainsPermission,
     getCaveat,
     getCurrentChainIdForDomain,
-    requestUserApproval,
-    getChainPermissionsFeatureFlag,
+    grantPermittedChainsPermissionIncremental,
   },
 ) {
   let chainId;
@@ -51,14 +48,12 @@ async function switchEthereumChainHandler(
     return end();
   }
 
-  const networkConfigurationForRequestedChainId = findExistingNetwork(
-    chainId,
-    findNetworkConfigurationBy,
-  );
-
+  const networkConfigurationForRequestedChainId =
+    getNetworkConfigurationByChainId(chainId);
   const networkClientIdToSwitchTo =
-    networkConfigurationForRequestedChainId?.id ??
-    networkConfigurationForRequestedChainId?.type;
+    networkConfigurationForRequestedChainId?.rpcEndpoints[
+      networkConfigurationForRequestedChainId.defaultRpcEndpointIndex
+    ].networkClientId;
 
   if (!networkClientIdToSwitchTo) {
     return end(
@@ -69,28 +64,10 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const requestData = {
-    toNetworkConfiguration: networkConfigurationForRequestedChainId,
-    fromNetworkConfiguration: findExistingNetwork(
-      currentChainIdForOrigin,
-      findNetworkConfigurationBy,
-    ),
-  };
-
-  return switchChain(
-    res,
-    end,
-    origin,
-    chainId,
-    requestData,
-    networkClientIdToSwitchTo,
-    null,
-    {
-      getChainPermissionsFeatureFlag,
-      setActiveNetwork,
-      requestUserApproval,
-      getCaveat,
-      requestPermittedChainsPermission,
-    },
-  );
+  return switchChain(res, end, chainId, networkClientIdToSwitchTo, null, {
+    setActiveNetwork,
+    getCaveat,
+    requestPermittedChainsPermission,
+    grantPermittedChainsPermissionIncremental,
+  });
 }

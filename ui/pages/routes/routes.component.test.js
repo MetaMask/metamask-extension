@@ -77,11 +77,6 @@ jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
 
-jest.mock('../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => false,
-}));
-
 const render = async (route, state) => {
   const store = configureMockStore(middlewares)({
     ...mockSendState,
@@ -120,6 +115,13 @@ describe('Routes Component', () => {
           announcements: {},
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
+          preferences: {
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+          },
         },
         send: {
           ...mockSendState.send,

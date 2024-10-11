@@ -36,11 +36,7 @@ describe('Permissions', function () {
           windowHandles,
         );
         await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
         });
 

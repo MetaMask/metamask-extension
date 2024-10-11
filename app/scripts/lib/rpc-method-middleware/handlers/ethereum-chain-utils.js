@@ -1,13 +1,4 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
-import { ApprovalType } from '@metamask/controller-utils';
-
-import {
-  BUILT_IN_INFURA_NETWORKS,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  CHAIN_ID_TO_TYPE_MAP,
-  CURRENCY_SYMBOLS,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -16,23 +7,6 @@ import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { PermissionNames } from '../../../controllers/permissions';
 import { getValidUrl } from '../../util';
-
-export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
-  if (
-    Object.values(BUILT_IN_INFURA_NETWORKS)
-      .map(({ chainId: id }) => id)
-      .includes(chainId)
-  ) {
-    return {
-      chainId,
-      ticker: CURRENCY_SYMBOLS.ETH,
-      nickname: NETWORK_TO_NAME_MAP[chainId],
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
-      type: CHAIN_ID_TO_TYPE_MAP[chainId],
-    };
-  }
-  return findNetworkConfigurationBy({ chainId });
-}
 
 export function validateChainId(chainId) {
   const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
@@ -181,40 +155,34 @@ export function validateAddEthereumChainParams(params, end) {
 export async function switchChain(
   res,
   end,
-  origin,
   chainId,
-  requestData,
   networkClientId,
   approvalFlowId,
   {
-    getChainPermissionsFeatureFlag,
+    isAddFlow,
     setActiveNetwork,
     endApprovalFlow,
-    requestUserApproval,
     getCaveat,
     requestPermittedChainsPermission,
+    grantPermittedChainsPermissionIncremental,
   },
 ) {
   try {
-    if (getChainPermissionsFeatureFlag()) {
-      const { value: permissionedChainIds } =
-        getCaveat({
-          target: PermissionNames.permittedChains,
-          caveatType: CaveatTypes.restrictNetworkSwitching,
-        }) ?? {};
+    const { value: permissionedChainIds } =
+      getCaveat({
+        target: PermissionNames.permittedChains,
+        caveatType: CaveatTypes.restrictNetworkSwitching,
+      }) ?? {};
 
-      if (
-        permissionedChainIds === undefined ||
-        !permissionedChainIds.includes(chainId)
-      ) {
+    if (
+      permissionedChainIds === undefined ||
+      !permissionedChainIds.includes(chainId)
+    ) {
+      if (isAddFlow) {
+        await grantPermittedChainsPermissionIncremental([chainId]);
+      } else {
         await requestPermittedChainsPermission([chainId]);
       }
-    } else {
-      await requestUserApproval({
-        origin,
-        type: ApprovalType.SwitchEthereumChain,
-        requestData,
-      });
     }
 
     await setActiveNetwork(networkClientId);

@@ -16,10 +16,10 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { setManifestFlags } = require('./set-manifest-flags');
 const {
   ERC_4337_ACCOUNT,
   DEFAULT_GANACHE_ETH_BALANCE_DEC,
-  DEFAULT_FIXTURE_ACCOUNT,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -49,6 +49,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
+ * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
  */
 
 /**
@@ -76,6 +77,7 @@ async function withFixtures(options, testSuite) {
     useBundler,
     usePaymaster,
     ethConversionInUsd,
+    manifestFlags,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -180,6 +182,8 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
+    setManifestFlags(manifestFlags);
+
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
 
@@ -225,10 +229,6 @@ async function withFixtures(options, testSuite) {
       throw new Error(errorsAndExceptions);
     }
 
-    // At this point the suite has executed successfully, so we can log out a success message
-    // (Note: a Chrome browser error will unfortunately pop up after this success message)
-    console.log(`\nSuccess on testcase: '${title}'\n`);
-
     // Evaluate whether any new hosts received network requests during E2E test
     // suite execution. If so, fail the test unless the
     // --update-privacy-snapshot was specified. In that case, update the
@@ -267,6 +267,10 @@ async function withFixtures(options, testSuite) {
         );
       }
     }
+
+    // At this point the suite has executed successfully, so we can log out a success message
+    // (Note: a Chrome browser error will unfortunately pop up after this success message)
+    console.log(`\nSuccess on testcase: '${title}'\n`);
   } catch (error) {
     failed = true;
     if (webDriver) {
@@ -542,15 +546,27 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
  */
 const onboardingCompleteWalletCreation = async (driver) => {
   // complete
-  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  await driver.findElement({ text: 'Congratulations', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
+};
+
+/**
+ * Move through the steps of pinning extension after successful onboarding
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingPinExtension = async (driver) => {
+  // pin extension
+  await driver.clickElement('[data-testid="pin-extension-next"]');
+  await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
 const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   // wait for h2 to appear
-  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  await driver.findElement({ text: 'Congratulations!', tag: 'h2' });
   // opt-out from third party API
-  await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await driver.clickElement({ text: 'Manage default settings', tag: 'button' });
+  await driver.clickElement({ text: 'General', tag: 'p' });
   await driver.clickElement(
     '[data-testid="basic-functionality-toggle"] .toggle-button',
   );
@@ -564,19 +580,12 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
       )
     ).map((toggle) => toggle.click()),
   );
+  await driver.clickElement('[data-testid="category-back-button"]');
+  await driver.clickElement('[data-testid="privacy-settings-back-button"]');
+
   // complete onboarding
   await driver.clickElement({ text: 'Done', tag: 'button' });
-};
-
-/**
- * Move through the steps of pinning extension after successful onboarding
- *
- * @param {WebDriver} driver
- */
-const onboardingPinExtension = async (driver) => {
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
+  await onboardingPinExtension(driver);
 };
 
 const completeCreateNewWalletOnboardingFlowWithOptOut = async (
@@ -724,18 +733,6 @@ const createDappTransaction = async (driver, transaction) => {
   );
 };
 
-const createDappTransactionTypeTwo = async (driver) => {
-  await createDappTransaction(driver, {
-    data: '0x',
-    from: DEFAULT_FIXTURE_ACCOUNT,
-    maxFeePerGas: '0x0',
-    maxPriorityFeePerGas: '0x0',
-    to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-    value: '0x38d7ea4c68000',
-    type: '0x2',
-  });
-};
-
 const switchToOrOpenDapp = async (
   driver,
   contract = null,
@@ -763,12 +760,19 @@ const connectToDapp = async (driver) => {
   });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[1].click();
+
   await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
+    text: 'Localhost 8545',
+    tag: 'p',
   });
+
+  await driver.clickElement('[data-testid="connect-more-chains-button"]');
+
   await driver.clickElementAndWaitForWindowToClose({
-    text: 'Confirm',
+    text: 'Connect',
     tag: 'button',
   });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -882,7 +886,6 @@ const sendTransaction = async (
   recipientAddress,
   quantity,
   isAsyncFlow = false,
-  skipConfirm = false,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
@@ -892,13 +895,10 @@ const sendTransaction = async (
     text: 'Continue',
     tag: 'button',
   });
-
-  if (skipConfirm !== true) {
-    await driver.clickElement({
-      text: 'Confirm',
-      tag: 'button',
-    });
-  }
+  await driver.clickElement({
+    text: 'Confirm',
+    tag: 'button',
+  });
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
@@ -906,19 +906,6 @@ const sendTransaction = async (
     await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
-};
-
-const createInternalTransaction = async (driver) => {
-  // Firefox has incorrect balance if send flow started too quickly.
-  await driver.delay(1000);
-
-  await sendTransaction(
-    driver,
-    '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-    '1',
-    true,
-    true,
-  );
 };
 
 const findAnotherAccountFromAccountList = async (
@@ -1201,6 +1188,7 @@ async function getSelectedAccountAddress(driver) {
 
   return accountAddress;
 }
+
 /**
  * Rather than using the FixtureBuilder#withPreferencesController to set the setting
  * we need to manually set the setting because the migration #122 overrides this.
@@ -1222,6 +1210,7 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   if (process.env.MMI) {
     await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
+
   // Click settings from dropdown menu
   await driver.clickElement('[data-testid="global-menu-settings"]');
 
@@ -1326,6 +1315,4 @@ module.exports = {
   getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
   openMenuSafe,
-  createDappTransactionTypeTwo,
-  createInternalTransaction,
 };

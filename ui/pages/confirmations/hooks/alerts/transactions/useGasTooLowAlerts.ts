@@ -1,23 +1,19 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { MIN_GAS_LIMIT_DEC } from '../../../send/send.constants';
 import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../selectors';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
+import { useConfirmContext } from '../../../context/confirm';
 
 export function useGasTooLowAlerts(): Alert[] {
   const t = useI18nContext();
-
-  const currentConfirmation = useSelector(currentConfirmationSelector) as
-    | TransactionMeta
-    | undefined;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const gas = currentConfirmation?.txParams?.gas;
 

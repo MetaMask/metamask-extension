@@ -23,7 +23,7 @@ export const SnapUIButton: FunctionComponent<
 > = ({
   name,
   children,
-  type,
+  type = ButtonType.Button,
   variant = 'primary',
   disabled = false,
   className = '',
@@ -48,8 +48,8 @@ export const SnapUIButton: FunctionComponent<
 
   return (
     <Text
-      className={classnames(className, 'snap-ui-button', {
-        'snap-ui-button--disabled': disabled,
+      className={classnames(className, 'snap-ui-renderer__button', {
+        'snap-ui-renderer__button--disabled': disabled,
       })}
       as="button"
       id={name}

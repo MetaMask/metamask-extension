@@ -5,6 +5,10 @@ const {
   BRIDGE_PROD_API_BASE_URL,
 } = require('../../shared/constants/bridge');
 const {
+  ACCOUNTS_DEV_API_BASE_URL,
+  ACCOUNTS_PROD_API_BASE_URL,
+} = require('../../shared/constants/accounts');
+const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
@@ -309,6 +313,52 @@ async function setupMocking(
         return {
           statusCode: 200,
           json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
+        };
+      }),
+  );
+
+  [
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            userId: '0x123',
+            surveys: {},
+          },
+        };
+      }),
+  );
+
+  let surveyCallCount = 0;
+  [
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        const surveyId = surveyCallCount > 2 ? 2 : surveyCallCount;
+        surveyCallCount += 1;
+        return {
+          statusCode: 200,
+          json: {
+            userId: '0x123',
+            surveys: {
+              url: 'https://example.com',
+              description: `Test survey ${surveyId}`,
+              cta: 'Take survey',
+              id: surveyId,
+            },
+          },
         };
       }),
   );
@@ -637,7 +687,7 @@ async function setupMocking(
     });
 
   // Notification APIs
-  mockNotificationServices(server);
+  await mockNotificationServices(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {

@@ -30,7 +30,7 @@ describe('NetworkConstants', () => {
       const expectedChainIds: { [key: string]: string } = {
         'Arbitrum One': CHAIN_IDS.ARBITRUM,
         'Avalanche Network C-Chain': CHAIN_IDS.AVALANCHE,
-        'BNB Chain': CHAIN_IDS.BSC,
+        'Binance Smart Chain': CHAIN_IDS.BSC,
         'OP Mainnet': CHAIN_IDS.OPTIMISM,
         'Polygon Mainnet': CHAIN_IDS.POLYGON,
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
@@ -38,57 +38,59 @@ describe('NetworkConstants', () => {
       };
 
       FEATURED_RPCS.forEach((rpc) => {
-        expect(rpc.chainId).toBe(expectedChainIds[rpc.nickname]);
+        expect(rpc.chainId).toBe(expectedChainIds[rpc.name]);
       });
     });
   });
 
   describe('FEATURED_RPCS Infura Usage Tests', () => {
     it('arbitrum entry should use Infura', () => {
-      const arbitrumRpc = FEATURED_RPCS.find(
+      const [arbitrumRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.ARBITRUM,
       );
-      expect(arbitrumRpc?.rpcUrl).toContain('infura.io');
+      expect(arbitrumRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
     it('avalanche entry should use Infura', () => {
-      const avalancheRpc = FEATURED_RPCS.find(
+      const [avalancheRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.AVALANCHE,
       );
-      expect(avalancheRpc?.rpcUrl).toContain('infura.io');
+      expect(avalancheRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
     it('bsc entry should not use Infura', () => {
-      const bscRpc = FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.BSC);
-      expect(bscRpc?.rpcUrl).not.toContain('infura.io');
+      const [bscRpc] = FEATURED_RPCS.filter(
+        (rpc) => rpc.chainId === CHAIN_IDS.BSC,
+      );
+      expect(bscRpc.rpcEndpoints[0].url).not.toContain('infura.io');
     });
 
     it('optimism entry should use Infura', () => {
-      const optimismRpc = FEATURED_RPCS.find(
+      const [optimismRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.OPTIMISM,
       );
-      expect(optimismRpc?.rpcUrl).toContain('infura.io');
+      expect(optimismRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
     it('polygon entry should use Infura', () => {
-      const polygonRpc = FEATURED_RPCS.find(
+      const [polygonRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.POLYGON,
       );
-      expect(polygonRpc?.rpcUrl).toContain('infura.io');
+      expect(polygonRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
     it('zkSync Era entry should not use Infura', () => {
-      const zksyncEraRpc = FEATURED_RPCS.find(
+      const [zksyncEraRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.ZKSYNC_ERA,
       );
-      expect(zksyncEraRpc?.rpcUrl).not.toContain('infura.io');
+      expect(zksyncEraRpc.rpcEndpoints[0].url).not.toContain('infura.io');
     });
 
     it('base entry should not use Infura', () => {
-      const baseRpc = FEATURED_RPCS.find(
+      const [baseRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.BASE,
       );
-      expect(baseRpc?.rpcUrl).not.toContain('infura.io');
+      expect(baseRpc.rpcEndpoints[0].url).not.toContain('infura.io');
     });
   });
 });

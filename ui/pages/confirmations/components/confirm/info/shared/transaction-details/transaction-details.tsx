@@ -13,8 +13,8 @@ import { RowAlertKey } from '../../../../../../../components/app/confirm/info/ro
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
-import { currentConfirmationSelector } from '../../../../../selectors';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
@@ -24,9 +24,7 @@ import { HEX_ZERO } from '../constants';
 export const OriginRow = () => {
   const t = useI18nContext();
 
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const origin = currentConfirmation?.origin;
 
@@ -49,10 +47,7 @@ export const OriginRow = () => {
 
 export const RecipientRow = () => {
   const t = useI18nContext();
-
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   if (
     !currentConfirmation?.txParams?.to ||
@@ -74,11 +69,7 @@ export const RecipientRow = () => {
 
 export const MethodDataRow = () => {
   const t = useI18nContext();
-
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
-
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const methodData = useFourByte(currentConfirmation);
 
   if (!methodData?.name) {
@@ -98,9 +89,7 @@ export const MethodDataRow = () => {
 
 const AmountRow = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { currency } = useUserPreferencedCurrency(PRIMARY);
 
   const value = currentConfirmation?.txParams?.value;
@@ -124,10 +113,7 @@ const AmountRow = () => {
 
 const PaymasterRow = () => {
   const t = useI18nContext();
-
-  const currentConfirmation = useSelector(currentConfirmationSelector) as
-    | TransactionMeta
-    | undefined;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const { id: userOperationId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);

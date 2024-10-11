@@ -103,7 +103,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:

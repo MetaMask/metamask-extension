@@ -82,6 +82,21 @@ describe('Name', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('renders address with image', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      image: 'test-image',
+    });
+
+    const { container } = renderWithProvider(
+      <Name type={NameType.ETHEREUM_ADDRESS} value={ADDRESS_SAVED_NAME_MOCK} />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   describe('metrics', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
