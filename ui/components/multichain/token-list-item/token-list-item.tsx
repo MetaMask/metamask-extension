@@ -44,8 +44,7 @@ import {
   getDataCollectionForMarketing,
 } from '../../../selectors';
 import {
-  getMultichainCurrentChainId,
-  getMultichainCurrentNetwork,
+  MultichainNetwork,
   getMultichainIsEvm,
 } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
@@ -71,6 +70,7 @@ type TokenListItemProps = {
   className?: string;
   onClick?: (arg?: string) => void;
   tokenSymbol?: string;
+  chain: MultichainNetwork;
   tokenImage: string;
   primary?: string;
   secondary?: string | null;
@@ -89,6 +89,7 @@ export const TokenListItem = ({
   tokenSymbol,
   tokenImage,
   primary,
+  chain,
   secondary,
   title,
   tooltipText,
@@ -101,20 +102,22 @@ export const TokenListItem = ({
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
-  const chainId = useSelector(getMultichainCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
 
-  const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
+  const decimalChainId =
+    isEvm && parseInt(hexToDecimal(chain.network.chainId), 10);
 
-  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
-    if (typeof decimalChainId === 'number') {
-      return chain.chainId === decimalChainId.toString();
-    }
-    return undefined;
-  });
+  const safeChainDetails: SafeChain | undefined = safeChains?.find(
+    (safechain) => {
+      if (typeof decimalChainId === 'number') {
+        return safechain.chainId === decimalChainId.toString();
+      }
+      return undefined;
+    },
+  );
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:
@@ -158,7 +161,7 @@ export const TokenListItem = ({
     <Box
       as="button"
       backgroundColor={BackgroundColor.transparent}
-      data-testid={`staking-entrypoint-${chainId}`}
+      data-testid={`staking-entrypoint-${chain.network.chainId}`}
       gap={1}
       paddingInline={0}
       paddingInlineStart={1}
@@ -182,7 +185,7 @@ export const TokenListItem = ({
             location: 'Token List Item',
             text: 'Stake',
             // FIXME: This might not be a number for non-EVM accounts
-            chain_id: chainId,
+            chain_id: chain.network.chainId,
             token_symbol: tokenSymbol,
           },
         });
@@ -206,7 +209,6 @@ export const TokenListItem = ({
     </Box>
   );
   // Used for badge icon
-  const currentNetwork = useSelector(getMultichainCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   return (
@@ -247,7 +249,7 @@ export const TokenListItem = ({
               properties: {
                 location: 'Home',
                 // FIXME: This might not be a number for non-EVM accounts
-                chain_id: chainId,
+                chain_id: chain.network.chainId,
                 token_symbol: tokenSymbol,
               },
             });
@@ -258,8 +260,8 @@ export const TokenListItem = ({
           badge={
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
-              name={currentNetwork?.nickname || ''}
-              src={currentNetwork?.rpcPrefs?.imageUrl}
+              name={chain.nickname || ''}
+              src={chain?.network.rpcPrefs?.imageUrl}
               backgroundColor={testNetworkBackgroundColor}
               className="multichain-token-list-item__badge__avatar-network"
             />
@@ -435,7 +437,9 @@ export const TokenListItem = ({
             <ModalFooter>
               <ButtonSecondary
                 onClick={() => {
-                  dispatch(setEditedNetwork({ chainId }));
+                  dispatch(
+                    setEditedNetwork({ chainId: chain.network.chainId }),
+                  );
                   history.push(NETWORKS_ROUTE);
                 }}
                 block

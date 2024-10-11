@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../../multichain';
+import { getChains } from '../../../../selectors/multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -22,6 +23,7 @@ export default function TokenCell({
   string,
   onClick,
 }: TokenCellProps) {
+  const chains = useSelector(getChains);
   const tokenList = useSelector(getTokenList);
   const tokenData = Object.values(tokenList).find(
     (token) =>
@@ -40,17 +42,26 @@ export default function TokenCell({
 
   const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
 
+  if (!chains) {
+    return null;
+  }
+
   return (
-    <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
-      tokenSymbol={symbol}
-      tokenImage={tokenImage}
-      primary={`${primary || 0}`}
-      secondary={isOriginalTokenSymbol ? formattedFiat : null}
-      title={title}
-      isOriginalTokenSymbol={isOriginalTokenSymbol}
-      address={address}
-      showPercentage
-    />
+    <>
+      {chains.map((chain) => (
+        <TokenListItem
+          onClick={onClick ? () => onClick(address) : undefined}
+          tokenSymbol={symbol}
+          tokenImage={tokenImage}
+          primary={`${primary || 0}`}
+          secondary={isOriginalTokenSymbol ? formattedFiat : null}
+          chain={chain}
+          title={title}
+          isOriginalTokenSymbol={isOriginalTokenSymbol}
+          address={address}
+          showPercentage
+        />
+      ))}
+    </>
   );
 }

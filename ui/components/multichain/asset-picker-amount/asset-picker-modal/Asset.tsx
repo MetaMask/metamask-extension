@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getTokenList } from '../../../../selectors';
+import { getChains } from '../../../../selectors/multichain';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -20,8 +21,8 @@ export default function Asset({
   string: decimalTokenAmount,
   tooltipText,
 }: AssetProps) {
+  const chains = useSelector(getChains);
   const locale = useSelector(getIntlLocale);
-
   const tokenList = useSelector(getTokenList);
   const tokenData = address
     ? Object.values(tokenList).find(
@@ -42,16 +43,21 @@ export default function Asset({
   );
 
   return (
-    <TokenListItem
-      tokenSymbol={symbol}
-      tokenImage={tokenImage}
-      primary={formatAmount(
-        locale,
-        new BigNumber(decimalTokenAmount || '0', 10),
-      )}
-      secondary={formattedFiat}
-      title={title}
-      tooltipText={tooltipText}
-    />
+    <>
+      {chains?.map((chain) => (
+        <TokenListItem
+          chain={chain}
+          tokenSymbol={symbol}
+          tokenImage={tokenImage}
+          primary={formatAmount(
+            locale,
+            new BigNumber(decimalTokenAmount || '0', 10),
+          )}
+          secondary={formattedFiat}
+          title={title}
+          tooltipText={tooltipText}
+        />
+      ))}
+    </>
   );
 }

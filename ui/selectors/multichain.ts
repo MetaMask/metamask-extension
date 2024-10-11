@@ -120,6 +120,30 @@ export function getMultichainNetworkProviders(
   return Object.values(MULTICHAIN_PROVIDER_CONFIGS);
 }
 
+export function getMultichainNetworkByChainId(
+  state: MultichainState,
+  chainId: Hex,
+): MultichainNetwork {
+  const evmChainIdKey =
+    chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+
+  const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
+    getProviderConfig(state) as ProviderConfigWithImageUrlAndExplorerUrl;
+
+  evmNetwork.rpcPrefs = {
+    ...evmNetwork.rpcPrefs,
+    imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
+  };
+
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
+  return {
+    nickname: networkConfigurations[chainId]?.name ?? evmNetwork.rpcUrl,
+    isEvmNetwork: true,
+    chainId: `${KnownCaipNamespace.Eip155}:${Number(chainId)}` as CaipChainId,
+    network: evmNetwork,
+  };
+}
+
 export function getMultichainNetwork(
   state: MultichainState,
   account?: InternalAccount,
@@ -129,32 +153,7 @@ export function getMultichainNetwork(
   if (isEvm) {
     // EVM networks
     const evmChainId: Hex = getCurrentChainId(state);
-
-    // TODO: Update to use network configurations when @metamask/network-controller is updated to 20.0.0
-    // ProviderConfig will be deprecated to use NetworkConfigurations
-    // When a user updates a network name its only updated in the NetworkConfigurations.
-    const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
-      getProviderConfig(state) as ProviderConfigWithImageUrlAndExplorerUrl;
-
-    const evmChainIdKey =
-      evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
-
-    evmNetwork.rpcPrefs = {
-      ...evmNetwork.rpcPrefs,
-      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
-    };
-
-    const networkConfigurations = getNetworkConfigurationsByChainId(state);
-    return {
-      nickname: networkConfigurations[evmChainId]?.name ?? evmNetwork.rpcUrl,
-      isEvmNetwork: true,
-      // We assume the chain ID is `string` or `number`, so we convert it to a
-      // `Number` to be compliant with EIP155 CAIP chain ID
-      chainId: `${KnownCaipNamespace.Eip155}:${Number(
-        evmChainId,
-      )}` as CaipChainId,
-      network: evmNetwork,
-    };
+    return getMultichainNetworkByChainId(state, evmChainId);
   }
 
   // Non-EVM networks:
@@ -182,6 +181,44 @@ export function getMultichainNetwork(
     chainId: nonEvmNetwork?.chainId,
     network: nonEvmNetwork,
   };
+}
+
+function caipChainIdToHex(chainId: CaipChainId): string {
+  const [namespace, reference] = chainId.split(':');
+  if (namespace === 'eip155') {
+    const chainIdDecimal = parseInt(reference, 10);
+    return `0x${chainIdDecimal.toString(16)}`;
+  }
+  return chainId;
+}
+
+export function getChains(
+  state: MultichainState,
+): MultichainNetwork[] | undefined {
+  const nonEvmProviders = getMultichainNetworkProviders(state);
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
+
+  const evmProviders: MultichainProviderConfig[] = Object.values(
+    networkConfigurations,
+  ).map((networkConfig) => {
+    const chainIdDecimal = parseInt(networkConfig.chainId, 16);
+    const chainId =
+      `${KnownCaipNamespace.Eip155}:${chainIdDecimal}` as CaipChainId;
+
+    return {
+      chainId: caipChainIdToHex(chainId),
+    } as MultichainProviderConfig;
+  });
+
+  const allProviders = [...evmProviders, ...nonEvmProviders];
+
+  const compatibleChainIdsInHex = allProviders.map((provider) =>
+    caipChainIdToHex(provider.chainId),
+  );
+
+  return compatibleChainIdsInHex.map((hex) =>
+    getMultichainNetworkByChainId(state, hex as `0x${string}`),
+  );
 }
 
 // FIXME: All the following might have side-effect, like if the current account is a bitcoin one and that

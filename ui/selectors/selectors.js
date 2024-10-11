@@ -122,7 +122,11 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import {
+  getMultichainBalances,
+  getMultichainNetwork,
+  getChains,
+} from './multichain';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -444,6 +448,19 @@ export function getMetaMaskCachedBalances(state) {
   return {};
 }
 
+export function getSelectedAccountCachedBalancesByChainId(state) {
+  const { accountsByChainId } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  const balancesByChainId = {};
+  for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
+    if (accounts[selectedAddress]) {
+      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    }
+  }
+  return balancesByChainId;
+}
+
 /**
  *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
  */
@@ -480,7 +497,9 @@ export function isBalanceCached(state) {
 }
 
 export function getSelectedAccountCachedBalance(state) {
-  const cachedBalances = getMetaMaskCachedBalances(state);
+  const cachedBalances = getSelectedAccountCachedBalancesByChainId(state);
+  console.log({ cachedBalances });
+  // getMetaMaskCachedBalances(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   return cachedBalances?.[selectedAddress];

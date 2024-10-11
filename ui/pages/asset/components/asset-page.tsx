@@ -12,6 +12,7 @@ import {
   getSwapsDefaultToken,
   getTokensMarketData,
 } from '../../../selectors';
+import { getChains } from '../../../selectors/multichain';
 import {
   Display,
   FlexDirection,
@@ -100,6 +101,7 @@ const AssetPage = ({
   const history = useHistory();
   const currency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
+  const chains = useSelector(getChains);
   const allMarketData = useSelector(getTokensMarketData);
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
@@ -110,7 +112,7 @@ const AssetPage = ({
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
 
-  const { chainId, type, symbol, name, image, balance } = asset;
+  const { type, symbol, name, image, balance } = asset;
 
   const address =
     type === AssetType.token
@@ -156,25 +158,30 @@ const AssetPage = ({
         </Box>
         {optionsButton}
       </Box>
-      <AssetChart
-        chainId={chainId}
-        address={address}
-        currentPrice={currentPrice}
-        currency={currency}
-      />
+      {chains?.map((chain) => (
+        <AssetChart
+          chainId={chain.network.chainId as `0x${string}`}
+          address={address}
+          currentPrice={currentPrice}
+          currency={currency}
+        />
+      ))}
       <Box marginTop={4}>
         {type === AssetType.native ? (
-          <CoinButtons
-            {...{
-              trackingLocation: 'asset-page',
-              isBuyableChain,
-              isSigningEnabled,
-              isSwapsChain,
-              isBridgeChain,
-              chainId,
-              defaultSwapsToken,
-            }}
-          />
+          chains?.map((chain) => (
+            <CoinButtons
+              key={chain.network.chainId}
+              {...{
+                trackingLocation: 'asset-page',
+                isBuyableChain,
+                isSigningEnabled,
+                isSwapsChain,
+                isBridgeChain,
+                chainId: chain.network.chainId as `0x${string}`,
+                defaultSwapsToken,
+              }}
+            />
+          ))
         ) : (
           <TokenButtons token={asset} />
         )}
@@ -188,15 +195,18 @@ const AssetPage = ({
           {t('yourBalance')}
         </Text>
         {type === AssetType.native ? (
-          <TokenListItem
-            title={symbol}
-            tokenSymbol={symbol}
-            primary={`${balance.display} ${symbol}`}
-            secondary={balance.fiat}
-            tokenImage={image}
-            isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
-            isNativeCurrency={true}
-          />
+          chains?.map((chain) => (
+            <TokenListItem
+              chain={chain}
+              title={symbol}
+              tokenSymbol={symbol}
+              primary={`${balance.display} ${symbol}`}
+              secondary={balance.fiat}
+              tokenImage={image}
+              isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
+              isNativeCurrency={true}
+            />
+          ))
         ) : (
           <TokenCell
             address={address}

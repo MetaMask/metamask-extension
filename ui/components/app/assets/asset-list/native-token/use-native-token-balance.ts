@@ -14,13 +14,19 @@ import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferen
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
 import { TokenWithBalance } from '../asset-list';
 
-export const useNativeTokenBalance = () => {
+export const useNativeTokenBalance = (
+  selectedChainId?: `${string}:${string}`,
+) => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
-  const { chainId, ticker, type, rpcUrl } = useSelector(
-    getMultichainCurrentNetwork,
-  );
+  const {
+    chainId: _chainId,
+    ticker,
+    type,
+    rpcUrl,
+  } = useSelector(getMultichainCurrentNetwork);
+  const chainId = selectedChainId || _chainId;
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,

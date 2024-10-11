@@ -15,6 +15,7 @@ import {
   getMultichainIsBitcoin,
   ///: END:ONLY_INCLUDE_IF
   getMultichainSelectedAccountCachedBalanceIsZero,
+  getChains,
 } from '../../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -58,6 +59,7 @@ export type AssetListProps = {
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
+  const chains = useSelector(getChains);
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
@@ -115,7 +117,13 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         )}
       <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenList
-        nativeToken={<NativeToken onClickAsset={onClickAsset} />}
+        nativeToken={
+          <>
+            {chains?.map((chain) => (
+              <NativeToken chain={chain} onClickAsset={onClickAsset} />
+            ))}
+          </>
+        }
         onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);
           trackEvent({

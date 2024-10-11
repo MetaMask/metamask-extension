@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
+  MultichainNetwork,
   getMultichainCurrentNetwork,
   getMultichainNativeCurrency,
   getMultichainIsEvm,
@@ -10,26 +11,31 @@ import {
 } from '../../../../../selectors/multichain';
 import { TokenListItem } from '../../../../multichain';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { AssetListProps } from '../asset-list';
 import { useNativeTokenBalance } from './use-native-token-balance';
-// import { getPreferences } from '../../../../../selectors';
 
-const NativeToken = ({ onClickAsset }: AssetListProps) => {
+export type NativeTokenProps = {
+  onClickAsset: (arg: string) => void;
+  showTokensLinks?: boolean;
+  chain: MultichainNetwork;
+};
+
+const NativeToken = ({ onClickAsset, chain }: NativeTokenProps) => {
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const isMainnet = useSelector(getMultichainIsMainnet);
-  const { chainId, ticker, type, rpcUrl } = useSelector(
-    getMultichainCurrentNetwork,
-  );
+  const { ticker, type, rpcUrl } = useSelector(getMultichainCurrentNetwork);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    chainId,
+    chain.network.chainId,
     ticker,
     type,
     rpcUrl,
   );
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  console.log('balancin', { balance });
   const balanceIsLoading = !balance;
 
-  const { string, symbol, secondary } = useNativeTokenBalance();
+  const { string, symbol, secondary } = useNativeTokenBalance(
+    chain.network.chainId,
+  );
 
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
 
@@ -42,6 +48,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
 
   return (
     <TokenListItem
+      chain={chain}
       onClick={() => onClickAsset(nativeCurrency)}
       title={nativeCurrency}
       primary={string}
