@@ -30,7 +30,7 @@ export default function TokenList({
   nativeToken,
 }: TokenListProps) {
   const t = useI18nContext();
-  const { tokenSortConfig } = useSelector(getPreferences);
+  const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
   const nativeTokenWithBalance = useNativeTokenBalance();
@@ -52,6 +52,7 @@ export default function TokenList({
   };
 
   const sortedTokens = useMemo(() => {
+    console.log('filter assets', tokenNetworkFilter);
     return sortAssets(
       [nativeTokenWithBalance, ...tokensWithBalances],
       tokenSortConfig,
@@ -59,6 +60,7 @@ export default function TokenList({
   }, [
     tokensWithBalances,
     tokenSortConfig,
+    tokenNetworkFilter,
     conversionRate,
     contractExchangeRates,
   ]);
