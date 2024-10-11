@@ -556,11 +556,23 @@ const onboardingCompleteWalletCreation = async (driver) => {
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
 
+/**
+ * Move through the steps of pinning extension after successful onboarding
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingPinExtension = async (driver) => {
+  // pin extension
+  await driver.clickElement('[data-testid="pin-extension-next"]');
+  await driver.clickElement('[data-testid="pin-extension-done"]');
+};
+
 const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   // wait for h2 to appear
-  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  await driver.findElement({ text: 'Congratulations!', tag: 'h2' });
   // opt-out from third party API
-  await driver.clickElement({ text: 'Manage default settings', tag: 'a' });
+  await driver.clickElement({ text: 'Manage default settings', tag: 'button' });
+  await driver.clickElement({ text: 'General', tag: 'p' });
   await driver.clickElement(
     '[data-testid="basic-functionality-toggle"] .toggle-button',
   );
@@ -574,19 +586,12 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
       )
     ).map((toggle) => toggle.click()),
   );
+  await driver.clickElement('[data-testid="category-back-button"]');
+  await driver.clickElement('[data-testid="privacy-settings-back-button"]');
+
   // complete onboarding
   await driver.clickElement({ text: 'Done', tag: 'button' });
-};
-
-/**
- * Move through the steps of pinning extension after successful onboarding
- *
- * @param {WebDriver} driver
- */
-const onboardingPinExtension = async (driver) => {
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
+  await onboardingPinExtension(driver);
 };
 
 const completeCreateNewWalletOnboardingFlowWithOptOut = async (
