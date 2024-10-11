@@ -21,6 +21,7 @@ export enum TraceName {
   NotificationDisplay = 'Notification Display',
   PPOMValidation = 'PPOM Validation',
   SetupStore = 'Setup Store',
+  Signature = 'Signature',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
 }

@@ -5,7 +5,7 @@ exports[`SearchableItemList renders the component with initial props 1`] = `
   class="MuiFormControl-root MuiTextField-root searchable-item-list__search MuiFormControl-fullWidth"
 >
   <div
-    class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth Mui-focused Mui-focused TextField-inputFocused-11 MuiInputBase-formControl MuiInput-formControl MuiInputBase-adornedStart"
+    class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth Mui-focused Mui-focused TextField-inputFocused-11 MuiInputBase-formControl MuiInput-formControl MuiInputBase-adornedStart"
   >
     <div
       class="MuiInputAdornment-root MuiInputAdornment-positionStart"

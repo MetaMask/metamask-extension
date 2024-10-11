@@ -11,6 +11,7 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import { mockNetworkState } from '../../test/stub/networks';
+import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -2016,6 +2017,67 @@ describe('#getConnectedSitesList', () => {
         },
         name: 'Site 3',
       },
+    });
+  });
+  describe('#getShowDeleteMetaMetricsDataModal', () => {
+    it('returns state of showDeleteMetaMetricsDataModal', () => {
+      expect(
+        selectors.getShowDeleteMetaMetricsDataModal({
+          appState: {
+            showDeleteMetaMetricsDataModal: true,
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+  describe('#getShowDataDeletionErrorModal', () => {
+    it('returns state of showDataDeletionErrorModal', () => {
+      expect(
+        selectors.getShowDataDeletionErrorModal({
+          appState: {
+            showDataDeletionErrorModal: true,
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+  describe('#getMetaMetricsDataDeletionId', () => {
+    it('returns metaMetricsDataDeletionId', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionId({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('123');
+    });
+  });
+  describe('#getMetaMetricsDataDeletionTimestamp', () => {
+    it('returns metaMetricsDataDeletionTimestamp', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionTimestamp({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('123345');
+    });
+  });
+  describe('#getMetaMetricsDataDeletionStatus', () => {
+    it('returns metaMetricsDataDeletionStatus', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionStatus({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('INITIALIZED');
     });
   });
 });
