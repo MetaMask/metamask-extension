@@ -21,10 +21,16 @@ import {
 } from '../types/notifications/notifications';
 import { formatIsoDateString } from '../../../../helpers/utils/notification.util';
 import { SnapUIRenderer } from '../../../../components/app/snaps/snap-ui-renderer';
-import { BackgroundColor } from '../../../../helpers/constants/design-system';
-import { ButtonVariant } from '../../../../components/component-library';
+import { BackgroundColor, Display, FlexDirection } from '../../../../helpers/constants/design-system';
+import {
+  Box,
+  ButtonVariant,
+  IconSize,
+  Text,
+} from '../../../../components/component-library';
 import { isOfTypeNodeGuard } from '../node-guard';
 import { TRIGGER_TYPES } from '..';
+import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 
 export const components: NotificationComponent<SnapNotification> = {
   guardFn: isOfTypeNodeGuard(['snap' as typeof TRIGGER_TYPES.SNAP]),
@@ -76,14 +82,36 @@ export const components: NotificationComponent<SnapNotification> = {
     ),
     body: {
       type: NotificationComponentType.SnapBody,
-      Content: ({ notification }) => (
-        <SnapUIRenderer
-          snapId={notification.data.origin}
-          interfaceId={notification.data.expandedView?.interfaceId as string}
-          useDelineator={false}
-          contentBackgroundColor={BackgroundColor.backgroundDefault}
-        />
-      ),
+      Content: ({ notification }) => {
+        const snapsMetadata = useSelector(getSnapsMetadata);
+        const snapsNameGetter = getSnapName(snapsMetadata);
+        const snapId = notification.data.origin;
+        return (
+          <>
+            <Box
+              display={Display.Flex}
+              style={{
+                border: '1px solid var(--color-border-muted)',
+              }}
+              flexDirection={FlexDirection.Column}
+            >
+              <Box display={Display.Flex}>
+                <SnapIcon snapId={snapId} avatarSize={IconSize.Xl} />
+                <Text paddingLeft={1}>{snapsNameGetter(snapId)}</Text>
+              </Box>
+              <Text overflowWrap>{notification.data.message}</Text>
+            </Box>
+            <SnapUIRenderer
+              snapId={notification.data.origin}
+              interfaceId={
+                notification.data.expandedView?.interfaceId as string
+              }
+              useDelineator={false}
+              contentBackgroundColor={BackgroundColor.backgroundDefault}
+            />
+          </>
+        );
+      },
     },
   },
   footer: {
