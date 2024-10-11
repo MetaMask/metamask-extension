@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
 
 import {
-  ALERTS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -45,7 +44,6 @@ import MetafoxLogo from '../../components/ui/metafox-logo';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import SettingsTab from './settings-tab';
-import AlertsTab from './alerts-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
@@ -317,11 +315,6 @@ class SettingsPage extends PureComponent {
         key: SECURITY_ROUTE,
       },
       {
-        content: t('alerts'),
-        icon: <Icon name={IconName.Notification} />,
-        key: ALERTS_ROUTE,
-      },
-      {
         content: t('experimental'),
         icon: <Icon name={IconName.Flask} />,
         key: EXPERIMENTAL_ROUTE,
@@ -376,7 +369,6 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={ABOUT_US_ROUTE} component={InfoTab} />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
-        <Route exact path={ALERTS_ROUTE} component={AlertsTab} />
         <Route
           exact
           path={ADD_NETWORK_ROUTE}
