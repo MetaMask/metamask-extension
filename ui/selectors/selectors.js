@@ -193,14 +193,15 @@ export function getCurrentChainId(state) {
 
   if (pageChainId === null) {
     console.info(
-      `[getCurrentChainId] no pageChainId found for ${networkClientId}`,
+      `[getCurrentChainId] no pageChainId found for ${networkClientId}; returning global chainId: ${chainId}`,
       state.metamask.networkConfigurationsByChainId,
     );
-  } else {
-    console.info(
-      `[getCurrentChainId] FOUND chainId ${pageChainId} for networkClientId ${networkClientId}`,
-    );
+    return chainId;
   }
+
+  console.info(
+    `[getCurrentChainId] FOUND chainId ${pageChainId} for networkClientId ${networkClientId}`,
+  );
 
   return pageChainId;
 }
