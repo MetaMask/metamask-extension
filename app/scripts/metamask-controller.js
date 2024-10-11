@@ -609,8 +609,10 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.preferencesController = new PreferencesController({
-      state: initState.PreferencesController,
-      initLangCode: opts.initLangCode,
+      state: {
+        currentLocale: opts.initLangCode ?? '',
+        ...initState.PreferencesController,
+      },
       messenger: preferencesMessenger,
     });
 
