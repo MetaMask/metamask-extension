@@ -37,14 +37,13 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const { totalFiatBalance: selectedAccountBalance, loading } =
     useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
 
-  let multiAccountBalance = 0;
-  accounts.forEach((account) => {
+  const multiAccountBalance = accounts.reduce((acc, account) => {
     const { totalFiatBalance } = useAccountTotalFiatBalance(
       account,
       shouldHideZeroBalanceTokens,
     );
-    multiAccountBalance = multiAccountBalance + parseFloat(totalFiatBalance);
-  });
+    return acc + parseFloat(totalFiatBalance);
+  }, 0);
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
     dispatch(setTokenNetworkFilter(chainFilters));
