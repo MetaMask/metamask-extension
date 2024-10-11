@@ -22,9 +22,15 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
   ): Promise<Response> {
     const abortController = new window.AbortController();
     const { signal } = abortController;
+
+    const abortSignals = [signal];
+    if (opts?.signal) {
+      abortSignals.push(opts.signal);
+    }
+
     const f = window.fetch(url, {
       ...opts,
-      signal,
+      signal: AbortSignal.any(abortSignals),
     });
 
     const timer = setTimeout(() => abortController.abort(), timeout);
