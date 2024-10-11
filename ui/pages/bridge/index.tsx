@@ -32,6 +32,7 @@ import { BridgeCTAButton } from './prepare/bridge-cta-button';
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
+  // Load swaps feature flags so that we can use smart transactions
   useSwapsFeatureFlags();
   useBridging();
 
