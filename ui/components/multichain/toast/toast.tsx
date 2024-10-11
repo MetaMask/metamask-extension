@@ -24,6 +24,7 @@ export const Toast = ({
   autoHideTime,
   onAutoHideToast,
   dataTestId,
+  className,
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
   text: string;
@@ -35,6 +36,7 @@ export const Toast = ({
   autoHideTime?: number;
   onAutoHideToast?: () => void;
   dataTestId?: string;
+  className?: string;
 }) => {
   const { theme } = document.documentElement.dataset;
   const [shouldDisplay, setShouldDisplay] = useState(true);
@@ -66,6 +68,7 @@ export const Toast = ({
       onClose={onClose}
       borderRadius={borderRadius}
       data-testid={dataTestId ? `${dataTestId}-banner-base` : undefined}
+      className={`toasts-container__banner-base ${className}`}
     >
       <Box display={Display.Flex} gap={4} data-testid={dataTestId}>
         {startAdornment}

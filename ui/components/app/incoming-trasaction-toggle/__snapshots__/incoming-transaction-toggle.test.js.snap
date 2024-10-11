@@ -6,7 +6,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
     class="mm-box mm-incoming-transaction-toggle"
   >
     <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
     >
       Show incoming transactions
     </p>
