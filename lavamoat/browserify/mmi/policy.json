@@ -2298,6 +2298,7 @@
         "@metamask/logging-controller": true,
         "@metamask/message-manager>jsonschema": true,
         "@metamask/utils": true,
+        "browserify>buffer": true,
         "uuid": true,
         "webpack>events": true
       }
