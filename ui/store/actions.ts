@@ -3090,6 +3090,10 @@ export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }
 
+export function setTokenNetworkFilter(value: Record<string, string>) {
+  return setPreference('tokenNetworkFilter', value, false);
+}
+
 export function setSmartTransactionsOptInStatus(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

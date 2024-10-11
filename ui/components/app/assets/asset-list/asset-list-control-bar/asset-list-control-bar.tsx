@@ -33,8 +33,7 @@ type AssetListControlBarProps = {
 
 const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const t = useI18nContext();
-  const tokenSortPopoverRef = useRef<HTMLDivElement>(null);
-  const networkFilterPopoverRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
@@ -45,10 +44,12 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
     windowType !== ENVIRONMENT_TYPE_POPUP;
 
   const toggleTokenSortPopover = () => {
+    setIsNetworkFilterPopoverOpen(false);
     setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
   };
 
   const toggleNetworkFilterPopover = () => {
+    setIsTokenSortPopoverOpen(false);
     setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
   };
 
@@ -60,13 +61,17 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   return (
     <Box
       className="asset-list-control-bar"
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
       marginLeft={4}
       marginRight={4}
       paddingTop={4}
+      ref={popoverRef}
     >
-      <Box ref={networkFilterPopoverRef}>
+      <Box
+        display={Display.Flex}
+        justifyContent={
+          isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
+        }
+      >
         <ButtonBase
           data-testid="sort-by-popover-toggle"
           className="asset-list-control-bar__button"
@@ -81,12 +86,11 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           borderColor={BorderColor.borderMuted}
           borderStyle={BorderStyle.solid}
           color={TextColor.textDefault}
+          marginRight={isFullScreen ? 2 : null}
         >
           Network
         </ButtonBase>
-      </Box>
 
-      <Box ref={tokenSortPopoverRef}>
         <ButtonBase
           data-testid="sort-by-popover-toggle"
           className="asset-list-control-bar__button"
@@ -101,17 +105,19 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           borderColor={BorderColor.borderMuted}
           borderStyle={BorderStyle.solid}
           color={TextColor.textDefault}
+          marginRight={isFullScreen ? 2 : null}
         >
           {t('sortBy')}
         </ButtonBase>
+
+        <ImportControl showTokensLinks={showTokensLinks} />
       </Box>
 
-      <ImportControl showTokensLinks={showTokensLinks} />
       <Popover
         onClickOutside={closePopover}
         isOpen={isNetworkFilterPopoverOpen}
         position={PopoverPosition.BottomStart}
-        referenceElement={networkFilterPopoverRef.current}
+        referenceElement={popoverRef.current}
         matchWidth={!isFullScreen}
         style={{
           zIndex: 10,
@@ -127,7 +133,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         onClickOutside={closePopover}
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomStart}
-        referenceElement={tokenSortPopoverRef.current}
+        referenceElement={popoverRef.current}
         matchWidth={!isFullScreen}
         style={{
           zIndex: 10,

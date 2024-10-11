@@ -111,6 +111,7 @@ export type Preferences = {
     order: string;
     sortCallback: string;
   };
+  tokenNetworkFilter: Record<string, string>;
   shouldShowAggregatedBalancePopover: boolean;
 };
 
@@ -247,6 +248,7 @@ export default class PreferencesController {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
+        tokenNetworkFilter: {},
         shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       },
       // ENS decentralized website resolution
