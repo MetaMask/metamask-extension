@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Itago ang sensitibong impormasyon"
   },
-  "hideToken": {
-    "message": "Itago ang token"
-  },
   "hideTokenPrompt": {
     "message": "Itago ang token?"
   },
@@ -5700,9 +5697,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Kailangan ng decimal ng token. Hanapin ito sa: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Mga Decimal ng Katumpakan:"
   },
   "tokenDetails": {
     "message": "Mga detalye ng token"
