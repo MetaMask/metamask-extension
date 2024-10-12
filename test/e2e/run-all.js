@@ -270,6 +270,21 @@ async function main() {
       await runInShell('node', [...args, ...qualityGateArg, testPath]);
     }
   }
+
+  //for all xml files in test/test-results/e2e/ directory, replace '/home/circleci/project/test/' with 'test/'
+  const e2eTestResultsDir = 'test/test-results/e2e/';
+  const files = fs.readdirSync(e2eTestResultsDir);
+  for (const file of files) {
+    if (file.endsWith('.xml')) {
+      const filePath = path.join(e2eTestResultsDir, file);
+      const fileContent = fs.readFileSync(filePath, 'utf8');
+      const updatedContent = fileContent.replaceAll(
+        '/home/circleci/project/test/',
+        'test/',
+      );
+      fs.writeFileSync(filePath, updatedContent);
+    }
+  }
 }
 
 main().catch((error) => {
