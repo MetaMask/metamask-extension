@@ -31,7 +31,7 @@ import {
   getSelectedAccount,
   getUseNftDetection,
 } from '../../selectors';
-import { getShowAutoNetworkSwitchTest } from './isolated';
+import { hidePermittedNetworkToast } from '../../store/actions';
 import {
   getNftDetectionEnablementToast,
   getShowPrivacyPolicyToast,
@@ -40,7 +40,7 @@ import {
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
 } from './toast-master-selectors';
-import { hidePermittedNetworkToast } from '../../store/actions';
+import { getShowAutoNetworkSwitchTest } from './isolated';
 
 // Allow comparison with a previous value, in order to detect changes
 // (This pattern only works if ToastMaster is a singleton)

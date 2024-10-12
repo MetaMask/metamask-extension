@@ -1,12 +1,8 @@
-/* eslint-disable no-unused-vars -- TODO remove */
-/* eslint-disable react/no-unused-prop-types -- TODO remove */
-
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
-import { isEvmAccountType } from '@metamask/keyring-api';
 
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
@@ -30,7 +26,6 @@ import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import { SURVEY_LINK, PRIVACY_POLICY_LINK } from '../../../shared/lib/ui-utils';
 import {
   AppHeader,
   AccountListMenu,
@@ -38,8 +33,6 @@ import {
   AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
-  ToastContainer,
-  Toast,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -75,7 +68,6 @@ import {
   UNLOCK_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ONBOARDING_ROUTE,
-  ONBOARDING_UNLOCK_ROUTE,
   CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
@@ -100,25 +92,15 @@ import {
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmations/confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
-import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
-import { ThemeType } from '../../../shared/constants/preferences';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarNetwork,
-  Box,
-  Icon,
-  IconName,
-} from '../../components/component-library';
+import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -127,14 +109,6 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 
 import { SendPage } from '../../components/multichain/pages/send';
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
-import { getURLHost } from '../../helpers/utils/util';
-import {
-  BorderColor,
-  BorderRadius,
-  IconColor,
-  TextVariant,
-} from '../../helpers/constants/design-system';
-import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
@@ -152,7 +126,6 @@ import { ToastMaster } from './toast-master';
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
-    account: PropTypes.object,
     activeTabOrigin: PropTypes.string,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
@@ -165,16 +138,11 @@ export default class Routes extends Component {
     setLastActiveTime: PropTypes.func,
     history: PropTypes.object,
     location: PropTypes.object,
-    lockMetaMask: PropTypes.func,
-    providerId: PropTypes.string,
-    providerType: PropTypes.string,
     autoLockTimeLimit: PropTypes.number,
     pageChanged: PropTypes.func.isRequired,
-    prepareToLeaveSwaps: PropTypes.func,
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
-    sendStage: PropTypes.string,
     isNetworkUsed: PropTypes.bool,
     allAccountsOnNetworkAreEmpty: PropTypes.bool,
     isTestNet: PropTypes.bool,
@@ -198,18 +166,13 @@ export default class Routes extends Component {
     hideImportTokensModal: PropTypes.func.isRequired,
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
-    addPermittedAccount: PropTypes.func.isRequired,
     switchedNetworkDetails: PropTypes.object,
-    currentNetwork: PropTypes.object,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
-    setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
-    neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
     totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
-    setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     clearEditedNetwork: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
@@ -226,7 +189,6 @@ export default class Routes extends Component {
   componentDidUpdate(prevProps) {
     const {
       theme,
-      account,
       networkToAutomaticallySwitchTo,
       activeTabOrigin,
       totalUnapprovedConfirmationCount,
