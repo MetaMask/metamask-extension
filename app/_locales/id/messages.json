@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Sembunyikan informasi sensitif"
   },
-  "hideToken": {
-    "message": "Sembunyikan token"
-  },
   "hideTokenPrompt": {
     "message": "Sembunyikan token?"
   },
@@ -5700,9 +5697,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Desimal token diperlukan. Temukan di: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Desimal token:"
   },
   "tokenDetails": {
     "message": "Detail token"
