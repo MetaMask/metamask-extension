@@ -67,10 +67,12 @@ function runningOnCircleCI(testPaths) {
   const changedOrNewTests = filterE2eChangedFiles();
   console.log('Changed or new test list:', changedOrNewTests);
 
-  const fullTestList = applyQualityGate(
-    testPaths.join('\n'),
-    changedOrNewTests,
-  );
+  let fullTestList = applyQualityGate(testPaths.join('\n'), changedOrNewTests);
+
+  fullTestList = fullTestList.replaceAll(
+    '/home/circleci/project/test/',
+    'test/',
+  ); // remove full path
 
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);

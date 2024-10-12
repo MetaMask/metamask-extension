@@ -1086,7 +1086,7 @@ jobs:
 
   test-e2e-chrome-webpack:
     executor: node-browsers-medium-plus
-    parallelism: 20
+    parallelism: 30
     steps:
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
