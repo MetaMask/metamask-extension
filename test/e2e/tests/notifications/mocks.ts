@@ -26,25 +26,6 @@ export async function mockNotificationServices(server: Mockttp) {
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
-  // Storage
-  const NOTIFICATIONS_USER_STORAGE_ENDPOINT =
-    'https://user-storage.api.cx.metamask.io/api/v1/userstorage/notifications';
-  const NOTIFICATION_USER_STORAGE_KEY =
-    'df1d90e0a8c2c7c48a84cfc80c979b68c7e7d5624b89986a83a280ab92511bd4';
-  mockAPICall(server, {
-    url: `${NOTIFICATIONS_USER_STORAGE_ENDPOINT}/${NOTIFICATION_USER_STORAGE_KEY}`,
-    requestMethod: 'GET',
-    response: NotificationMocks.createMockFullUserStorage({
-      triggersEnabled: false,
-    }),
-  });
-
-  mockAPICall(server, {
-    url: `${NOTIFICATIONS_USER_STORAGE_ENDPOINT}/${NOTIFICATION_USER_STORAGE_KEY}`,
-    requestMethod: 'PUT',
-    response: null,
-  });
-
   // TODO - add better mock responses for other Profile Sync features
   // (Account Sync, Network Sync, ...)
   server
