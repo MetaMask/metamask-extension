@@ -98,6 +98,7 @@ export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
   await validateSecurity(request);
+
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
   );
