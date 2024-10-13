@@ -1,9 +1,10 @@
-import * as Sentry from '@sentry/browser';
 import { createModuleLogger, createProjectLogger } from '@metamask/utils';
+import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
+import { getManifestFlags } from './manifestFlags';
 import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
@@ -26,6 +27,9 @@ const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
+
+// This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
+const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
 
 export const ERROR_URL_ALLOWLIST = {
   CRYPTOCOMPARE: 'cryptocompare.com',
@@ -93,9 +97,61 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate: METAMASK_DEBUG ? 1.0 : 0.01,
+    tracesSampleRate: getTracesSampleRate(sentryTarget),
     transport: makeTransport,
   };
+}
+
+/**
+ * Compute the tracesSampleRate depending on testing condition.
+ *
+ * @param {string} sentryTarget
+ * @returns tracesSampleRate to setup Sentry
+ */
+function getTracesSampleRate(sentryTarget) {
+  if (sentryTarget === SENTRY_DSN_FAKE) {
+    return 1.0;
+  }
+
+  const flags = getManifestFlags();
+
+  // Grab the tracesSampleRate that may have come in from a git message
+  // 0 is a valid value, so must explicitly check for undefined
+  if (flags.sentry?.tracesSampleRate !== undefined) {
+    return flags.sentry.tracesSampleRate;
+  }
+
+  if (flags.circleci) {
+    // Report very frequently on develop branch, and never on other branches
+    // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
+    if (flags.circleci.branch === 'develop') {
+      return 0.03;
+    }
+    return 0;
+  }
+
+  if (METAMASK_DEBUG) {
+    return 1.0;
+  }
+
+  return 0.02;
+}
+
+/**
+ * Get CircleCI tags passed from the test environment, through manifest.json,
+ * and give them to the Sentry client.
+ */
+function setCircleCiTags() {
+  const { circleci } = getManifestFlags();
+
+  if (circleci?.enabled) {
+    Sentry.setTag('circleci.enabled', circleci.enabled);
+    Sentry.setTag('circleci.branch', circleci.branch);
+    Sentry.setTag('circleci.buildNum', circleci.buildNum);
+    Sentry.setTag('circleci.job', circleci.job);
+    Sentry.setTag('circleci.nodeIndex', circleci.nodeIndex);
+    Sentry.setTag('circleci.prNumber', circleci.prNumber);
+  }
 }
 
 /**
@@ -181,6 +237,13 @@ function getSentryEnvironment() {
 }
 
 function getSentryTarget() {
+  if (
+    !getManifestFlags().sentry?.forceEnable ||
+    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+  ) {
+    return SENTRY_DSN_FAKE;
+  }
+
   if (METAMASK_ENVIRONMENT !== 'production') {
     return SENTRY_DSN_DEV;
   }
@@ -205,7 +268,12 @@ function getSentryTarget() {
  * @returns `true` if MetaMetrics is enabled, `false` otherwise.
  */
 async function getMetaMetricsEnabled() {
-  if (METAMASK_BUILD_TYPE === 'mmi') {
+  const flags = getManifestFlags();
+
+  if (
+    METAMASK_BUILD_TYPE === 'mmi' ||
+    (flags.circleci && flags.sentry.forceEnable)
+  ) {
     return true;
   }
 
@@ -234,7 +302,7 @@ async function getMetaMetricsEnabled() {
 
 function setSentryClient() {
   const clientOptions = getClientOptions();
-  const { dsn, environment, release } = clientOptions;
+  const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
@@ -244,14 +312,23 @@ function setSentryClient() {
    */
   globalThis.nw = {};
 
+  /**
+   * Sentry checks session tracking support by looking for global history object and functions inside it.
+   * Scuttling sets this property to undefined which breaks Sentry logic and crashes background.
+   */
+  globalThis.history ??= {};
+
   log('Updating client', {
     environment,
     dsn,
     release,
+    tracesSampleRate,
   });
 
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
+
+  setCircleCiTags();
 
   addDebugListeners();
 

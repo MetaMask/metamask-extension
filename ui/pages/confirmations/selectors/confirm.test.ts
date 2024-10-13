@@ -3,13 +3,12 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { ConfirmMetamaskState } from '../types/confirm';
 import {
   getIsRedesignedConfirmationsDeveloperEnabled,
-  latestPendingConfirmationSelector,
+  oldestPendingConfirmationSelector,
   pendingConfirmationsSelector,
 } from './confirm';
 
 describe('confirm selectors', () => {
   const mockedState: ConfirmMetamaskState = {
-    confirm: {},
     metamask: {
       pendingApprovals: {
         '1': {
@@ -55,11 +54,11 @@ describe('confirm selectors', () => {
     });
   });
 
-  describe('latestPendingConfirmationSelector', () => {
-    it('should return latest pending confirmation from state', () => {
-      const result = latestPendingConfirmationSelector(mockedState);
+  describe('oldestPendingConfirmationSelector', () => {
+    it('should return oldest pending confirmation from state', () => {
+      const result = oldestPendingConfirmationSelector(mockedState);
 
-      expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[2]);
+      expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[3]);
     });
   });
 

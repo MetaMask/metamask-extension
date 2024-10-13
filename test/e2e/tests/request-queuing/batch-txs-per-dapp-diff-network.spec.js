@@ -1,4 +1,4 @@
-const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -6,11 +6,9 @@ const {
   unlockWallet,
   DAPP_URL,
   DAPP_ONE_URL,
-  regularDelayMs,
   WINDOW_TITLES,
   defaultGanacheOptions,
   largeDelayMs,
-  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -49,23 +47,13 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await openDapp(driver, undefined, DAPP_URL);
 
         // Connect to dapp 1
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
-          text: 'Next',
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithTitle(
@@ -89,23 +77,13 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Connect to dapp 2
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver, 4);
-
-        await driver.clickElement({
-          text: 'Next',
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         // Dapp one send tx
@@ -122,40 +100,31 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
 
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        let navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
+        await driver.waitForSelector(
+          By.xpath("//div[normalize-space(.)='1 of 2']"),
         );
-
-        let navigationText = await navigationElement.getText();
-
-        assert.equal(navigationText.includes('1 of 2'), true);
-
-        // Check correct network on confirm tx.
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Localhost 8545',
-        });
 
         // Reject All Transactions
         await driver.clickElement('.page-container__footer-secondary a');
 
-        await driver.clickElement({ text: 'Reject all', tag: 'button' }); // TODO: Do we want to confirm here?
+        // TODO: Do we want to confirm here?
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Reject all',
+          tag: 'button',
+        });
 
         // Wait for confirmation to close
-        await driver.waitUntilXWindowHandles(3);
+        // TODO: find a better way to handle different dialog ids
+        await driver.delay(2000);
 
         // Wait for new confirmations queued from second dapp to open
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
+        await driver.waitForSelector(
+          By.xpath("//div[normalize-space(.)='1 of 2']"),
         );
-
-        navigationText = await navigationElement.getText();
-
-        assert.equal(navigationText.includes('1 of 2'), true);
 
         // Check correct network on confirm tx.
         await driver.findElement({

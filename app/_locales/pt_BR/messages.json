@@ -157,18 +157,6 @@
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Navegando em um site com uma conta não conectada selecionada"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Esse alerta é exibido no pop-up quando você estiver navegando em um site conectado da web3, mas a conta atualmente selecionada não estiver conectada."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Quando um site tenta usar a API window.web3 removida"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Esse alerta é exibido no pop-up quando você estiver navegando em um site que tente usar a API window.web3 removida, e que consequentemente possa apresentar problemas."
-  },
   "alerts": {
     "message": "Alertas"
   },
@@ -534,9 +522,6 @@
   "delete": {
     "message": "Excluir"
   },
-  "deleteNetwork": {
-    "message": "Excluir rede?"
-  },
   "description": {
     "message": "Descrição"
   },
@@ -705,12 +690,6 @@
     "message": "O endpoint retornou um ID diferente da chain: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensIllegalCharacter": {
-    "message": "Caractere inválido para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Erro no registro do nome ENS"
-  },
   "ensUnknownError": {
     "message": "Falha na busca de ENS."
   },
@@ -790,10 +769,6 @@
   },
   "feeAssociatedRequest": {
     "message": "Há uma taxa associada a essa solicitação."
-  },
-  "fiat": {
-    "message": "Fiduciária",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
@@ -1020,12 +995,6 @@
   "invalidAddressRecipient": {
     "message": "O endereço do destinatário é inválido"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Não é uma rede de ETH; configurar em minúsculas"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL inválido do Block Explorer"
-  },
   "invalidChainIdTooBig": {
     "message": "ID de cadeia inválido. O ID de cadeia é muito grande."
   },
@@ -1063,9 +1032,6 @@
   },
   "invalidSeedPhrase": {
     "message": "Frase de Recuperação Secreta inválida"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "Arquivo JSON",
@@ -1272,9 +1238,6 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "O ID da cadeia é usado para assinar transações. É preciso ser igual ao ID da cadeia retornado pela rede. Você pode informar um número decimal ou um número hexadecimal com prefixo “0x”, mas exibiremos o número em casas decimais."
-  },
   "networkStatus": {
     "message": "Status da rede"
   },
@@ -1338,12 +1301,6 @@
   },
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a busca efetuada"
-  },
-  "noAddressForName": {
-    "message": "Não foi configurado nenhum endereço para esse nome."
-  },
-  "noConversionDateAvailable": {
-    "message": "Não há uma data de conversão de moeda disponível"
   },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
@@ -1432,13 +1389,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Os alertas de detecção de phishing dependem de comunicação com $1. O jsDeliver terá acesso ao seu endereço IP. Veja $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
-  "onlyAddTrustedNetworks": {
-    "message": "Um provedor de rede mal-intencionado pode mentir sobre o estado do blockchain e registrar as atividades da sua rede. Adicione somente as redes personalizadas em que você confia."
-  },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em que você confia.",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -1449,9 +1399,6 @@
   },
   "optional": {
     "message": "Opcional"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Opcional)"
   },
   "or": {
     "message": "ou"
@@ -1520,12 +1467,6 @@
   "prev": {
     "message": "Anterior"
   },
-  "primaryCurrencySetting": {
-    "message": "Moeda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selecione Nativa para priorizar a exibição de valores na moeda nativa da cadeia (por ex., ETH). Selecione Fiduciária para priorizar a exibição de valores na moeda fiduciária selecionada."
-  },
   "priorityFee": {
     "message": "Taxa de prioridade"
   },
@@ -1565,9 +1506,6 @@
   },
   "receive": {
     "message": "Receber"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Busca, endereço público (0x) ou ENS"
   },
   "recommendedGasLabel": {
     "message": "Recomendado"
@@ -1613,9 +1551,6 @@
   },
   "rejected": {
     "message": "Rejeitada"
-  },
-  "remember": {
-    "message": "Lembre-se:"
   },
   "remove": {
     "message": "Remover"
@@ -1778,9 +1713,6 @@
   "sendingNativeAsset": {
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "A MetaMask utiliza esses serviços terceirizados de confiança para aumentar a usabilidade e a segurança dos produtos."
   },
   "settings": {
     "message": "Configurações"
@@ -2439,14 +2371,8 @@
     "message": "O envio de tokens colecionáveis (ERC-721) não é suportado no momento",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
-  "updatedWithDate": {
-    "message": "Atualizado em $1"
-  },
   "urlErrorMsg": {
     "message": "Os URLs precisam do prefixo HTTP/HTTPS adequado."
-  },
-  "urlExistsErrorMsg": {
-    "message": "O ID da cadeia está sendo usado pela rede $1."
   },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
@@ -2506,26 +2432,6 @@
   },
   "walletConnectionGuide": {
     "message": "nosso guia de conexão com a carteira de hardware"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Você protegeu sua carteira com sucesso. Guarde sua Frase de Recuperação Secreta em segredo e em segurança — é sua responsabilidade!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "A MetaMask não é capaz de recuperar sua Frase de Recuperação Secreta."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "A equipe da MetaMask jamais pedirá sua Frase de Recuperação Secreta."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 com ninguém, senão seus fundos poderão ser roubados",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Nunca compartilhe a sua Frase de Recuperação Secreta",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Carteira criada com sucesso"
   },
   "web3ShimUsageNotification": {
     "message": "Percebemos que o site atual tentou usar a API window.web3 removida. Se o site parecer estar corrompido, clique em $1 para obter mais informações.",

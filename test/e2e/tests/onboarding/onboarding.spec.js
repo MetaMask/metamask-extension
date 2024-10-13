@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { toHex } = require('@metamask/controller-utils');
 const { By } = require('selenium-webdriver');
 const {
   TEST_SEED_PHRASE,
@@ -19,6 +20,8 @@ const {
   onboardingCompleteWalletCreation,
   regularDelayMs,
   unlockWallet,
+  tinyDelayMs,
+  largeDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -202,7 +205,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         // Verify site
         assert.equal(
           await driver.isElementPresent({
-            text: 'Wallet creation successful',
+            text: 'Your wallet is ready',
             tag: 'h2',
           }),
           true,
@@ -268,51 +271,122 @@ describe('MetaMask onboarding @no-mmi', function () {
       },
 
       async ({ driver, secondaryGanacheServer }) => {
-        await driver.navigate();
-        await importSRPOnboardingFlow(
-          driver,
-          TEST_SEED_PHRASE,
-          WALLET_PASSWORD,
-        );
+        try {
+          await driver.navigate();
+          await importSRPOnboardingFlow(
+            driver,
+            TEST_SEED_PHRASE,
+            WALLET_PASSWORD,
+          );
 
-        // Add custom network localhost 8546 during onboarding
-        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
-        await driver.clickElement('.mm-picker-network');
-        await driver.clickElement({
-          text: 'Add network',
-          tag: 'button',
-        });
+          await driver.clickElement({
+            text: 'Manage default settings',
+            tag: 'button',
+          });
 
-        await driver.waitForSelector('[data-testid="add-network-modal"]');
-        const [
-          networkNameField,
-          networkUrlField,
-          chainIdField,
-          currencySymbolField,
-        ] = await driver.findElements('input[type="text"]');
-        await networkNameField.sendKeys(networkName);
-        await networkUrlField.sendKeys(networkUrl);
-        await chainIdField.sendKeys(chainId.toString());
-        await currencySymbolField.sendKeys(currencySymbol);
+          await driver.clickElement({
+            text: 'General',
+          });
+          await driver.delay(largeDelayMs);
+          await driver.clickElement({ text: 'Add a network' });
 
-        await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.assertElementNotPresent(
-          '[data-testid="add-network-modal"]',
-        );
-        await driver.clickElement({ text: 'Done', tag: 'button' });
+          await driver.waitForSelector(
+            '.multichain-network-list-menu-content-wrapper__dialog',
+          );
 
-        // Check localhost 8546 is selected and its balance value is correct
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: networkName,
-        });
+          await driver.fill(
+            '[data-testid="network-form-network-name"]',
+            networkName,
+          );
+          await driver.fill(
+            '[data-testid="network-form-chain-id"]',
+            chainId.toString(),
+          );
+          await driver.fill(
+            '[data-testid="network-form-ticker-input"]',
+            currencySymbol,
+          );
 
-        await locateAccountBalanceDOM(driver, secondaryGanacheServer[0]);
+          // Add rpc url
+          const rpcUrlInputDropDown = await driver.waitForSelector(
+            '[data-testid="test-add-rpc-drop-down"]',
+          );
+          await driver.delay(tinyDelayMs);
+          await rpcUrlInputDropDown.click();
+          await driver.delay(tinyDelayMs);
+          await driver.clickElement({
+            text: 'Add RPC URL',
+            tag: 'button',
+          });
+          const rpcUrlInput = await driver.waitForSelector(
+            '[data-testid="rpc-url-input-test"]',
+          );
+          await rpcUrlInput.clear();
+          await rpcUrlInput.sendKeys(networkUrl);
+          await driver.clickElement({
+            text: 'Add URL',
+            tag: 'button',
+          });
+
+          await driver.clickElement({ text: 'Save', tag: 'button' });
+
+          await driver.delay(largeDelayMs);
+          await driver.waitForSelector('[data-testid="category-back-button"]');
+          const generalBackButton = await driver.waitForSelector(
+            '[data-testid="category-back-button"]',
+          );
+          await generalBackButton.click();
+
+          await driver.delay(largeDelayMs);
+
+          await driver.waitForSelector(
+            '[data-testid="privacy-settings-back-button"]',
+          );
+          const defaultSettingsBackButton = await driver.findElement(
+            '[data-testid="privacy-settings-back-button"]',
+          );
+          await defaultSettingsBackButton.click();
+
+          await driver.delay(largeDelayMs);
+
+          await driver.clickElement({
+            text: 'Done',
+            tag: 'button',
+          });
+
+          await driver.clickElement({
+            text: 'Next',
+            tag: 'button',
+          });
+
+          await driver.delay(largeDelayMs);
+
+          await driver.clickElement({
+            text: 'Done',
+            tag: 'button',
+          });
+
+          await driver.clickElement('.mm-picker-network');
+          await driver.clickElement(
+            `[data-rbd-draggable-id="${toHex(chainId)}"]`,
+          );
+          await driver.delay(largeDelayMs);
+          // Check localhost 8546 is selected and its balance value is correct
+          await driver.findElement({
+            css: '[data-testid="network-display"]',
+            text: networkName,
+          });
+
+          await locateAccountBalanceDOM(driver, secondaryGanacheServer[0]);
+        } catch (error) {
+          console.error('Error in test:', error);
+          throw error;
+        }
       },
     );
   });
 
-  it('User can turn off basic functionality in advanced configurations', async function () {
+  it('User can turn off basic functionality in default settings', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -327,13 +401,25 @@ describe('MetaMask onboarding @no-mmi', function () {
           WALLET_PASSWORD,
         );
 
-        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement({
+          text: 'Manage default settings',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="category-item-General"]');
         await driver.clickElement(
           '[data-testid="basic-functionality-toggle"] .toggle-button',
         );
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
-        await driver.clickElement({ text: 'Done', tag: 'button' });
+        await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.clickElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+
+        await driver.clickElement('[data-testid="onboarding-complete-done"]');
+        await driver.clickElement('[data-testid="pin-extension-next"]');
+        await driver.clickElement('[data-testid="pin-extension-done"]');
+
         // Check that the 'basic functionality is off' banner is displayed on the home screen after onboarding completion
         await driver.waitForSelector({
           text: 'Basic functionality is off',

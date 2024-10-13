@@ -18,6 +18,7 @@ const VERSION = '0.0.1-test';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
+const TEST_GA_COOKIE_ID = '123456.123455';
 const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
 const MOCK_EXTENSION_ID = 'testid';
 
@@ -51,6 +52,7 @@ const DEFAULT_TEST_CONTEXT = {
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
   userAgent: window.navigator.userAgent,
+  marketingCampaignCookieId: null,
 };
 
 const DEFAULT_SHARED_PROPERTIES = {
@@ -114,6 +116,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
 function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
+  marketingCampaignCookieId = null,
   preferencesStore = getMockPreferencesStore(),
   getCurrentChainId = () => FAKE_CHAIN_ID,
   onNetworkDidChange = () => {
@@ -131,6 +134,7 @@ function getMetaMetricsController({
     initState: {
       participateInMetaMetrics,
       metaMetricsId,
+      marketingCampaignCookieId,
       fragments: {
         testid: SAMPLE_PERSISTED_EVENT,
         testid2: SAMPLE_NON_PERSISTED_EVENT,
@@ -161,6 +165,9 @@ describe('MetaMetricsController', function () {
       expect(metaMetricsController.state.metaMetricsId).toStrictEqual(
         TEST_META_METRICS_ID,
       );
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
       expect(metaMetricsController.locale).toStrictEqual(
         LOCALE.replace('_', '-'),
       );
@@ -339,6 +346,21 @@ describe('MetaMetricsController', function () {
       expect(metaMetricsController.state.metaMetricsId).toStrictEqual(
         TEST_META_METRICS_ID,
       );
+    });
+    it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+        marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+      });
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      await metaMetricsController.setParticipateInMetaMetrics(false);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
     });
   });
 
@@ -556,6 +578,38 @@ describe('MetaMetricsController', function () {
         spy.mock.calls[1][1],
       );
     });
+  });
+
+  describe('Change Signature XXX anonymous event names', function () {
+    it.each([
+      ['Signature Requested', 'Signature Requested Anon'],
+      ['Signature Rejected', 'Signature Rejected Anon'],
+      ['Signature Approved', 'Signature Approved Anon'],
+    ])(
+      'should change "%s" anonymous event names to "%s"',
+      (eventType, anonEventType) => {
+        const metaMetricsController = getMetaMetricsController();
+        const spy = jest.spyOn(segment, 'track');
+        metaMetricsController.submitEvent({
+          event: eventType,
+          category: 'Unit Test',
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+          sensitiveProperties: { foo: 'bar' },
+        });
+
+        expect(spy).toHaveBeenCalledTimes(2);
+
+        expect(spy.mock.calls[0][0]).toMatchObject({
+          event: anonEventType,
+          properties: { foo: 'bar', ...DEFAULT_EVENT_PROPERTIES },
+        });
+
+        expect(spy.mock.calls[1][0]).toMatchObject({
+          event: eventType,
+          properties: { ...DEFAULT_EVENT_PROPERTIES },
+        });
+      },
+    );
   });
 
   describe('Change Transaction XXX anonymous event namnes', function () {
@@ -1034,7 +1088,7 @@ describe('MetaMetricsController', function () {
         securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
         security_providers: [],
         names: {
           [NameType.ETHEREUM_ADDRESS]: {
@@ -1068,6 +1122,11 @@ describe('MetaMetricsController', function () {
             },
           },
         },
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
       });
 
       expect(traits).toStrictEqual({
@@ -1089,7 +1148,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
-        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: true,
+        [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: true,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
@@ -1099,6 +1158,7 @@ describe('MetaMetricsController', function () {
         ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         [MetaMetricsUserTrait.PetnameAddressCount]: 3,
         ///: END:ONLY_INCLUDE_IF
+        [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
       });
     });
 
@@ -1127,7 +1187,12 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+        showNativeTokenAsMainBalance: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1154,7 +1219,12 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: false,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+        showNativeTokenAsMainBalance: false,
       });
 
       expect(updatedTraits).toStrictEqual({
@@ -1162,7 +1232,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.NumberOfAccounts]: 3,
         [MetaMetricsUserTrait.NumberOfTokens]: 1,
         [MetaMetricsUserTrait.OpenseaApiEnabled]: false,
-        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: false,
+        [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
       });
     });
 
@@ -1191,7 +1261,12 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+        showNativeTokenAsMainBalance: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1213,7 +1288,12 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        useNativeCurrencyAsPrimaryCurrency: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+        showNativeTokenAsMainBalance: true,
       });
       expect(updatedTraits).toStrictEqual(null);
     });
@@ -1243,7 +1323,65 @@ describe('MetaMetricsController', function () {
       expect(Object.keys(segmentApiCalls).length === 0).toStrictEqual(true);
     });
   });
-
+  describe('setMarketingCampaignCookieId', function () {
+    it('should update marketingCampaignCookieId in the context when cookieId is available', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+      });
+      metaMetricsController.setMarketingCampaignCookieId(TEST_GA_COOKIE_ID);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      const spy = jest.spyOn(segment, 'track');
+      metaMetricsController.submitEvent(
+        {
+          event: 'Fake Event',
+          category: 'Unit Test',
+          properties: {
+            test: 1,
+          },
+        },
+        { isOptIn: true },
+      );
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: {
+            ...DEFAULT_TEST_CONTEXT,
+            marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+          },
+          properties: {
+            test: 1,
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        },
+        spy.mock.calls[0][1],
+      );
+    });
+  });
+  describe('setDataCollectionForMarketing', function () {
+    it('should nullify the marketingCampaignCookieId when Data collection for marketing is toggled off', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+        marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+      });
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      await metaMetricsController.setDataCollectionForMarketing(false);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
+    });
+  });
   afterEach(function () {
     // flush the queues manually after each test
     segment.flush();

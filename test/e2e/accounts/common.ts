@@ -13,7 +13,7 @@ import {
   regularDelayMs,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
+import { DAPP_URL, TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 import { retry } from '../../../development/lib/retry';
 
 /**
@@ -27,7 +27,9 @@ export const accountSnapFixtures = (title: string | undefined) => {
   return {
     dapp: true,
     fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp(false)
+      .withPermissionControllerConnectedToTestDapp({
+        restrictReturnedAccounts: false,
+      })
       .build(),
     ganacheOptions: multipleGanacheOptions,
     title,
@@ -199,16 +201,12 @@ export async function connectAccountToTestDapp(driver: Driver) {
 
   await driver.delay(regularDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement({
-    text: 'Next',
+  await driver.clickElementAndWaitForWindowToClose({
+    text: 'Connect',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
+
+  await driver.switchToWindowWithUrl(DAPP_URL);
 }
 
 export async function disconnectFromTestDapp(driver: Driver) {
@@ -223,7 +221,6 @@ export async function disconnectFromTestDapp(driver: Driver) {
     text: '127.0.0.1:8080',
     tag: 'p',
   });
-  await driver.clickElement('[data-testid="account-list-item-menu-button"]');
   await driver.clickElement({ text: 'Disconnect', tag: 'button' });
   await driver.clickElement('[data-testid ="disconnect-all"]');
 }

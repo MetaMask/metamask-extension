@@ -8,7 +8,11 @@ import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
-import { setCompletedOnboarding } from '../../../store/actions';
+import {
+  setCompletedOnboarding,
+  performSignIn,
+  toggleExternalServices,
+} from '../../../store/actions';
 ///: END:ONLY_INCLUDE_IF
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
@@ -32,7 +36,12 @@ import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin
 import { Text } from '../../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getFirstTimeFlowType } from '../../../selectors';
+import {
+  getFirstTimeFlowType,
+  getExternalServicesOnboardingToggleState,
+} from '../../../selectors';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -49,14 +58,26 @@ export default function OnboardingPinExtension() {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const externalServicesOnboardingToggleState = useSelector(
+    getExternalServicesOnboardingToggleState,
+  );
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
+
   const handleClick = async () => {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
     } else {
+      dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
       await dispatch(setCompletedOnboarding());
+
+      if (externalServicesOnboardingToggleState) {
+        if (!isProfileSyncingEnabled || participateInMetaMetrics) {
+          await dispatch(performSignIn());
+        }
+      }
+
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.OnboardingWalletSetupComplete,

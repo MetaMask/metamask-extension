@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<EditSpendingCapModal /> renders component 1`] = `
+<div>
+  <div
+    class="mm-modal edit-spending-cap-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+            >
+              <h3
+                class="mm-box mm-text mm-text--heading-md mm-box--color-text-default"
+              >
+                Edit spending cap
+              </h3>
+            </div>
+          </header>
+          <div
+            class="mm-box mm-modal-body mm-box--padding-right-4 mm-box--padding-left-4"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            >
+              Enter the amount that you feel comfortable being spent on your behalf.
+            </p>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+              style="width: 100%;"
+            >
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="custom-spending-cap-input"
+                focused="true"
+                placeholder="1000 TST"
+                type="number"
+                value="1000"
+              />
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-box--padding-top-1 mm-box--color-text-alternative"
+            >
+              Account balance: 0.000000000001 TST
+            </p>
+          </div>
+          <div
+            class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+          >
+            <div
+              class="mm-box mm-container mm-container--max-width-sm mm-box--margin-right-auto mm-box--margin-left-auto mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            >
+              <button
+                class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-modal-footer__button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+              >
+                Cancel
+              </button>
+              <button
+                class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-modal-footer__button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+                data-theme="light"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</div>
+`;

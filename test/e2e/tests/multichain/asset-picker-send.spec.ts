@@ -34,6 +34,15 @@ describe('AssetPickerSendFlow @no-mmi', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
+        // Disable token auto detection
+        await driver.openNewURL(
+          `${driver.extensionUrl}/home.html#settings/security`,
+        );
+        await driver.clickElement(
+          '[data-testid="autoDetectTokens"] .toggle-button',
+        );
+        await driver.navigate();
+
         // Open the send flow
         openActionMenuAndStartSendFlow(driver);
 
@@ -62,7 +71,7 @@ describe('AssetPickerSendFlow @no-mmi', function () {
           )
         ).getText();
 
-        assert.equal(tokenListValue, '25 ETH');
+        assert.equal(tokenListValue, '$250,000.00');
 
         const tokenListSecondaryValue = await (
           await driver.findElement(
@@ -70,15 +79,15 @@ describe('AssetPickerSendFlow @no-mmi', function () {
           )
         ).getText();
 
-        assert.equal(tokenListSecondaryValue, '$250,000.00');
+        assert.equal(tokenListSecondaryValue, '25 ETH');
 
-        // Search for BNB
+        // Search for CHZ
         const searchInputField = await driver.waitForSelector(
           '[data-testid="asset-picker-modal-search-input"]',
         );
         await searchInputField.sendKeys('CHZ');
 
-        // check that BNB is disabled
+        // check that CHZ is disabled
         const [, tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );
