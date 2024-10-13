@@ -10,7 +10,6 @@ jest.mock('../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
-
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
@@ -27,6 +26,20 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
+const notificationsState = {
+  ...mockMetaMaskState,
+  isProfileSyncingEnabled: true,
+  isProfileSyncingUpdateLoading: false,
+  isMetamaskNotificationsFeatureSeen: true,
+  isNotificationServicesEnabled: true,
+  isFeatureAnnouncementsEnabled: true,
+  metamaskNotificationsList: [],
+  metamaskNotificationsReadList: ['enhanced-signatures'],
+  isUpdatingMetamaskNotifications: false,
+  isFetchingMetamaskNotifications: false,
+  isUpdatingMetamaskNotificationsAccount: [],
+};
+
 describe('Notifications', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -35,19 +48,17 @@ describe('Notifications', () => {
 
   it('should show badge with correct unread notifications', async () => {
     const mockedRequests = {
-      getState: mockMetaMaskState,
+      getState: notificationsState,
     };
 
     setupSubmitRequestToBackgroundMocks(mockedRequests);
 
-    await act(async() => {
+    await act(async () => {
       await integrationTestRender({
-        preloadedState: {
-          ...mockMetaMaskState,
-         },
+        preloadedState: notificationsState,
         backgroundConnection: backgroundConnectionMocked,
       });
-    })
+    });
 
     expect(
       screen.getByTestId('notifications-tag-counter__unread-dot'),
