@@ -5545,7 +5545,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createTracingMiddleware());
 
-    // PPOMMiddleware come after the SelectedNetworkMiddleware
     engine.push(
       createPPOMMiddleware(
         this.ppomController,
