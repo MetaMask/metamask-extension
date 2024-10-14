@@ -2,7 +2,6 @@ import {
   CaveatConstraint,
   CaveatMutatorOperation,
   PermissionType,
-  SubjectType,
 } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
 import * as Scope from './scope';
@@ -46,7 +45,6 @@ describe('endowment:caip25', () => {
       targetName: Caip25EndowmentPermissionName,
       endowmentGetter: expect.any(Function),
       allowedCaveats: [Caip25CaveatType],
-      subjectTypes: [SubjectType.Website],
       validator: expect.any(Function),
     });
 
