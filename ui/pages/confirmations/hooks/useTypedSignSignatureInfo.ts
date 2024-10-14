@@ -14,7 +14,6 @@ import { TypedSignSignaturePrimaryTypes } from '../constants';
 export const useTypedSignSignatureInfo = (
   confirmation: SignatureRequestType,
 ) => {
-
   const primaryType = useMemo(() => {
     if (
       !confirmation ||
