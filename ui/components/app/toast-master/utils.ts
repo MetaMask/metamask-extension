@@ -2,6 +2,11 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
 import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { useLocation } from 'react-router-dom';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { getSwitchedNetworkDetails } from '../../../selectors';
+import { useSelector } from 'react-redux';
+import { selectSwitchedNetworkNeverShowMessage } from './selectors';
 
 /**
  * Returns true if the privacy policy toast was shown either never, or less than a day ago.
@@ -43,4 +48,29 @@ export function setShowNftDetectionEnablementToast(
     type: SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
     payload: value,
   };
+}
+
+export function setSwitchedNetworkNeverShowMessage() {
+  submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [true]);
+}
+
+export function onHomeScreen() {
+  const location = useLocation();
+
+  return location.pathname === DEFAULT_ROUTE;
+}
+
+export function setSurveyLinkLastClickedOrClosed(time: number) {
+  return async () => {
+    await submitRequestToBackground('setSurveyLinkLastClickedOrClosed', [time]);
+  };
+}
+
+export function getShowAutoNetworkSwitchTest() {
+  const switchedNetworkDetails = useSelector(getSwitchedNetworkDetails);
+  const switchedNetworkNeverShowMessage = useSelector(
+    selectSwitchedNetworkNeverShowMessage,
+  );
+
+  return switchedNetworkDetails && !switchedNetworkNeverShowMessage;
 }

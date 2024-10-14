@@ -4242,12 +4242,6 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   };
 }
 
-export function setSurveyLinkLastClickedOrClosed(time: number) {
-  return async () => {
-    await submitRequestToBackground('setSurveyLinkLastClickedOrClosed', [time]);
-  };
-}
-
 export function setLastViewedUserSurvey(id: number) {
   return async () => {
     await submitRequestToBackground('setLastViewedUserSurvey', [id]);
@@ -4879,12 +4873,6 @@ export function hideAccountBanner() {
 
 export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
-}
-
-export function neverShowSwitchedNetworkMessage() {
-  return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
-    true,
-  ]);
 }
 
 /**

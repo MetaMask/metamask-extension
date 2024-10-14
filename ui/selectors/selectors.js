@@ -695,16 +695,6 @@ export function getGasIsLoading(state) {
   return state.appState.gasIsLoading;
 }
 
-/**
- * Retrieves user preference to never see the "Switched Network" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function getNeverShowSwitchedNetworkMessage(state) {
-  return state.metamask.switchedNetworkNeverShowMessage;
-}
-
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (state) => state.metamask.networkConfigurationsByChainId,
   /**

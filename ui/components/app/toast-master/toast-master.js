@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -13,15 +14,22 @@ import {
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  DEFAULT_ROUTE,
-  REVIEW_PERMISSIONS,
-} from '../../../helpers/constants/routes';
+import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { getShowAutoNetworkSwitchTest } from '../../../pages/routes/utils';
-import { getSelectedAccount, getUseNftDetection } from '../../../selectors';
-import { hidePermittedNetworkToast } from '../../../store/actions';
+import {
+  getCurrentNetwork,
+  getOriginOfCurrentTab,
+  getSelectedAccount,
+  getSwitchedNetworkDetails,
+  getUseNftDetection,
+} from '../../../selectors';
+import {
+  addPermittedAccount,
+  clearSwitchedNetworkDetails,
+  hidePermittedNetworkToast,
+} from '../../../store/actions';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -36,34 +44,36 @@ import {
   selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
-  setNewPrivacyPolicyToastClickedOrClosed,
+  selectSwitchedNetworkNeverShowMessage,
+} from './selectors';
+import {
+  getShowAutoNetworkSwitchTest,
+  onHomeScreen,
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
-} from './selectors';
+  setSurveyLinkLastClickedOrClosed,
+  setSwitchedNetworkNeverShowMessage,
+} from './utils';
 
-export function ToastMaster({ props, context }) {
-  const { t } = context;
-  const {
-    activeTabOrigin,
-    addPermittedAccount,
-    clearSwitchedNetworkDetails,
-    setSurveyLinkLastClickedOrClosed,
-    setSwitchedNetworkNeverShowMessage,
-    switchedNetworkDetails,
-    currentNetwork,
-  } = props;
+export function ToastMaster() {
+  return (
+    onHomeScreen() && (
+      <ToastContainer>
+        <SurveyToast />
+        <ConnectAccountToast />
+        <SurveyToastMayDelete />
+        <PrivacyPolicyToast />
+        <SwitchedNetworkToast />
+        <NftEnablementToast />
+        <PermittedNetworkToast />
+      </ToastContainer>
+    )
+  );
+}
 
+function ConnectAccountToast() {
+  const t = useI18nContext();
   const dispatch = useDispatch();
-
-  const showAutoNetworkSwitchToast = getShowAutoNetworkSwitchTest(props);
-
-  const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
-    useSelector(selectShowPrivacyPolicyToast);
-
-  const autoHideToastDelay = 5 * SECOND;
-  const safeEncodedHost = encodeURIComponent(activeTabOrigin);
-
-  const showSurveyToast = useSelector(selectShowSurveyToast);
 
   const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
   const account = useSelector(getSelectedAccount);
@@ -78,44 +88,28 @@ export function ToastMaster({ props, context }) {
     selectShowConnectAccountToast(state, account),
   );
 
-  const showNftEnablementToast = useSelector(selectNftDetectionEnablementToast);
-  const useNftDetection = useSelector(getUseNftDetection);
-
-  // If the privacy policy toast is shown, and there is no date set, set it
-  if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
-    setNewPrivacyPolicyToastShownDate(Date.now());
-  }
-
-  const isPermittedNetworkToastOpen = useSelector(
-    (state) => state.appState.showPermittedNetworkToastOpen,
-  );
-
-  if (!onHomeScreen(props)) {
-    return null;
-  }
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
 
   return (
-    <ToastContainer>
-      <SurveyToast />
-      {!hideConnectAccountToast && showConnectAccountToast && (
-        <Toast
-          dataTestId="connect-account-toast"
-          key="connect-account-toast"
-          startAdornment={
-            <AvatarAccount
-              address={account.address}
-              size={AvatarAccountSize.Md}
-              borderColor={BorderColor.transparent}
-            />
-          }
-          text={t('accountIsntConnectedToastText', [
-            account?.metadata?.name,
-            getURLHost(activeTabOrigin),
-          ])}
-          actionText={t('connectAccount')}
-          onActionClick={() => {
-            // Connect this account
-            addPermittedAccount(activeTabOrigin, account.address);
+    Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
+      <Toast
+        dataTestId="connect-account-toast"
+        key="connect-account-toast"
+        startAdornment={
+          <AvatarAccount
+            address={account.address}
+            size={AvatarAccountSize.Md}
+            borderColor={BorderColor.transparent}
+          />
+        }
+        text={t('accountIsntConnectedToastText', [
+          account?.metadata?.name,
+          getURLHost(activeTabOrigin),
+        ])}
+        actionText={t('connectAccount')}
+        onActionClick={() => {
+          // Connect this account
+          dispatch(addPermittedAccount(activeTabOrigin, account.address)),
             // Use setTimeout to prevent React re-render from
             // hiding the tooltip
             setTimeout(() => {
@@ -127,109 +121,166 @@ export function ToastMaster({ props, context }) {
                 )
                 ?.dispatchEvent(new CustomEvent('mouseenter', {}));
             }, 250 * MILLISECOND);
-          }}
-          onClose={() => setHideConnectAccountToast(true)}
-        />
-      )}
-      {showSurveyToast && (
-        <Toast
-          key="survey-toast"
-          startAdornment={
-            <Icon name={IconName.Heart} color={IconColor.errorDefault} />
-          }
-          text={t('surveyTitle')}
-          actionText={t('surveyConversion')}
-          onActionClick={() => {
-            global.platform.openTab({
-              url: SURVEY_LINK,
-            });
-            setSurveyLinkLastClickedOrClosed(Date.now());
-          }}
-          onClose={() => {
-            setSurveyLinkLastClickedOrClosed(Date.now());
-          }}
-        />
-      )}
-      {showPrivacyPolicyToast && (
-        <Toast
-          key="privacy-policy-toast"
-          startAdornment={
-            <Icon name={IconName.Info} color={IconColor.iconDefault} />
-          }
-          text={t('newPrivacyPolicyTitle')}
-          actionText={t('newPrivacyPolicyActionButton')}
-          onActionClick={() => {
-            global.platform.openTab({
-              url: PRIVACY_POLICY_LINK,
-            });
-            setNewPrivacyPolicyToastClickedOrClosed();
-          }}
-          onClose={setNewPrivacyPolicyToastClickedOrClosed}
-        />
-      )}
-      {showAutoNetworkSwitchToast && (
-        <Toast
-          key="switched-network-toast"
-          startAdornment={
-            <AvatarNetwork
-              size={AvatarAccountSize.Md}
-              borderColor={BorderColor.transparent}
-              src={switchedNetworkDetails?.imageUrl || ''}
-              name={switchedNetworkDetails?.nickname}
-            />
-          }
-          text={t('switchedNetworkToastMessage', [
-            switchedNetworkDetails.nickname,
-            getURLHost(switchedNetworkDetails.origin),
-          ])}
-          actionText={t('switchedNetworkToastDecline')}
-          onActionClick={() => setSwitchedNetworkNeverShowMessage()}
-          onClose={() => clearSwitchedNetworkDetails()}
-        />
-      )}
-      {showNftEnablementToast && useNftDetection && (
-        <Toast
-          key="enabled-nft-auto-detection"
-          startAdornment={
-            <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-          }
-          text={t('nftAutoDetectionEnabled')}
-          borderRadius={BorderRadius.LG}
-          textVariant={TextVariant.bodyMd}
-          autoHideTime={autoHideToastDelay}
-          onAutoHideToast={() =>
-            dispatch(setShowNftDetectionEnablementToast(false))
-          }
-        />
-      )}
-      {isPermittedNetworkToastOpen && (
-        <Toast
-          key="switched-permitted-network-toast"
-          startAdornment={
-            <AvatarNetwork
-              size={AvatarAccountSize.Md}
-              borderColor={BorderColor.transparent}
-              src={currentNetwork?.rpcPrefs.imageUrl || ''}
-              name={currentNetwork?.nickname}
-            />
-          }
-          text={t('permittedChainToastUpdate', [
-            getURLHost(activeTabOrigin),
-            currentNetwork?.nickname,
-          ])}
-          actionText={t('editPermissions')}
-          onActionClick={() => {
-            dispatch(hidePermittedNetworkToast());
-            props.history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
-          }}
-          onClose={() => dispatch(hidePermittedNetworkToast())}
-        />
-      )}
-    </ToastContainer>
+        }}
+        onClose={() => setHideConnectAccountToast(true)}
+      />
+    )
   );
 }
 
-function onHomeScreen(props) {
-  const { location } = props;
-  return location.pathname === DEFAULT_ROUTE;
+function SurveyToastMayDelete() {
+  const t = useI18nContext();
+
+  const showSurveyToast = useSelector(selectShowSurveyToast);
+
+  return (
+    showSurveyToast && (
+      <Toast
+        key="survey-toast"
+        startAdornment={
+          <Icon name={IconName.Heart} color={IconColor.errorDefault} />
+        }
+        text={t('surveyTitle')}
+        actionText={t('surveyConversion')}
+        onActionClick={() => {
+          global.platform.openTab({
+            url: SURVEY_LINK,
+          });
+          setSurveyLinkLastClickedOrClosed(Date.now());
+        }}
+        onClose={() => {
+          setSurveyLinkLastClickedOrClosed(Date.now());
+        }}
+      />
+    )
+  );
+}
+
+function PrivacyPolicyToast() {
+  const t = useI18nContext();
+
+  const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
+    useSelector(selectShowPrivacyPolicyToast);
+
+  // If the privacy policy toast is shown, and there is no date set, set it
+  if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
+    setNewPrivacyPolicyToastShownDate(Date.now());
+  }
+
+  return (
+    showPrivacyPolicyToast && (
+      <Toast
+        key="privacy-policy-toast"
+        startAdornment={
+          <Icon name={IconName.Info} color={IconColor.iconDefault} />
+        }
+        text={t('newPrivacyPolicyTitle')}
+        actionText={t('newPrivacyPolicyActionButton')}
+        onActionClick={() => {
+          global.platform.openTab({
+            url: PRIVACY_POLICY_LINK,
+          });
+          setNewPrivacyPolicyToastClickedOrClosed();
+        }}
+        onClose={setNewPrivacyPolicyToastClickedOrClosed}
+      />
+    )
+  );
+}
+
+function SwitchedNetworkToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  return (
+    getShowAutoNetworkSwitchTest() && (
+      <Toast
+        key="switched-network-toast"
+        startAdornment={
+          <AvatarNetwork
+            size={AvatarAccountSize.Md}
+            borderColor={BorderColor.transparent}
+            src={switchedNetworkDetails?.imageUrl || ''}
+            name={switchedNetworkDetails?.nickname}
+          />
+        }
+        text={t('switchedNetworkToastMessage', [
+          switchedNetworkDetails.nickname,
+          getURLHost(switchedNetworkDetails.origin),
+        ])}
+        actionText={t('switchedNetworkToastDecline')}
+        onActionClick={setSwitchedNetworkNeverShowMessage}
+        onClose={() => dispatch(clearSwitchedNetworkDetails())}
+      />
+    )
+  );
+}
+
+function NftEnablementToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showNftEnablementToast = useSelector(selectNftDetectionEnablementToast);
+  const useNftDetection = useSelector(getUseNftDetection);
+
+  const autoHideToastDelay = 5 * SECOND;
+
+  return (
+    showNftEnablementToast &&
+    useNftDetection && (
+      <Toast
+        key="enabled-nft-auto-detection"
+        startAdornment={
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+        }
+        text={t('nftAutoDetectionEnabled')}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() =>
+          dispatch(setShowNftDetectionEnablementToast(false))
+        }
+      />
+    )
+  );
+}
+
+function PermittedNetworkToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const isPermittedNetworkToastOpen = useSelector(
+    (state) => state.appState.showPermittedNetworkToastOpen,
+  );
+
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const safeEncodedHost = encodeURIComponent(activeTabOrigin);
+  const history = useHistory();
+
+  return (
+    isPermittedNetworkToastOpen && (
+      <Toast
+        key="switched-permitted-network-toast"
+        startAdornment={
+          <AvatarNetwork
+            size={AvatarAccountSize.Md}
+            borderColor={BorderColor.transparent}
+            src={currentNetwork?.rpcPrefs.imageUrl || ''}
+            name={currentNetwork?.nickname}
+          />
+        }
+        text={t('permittedChainToastUpdate', [
+          getURLHost(activeTabOrigin),
+          currentNetwork?.nickname,
+        ])}
+        actionText={t('editPermissions')}
+        onActionClick={() => {
+          dispatch(hidePermittedNetworkToast());
+          history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+        }}
+        onClose={() => dispatch(hidePermittedNetworkToast())}
+      />
+    )
+  );
 }
