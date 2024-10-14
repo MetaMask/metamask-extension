@@ -99,7 +99,7 @@ const defaultState: AlertControllerState = {
 export class AlertController {
   store: ObservableStore<AlertControllerState>;
 
-  #controllerMessenger: AlertControllerMessenger;
+  readonly #controllerMessenger: AlertControllerMessenger;
 
   #selectedAddress: string;
 

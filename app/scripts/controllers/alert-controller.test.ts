@@ -27,7 +27,7 @@ const EMPTY_ACCOUNT = {
     importTime: 0,
   },
 };
-describe('alert controller', () => {
+describe('AlertController', () => {
   let controllerMessenger: ControllerMessenger<
     AlertControllerActions | AllowedActions,
     | AlertControllerEvents
