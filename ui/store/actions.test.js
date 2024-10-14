@@ -484,6 +484,9 @@ describe('Actions', () => {
   });
 
   describe('#getHardwareDeviceName', () => {
+    const deviceName = 'ledger';
+    const hdPath = "m/44'/60'/0'/0/0";
+
     afterEach(() => {
       sinon.restore();
     });
@@ -498,7 +501,7 @@ describe('Actions', () => {
       setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.getHardwareDeviceName('ledger', "m/44'/60'/0'/0/0"),
+        actions.getHardwareDeviceName(deviceName, hdPath),
       );
       expect(getHardwareDeviceName.callCount).toStrictEqual(1);
     });
@@ -520,7 +523,7 @@ describe('Actions', () => {
 
       await expect(
         store.dispatch(
-          actions.getHardwareDeviceName('ledger', "m/44'/60'/0'/0/0"),
+          actions.getHardwareDeviceName(deviceName, hdPath),
         ),
       ).rejects.toThrow('error');
 
