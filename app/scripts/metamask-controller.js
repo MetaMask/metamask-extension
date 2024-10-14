@@ -1406,11 +1406,11 @@ export default class MetamaskController extends EventEmitter {
           rateLimitTimeout: 300000,
         },
         showInAppNotification: {
-          method: (origin, message) => {
+          method: (origin, notificationData) => {
             this.controllerMessenger.call(
               'NotificationController:show',
               origin,
-              message,
+              notificationData,
             );
 
             return null;
@@ -2758,14 +2758,22 @@ export default class MetamaskController extends EventEmitter {
               origin,
               args.message,
             ),
-          showInAppNotification: (origin, args) =>
+          showInAppNotification: (origin, args) => {
+            const { message, title, footerLink } = args;
+            const notificationArgs = {
+              interfaceId: args.content,
+              message,
+              title,
+              footerLink,
+            };
             this.controllerMessenger.call(
               'RateLimitController:call',
               origin,
               'showInAppNotification',
               origin,
-              args.message,
-            ),
+              notificationArgs,
+            );
+          },
           updateSnapState: this.controllerMessenger.call.bind(
             this.controllerMessenger,
             'SnapController:updateSnapState',
@@ -2792,7 +2800,7 @@ export default class MetamaskController extends EventEmitter {
 
             return this.controllerMessenger.call(
               'PhishingController:testOrigin',
-              sender.url,
+              sender,
             ).result;
           },
           createInterface: this.controllerMessenger.call.bind(

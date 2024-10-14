@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Text } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SnapAccountCard } from '../../../remove-snap-account';
+import { SnapAccountCard } from '../../../remove-snap-account/snap-account-card';
 
 const SnapAccountSuccessMessage = ({
   message,

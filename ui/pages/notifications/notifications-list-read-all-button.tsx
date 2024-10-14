@@ -13,7 +13,7 @@ import { markNotificationsAsRead } from '../../store/actions';
 import { Box, Button, ButtonVariant } from '../../components/component-library';
 import { BlockSize } from '../../helpers/constants/design-system';
 import type { NotificationType } from './notifications';
-import { SNAP } from './snap/types/types';
+import { TRIGGER_TYPES } from './notification-components';
 
 type Notification = NotificationServicesController.Types.INotification;
 type MarkAsReadNotificationsParam =
@@ -40,7 +40,7 @@ export const NotificationsListReadAllButton = ({
         .filter(
           (notification): notification is Notification =>
             (notification as Notification).id !== undefined &&
-            notification.type !== SNAP,
+            notification.type !== TRIGGER_TYPES.SNAP,
         )
         .map((notification: Notification) => ({
           id: notification.id,

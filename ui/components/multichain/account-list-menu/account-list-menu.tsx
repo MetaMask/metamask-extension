@@ -31,12 +31,9 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import {
-  AccountListItem,
-  AccountListItemMenuTypes,
-  CreateEthAccount,
-  ImportAccount,
-} from '..';
+import { AccountListItem } from '../account-list-item';
+import { AccountListItemMenuTypes } from '../account-list-item/account-list-item.types';
+
 import {
   AlignItems,
   BlockSize,
@@ -99,6 +96,8 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
+import { CreateEthAccount } from '../create-eth-account';
+import { ImportAccount } from '../import-account';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {

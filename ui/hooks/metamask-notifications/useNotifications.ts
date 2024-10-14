@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-api';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import log from 'loglevel';
 
 import {
@@ -11,10 +10,12 @@ import {
   enableMetamaskNotifications,
   disableMetamaskNotifications,
 } from '../../store/actions';
+import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
 
-type Notification = NotificationServicesController.Types.INotification;
-type MarkAsReadNotificationsParam =
-  NotificationServicesController.Types.MarkAsReadNotificationsParam;
+export type MarkAsReadNotificationsParam = Pick<
+  Notification,
+  'id' | 'type' | 'isRead'
+>[];
 
 // Define KeyringType interface
 type KeyringType = {
