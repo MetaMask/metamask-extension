@@ -120,6 +120,7 @@ export const PermissionsPage = () => {
             justifyContent={JustifyContent.center}
             height={BlockSize.Full}
             gap={2}
+            padding={4}
           >
             <Text
               variant={TextVariant.bodyMdMedium}
