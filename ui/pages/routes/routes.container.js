@@ -18,7 +18,6 @@ import {
   getShowExtensionInFullSizeView,
   getSelectedAccount,
   getSwitchedNetworkDetails,
-  getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
   getUseRequestQueue,
@@ -35,10 +34,9 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   addPermittedAccount,
-  setSurveyLinkLastClickedOrClosed,
   automaticallySwitchNetwork,
   clearSwitchedNetworkDetails,
-  neverShowSwitchedNetworkMessage,
+  switchedNetworkNeverShowMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
@@ -53,6 +51,7 @@ import {
 } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import Routes from './routes.component';
+import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
 
 function mapStateToProps(state) {
   const { activeTab, appState } = state;
@@ -111,7 +110,8 @@ function mapStateToProps(state) {
     currentNetwork,
     totalUnapprovedConfirmationCount:
       getNumberOfAllUnapprovedTransactionsAndMessages(state),
-    neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
+    switchedNetworkNeverShowMessage:
+      selectSwitchedNetworkNeverShowMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
     useRequestQueue: getUseRequestQueue(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -138,12 +138,8 @@ function mapDispatchToProps(dispatch) {
     addPermittedAccount: (activeTabOrigin, address) =>
       dispatch(addPermittedAccount(activeTabOrigin, address)),
     clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
-    setSwitchedNetworkNeverShowMessage: () =>
-      dispatch(neverShowSwitchedNetworkMessage()),
     automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
       dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
-    setSurveyLinkLastClickedOrClosed: (time) =>
-      dispatch(setSurveyLinkLastClickedOrClosed(time)),
     clearEditedNetwork: () => dispatch(setEditedNetwork()),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>

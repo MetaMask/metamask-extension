@@ -21,6 +21,7 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
     onboardingDate?: number;
     showNftDetectionEnablementToast?: boolean;
     surveyLinkLastClickedOrClosed?: number;
+    switchedNetworkNeverShowMessage?: boolean;
   };
 };
 
@@ -94,4 +95,14 @@ export function selectShowConnectAccountToast(
     connectedAccounts.length > 0 &&
     !connectedAccounts.some((address) => address === account.address)
   );
+}
+
+/**
+ * Retrieves user preference to never see the "Switched Network" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
+  return Boolean(state.metamask.switchedNetworkNeverShowMessage);
 }

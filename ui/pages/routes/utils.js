@@ -209,7 +209,3 @@ export function hideAppHeader(props) {
     isConfirmTransactionRoute(location.pathname)
   );
 }
-
-export function getShowAutoNetworkSwitchTest(props) {
-  return props.switchedNetworkDetails && !props.neverShowSwitchedNetworkMessage;
-}

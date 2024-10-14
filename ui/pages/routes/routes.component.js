@@ -116,12 +116,12 @@ import CrossChainSwap from '../bridge';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import {
   getConnectingLabel,
-  getShowAutoNetworkSwitchTest,
   hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
   showOnboardingHeader,
 } from './utils';
+import { getShowAutoNetworkSwitchTest } from '../../components/app/toast-master/utils';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -466,8 +466,6 @@ export default class Routes extends Component {
       );
     ///: END:ONLY_INCLUDE_IF
 
-    const showAutoNetworkSwitchToast = getShowAutoNetworkSwitchTest(this.props);
-
     return (
       <div
         className={classnames('app', {
@@ -476,7 +474,7 @@ export default class Routes extends Component {
         })}
         dir={textDirection}
         onMouseUp={
-          showAutoNetworkSwitchToast
+          deprecatedGetShowAutoNetworkSwitchTest(this.props)
             ? () => clearSwitchedNetworkDetails()
             : undefined
         }
@@ -545,8 +543,13 @@ export default class Routes extends Component {
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
-        <ToastMaster props={this.props} context={this.context} />
+        <ToastMaster />
       </div>
     );
   }
+}
+
+// Will eventually delete this function
+function deprecatedGetShowAutoNetworkSwitchTest(props) {
+  return props.switchedNetworkDetails && !props.switchedNetworkNeverShowMessage;
 }
