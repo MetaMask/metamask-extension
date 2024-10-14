@@ -477,7 +477,7 @@
     "@metamask/forwarder": "^1.1.0",
     "@metamask/phishing-warning": "^4.0.0",
     "@metamask/test-bundler": "^1.0.0",
-    "@metamask/test-dapp": "^8.7.0",
+    "@metamask/test-dapp": "8.7.0",
     "@octokit/core": "^3.6.0",
     "@open-rpc/meta-schema": "^1.14.6",
     "@open-rpc/mock-server": "^1.7.5",
