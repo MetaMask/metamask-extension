@@ -163,8 +163,7 @@
     "message": "Account options"
   },
   "accountPermissionToast": {
-    "message": "Account permissions updated for $1",
-    "description": "$1 represents connected dapp"
+    "message": "Account permissions updated"
   },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
@@ -374,9 +373,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
   },
-  "advancedConfiguration": {
-    "message": "Advanced configuration"
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -443,8 +439,8 @@
   "alertMessageGasTooLow": {
     "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "You do not have enough ETH in your account to pay for transaction fees."
+  "alertMessageInsufficientBalance2": {
+    "message": "You do not have enough ETH in your account to pay for network fees."
   },
   "alertMessageNetworkBusy": {
     "message": "Gas prices are high and estimates are less accurate."
@@ -499,18 +495,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Wrong account"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Browsing a website with an unconnected account selected"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "This alert is shown in the popup when you are browsing a connected web3 site, but the currently selected account is not connected."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "When a website tries to use the removed window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "This alert is shown in the popup when you are browsing a site that tries to use the removed window.web3 API, and may be broken as a result."
   },
   "alerts": {
     "message": "Alerts"
@@ -651,6 +635,12 @@
   "assetOptions": {
     "message": "Asset options"
   },
+  "assets": {
+    "message": "Assets"
+  },
+  "assetsDescription": {
+    "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
+  },
   "attemptSendingAssets": {
     "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge."
   },
@@ -765,12 +755,6 @@
   "betaTerms": {
     "message": "Beta Terms of use"
   },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask Beta can’t recover your Secret Recovery Phrase."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
-  },
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
@@ -869,6 +853,9 @@
   },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
+  },
+  "bridgeSelectNetwork": {
+    "message": "Select network"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -1103,6 +1090,9 @@
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
   },
+  "congratulations": {
+    "message": "Congratulations!"
+  },
   "connect": {
     "message": "Connect"
   },
@@ -1179,9 +1169,6 @@
   },
   "connectedSnaps": {
     "message": "Connected Snaps"
-  },
-  "connectedWith": {
-    "message": "Connected with"
   },
   "connectedWithAccount": {
     "message": "$1 accounts connected",
@@ -1557,6 +1544,12 @@
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
+  "defaultSettingsSubTitle": {
+    "message": "MetaMask uses default settings to best balance safety and ease of use. Change these settings to further increase your privacy."
+  },
+  "defaultSettingsTitle": {
+    "message": "Default settings"
+  },
   "delete": {
     "message": "Delete"
   },
@@ -1646,14 +1639,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snaps"
-  },
-  "disconnectAllText": {
-    "message": "If you disconnect your $1 from $2, you'll need to reconnect to use them again.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Disconnect all $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectMessage": {
     "message": "This will disconnect you from $1",
@@ -1837,6 +1822,9 @@
   },
   "editSpendingCapDesc": {
     "message": "Enter the amount that you feel comfortable being spent on your behalf."
+  },
+  "editSpendingCapError": {
+    "message": "The spending cap can’t exceed $1 decimal digits. Remove decimal digits to continue."
   },
   "enable": {
     "message": "Enable"
@@ -2211,6 +2199,9 @@
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
   },
+  "generalDescription": {
+    "message": "Sync settings across devices, select network preferences, and track token data"
+  },
   "genericExplorerView": {
     "message": "View account on $1"
   },
@@ -2293,9 +2284,6 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
-  "hideToken": {
-    "message": "Hide token"
-  },
   "hideTokenPrompt": {
     "message": "Hide token?"
   },
@@ -2373,6 +2361,10 @@
   },
   "id": {
     "message": "ID"
+  },
+  "ifYouGetLockedOut": {
+    "message": "If you get locked out of the app or get a new device, you will lose your funds. Be sure to back up your Secret Recovery Phrase in $1 ",
+    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Ignore all"
@@ -2624,12 +2616,13 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
+  },
+  "keepReminderOfSRP": {
+    "message": "Keep a reminder of your Secret Recovery Phrase somewhere safe. If you lose it, no one can help you get it back. Even worse, you won’t be able access to your wallet ever again. $1",
+    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Account name"
@@ -2689,12 +2682,18 @@
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
+  "learnHow": {
+    "message": "Learn how"
+  },
   "learnMore": {
     "message": "learn more"
   },
   "learnMoreAboutGas": {
     "message": "Want to $1 about gas?",
     "description": "$1 will be replaced by the learnMore translation key"
+  },
+  "learnMoreAboutPrivacy": {
+    "message": "Learn more about privacy best practices."
   },
   "learnMoreKeystone": {
     "message": "Learn More"
@@ -2846,6 +2845,9 @@
   "makeSureNoOneWatching": {
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
+  "manageDefaultSettings": {
+    "message": "Manage default settings"
   },
   "marketCap": {
     "message": "Market cap"
@@ -3050,10 +3052,6 @@
     "message": "$1 is asking for your approval to:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Do you want this site to do the following?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3160,8 +3158,7 @@
     "message": "Network options"
   },
   "networkPermissionToast": {
-    "message": "Network permissions updated for $1",
-    "description": "$1 represents connected dapp"
+    "message": "Network permissions updated"
   },
   "networkProvider": {
     "message": "Network provider"
@@ -3725,10 +3722,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "Pin MetaMask Institutional"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1D",
     "description": "Shortened form of '1 day'"
@@ -4109,7 +4102,7 @@
     "message": "You're giving the spender permission to spend this many tokens from your account."
   },
   "permittedChainToastUpdate": {
-    "message": "$1 has been given access to $2."
+    "message": "$1 has access to $2."
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -4392,8 +4385,11 @@
   "rejected": {
     "message": "Rejected"
   },
-  "remember": {
-    "message": "Remember:"
+  "rememberSRPIfYouLooseAccess": {
+    "message": "Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet. $1 to keep this set of words safe so you can always access your funds."
+  },
+  "reminderSet": {
+    "message": "Reminder set!"
   },
   "remove": {
     "message": "Remove"
@@ -4665,6 +4661,12 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityDescription": {
+    "message": "Reduce your chances of joining unsafe networks and protect your accounts"
+  },
+  "securityPrivacyPath": {
+    "message": "Settings > Security & Privacy."
+  },
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
@@ -4831,9 +4833,6 @@
   "sepolia": {
     "message": "Sepolia test network"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
-  },
   "setApprovalForAll": {
     "message": "Set approval for all"
   },
@@ -4849,6 +4848,9 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "settingsOptimisedForEaseOfUseAndSecurity": {
+    "message": "Settings are optimised for ease of use and security. Change these any time."
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
@@ -6115,9 +6117,6 @@
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required. Find it on: $1"
   },
-  "tokenDecimalTitle": {
-    "message": "Token decimal:"
-  },
   "tokenDetails": {
     "message": "Token details"
   },
@@ -6568,25 +6567,9 @@
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
-  "walletCreationSuccessDetail": {
-    "message": "You’ve successfully protected your wallet. Keep your Secret Recovery Phrase safe and secret -- it’s your responsibility!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask can’t recover your Secret Recovery Phrase."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask will never ask you for your Secret Recovery Phrase."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 with anyone or risk your funds being stolen",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Never share your Secret Recovery Phrase",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Wallet creation successful"
+  "walletProtectedAndReadyToUse": {
+    "message": "Your wallet is protected and ready to use. You can find your Secret Recovery Phrase in $1 ",
+    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
@@ -6703,6 +6686,9 @@
   },
   "yourTransactionJustConfirmed": {
     "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
+  },
+  "yourWalletIsReady": {
+    "message": "Your wallet is ready"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

@@ -7,6 +7,7 @@ import {
   TextVariant,
   AlignItems,
   Display,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -25,7 +26,7 @@ export const Setting = ({
     <Box
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
+      alignItems={AlignItems.flexStart}
       marginTop={3}
       marginBottom={3}
       className="privacy-settings__setting__wrapper"
@@ -33,7 +34,11 @@ export const Setting = ({
     >
       <div className="privacy-settings__setting">
         <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
-        <Text variant={TextVariant.bodySm} as="div">
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          as="div"
+        >
           {description}
         </Text>
       </div>
