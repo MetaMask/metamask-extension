@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -30,6 +30,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getURLHost } from '../../../helpers/utils/util';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 type EditAccountsModalProps = {
   activeTabOrigin: string;
@@ -47,6 +52,8 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
+
   const [showAddNewAccounts, setShowAddNewAccounts] = useState(false);
 
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
@@ -181,8 +188,29 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                     <ButtonPrimary
                       data-testid="connect-more-accounts-button"
                       onClick={() => {
+                        const addedAccounts = selectedAccountAddresses.filter(
+                          (address) =>
+                            !defaultSelectedAccountAddresses.includes(address),
+                        ); // Number of new accounts added for metrics
+
+                        const removedAccounts =
+                          defaultSelectedAccountAddresses.filter(
+                            (address) =>
+                              !selectedAccountAddresses.includes(address),
+                          ); // Number of old accounts removed for metrics
+
                         onSubmit(selectedAccountAddresses);
-                        onClose();
+                        trackEvent({
+                          event:
+                            MetaMetricsEventName.UpdatePermissionedAccounts,
+                          category: MetaMetricsEventCategory.Permissions,
+                          properties: {
+                            addedAccounts: addedAccounts.length,
+                            removedAccounts: removedAccounts.length,
+                          },
+                        });
+
+                        onClose(); // Close the modal
                       }}
                       size={ButtonPrimarySize.Lg}
                       block

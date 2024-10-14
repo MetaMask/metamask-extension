@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
@@ -28,6 +28,11 @@ import {
 import { NetworkListItem } from '..';
 import { getURLHost } from '../../../helpers/utils/util';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export const EditNetworksModal = ({
   activeTabOrigin,
@@ -38,7 +43,7 @@ export const EditNetworksModal = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
-
+  const trackEvent = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [selectedChainIds, setSelectedChainIds] = useState(
@@ -180,6 +185,21 @@ export const EditNetworksModal = ({
                 data-testid="connect-more-chains-button"
                 onClick={() => {
                   onSubmit(selectedChainIds);
+                  const addedNetworks = selectedChainIds.filter(
+                    (chainId) => !defaultSelectedChainIds.includes(chainId),
+                  ); // networks added for metrics
+                  const removedNetworks = defaultSelectedChainIds.filter(
+                    (chainId) => !selectedChainIds.includes(chainId),
+                  ); // networks removed for metrics
+
+                  trackEvent({
+                    event: MetaMetricsEventName.UpdatePermissionedNetworks,
+                    category: MetaMetricsEventCategory.Permissions,
+                    properties: {
+                      addedNetworks: addedNetworks.length,
+                      removedNetworks: removedNetworks.length,
+                    },
+                  });
                   onClose();
                 }}
                 size={ButtonPrimarySize.Lg}
