@@ -1,5 +1,7 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { withBtcAccountSnap } from './common-btc';
+import { DEFAULT_BTC_BALANCE } from '../../constants';
 
 describe('BTC Account - Overview', function (this: Suite) {
   it('has portfolio button enabled for BTC accounts', async function () {
@@ -36,6 +38,23 @@ describe('BTC Account - Overview', function (this: Suite) {
         await driver.findClickableElement(
           '[data-testid="coin-overview-receive"]',
         );
+      },
+    );
+  });
+
+  it.only('has balance', async function () {
+    await withBtcAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver) => {
+        // Wait for the balance to load up
+        await driver.delay(2000);
+
+        const balanceElement = await driver.findElement('.coin-overview__balance');
+        const balanceText = await balanceElement.getText();
+
+        const [balance, unit] = balanceText.split('\n');
+        assert(Number(balance) === DEFAULT_BTC_BALANCE);
+        assert(unit === 'BTC');
       },
     );
   });
