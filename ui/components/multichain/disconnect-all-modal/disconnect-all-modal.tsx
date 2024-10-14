@@ -34,7 +34,9 @@ export const DisconnectAllModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>{t('disconnect')}</ModalHeader>
-        <ModalBody>{<Text>{t('disconnectAllDescription')}</Text>}</ModalBody>
+        <ModalBody>
+          {<Text>{t('disconnectAllDescriptionText')}</Text>}
+        </ModalBody>
         <ModalFooter>
           <Button
             onClick={onClick}
