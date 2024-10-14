@@ -125,9 +125,6 @@ PATH_NAME_MAP[PERMISSIONS] = 'Permissions';
 
 export const REVIEW_PERMISSIONS = '/review-permissions';
 
-export const TOKEN_DETAILS = '/token-details';
-PATH_NAME_MAP[`${TOKEN_DETAILS}/:address`] = 'Token Details Page';
-
 export const CONNECT_ROUTE = '/connect';
 PATH_NAME_MAP[`${CONNECT_ROUTE}/:id`] = 'Connect To Site Confirmation Page';
 
