@@ -1,10 +1,4 @@
-import {
-  hasProperty,
-  Hex,
-  isObject,
-  NonEmptyArray,
-  Json,
-} from '@metamask/utils';
+import { hasProperty, isObject, NonEmptyArray, Json } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
 type CaveatConstraint = {
@@ -23,24 +17,12 @@ const PermissionNames = {
 };
 
 const BUILT_IN_NETWORKS = {
-  goerli: {
-    chainId: '0x5',
-  },
-  sepolia: {
-    chainId: '0xaa36a7',
-  },
-  mainnet: {
-    chainId: '0x1',
-  },
-  'linea-goerli': {
-    chainId: '0xe704',
-  },
-  'linea-sepolia': {
-    chainId: '0xe705',
-  },
-  'linea-mainnet': {
-    chainId: '0xe708',
-  },
+  goerli: '0x5',
+  sepolia: '0xaa36a7',
+  mainnet: '0x1',
+  'linea-goerli': '0xe704',
+  'linea-sepolia': '0xe705',
+  'linea-mainnet': '0xe708',
 };
 
 const Caip25CaveatType = 'authorizedScopes';
@@ -115,7 +97,10 @@ function transformState(state: Record<string, unknown>) {
 
   const {
     PermissionController: { subjects },
-    NetworkController: { selectedNetworkClientId, networkConfigurations },
+    NetworkController: {
+      selectedNetworkClientId,
+      networkConfigurationsByChainId,
+    },
     SelectedNetworkController: { domains },
   } = state;
 
@@ -135,10 +120,10 @@ function transformState(state: Record<string, unknown>) {
     );
     return state;
   }
-  if (!isObject(networkConfigurations)) {
+  if (!isObject(networkConfigurationsByChainId)) {
     global.sentry?.captureException(
       new Error(
-        `Migration ${version}: typeof state.NetworkController.networkConfigurations is ${typeof networkConfigurations}`,
+        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is ${typeof networkConfigurationsByChainId}`,
       ),
     );
     return state;
@@ -153,12 +138,43 @@ function transformState(state: Record<string, unknown>) {
   }
 
   const getChainIdForNetworkClientId = (networkClientId: string) => {
-    const networkConfiguration =
-      (networkConfigurations[networkClientId] as { chainId: Hex }) ??
-      BUILT_IN_NETWORKS[
-        networkClientId as unknown as keyof typeof BUILT_IN_NETWORKS
-      ];
-    return networkConfiguration?.chainId;
+    for (const [chainId, networkConfiguration] of Object.entries(
+      networkConfigurationsByChainId,
+    )) {
+      if (!isObject(networkConfiguration)) {
+        global.sentry?.captureException(
+          new Error(
+            `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"] is ${typeof networkConfiguration}`,
+          ),
+        );
+        return null;
+      }
+      if (!Array.isArray(networkConfiguration.rpcEndpoints)) {
+        global.sentry?.captureException(
+          new Error(
+            `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints is ${typeof networkConfiguration.rpcEndpoints}`,
+          ),
+        );
+        return null;
+      }
+      for (const rpcEndpoint of networkConfiguration.rpcEndpoints) {
+        if (!isObject(rpcEndpoint)) {
+          global.sentry?.captureException(
+            new Error(
+              `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints[] is ${typeof rpcEndpoint}`,
+            ),
+          );
+          return null;
+        }
+        if (rpcEndpoint.networkClientId === networkClientId) {
+          return chainId;
+        }
+      }
+    }
+
+    return BUILT_IN_NETWORKS[
+      networkClientId as unknown as keyof typeof BUILT_IN_NETWORKS
+    ];
   };
 
   const currentChainId = getChainIdForNetworkClientId(selectedNetworkClientId);
