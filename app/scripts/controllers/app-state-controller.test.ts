@@ -473,4 +473,130 @@ describe('AppStateController', () => {
       updateStateSpy.mockRestore();
     });
   });
+
+  describe('setSurveyLinkLastClickedOrClosed', () => {
+    it('set the surveyLinkLastClickedOrClosed time', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = Date.now();
+
+      appStateController.setSurveyLinkLastClickedOrClosed(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        surveyLinkLastClickedOrClosed: mockParams,
+      });
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setOnboardingDate', () => {
+    it('set the onboardingDate', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      appStateController.setOnboardingDate();
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setLastViewedUserSurvey', () => {
+    it('set the lastViewedUserSurvey with id 1', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = 1;
+
+      appStateController.setLastViewedUserSurvey(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        lastViewedUserSurvey: mockParams,
+      });
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setNewPrivacyPolicyToastClickedOrClosed', () => {
+    it('set the newPrivacyPolicyToastClickedOrClosed to true', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      appStateController.setNewPrivacyPolicyToastClickedOrClosed();
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(
+        appStateController.store.getState()
+          .newPrivacyPolicyToastClickedOrClosed,
+      ).toStrictEqual(true);
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setNewPrivacyPolicyToastShownDate', () => {
+    it('set the newPrivacyPolicyToastShownDate', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = Date.now();
+
+      appStateController.setNewPrivacyPolicyToastShownDate(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        newPrivacyPolicyToastShownDate: mockParams,
+      });
+      expect(
+        appStateController.store.getState().newPrivacyPolicyToastShownDate,
+      ).toStrictEqual(mockParams);
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setTermsOfUseLastAgreed', () => {
+    it('set the termsOfUseLastAgreed timestamp', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = Date.now();
+
+      appStateController.setTermsOfUseLastAgreed(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        termsOfUseLastAgreed: mockParams,
+      });
+      expect(
+        appStateController.store.getState().termsOfUseLastAgreed,
+      ).toStrictEqual(mockParams);
+
+      updateStateSpy.mockRestore();
+    });
+  });
 });
