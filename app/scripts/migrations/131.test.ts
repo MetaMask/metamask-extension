@@ -189,7 +189,7 @@ describe('migration #131', () => {
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('does nothing if NetworkController.networkConfigurations is not an object', async () => {
+  it('does nothing if NetworkController.networkConfigurationsByChainId is not an object', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -198,7 +198,7 @@ describe('migration #131', () => {
         },
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
-          networkConfigurations: 'foo',
+          networkConfigurationsByChainId: 'foo',
         },
         SelectedNetworkController: {},
       },
@@ -208,7 +208,7 @@ describe('migration #131', () => {
 
     expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
       new Error(
-        `Migration ${version}: typeof state.NetworkController.networkConfigurations is string`,
+        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is string`,
       ),
     );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
@@ -223,7 +223,7 @@ describe('migration #131', () => {
         },
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
-          networkConfigurations: {},
+          networkConfigurationsByChainId: {},
         },
         SelectedNetworkController: {
           domains: 'foo',
@@ -241,7 +241,7 @@ describe('migration #131', () => {
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('does nothing if the currently selected network client is neither built in nor exists in NetworkController.networkConfigurations', async () => {
+  it('does nothing if NetworkController.networkConfigurationsByChainId[] is not an object', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -250,7 +250,98 @@ describe('migration #131', () => {
         },
         NetworkController: {
           selectedNetworkClientId: 'nonExistentNetworkClientId',
-          networkConfigurations: {},
+          networkConfigurationsByChainId: {
+            '0x1': 'foo',
+          },
+        },
+        SelectedNetworkController: {
+          domains: {},
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["0x1"] is string`,
+      ),
+    );
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
+
+  it('does nothing if NetworkController.networkConfigurationsByChainId[].rpcEndpoints is not an array', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PermissionController: {
+          subjects: {},
+        },
+        NetworkController: {
+          selectedNetworkClientId: 'nonExistentNetworkClientId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: 'foo',
+            },
+          },
+        },
+        SelectedNetworkController: {
+          domains: {},
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["0x1"].rpcEndpoints is string`,
+      ),
+    );
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
+
+  it('does nothing if NetworkController.networkConfigurationsByChainId[].rpcEndpoints[] is not an object', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PermissionController: {
+          subjects: {},
+        },
+        NetworkController: {
+          selectedNetworkClientId: 'nonExistentNetworkClientId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: ['foo'],
+            },
+          },
+        },
+        SelectedNetworkController: {
+          domains: {},
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["0x1"].rpcEndpoints[] is string`,
+      ),
+    );
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
+
+  it('does nothing if the currently selected network client is neither built in nor exists in NetworkController.networkConfigurationsByChainId', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PermissionController: {
+          subjects: {},
+        },
+        NetworkController: {
+          selectedNetworkClientId: 'nonExistentNetworkClientId',
+          networkConfigurationsByChainId: {},
         },
         SelectedNetworkController: {
           domains: {},
@@ -274,7 +365,7 @@ describe('migration #131', () => {
       data: {
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
-          networkConfigurations: {},
+          networkConfigurationsByChainId: {},
         },
         SelectedNetworkController: {
           domains: {},
@@ -303,7 +394,7 @@ describe('migration #131', () => {
       data: {
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
-          networkConfigurations: {},
+          networkConfigurationsByChainId: {},
         },
         SelectedNetworkController: {
           domains: {},
@@ -334,7 +425,7 @@ describe('migration #131', () => {
       data: {
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
-          networkConfigurations: {},
+          networkConfigurationsByChainId: {},
         },
         SelectedNetworkController: {
           domains: {},
@@ -357,7 +448,7 @@ describe('migration #131', () => {
     expect(newStorage.data).toStrictEqual({
       NetworkController: {
         selectedNetworkClientId: 'mainnet',
-        networkConfigurations: {},
+        networkConfigurationsByChainId: {},
       },
       SelectedNetworkController: {
         domains: {},
@@ -382,7 +473,7 @@ describe('migration #131', () => {
       'built-in',
       {
         selectedNetworkClientId: 'mainnet',
-        networkConfigurations: {},
+        networkConfigurationsByChainId: {},
       },
       '1',
     ],
@@ -390,9 +481,13 @@ describe('migration #131', () => {
       'custom',
       {
         selectedNetworkClientId: 'customId',
-        networkConfigurations: {
-          customId: {
-            chainId: '0xf',
+        networkConfigurationsByChainId: {
+          '0xf': {
+            rpcEndpoints: [
+              {
+                networkClientId: 'customId',
+              },
+            ],
           },
         },
       },
@@ -403,7 +498,12 @@ describe('migration #131', () => {
     (
       _type: string,
       NetworkController: {
-        networkConfigurations: Record<string, unknown>;
+        networkConfigurationsByChainId: Record<
+          string,
+          {
+            rpcEndpoints: { networkClientId: string }[];
+          }
+        >;
       } & Record<string, unknown>,
       chainId: string,
     ) => {
@@ -733,10 +833,14 @@ describe('migration #131', () => {
             ...baseData(),
             NetworkController: {
               ...baseData().NetworkController,
-              networkConfigurations: {
-                ...baseData().NetworkController.networkConfigurations,
-                customNetworkClientId: {
-                  chainId: '0xa',
+              networkConfigurationsByChainId: {
+                ...baseData().NetworkController.networkConfigurationsByChainId,
+                '0xa': {
+                  rpcEndpoints: [
+                    {
+                      networkClientId: 'customNetworkClientId',
+                    },
+                  ],
                 },
               },
             },
@@ -772,10 +876,14 @@ describe('migration #131', () => {
           ...baseData(),
           NetworkController: {
             ...baseData().NetworkController,
-            networkConfigurations: {
-              ...baseData().NetworkController.networkConfigurations,
-              customNetworkClientId: {
-                chainId: '0xa',
+            networkConfigurationsByChainId: {
+              ...baseData().NetworkController.networkConfigurationsByChainId,
+              '0xa': {
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'customNetworkClientId',
+                  },
+                ],
               },
             },
           },
@@ -1019,9 +1127,7 @@ describe('migration #131', () => {
                               notifications: [],
                             },
                             'wallet:eip155': {
-                              accounts: [
-                                'wallet:eip155:0xdeadbeef',
-                              ],
+                              accounts: ['wallet:eip155:0xdeadbeef'],
                               methods: [],
                               notifications: [],
                             },
@@ -1049,9 +1155,7 @@ describe('migration #131', () => {
                               notifications: [],
                             },
                             'wallet:eip155': {
-                              accounts: [
-                                'wallet:eip155:0xdeadbeef',
-                              ],
+                              accounts: ['wallet:eip155:0xdeadbeef'],
                               methods: [],
                               notifications: [],
                             },
