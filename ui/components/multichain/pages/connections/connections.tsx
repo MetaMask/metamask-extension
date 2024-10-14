@@ -396,7 +396,7 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
-              onClick={() => dispatch(requestAccountsPermission())}
+              onClick={() => requestAccountsPermission()}
             >
               {t('connectAccounts')}
             </ButtonPrimary>

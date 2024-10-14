@@ -1,45 +1,178 @@
 import nanoid from 'nanoid';
+import { MethodNames } from '@metamask/permission-controller';
 import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
-import { CaveatFactories, PermissionNames } from './specifications';
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getEthAccounts,
+  setEthAccounts,
+  getPermittedEthChainIds,
+  setPermittedEthChainIds,
+} from '@metamask/multichain';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import { PermissionNames } from './specifications';
 
-export function getPermissionBackgroundApiMethods(permissionController) {
+export function getPermissionBackgroundApiMethods({
+  permissionController,
+  approvalController,
+}) {
+  // To add more than one account when already connected to the dapp
   const addMoreAccounts = (origin, accounts) => {
-    const caveat = CaveatFactories.restrictReturnedAccounts(accounts);
+    let caip25Caveat;
+    try {
+      caip25Caveat = permissionController.getCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    } catch (err) {
+      // noop
+    }
 
-    permissionController.grantPermissionsIncremental({
-      subject: { origin },
-      approvedPermissions: {
-        [RestrictedMethods.eth_accounts]: { caveats: [caveat] },
-      },
-    });
+    if (!caip25Caveat) {
+      throw new Error('tried to add accounts when none have been permissioned'); // TODO: better error
+    }
+
+    const ethAccounts = getEthAccounts(caip25Caveat.value);
+
+    const updatedEthAccounts = Array.from(
+      new Set([...ethAccounts, ...accounts]),
+    );
+
+    const updatedCaveatValue = setEthAccounts(
+      caip25Caveat.value,
+      updatedEthAccounts,
+    );
+
+    permissionController.updateCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      updatedCaveatValue,
+    );
   };
 
   const addMoreChains = (origin, chainIds) => {
-    const caveat = CaveatFactories.restrictNetworkSwitching(chainIds);
+    let caip25Caveat;
+    try {
+      caip25Caveat = permissionController.getCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    } catch (err) {
+      // noop
+    }
 
-    permissionController.grantPermissionsIncremental({
-      subject: { origin },
-      approvedPermissions: {
-        [PermissionNames.permittedChains]: { caveats: [caveat] },
-      },
-    });
+    if (!caip25Caveat) {
+      throw new Error('tried to add chains when none have been permissioned'); // TODO: better error
+    }
+
+    // get the list of permitted eth accounts before we modify the permitted chains and potentially lose some
+    const ethAccounts = getEthAccounts(caip25Caveat.value);
+
+    const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
+
+    const updatedEthChainIds = Array.from(
+      new Set([...ethChainIds, ...chainIds]),
+    );
+
+    let updatedCaveatValue = setPermittedEthChainIds(
+      caip25Caveat.value,
+      updatedEthChainIds,
+    );
+
+    // ensure that the list of permitted eth accounts is intact after permitted chain updates
+    updatedCaveatValue = setEthAccounts(updatedCaveatValue, ethAccounts);
+
+    permissionController.updateCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      updatedCaveatValue,
+    );
+  };
+
+  const requestAccountsAndChainPermissionsWithId = (origin) => {
+    const id = nanoid();
+    // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
+    // Until they are actually combined, when testing, you must request both
+    // eth_accounts and permittedChains together.
+    approvalController
+      .addAndShowApprovalRequest({
+        id,
+        origin,
+        requestData: {
+          metadata: {
+            id,
+            origin,
+          },
+          permissions: {
+            [RestrictedMethods.eth_accounts]: {},
+            [PermissionNames.permittedChains]: {},
+          },
+        },
+        type: MethodNames.requestPermissions,
+      })
+      .then((legacyApproval) => {
+        let caveatValue = {
+          requiredScopes: {},
+          optionalScopes: {},
+          isMultichainOrigin: false,
+        };
+        caveatValue = setPermittedEthChainIds(
+          caveatValue,
+          legacyApproval.approvedChainIds,
+        );
+
+        caveatValue = setEthAccounts(
+          caveatValue,
+          legacyApproval.approvedAccounts,
+        );
+
+        permissionController.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: caveatValue,
+                },
+              ],
+            },
+          },
+        });
+      });
+
+    return id;
   };
 
   return {
     addPermittedAccount: (origin, account) =>
       addMoreAccounts(origin, [account]),
+
     addPermittedAccounts: (origin, accounts) =>
       addMoreAccounts(origin, accounts),
 
     removePermittedAccount: (origin, account) => {
-      const { value: existingAccounts } = permissionController.getCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
+      let caip25Caveat;
+      try {
+        caip25Caveat = permissionController.getCaveat(
+          origin,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+        );
+      } catch (err) {
+        // noop
+      }
+
+      if (!caip25Caveat) {
+        throw new Error(
+          'tried to remove accounts when none have been permissioned',
+        ); // TODO: better error
+      }
+
+      const existingAccounts = getEthAccounts(caip25Caveat.value);
 
       const remainingAccounts = existingAccounts.filter(
         (existingAccount) => existingAccount !== account,
@@ -52,74 +185,78 @@ export function getPermissionBackgroundApiMethods(permissionController) {
       if (remainingAccounts.length === 0) {
         permissionController.revokePermission(
           origin,
-          RestrictedMethods.eth_accounts,
+          Caip25EndowmentPermissionName,
         );
       } else {
+        const updatedCaveatValue = setEthAccounts(
+          caip25Caveat.value,
+          remainingAccounts,
+        );
         permissionController.updateCaveat(
           origin,
-          RestrictedMethods.eth_accounts,
-          CaveatTypes.restrictReturnedAccounts,
-          remainingAccounts,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          updatedCaveatValue,
         );
       }
     },
 
     addPermittedChain: (origin, chainId) => addMoreChains(origin, [chainId]),
+
     addPermittedChains: (origin, chainIds) => addMoreChains(origin, chainIds),
 
     removePermittedChain: (origin, chainId) => {
-      const { value: existingChains } = permissionController.getCaveat(
-        origin,
-        PermissionNames.permittedChains,
-        CaveatTypes.restrictNetworkSwitching,
+      let caip25Caveat;
+      try {
+        caip25Caveat = permissionController.getCaveat(
+          origin,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+        );
+      } catch (err) {
+        // noop
+      }
+
+      if (!caip25Caveat) {
+        throw new Error(
+          'tried to remove chains when none have been permissioned',
+        ); // TODO: better error
+      }
+
+      const existingEthChainIds = getPermittedEthChainIds(caip25Caveat.value);
+
+      const remainingChainIds = existingEthChainIds.filter(
+        (existingChainId) => existingChainId !== chainId,
       );
 
-      const remainingChains = existingChains.filter(
-        (existingChain) => existingChain !== chainId,
-      );
-
-      if (remainingChains.length === existingChains.length) {
+      if (remainingChainIds.length === existingEthChainIds.length) {
         return;
       }
 
-      if (remainingChains.length === 0) {
+      // TODO: Is this right? Do we want to revoke the entire
+      // CAIP-25 permission if no eip-155 chains are left?
+      if (remainingChainIds.length === 0) {
         permissionController.revokePermission(
           origin,
-          PermissionNames.permittedChains,
+          Caip25EndowmentPermissionName,
         );
       } else {
+        const updatedCaveatValue = setPermittedEthChainIds(
+          caip25Caveat.value,
+          remainingChainIds,
+        );
         permissionController.updateCaveat(
           origin,
-          PermissionNames.permittedChains,
-          CaveatTypes.restrictNetworkSwitching,
-          remainingChains,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          updatedCaveatValue,
         );
       }
     },
 
-    requestAccountsAndChainPermissionsWithId: async (origin) => {
-      const id = nanoid();
-      permissionController.requestPermissions(
-        { origin },
-        {
-          [PermissionNames.eth_accounts]: {},
-          [PermissionNames.permittedChains]: {},
-        },
-        { id },
-      );
-      return id;
-    },
+    requestAccountsAndChainPermissionsWithId,
 
-    requestAccountsPermissionWithId: async (origin) => {
-      const id = nanoid();
-      permissionController.requestPermissions(
-        { origin },
-        {
-          eth_accounts: {},
-        },
-        { id },
-      );
-      return id;
-    },
+    // TODO: Remove this / DRY with requestAccountsAndChainPermissionsWithId
+    requestAccountsPermissionWithId: requestAccountsAndChainPermissionsWithId,
   };
 }

@@ -447,106 +447,156 @@ class FixtureBuilder {
     account = '',
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
-    return this.withPermissionController({
-      subjects: {
+    let subjects = {};
+    if (restrictReturnedAccounts) {
+      subjects = {
         [DAPP_URL]: {
           origin: DAPP_URL,
           permissions: {
-            eth_accounts: {
-              id: 'ZaqPEWxyhNCJYACFw93jE',
-              parentCapability: 'eth_accounts',
-              invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+            'endowment:caip25': {
+              caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [
-                    selectedAccount.toLowerCase(),
-                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                    ERC_4337_ACCOUNT.toLowerCase(),
-                  ],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: [
+                          `eip155:1:${selectedAccount.toLowerCase()}`,
+                          'eip155:1:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                          `eip155:1:${ERC_4337_ACCOUNT.toLowerCase()}`,
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
+              id: 'ZaqPEWxyhNCJYACFw93jE',
               date: 1664388714636,
+              invoker: DAPP_URL,
+              parentCapability: 'endowment:caip25',
             },
           },
         },
-      },
+      };
+    }
+    return this.withPermissionController({
+      subjects,
     });
   }
 
   withPermissionControllerSnapAccountConnectedToTestDapp(
     restrictReturnedAccounts = true,
   ) {
-    return this.withPermissionController({
-      subjects: {
+    let subjects = {};
+    if (restrictReturnedAccounts) {
+      subjects = {
         [DAPP_URL]: {
           origin: DAPP_URL,
           permissions: {
-            eth_accounts: {
-              id: 'ZaqPEWxyhNCJYACFw93jE',
-              parentCapability: 'eth_accounts',
-              invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+            'endowment:caip25': {
+              caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: [
+                          'eip155:1:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
+              id: 'ZaqPEWxyhNCJYACFw93jE',
               date: 1664388714636,
+              invoker: DAPP_URL,
+              parentCapability: 'endowment:caip25',
             },
           },
         },
-      },
-    });
+      };
+    }
+    return this.withPermissionController({ subjects });
   }
 
   withPermissionControllerConnectedToTwoTestDapps(
     restrictReturnedAccounts = true,
   ) {
-    return this.withPermissionController({
-      subjects: {
+    let subjects = {};
+    if (restrictReturnedAccounts) {
+      subjects = {
         [DAPP_URL]: {
           origin: DAPP_URL,
           permissions: {
-            eth_accounts: {
-              id: 'ZaqPEWxyhNCJYACFw93jE',
-              parentCapability: 'eth_accounts',
-              invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+            'endowment:caip25': {
+              caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [
-                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                  ],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: [
+                          'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                          'eip155:1:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
+              id: 'ZaqPEWxyhNCJYACFw93jE',
               date: 1664388714636,
+              invoker: DAPP_URL,
+              parentCapability: 'endowment:caip25',
             },
           },
         },
         [DAPP_ONE_URL]: {
           origin: DAPP_ONE_URL,
           permissions: {
-            eth_accounts: {
-              id: 'AqPEWxyhNCJYACFw93jE4',
-              parentCapability: 'eth_accounts',
-              invoker: DAPP_ONE_URL,
-              caveats: restrictReturnedAccounts && [
+            'endowment:caip25': {
+              caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [
-                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                  ],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: [
+                          'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                          'eip155:1:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
+              id: 'ZaqPEWxyhNCJYACFw93jE',
               date: 1664388714636,
+              invoker: DAPP_ONE_URL,
+              parentCapability: 'endowment:caip25',
             },
           },
         },
-      },
-    });
+      };
+    }
+    return this.withPermissionController({ subjects });
   }
 
   withPermissionControllerConnectedToSnapDapp() {
@@ -1183,78 +1233,120 @@ class FixtureBuilder {
         'https://app.ens.domains': {
           origin: 'https://app.ens.domains',
           permissions: {
-            eth_accounts: {
-              id: 'oKXoF_MNlffiR2u1Y3mDE',
-              parentCapability: 'eth_accounts',
-              invoker: 'https://app.ens.domains',
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [
-                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
-                    '0xb9504634e5788208933b51ae7440b478bfadf865',
-                  ],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: [
+                          'eip155:1:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                          'eip155:1:0xb9504634e5788208933b51ae7440b478bfadf865',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               date: 1708029792962,
+              id: 'oKXoF_MNlffiR2u1Y3mDE',
+              invoker: 'https://app.ens.domains',
+              parentCapability: 'endowment:caip25',
             },
           },
         },
         'https://app.uniswap.org': {
           origin: 'https://app.uniswap.org',
           permissions: {
-            eth_accounts: {
-              id: 'vaa88u5Iv3VmsJwG3bDKW',
-              parentCapability: 'eth_accounts',
-              invoker: 'https://app.uniswap.org',
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [
-                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
-                    '0xd1ca923697a701cba1364d803d72b4740fc39bc9',
-                  ],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: [
+                          'eip155:1:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                          'eip155:1:0xd1ca923697a701cba1364d803d72b4740fc39bc9',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               date: 1708029870079,
+              id: 'vaa88u5Iv3VmsJwG3bDKW',
+              invoker: 'https://app.uniswap.org',
+              parentCapability: 'endowment:caip25',
             },
           },
         },
         'https://www.dextools.io': {
           origin: 'https://www.dextools.io',
           permissions: {
-            eth_accounts: {
-              id: 'bvvPcFtIhkFyHyW0Tmwi4',
-              parentCapability: 'eth_accounts',
-              invoker: 'https://www.dextools.io',
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [
-                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
-                    '0xa5c5293e124d04e2f85e8553851001fd2f192647',
-                    '0xb9504634e5788208933b51ae7440b478bfadf865',
-                  ],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: [
+                          'eip155:1:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                          'eip155:1:0xa5c5293e124d04e2f85e8553851001fd2f192647',
+                          'eip155:1:0xb9504634e5788208933b51ae7440b478bfadf865',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               date: 1708029948170,
+              id: 'bvvPcFtIhkFyHyW0Tmwi4',
+              invoker: 'https://www.dextools.io',
+              parentCapability: 'endowment:caip25',
             },
           },
         },
         'https://coinmarketcap.com': {
           origin: 'https://coinmarketcap.com',
           permissions: {
-            eth_accounts: {
-              id: 'AiblK84K1Cic-Y0FDSzMD',
-              parentCapability: 'eth_accounts',
-              invoker: 'https://coinmarketcap.com',
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: ['0xbee150bdc171c7d4190891e78234f791a3ac7b24'],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: [
+                          'eip155:1:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               date: 1708030049641,
+              id: 'AiblK84K1Cic-Y0FDSzMD',
+              invoker: 'https://coinmarketcap.com',
+              parentCapability: 'endowment:caip25',
             },
           },
         },

@@ -30,6 +30,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getURLHost } from '../../../helpers/utils/util';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -141,8 +142,12 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                     isPinned={Boolean(account.pinned)}
                     startAccessory={
                       <Checkbox
-                        isChecked={selectedAccountAddresses.includes(
-                          account.address,
+                        isChecked={selectedAccountAddresses.some(
+                          (selectedAccountAddress) =>
+                            isEqualCaseInsensitive(
+                              selectedAccountAddress,
+                              account.address,
+                            ),
                         )}
                       />
                     }

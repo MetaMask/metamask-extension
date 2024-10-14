@@ -1,10 +1,20 @@
 import { ethErrors } from 'eth-rpc-errors';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  setEthAccounts,
+  setPermittedEthChainIds,
+} from '@metamask/multichain';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
+import { RestrictedMethods } from '../../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
+// eslint-disable-next-line import/no-restricted-paths
+import { isSnapId } from '../../../../../ui/helpers/utils/snaps';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -18,14 +28,12 @@ const requestEthereumAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS],
   implementation: requestEthereumAccountsHandler,
   hookNames: {
-    origin: true,
     getAccounts: true,
     getUnlockPromise: true,
-    hasPermission: true,
-    requestAccountsPermission: true,
+    requestPermissionApprovalForOrigin: true,
     sendMetrics: true,
-    getPermissionsForOrigin: true,
     metamaskState: true,
+    grantPermissions: true,
   },
 };
 export default requestEthereumAccounts;
@@ -35,7 +43,6 @@ const locks = new Set();
 
 /**
  * @typedef {Record<string, string | Function>} RequestEthereumAccountsOptions
- * @property {string} origin - The requesting origin.
  * @property {Function} getAccounts - Gets the accounts for the requesting
  * origin.
  * @property {Function} getUnlockPromise - Gets a promise that resolves when
@@ -48,28 +55,27 @@ const locks = new Set();
 
 /**
  *
- * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} _req - The JSON-RPC request object.
+ * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} req - The JSON-RPC request object.
  * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {RequestEthereumAccountsOptions} options - The RPC method hooks.
  */
 async function requestEthereumAccountsHandler(
-  _req,
+  req,
   res,
   _next,
   end,
   {
-    origin,
     getAccounts,
     getUnlockPromise,
-    hasPermission,
-    requestAccountsPermission,
+    requestPermissionApprovalForOrigin,
     sendMetrics,
-    getPermissionsForOrigin,
     metamaskState,
+    grantPermissions,
   },
 ) {
+  const { origin } = req;
   if (locks.has(origin)) {
     res.error = ethErrors.rpc.resourceUnavailable(
       `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
@@ -77,14 +83,15 @@ async function requestEthereumAccountsHandler(
     return end();
   }
 
-  if (hasPermission(MESSAGE_TYPE.ETH_ACCOUNTS)) {
+  let ethAccounts = await getAccounts();
+  if (ethAccounts.length > 0) {
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
     // lock state when they were received.
     try {
       locks.add(origin);
       await getUnlockPromise(true);
-      res.result = await getAccounts();
+      res.result = ethAccounts;
       end();
     } catch (error) {
       end(error);
@@ -94,48 +101,77 @@ async function requestEthereumAccountsHandler(
     return undefined;
   }
 
-  // If no accounts, request the accounts permission
+  let legacyApproval;
   try {
-    await requestAccountsPermission();
+    legacyApproval = await requestPermissionApprovalForOrigin({
+      [RestrictedMethods.eth_accounts]: {},
+      ...(!isSnapId(origin) && {
+        [PermissionNames.permittedChains]: {},
+      }),
+    });
   } catch (err) {
     res.error = err;
     return end();
   }
 
-  // Get the approved accounts
-  const accounts = await getAccounts();
-  /* istanbul ignore else: too hard to induce, see below comment */
-  if (accounts.length > 0) {
-    res.result = accounts;
-    const numberOfConnectedAccounts =
-      getPermissionsForOrigin(origin).eth_accounts.caveats[0].value.length;
-    // first time connection to dapp will lead to no log in the permissionHistory
-    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
-    // we will leverage that to identify `is_first_visit` for metrics
+  // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
+  // We assume that approvedAccounts and permittedChains are both defined here.
+  // Until they are actually combined, when testing, you must request both
+  // eth_accounts and permittedChains together.
+  let caveatValue = {
+    requiredScopes: {},
+    optionalScopes: {},
+    isMultichainOrigin: false,
+  };
+
+  if (!isSnapId(origin)) {
+    caveatValue = setPermittedEthChainIds(
+      caveatValue,
+      legacyApproval.approvedChainIds,
+    );
+  }
+
+  caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
+
+  grantPermissions({
+    subject: { origin },
+    approvedPermissions: {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: caveatValue,
+          },
+        ],
+      },
+    },
+  });
+
+  ethAccounts = await getAccounts();
+  // first time connection to dapp will lead to no log in the permissionHistory
+  // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+  // we will leverage that to identify `is_first_visit` for metrics
+  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
-    if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
-      sendMetrics({
-        event: MetaMetricsEventName.DappViewed,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties: {
-          is_first_visit: isFirstVisit,
-          number_of_accounts: Object.keys(metamaskState.accounts).length,
-          number_of_accounts_connected: numberOfConnectedAccounts,
-        },
-      });
-    }
-  } else {
-    // This should never happen, because it should be caught in the
-    // above catch clause
-    res.error = ethErrors.rpc.internal(
-      'Accounts unexpectedly unavailable. Please report this bug.',
-    );
+    sendMetrics({
+      event: MetaMetricsEventName.DappViewed,
+      category: MetaMetricsEventCategory.InpageProvider,
+      referrer: {
+        url: origin,
+      },
+      properties: {
+        is_first_visit: isFirstVisit,
+        number_of_accounts: Object.keys(metamaskState.accounts).length,
+        number_of_accounts_connected: ethAccounts.length,
+      },
+    });
   }
+
+  // We cannot derive ethAccounts directly from the CAIP-25 permission
+  // because the accounts will not be in order of lastSelected
+  res.result = ethAccounts;
 
   return end();
 }
