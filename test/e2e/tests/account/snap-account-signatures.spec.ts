@@ -17,7 +17,7 @@ import SettingsPage from '../../page-objects/pages/settings-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 
-describe('Snap Account Signatures', function (this: Suite) {
+describe('Snap Account Signatures @no-mmi', function (this: Suite) {
   // Run sync, async approve, and async reject flows
   // (in Jest we could do this with test.each, but that does not exist here)
 
