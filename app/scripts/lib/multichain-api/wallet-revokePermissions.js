@@ -3,7 +3,7 @@ import { isNonEmptyArray } from '@metamask/utils';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
+} from '@metamask/multichain';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionNames } from '../../controllers/permissions';
 

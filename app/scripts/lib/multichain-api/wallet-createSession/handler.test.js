@@ -2,35 +2,30 @@ import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import { CaveatTypes } from '../../../../../shared/constants/permissions';
-import {
   validateAndFlattenScopes,
-  processScopedProperties,
   bucketScopes,
   KnownRpcMethods,
   KnownNotifications,
-} from '../scope';
+} from '@metamask/multichain';
+import { processScopedProperties } from '../scope/authorization';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { shouldEmitDappViewedEvent } from '../../util';
 import { PermissionNames } from '../../../controllers/permissions';
-import { walletCreateSessionHandler } from './handler';
 import { validateAndAddEip3085 } from './helpers';
+import { walletCreateSessionHandler } from './handler';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
   shouldEmitDappViewedEvent: jest.fn(),
 }));
 
-jest.mock('../scope', () => ({
-  ...jest.requireActual('../scope/assert'),
-  ...jest.requireActual('../scope/authorization'),
-  ...jest.requireActual('../scope/filter'),
-  ...jest.requireActual('../scope/scope'),
-  ...jest.requireActual('../scope/supported'),
-  ...jest.requireActual('../scope/transform'),
-  ...jest.requireActual('../scope/validation'),
-  validateAndFlattenScopes: jest.fn(),
+jest.mock('../scope/authorization', () => ({
   processScopedProperties: jest.fn(),
+}));
+
+jest.mock('@metamask/multichain', () => ({
+  ...jest.requireActual('@metamask/multichain'),
+  validateAndFlattenScopes: jest.fn(),
   bucketScopes: jest.fn(),
 }));
 

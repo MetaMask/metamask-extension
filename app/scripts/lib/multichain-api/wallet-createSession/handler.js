@@ -2,20 +2,14 @@ import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import {
   getEthAccounts,
   setEthAccounts,
-} from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
-import {
   getPermittedEthChainIds,
   setPermittedEthChainIds,
-} from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
-import { mergeScopes } from '@metamask/multichain/scope/transform';
-import {
+  mergeScopes,
   bucketScopes,
   validateAndFlattenScopes,
-} from '@metamask/multichain/scope/authorization';
+} from '@metamask/multichain';
 import { PermissionNames } from '../../../controllers/permissions';
 import {
   MetaMetricsEventCategory,

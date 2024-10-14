@@ -2,11 +2,9 @@ import { errorCodes } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import {
   KnownNotifications,
   KnownRpcMethods,
-} from '@metamask/multichain/scope/scope';
+} from '@metamask/multichain';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 import * as EthChainUtils from './ethereum-chain-utils';

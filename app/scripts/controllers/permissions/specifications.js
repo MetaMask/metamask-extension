@@ -6,7 +6,7 @@ import {
   Caip25CaveatFactoryFn,
   Caip25CaveatType,
   caip25EndowmentBuilder,
-} from '@metamask/multichain/caip25Permission';
+} from '@metamask/multichain';
 import {
   EndowmentTypes,
   RestrictedMethods,

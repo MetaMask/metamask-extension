@@ -153,20 +153,20 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import { walletInvokeMethodHandler } from '@metamask/multichain/handlers/wallet-invokeMethod';
 import {
+  walletInvokeMethodHandler,
   Caip25CaveatMutatorFactories,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import { multichainMethodCallValidatorMiddleware } from '@metamask/multichain/middlewares/multichainMethodCallValidator';
-import MultichainSubscriptionManager from '@metamask/multichain/middlewares/MultichainSubscriptionManager';
-import MultichainMiddlewareManager from '@metamask/multichain/middlewares/MultichainMiddlewareManager';
-import { walletRevokeSessionHandler } from '@metamask/multichain/handlers/wallet-revokeSession';
-import { walletGetSessionHandler } from '@metamask/multichain/handlers/wallet-getSession';
-import { mergeScopes } from '@metamask/multichain/scope/transforms';
-import { getEthAccounts } from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
-import { CaipPermissionAdapterMiddleware } from '@metamask/multichain/adapters/caip-permission-adapter-middleware';
+  multichainMethodCallValidatorMiddleware,
+  MultichainSubscriptionManager,
+  MultichainMiddlewareManager,
+  walletRevokeSessionHandler,
+  walletGetSessionHandler,
+  mergeScopes,
+  getEthAccounts,
+  CaipPermissionAdapterMiddleware,
+} from '@metamask/multichain';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

@@ -4,9 +4,9 @@ import { invalidParams, MethodNames } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import { setEthAccounts } from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
-import { setPermittedEthChainIds } from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+  setEthAccounts,
+  setPermittedEthChainIds,
+} from '@metamask/multichain';
 import {
   CaveatTypes,
   RestrictedMethods,

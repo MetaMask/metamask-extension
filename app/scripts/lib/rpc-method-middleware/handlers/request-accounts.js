@@ -2,9 +2,9 @@ import { ethErrors } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import { setEthAccounts } from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
-import { setPermittedEthChainIds } from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+  setEthAccounts,
+  setPermittedEthChainIds,
+} from '@metamask/multichain';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,

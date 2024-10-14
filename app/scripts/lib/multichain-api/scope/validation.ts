@@ -1,4 +1,4 @@
-import { parseScopeString } from '@metamask/multichain/scope/scope';
+import { parseScopeString } from '@metamask/multichain';
 import { KnownCaipNamespace } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';

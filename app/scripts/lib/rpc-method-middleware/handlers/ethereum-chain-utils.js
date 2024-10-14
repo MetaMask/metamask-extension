@@ -2,11 +2,9 @@ import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import {
   getPermittedEthChainIds,
   addPermittedEthChainId,
-} from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+} from '@metamask/multichain';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,

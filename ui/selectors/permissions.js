@@ -4,9 +4,9 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import { getEthAccounts } from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
-import { getPermittedEthChainIds } from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+  getEthAccounts,
+  getPermittedEthChainIds,
+} from '@metamask/multichain';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 import {

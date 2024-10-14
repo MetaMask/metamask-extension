@@ -1,7 +1,4 @@
-import {
-  ScopedProperties,
-  ScopesObject,
-} from '@metamask/multichain/scope/scope';
+import { ScopedProperties, ScopesObject } from '@metamask/multichain';
 import { CaipChainId } from '@metamask/utils';
 import { validateScopedPropertyEip3085 } from './validation';
 

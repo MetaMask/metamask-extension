@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
+} from '@metamask/multichain';
 import {
   diffMap,
   getPermittedAccountsByOrigin,

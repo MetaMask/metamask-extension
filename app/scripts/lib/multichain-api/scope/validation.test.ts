@@ -1,4 +1,3 @@
-import { ExternalScopeObject } from '@metamask/multichain/scope/scope';
 import * as EthereumChainUtils from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 import { validateScopedPropertyEip3085 } from './validation';
 

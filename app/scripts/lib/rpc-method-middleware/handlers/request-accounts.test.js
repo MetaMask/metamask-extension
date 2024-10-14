@@ -2,36 +2,20 @@ import { ethErrors } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import PermittedChainsAdapters from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
-import EthAccountsAdapters from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
+} from '@metamask/multichain';
+import * as Multichain from '@metamask/multichain';
 import { deferredPromise, shouldEmitDappViewedEvent } from '../../util';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import requestEthereumAccounts from './request-accounts';
 
-jest.mock(
-  '@metamask/multichain/adapters/caip-permission-adapter-permittedChains',
-  () => ({
-    ...jest.requireActual(
-      '@metamask/multichain/adapters/caip-permission-adapter-permittedChains',
-    ),
-    setPermittedEthChainIds: jest.fn(),
-  }),
-);
-const MockPermittedChainsAdapters = jest.mocked(PermittedChainsAdapters);
-
-jest.mock(
-  '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts',
-  () => ({
-    ...jest.requireActual(
-      '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts',
-    ),
-    setEthAccounts: jest.fn(),
-  }),
-);
-const MockEthAccountsAdapters = jest.mocked(EthAccountsAdapters);
+jest.mock('@metamask/multichain', () => ({
+  ...jest.requireActual('@metamask/multichain'),
+  setPermittedEthChainIds: jest.fn(),
+  setEthAccounts: jest.fn(),
+}));
+const MockMultichain = jest.mocked(Multichain);
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -90,10 +74,10 @@ const createMockedHandler = () => {
 describe('requestEthereumAccountsHandler', () => {
   beforeEach(() => {
     shouldEmitDappViewedEvent.mockReturnValue(true);
-    MockEthAccountsAdapters.setEthAccounts.mockImplementation(
+    MockMultichain.setEthAccounts.mockImplementation(
       (caveatValue) => caveatValue,
     );
-    MockPermittedChainsAdapters.setPermittedEthChainIds.mockImplementation(
+    MockMultichain.setPermittedEthChainIds.mockImplementation(
       (caveatValue) => caveatValue,
     );
   });
@@ -178,9 +162,7 @@ describe('requestEthereumAccountsHandler', () => {
       const { handler } = createMockedHandler();
 
       await handler(baseRequest);
-      expect(
-        MockPermittedChainsAdapters.setPermittedEthChainIds,
-      ).toHaveBeenCalledWith(
+      expect(MockMultichain.setPermittedEthChainIds).toHaveBeenCalledWith(
         {
           requiredScopes: {},
           optionalScopes: {},
@@ -193,12 +175,12 @@ describe('requestEthereumAccountsHandler', () => {
     it('sets the approved accounts on the CAIP-25 caveat after the approved chainIds', async () => {
       const { handler } = createMockedHandler();
 
-      MockPermittedChainsAdapters.setPermittedEthChainIds.mockReturnValue(
+      MockMultichain.setPermittedEthChainIds.mockReturnValue(
         'caveatValueWithEthChainIdsSet',
       );
 
       await handler(baseRequest);
-      expect(MockEthAccountsAdapters.setEthAccounts).toHaveBeenCalledWith(
+      expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         'caveatValueWithEthChainIdsSet',
         ['0xdeadbeef'],
       );
@@ -207,9 +189,7 @@ describe('requestEthereumAccountsHandler', () => {
     it('grants a CAIP-25 permission', async () => {
       const { handler, grantPermissions } = createMockedHandler();
 
-      MockEthAccountsAdapters.setEthAccounts.mockReturnValue(
-        'updatedCaveatValue',
-      );
+      MockMultichain.setEthAccounts.mockReturnValue('updatedCaveatValue');
 
       await handler(baseRequest);
       expect(grantPermissions).toHaveBeenCalledWith({

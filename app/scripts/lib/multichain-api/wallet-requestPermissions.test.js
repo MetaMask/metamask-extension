@@ -2,9 +2,8 @@ import { invalidParams } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import PermittedChainsAdapters from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
-import EthAccountsAdapters from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
+} from '@metamask/multichain';
+import * as Multichain from '@metamask/multichain';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -12,27 +11,12 @@ import {
 import { PermissionNames } from '../../controllers/permissions';
 import { requestPermissionsHandler } from './wallet-requestPermissions';
 
-jest.mock(
-  '@metamask/multichain/adapters/caip-permission-adapter-permittedChains',
-  () => ({
-    ...jest.requireActual(
-      '@metamask/multichain/adapters/caip-permission-adapter-permittedChains',
-    ),
-    setPermittedEthChainIds: jest.fn(),
-  }),
-);
-const MockPermittedChainsAdapters = jest.mocked(PermittedChainsAdapters);
-
-jest.mock(
-  '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts',
-  () => ({
-    ...jest.requireActual(
-      '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts',
-    ),
-    setEthAccounts: jest.fn(),
-  }),
-);
-const MockEthAccountsAdapters = jest.mocked(EthAccountsAdapters);
+jest.mock('@metamask/multichain', () => ({
+  ...jest.requireActual('@metamask/multichain'),
+  setEthAccounts: jest.fn(),
+  setPermittedEthChainIds: jest.fn(),
+}));
+const MockMultichain = jest.mocked(Multichain);
 
 const getBaseRequest = () => ({
   networkClientId: 'mainnet',
@@ -159,10 +143,10 @@ describe('requestPermissionsHandler', () => {
   });
 
   beforeEach(() => {
-    MockEthAccountsAdapters.setEthAccounts.mockImplementation(
+    MockMultichain.setEthAccounts.mockImplementation(
       (caveatValue) => caveatValue,
     );
-    MockPermittedChainsAdapters.setPermittedEthChainIds.mockImplementation(
+    MockMultichain.setPermittedEthChainIds.mockImplementation(
       (caveatValue) => caveatValue,
     );
   });
@@ -470,9 +454,7 @@ describe('requestPermissionsHandler', () => {
       const { handler } = createMockedHandler();
 
       await handler(getBaseRequest());
-      expect(
-        MockPermittedChainsAdapters.setPermittedEthChainIds,
-      ).toHaveBeenCalledWith(
+      expect(MockMultichain.setPermittedEthChainIds).toHaveBeenCalledWith(
         {
           requiredScopes: {},
           optionalScopes: {},
@@ -484,12 +466,12 @@ describe('requestPermissionsHandler', () => {
 
     it('sets the approved accounts on the CAIP-25 caveat after the approved chainIds', async () => {
       const { handler } = createMockedHandler();
-      MockPermittedChainsAdapters.setPermittedEthChainIds.mockReturnValue(
+      MockMultichain.setPermittedEthChainIds.mockReturnValue(
         'caveatValueWithEthChainIdsSet',
       );
 
       await handler(getBaseRequest());
-      expect(MockEthAccountsAdapters.setEthAccounts).toHaveBeenCalledWith(
+      expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         'caveatValueWithEthChainIdsSet',
         ['0xdeadbeef'],
       );
@@ -529,9 +511,7 @@ describe('requestPermissionsHandler', () => {
 
     it('updates the caveat when a CAIP-25 already exists that was granted from the legacy flow (isMultichainOrigin: false)', async () => {
       const { handler, updateCaveat } = createMockedHandler();
-      MockEthAccountsAdapters.setEthAccounts.mockReturnValue(
-        'updatedCaveatValue',
-      );
+      MockMultichain.setEthAccounts.mockReturnValue('updatedCaveatValue');
 
       await handler(getBaseRequest());
       expect(updateCaveat).toHaveBeenCalledWith(
@@ -546,9 +526,7 @@ describe('requestPermissionsHandler', () => {
       const { handler, getPermissionsForOrigin, grantPermissions } =
         createMockedHandler();
       getPermissionsForOrigin.mockReturnValue({});
-      MockEthAccountsAdapters.setEthAccounts.mockReturnValue(
-        'updatedCaveatValue',
-      );
+      MockMultichain.setEthAccounts.mockReturnValue('updatedCaveatValue');
 
       await handler(getBaseRequest());
       expect(grantPermissions).toHaveBeenCalledWith({

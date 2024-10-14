@@ -2,9 +2,9 @@ import { createSelector } from 'reselect';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import { getEthAccounts } from '@metamask/multichain/adapters/caip-permission-adapter-eth-accounts';
-import { getPermittedEthChainIds } from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+  getEthAccounts,
+  getPermittedEthChainIds,
+} from '@metamask/multichain';
 
 /**
  * This file contains selectors for PermissionController selector event

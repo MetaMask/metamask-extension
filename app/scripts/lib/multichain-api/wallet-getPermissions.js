@@ -2,8 +2,8 @@ import { MethodNames } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain/caip25Permission';
-import { getPermittedEthChainIds } from '@metamask/multichain/adapters/caip-permission-adapter-permittedChains';
+  getPermittedEthChainIds,
+} from '@metamask/multichain';
 import {
   CaveatTypes,
   RestrictedMethods,

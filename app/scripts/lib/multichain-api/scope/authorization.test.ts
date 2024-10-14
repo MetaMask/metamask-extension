@@ -1,4 +1,4 @@
-import { ExternalScopeObject } from '@metamask/multichain/scope/scope';
+import { ExternalScopeObject } from '@metamask/multichain';
 import * as Validation from './validation';
 import { processScopedProperties } from './authorization';
 
