@@ -1535,6 +1535,25 @@
         "@noble/hashes": true
       }
     },
+    "@metamask/multichain": {
+      "globals": {
+        "console.error": true,
+        "console.log": true
+      },
+      "packages": {
+        "@metamask/api-specs": true,
+        "@metamask/controller-utils": true,
+        "@metamask/eth-json-rpc-filters": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "@open-rpc/schema-utils-js": true,
+        "browserify>assert": true,
+        "jsonschema": true,
+        "lodash": true
+      }
+    },
     "@metamask/name-controller": {
       "globals": {
         "fetch": true
