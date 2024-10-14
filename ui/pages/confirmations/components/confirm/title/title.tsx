@@ -52,6 +52,8 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
 
 type IntlFunction = (str: string) => string;
 
+// todo: getTitle and getDescription can be merged to remove code duplication.
+
 const getTitle = (
   t: IntlFunction,
   confirmation?: Confirmation,
