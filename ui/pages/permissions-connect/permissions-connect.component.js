@@ -19,6 +19,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
+import { isSnapId } from '../../helpers/utils/snaps';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -147,9 +148,6 @@ export default class PermissionConnect extends Component {
     if (!permissionsRequest) {
       history.replace(DEFAULT_ROUTE);
       return;
-    }
-    if (process.env.CHAIN_PERMISSIONS) {
-      history.replace(confirmPermissionPath);
     }
     // if this is an incremental permission request for permitted chains, skip the account selection
     if (
@@ -331,6 +329,8 @@ export default class PermissionConnect extends Component {
       snapsInstallPrivacyWarningShown,
     } = this.state;
 
+    const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
+
     return (
       <div className="permissions-connect">
         {!hideTopBar && this.renderTopBar(permissionsRequestId)}
@@ -341,33 +341,30 @@ export default class PermissionConnect extends Component {
             <Route
               path={connectPath}
               exact
-              render={() => (
-                <ChooseAccount
-                  accounts={accounts}
-                  nativeCurrency={nativeCurrency}
-                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
-                  selectNewAccountViaModal={(handleAccountClick) => {
-                    showNewAccountModal({
-                      onCreateNewAccount: (address) =>
-                        handleAccountClick(address),
-                      newAccountNumber,
-                    });
-                  }}
-                  addressLastConnectedMap={addressLastConnectedMap}
-                  cancelPermissionsRequest={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
-                  }
-                  permissionsRequestId={permissionsRequestId}
-                  selectedAccountAddresses={selectedAccountAddresses}
-                  targetSubjectMetadata={targetSubjectMetadata}
-                />
-              )}
-            />
-            <Route
-              path={confirmPermissionPath}
-              exact
               render={() =>
-                process.env.CHAIN_PERMISSIONS && !permissionsRequest?.diff ? (
+                isRequestingSnap ? (
+                  <ChooseAccount
+                    accounts={accounts}
+                    nativeCurrency={nativeCurrency}
+                    selectAccounts={(addresses) =>
+                      this.selectAccounts(addresses)
+                    }
+                    selectNewAccountViaModal={(handleAccountClick) => {
+                      showNewAccountModal({
+                        onCreateNewAccount: (address) =>
+                          handleAccountClick(address),
+                        newAccountNumber,
+                      });
+                    }}
+                    addressLastConnectedMap={addressLastConnectedMap}
+                    cancelPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    permissionsRequestId={permissionsRequestId}
+                    selectedAccountAddresses={selectedAccountAddresses}
+                    targetSubjectMetadata={targetSubjectMetadata}
+                  />
+                ) : (
                   <ConnectPage
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
@@ -377,31 +374,36 @@ export default class PermissionConnect extends Component {
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
                   />
-                ) : (
-                  <PermissionPageContainer
-                    request={permissionsRequest || {}}
-                    approvePermissionsRequest={(...args) => {
-                      approvePermissionsRequest(...args);
-                      this.redirect(true);
-                    }}
-                    rejectPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    selectedAccounts={accounts.filter((account) =>
-                      selectedAccountAddresses.has(account.address),
-                    )}
-                    targetSubjectMetadata={targetSubjectMetadata}
-                    history={this.props.history}
-                    connectPath={connectPath}
-                    snapsInstallPrivacyWarningShown={
-                      snapsInstallPrivacyWarningShown
-                    }
-                    setSnapsInstallPrivacyWarningShownStatus={
-                      setSnapsInstallPrivacyWarningShownStatus
-                    }
-                  />
                 )
               }
+            />
+            <Route
+              path={confirmPermissionPath}
+              exact
+              render={() => (
+                <PermissionPageContainer
+                  request={permissionsRequest || {}}
+                  approvePermissionsRequest={(...args) => {
+                    approvePermissionsRequest(...args);
+                    this.redirect(true);
+                  }}
+                  rejectPermissionsRequest={(requestId) =>
+                    this.cancelPermissionsRequest(requestId)
+                  }
+                  selectedAccounts={accounts.filter((account) =>
+                    selectedAccountAddresses.has(account.address),
+                  )}
+                  targetSubjectMetadata={targetSubjectMetadata}
+                  history={this.props.history}
+                  connectPath={connectPath}
+                  snapsInstallPrivacyWarningShown={
+                    snapsInstallPrivacyWarningShown
+                  }
+                  setSnapsInstallPrivacyWarningShownStatus={
+                    setSnapsInstallPrivacyWarningShownStatus
+                  }
+                />
+              )}
             />
             <Route
               path={snapsConnectPath}

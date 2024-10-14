@@ -5,11 +5,8 @@ const {
   unlockWallet,
   DAPP_URL,
   DAPP_ONE_URL,
-  regularDelayMs,
   WINDOW_TITLES,
   defaultGanacheOptions,
-  largeDelayMs,
-  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -48,23 +45,13 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         await openDapp(driver, undefined, DAPP_URL);
 
         // Connect to dapp 1
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
-          text: 'Next',
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithTitle(
@@ -88,28 +75,21 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Connect to dapp 2
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver, 4);
-
-        await driver.clickElement({
-          text: 'Next',
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         // Dapp 1 send tx
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.delay(largeDelayMs);
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x1',
+        });
         await driver.clickElement('#sendButton');
 
         await driver.waitUntilXWindowHandles(4);
@@ -117,18 +97,31 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
 
         // Dapp 2 send tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await driver.delay(largeDelayMs);
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x53a',
+        });
         await driver.clickElement('#sendButton');
+        await driver.waitUntilXWindowHandles(4);
 
         // Dapp 1 revokePermissions
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.clickElement('#revokeAccountsPermission');
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x1',
+        });
+        await driver.assertElementNotPresent({
+          css: '[id="chainId"]',
+          text: '0x53a',
+        });
 
         // Confirmation will close then reopen
-        await driver.waitUntilXWindowHandles(3);
+        await driver.clickElement('#revokeAccountsPermission');
+        // TODO: find a better way to handle different dialog ids
+        await driver.delay(3000);
 
         // Check correct network on confirm tx.
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.findElement({
           css: '[data-testid="network-display"]',
