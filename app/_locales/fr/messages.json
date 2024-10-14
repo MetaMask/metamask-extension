@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Lorsque votre transaction est intégrée au bloc, toute différence entre vos frais de base maximaux et les frais de base réels vous sera remboursée. Le montant total est calculé comme suit : frais de base maximaux (en GWEI) × limite de carburant."
   },
-  "advancedConfiguration": {
-    "message": "Configuration avancée"
-  },
   "advancedDetailsDataDesc": {
     "message": "Données"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "Pour effectuer cette transaction, vous devez augmenter la limite de gaz à 21 000 ou plus."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Vous n’avez pas assez d’ETH sur votre compte pour payer les frais de transaction."
-  },
   "alertMessageNetworkBusy": {
     "message": "Les prix du gaz sont élevés et les estimations sont moins précises."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Mauvais compte"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Navigation sur un site Web avec un compte non connecté sélectionné"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Cette alerte s’affiche dans le pop-up lorsque vous naviguez sur un site web3 connecté, mais que le compte actuellement sélectionné n’est pas connecté."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Lorsqu’un site Web tente d’utiliser l’API window.web3 supprimée"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Cette alerte s’affiche dans le pop-up lorsque vous naviguez sur un site qui tente d’utiliser l’API window.web3 supprimée, et qui peut par conséquent être défaillant."
   },
   "alerts": {
     "message": "Alertes"
@@ -714,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Conditions d’utilisation de la version bêta"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "La version bêta de MetaMask ne peut pas retrouver votre phrase secrète de récupération."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "La version bêta de MetaMask ne vous demandera jamais votre phrase secrète de récupération."
   },
   "billionAbbreviation": {
     "message": "Mrd",
@@ -2087,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Masquer les informations sensibles"
   },
-  "hideToken": {
-    "message": "Masquer le token"
-  },
   "hideTokenPrompt": {
     "message": "Masquer le jeton ?"
   },
@@ -2414,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "Fichier JSON",
@@ -3464,10 +3434,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "Épingler MetaMask Institutional"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Les alertes de détection d’hameçonnage reposent sur la communication avec $1. jsDeliver aura accès à votre adresse IP. Voir $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1 j",
     "description": "Shortened form of '1 day'"
@@ -4108,9 +4074,6 @@
   "rejected": {
     "message": "Rejeté"
   },
-  "remember": {
-    "message": "Rappel :"
-  },
   "remove": {
     "message": "Supprimer"
   },
@@ -4517,9 +4480,6 @@
   },
   "sepolia": {
     "message": "Réseau de test Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask utilise ces services tiers de confiance pour améliorer la convivialité et la sécurité des produits."
   },
   "setApprovalForAll": {
     "message": "Définir l’approbation pour tous"
@@ -5735,9 +5695,6 @@
   "tokenDecimalFetchFailed": {
     "message": "La décimale du jeton est requise. Trouvez-la sur : $1"
   },
-  "tokenDecimalTitle": {
-    "message": "Nombre de décimales du token :"
-  },
   "tokenDetails": {
     "message": "Détails du token"
   },
@@ -6171,26 +6128,6 @@
   },
   "walletConnectionGuide": {
     "message": "notre guide de connexion des portefeuilles matériels"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Votre portefeuille est bien protégé. Conservez votre phrase secrète de récupération en sécurité et en toute discrétion. C’est votre responsabilité !"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask ne peut pas restaurer votre phrase secrète de récupération."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask ne vous demandera jamais votre phrase secrète de récupération."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 avec n’importe qui, sinon vous risquez de voir vos fonds subtilisés",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Ne partagez jamais votre phrase secrète de récupération",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Portefeuille créé avec succès"
   },
   "wantToAddThisNetwork": {
     "message": "Voulez-vous ajouter ce réseau ?"

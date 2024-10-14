@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Wenn Ihre Transaktion in den Block aufgenommen wird, wird die Differenz zwischen Ihrer maximalen Grundgebühr und der tatsächlichen Grundgebühr erstattet. Der Gesamtbetrag wird berechnet als maximale Grundgebühr (in GWEI) * Gas-Limit."
   },
-  "advancedConfiguration": {
-    "message": "Erweiterte Einstellungen"
-  },
   "advancedDetailsDataDesc": {
     "message": "Daten"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 21.000 oder mehr erhöhen."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Sie haben nicht genug ETH auf Ihrem Konto, um die Transaktionsgebühren zu bezahlen."
-  },
   "alertMessageNetworkBusy": {
     "message": "Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Falsches Konto"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Eine Webseite mit einem nicht verknüpften Konto durchsuchen"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Diese Warnung wird im Popup angezeigt, wenn Sie eine verbundene Webseite durchsuchen, aber das aktuell ausgewählte Konto ist nicht verbunden."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Wenn eine Webseite versucht, die entfernte window.web3 API zu verwenden"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Diese Benachrichtigung wird in einem Popup-Fenster angezeigt, wenn Sie eine Website besuchen, die versucht, die entfernte window.web3-API zu verwenden, und die dadurch möglicherweise beschädigt wird."
   },
   "alerts": {
     "message": "Benachrichtigungen"
@@ -714,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Beta-Nutzungsbedingungen"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask Beta kann Ihre geheime Wiederherstellungsphrase nicht wiederherstellen."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask Beta wird Sie nie nach Ihrer geheimen Wiederherstellungsphrase fragen."
   },
   "billionAbbreviation": {
     "message": "B",
@@ -2087,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Sensible Informationen verbergen"
   },
-  "hideToken": {
-    "message": "Token verbergen"
-  },
   "hideTokenPrompt": {
     "message": "Token verbergen?"
   },
@@ -2414,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "JSON Datei",
@@ -3464,10 +3434,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "MetaMask Institutional pinnen"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Phishing-Warnungen basieren auf der Kommunikation mit $1. jsDeliver hat Zugriff auf Ihre IP-Adresse. $2 ansehen.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1 T",
     "description": "Shortened form of '1 day'"
@@ -4108,9 +4074,6 @@
   "rejected": {
     "message": "Abgelehnt"
   },
-  "remember": {
-    "message": "Erinnern:"
-  },
   "remove": {
     "message": "Entfernen"
   },
@@ -4517,9 +4480,6 @@
   },
   "sepolia": {
     "message": "Sepolia-Testnetzwerk"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask nutzt diese vertrauenswürdigen Dienstleistungen von Drittanbietern, um die Benutzerfreundlichkeit und Sicherheit der Produkte zu verbessern."
   },
   "setApprovalForAll": {
     "message": "Erlaubnis für alle erteilen"
@@ -5735,9 +5695,6 @@
   "tokenDecimalFetchFailed": {
     "message": "Tokendezimal erforderlich. Finden Sie es auf: $1"
   },
-  "tokenDecimalTitle": {
-    "message": "Token-Dezimale:"
-  },
   "tokenDetails": {
     "message": "Token-Details"
   },
@@ -6171,26 +6128,6 @@
   },
   "walletConnectionGuide": {
     "message": "unsere Hardware-Wallet-Verbindungsanleitung"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Sie haben Ihre Wallet erfolgreich geschützt. Halten Sie Ihre geheime Wiederherstellungsphrase sicher und geheim -- es liegt in Ihrer Verantwortung!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask kann Ihre geheime Wiederherstellungsphrase nicht wiederherstellen."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask-Team wird nie nach Ihrer geheimen Wiederherstellungsphrase fragen."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 mit jemandem oder riskieren Sie, dass Ihre Gelder gestohlen werden.",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Geben Sie niemals Ihre geheime Wiederherstellungsphrase an andere weiter",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Wallet-Erstellung erfolgreich"
   },
   "wantToAddThisNetwork": {
     "message": "Möchten Sie dieses Netzwerk hinzufügen?"

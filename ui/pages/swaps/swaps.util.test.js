@@ -18,6 +18,7 @@ import {
   LINEA,
   BASE,
 } from '../../../shared/constants/swaps';
+import { estimateGasFee } from '../../store/actions';
 import {
   TOKENS,
   EXPECTED_TOKENS_RESULT,
@@ -36,6 +37,7 @@ import {
   getFeeForSmartTransaction,
   formatSwapsValueForDisplay,
   fetchTopAssetsList,
+  getSwap1559GasFeeEstimates,
 } from './swaps.util';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
@@ -43,7 +45,24 @@ jest.mock('../../../shared/lib/storage-helpers', () => ({
   setStorageItem: jest.fn(),
 }));
 
+jest.mock('../../store/actions', () => ({
+  estimateGasFee: jest.fn(),
+}));
+
+const ESTIMATED_BASE_FEE_GWEI_MOCK = '1';
+const TRADE_TX_PARAMS_MOCK = { data: '0x123' };
+const APPROVE_TX_PARAMS_MOCK = { data: '0x456' };
+const CHAIN_ID_MOCK = '0x1';
+const MAX_FEE_PER_GAS_MOCK = '0x1';
+const MAX_PRIORITY_FEE_PER_GAS_MOCK = '0x2';
+
 describe('Swaps Util', () => {
+  const estimateGasFeeMock = jest.mocked(estimateGasFee);
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   afterEach(() => {
     nock.cleanAll();
   });
@@ -543,6 +562,110 @@ describe('Swaps Util', () => {
           props.chainId,
         ),
       ).toBeNull();
+    });
+  });
+
+  describe('getSwap1559GasFeeEstimates', () => {
+    it('returns estimated base fee in WEI as hex', async () => {
+      estimateGasFeeMock.mockResolvedValueOnce({});
+
+      const { estimatedBaseFee } = await getSwap1559GasFeeEstimates(
+        {},
+        undefined,
+        ESTIMATED_BASE_FEE_GWEI_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(estimatedBaseFee).toBe('3b9aca00');
+    });
+
+    it('returns trade gas fee estimates', async () => {
+      estimateGasFeeMock.mockResolvedValueOnce({
+        estimates: {
+          high: {
+            maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+            maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+          },
+        },
+      });
+
+      const { tradeGasFeeEstimates } = await getSwap1559GasFeeEstimates(
+        TRADE_TX_PARAMS_MOCK,
+        undefined,
+        ESTIMATED_BASE_FEE_GWEI_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(tradeGasFeeEstimates).toStrictEqual({
+        maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+        maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+        baseAndPriorityFeePerGas: '3b9aca02',
+      });
+
+      expect(estimateGasFeeMock).toHaveBeenCalledTimes(1);
+      expect(estimateGasFeeMock).toHaveBeenCalledWith({
+        transactionParams: TRADE_TX_PARAMS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        networkClientId: undefined,
+      });
+    });
+
+    it('returns approve gas fee estimates if approve params', async () => {
+      estimateGasFeeMock.mockResolvedValueOnce({});
+      estimateGasFeeMock.mockResolvedValueOnce({
+        estimates: {
+          high: {
+            maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+            maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+          },
+        },
+      });
+
+      const { approveGasFeeEstimates } = await getSwap1559GasFeeEstimates(
+        TRADE_TX_PARAMS_MOCK,
+        APPROVE_TX_PARAMS_MOCK,
+        ESTIMATED_BASE_FEE_GWEI_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(approveGasFeeEstimates).toStrictEqual({
+        maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+        maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+        baseAndPriorityFeePerGas: '3b9aca02',
+      });
+
+      expect(estimateGasFeeMock).toHaveBeenCalledTimes(2);
+      expect(estimateGasFeeMock).toHaveBeenCalledWith({
+        transactionParams: TRADE_TX_PARAMS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        networkClientId: undefined,
+      });
+      expect(estimateGasFeeMock).toHaveBeenCalledWith({
+        transactionParams: APPROVE_TX_PARAMS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        networkClientId: undefined,
+      });
+    });
+
+    it('returns no approve gas fee estimates if no approve params', async () => {
+      estimateGasFeeMock.mockResolvedValueOnce({});
+      estimateGasFeeMock.mockResolvedValueOnce({
+        estimates: {
+          high: {
+            maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+            maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+          },
+        },
+      });
+
+      const { approveGasFeeEstimates } = await getSwap1559GasFeeEstimates(
+        TRADE_TX_PARAMS_MOCK,
+        undefined,
+        ESTIMATED_BASE_FEE_GWEI_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(approveGasFeeEstimates).toBeUndefined();
     });
   });
 });
