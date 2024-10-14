@@ -829,12 +829,12 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
-      preferencesStore: this.preferencesController.store,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AppStateController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
+          `PreferencesController:getState`,
         ],
         allowedEvents: [
           `KeyringController:qrKeyringStateChange`,

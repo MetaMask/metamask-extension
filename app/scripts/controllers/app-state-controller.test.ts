@@ -45,25 +45,26 @@ describe('AppStateController', () => {
       allowedActions: [
         `ApprovalController:addRequest`,
         `ApprovalController:acceptRequest`,
+        `PreferencesController:getState`,
       ],
       allowedEvents: [
         `PreferencesController:stateChange`,
         `KeyringController:qrKeyringStateChange`,
       ],
     });
+    controllerMessenger.registerActionHandler(
+      'PreferencesController:getState',
+      jest.fn().mockReturnValue({
+        preferences: {
+          autoLockTimeLimit: 0,
+        },
+      }),
+    );
     return new AppStateController({
       addUnlockListener: jest.fn(),
       isUnlocked: jest.fn(() => true),
       initState,
       onInactiveTimeout: jest.fn(),
-      preferencesStore: {
-        subscribe: jest.fn(),
-        getState: jest.fn(() => ({
-          preferences: {
-            autoLockTimeLimit: 0,
-          },
-        })),
-      },
       messenger: appStateMessenger,
       extension: {
         alarms: {
@@ -151,7 +152,7 @@ describe('AppStateController', () => {
       const resolveFn: () => void = jest.fn();
       appStateController.waitForUnlock(resolveFn, false);
       expect(emitSpy).toHaveBeenCalledWith('updateBadge');
-      expect(controllerMessenger.call).toHaveBeenCalledTimes(0);
+      expect(controllerMessenger.call).toHaveBeenCalledTimes(1);
     });
 
     it('creates approval request when waitForUnlock is called with shouldShowUnlockRequest as true', async () => {
@@ -167,7 +168,7 @@ describe('AppStateController', () => {
       const resolveFn: () => void = jest.fn();
       appStateController.waitForUnlock(resolveFn, true);
 
-      expect(controllerMessenger.call).toHaveBeenCalledTimes(1);
+      expect(controllerMessenger.call).toHaveBeenCalledTimes(2);
       expect(controllerMessenger.call).toHaveBeenCalledWith(
         'ApprovalController:addRequest',
         expect.objectContaining({

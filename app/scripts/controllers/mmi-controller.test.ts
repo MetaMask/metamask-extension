@@ -245,15 +245,14 @@ describe('MMIController', function () {
         initState: {},
         onInactiveTimeout: jest.fn(),
         showUnlockRequest: jest.fn(),
-        preferencesStore: {
-          subscribe: jest.fn(),
-          getState: jest.fn(() => ({
+        messenger: {
+          ...mockMessenger,
+          call: jest.fn().mockReturnValue({
             preferences: {
               autoLockTimeLimit: 0,
             },
-          })),
-        },
-        messenger: mockMessenger,
+          })
+        }
       }),
       networkController,
       permissionController,

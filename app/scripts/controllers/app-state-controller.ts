@@ -28,6 +28,7 @@ import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
 import { SecurityAlertResponse } from '../lib/ppom/types';
 import type {
   Preferences,
+  PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 
@@ -92,7 +93,10 @@ export type AppStateControllerActions = AppStateControllerGetStateAction;
 /**
  * Actions that this controller is allowed to call.
  */
-export type AllowedActions = AddApprovalRequest | AcceptRequest;
+export type AllowedActions =
+  | AddApprovalRequest
+  | AcceptRequest
+  | PreferencesControllerGetStateAction;
 
 /**
  * Event emitted when the state of the {@link AppStateController} changes.
@@ -146,9 +150,6 @@ type AppStateControllerOptions = {
   isUnlocked: () => boolean;
   initState?: AppStateControllerInitState;
   onInactiveTimeout?: () => void;
-  // TODO: Remove this as soon as PreferencesController upgrade to BaseControllerV2 merges with develop
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  preferencesStore: any;
   messenger: AppStateControllerMessenger;
   extension: Browser;
 };
@@ -215,7 +216,6 @@ export class AppStateController extends EventEmitter {
       isUnlocked,
       initState,
       onInactiveTimeout,
-      preferencesStore,
       messenger,
       extension,
     } = opts;
@@ -253,7 +253,7 @@ export class AppStateController extends EventEmitter {
         }),
     );
 
-    const { preferences } = preferencesStore.getState();
+    const { preferences } = messenger.call('PreferencesController:getState');
 
     if (preferences.autoLockTimeLimit) {
       this._setInactiveTimeout(preferences.autoLockTimeLimit);
