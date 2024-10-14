@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import {
   CaipAccountId,
   isHexString,
@@ -19,7 +18,7 @@ export type SnapUIAddressProps = {
   // The address must be a CAIP-10 string.
   address: string;
   // This is not currently exposed to Snaps.
-  avatarSize?: string;
+  avatarSize?: 'xs' | 'sm' | 'md' | 'lg';
 };
 
 export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({

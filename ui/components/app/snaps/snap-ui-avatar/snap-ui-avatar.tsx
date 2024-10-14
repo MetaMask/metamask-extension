@@ -6,16 +6,16 @@ import Jazzicon from '../../../ui/jazzicon';
 import { getUseBlockie } from '../../../../selectors';
 
 export const DIAMETERS: Record<string, number> = {
-  'xs': 16,
-  'sm': 24,
-  'md': 32,
-  'lg': 40,
+  xs: 16,
+  sm: 24,
+  md: 32,
+  lg: 40,
 };
 
 export type SnapUIAvatarProps = {
   // The address must be a CAIP-10 string.
   address: string;
-  size?: string;
+  size?: 'xs' | 'sm' | 'md' | 'lg';
 };
 
 export const SnapUIAvatar: React.FunctionComponent<SnapUIAvatarProps> = ({
