@@ -15,7 +15,7 @@ import {
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine, createScaffoldMiddleware } from 'json-rpc-engine';
+import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
@@ -154,18 +154,10 @@ import {
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
 import {
-  walletInvokeMethodHandler,
   Caip25CaveatMutatorFactories,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  multichainMethodCallValidatorMiddleware,
-  MultichainSubscriptionManager,
-  MultichainMiddlewareManager,
-  walletRevokeSessionHandler,
-  walletGetSessionHandler,
-  mergeScopes,
   getEthAccounts,
-  caipPermissionAdapterMiddleware,
 } from '@metamask/multichain';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
@@ -204,7 +196,6 @@ import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
-  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -325,14 +316,11 @@ import AppMetadataController from './controllers/app-metadata';
 
 import {
   CaveatMutatorFactories,
-  getAuthorizedScopesByOrigin,
   getCaveatSpecifications,
-  getChangedAuthorizations,
   diffMap,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
-  getRemovedAuthorizations,
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
   unrestrictedMethods,
@@ -4957,8 +4945,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   removeNetwork(chainId) {
-    const scope = `eip155:${parseInt(chainId, 16)}`;
-
     this.removeAllChainIdPermissions(chainId);
 
     this.networkController.removeNetwork(chainId);
