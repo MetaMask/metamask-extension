@@ -15,7 +15,7 @@ import {
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine, createScaffoldMiddleware } from 'json-rpc-engine';
+import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
@@ -25,7 +25,11 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { EthereumRpcError, ethErrors } from 'eth-rpc-errors';
+import {
+  errorCodes as rpcErrorCodes,
+  EthereumRpcError,
+  ethErrors,
+} from 'eth-rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -58,7 +62,6 @@ import {
 } from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
-  MethodNames,
   PermissionController,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
@@ -144,7 +147,6 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { isValidHexAddress, toCaipChainId } from '@metamask/utils';
 import {
   AuthenticationController,
   UserStorageController,
@@ -153,20 +155,6 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import {
-  walletInvokeMethodHandler,
-  Caip25CaveatMutatorFactories,
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-  multichainMethodCallValidatorMiddleware,
-  MultichainSubscriptionManager,
-  MultichainMiddlewareManager,
-  walletRevokeSessionHandler,
-  walletGetSessionHandler,
-  mergeScopes,
-  getEthAccounts,
-  caipPermissionAdapterMiddleware,
-} from '@metamask/multichain';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -183,7 +171,6 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
   NetworkStatus,
-  UNSUPPORTED_RPC_METHODS,
   MAINNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
@@ -205,7 +192,6 @@ import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
-  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -294,9 +280,8 @@ import AccountTrackerController from './controllers/account-tracker-controller';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
-  createEthAccountsMethodMiddleware,
-  createEip1193MethodMiddleware,
-  createMultichainMethodMiddleware,
+  createLegacyMethodMiddleware,
+  createMethodMiddleware,
   createUnsupportedMethodMiddleware,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -326,19 +311,17 @@ import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
 import {
+  CaveatFactories,
   CaveatMutatorFactories,
-  getAuthorizedScopesByOrigin,
   getCaveatSpecifications,
-  getChangedAuthorizations,
   diffMap,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
-  getRemovedAuthorizations,
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
-  unrestrictedMethods,
   PermissionNames,
+  unrestrictedMethods,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -365,7 +348,6 @@ import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verific
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
-
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import {
   BridgeUserAction,
@@ -380,7 +362,6 @@ import {
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import { walletCreateSessionHandler } from './lib/multichain-api/wallet-createSession';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -589,19 +570,7 @@ export default class MetamaskController extends EventEmitter {
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
     });
-
     this.networkController.initializeProvider();
-    this.multichainSubscriptionManager = new MultichainSubscriptionManager({
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
-      findNetworkClientIdByChainId:
-        this.networkController.findNetworkClientIdByChainId.bind(
-          this.networkController,
-        ),
-    });
-
-    this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -1231,16 +1200,51 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.PermissionController,
-      caveatSpecifications: getCaveatSpecifications(),
+      caveatSpecifications: getCaveatSpecifications({
+        getInternalAccounts: this.accountsController.listAccounts.bind(
+          this.accountsController,
+        ),
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
+      }),
       permissionSpecifications: {
         ...getPermissionSpecifications({
           getInternalAccounts: this.accountsController.listAccounts.bind(
             this.accountsController,
           ),
-          findNetworkClientIdByChainId:
-            this.networkController.findNetworkClientIdByChainId.bind(
-              this.networkController,
-            ),
+          getAllAccounts: this.keyringController.getAccounts.bind(
+            this.keyringController,
+          ),
+          captureKeyringTypesWithMissingIdentities: (
+            internalAccounts = [],
+            accounts = [],
+          ) => {
+            const accountsMissingIdentities = accounts.filter(
+              (address) =>
+                !internalAccounts.some(
+                  (account) =>
+                    account.address.toLowerCase() === address.toLowerCase(),
+                ),
+            );
+            const keyringTypesWithMissingIdentities =
+              accountsMissingIdentities.map((address) =>
+                this.keyringController.getAccountKeyringType(address),
+              );
+
+            const internalAccountCount = internalAccounts.length;
+
+            const accountTrackerCount = Object.keys(
+              this.accountTrackerController.state.accounts || {},
+            ).length;
+
+            captureException(
+              new Error(
+                `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
+              ),
+            );
+          },
         }),
         ...this.getSnapPermissionSpecifications(),
       },
@@ -1548,7 +1552,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: false, // TODO: undo this once fixed
+        isAccountSyncingEnabled: isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1857,7 +1861,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       getNetworkState: () => this.networkController.state,
-      getPermittedAccounts: this.getPermittedAccountsSorted.bind(this),
+      getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getSavedGasFees: () =>
         this.preferencesController.state.advancedGasFee[
           getCurrentChainId({ metamask: this.networkController.state })
@@ -2245,13 +2249,18 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: async ({ origin: innerOrigin }) => {
+      getAccounts: async (
+        { origin: innerOrigin },
+        { suppressUnauthorizedError = true } = {},
+      ) => {
         if (innerOrigin === ORIGIN_METAMASK) {
           const selectedAddress =
             this.accountsController.getSelectedAccount().address;
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
-          return await this.getPermittedAccounts(innerOrigin);
+          return await this.getPermittedAccounts(innerOrigin, {
+            suppressUnauthorizedError,
+          });
         }
         return []; // changing this is a breaking change
       },
@@ -2882,86 +2891,6 @@ export default class MetamaskController extends EventEmitter {
       getPermittedAccountsByOrigin,
     );
 
-    // This handles CAIP-25 authorization changes every time relevant permission state
-    // changes, for any reason.
-    this.controllerMessenger.subscribe(
-      `${this.permissionController.name}:stateChange`,
-      async (currentValue, previousValue) => {
-        const changedAuthorizations = getChangedAuthorizations(
-          currentValue,
-          previousValue,
-        );
-
-        const removedAuthorizations = getRemovedAuthorizations(
-          currentValue,
-          previousValue,
-        );
-
-        // remove any existing notification subscriptions for removed authorizations
-        for (const [origin, authorization] of removedAuthorizations.entries()) {
-          const mergedScopes = mergeScopes(
-            authorization.requiredScopes,
-            authorization.optionalScopes,
-          );
-          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-          // then remove middleware and unsubscribe
-          Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
-            if (
-              scopeObject.notifications.includes('eth_subscription') &&
-              scopeObject.methods.includes('eth_subscribe')
-            ) {
-              this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
-                scope,
-                origin,
-              );
-              this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
-                scope,
-                origin,
-              );
-            }
-          });
-        }
-
-        // add new notification subscriptions for changed authorizations
-        for (const [origin, authorization] of changedAuthorizations.entries()) {
-          const mergedScopes = mergeScopes(
-            authorization.requiredScopes,
-            authorization.optionalScopes,
-          );
-
-          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-          // then get the subscriptionManager going for that scope
-          Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
-            if (
-              scopeObject.notifications.includes('eth_subscription') &&
-              scopeObject.methods.includes('eth_subscribe')
-            ) {
-              // for each tabId
-              Object.entries(this.connections[origin]).forEach(
-                ([_, { tabId }]) => {
-                  const subscriptionManager =
-                    this.multichainSubscriptionManager.subscribe({
-                      scope,
-                      origin,
-                      tabId,
-                    });
-                  this.multichainMiddlewareManager.addMiddleware({
-                    scope,
-                    origin,
-                    tabId,
-                    middleware: subscriptionManager.middleware,
-                  });
-                },
-              );
-            }
-          });
-
-          this._notifyAuthorizationChange(origin, authorization);
-        }
-      },
-      getAuthorizedScopesByOrigin,
-    );
-
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
@@ -3504,7 +3433,9 @@ export default class MetamaskController extends EventEmitter {
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
-      removeNetwork: this.removeNetwork.bind(this),
+      removeNetwork: this.networkController.removeNetwork.bind(
+        this.networkController,
+      ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -3781,10 +3712,7 @@ export default class MetamaskController extends EventEmitter {
       removePermissionsFor: this.removePermissionsFor,
       approvePermissionsRequest: this.acceptPermissionsRequest,
       rejectPermissionsRequest: this.rejectPermissionsRequest,
-      ...getPermissionBackgroundApiMethods({
-        permissionController,
-        approvalController,
-      }),
+      ...getPermissionBackgroundApiMethods(permissionController),
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       connectCustodyAddresses: this.mmiController.connectCustodyAddresses.bind(
@@ -4927,140 +4855,54 @@ export default class MetamaskController extends EventEmitter {
     return selectedAddress;
   }
 
-  captureKeyringTypesWithMissingIdentities(
-    internalAccounts = [],
-    accounts = [],
-  ) {
-    const accountsMissingIdentities = accounts.filter(
-      (address) =>
-        !internalAccounts.some(
-          (account) => account.address.toLowerCase() === address.toLowerCase(),
-        ),
-    );
-    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
-      (address) => this.keyringController.getAccountKeyringType(address),
-    );
-
-    const internalAccountCount = internalAccounts.length;
-
-    const accountTrackerCount = Object.keys(
-      this.accountTrackerController.state.accounts || {},
-    ).length;
-
-    captureException(
-      new Error(
-        `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
-      ),
-    );
-  }
-
-  async getAllEvmAccountsSorted() {
-    // We only consider EVM addresses here, hence the filtering:
-    const accounts = (await this.keyringController.getAccounts()).filter(
-      isValidHexAddress,
-    );
-    const internalAccounts = this.accountsController.listAccounts();
-
-    return accounts.sort((firstAddress, secondAddress) => {
-      const firstAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
-      );
-
-      const secondAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
-      );
-
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          accounts,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          accounts,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
-        firstAccount.metadata.lastSelected ===
-        secondAccount.metadata.lastSelected
-      ) {
-        return 0;
-      } else if (firstAccount.metadata.lastSelected === undefined) {
-        return 1;
-      } else if (secondAccount.metadata.lastSelected === undefined) {
-        return -1;
-      }
-
-      return (
-        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
-      );
-    });
-  }
-
   /**
    * Gets the permitted accounts for the specified origin. Returns an empty
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {boolean} [suppressUnauthorizedError] - Suppresses the unauthorized error.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  getPermittedAccounts(origin) {
-    let caveat;
+  async getPermittedAccounts(
+    origin,
+    { suppressUnauthorizedError = true } = {},
+  ) {
     try {
-      caveat = this.permissionController.getCaveat(
+      return await this.permissionController.executeRestrictedMethod(
         origin,
-        Caip25EndowmentPermissionName,
-        Caip25CaveatType,
+        RestrictedMethods.eth_accounts,
       );
-    } catch (err) {
-      // noop
+    } catch (error) {
+      if (
+        suppressUnauthorizedError &&
+        error.code === rpcErrorCodes.provider.unauthorized
+      ) {
+        return [];
+      }
+      throw error;
     }
-    if (!caveat) {
-      return [];
-    }
-
-    return getEthAccounts(caveat.value);
-  }
-
-  async getPermittedAccountsSorted(origin) {
-    const permittedAccounts = this.getPermittedAccounts(origin);
-    const allEvmAccounts = await this.getAllEvmAccountsSorted();
-    return allEvmAccounts.filter((account) =>
-      permittedAccounts.includes(account),
-    );
   }
 
   /**
    * Stops exposing the specified chain ID to all third parties.
+   * Exposed chain IDs are stored in caveats of the `endowment:permitted-chains`
+   * permission. This method uses `PermissionController.updatePermissionsByCaveat`
+   * to remove the specified chain ID from every `endowment:permitted-chains`
+   * permission. If a permission only included this chain ID, the permission is
+   * revoked entirely.
    *
    * @param {string} targetChainId - The chain ID to stop exposing
    * to third parties.
    */
   removeAllChainIdPermissions(targetChainId) {
     this.permissionController.updatePermissionsByCaveat(
-      Caip25CaveatType,
-      (existingScopes) =>
-        Caip25CaveatMutatorFactories[Caip25CaveatType].removeScope(
-          toCaipChainId('eip155', parseInt(targetChainId, 16)),
-          existingScopes,
-        ),
+      CaveatTypes.restrictNetworkSwitching,
+      (existingChainIds) =>
+        CaveatMutatorFactories[
+          CaveatTypes.restrictNetworkSwitching
+        ].removeChainId(targetChainId, existingChainIds),
     );
-  }
-
-  // Figure out what needs to be done with the middleware/subscription logic
-  removeNetwork(chainId) {
-    const scope = `eip155:${parseInt(chainId, 16)}`;
-    this.multichainSubscriptionManager.unsubscribeByScope(scope);
-    this.multichainMiddlewareManager.removeMiddlewareByScope(scope);
-
-    this.removeAllChainIdPermissions(chainId);
-
-    this.networkController.removeNetwork(chainId);
   }
 
   /**
@@ -5080,14 +4922,6 @@ export default class MetamaskController extends EventEmitter {
         CaveatMutatorFactories[
           CaveatTypes.restrictReturnedAccounts
         ].removeAccount(targetAccount, existingAccounts),
-    );
-    this.permissionController.updatePermissionsByCaveat(
-      Caip25CaveatType,
-      (existingScopes) =>
-        Caip25CaveatMutatorFactories[Caip25CaveatType].removeAccount(
-          targetAccount,
-          existingScopes,
-        ),
     );
   }
 
@@ -5128,28 +4962,6 @@ export default class MetamaskController extends EventEmitter {
       await this.keyringController.importAccountWithStrategy(strategy, args);
     // set new account as selected
     this.preferencesController.setSelectedAddress(importedAccountAddress);
-  }
-
-  /**
-   * Requests approval for permissions for the specified origin
-   *
-   * @param origin - The origin to request approval for.
-   * @param permissions - The permissions to request approval for.
-   */
-  async requestPermissionApprovalForOrigin(origin, permissions) {
-    const id = nanoid();
-    return this.approvalController.addAndShowApprovalRequest({
-      id,
-      origin,
-      requestData: {
-        metadata: {
-          id,
-          origin,
-        },
-        permissions,
-      },
-      type: MethodNames.requestPermissions,
-    });
   }
 
   // ---------------------------------------------------------------------------
@@ -5659,7 +5471,7 @@ export default class MetamaskController extends EventEmitter {
     // setup connection
     const providerStream = createEngineStream({ engine });
 
-    const connectionId = this.addConnection(origin, { tabId, engine });
+    const connectionId = this.addConnection(origin, { engine });
 
     pipeline(
       outStream,
@@ -5727,7 +5539,7 @@ export default class MetamaskController extends EventEmitter {
     // setup connection
     const providerStream = createEngineStream({ engine });
 
-    const connectionId = this.addConnection(origin, { tabId, engine });
+    const connectionId = this.addConnection(origin, { engine });
 
     pipeline(
       outStream,
@@ -5735,15 +5547,6 @@ export default class MetamaskController extends EventEmitter {
       providerStream,
       outStream,
       (err) => {
-        this.multichainMiddlewareManager.removeMiddlewareByOriginAndTabId(
-          origin,
-          tabId,
-        );
-        this.multichainSubscriptionManager.unsubscribeByOriginAndTabId(
-          origin,
-          tabId,
-        );
-
         // handle any middleware cleanup
         engine._middleware.forEach((mid) => {
           if (mid.destroy && typeof mid.destroy === 'function') {
@@ -5803,8 +5606,6 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
-      // TODO: Should this be made async in queued-request-controller package?
-      // Doing so allows us to DRY up getPermittedAcounts and getPermittedAccountsSorted
       shouldEnqueueRequest: (request) => {
         return methodsRequiringNetworkSwitch.includes(request.method);
       },
@@ -5878,25 +5679,13 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS));
+    engine.push(createUnsupportedMethodMiddleware());
 
-    engine.push((req, res, next, end) =>
-      caipPermissionAdapterMiddleware(req, res, next, end, {
-        getCaveat: this.permissionController.getCaveat.bind(
-          this.permissionController,
-        ),
-        getNetworkConfigurationByNetworkClientId:
-          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-            this.networkController,
-          ),
-      }),
-    );
-
-    // Legacy RPC method that needs to be implemented _ahead of_ the permission
+    // Legacy RPC methods that need to be implemented _ahead of_ the permission
     // middleware.
     engine.push(
-      createEthAccountsMethodMiddleware({
-        getAccounts: this.getPermittedAccountsSorted.bind(this, origin),
+      createLegacyMethodMiddleware({
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
       }),
     );
 
@@ -5931,7 +5720,9 @@ export default class MetamaskController extends EventEmitter {
     // Unrestricted/permissionless RPC method implementations.
     // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
-      createEip1193MethodMiddleware({
+      createMethodMiddleware({
+        origin,
+
         subjectType,
 
         // Miscellaneous
@@ -5959,21 +5750,59 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
         // Permission-related
-        getAccounts: this.getPermittedAccountsSorted.bind(this, origin),
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
         ),
-        requestPermissionApprovalForOrigin:
-          this.requestPermissionApprovalForOrigin.bind(this, origin),
+        hasPermission: this.permissionController.hasPermission.bind(
+          this.permissionController,
+          origin,
+        ),
+        requestAccountsPermission:
+          this.permissionController.requestPermissions.bind(
+            this.permissionController,
+            { origin },
+            {
+              eth_accounts: {},
+              ...(!isSnapId(origin) && {
+                [PermissionNames.permittedChains]: {},
+              }),
+            },
+          ),
+        requestPermittedChainsPermission: (chainIds) =>
+          this.permissionController.requestPermissionsIncremental(
+            { origin },
+            {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          ),
+        grantPermittedChainsPermissionIncremental: (chainIds) =>
+          this.permissionController.grantPermissionsIncremental({
+            subject: { origin },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          }),
         requestPermissionsForOrigin: (requestedPermissions) =>
           this.permissionController.requestPermissions(
             { origin },
             {
-              ...(requestedPermissions[PermissionNames.eth_accounts] &&
-                !isSnapId(origin) && {
-                  [PermissionNames.permittedChains]: {},
-                }),
+              ...(requestedPermissions[PermissionNames.eth_accounts] && {
+                [PermissionNames.permittedChains]: {},
+              }),
               ...(requestedPermissions[PermissionNames.permittedChains] && {
                 [PermissionNames.eth_accounts]: {},
               }),
@@ -6015,12 +5844,12 @@ export default class MetamaskController extends EventEmitter {
         // network configuration-related
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);
-          // if the origin has the CAIP-25 permission
+          // if the origin has the eth_accounts permission
           // we set per dapp network selection state
           if (
             this.permissionController.hasPermission(
               origin,
-              Caip25EndowmentPermissionName,
+              PermissionNames.eth_accounts,
             )
           ) {
             this.selectedNetworkController.setNetworkClientIdForDomain(
@@ -6057,13 +5886,6 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
-
-        grantPermissions: this.permissionController.grantPermissions.bind(
-          this.permissionController,
-        ),
-        updateCaveat: this.permissionController.updateCaveat.bind(
-          this.permissionController,
-        ),
 
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         handleMmiAuthenticate:
@@ -6179,7 +6001,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for creating a provider that is safely restricted for the requesting subject.
+   * A method for creating a CAIP provider that is safely restricted for the requesting subject.
    *
    * @param {object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
@@ -6188,290 +6010,9 @@ export default class MetamaskController extends EventEmitter {
   setupProviderEngineCaip({ origin, tabId }) {
     const engine = new JsonRpcEngine();
 
-    // Append origin to each request
-    engine.push(createOriginMiddleware({ origin }));
-
-    // Append tabId to each request if it exists
-    if (tabId) {
-      engine.push(createTabIdMiddleware({ tabId }));
-    }
-
-    engine.push(createLoggerMiddleware({ origin }));
-
-    engine.push((req, _res, next, end) => {
-      if (
-        ![
-          MESSAGE_TYPE.WALLET_CREATE_SESSION,
-          MESSAGE_TYPE.WALLET_INVOKE_METHOD,
-          MESSAGE_TYPE.WALLET_GET_SESSION,
-          MESSAGE_TYPE.WALLET_REVOKE_SESSION,
-        ].includes(req.method)
-      ) {
-        return end(new Error('Invalid method')); // TODO: Use a proper error
-      }
-      return next();
-    });
-
-    // TODO: Uncomment this when wallet lifecycle methods are added to api-specs
-    engine.push(multichainMethodCallValidatorMiddleware);
-
-    engine.push(
-      createScaffoldMiddleware({
-        [MESSAGE_TYPE.WALLET_CREATE_SESSION]: (
-          request,
-          response,
-          next,
-          end,
-        ) => {
-          return walletCreateSessionHandler(request, response, next, end, {
-            grantPermissions: this.permissionController.grantPermissions.bind(
-              this.permissionController,
-            ),
-            findNetworkClientIdByChainId:
-              this.networkController.findNetworkClientIdByChainId.bind(
-                this.networkController,
-              ),
-            listAccounts: this.accountsController.listAccounts.bind(
-              this.accountsController,
-            ),
-            addNetwork: this.networkController.addNetwork.bind(
-              this.networkController,
-            ),
-            removeNetwork: this.removeNetwork.bind(this),
-            requestPermissionApprovalForOrigin:
-              this.requestPermissionApprovalForOrigin.bind(this, origin),
-            sendMetrics: this.metaMetricsController.trackEvent.bind(
-              this.metaMetricsController,
-            ),
-            metamaskState: this.getState(),
-          });
-        },
-        [MESSAGE_TYPE.WALLET_INVOKE_METHOD]: (request, response, next, end) => {
-          return walletInvokeMethodHandler(request, response, next, end, {
-            findNetworkClientIdByChainId:
-              this.networkController.findNetworkClientIdByChainId.bind(
-                this.networkController,
-              ),
-            getCaveat: this.permissionController.getCaveat.bind(
-              this.permissionController,
-            ),
-            getSelectedNetworkClientId: () =>
-              this.networkController.state.selectedNetworkClientId,
-          });
-        },
-        [MESSAGE_TYPE.WALLET_REVOKE_SESSION]: (
-          request,
-          response,
-          next,
-          end,
-        ) => {
-          return walletRevokeSessionHandler(request, response, next, end, {
-            revokePermission: this.permissionController.revokePermission.bind(
-              this.permissionController,
-            ),
-          });
-        },
-        [MESSAGE_TYPE.WALLET_GET_SESSION]: (request, response, next, end) => {
-          return walletGetSessionHandler(request, response, next, end, {
-            getCaveat: this.permissionController.getCaveat.bind(
-              this.permissionController,
-            ),
-          });
-        },
-      }),
-    );
-
-    // TODO: Does this need to go before the wallet_createSession middleware?
-    // Add a middleware that will switch chain on each request (as needed)
-    const requestQueueMiddleware = createQueuedRequestMiddleware({
-      enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
-        this.queuedRequestController,
-      ),
-      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
-      ),
-      shouldEnqueueRequest: (request) => {
-        return methodsRequiringNetworkSwitch.includes(request.method);
-      },
-    });
-    engine.push(requestQueueMiddleware);
-
-    engine.push(
-      createUnsupportedMethodMiddleware([
-        ...UNSUPPORTED_RPC_METHODS,
-        'eth_requestAccounts',
-        'eth_accounts',
-      ]),
-    );
-
-    engine.push(
-      createMultichainMethodMiddleware({
-        subjectType: SubjectType.Website, // TODO: this should probably be passed in
-
-        // Miscellaneous
-        addSubjectMetadata:
-          this.subjectMetadataController.addSubjectMetadata.bind(
-            this.subjectMetadataController,
-          ),
-        getProviderState: this.getProviderState.bind(this),
-        handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
-        requestUserApproval:
-          this.approvalController.addAndShowApprovalRequest.bind(
-            this.approvalController,
-          ),
-        startApprovalFlow: this.approvalController.startFlow.bind(
-          this.approvalController,
-        ),
-        endApprovalFlow: this.approvalController.endFlow.bind(
-          this.approvalController,
-        ),
-        getCaveat: ({ target, caveatType }) => {
-          try {
-            return this.permissionController.getCaveat(
-              origin,
-              target,
-              caveatType,
-            );
-          } catch (e) {
-            if (e instanceof PermissionDoesNotExistError) {
-              // suppress expected error in case that the origin
-              // does not have the target permission yet
-            } else {
-              throw e;
-            }
-          }
-
-          return undefined;
-        },
-        addNetwork: this.networkController.addNetwork.bind(
-          this.networkController,
-        ),
-        updateNetwork: this.networkController.updateNetwork.bind(
-          this.networkController,
-        ),
-        setActiveNetwork: async (networkClientId) => {
-          await this.networkController.setActiveNetwork(networkClientId);
-          // if the origin has the CAIP-25 permission
-          // we set per dapp network selection state
-          if (
-            this.permissionController.hasPermission(
-              origin,
-              Caip25EndowmentPermissionName,
-            )
-          ) {
-            this.selectedNetworkController.setNetworkClientIdForDomain(
-              origin,
-              networkClientId,
-            );
-          }
-        },
-        getNetworkConfigurationByChainId:
-          this.networkController.getNetworkConfigurationByChainId.bind(
-            this.networkController,
-          ),
-        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
-        getCurrentChainIdForDomain: (domain) => {
-          const networkClientId =
-            this.selectedNetworkController.getNetworkClientIdForDomain(domain);
-          const { chainId } =
-            this.networkController.getNetworkConfigurationByNetworkClientId(
-              networkClientId,
-            );
-          return chainId;
-        },
-
-        // Web3 shim-related
-        getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
-          this.alertController,
-        ),
-        setWeb3ShimUsageRecorded:
-          this.alertController.setWeb3ShimUsageRecorded.bind(
-            this.alertController,
-          ),
-
-        requestPermissionApprovalForOrigin:
-          this.requestPermissionApprovalForOrigin.bind(this, origin),
-        updateCaveat: this.permissionController.updateCaveat.bind(
-          this.permissionController,
-        ),
-        grantPermissions: this.permissionController.grantPermissions.bind(
-          this.permissionController,
-        ),
-      }),
-    );
-
-    engine.push(this.metamaskMiddleware);
-
-    // TODO: Might be able to DRY this with the stateChange event
-    try {
-      const caip25Caveat = this.permissionController.getCaveat(
-        origin,
-        Caip25EndowmentPermissionName,
-        Caip25CaveatType,
-      );
-
-      // add new notification subscriptions for changed authorizations
-      const mergedScopes = mergeScopes(
-        caip25Caveat.value.requiredScopes,
-        caip25Caveat.value.optionalScopes,
-      );
-
-      // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-      // then get the subscriptionManager going for that scope
-      Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
-        if (
-          scopeObject.notifications.includes('eth_subscription') &&
-          scopeObject.methods.includes('eth_subscribe')
-        ) {
-          const subscriptionManager =
-            this.multichainSubscriptionManager.subscribe({
-              scope,
-              origin,
-              tabId,
-            });
-          this.multichainMiddlewareManager.addMiddleware({
-            scope,
-            origin,
-            tabId,
-            middleware: subscriptionManager.middleware,
-          });
-        }
-      });
-    } catch (err) {
-      // noop
-    }
-
-    this.multichainSubscriptionManager.on(
-      'notification',
-      (targetOrigin, targetTabId, message) => {
-        if (origin === targetOrigin && tabId === targetTabId) {
-          engine.emit('notification', message);
-        }
-      },
-    );
-
-    engine.push(
-      this.multichainMiddlewareManager.generateMultichainMiddlewareForOriginAndTabId(
-        origin,
-        tabId,
-      ),
-    );
-
-    engine.push((req, res, _next, end) => {
-      const { provider } = this.networkController.getNetworkClientById(
-        req.networkClientId,
-      );
-
-      // send request to provider
-      provider.sendAsync(req, (err, providerRes) => {
-        // forward any error
-        if (err instanceof Error) {
-          return end(err);
-        }
-        // copy provider response onto original response
-        Object.assign(res, providerRes);
-        return end();
-      });
+    engine.push((request, _res, _next, end) => {
+      console.log('CAIP request received', { origin, tabId, request });
+      return end(new Error('CAIP RPC Pipeline not yet implemented.'));
     });
 
     return engine;
@@ -6508,10 +6049,9 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - The connection's origin string.
    * @param {object} options - Data associated with the connection
    * @param {object} options.engine - The connection's JSON Rpc Engine
-   * @param options.tabId
    * @returns {string} The connection's id (so that it can be deleted later)
    */
-  addConnection(origin, { tabId, engine }) {
+  addConnection(origin, { engine }) {
     if (origin === ORIGIN_METAMASK) {
       return null;
     }
@@ -6522,7 +6062,6 @@ export default class MetamaskController extends EventEmitter {
 
     const id = nanoid();
     this.connections[origin][id] = {
-      tabId,
       engine,
     };
 
@@ -6678,7 +6217,7 @@ export default class MetamaskController extends EventEmitter {
         method: NOTIFICATION_NAMES.unlockStateChanged,
         params: {
           isUnlocked: true,
-          accounts: await this.getPermittedAccountsSorted(origin),
+          accounts: await this.getPermittedAccounts(origin),
         },
       };
     });
@@ -6719,7 +6258,7 @@ export default class MetamaskController extends EventEmitter {
    */
   _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
-    // this._notifyChainChange();
+    this._notifyChainChange();
   }
 
   // misc
@@ -7209,25 +6748,11 @@ export default class MetamaskController extends EventEmitter {
               newAccounts
             : // If the length is 2 or greater, we have to execute
               // `eth_accounts` vi this method.
-              await this.getPermittedAccountsSorted(origin),
+              await this.getPermittedAccounts(origin),
       });
     }
 
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
-  }
-
-  async _notifyAuthorizationChange(origin, newAuthorization) {
-    if (this.isUnlocked()) {
-      this.notifyConnections(origin, {
-        method: NOTIFICATION_NAMES.sessionChanged,
-        params: {
-          sessionScopes: mergeScopes(
-            newAuthorization.requiredScopes ?? {},
-            newAuthorization.optionalScopes ?? {},
-          ),
-        },
-      });
-    }
   }
 
   async _notifyChainChange() {

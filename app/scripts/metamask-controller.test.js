@@ -102,13 +102,10 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
 const rpcMethodMiddlewareMock = {
-  createEip1193MethodMiddleware: () => (_req, _res, next, _end) => {
+  createMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
-  createEthAccountsMethodMiddleware: () => (_req, _res, next, _end) => {
-    next();
-  },
-  createMultichainMethodMiddleware: () => (_req, _res, next, _end) => {
+  createLegacyMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
   createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
@@ -1400,10 +1397,6 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
-      it.todo('adds a tabId, origin and networkClient to requests');
-
-      it.todo('should add only origin to request if tabId not provided');
-
       it.todo('should only process `caip-x` CAIP formatted messages');
     });
 
