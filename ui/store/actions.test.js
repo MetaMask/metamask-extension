@@ -500,9 +500,7 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      await store.dispatch(
-        actions.getHardwareDeviceName(deviceName, hdPath),
-      );
+      await store.dispatch(actions.getHardwareDeviceName(deviceName, hdPath));
       expect(getHardwareDeviceName.callCount).toStrictEqual(1);
     });
 
@@ -522,9 +520,7 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(
-          actions.getHardwareDeviceName(deviceName, hdPath),
-        ),
+        store.dispatch(actions.getHardwareDeviceName(deviceName, hdPath)),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);

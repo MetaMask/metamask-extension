@@ -45,7 +45,9 @@ import {
 } from './lib/accounts/BalancesController';
 import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
-import MetaMaskController, { ONE_KEY_VIA_TREZOR_MINOR_VERSION } from './metamask-controller';
+import MetaMaskController, {
+  ONE_KEY_VIA_TREZOR_MINOR_VERSION,
+} from './metamask-controller';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
