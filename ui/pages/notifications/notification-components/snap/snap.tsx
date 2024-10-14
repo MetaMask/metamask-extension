@@ -1,11 +1,6 @@
-import React, { useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   NotificationDetailButton,
   NotificationDetailTitle,
@@ -13,7 +8,6 @@ import {
 } from '../../../../components/multichain';
 import type { SnapNotification } from '../../snap/types/types';
 import { getSnapsMetadata } from '../../../../selectors';
-import { markNotificationsAsRead } from '../../../../store/actions';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
 import {
   NotificationComponent,
@@ -22,6 +16,7 @@ import {
 import { formatIsoDateString } from '../../../../helpers/utils/notification.util';
 import { SnapUIRenderer } from '../../../../components/app/snaps/snap-ui-renderer';
 import {
+  AlignItems,
   BackgroundColor,
   Display,
   FlexDirection,
@@ -40,22 +35,10 @@ import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 export const components: NotificationComponent<SnapNotification> = {
   guardFn: isOfTypeNodeGuard(['snap' as typeof TRIGGER_TYPES.SNAP]),
   item: ({ notification, onClick }) => {
-    const dispatch = useDispatch();
     const history = useHistory();
-    const trackEvent = useContext(MetaMetricsContext);
     const snapsMetadata = useSelector(getSnapsMetadata);
     const snapsNameGetter = getSnapName(snapsMetadata);
     const handleSnapButton = () => {
-      dispatch(markNotificationsAsRead([notification.id]));
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationInteraction,
-        event: MetaMetricsEventName.NotificationClicked,
-        properties: {
-          notification_id: notification.id,
-          notification_type: notification.type,
-          previously_read: notification.isRead,
-        },
-      });
       history.push(getSnapRoute(notification.data.origin));
     };
 
@@ -99,23 +82,30 @@ export const components: NotificationComponent<SnapNotification> = {
                 border: '1px solid var(--color-border-muted)',
               }}
               flexDirection={FlexDirection.Column}
+              padding={[4, 3, 4, 3]}
             >
-              <Box display={Display.Flex}>
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                paddingBottom={2}
+              >
                 <SnapIcon snapId={snapId} avatarSize={IconSize.Xl} />
-                <Text paddingLeft={1}>{snapsNameGetter(snapId)}</Text>
+                <Text paddingLeft={4}>{snapsNameGetter(snapId)}</Text>
               </Box>
               <Text overflowWrap={OverflowWrap.Normal}>
                 {notification.data.message}
               </Text>
             </Box>
-            <SnapUIRenderer
-              snapId={notification.data.origin}
-              interfaceId={
-                notification.data.expandedView?.interfaceId as string
-              }
-              useDelineator={false}
-              contentBackgroundColor={BackgroundColor.backgroundDefault}
-            />
+            <Box paddingLeft={1} paddingRight={1}>
+              <SnapUIRenderer
+                snapId={notification.data.origin}
+                interfaceId={
+                  notification.data.expandedView?.interfaceId as string
+                }
+                useDelineator={false}
+                contentBackgroundColor={BackgroundColor.backgroundDefault}
+              />
+            </Box>
           </>
         );
       },

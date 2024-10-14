@@ -1,4 +1,5 @@
 import React, { useContext, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -13,6 +14,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
+import { markNotificationsAsRead as markSnapNotificationsAsRead } from '../../store/actions';
 import {
   NotificationComponents,
   TRIGGER_TYPES,
@@ -26,6 +28,7 @@ export function NotificationsListItem({
   notification: Notification;
 }) {
   const history = useHistory();
+  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
@@ -44,13 +47,19 @@ export function NotificationsListItem({
         previously_read: notification.isRead,
       },
     });
-    markNotificationAsRead([
-      {
-        id: notification.id,
-        type: notification.type,
-        isRead: notification.isRead,
-      },
-    ]);
+
+    // In the future will move snap notifications into the notification services controller
+    if (notification.type === TRIGGER_TYPES.SNAP) {
+      dispatch(markSnapNotificationsAsRead([notification.id]));
+    } else {
+      markNotificationAsRead([
+        {
+          id: notification.id,
+          type: notification.type,
+          isRead: notification.isRead,
+        },
+      ]);
+    }
 
     if (
       notification.type === TRIGGER_TYPES.SNAP &&
@@ -60,7 +69,13 @@ export function NotificationsListItem({
     }
 
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
-  }, [notification, markNotificationAsRead, history]);
+  }, [
+    notification,
+    markNotificationAsRead,
+    markSnapNotificationsAsRead,
+    dispatch,
+    history,
+  ]);
 
   if (!hasNotificationComponents(notification.type)) {
     return null;

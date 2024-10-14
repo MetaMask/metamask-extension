@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -16,14 +15,18 @@ import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/us
 import { getMetamaskNotificationById } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
   NotificationComponents,
+  TRIGGER_TYPES,
   hasNotificationComponents,
 } from '../notifications/notification-components';
+import { getNotificationById } from '../../selectors';
+import { type Notification } from '../notifications/notification-components/types/notifications/notifications';
+import { markNotificationsAsRead as markSnapNotificationsAsRead } from '../../store/actions';
+import { processSnapNotifications } from '../notifications/snap/utils/utils';
+import { RawSnapNotification } from '../notifications/snap/types/types';
 import { getExtractIdentifier } from './utils/utils';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
 import { NotificationDetailsFooter } from './notification-details-footer/notification-details-footer';
-
-type Notification = NotificationServicesController.Types.INotification;
 
 function useModalNavigation() {
   const history = useHistory();
@@ -40,7 +43,19 @@ function useModalNavigation() {
 function useNotificationByPath() {
   const { pathname } = useLocation();
   const id = getExtractIdentifier(pathname);
-  const notification = useSelector(getMetamaskNotificationById(id));
+  let notification = useSelector(
+    getMetamaskNotificationById(id),
+  ) as unknown as Notification;
+  if (!notification) {
+    // we only reach here if it is a snap notification
+    const snapNotification = useSelector((state) =>
+      // @ts-expect-error improperly typed
+      getNotificationById(state, id),
+    ) as unknown as RawSnapNotification;
+    if (snapNotification) {
+      notification = processSnapNotifications([snapNotification])[0];
+    }
+  }
 
   return {
     notification,
@@ -49,15 +64,20 @@ function useNotificationByPath() {
 
 function useEffectOnNotificationView(notificationData?: Notification) {
   const { markNotificationAsRead } = useMarkNotificationAsRead();
+  const dispatch = useDispatch();
   useEffect(() => {
     if (notificationData) {
-      markNotificationAsRead([
-        {
-          id: notificationData.id,
-          type: notificationData.type,
-          isRead: notificationData.isRead,
-        },
-      ]);
+      if (notificationData.type === TRIGGER_TYPES.SNAP) {
+        dispatch(markSnapNotificationsAsRead([notificationData.id]));
+      } else {
+        markNotificationAsRead([
+          {
+            id: notificationData.id,
+            type: notificationData.type,
+            isRead: notificationData.isRead,
+          },
+        ]);
+      }
     }
   }, [markNotificationAsRead, notificationData]);
 }

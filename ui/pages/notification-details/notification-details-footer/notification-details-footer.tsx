@@ -1,5 +1,4 @@
 import React from 'react';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Box } from '../../../components/component-library';
 import {
   BlockSize,
@@ -8,11 +7,10 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
+  Notification,
   NotificationComponentType,
   type NotificationComponent,
 } from '../../notifications/notification-components/types/notifications/notifications';
-
-type Notification = NotificationServicesController.Types.INotification;
 
 type NotificationDetailsFooterProps = {
   footer: NotificationComponent['footer'];
