@@ -17,7 +17,6 @@ import {
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import {
-  getPreferences,
   getShouldShowFiat,
   getTxData,
   transactionFeeSelector,
@@ -68,7 +67,6 @@ const GasDetailsItem = ({
     supportsEIP1559,
   } = useGasFeeContext();
 
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const getTransactionFeeTotal = useMemo(() => {
     if (layer1GasFee) {
       return sumHexes(hexMinimumTransactionFee, layer1GasFee);
@@ -148,7 +146,7 @@ const GasDetailsItem = ({
                 }}
                 type={SECONDARY}
                 value={getTransactionFeeTotal}
-                hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                hideLabel // Label not required here as it will always display fiat value.
               />
             )}
           </div>
@@ -168,7 +166,7 @@ const GasDetailsItem = ({
             }}
             type={PRIMARY}
             value={getTransactionFeeTotal || draftHexMinimumTransactionFee}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            // Label required here as it will always display crypto value
           />
         </div>
       }
@@ -216,7 +214,6 @@ const GasDetailsItem = ({
                 value={
                   getMaxTransactionFeeTotal || draftHexMaximumTransactionFee
                 }
-                hideLabel={!useNativeCurrencyAsPrimaryCurrency}
               />
             </div>
           </Box>
