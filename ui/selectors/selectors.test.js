@@ -2128,14 +2128,14 @@ describe('#getConnectedSitesList', () => {
 
     const evmAccounts = [account1, account2, account3, account4, account5];
 
-    it('only returns EVM accounts with only EVM accounts', () => {
+    it('returns all EVM accounts when only EVM accounts are present', () => {
       const state = mockAccountsState(evmAccounts);
       expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
         evmAccounts,
       );
     });
 
-    it('only returns EVM accounts when there is non-EVM accounts', () => {
+    it('only returns EVM accounts when there are non-EVM accounts', () => {
       const state = mockAccountsState([
         ...evmAccounts,
         nonEvmAccount1,
@@ -2146,7 +2146,7 @@ describe('#getConnectedSitesList', () => {
       );
     });
 
-    it('returns an empty array when there is no EVM accounts', () => {
+    it('returns an empty array when there are no EVM accounts', () => {
       const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
       expect(selectors.getEvmInternalAccounts(state)).toStrictEqual([]);
     });
@@ -2178,7 +2178,7 @@ describe('#getConnectedSitesList', () => {
       expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
     });
 
-    it('returns the last selected EVM account even with non-EVM accounts', () => {
+    it('returns the last selected EVM account when there are non-EVM accounts', () => {
       const state = mockAccountsState([
         account1,
         account2,
@@ -2189,7 +2189,7 @@ describe('#getConnectedSitesList', () => {
       expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
     });
 
-    it('returns `undefined` if there is no EVM accounts', () => {
+    it('returns `undefined` if there are no EVM accounts', () => {
       const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
       expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
     });
