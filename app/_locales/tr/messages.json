@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "İşleminiz bloka dahil edildiğinde maks. baz ücretiniz ile gerçek paz ücret arasındaki fark iade edilecektir. Toplam miktar, maks. baz ücret (GWEI'de) * gaz limiti olarak hesaplanacaktır."
   },
-  "advancedConfiguration": {
-    "message": "Gelişmiş yapılandırma"
-  },
   "advancedDetailsDataDesc": {
     "message": "Veri"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "Bu işlemle devam etmek için gaz limitini 21000 veya üzeri olacak şekilde artırmanız gerekecek."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Hesabınızda işlem ücretlerini ödemek için yeterli ETH yok."
-  },
   "alertMessageNetworkBusy": {
     "message": "Gaz fiyatları yüksektir ve tahmin daha az kesindir."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Yanlış hesap"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Bağlı olmayan bir hesap ile bir web sitesine göz atma seçildi"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Bu uyarı, bağlı bir web3 sitesinde gezdiğinizde gösterilir ancak şu anda seçili hesap bağlı değildir."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Bir web sitesi kaldırılmış window.web3 API'sini kullanmaya çalıştığında"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Bu uyarı, kaldırılmış window.web3 API kullanmaya çalışan bir ve bunun sonucu olarak bozulmuş olabilen bir sitede gezindiğinizde açılır pencerede gösterilir."
   },
   "alerts": {
     "message": "Uyarılar"
@@ -714,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Beta Kullanım koşulları"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask Beta Gizli Kurtarma İfadenizi kurtaramaz."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask hiçbir zaman Gizli Kurtarma İfadenizi istemez."
   },
   "billionAbbreviation": {
     "message": "MR",
@@ -2087,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Hassas bilgileri gizle"
   },
-  "hideToken": {
-    "message": "Tokeni gizle"
-  },
   "hideTokenPrompt": {
     "message": "Tokeni gizle?"
   },
@@ -2414,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "JSON Dosyası",
@@ -3467,10 +3437,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "MetaMask Institutional'ı sabitle"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Kimlik avı tespiti uyarıları $1 ile iletişime bağlıdır. jsDeliver IP adresinize erişim sağlayacaktır. Şunu görüntüleyin: $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1G",
     "description": "Shortened form of '1 day'"
@@ -4111,9 +4077,6 @@
   "rejected": {
     "message": "Reddedildi"
   },
-  "remember": {
-    "message": "Unutmayın:"
-  },
   "remove": {
     "message": "Kaldır"
   },
@@ -4520,9 +4483,6 @@
   },
   "sepolia": {
     "message": "Sepolia test ağı"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask, ürünün kullanılabilirliğini ve güvenliğini iyileştirmek amacıyla bu güvenilir üçüncü taraf hizmetlerini kullanır."
   },
   "setApprovalForAll": {
     "message": "Tümüne onay ver"
@@ -5738,9 +5698,6 @@
   "tokenDecimalFetchFailed": {
     "message": "Token ondalığı gereklidir. Şurada bulabilirsiniz: $1"
   },
-  "tokenDecimalTitle": {
-    "message": "Token ondalığı:"
-  },
   "tokenDetails": {
     "message": "Token bilgileri"
   },
@@ -6174,26 +6131,6 @@
   },
   "walletConnectionGuide": {
     "message": "donanım cüzdanı bağlantı kılavuzumuz"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Cüzdanınızı başarılı bir şekilde korudunuz. Gizli Kurtarma İfadenizi güvenli ve gizli tutun -- bunun sorumluluğu size aittir!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask Gizli Kurtarma İfadenizi kurtaramıyor."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask hiçbir zaman Gizli Kurtarma İfadenizi istemeyecektir."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 hiç kimseyle başkasıyla paylaşmayın, aksi halde çalınma riskiyle karşı karşıya kalırsınız",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Gizli Kurtarma İfadenizi",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Cüzdan oluşturma başarılı"
   },
   "wantToAddThisNetwork": {
     "message": "Bu ağı eklemek istiyor musunuz?"
