@@ -172,6 +172,7 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
+
     // Get the first request from the requests list on simple keyring snap page
     await this.driver.clickElementUsingMouseMove(this.listRequestsSection);
     await this.driver.clickElement(this.listRequestsButton);

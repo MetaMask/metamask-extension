@@ -118,6 +118,15 @@ class TestDapp {
     await this.driver.openNewPage(dappUrl);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async request(method: string, params: any[]) {
+    await this.openTestDappPage({
+      url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
+        params,
+      )}`,
+    });
+  }
+
   async clickERC721SetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721SetApprovalForAllButton);
   }
