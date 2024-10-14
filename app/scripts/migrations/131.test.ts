@@ -471,6 +471,14 @@ describe('migration #131', () => {
                               methods: [],
                               notifications: [],
                             },
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                                'wallet:eip155:0x999',
+                              ],
+                              methods: [],
+                              notifications: [],
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -547,6 +555,14 @@ describe('migration #131', () => {
                               methods: [],
                               notifications: [],
                             },
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                                'wallet:eip155:0x999',
+                              ],
+                              methods: [],
+                              notifications: [],
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -619,6 +635,80 @@ describe('migration #131', () => {
                               accounts: [
                                 'eip155:11155111:0xdeadbeef',
                                 'eip155:11155111:0x999',
+                              ],
+                              methods: [],
+                              notifications: [],
+                            },
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                                'wallet:eip155:0x999',
+                              ],
+                              methods: [],
+                              notifications: [],
+                            },
+                          },
+                          isMultichainOrigin: false,
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        });
+      });
+
+      it('replaces the eth_accounts permission with a CAIP-25 permission using the eth_accounts value without permitted chains when the origin is snapId', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            ...baseData(),
+            PermissionController: {
+              subjects: {
+                'npm:snap': {
+                  permissions: {
+                    unrelated: {
+                      foo: 'bar',
+                    },
+                    [PermissionNames.eth_accounts]: {
+                      caveats: [
+                        {
+                          type: 'restrictReturnedAccounts',
+                          value: ['0xdeadbeef', '0x999'],
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migrate(oldStorage);
+        expect(newStorage.data).toStrictEqual({
+          ...baseData(),
+          PermissionController: {
+            subjects: {
+              'npm:snap': {
+                permissions: {
+                  unrelated: {
+                    foo: 'bar',
+                  },
+                  'endowment:caip25': {
+                    parentCapability: 'endowment:caip25',
+                    caveats: [
+                      {
+                        type: 'authorizedScopes',
+                        value: {
+                          requiredScopes: {},
+                          optionalScopes: {
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                                'wallet:eip155:0x999',
                               ],
                               methods: [],
                               notifications: [],
@@ -713,6 +803,14 @@ describe('migration #131', () => {
                               accounts: [
                                 'eip155:10:0xdeadbeef',
                                 'eip155:10:0x999',
+                              ],
+                              methods: [],
+                              notifications: [],
+                            },
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                                'wallet:eip155:0x999',
                               ],
                               methods: [],
                               notifications: [],
@@ -843,6 +941,14 @@ describe('migration #131', () => {
                               methods: [],
                               notifications: [],
                             },
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                                'wallet:eip155:0x999',
+                              ],
+                              methods: [],
+                              notifications: [],
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -912,6 +1018,13 @@ describe('migration #131', () => {
                               methods: [],
                               notifications: [],
                             },
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                              ],
+                              methods: [],
+                              notifications: [],
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -932,6 +1045,13 @@ describe('migration #131', () => {
                           optionalScopes: {
                             [currentScope]: {
                               accounts: [`${currentScope}:0xdeadbeef`],
+                              methods: [],
+                              notifications: [],
+                            },
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                              ],
                               methods: [],
                               notifications: [],
                             },

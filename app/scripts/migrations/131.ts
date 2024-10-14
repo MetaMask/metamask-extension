@@ -46,6 +46,8 @@ const BUILT_IN_NETWORKS = {
 const Caip25CaveatType = 'authorizedScopes';
 const Caip25EndowmentPermissionName = 'endowment:caip25';
 
+const snapsPrefixes = ['npm:', 'local:'] as const;
+
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
@@ -235,10 +237,12 @@ function transformState(state: Record<string, unknown>) {
       }
     }
 
+    const isSnap = snapsPrefixes.some((prefix) => origin.startsWith(prefix))
     const scopes: Record<string, Json> = {};
+    const scopeStrings = isSnap ? [] : chainIds.map(chainId => `eip155:${parseInt(chainId, 16)}`)
+    scopeStrings.push('wallet:eip155')
 
-    chainIds.forEach((chainId) => {
-      const scopeString = `eip155:${parseInt(chainId, 16)}`;
+    scopeStrings.forEach((scopeString) => {
       const caipAccounts = ethAccounts.map(
         (account) => `${scopeString}:${account}`,
       );
