@@ -18,6 +18,7 @@ import {
   REVIEW_PERMISSIONS,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
+import { usePrevious } from '../../../hooks/usePrevious';
 import { getShowAutoNetworkSwitchTest } from '../../../pages/routes/utils';
 import { getSelectedAccount, getUseNftDetection } from '../../../selectors';
 import { hidePermittedNetworkToast } from '../../../store/actions';
@@ -39,10 +40,6 @@ import {
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
 } from './selectors';
-
-// Allow comparison with a previous value, in order to detect changes
-// (This pattern only works if ToastMaster is a singleton)
-let prevAccountAddress;
 
 export function ToastMaster({ props, context }) {
   const { t } = context;
@@ -72,8 +69,8 @@ export function ToastMaster({ props, context }) {
   const account = useSelector(getSelectedAccount);
 
   // If the account has changed, allow the connect account toast again
-  if (account?.address !== prevAccountAddress) {
-    prevAccountAddress = account.address;
+  const prevAccountAddress = usePrevious(account?.address);
+  if (account?.address !== prevAccountAddress && hideConnectAccountToast) {
     setHideConnectAccountToast(false);
   }
 
