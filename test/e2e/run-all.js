@@ -67,9 +67,9 @@ async function runningOnCircleCI(testPaths) {
   const { changedOrNewTests, hasOnlyMdOrCsvFiles } = await filterE2eChangedFiles();
   if (hasOnlyMdOrCsvFiles) {
     console.log(
-      'run-all.js info: Skipping test runs because run only has changes for MD or CSV files'
-    )
-    return {fullTestList: []};
+      'run-all.js info: Skipping test runs because run only has changes for MD or CSV files',
+    );
+    return { fullTestList: [] };
   }
   console.log('Changed or new test list:', changedOrNewTests);
 

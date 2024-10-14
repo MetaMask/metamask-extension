@@ -42,11 +42,11 @@ function filterE2eChangedFiles() {
     )
     .map((file) => `${BASE_PATH}/${file}`);
 
-    const hasOnlyMdOrCsvFiles = changedFiles.every(
-      (file) => file.endsWith('.md') || file.endsWith('.csv')
-    );
+  const hasOnlyMdOrCsvFiles = changedFiles.every(
+    (file) => file.endsWith('.md') || file.endsWith('.csv'),
+  );
 
-  return {e2eChangedFiles, hasOnlyMdOrCsvFiles};
+  return { e2eChangedFiles, hasOnlyMdOrCsvFiles };
 }
 
 module.exports = { filterE2eChangedFiles, readChangedFiles };
