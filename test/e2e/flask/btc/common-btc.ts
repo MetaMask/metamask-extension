@@ -19,7 +19,6 @@ export async function mockBtcBalanceQuote(
       return {
         statusCode: 200,
         json: {
-          error: null,
           result: {
             address,
             balance: (DEFAULT_BTC_BALANCE * 1e8).toString(), // Converts from BTC to sats
