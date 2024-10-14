@@ -124,19 +124,6 @@ export const SendPage = () => {
 
       token.image = token.image ?? token.iconUrl;
 
-      if (getIsDraftSwapAndSend(draftTransaction)) {
-        trackEvent(
-          {
-            event: MetaMetricsEventName.sendSwapQuoteRequested,
-            category: MetaMetricsEventCategory.Send,
-            sensitiveProperties: {
-              ...sendAnalytics,
-            },
-          },
-          { excludeMetaMetricsId: false },
-        );
-      }
-
       if (token.type === AssetType.native) {
         dispatch(
           updateSendAsset({
@@ -356,20 +343,6 @@ export const SendPage = () => {
 
   const onAmountChange = useCallback(
     (newAmountRaw, newAmountFormatted) => {
-      console.log('CHANGING')
-      console.log(getIsDraftSwapAndSend(draftTransaction))
-      if (getIsDraftSwapAndSend(draftTransaction)) {
-        trackEvent(
-          {
-            event: MetaMetricsEventName.sendSwapQuoteRequested,
-            category: MetaMetricsEventCategory.Send,
-            sensitiveProperties: {
-              ...sendAnalytics,
-            },
-          },
-          { excludeMetaMetricsId: false },
-        );
-      }
       dispatch(updateSendAmount(newAmountRaw, newAmountFormatted));
       setError(undefined);
     },

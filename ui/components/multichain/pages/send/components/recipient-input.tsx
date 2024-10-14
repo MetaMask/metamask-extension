@@ -5,11 +5,9 @@ import DomainInput from '../../../../../pages/confirmations/send/send-content/ad
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   addHistoryEntry,
-  getCurrentDraftTransaction,
   getIsUsingMyAccountForRecipientSearch,
   getRecipient,
   getRecipientUserInput,
-  getSendAnalyticProperties,
   resetRecipientInput,
   updateRecipient,
   updateRecipientUserInput,
@@ -23,7 +21,6 @@ import {
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { SendPageRow } from '.';
-import { getIsDraftSwapAndSend } from '../../../../../ducks/send/helpers';
 
 export const SendPageRecipientInput = () => {
   const t = useContext(I18nContext);
@@ -35,8 +32,6 @@ export const SendPageRecipientInput = () => {
   const isUsingMyAccountsForRecipientSearch = useSelector(
     getIsUsingMyAccountForRecipientSearch,
   );
-  const currentDraftTransaction = useSelector(getCurrentDraftTransaction);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   return (
     <SendPageRow>
@@ -62,18 +57,6 @@ export const SendPageRecipientInput = () => {
             },
             { excludeMetaMetricsId: false },
           );
-          if (getIsDraftSwapAndSend(currentDraftTransaction)) {
-            trackEvent(
-              {
-                event: MetaMetricsEventName.sendSwapQuoteRequested,
-                category: MetaMetricsEventCategory.Send,
-                sensitiveProperties: {
-                  ...sendAnalytics,
-                },
-              },
-              { excludeMetaMetricsId: false },
-            );
-          }
           dispatch(updateRecipient({ address, nickname: '' }));
         }}
         internalSearch={isUsingMyAccountsForRecipientSearch}
