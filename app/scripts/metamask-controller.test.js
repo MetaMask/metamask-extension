@@ -102,10 +102,13 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
 const rpcMethodMiddlewareMock = {
-  createMethodMiddleware: () => (_req, _res, next, _end) => {
+  createEip1193MethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
-  createLegacyMethodMiddleware: () => (_req, _res, next, _end) => {
+  createEthAccountsMethodMiddleware: () => (_req, _res, next, _end) => {
+    next();
+  },
+  createMultichainMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
   createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {

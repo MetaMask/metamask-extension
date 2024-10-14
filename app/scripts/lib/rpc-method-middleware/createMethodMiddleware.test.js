@@ -6,7 +6,6 @@ import {
 import {
   createEip1193MethodMiddleware,
   createEthAccountsMethodMiddleware,
-  createMultichainMethodMiddleware,
 } from '.';
 
 const getHandler = () => ({
@@ -40,15 +39,15 @@ jest.mock('@metamask/permission-controller', () => ({
   ...jest.requireActual('@metamask/permission-controller'),
 }));
 
-jest.mock('../multichain-api/wallet-getPermissions', () => ({
+jest.mock('./handlers/wallet-getPermissions', () => ({
   getPermissionsHandler: getHandler(),
 }));
 
-jest.mock('../multichain-api/wallet-requestPermissions', () => ({
+jest.mock('./handlers/wallet-requestPermissions', () => ({
   requestPermissionsHandler: getHandler(),
 }));
 
-jest.mock('../multichain-api/wallet-revokePermissions', () => ({
+jest.mock('./handlers/wallet-revokePermissions', () => ({
   revokePermissionsHandler: getHandler(),
 }));
 
@@ -61,7 +60,6 @@ jest.mock('./handlers', () => ({
 describe.each([
   ['createEip1193MethodMiddleware', createEip1193MethodMiddleware],
   ['createEthAccountsMethodMiddleware', createEthAccountsMethodMiddleware],
-  ['createMultichainMethodMiddleware', createMultichainMethodMiddleware],
 ])('%s', (_name, createMiddleware) => {
   const method1 = 'method1';
 
