@@ -3,8 +3,8 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
-import { PermissionNames } from '../../controllers/permissions';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
+import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { revokePermissionsHandler } from './wallet-revokePermissions';
 
 const baseRequest = {

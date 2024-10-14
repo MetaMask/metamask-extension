@@ -2,14 +2,14 @@ import { selectHooks } from '@metamask/snaps-rpc-methods';
 import { hasProperty } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { getPermissionsHandler } from '../multichain-api/wallet-getPermissions';
-import { requestPermissionsHandler } from '../multichain-api/wallet-requestPermissions';
-import { revokePermissionsHandler } from '../multichain-api/wallet-revokePermissions';
 import {
   handlers as localHandlers,
   eip1193OnlyHandlers,
   ethAccountsHandler,
 } from './handlers';
+import { getPermissionsHandler } from './handlers/wallet-getPermissions';
+import { requestPermissionsHandler } from './handlers/wallet-requestPermissions';
+import { revokePermissionsHandler } from './handlers/wallet-revokePermissions';
 
 // The primary home of RPC method implementations for the injected 1193 provider API. MUST be subsequent
 // to our permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
