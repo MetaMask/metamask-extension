@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 
+import * as TokenActions from '../utils/token';
 import useGetTokenStandardAndDetails from './useGetTokenStandardAndDetails';
 
 jest.mock('react-redux', () => ({
@@ -28,6 +29,11 @@ describe('useGetTokenStandardAndDetails', () => {
   });
 
   it('should return token details obtained from getTokenStandardAndDetails action', async () => {
+    jest
+      .spyOn(TokenActions, 'memoizedGetTokenStandardAndDetails')
+      .mockResolvedValue({
+        standard: 'ERC20',
+      } as TokenActions.TokenDetailsERC20);
     const { result, rerender } = renderHook(() =>
       useGetTokenStandardAndDetails('0x5'),
     );
@@ -36,8 +42,7 @@ describe('useGetTokenStandardAndDetails', () => {
 
     await waitFor(() => {
       expect(result.current).toEqual({
-        decimals: 2,
-        decimalsNumber: 2,
+        decimalsNumber: 18,
         standard: 'ERC20',
       });
     });
