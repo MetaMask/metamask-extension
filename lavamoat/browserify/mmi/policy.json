@@ -2110,6 +2110,12 @@
         "ethers>@ethersproject/sha2>hash.js": true
       }
     },
+    "@metamask/preferences-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true
+      }
+    },
     "@metamask/profile-sync-controller": {
       "globals": {
         "Event": true,
