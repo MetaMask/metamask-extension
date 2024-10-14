@@ -3,7 +3,7 @@ import { SURVEY_DATE, SURVEY_GMT } from '../../../helpers/constants/survey';
 import {
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
-} from './toast-master-selectors';
+} from './selectors';
 
 describe('#getShowSurveyToast', () => {
   const realDateNow = Date.now;

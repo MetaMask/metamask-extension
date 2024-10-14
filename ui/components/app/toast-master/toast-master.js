@@ -38,7 +38,7 @@ import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
-} from './toast-master-selectors';
+} from './selectors';
 
 // Allow comparison with a previous value, in order to detect changes
 // (This pattern only works if ToastMaster is a singleton)
