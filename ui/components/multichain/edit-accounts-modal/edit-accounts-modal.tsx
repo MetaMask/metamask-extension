@@ -201,12 +201,13 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 
                         onSubmit(selectedAccountAddresses);
                         trackEvent({
+                          category: MetaMetricsEventCategory.Permissions,
                           event:
                             MetaMetricsEventName.UpdatePermissionedAccounts,
-                          category: MetaMetricsEventCategory.Permissions,
                           properties: {
                             addedAccounts: addedAccounts.length,
                             removedAccounts: removedAccounts.length,
+                            location: 'Edit Accounts Modal',
                           },
                         });
 

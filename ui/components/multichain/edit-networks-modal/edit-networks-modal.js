@@ -193,11 +193,12 @@ export const EditNetworksModal = ({
                   ); // networks removed for metrics
 
                   trackEvent({
-                    event: MetaMetricsEventName.UpdatePermissionedNetworks,
                     category: MetaMetricsEventCategory.Permissions,
+                    event: MetaMetricsEventName.UpdatePermissionedNetworks,
                     properties: {
                       addedNetworks: addedNetworks.length,
                       removedNetworks: removedNetworks.length,
+                      location: 'Edit Networks Modal',
                     },
                   });
                   onClose();
