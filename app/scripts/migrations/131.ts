@@ -237,10 +237,12 @@ function transformState(state: Record<string, unknown>) {
       }
     }
 
-    const isSnap = snapsPrefixes.some((prefix) => origin.startsWith(prefix))
+    const isSnap = snapsPrefixes.some((prefix) => origin.startsWith(prefix));
     const scopes: Record<string, Json> = {};
-    const scopeStrings = isSnap ? [] : chainIds.map(chainId => `eip155:${parseInt(chainId, 16)}`)
-    scopeStrings.push('wallet:eip155')
+    const scopeStrings = isSnap
+      ? []
+      : chainIds.map((chainId) => `eip155:${parseInt(chainId, 16)}`);
+    scopeStrings.push('wallet:eip155');
 
     scopeStrings.forEach((scopeString) => {
       const caipAccounts = ethAccounts.map(
