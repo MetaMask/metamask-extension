@@ -52,6 +52,7 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   currentPopupId?: number;
   onboardingDate: number | null;
+  lastViewedUserSurvey: number | null;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   // This key is only used for checking if the user had set advancedGasFee
@@ -175,6 +176,7 @@ const getDefaultAppStateControllerState = (
   showAccountBanner: true,
   trezorModel: null,
   onboardingDate: null,
+  lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
@@ -351,6 +353,12 @@ export class AppStateController extends EventEmitter {
   setOnboardingDate(): void {
     this.store.updateState({
       onboardingDate: Date.now(),
+    });
+  }
+
+  setLastViewedUserSurvey(id: number) {
+    this.store.updateState({
+      lastViewedUserSurvey: id,
     });
   }
 
