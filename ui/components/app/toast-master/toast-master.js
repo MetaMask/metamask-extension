@@ -18,7 +18,7 @@ import {
   REVIEW_PERMISSIONS,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
-import { getShowAutoNetworkSwitchTest } from '../../../pages/routes/routes-helpers';
+import { getShowAutoNetworkSwitchTest } from '../../../pages/routes/utils';
 import { getSelectedAccount, getUseNftDetection } from '../../../selectors';
 import { hidePermittedNetworkToast } from '../../../store/actions';
 import {

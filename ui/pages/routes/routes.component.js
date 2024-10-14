@@ -121,7 +121,7 @@ import {
   isConfirmTransactionRoute,
   setTheme,
   showOnboardingHeader,
-} from './routes-helpers';
+} from './utils';
 
 export default class Routes extends Component {
   static propTypes = {
