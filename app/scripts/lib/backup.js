@@ -18,7 +18,7 @@ export default class Backup {
   }
 
   async restoreUserData(jsonString) {
-    const existingPreferences = this.preferencesController.store.getState();
+    const existingPreferences = this.preferencesController.state;
     const { preferences, addressBook, network, internalAccounts } =
       JSON.parse(jsonString);
     if (preferences) {
@@ -26,7 +26,7 @@ export default class Backup {
       preferences.lostIdentities = existingPreferences.lostIdentities;
       preferences.selectedAddress = existingPreferences.selectedAddress;
 
-      this.preferencesController.store.updateState(preferences);
+      this.preferencesController.update(preferences);
     }
 
     if (addressBook) {
@@ -51,7 +51,7 @@ export default class Backup {
 
   async backupUserData() {
     const userData = {
-      preferences: { ...this.preferencesController.store.getState() },
+      preferences: { ...this.preferencesController.state },
       internalAccounts: {
         internalAccounts: this.accountsController.state.internalAccounts,
       },
