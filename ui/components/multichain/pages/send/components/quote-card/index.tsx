@@ -110,6 +110,17 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     }
 
     if (timeLeft <= 0) {
+      dispatch(updateSendQuote(false, true));
+    }
+
+    const timeout = setTimeout(() => setTimeLeft(timeLeft - 1), SECOND);
+    // eslint-disable-next-line consistent-return
+    return () => clearTimeout(timeout);
+  }, [timeLeft]);
+
+  // use to track when a quote is requested and received
+  useEffect(() => {
+    if(isSwapQuoteLoading) {
       trackEvent(
         {
           event: MetaMetricsEventName.sendSwapQuoteRequested,
@@ -120,13 +131,19 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
         },
         { excludeMetaMetricsId: false },
       );
-      dispatch(updateSendQuote(false, true));
+    } else {
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteReceived,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
     }
-
-    const timeout = setTimeout(() => setTimeLeft(timeLeft - 1), SECOND);
-    // eslint-disable-next-line consistent-return
-    return () => clearTimeout(timeout);
-  }, [timeLeft]);
+  }, [isSwapQuoteLoading])
 
   const infoText = useMemo(() => {
     if (isSwapQuoteLoading) {
