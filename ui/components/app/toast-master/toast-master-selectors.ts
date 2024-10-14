@@ -33,7 +33,7 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
  * @param state - The application state containing the necessary survey data.
  * @returns True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
  */
-export function getShowSurveyToast(state: State): boolean {
+export function selectShowSurveyToast(state: State): boolean {
   if (state.metamask?.surveyLinkLastClickedOrClosed) {
     return false;
   }
@@ -51,7 +51,7 @@ export function getShowSurveyToast(state: State): boolean {
  * @param state - The application state containing the privacy policy data.
  * @returns Boolean is True if the toast should be shown, and the number is the date the toast was last shown.
  */
-export function getShowPrivacyPolicyToast(state: State): {
+export function selectShowPrivacyPolicyToast(state: State): {
   showPrivacyPolicyToast: boolean;
   newPrivacyPolicyToastShownDate?: number;
 } {
@@ -108,7 +108,7 @@ export function setNewPrivacyPolicyToastClickedOrClosed() {
   submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
 }
 
-export function getNftDetectionEnablementToast(state: State): boolean {
+export function selectNftDetectionEnablementToast(state: State): boolean {
   return Boolean(state.appState?.showNftDetectionEnablementToast);
 }
 
@@ -123,7 +123,7 @@ export function setShowNftDetectionEnablementToast(
 
 // If there is more than one connected account to activeTabOrigin,
 // *BUT* the current account is not one of them, show the banner
-export function getShowConnectAccountToast(
+export function selectShowConnectAccountToast(
   state: State,
   account: InternalAccount,
 ): boolean {

@@ -31,10 +31,10 @@ import {
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import {
-  getNftDetectionEnablementToast,
-  getShowConnectAccountToast,
-  getShowPrivacyPolicyToast,
-  getShowSurveyToast,
+  selectNftDetectionEnablementToast,
+  selectShowConnectAccountToast,
+  selectShowPrivacyPolicyToast,
+  selectShowSurveyToast,
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
@@ -61,12 +61,12 @@ export function ToastMaster({ props, context }) {
   const showAutoNetworkSwitchToast = getShowAutoNetworkSwitchTest(props);
 
   const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
-    useSelector(getShowPrivacyPolicyToast);
+    useSelector(selectShowPrivacyPolicyToast);
 
   const autoHideToastDelay = 5 * SECOND;
   const safeEncodedHost = encodeURIComponent(activeTabOrigin);
 
-  const showSurveyToast = useSelector(getShowSurveyToast);
+  const showSurveyToast = useSelector(selectShowSurveyToast);
 
   const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
   const account = useSelector(getSelectedAccount);
@@ -78,10 +78,10 @@ export function ToastMaster({ props, context }) {
   }
 
   const showConnectAccountToast = useSelector((state) =>
-    getShowConnectAccountToast(state, account),
+    selectShowConnectAccountToast(state, account),
   );
 
-  const showNftEnablementToast = useSelector(getNftDetectionEnablementToast);
+  const showNftEnablementToast = useSelector(selectNftDetectionEnablementToast);
   const useNftDetection = useSelector(getUseNftDetection);
 
   // If the privacy policy toast is shown, and there is no date set, set it
