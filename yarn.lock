@@ -6456,10 +6456,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:^8.4.0":
-  version: 8.4.0
-  resolution: "@metamask/test-dapp@npm:8.4.0"
-  checksum: 10/9d9c4df11c2b18c72b52e8743435ed0bd18815dd7a7aed43cf3a2cce1b9ef8926909890d00b4b624446f73b88c15e95bc0190c5437b9dad437a0e345a6b430ba
+"@metamask/test-dapp@npm:^8.7.0":
+  version: 8.10.0
+  resolution: "@metamask/test-dapp@npm:8.10.0"
+  checksum: 10/cde7534b1ceff2b32dfdc28b86a0de7b6da5b84778ef1d1ac097ecf2e5ab08d708efcb30b23d5eaeaf20824151dd8a228893119091963bdcf144bae711a7d646
   languageName: node
   linkType: hard
 
@@ -26151,7 +26151,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^6.5.1"
     "@metamask/snaps-utils": "npm:^8.1.1"
     "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:^8.4.0"
+    "@metamask/test-dapp": "npm:^8.7.0"
     "@metamask/transaction-controller": "npm:^37.2.0"
     "@metamask/user-operation-controller": "npm:^13.0.0"
     "@metamask/utils": "npm:^9.3.0"
