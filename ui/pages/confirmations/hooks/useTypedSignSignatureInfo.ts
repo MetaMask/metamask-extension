@@ -14,15 +14,15 @@ import { TypedSignSignaturePrimaryTypes } from '../constants';
 export const useTypedSignSignatureInfo = (
   confirmation: SignatureRequestType,
 ) => {
-  if (
-    !confirmation ||
-    !isSignatureTransactionType(confirmation) ||
-    confirmation?.type !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA
-  ) {
-    return {};
-  }
 
   const primaryType = useMemo(() => {
+    if (
+      !confirmation ||
+      !isSignatureTransactionType(confirmation) ||
+      confirmation?.type !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA
+    ) {
+      return undefined;
+    }
     if (isPermitSignatureRequest(confirmation)) {
       return TypedSignSignaturePrimaryTypes.PERMIT;
     } else if (isOrderSignatureRequest(confirmation)) {
@@ -35,6 +35,13 @@ export const useTypedSignSignatureInfo = (
   // we can get contract details for verifyingContract but that is async process taking longer
   // and result in confirmation page content loading late
   const tokenStandard = useMemo(() => {
+    if (
+      !confirmation ||
+      !isSignatureTransactionType(confirmation) ||
+      confirmation?.type !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA
+    ) {
+      return undefined;
+    }
     const {
       message: { tokenId },
     } = parseTypedDataMessage(confirmation?.msgParams?.data as string);

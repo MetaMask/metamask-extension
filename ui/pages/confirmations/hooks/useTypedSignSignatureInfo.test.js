@@ -21,6 +21,7 @@ describe('useTypedSignSignatureInfo', () => {
     const { result } = renderHook(() =>
       useTypedSignSignatureInfo(unapprovedPersonalSignMsg),
     );
-    expect(result.current).toStrictEqual({});
+    expect(result.current.primaryType).toBeUndefined();
+    expect(result.current.tokenStandard).toBeUndefined();
   });
 });
