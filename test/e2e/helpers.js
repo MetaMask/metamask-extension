@@ -570,7 +570,8 @@ const onboardingPinExtension = async (driver) => {
 const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   // wait for h2 to appear
   await driver.findElement({ text: 'Congratulations!', tag: 'h2' });
-  // opt-out from third party API
+
+  // opt-out from third party API on general section
   await driver.clickElement({ text: 'Manage default settings', tag: 'button' });
   await driver.clickElement({ text: 'General', tag: 'p' });
   await driver.clickElement(
@@ -579,6 +580,9 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await driver.clickElement('[id="basic-configuration-checkbox"]');
   await driver.clickElement({ text: 'Turn off', tag: 'button' });
 
+  // opt-out from third party API on assets section
+  await driver.clickElement('[data-testid="category-back-button"]');
+  await driver.clickElement({ text: 'Assets', tag: 'p' });
   await Promise.all(
     (
       await driver.findClickableElements(
