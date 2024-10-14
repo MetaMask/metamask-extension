@@ -60,10 +60,10 @@ export class DummyAppPage {
     if (isSign) {
       await popup.click('button:has-text("Confirm")');
     } else {
-      await popup.getByTestId('page-container-footer-next').click();
+      await popup.getByTestId('confirm-footer-button').click();
 
       if (buttonId === 'approveTokens') {
-        await popup.getByTestId('page-container-footer-next').click();
+        await popup.getByTestId('confirm-footer-button').click();
       }
 
       await popup
