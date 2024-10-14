@@ -7,7 +7,6 @@ const {
   findAnotherAccountFromAccountList,
   locateAccountBalanceDOM,
   logInWithBalanceValidation,
-  regularDelayMs,
   unlockWallet,
   WALLET_PASSWORD,
   generateGanacheOptions,
@@ -109,16 +108,13 @@ describe('Add account', function () {
           '[data-testid="account-options-menu-button"]',
         );
 
-        await driver.delay(regularDelayMs);
-        await driver.waitForSelector('[data-testid="global-menu-lock"]');
         await driver.clickElement('[data-testid="global-menu-lock"]');
         await driver.waitForSelector('[data-testid="unlock-page"]');
 
         // Recover via SRP in "forget password" option
-        const restoreSeedLink = await driver.findClickableElement(
+        await driver.clickElement(
           '.unlock-page__link',
         );
-        await restoreSeedLink.click();
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
           TEST_SEED_PHRASE,
@@ -126,7 +122,6 @@ describe('Add account', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
 
-        await driver.delay(regularDelayMs);
         await driver.clickElement(
           '[data-testid="create-new-vault-submit-button"]',
         );
