@@ -9,11 +9,6 @@ class SnapSimpleKeyringPage {
     tag: 'h3',
   };
 
-  private readonly accountSupportedMethods = {
-    text: 'Account Supported Methods',
-    tag: 'p',
-  };
-
   private readonly addtoMetamaskMessage = {
     text: 'Add to MetaMask',
     tag: 'h3',
@@ -104,6 +99,11 @@ class SnapSimpleKeyringPage {
     tag: 'div',
   };
 
+  private readonly newAccountMessage = {
+    text: '"address":',
+    tag: 'div',
+  };
+
   private readonly pageTitle = {
     text: 'Snap Simple Keyring',
     tag: 'p',
@@ -168,13 +168,10 @@ class SnapSimpleKeyringPage {
     console.log(
       'Approve/Reject snap account transaction on Snap Simple Keyring page',
     );
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmationSubmitButton,
-    );
+    await this.driver.clickElement(this.confirmationSubmitButton);
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
-
     // Get the first request from the requests list on simple keyring snap page
     await this.driver.clickElementUsingMouseMove(this.listRequestsSection);
     await this.driver.clickElement(this.listRequestsButton);
@@ -242,7 +239,7 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
-    await this.check_accountSupportedMethodsDisplayed();
+    await this.driver.waitForSelector(this.newAccountMessage);
   }
 
   async confirmCreateSnapOnConfirmationScreen(): Promise<void> {
@@ -255,15 +252,21 @@ class SnapSimpleKeyringPage {
    *
    * @param accountName - Optional: name for the snap account. Defaults to "SSK Account".
    * @param isFirstAccount - Indicates if this is the first snap account being created. Defaults to true.
+   * @returns the public key of the new created account
    */
   async createNewAccount(
     accountName: string = 'SSK Account',
     isFirstAccount: boolean = true,
-  ): Promise<void> {
+  ): Promise<string> {
     console.log('Create new account on Snap Simple Keyring page');
     await this.openCreateSnapAccountConfirmationScreen(isFirstAccount);
     await this.confirmCreateSnapOnConfirmationScreen();
     await this.confirmAddAccountDialog(accountName);
+    const newAccountJSONMessage = await (
+      await this.driver.waitForSelector(this.newAccountMessage)
+    ).getText();
+    const newPublicKey = JSON.parse(newAccountJSONMessage).address;
+    return newPublicKey;
   }
 
   /**
@@ -329,13 +332,6 @@ class SnapSimpleKeyringPage {
   async toggleUseSyncApproval() {
     console.log('Toggle Use Synchronous Approval');
     await this.driver.clickElement(this.useSyncApprovalToggle);
-  }
-
-  async check_accountSupportedMethodsDisplayed(): Promise<void> {
-    console.log(
-      'Check new created account supported methods are displayed on simple keyring snap page',
-    );
-    await this.driver.waitForSelector(this.accountSupportedMethods);
   }
 
   async check_errorRequestMessageDisplayed(): Promise<void> {
