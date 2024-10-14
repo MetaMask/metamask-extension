@@ -18,7 +18,7 @@ import { getSelectedEvmInternalAccount } from '../../../selectors';
 /** @param {PropTypes.InferProps<typeof UserPreferencedCurrencyDisplayPropTypes>>} */
 export default function UserPreferencedCurrencyDisplay({
   'data-testid': dataTestId,
-  account: account_,
+  account: multichainAccount,
   ethNumberOfDecimals,
   fiatNumberOfDecimals,
   numberOfDecimals: propsNumberOfDecimals,
@@ -37,7 +37,7 @@ export default function UserPreferencedCurrencyDisplay({
   // The caller has to pass the account in a multichain context to properly display the currency
   // here (e.g for Bitcoin).
   const evmAccount = useSelector(getSelectedEvmInternalAccount);
-  const account = account_ ?? evmAccount;
+  const account = multichainAccount ?? evmAccount;
 
   const currentNetwork = useMultichainSelector(
     getMultichainCurrentNetwork,
