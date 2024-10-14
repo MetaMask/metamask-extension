@@ -1,11 +1,14 @@
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
+import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
   SURVEY_DATE,
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
+import { getPermittedAccountsForCurrentTab } from '../../../selectors';
 import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { MetaMaskReduxState } from '../../../store/store';
@@ -116,4 +119,24 @@ export function setShowNftDetectionEnablementToast(
     type: SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
     payload: value,
   };
+}
+
+// If there is more than one connected account to activeTabOrigin,
+// *BUT* the current account is not one of them, show the banner
+export function getShowConnectAccountToast(
+  state: State,
+  account: InternalAccount,
+): boolean {
+  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
+  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const isEvmAccount = isEvmAccountType(account?.type);
+
+  return (
+    allowShowAccountSetting &&
+    account &&
+    state.activeTab?.origin &&
+    isEvmAccount &&
+    connectedAccounts.length > 0 &&
+    !connectedAccounts.some((address) => address === account.address)
+  );
 }

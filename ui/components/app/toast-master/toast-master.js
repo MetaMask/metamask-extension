@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import { isEvmAccountType } from '@metamask/keyring-api';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
@@ -8,7 +7,6 @@ import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
 } from '../../../../shared/lib/ui-utils';
-import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import {
   BorderColor,
   BorderRadius,
@@ -21,11 +19,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getShowAutoNetworkSwitchTest } from '../../../pages/routes/routes-helpers';
-import {
-  getPermittedAccountsForCurrentTab,
-  getSelectedAccount,
-  getUseNftDetection,
-} from '../../../selectors';
+import { getSelectedAccount, getUseNftDetection } from '../../../selectors';
 import { hidePermittedNetworkToast } from '../../../store/actions';
 import {
   AvatarAccount,
@@ -38,6 +32,7 @@ import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import {
   getNftDetectionEnablementToast,
+  getShowConnectAccountToast,
   getShowPrivacyPolicyToast,
   getShowSurveyToast,
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -240,21 +235,4 @@ export function ToastMaster({ props, context }) {
 function onHomeScreen(props) {
   const { location } = props;
   return location.pathname === DEFAULT_ROUTE;
-}
-
-// If there is more than one connected account to activeTabOrigin,
-// *BUT* the current account is not one of them, show the banner
-function getShowConnectAccountToast(state, account) {
-  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-  const isEvmAccount = isEvmAccountType(account?.type);
-
-  return (
-    allowShowAccountSetting &&
-    account &&
-    state.activeTab?.origin &&
-    isEvmAccount &&
-    connectedAccounts.length > 0 &&
-    !connectedAccounts.some((address) => address === account.address)
-  );
 }
