@@ -210,6 +210,8 @@ describe('NetworkListMenu', () => {
     fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
     expect(mockToggleNetworkMenu).toHaveBeenCalled();
     expect(mockSetActiveNetwork).toHaveBeenCalled();
+    expect(mockUpdateCustomNonce).toHaveBeenCalled();
+    expect(mockSetNextNonce).toHaveBeenCalled();
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
