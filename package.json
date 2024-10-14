@@ -338,7 +338,7 @@
     "@metamask/message-manager": "^10.1.0",
     "@metamask/message-signing-snap": "^0.3.3",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-42134f7e",
+    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-a13b9c75",
     "@metamask/name-controller": "^8.0.0",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/notification-controller": "^6.0.0",
