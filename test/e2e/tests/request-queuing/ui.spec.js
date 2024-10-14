@@ -60,7 +60,7 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
           (permission) =>
             permission.parentCapability === PermissionNames.permittedChains,
         )
-        ?.caveats.find(
+        ?.caveats?.find(
           (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
         )?.value || [];
 

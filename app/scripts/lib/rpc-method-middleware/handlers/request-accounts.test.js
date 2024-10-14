@@ -135,7 +135,7 @@ describe('requestEthereumAccountsHandler', () => {
   });
 
   describe('eip155 account permissions do not exist', () => {
-    it('requests eth_accounts and permittedChains approval', async () => {
+    it('requests eth_accounts and permittedChains approval if origin is not snapId', async () => {
       const { handler, requestPermissionApprovalForOrigin } =
         createMockedHandler();
 
@@ -143,6 +143,16 @@ describe('requestEthereumAccountsHandler', () => {
       expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
         [RestrictedMethods.eth_accounts]: {},
         [PermissionNames.permittedChains]: {},
+      });
+    });
+
+    it('requests eth_accounts approval if origin is snapId', async () => {
+      const { handler, requestPermissionApprovalForOrigin } =
+        createMockedHandler();
+
+      await handler({ ...baseRequest, origin: 'npm:snap' });
+      expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
+        [RestrictedMethods.eth_accounts]: {},
       });
     });
 
@@ -158,7 +168,7 @@ describe('requestEthereumAccountsHandler', () => {
       expect(end).toHaveBeenCalled();
     });
 
-    it('sets the approved chainIds on an empty CAIP-25 caveat with isMultichainOrigin: false', async () => {
+    it('sets the approved chainIds on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is not snapId', async () => {
       const { handler } = createMockedHandler();
 
       await handler(baseRequest);
@@ -172,7 +182,7 @@ describe('requestEthereumAccountsHandler', () => {
       );
     });
 
-    it('sets the approved accounts on the CAIP-25 caveat after the approved chainIds', async () => {
+    it('sets the approved accounts on the CAIP-25 caveat after the approved chainIds if origin is not snapId', async () => {
       const { handler } = createMockedHandler();
 
       MockMultichain.setPermittedEthChainIds.mockReturnValue(
@@ -182,6 +192,29 @@ describe('requestEthereumAccountsHandler', () => {
       await handler(baseRequest);
       expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         'caveatValueWithEthChainIdsSet',
+        ['0xdeadbeef'],
+      );
+    });
+
+    it('does not set the approved chainIds on an empty CAIP-25 caveat if origin is snapId', async () => {
+      const { handler } = createMockedHandler();
+
+      await handler({ baseRequest, origin: 'npm:snap' });
+      expect(
+        MockPermittedChainsAdapters.setPermittedEthChainIds,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('sets the approved accounts on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is snapId', async () => {
+      const { handler } = createMockedHandler();
+
+      await handler({ baseRequest, origin: 'npm:snap' });
+      expect(MockEthAccountsAdapters.setEthAccounts).toHaveBeenCalledWith(
+        {
+          requiredScopes: {},
+          optionalScopes: {},
+          isMultichainOrigin: false,
+        },
         ['0xdeadbeef'],
       );
     });

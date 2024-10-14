@@ -164,7 +164,7 @@ describe('requestPermissionsHandler', () => {
     );
   });
 
-  it('requests approval from the ApprovalController for eth_accounts and permittedChains when only eth_accounts is specified in params', async () => {
+  it('requests approval from the ApprovalController for eth_accounts and permittedChains when only eth_accounts is specified in params and origin is not snapId', async () => {
     const { handler, requestPermissionApprovalForOrigin } =
       createMockedHandler();
 
@@ -187,7 +187,7 @@ describe('requestPermissionsHandler', () => {
     });
   });
 
-  it('requests approval from the ApprovalController for eth_accounts and permittedChains when only permittedChains is specified in params', async () => {
+  it('requests approval from the ApprovalController for eth_accounts and permittedChains when only permittedChains is specified in params and origin is not snapId', async () => {
     const { handler, requestPermissionApprovalForOrigin } =
       createMockedHandler();
 
@@ -220,7 +220,7 @@ describe('requestPermissionsHandler', () => {
     });
   });
 
-  it('requests approval from the ApprovalController for eth_accounts and permittedChains when both are specified in params', async () => {
+  it('requests approval from the ApprovalController for eth_accounts and permittedChains when both are specified in params and origin is not snapId', async () => {
     const { handler, requestPermissionApprovalForOrigin } =
       createMockedHandler();
 
@@ -254,6 +254,86 @@ describe('requestPermissionsHandler', () => {
             value: ['0x64'],
           },
         ],
+      },
+    });
+  });
+
+  it('requests approval from the ApprovalController for only eth_accounts when only eth_accounts is specified in params and origin is snapId', async () => {
+    const { handler, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
+
+    await handler({
+      ...getBaseRequest(),
+      origin: 'npm:snap',
+      params: [
+        {
+          [RestrictedMethods.eth_accounts]: {
+            foo: 'bar',
+          },
+        },
+      ],
+    });
+
+    expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
+      [RestrictedMethods.eth_accounts]: {
+        foo: 'bar',
+      },
+    });
+  });
+
+  it('requests approval from the ApprovalController for only eth_accounts when only permittedChains is specified in params and origin is snapId', async () => {
+    const { handler, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
+
+    await handler({
+      ...getBaseRequest(),
+      origin: 'npm:snap',
+      params: [
+        {
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x64'],
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
+      [RestrictedMethods.eth_accounts]: {},
+    });
+  });
+
+  it('requests approval from the ApprovalController for only eth_accounts when both eth_accounts and permittedChains are specified in params and origin is snapId', async () => {
+    const { handler, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
+
+    await handler({
+      ...getBaseRequest(),
+      origin: 'npm:snap',
+      params: [
+        {
+          [RestrictedMethods.eth_accounts]: {
+            foo: 'bar',
+          },
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x64'],
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
+      [RestrictedMethods.eth_accounts]: {
+        foo: 'bar',
       },
     });
   });
@@ -450,7 +530,7 @@ describe('requestPermissionsHandler', () => {
   });
 
   describe('eth_accounts and permittedChains approvals were accepted', () => {
-    it('sets the approved chainIds on an empty CAIP-25 caveat with isMultichainOrigin: false', async () => {
+    it('sets the approved chainIds on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is not snapId', async () => {
       const { handler } = createMockedHandler();
 
       await handler(getBaseRequest());
@@ -464,7 +544,7 @@ describe('requestPermissionsHandler', () => {
       );
     });
 
-    it('sets the approved accounts on the CAIP-25 caveat after the approved chainIds', async () => {
+    it('sets the approved accounts on the CAIP-25 caveat after the approved chainIds if origin is not snapId', async () => {
       const { handler } = createMockedHandler();
       MockMultichain.setPermittedEthChainIds.mockReturnValue(
         'caveatValueWithEthChainIdsSet',
@@ -473,6 +553,29 @@ describe('requestPermissionsHandler', () => {
       await handler(getBaseRequest());
       expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         'caveatValueWithEthChainIdsSet',
+        ['0xdeadbeef'],
+      );
+    });
+
+    it('does not set the approved chainIds on an empty CAIP-25 caveat if origin is snapId', async () => {
+      const { handler } = createMockedHandler();
+
+      await handler({ ...getBaseRequest(), origin: 'npm:snapm' });
+      expect(
+        MockPermittedChainsAdapters.setPermittedEthChainIds,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('sets the approved accounts on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is snapId', async () => {
+      const { handler } = createMockedHandler();
+
+      await handler({ ...getBaseRequest(), origin: 'npm:snapm' });
+      expect(MockEthAccountsAdapters.setEthAccounts).toHaveBeenCalledWith(
+        {
+          requiredScopes: {},
+          optionalScopes: {},
+          isMultichainOrigin: false,
+        },
         ['0xdeadbeef'],
       );
     });
@@ -553,7 +656,7 @@ describe('requestPermissionsHandler', () => {
       expect(getAccounts).toHaveBeenCalled();
     });
 
-    it('returns eth_accounts and permittedChains permissions in addition to other permissions that were granted', async () => {
+    it('returns both eth_accounts and permittedChains permissions in addition to other permissions that were granted if origin is not snapId', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockResolvedValue(['0xdeadbeef']);
 
@@ -583,6 +686,30 @@ describe('requestPermissionsHandler', () => {
           ],
           id: '1',
           parentCapability: PermissionNames.permittedChains,
+        },
+      ]);
+    });
+
+    it('returns only eth_accounts permissions in addition to other permissions that were granted if origin is snapId', async () => {
+      const { handler, getAccounts, response } = createMockedHandler();
+      getAccounts.mockResolvedValue(['0xdeadbeef']);
+
+      await handler({ ...getBaseRequest(), origin: 'npm:snap' });
+      expect(response.result).toStrictEqual([
+        {
+          caveats: [{ value: { foo: 'bar' } }],
+          id: '2',
+          parentCapability: 'otherPermission',
+        },
+        {
+          caveats: [
+            {
+              type: CaveatTypes.restrictReturnedAccounts,
+              value: ['0xdeadbeef'],
+            },
+          ],
+          id: '1',
+          parentCapability: RestrictedMethods.eth_accounts,
         },
       ]);
     });

@@ -246,6 +246,8 @@ import { getCurrentChainId } from '../../ui/selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
 import { endTrace, trace } from '../../shared/lib/trace';
+// eslint-disable-next-line import/no-restricted-paths
+import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -5821,7 +5823,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createTracingMiddleware());
 
-    // PPOMMiddleware come after the SelectedNetworkMiddleware
     engine.push(
       createPPOMMiddleware(
         this.ppomController,
@@ -5951,9 +5952,10 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             {
-              ...(requestedPermissions[PermissionNames.eth_accounts] && {
-                [PermissionNames.permittedChains]: {},
-              }),
+              ...(requestedPermissions[PermissionNames.eth_accounts] &&
+                !isSnapId(origin) && {
+                  [PermissionNames.permittedChains]: {},
+                }),
               ...(requestedPermissions[PermissionNames.permittedChains] && {
                 [PermissionNames.eth_accounts]: {},
               }),

@@ -10,6 +10,7 @@ import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import { IOptions } from '@open-rpc/test-coverage/build/coverage';
+import { ScopeString } from '@metamask/multichain';
 import { Driver, PAGES } from './webdriver/driver';
 
 import {
@@ -29,7 +30,6 @@ import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAutho
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
-import { ScopeString } from '@metamask/multichain';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;

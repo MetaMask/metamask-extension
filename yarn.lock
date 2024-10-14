@@ -4177,17 +4177,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@json-schema-tools/traverse@npm:^1.10.4":
+"@json-schema-tools/traverse@npm:^1.10.4, @json-schema-tools/traverse@npm:^1.7.5, @json-schema-tools/traverse@npm:^1.7.8":
   version: 1.10.4
   resolution: "@json-schema-tools/traverse@npm:1.10.4"
   checksum: 10/0027bc90df01c5eeee0833e722b7320b53be8b5ce3f4e0e4a6e45713a38e6f88f21aba31e3dd973093ef75cd21a40c07fe8f112da8f49a7919b1c0e44c904d20
-  languageName: node
-  linkType: hard
-
-"@json-schema-tools/traverse@npm:^1.7.5, @json-schema-tools/traverse@npm:^1.7.8":
-  version: 1.10.3
-  resolution: "@json-schema-tools/traverse@npm:1.10.3"
-  checksum: 10/690623740d223ea373d8e561dad5c70bf86461bcedc5fc45da01c87bcdf3284bbdbad3006d4a423f8d82e4b2d4580e45f92c0b272f006024fb597d7f01876215
   languageName: node
   linkType: hard
 

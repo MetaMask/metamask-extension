@@ -2,8 +2,8 @@ import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
 import { JsonRpcResponse } from 'json-rpc-engine';
 import { JsonRpcFailure } from '@metamask/utils';
-import { Driver } from '../webdriver/driver';
 import { ScopeString } from '@metamask/multichain';
+import { Driver } from '../webdriver/driver';
 
 // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-explicit-any
 declare let window: any;

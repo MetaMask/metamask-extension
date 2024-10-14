@@ -41,7 +41,7 @@ async function getPermissionsImplementation(
   // permissions are frozen and must be cloned before modified
   const permissions = { ...getPermissionsForOrigin() } || {};
   const caip25Endowment = permissions[Caip25EndowmentPermissionName];
-  const caip25Caveat = caip25Endowment?.caveats.find(
+  const caip25Caveat = caip25Endowment?.caveats?.find(
     ({ type }) => type === Caip25CaveatType,
   );
   delete permissions[Caip25EndowmentPermissionName];
