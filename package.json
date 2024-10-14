@@ -352,7 +352,7 @@
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "^18.0.1",
-    "@metamask/signature-controller": "npm:@metamask-previews/signature-controller@19.1.0-preview-2f4bcaa9",
+    "@metamask/signature-controller": "npm:@metamask-previews/signature-controller@19.1.0-preview-a66fa61a",
     "@metamask/smart-transactions-controller": "^13.0.0",
     "@metamask/snaps-controllers": "^9.7.0",
     "@metamask/snaps-execution-environments": "^6.7.2",
