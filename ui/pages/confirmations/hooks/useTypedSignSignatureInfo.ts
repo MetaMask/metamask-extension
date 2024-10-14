@@ -11,18 +11,15 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { TypedSignSignaturePrimaryTypes } from '../constants';
 
-const isNotTypedSignDataSignatureRequest = (
-  confirmation: SignatureRequestType,
-) =>
-  !confirmation ||
-  !isSignatureTransactionType(confirmation) ||
-  confirmation?.type !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA;
-
 export const useTypedSignSignatureInfo = (
   confirmation: SignatureRequestType,
 ) => {
   const primaryType = useMemo(() => {
-    if (isNotTypedSignDataSignatureRequest(confirmation)) {
+    if (
+      !confirmation ||
+      !isSignatureTransactionType(confirmation) ||
+      confirmation?.type !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA
+    ) {
       return undefined;
     }
     if (isPermitSignatureRequest(confirmation)) {
@@ -37,9 +34,10 @@ export const useTypedSignSignatureInfo = (
   // we can get contract details for verifyingContract but that is async process taking longer
   // and result in confirmation page content loading late
   const tokenStandard = useMemo(() => {
-    if (isNotTypedSignDataSignatureRequest(confirmation)) {
+    if (primaryType !== TypedSignSignaturePrimaryTypes.PERMIT) {
       return undefined;
     }
+    console.log(confirmation, confirmation?.msgParams?.data);
     const {
       message: { tokenId },
     } = parseTypedDataMessage(confirmation?.msgParams?.data as string);
@@ -47,7 +45,7 @@ export const useTypedSignSignatureInfo = (
       return TokenStandard.ERC721;
     }
     return undefined;
-  }, [confirmation]);
+  }, [confirmation, primaryType]);
 
   return {
     primaryType: primaryType as keyof typeof TypedSignSignaturePrimaryTypes,
