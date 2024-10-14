@@ -121,7 +121,6 @@ import {
   setTheme,
   showOnboardingHeader,
 } from './utils';
-import { getShowAutoNetworkSwitchTest } from '../../components/app/toast-master/utils';
 
 export default class Routes extends Component {
   static propTypes = {

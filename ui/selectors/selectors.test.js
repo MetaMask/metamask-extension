@@ -13,6 +13,7 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import mockState from '../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
+import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import * as selectors from './selectors';
 
@@ -185,10 +186,10 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNeverShowSwitchedNetworkMessage', () => {
+  describe('#selectSwitchedNetworkNeverShowMessage', () => {
     it('returns the correct value', () => {
       expect(
-        selectors.getNeverShowSwitchedNetworkMessage({
+        selectSwitchedNetworkNeverShowMessage({
           metamask: { switchedNetworkNeverShowMessage: true },
         }),
       ).toStrictEqual(true);

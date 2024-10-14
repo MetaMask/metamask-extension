@@ -44,11 +44,11 @@ import {
   selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
-  selectSwitchedNetworkNeverShowMessage,
 } from './selectors';
 import {
   getShowAutoNetworkSwitchTest,
   onHomeScreen,
+  setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
@@ -109,18 +109,18 @@ function ConnectAccountToast() {
         actionText={t('connectAccount')}
         onActionClick={() => {
           // Connect this account
-          dispatch(addPermittedAccount(activeTabOrigin, account.address)),
-            // Use setTimeout to prevent React re-render from
-            // hiding the tooltip
-            setTimeout(() => {
-              // Trigger a mouseenter on the header's connection icon
-              // to display the informative connection tooltip
-              document
-                .querySelector(
-                  '[data-testid="connection-menu"] [data-tooltipped]',
-                )
-                ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-            }, 250 * MILLISECOND);
+          dispatch(addPermittedAccount(activeTabOrigin, account.address));
+          // Use setTimeout to prevent React re-render from
+          // hiding the tooltip
+          setTimeout(() => {
+            // Trigger a mouseenter on the header's connection icon
+            // to display the informative connection tooltip
+            document
+              .querySelector(
+                '[data-testid="connection-menu"] [data-tooltipped]',
+              )
+              ?.dispatchEvent(new CustomEvent('mouseenter', {}));
+          }, 250 * MILLISECOND);
         }}
         onClose={() => setHideConnectAccountToast(true)}
       />
@@ -191,6 +191,8 @@ function PrivacyPolicyToast() {
 function SwitchedNetworkToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
+
+  const switchedNetworkDetails = useSelector(getSwitchedNetworkDetails);
 
   return (
     getShowAutoNetworkSwitchTest() && (
