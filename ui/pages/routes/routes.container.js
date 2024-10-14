@@ -36,7 +36,6 @@ import {
   addPermittedAccount,
   automaticallySwitchNetwork,
   clearSwitchedNetworkDetails,
-  switchedNetworkNeverShowMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
@@ -50,8 +49,8 @@ import {
   getProviderConfig,
 } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import Routes from './routes.component';
 import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
+import Routes from './routes.component';
 
 function mapStateToProps(state) {
   const { activeTab, appState } = state;

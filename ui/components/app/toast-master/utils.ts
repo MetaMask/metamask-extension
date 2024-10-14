@@ -1,11 +1,11 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
-import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
-import { submitRequestToBackground } from '../../../store/background-connection';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getSwitchedNetworkDetails } from '../../../selectors';
-import { useSelector } from 'react-redux';
+import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { selectSwitchedNetworkNeverShowMessage } from './selectors';
 
 /**
