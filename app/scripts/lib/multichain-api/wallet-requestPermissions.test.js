@@ -561,16 +561,14 @@ describe('requestPermissionsHandler', () => {
       const { handler } = createMockedHandler();
 
       await handler({ ...getBaseRequest(), origin: 'npm:snapm' });
-      expect(
-        MockPermittedChainsAdapters.setPermittedEthChainIds,
-      ).not.toHaveBeenCalled();
+      expect(MockMultichain.setPermittedEthChainIds).not.toHaveBeenCalled();
     });
 
     it('sets the approved accounts on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is snapId', async () => {
       const { handler } = createMockedHandler();
 
       await handler({ ...getBaseRequest(), origin: 'npm:snapm' });
-      expect(MockEthAccountsAdapters.setEthAccounts).toHaveBeenCalledWith(
+      expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         {
           requiredScopes: {},
           optionalScopes: {},

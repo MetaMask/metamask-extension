@@ -200,16 +200,14 @@ describe('requestEthereumAccountsHandler', () => {
       const { handler } = createMockedHandler();
 
       await handler({ baseRequest, origin: 'npm:snap' });
-      expect(
-        MockPermittedChainsAdapters.setPermittedEthChainIds,
-      ).not.toHaveBeenCalled();
+      expect(MockMultichain.setPermittedEthChainIds).not.toHaveBeenCalled();
     });
 
     it('sets the approved accounts on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is snapId', async () => {
       const { handler } = createMockedHandler();
 
       await handler({ baseRequest, origin: 'npm:snap' });
-      expect(MockEthAccountsAdapters.setEthAccounts).toHaveBeenCalledWith(
+      expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         {
           requiredScopes: {},
           optionalScopes: {},

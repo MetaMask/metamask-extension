@@ -1,6 +1,7 @@
-import PermittedChainsAdapters, {
+import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
+  getPermittedEthChainIds,
 } from '@metamask/multichain';
 import {
   CaveatTypes,
@@ -13,7 +14,6 @@ jest.mock('@metamask/multichain', () => ({
   ...jest.requireActual('@metamask/multichain'),
   getPermittedEthChainIds: jest.fn(),
 }));
-const MockPermittedChainsAdapters = jest.mocked(PermittedChainsAdapters);
 
 const baseRequest = {
   origin: 'http://test.com',
@@ -93,7 +93,7 @@ describe('getPermissionsHandler', () => {
   });
 
   beforeEach(() => {
-    MockPermittedChainsAdapters.getPermittedEthChainIds.mockReturnValue([]);
+    getPermittedEthChainIds.mockReturnValue([]);
   });
 
   it('gets the permissions for the origin', async () => {
@@ -197,9 +197,7 @@ describe('getPermissionsHandler', () => {
     it('gets the permitted eip155 chainIds from the CAIP-25 caveat value', async () => {
       const { handler } = createMockedHandler();
       await handler(baseRequest);
-      expect(
-        MockPermittedChainsAdapters.getPermittedEthChainIds,
-      ).toHaveBeenCalledWith({
+      expect(getPermittedEthChainIds).toHaveBeenCalledWith({
         requiredScopes: {
           'eip155:1': {
             methods: [],
@@ -225,10 +223,7 @@ describe('getPermissionsHandler', () => {
     it('returns the permissions with a permittedChains permission if some eip155 chainIds are permissioned', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockResolvedValue([]);
-      MockPermittedChainsAdapters.getPermittedEthChainIds.mockReturnValue([
-        '0x1',
-        '0x64',
-      ]);
+      getPermittedEthChainIds.mockReturnValue(['0x1', '0x64']);
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual([
@@ -259,10 +254,7 @@ describe('getPermissionsHandler', () => {
     it('returns the permissions with a eth_accounts and permittedChains permission if some eip155 accounts and chainIds are permissioned', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockResolvedValue(['0x1', '0x2', '0xdeadbeef']);
-      MockPermittedChainsAdapters.getPermittedEthChainIds.mockReturnValue([
-        '0x1',
-        '0x64',
-      ]);
+      getPermittedEthChainIds.mockReturnValue(['0x1', '0x64']);
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual([
