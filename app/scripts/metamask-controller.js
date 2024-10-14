@@ -380,7 +380,7 @@ const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 
 // const for special case for OneKey device via trezor device
 // OneKeyDevice can connect metamask via Trezor usb, and they use minorVersion 99 to differentiate oneKeyDevice and Trezor.
-const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
+export const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
 
 export default class MetamaskController extends EventEmitter {
   /**
