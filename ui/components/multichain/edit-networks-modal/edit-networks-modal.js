@@ -82,6 +82,9 @@ export const EditNetworksModal = ({
 
   const hostName = getURLHost(activeTabOrigin);
 
+  const defaultChainIdsSet = new Set(defaultSelectedChainIds);
+  const selectedChainIdsSet = new Set(selectedChainIds);
+
   return (
     <Modal
       isOpen
@@ -185,12 +188,15 @@ export const EditNetworksModal = ({
                 data-testid="connect-more-chains-button"
                 onClick={() => {
                   onSubmit(selectedChainIds);
+                  // Get networks that are in `selectedChainIds` but not in `defaultSelectedChainIds`
                   const addedNetworks = selectedChainIds.filter(
-                    (chainId) => !defaultSelectedChainIds.includes(chainId),
-                  ); // networks added for metrics
+                    (chainId) => !defaultChainIdsSet.has(chainId),
+                  );
+
+                  // Get networks that are in `defaultSelectedChainIds` but not in `selectedChainIds`
                   const removedNetworks = defaultSelectedChainIds.filter(
-                    (chainId) => !selectedChainIds.includes(chainId),
-                  ); // networks removed for metrics
+                    (chainId) => !selectedChainIdsSet.has(chainId),
+                  );
 
                   trackEvent({
                     category: MetaMetricsEventCategory.Permissions,

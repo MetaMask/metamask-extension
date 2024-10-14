@@ -92,6 +92,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 
   const hostName = getURLHost(activeTabOrigin);
 
+  const defaultSet = new Set(defaultSelectedAccountAddresses);
+  const selectedSet = new Set(selectedAccountAddresses);
+
   return (
     <>
       <Modal
@@ -188,16 +191,16 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                     <ButtonPrimary
                       data-testid="connect-more-accounts-button"
                       onClick={() => {
+                        // Get accounts that are in `selectedAccountAddresses` but not in `defaultSelectedAccountAddresses`
                         const addedAccounts = selectedAccountAddresses.filter(
-                          (address) =>
-                            !defaultSelectedAccountAddresses.includes(address),
-                        ); // Number of new accounts added for metrics
+                          (address) => !defaultSet.has(address),
+                        );
 
+                        // Get accounts that are in `defaultSelectedAccountAddresses` but not in `selectedAccountAddresses`
                         const removedAccounts =
                           defaultSelectedAccountAddresses.filter(
-                            (address) =>
-                              !selectedAccountAddresses.includes(address),
-                          ); // Number of old accounts removed for metrics
+                            (address) => !selectedSet.has(address),
+                          );
 
                         onSubmit(selectedAccountAddresses);
                         trackEvent({
