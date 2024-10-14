@@ -1,6 +1,4 @@
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import { PayloadAction } from '@reduxjs/toolkit';
-import { ReactFragment } from 'react';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
@@ -9,9 +7,8 @@ import {
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
 import { getPermittedAccountsForCurrentTab } from '../../../selectors';
-import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
-import { submitRequestToBackground } from '../../../store/background-connection';
 import { MetaMaskReduxState } from '../../../store/store';
+import { getIsPrivacyToastRecent } from './utils';
 
 // TODO: get this into one of the larger definitions of state type
 type State = Omit<MetaMaskReduxState, 'appState'> & {
@@ -75,50 +72,8 @@ export function selectShowPrivacyPolicyToast(state: State): {
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
 }
 
-/**
- * Returns true if the privacy policy toast was shown either never, or less than a day ago.
- *
- * @param newPrivacyPolicyToastShownDate
- * @returns true if the privacy policy toast was shown either never, or less than a day ago
- */
-function getIsPrivacyToastRecent(
-  newPrivacyPolicyToastShownDate?: number,
-): boolean {
-  if (!newPrivacyPolicyToastShownDate) {
-    return true;
-  }
-
-  const currentDate = new Date();
-  const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-  const newPrivacyPolicyToastShownDateObj = new Date(
-    newPrivacyPolicyToastShownDate,
-  );
-  const toastWasShownLessThanADayAgo =
-    currentDate.valueOf() - newPrivacyPolicyToastShownDateObj.valueOf() <
-    oneDayInMilliseconds;
-
-  return toastWasShownLessThanADayAgo;
-}
-
-export function setNewPrivacyPolicyToastShownDate(time: number) {
-  submitRequestToBackground('setNewPrivacyPolicyToastShownDate', [time]);
-}
-
-export function setNewPrivacyPolicyToastClickedOrClosed() {
-  submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
-}
-
 export function selectNftDetectionEnablementToast(state: State): boolean {
   return Boolean(state.appState?.showNftDetectionEnablementToast);
-}
-
-export function setShowNftDetectionEnablementToast(
-  value: boolean,
-): PayloadAction<string | ReactFragment | undefined> {
-  return {
-    type: SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
-    payload: value,
-  };
 }
 
 // If there is more than one connected account to activeTabOrigin,
