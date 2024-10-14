@@ -510,6 +510,16 @@ describe('wallet_createSession', () => {
                     notifications: KnownNotifications.eip155,
                     accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
                   },
+                  'wallet:eip155': {
+                    methods: [],
+                    notifications: [],
+                    accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
+                  },
+                  wallet: {
+                    methods: [],
+                    notifications: [],
+                    accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
+                  },
                 },
                 isMultichainOrigin: true,
               },
@@ -607,6 +617,16 @@ describe('wallet_createSession', () => {
           methods: ['eth_sendTransaction'],
           notifications: ['chainChanged'],
           accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
+        },
+        'wallet:eip155': {
+          methods: [],
+          notifications: [],
+          accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
+        },
+        wallet: {
+          methods: [],
+          notifications: [],
+          accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
         },
       },
     });
