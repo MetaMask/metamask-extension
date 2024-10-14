@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Quando a sua transação for incluída no bloco, qualquer diferença entre a sua taxa-base máxima e a taxa-base real será reembolsada. O cálculo do valor total é feito da seguinte forma: taxa-base máxima (em GWEI) * limite de gás."
   },
-  "advancedConfiguration": {
-    "message": "Configurações avançadas"
-  },
   "advancedDetailsDataDesc": {
     "message": "Dados"
   },
@@ -381,12 +378,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Atualizar opções de gás"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Se você aprovar esta solicitação, um terceiro conhecido por aplicar golpes poderá se apropriar de todos os seus ativos."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Vários alertas!"
-  },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
@@ -398,9 +389,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Para continuar com essa transação, você precisará aumentar o limite de gás para 21000 ou mais."
-  },
-  "alertMessageInsufficientBalance": {
-    "message": "Você não tem ETH suficiente em sua conta para pagar as taxas de transação."
   },
   "alertMessageNetworkBusy": {
     "message": "Os preços do gás são altos e as estimativas são menos precisas."
@@ -455,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Conta incorreta"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Navegando em um site com uma conta não conectada selecionada"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Esse alerta é exibido no pop-up quando você estiver navegando em um site conectado da web3, mas a conta atualmente selecionada não estiver conectada."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Quando um site tenta usar a API window.web3 removida"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Esse alerta é exibido no pop-up quando você estiver navegando em um site que tente usar a API window.web3 removida, e que consequentemente possa apresentar problemas."
   },
   "alerts": {
     "message": "Alertas"
@@ -721,12 +697,6 @@
   "betaTerms": {
     "message": "Termos de uso do Beta"
   },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "O MetaMask Beta não pode recuperar a sua Frase de Recuperação Secreta."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "O MetaMask Beta nunca pedirá sua Frase de Recuperação Secreta."
-  },
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
@@ -972,12 +942,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Reconheço o alerta e quero prosseguir mesmo assim"
   },
-  "confirmAlertModalDetails": {
-    "message": "Se você fizer login, um terceiro conhecido por aplicar golpes poderá se apropriar de todos os seus ativos. Confira os alertas antes de prosseguir."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Seus ativos podem estar em risco"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Você será redirecionado para $1 ao clicar em continuar."
   },
@@ -1099,9 +1063,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "A MetaMask está conectada a este site, mas nenhuma conta está conectada ainda"
-  },
-  "connectedWith": {
-    "message": "Conectado com"
   },
   "connecting": {
     "message": "Conectando"
@@ -1519,14 +1480,6 @@
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
-  "disconnectAllText": {
-    "message": "Se desconectar $1 de $2, você precisará reconectar para usar novamente.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Desconectar $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "Desconectar $1"
   },
@@ -1879,10 +1832,6 @@
   "feeDetails": {
     "message": "Detalhes da taxa"
   },
-  "fiat": {
-    "message": "Fiduciária",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
     "description": "Helps user import their account from a JSON file"
@@ -2113,9 +2062,6 @@
   },
   "hideSentitiveInfo": {
     "message": "Ocultar informações confidenciais"
-  },
-  "hideToken": {
-    "message": "Ocultar token"
   },
   "hideTokenPrompt": {
     "message": "Ocultar token?"
@@ -2441,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "Arquivo JSON",
@@ -2851,10 +2794,6 @@
     "message": "$1 solicita sua aprovação para:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Deseja que este site faça o seguinte?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "O token nativo dessa rede é $1. Esse é o token usado para taxas de gás.",
     "description": "$1 represents the name of the native token on the current network"
@@ -3097,9 +3036,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "A MetaMask não está conectada a este site"
-  },
-  "noConversionDateAvailable": {
-    "message": "Não há uma data de conversão de moeda disponível"
   },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
@@ -3500,10 +3436,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "Fixar MetaMask Institutional"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Os alertas de detecção de phishing dependem de comunicação com $1. O jsDeliver terá acesso ao seu endereço IP. Veja $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1D",
@@ -3921,12 +3853,6 @@
   "priceUnavailable": {
     "message": "preço não disponível"
   },
-  "primaryCurrencySetting": {
-    "message": "Moeda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selecione Nativa para priorizar a exibição de valores na moeda nativa da cadeia (por ex., ETH). Selecione Fiduciária para priorizar a exibição de valores na moeda fiduciária selecionada."
-  },
   "primaryType": {
     "message": "Tipo primário"
   },
@@ -4150,9 +4076,6 @@
   },
   "rejected": {
     "message": "Recusada"
-  },
-  "remember": {
-    "message": "Lembre-se:"
   },
   "remove": {
     "message": "Remover"
@@ -4561,9 +4484,6 @@
   "sepolia": {
     "message": "Rede de teste Sepolia"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "A MetaMask utiliza esses serviços terceirizados de confiança para aumentar a usabilidade e a segurança dos produtos."
-  },
   "setApprovalForAll": {
     "message": "Definir aprovação para todos"
   },
@@ -4752,13 +4672,6 @@
   },
   "smartTransactionSuccess": {
     "message": "Sua transação foi concluída"
-  },
-  "smartTransactionTakingTooLong": {
-    "message": "Desculpe pela espera"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Se a sua transação não for finalizada em $1, ela será cancelada e você não pagará gás.",
-    "description": "$1 is remaining time in seconds"
   },
   "smartTransactions": {
     "message": "Transações inteligentes"
@@ -5175,10 +5088,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "Tente trocar novamente. Estaremos aqui para proteger você contra riscos semelhantes no futuro."
-  },
-  "stxEstimatedCompletion": {
-    "message": "Conclusão estimada em até $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "Falha na troca"
@@ -5789,9 +5698,6 @@
   "tokenDecimalFetchFailed": {
     "message": "É necessário o decimal do token. Encontre-o em: $1"
   },
-  "tokenDecimalTitle": {
-    "message": "Decimal do token:"
-  },
   "tokenDetails": {
     "message": "Dados do token"
   },
@@ -6091,9 +5997,6 @@
   "updateRequest": {
     "message": "Solicitação de atualização"
   },
-  "updatedWithDate": {
-    "message": "Atualizado em $1"
-  },
   "uploadDropFile": {
     "message": "Solte seu arquivo aqui"
   },
@@ -6228,26 +6131,6 @@
   },
   "walletConnectionGuide": {
     "message": "nosso guia de conexão com a carteira de hardware"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Você protegeu sua carteira com sucesso. Guarde sua Frase de Recuperação Secreta em segredo e em segurança — é sua responsabilidade!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "A MetaMask não é capaz de recuperar sua Frase de Recuperação Secreta."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "A equipe da MetaMask jamais pedirá sua Frase de Recuperação Secreta."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 com ninguém, senão seus fundos poderão ser roubados",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Nunca compartilhe a sua Frase de Recuperação Secreta",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Carteira criada com sucesso"
   },
   "wantToAddThisNetwork": {
     "message": "Desejar adicionar esta rede?"

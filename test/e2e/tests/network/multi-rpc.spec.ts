@@ -397,7 +397,13 @@ describe('MultiRpc:', function (this: Suite) {
 
         // go to advanced settigns
         await driver.clickElement({
-          text: 'Advanced configuration',
+          text: 'Manage default settings',
+        });
+
+        await driver.delay(regularDelayMs);
+
+        await driver.clickElement({
+          text: 'General',
         });
 
         // open edit modal
@@ -419,6 +425,27 @@ describe('MultiRpc:', function (this: Suite) {
           tag: 'button',
         });
 
+        await driver.delay(regularDelayMs);
+        await driver.waitForSelector('[data-testid="category-back-button"]');
+        await driver.clickElement('[data-testid="category-back-button"]');
+
+        await driver.waitForSelector(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+
+        await driver.clickElement({
+          text: 'Done',
+          tag: 'button',
+        });
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+        });
+
         await driver.clickElement({
           text: 'Done',
           tag: 'button',
@@ -433,7 +460,7 @@ describe('MultiRpc:', function (this: Suite) {
           true,
           '“Arbitrum One” was successfully edited!',
         );
-
+        // Ensures popover backround doesn't kill test
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="network-display"]');
 
