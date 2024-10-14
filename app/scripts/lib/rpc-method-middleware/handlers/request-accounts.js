@@ -13,6 +13,8 @@ import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { setEthAccounts } from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
 import { PermissionNames } from '../../../controllers/permissions';
 import { setPermittedEthChainIds } from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
+// eslint-disable-next-line import/no-restricted-paths
+import { isSnapId } from '../../../../../ui/helpers/utils/snaps';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -103,7 +105,9 @@ async function requestEthereumAccountsHandler(
   try {
     legacyApproval = await requestPermissionApprovalForOrigin({
       [RestrictedMethods.eth_accounts]: {},
-      [PermissionNames.permittedChains]: {},
+      ...(!isSnapId(origin) && {
+        [PermissionNames.permittedChains]: {},
+      }),
     });
   } catch (err) {
     res.error = err;
@@ -119,10 +123,13 @@ async function requestEthereumAccountsHandler(
     optionalScopes: {},
     isMultichainOrigin: false,
   };
-  caveatValue = setPermittedEthChainIds(
-    caveatValue,
-    legacyApproval.approvedChainIds,
-  );
+
+  if (!isSnapId(origin)) {
+    caveatValue = setPermittedEthChainIds(
+      caveatValue,
+      legacyApproval.approvedChainIds,
+    );
+  }
 
   caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
 

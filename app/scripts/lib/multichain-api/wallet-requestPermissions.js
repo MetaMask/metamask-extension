@@ -6,6 +6,8 @@ import {
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import { PermissionNames } from '../../controllers/permissions';
+// eslint-disable-next-line import/no-restricted-paths
+import { isSnapId } from '../../../../ui/helpers/utils/snaps';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -90,6 +92,10 @@ async function requestPermissionsImplementation(
       legacyRequestedPermissions[PermissionNames.permittedChains] = {};
     }
 
+    if (isSnapId(origin)) {
+      delete legacyRequestedPermissions[PermissionNames.permittedChains];
+    }
+
     legacyApproval = await requestPermissionApprovalForOrigin(
       legacyRequestedPermissions,
     );
@@ -122,16 +128,18 @@ async function requestPermissionsImplementation(
       optionalScopes: {},
       isMultichainOrigin: false,
     };
-    caveatValue = setPermittedEthChainIds(
-      caveatValue,
-      legacyApproval.approvedChainIds,
-    );
+    if (!isSnapId(origin)) {
+      caveatValue = setPermittedEthChainIds(
+        caveatValue,
+        legacyApproval.approvedChainIds,
+      );
+    }
 
     caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
 
     const permissions = getPermissionsForOrigin(origin) || {};
     let caip25Endowment = permissions[Caip25EndowmentPermissionName];
-    const existingCaveat = caip25Endowment?.caveats.find(
+    const existingCaveat = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
     );
     if (existingCaveat) {
@@ -178,16 +186,18 @@ async function requestPermissionsImplementation(
       ],
     };
 
-    grantedPermissions[PermissionNames.permittedChains] = {
-      ...caip25Endowment,
-      parentCapability: PermissionNames.permittedChains,
-      caveats: [
-        {
-          type: CaveatTypes.restrictNetworkSwitching,
-          value: legacyApproval.approvedChainIds,
-        },
-      ],
-    };
+    if (!isSnapId(origin)) {
+      grantedPermissions[PermissionNames.permittedChains] = {
+        ...caip25Endowment,
+        parentCapability: PermissionNames.permittedChains,
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: legacyApproval.approvedChainIds,
+          },
+        ],
+      };
+    }
   }
 
   res.result = Object.values(grantedPermissions);

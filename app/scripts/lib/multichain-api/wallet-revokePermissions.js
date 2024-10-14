@@ -68,7 +68,7 @@ function revokePermissionsImplementation(
   if (shouldRevokeLegacyPermission) {
     const permissions = getPermissionsForOrigin(origin) || {};
     const caip25Endowment = permissions?.[Caip25EndowmentPermissionName];
-    const caip25Caveat = caip25Endowment?.caveats.find(
+    const caip25Caveat = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
     );
 

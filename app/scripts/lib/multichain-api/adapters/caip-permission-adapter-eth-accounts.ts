@@ -90,7 +90,17 @@ export const setEthAccounts = (
       accounts,
     ),
     optionalScopes: setEthAccountsForScopesObject(
-      caip25CaveatValue.optionalScopes,
+      {
+        wallet: {
+          methods: [],
+          notifications: [],
+        },
+        'wallet:eip155': {
+          methods: [],
+          notifications: [],
+        },
+        ...caip25CaveatValue.optionalScopes,
+      },
       accounts,
     ),
   };

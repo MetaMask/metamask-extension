@@ -148,7 +148,7 @@ export default class PermissionPageContainer extends Component {
 
     const permittedChainsPermission =
       _request.permissions?.[PermissionNames.permittedChains];
-    const approvedChainIds = permittedChainsPermission?.caveats.find(
+    const approvedChainIds = permittedChainsPermission?.caveats?.find(
       (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
     )?.value;
 
