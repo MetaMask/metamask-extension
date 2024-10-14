@@ -4085,10 +4085,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@json-schema-spec/json-pointer@npm:^0.1.2":
+"@json-schema-spec/json-pointer@npm:0.1.2":
   version: 0.1.2
   resolution: "@json-schema-spec/json-pointer@npm:0.1.2"
   checksum: 10/2a691ffc11f1a266ca4d0c9e2c99791679d580f343ef69746fad623d1abcf4953adde987890e41f906767d7729604c0182341e9012388b73a44d5b21fb296453
+  languageName: node
+  linkType: hard
+
+"@json-schema-spec/json-pointer@patch:@json-schema-spec/json-pointer@npm%3A0.1.2#~/.yarn/patches/@json-schema-spec-json-pointer-npm-0.1.2-3d06119887.patch":
+  version: 0.1.2
+  resolution: "@json-schema-spec/json-pointer@patch:@json-schema-spec/json-pointer@npm%3A0.1.2#~/.yarn/patches/@json-schema-spec-json-pointer-npm-0.1.2-3d06119887.patch::version=0.1.2&hash=8ff707"
+  checksum: 10/b957be819e3f744e8546014064f9fd8e45aa133985384bf91ae5f20688a087e12da3cb9046cd163e57ed1bea90c95ff7ed9a3e817f4c5e47377a8b330177915e
   languageName: node
   linkType: hard
 
@@ -4157,33 +4164,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@json-schema-tools/reference-resolver@npm:1.2.4":
-  version: 1.2.4
-  resolution: "@json-schema-tools/reference-resolver@npm:1.2.4"
-  dependencies:
-    "@json-schema-spec/json-pointer": "npm:^0.1.2"
-    isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/1ad98d011e5aad72000112215615715593a0a244ca82dbf6008cc93bfcd14ef99a0796ab4e808faee083dc13182dc9ab2d01ca5db4f44ca880f45de2f5ea2437
-  languageName: node
-  linkType: hard
-
-"@json-schema-tools/reference-resolver@npm:^1.2.1, @json-schema-tools/reference-resolver@npm:^1.2.4":
-  version: 1.2.5
-  resolution: "@json-schema-tools/reference-resolver@npm:1.2.5"
-  dependencies:
-    "@json-schema-spec/json-pointer": "npm:^0.1.2"
-    isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/0f48098ea6df853a56fc7c758974eee4c5b7e3979123f49f52929c82a1eb263c7d0154efc6671325920d670494b05cae4d4625c6204023b4b1fed6e5f93ccb96
-  languageName: node
-  linkType: hard
-
-"@json-schema-tools/reference-resolver@npm:^1.2.6":
+"@json-schema-tools/reference-resolver@npm:1.2.6":
   version: 1.2.6
   resolution: "@json-schema-tools/reference-resolver@npm:1.2.6"
   dependencies:
     "@json-schema-spec/json-pointer": "npm:^0.1.2"
     isomorphic-fetch: "npm:^3.0.0"
   checksum: 10/91d6b4b2ac43f8163fd27bde6d826f29f339e9c7ce3b7e2b73b85e891fa78e3702fd487deda143a0701879cbc2fe28c53a4efce4cd2d2dd2fe6e82b64bbd9c9c
+  languageName: node
+  linkType: hard
+
+"@json-schema-tools/reference-resolver@patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch":
+  version: 1.2.6
+  resolution: "@json-schema-tools/reference-resolver@patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch::version=1.2.6&hash=6fefb6"
+  dependencies:
+    "@json-schema-spec/json-pointer": "npm:^0.1.2"
+    isomorphic-fetch: "npm:^3.0.0"
+  checksum: 10/91534095e488dc091a6d9bf807a065697cdc2c070bbda70ebd0817569c46daa8cfb56b4e625a9d9ddaa0d08c5fdc40db3ef39cae97a16b682e8b593f1febf062
   languageName: node
   linkType: hard
 
