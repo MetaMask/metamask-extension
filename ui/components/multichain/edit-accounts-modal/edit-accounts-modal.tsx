@@ -210,7 +210,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                           },
                         });
 
-                        onClose(); // Close the modal
+                        onClose();
                       }}
                       size={ButtonPrimarySize.Lg}
                       block
