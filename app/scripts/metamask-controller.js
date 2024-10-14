@@ -165,7 +165,7 @@ import {
   walletGetSessionHandler,
   mergeScopes,
   getEthAccounts,
-  CaipPermissionAdapterMiddleware,
+  caipPermissionAdapterMiddleware,
 } from '@metamask/multichain';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
@@ -5881,7 +5881,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS));
 
     engine.push((req, res, next, end) =>
-      CaipPermissionAdapterMiddleware(req, res, next, end, {
+      caipPermissionAdapterMiddleware(req, res, next, end, {
         getCaveat: this.permissionController.getCaveat.bind(
           this.permissionController,
         ),
