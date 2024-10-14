@@ -7,20 +7,15 @@ import {
   KnownRpcMethods,
   KnownNotifications,
 } from '@metamask/multichain';
-import { processScopedProperties } from '../scope/authorization';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { shouldEmitDappViewedEvent } from '../../util';
 import { PermissionNames } from '../../../controllers/permissions';
-import { validateAndAddEip3085 } from './helpers';
+import { processScopedProperties, validateAndAddEip3085 } from './helpers';
 import { walletCreateSessionHandler } from './handler';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
   shouldEmitDappViewedEvent: jest.fn(),
-}));
-
-jest.mock('../scope/authorization', () => ({
-  processScopedProperties: jest.fn(),
 }));
 
 jest.mock('@metamask/multichain', () => ({
@@ -32,6 +27,7 @@ jest.mock('@metamask/multichain', () => ({
 jest.mock('./helpers', () => ({
   ...jest.requireActual('./helpers'),
   validateAndAddEip3085: jest.fn(),
+  processScopedProperties: jest.fn(),
 }));
 
 const baseRequest = {
@@ -505,16 +501,6 @@ describe('wallet_createSession', () => {
                     notifications: KnownNotifications.eip155,
                     accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
                   },
-                  'wallet:eip155': {
-                    methods: [],
-                    notifications: [],
-                    accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
-                  },
-                  wallet: {
-                    methods: [],
-                    notifications: [],
-                    accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
-                  },
                 },
                 isMultichainOrigin: true,
               },
@@ -612,16 +598,6 @@ describe('wallet_createSession', () => {
           methods: ['eth_sendTransaction'],
           notifications: ['chainChanged'],
           accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
-        },
-        'wallet:eip155': {
-          methods: [],
-          notifications: [],
-          accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
-        },
-        wallet: {
-          methods: [],
-          notifications: [],
-          accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
         },
       },
     });

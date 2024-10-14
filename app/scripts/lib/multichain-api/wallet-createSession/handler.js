@@ -17,8 +17,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
-import { processScopedProperties } from '../scope/authorization';
-import { validateAndAddEip3085 } from './helpers';
+import { processScopedProperties, validateAndAddEip3085 } from './helpers';
 
 export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
   // TODO: Does this handler need a rate limiter/lock like the one in eth_requestAccounts?
