@@ -2,17 +2,19 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Asset,
+  getCurrentDraftTransaction,
   getSendAnalyticProperties,
   getSendMaxModeState,
   toggleSendMaxMode,
 } from '../../../ducks/send';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { ButtonLink } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { getIsDraftSwapAndSend } from '../../../ducks/send/helpers';
 
 // A button that updates the send amount to max balance or 0.
 export default function MaxClearButton({ asset }: { asset: Asset }) {
@@ -21,6 +23,7 @@ export default function MaxClearButton({ asset }: { asset: Asset }) {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
+  const currentDraftTransaction = useSelector(getCurrentDraftTransaction);
 
   const onClick = () => {
     trackEvent({
@@ -32,6 +35,19 @@ export default function MaxClearButton({ asset }: { asset: Asset }) {
         legacy_event: true,
       },
     });
+
+    if (getIsDraftSwapAndSend(currentDraftTransaction)) {
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteRequested,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
+    }
     dispatch(toggleSendMaxMode());
   };
 
