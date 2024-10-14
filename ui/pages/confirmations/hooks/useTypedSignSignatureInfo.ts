@@ -44,5 +44,8 @@ export const useTypedSignSignatureInfo = (
     return undefined;
   }, [confirmation]);
 
-  return { primaryType, tokenStandard };
+  return {
+    primaryType: primaryType as keyof typeof TypedSignSignaturePrimaryTypes,
+    tokenStandard,
+  };
 };
