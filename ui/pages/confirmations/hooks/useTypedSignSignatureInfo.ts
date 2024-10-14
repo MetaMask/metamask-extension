@@ -14,15 +14,14 @@ import { TypedSignSignaturePrimaryTypes } from '../constants';
 export const useTypedSignSignatureInfo = (
   confirmation: SignatureRequestType,
 ) => {
-  if (!confirmation) {
-    return {};
-  }
   if (
+    !confirmation ||
     !isSignatureTransactionType(confirmation) ||
     confirmation?.type !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA
   ) {
     return {};
   }
+
   const primaryType = useMemo(() => {
     if (isPermitSignatureRequest(confirmation)) {
       return TypedSignSignaturePrimaryTypes.PERMIT;
@@ -32,6 +31,9 @@ export const useTypedSignSignatureInfo = (
     return undefined;
   }, [confirmation]);
 
+  // here we are using presence of tokenId in typed message data to know if its NFT permit
+  // we can get contract details for verifyingContract but that is async process taking longer
+  // and result in confirmation page content loading late
   const tokenStandard = useMemo(() => {
     const {
       message: { tokenId },
