@@ -867,10 +867,11 @@ describe('MetaMaskController', () => {
       });
 
       describe('getHardwareDeviceName', () => {
-        const deviceName = 'ledger';
         const hdPath = "m/44'/60'/0'/0/0";
 
         it('should return the correct device name for Ledger', async () => {
+          const deviceName = 'ledger';
+
           const result = await metamaskController.getHardwareDeviceName(
             deviceName,
             hdPath,
@@ -879,6 +880,8 @@ describe('MetaMaskController', () => {
         });
 
         it('should return the correct device name for Lattice', async () => {
+          const deviceName = 'lattice';
+
           const result = await metamaskController.getHardwareDeviceName(
             deviceName,
             hdPath,
@@ -887,7 +890,7 @@ describe('MetaMaskController', () => {
         });
 
         it('should return the correct device name for Trezor', async () => {
-
+          const deviceName = 'trezor';
           jest
             .spyOn(metamaskController, 'getKeyringForDevice')
             .mockResolvedValue({
@@ -904,7 +907,7 @@ describe('MetaMaskController', () => {
         });
 
         it('should return undefined for unknown device name', async () => {
-
+          const deviceName = 'unknown';
           const result = await metamaskController.getHardwareDeviceName(
             deviceName,
             hdPath,
@@ -913,7 +916,7 @@ describe('MetaMaskController', () => {
         });
 
         it('should handle special case for OneKeyDevice via Trezor', async () => {
-
+          const deviceName = 'trezor';
           jest
             .spyOn(metamaskController, 'getKeyringForDevice')
             .mockResolvedValue({
