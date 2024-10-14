@@ -335,7 +335,10 @@ function overrideContentSecurityPolicyHeader() {
     ({ responseHeaders }) => {
       for (const header of responseHeaders) {
         if (header.name.toLowerCase() === 'content-security-policy') {
-          header.value = '';
+          header.value = header.value.replace(
+            /script-src([^;]*)/u,
+            (match) => `${match} 'nonce-inpage'`,
+          );
         }
       }
       return { responseHeaders };
