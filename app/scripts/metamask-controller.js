@@ -4648,8 +4648,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * get hardware wallet Device name for metric logging in UI.
-   * Currently, it only handle the special case for OneKeyDevice connect metamask via Trezor.
+   * get preferred hardware wallet device name.
    *
    * @param deviceName - HardwareDeviceNames
    * @param hdPath - string
@@ -4659,8 +4658,8 @@ export default class MetamaskController extends EventEmitter {
     if (deviceName === HardwareDeviceNames.trezor) {
       const keyring = await this.getKeyringForDevice(deviceName, hdPath);
       const { minorVersion } = keyring.bridge;
-      // OneKeyDevice can connect metamask via Trezor usb, and they use minorVersion 99 to differentiate oneKeyDevice and Trezor.
-      if (minorVersion && minorVersion === 99) {
+      // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
+      if (minorVersion && minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION) {
         return HardwareDeviceNames.oneKeyViaTrezor;
       }
     }

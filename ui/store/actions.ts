@@ -508,7 +508,6 @@ export function getHardwareDeviceName(
   hdPath: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.getHardwareDeviceName`, deviceName, hdPath);
-
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 

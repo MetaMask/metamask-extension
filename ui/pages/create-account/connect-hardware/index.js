@@ -291,7 +291,7 @@ class ConnectHardwareForm extends Component {
         ? this.context.t('hardwareWalletLegacyDescription')
         : '';
 
-    // process device type. specially handle trezor for oneKey device.
+    // Get preferred device name for metrics.
     const metricDeviceName = await this.props.getHardwareDeviceName(
       device,
       path,
