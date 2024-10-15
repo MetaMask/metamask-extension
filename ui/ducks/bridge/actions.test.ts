@@ -6,7 +6,6 @@ import * as actions from '../../store/actions';
 import * as selectors from '../../selectors';
 import { submitBridgeTransaction } from './actions';
 import { DummyQuotesNoApproval, DummyQuotesWithApproval } from './dummy-quotes';
-import * as bridgeSelectors from './selectors';
 
 jest.mock('../../store/actions', () => {
   const original = jest.requireActual('../../store/actions');
@@ -18,13 +17,6 @@ jest.mock('../../store/actions', () => {
   };
 });
 
-jest.mock('./selectors', () => {
-  const original = jest.requireActual('./selectors');
-  return {
-    ...original,
-    getQuotes: jest.fn(),
-  };
-});
 jest.mock('../../selectors', () => {
   const original = jest.requireActual('../../selectors');
   return {
@@ -119,10 +111,6 @@ describe('bridge/actions', () => {
         };
       });
 
-      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
-        () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
-      );
-
       // For some reason, setBackgroundConnection does not work, gets hung up on the promise, so mock this way instead
       (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
         mockAddTransactionAndWaitForPublish,
@@ -131,7 +119,12 @@ describe('bridge/actions', () => {
       const history = makeMockHistory();
 
       // Execute
-      await store.dispatch(submitBridgeTransaction(history as any) as any);
+      await store.dispatch(
+        submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          history as any,
+        ) as any,
+      );
 
       // Assert
       expect(mockAddTransactionAndWaitForPublish).toHaveBeenLastCalledWith(
@@ -173,10 +166,6 @@ describe('bridge/actions', () => {
         };
       });
 
-      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
-        () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
-      );
-
       // For some reason, setBackgroundConnection does not work, gets hung up on the promise, so mock this way instead
       (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
         mockAddTransactionAndWaitForPublish,
@@ -185,7 +174,12 @@ describe('bridge/actions', () => {
       const history = makeMockHistory();
 
       // Execute
-      await store.dispatch(submitBridgeTransaction(history as any) as any);
+      await store.dispatch(
+        submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          history as any,
+        ) as any,
+      );
 
       // Assert
       expect(mockAddTransactionAndWaitForPublish).toHaveBeenNthCalledWith(
@@ -247,15 +241,17 @@ describe('bridge/actions', () => {
       const store = makeMockStore();
       const history = makeMockHistory();
 
-      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
-        () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
-      );
       (actions.addToken as jest.Mock).mockImplementation(
         () => async () => ({}),
       );
 
       // Execute
-      await store.dispatch(submitBridgeTransaction(history as any) as any);
+      await store.dispatch(
+        submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          history as any,
+        ) as any,
+      );
 
       // Assert
       expect(actions.addToken).toHaveBeenCalledWith({
@@ -287,15 +283,17 @@ describe('bridge/actions', () => {
       (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
         mockAddTransactionAndWaitForPublish,
       );
-      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
-        () => DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
-      );
       (actions.addToken as jest.Mock).mockImplementation(
         () => async () => ({}),
       );
 
       // Execute
-      await store.dispatch(submitBridgeTransaction(history as any) as any);
+      await store.dispatch(
+        submitBridgeTransaction(
+          DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0] as any,
+          history as any,
+        ) as any,
+      );
 
       // Assert
       expect(actions.addToken).not.toHaveBeenCalled();
@@ -311,15 +309,17 @@ describe('bridge/actions', () => {
       const store = makeMockStore();
       const history = makeMockHistory();
 
-      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
-        () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
-      );
       (actions.addToken as jest.Mock).mockImplementation(
         () => async () => ({}),
       );
 
       // Execute
-      await store.dispatch(submitBridgeTransaction(history as any) as any);
+      await store.dispatch(
+        submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          history as any,
+        ) as any,
+      );
 
       // Assert
       expect(actions.addToken).toHaveBeenCalledWith({
@@ -351,15 +351,17 @@ describe('bridge/actions', () => {
       (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
         mockAddTransactionAndWaitForPublish,
       );
-      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
-        () => DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
-      );
       (actions.addToken as jest.Mock).mockImplementation(
         () => async () => ({}),
       );
 
       // Execute
-      await store.dispatch(submitBridgeTransaction(history as any) as any);
+      await store.dispatch(
+        submitBridgeTransaction(
+          DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0] as any,
+          history as any,
+        ) as any,
+      );
 
       // Assert
       expect(actions.addToken).not.toHaveBeenCalled();
@@ -385,12 +387,11 @@ describe('bridge/actions', () => {
         mockAddTransactionAndWaitForPublish,
       );
 
-      (bridgeSelectors.getQuotes as jest.Mock).mockImplementation(
-        () => DummyQuotesWithApproval.ETH_11_USDC_TO_ARB,
-      );
-      (
-        selectors.getNetworkConfigurationsByChainId as jest.Mock
-      ).mockImplementation(() => ({
+      const mockedGetNetworkConfigurationsByChainId =
+        // @ts-expect-error this is a jest mock
+        selectors.getNetworkConfigurationsByChainId as jest.Mock;
+
+      mockedGetNetworkConfigurationsByChainId.mockImplementation(() => ({
         '0x1': {
           blockExplorerUrls: ['https://etherscan.io'],
           chainId: '0x1',
@@ -424,7 +425,12 @@ describe('bridge/actions', () => {
       }));
 
       // Execute
-      await store.dispatch(submitBridgeTransaction(history as any) as any);
+      await store.dispatch(
+        submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          history as any,
+        ) as any,
+      );
 
       // Assert
       expect(actions.addNetwork).toHaveBeenCalledWith({
@@ -447,7 +453,12 @@ describe('bridge/actions', () => {
       const history = makeMockHistory();
 
       // Execute
-      await store.dispatch(submitBridgeTransaction(history as any) as any);
+      await store.dispatch(
+        submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          history as any,
+        ) as any,
+      );
 
       // Assert
       expect(history.push).toHaveBeenCalledWith('/');

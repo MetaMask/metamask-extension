@@ -24,7 +24,6 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { isValidQuoteRequest } from '../../pages/bridge/types';
 import { BridgeState } from './bridge';
-import { DummyQuotesWithApproval } from './dummy-quotes';
 
 export type BridgeAppState = {
   metamask: NetworkState & { bridgeState: BridgeControllerState } & {
@@ -179,7 +178,3 @@ export const getIsBridgeTx = createDeepEqualSelector(
       ? fromChain.chainId !== toChain.chainId
       : false,
 );
-
-export const getQuotes = (state: BridgeAppState) => {
-  return DummyQuotesWithApproval.ETH_11_USDC_TO_ARB;
-};
