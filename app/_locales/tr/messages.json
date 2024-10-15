@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noConnectedAccountDescription": {
-    "message": "Devam etmek için bu sitede kullanmak istediğiniz bir hesap seçin."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
   },
