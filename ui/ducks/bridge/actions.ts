@@ -23,8 +23,6 @@ import { FeeType, QuoteRequest } from '../../pages/bridge/types';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
   checkNetworkAndAccountSupports1559,
-  getIsBridgeChain,
-  getIsBridgeEnabled,
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../selectors';
@@ -138,14 +136,6 @@ export const submitBridgeTransaction = (
     getState: () => MetaMaskReduxState & BridgeAppState,
   ) => {
     const state = getState();
-    const isBridgeEnabled = getIsBridgeEnabled(state);
-    const isBridgeChain = getIsBridgeChain(state);
-
-    if (!(isBridgeEnabled && isBridgeChain)) {
-      // TODO do we want to do something here?
-      return;
-    }
-
     const quoteMetas = getQuotes(state);
     const quoteMeta = quoteMetas[0];
 
