@@ -57,7 +57,6 @@ import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
-  setUsePhishDetect,
   setUse4ByteResolution,
   setUseTokenDetection,
   setUseAddressBarEnsResolution,
@@ -132,7 +131,6 @@ export default function PrivacySettings() {
   } = defaultState;
   const petnamesEnabled = useSelector(getPetnamesEnabled);
 
-  const [usePhishingDetection, setUsePhishingDetection] = useState(null);
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -160,17 +158,11 @@ export default function PrivacySettings() {
     getExternalServicesOnboardingToggleState,
   );
 
-  const phishingToggleState =
-    usePhishingDetection === null
-      ? externalServicesOnboardingToggleState
-      : usePhishingDetection;
-
   const profileSyncingProps = useProfileSyncingProps(
     externalServicesOnboardingToggleState,
   );
 
   const handleSubmit = () => {
-    dispatch(setUsePhishDetect(phishingToggleState));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
     dispatch(
@@ -199,7 +191,6 @@ export default function PrivacySettings() {
         is_profile_syncing_enabled: profileSyncingProps.isProfileSyncingEnabled,
         is_basic_functionality_enabled: externalServicesOnboardingToggleState,
         show_incoming_tx: incomingTransactionsPreferences,
-        use_phising_detection: usePhishingDetection,
         turnon_token_detection: turnOnTokenDetection,
       },
     });
@@ -720,12 +711,6 @@ export default function PrivacySettings() {
               ) : null}
               {selectedItem && selectedItem.id === 3 ? (
                 <>
-                  <Setting
-                    value={phishingToggleState}
-                    setValue={setUsePhishingDetection}
-                    title={t('usePhishingDetection')}
-                    description={t('usePhishingDetectionDescription')}
-                  />
                   <Setting
                     value={turnOn4ByteResolution}
                     setValue={setTurnOn4ByteResolution}
