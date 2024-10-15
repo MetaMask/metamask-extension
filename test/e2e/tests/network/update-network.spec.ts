@@ -361,6 +361,10 @@ describe('Update Network:', function (this: Suite) {
         //  Re-open the network menu
         await driver.delay(regularDelayMs);
         await driver.clickElementSafe({ text: 'Got it', tag: 'h6' });
+        await driver.assertElementNotPresent({
+          tag: 'h6',
+          text: 'Got it',
+        });
         await driver.clickElement('[data-testid="network-display"]');
 
         // Go back to edit the network
