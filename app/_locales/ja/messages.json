@@ -1641,6 +1641,9 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "高速化用のガス代を編集"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "enable": {
     "message": "有効にする"
   },
