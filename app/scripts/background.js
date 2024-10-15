@@ -337,7 +337,7 @@ function overrideContentSecurityPolicyHeader() {
         if (header.name.toLowerCase() === 'content-security-policy') {
           header.value = header.value.replace(
             /script-src([^;]*)/u,
-            (match) => `${match} 'nonce-${btoa(browser.runtime.id)}'`,
+            (match) => `${match} 'nonce-${btoa(browser.runtime.getURL('/'))}'`,
           );
         }
       }

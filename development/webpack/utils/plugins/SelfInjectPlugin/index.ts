@@ -142,7 +142,7 @@ export class SelfInjectPlugin {
       `\`\\n//# sourceURL=\${${this.options.sourceUrlExpression(file)}};\``,
     );
     newSource.add(`;`);
-    newSource.add(`s.nonce=btoa(browser.runtime.id);`);
+    newSource.add(`s.nonce=btoa(browser.runtime.getURL('/'));`);
     // add and immediately remove the script to avoid modifying the DOM.
     newSource.add(`d.documentElement.appendChild(s).remove()`);
     newSource.add(`}`);
