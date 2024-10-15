@@ -151,8 +151,6 @@ const MISMATCHED_NETWORK_RPC_CHAIN_ID = {
   },
 };
 
-const multichainFlag = process.env.CHAIN_PERMISSIONS;
-
 const ERROR_CONNECTING_TO_RPC = {
   id: 'ERROR_CONNECTING_TO_RPC',
   severity: Severity.Danger,
@@ -234,20 +232,16 @@ function getValues(pendingApproval, t, actions, history, data) {
       data.existingNetworkConfiguration.name,
     ]);
   } else {
-    title = process.env.CHAIN_PERMISSIONS
-      ? t('addNetworkConfirmationTitle', [
-          pendingApproval.requestData.chainName,
-        ])
-      : t('addEthereumChainConfirmationTitle');
+    title = t('addNetworkConfirmationTitle', [
+      pendingApproval.requestData.chainName,
+    ]);
   }
 
   let subtitle;
   if (data.existingNetworkConfiguration) {
     subtitle = t('updateEthereumChainConfirmationDescription');
   } else {
-    subtitle = process.env.CHAIN_PERMISSIONS
-      ? t('multichainAddEthereumChainConfirmationDescription')
-      : t('addEthereumChainConfirmationDescription');
+    subtitle = t('multichainAddEthereumChainConfirmationDescription');
   }
 
   return {
@@ -275,7 +269,7 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
         ],
       },
-      multichainFlag && {
+      {
         element: 'BannerAlert',
         key: 'only-add-networks-you-trust',
         children: [
@@ -378,96 +372,6 @@ function getValues(pendingApproval, t, actions, history, data) {
         },
       },
       {
-        element: 'Typography',
-        key: 'only-add-networks-you-trust',
-        children: process.env.CHAIN_PERMISSIONS
-          ? []
-          : [
-              {
-                element: 'b',
-                key: 'bolded-text',
-                props: {
-                  style: { display: originIsMetaMask && '-webkit-box' },
-                },
-                children: [
-                  `${t('addEthereumChainConfirmationRisks')} `,
-                  {
-                    hide: !originIsMetaMask,
-                    element: 'Tooltip',
-                    key: 'tooltip-info',
-                    props: {
-                      position: 'bottom',
-                      interactive: true,
-                      trigger: 'mouseenter',
-                      html: (
-                        <div
-                          style={{
-                            width: '180px',
-                            margin: '16px',
-                            textAlign: 'left',
-                          }}
-                        >
-                          {t('someNetworksMayPoseSecurity')}{' '}
-                          <a
-                            key="zendesk_page_link"
-                            href={ZENDESK_URLS.UNKNOWN_NETWORK}
-                            rel="noreferrer"
-                            target="_blank"
-                            style={{ color: 'var(--color-primary-default)' }}
-                          >
-                            {t('learnMoreUpperCase')}
-                          </a>
-                        </div>
-                      ),
-                    },
-                    children: [
-                      {
-                        element: 'i',
-                        key: 'info-circle',
-                        props: {
-                          className: 'fas fa-info-circle',
-                          style: {
-                            marginLeft: '4px',
-                            color: 'var(--color-icon-default)',
-                          },
-                        },
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                element: 'MetaMaskTranslation',
-                key: 'learn-about-risks',
-                props: {
-                  translationKey: 'addEthereumChainConfirmationRisksLearnMore',
-                  variables: [
-                    {
-                      element: 'a',
-                      children: t(
-                        'addEthereumChainConfirmationRisksLearnMoreLink',
-                      ),
-                      key: 'addEthereumChainConfirmationRisksLearnMoreLink',
-                      props: {
-                        href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
-                        target: '__blank',
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-        props: {
-          variant: TypographyVariant.H7,
-          boxProps: {
-            margin: originIsMetaMask ? [0, 8] : 0,
-            display: Display.Flex,
-            flexDirection: FlexDirection.Column,
-            alignItems: AlignItems.center,
-          },
-        },
-      },
-      {
         element: 'TruncatedDefinitionList',
         key: 'network-details',
         props: {
@@ -497,14 +401,7 @@ function getValues(pendingApproval, t, actions, history, data) {
             [t('blockExplorerUrl')]:
               pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
           },
-          prefaceKeys: process.env.CHAIN_PERMISSIONS
-            ? [t('currencySymbol'), t('networkURL')]
-            : [
-                t('networkName'),
-                t('networkURL'),
-                t('chainId'),
-                t('currencySymbol'),
-              ],
+          prefaceKeys: [t('currencySymbol'), t('networkURL')],
         },
       },
     ],
