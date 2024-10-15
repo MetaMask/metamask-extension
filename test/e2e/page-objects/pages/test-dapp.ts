@@ -7,11 +7,22 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 class TestDapp {
   private driver: Driver;
 
+  private readonly confirmDialogButton = '[data-testid="confirm-btn"]';
+
   private readonly confirmDialogScrollButton =
     '[data-testid="signature-request-scroll-button"]';
 
   private readonly confirmSignatureButton =
     '[data-testid="page-container-footer-next"]';
+
+  private readonly connectAccountButton = '#connectButton';
+
+  private readonly connectMetaMaskMessage = {
+    text: 'Connect with MetaMask',
+    tag: 'h2',
+  };
+
+  private readonly connectedAccount = '#accounts';
 
   private readonly erc1155RevokeSetApprovalForAllButton =
     '#revokeERC1155Button';
@@ -35,6 +46,8 @@ class TestDapp {
   };
 
   private readonly personalSignVerifyButton = '#personalSignVerify';
+
+  private readonly revokePermissionButton = '#revokeAccountsPermission';
 
   private readonly signPermitButton = '#signPermit';
 
@@ -98,7 +111,7 @@ class TestDapp {
   }
 
   /**
-   * Open the test dapp page.
+   * Go to the currently open test dapp or open a new test dapp page.
    *
    * @param options - The options for opening the test dapp page.
    * @param options.contractAddress - The contract address to open the dapp with. Defaults to null.
@@ -112,10 +125,15 @@ class TestDapp {
     contractAddress?: string | null;
     url?: string;
   } = {}): Promise<void> {
-    const dappUrl = contractAddress
+    const handle = await this.driver.windowHandles.switchToWindowIfKnown(
+      WINDOW_TITLES.TestDApp,
+    );
+    if (!handle) {
+      const dappUrl = contractAddress
       ? `${url}/?contract=${contractAddress}`
       : url;
-    await this.driver.openNewPage(dappUrl);
+      await this.driver.openNewPage(dappUrl);
+    }
   }
 
   async clickERC721SetApprovalForAllButton() {
@@ -132,6 +150,41 @@ class TestDapp {
 
   async clickERC1155RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc1155RevokeSetApprovalForAllButton);
+  }
+
+  /**
+   * Connect account to test dapp.
+   *
+   * @param publicAddress - The public address to connect to test dapp.
+   */
+  async connectAccount(publicAddress: string) {
+    console.log('Connect account to test dapp');
+    await this.driver.clickElement(this.connectAccountButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.connectMetaMaskMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmDialogButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+    await this.driver.waitForSelector({
+      css: this.connectedAccount,
+      text: publicAddress.toLowerCase(),
+    });
+  }
+
+  /**
+   * Disconnect current connected account from test dapp.
+   *
+   * @param publicAddress - The public address of the account to disconnect from test dapp.
+   */
+  async disconnectAccount(publicAddress: string) {
+    console.log('Disconnect account from test dapp');
+    await this.driver.clickElement(this.revokePermissionButton);
+    await this.openTestDappPage();
+    await this.driver.refresh();
+    await this.check_pageIsLoaded();
+    await this.driver.assertElementNotPresent({
+      css: this.connectedAccount,
+      text: publicAddress.toLowerCase(),
+    });
   }
 
   /**

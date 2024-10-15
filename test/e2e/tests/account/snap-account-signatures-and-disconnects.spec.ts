@@ -13,7 +13,6 @@ import {
   signTypedDataV3WithSnapAccount,
   signTypedDataV4WithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import { error } from 'console';
 
 describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
@@ -47,7 +46,7 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
         await settingsPage.goToExperimentalSettings();
 
         const experimentalSettings = new ExperimentalSettings(driver);
-        await settingsPage.check_pageIsLoaded();
+        await experimentalSettings.check_pageIsLoaded();
         await experimentalSettings.toggleRedesignedSignature();
 
         // Open the Test Dapp and signTypedDataV3
@@ -56,22 +55,21 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
         await signTypedDataV3WithSnapAccount(
           driver,
           newPublicKey,
-          true,
+          false,
           true,
         );
 
         // disconnect from Test Dapp and reconnect to Test Dapp
-        await testDapp.disconnect();
-        await testDapp.connect();
+        await testDapp.disconnectAccount(newPublicKey);
+        await testDapp.connectAccount(newPublicKey);
 
         // SignTypedDataV4 with Test Dapp
         await signTypedDataV4WithSnapAccount(
           driver,
           newPublicKey,
-          true,
+          false,
           true,
         );
-        throw error;
       },
     );
   });

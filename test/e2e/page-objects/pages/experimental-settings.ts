@@ -9,7 +9,7 @@ class ExperimentalSettings {
 
   private readonly experimentalPageTitle: object = {
     text: 'Experimental',
-    css: '.h4',
+    css: 'h4',
   };
 
   private readonly redesignedSignatureToggle: string =
