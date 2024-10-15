@@ -6218,9 +6218,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:@metamask-previews/signature-controller@19.1.0-preview-8c68b2ec":
-  version: 19.1.0-preview-8c68b2ec
-  resolution: "@metamask-previews/signature-controller@npm:19.1.0-preview-8c68b2ec"
+"@metamask/signature-controller@npm:@metamask-previews/signature-controller@19.1.0-preview-2c5a4f93":
+  version: 19.1.0-preview-2c5a4f93
+  resolution: "@metamask-previews/signature-controller@npm:19.1.0-preview-2c5a4f93"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.1"
     "@metamask/controller-utils": "npm:^11.3.0"
@@ -6233,7 +6233,8 @@ __metadata:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/logging-controller": ^6.0.0
-  checksum: 10/37bed84a55344de3b823c6988a2b409f887d1b449aed19dd038f5e455b913d6dbc2aa1e842ce555638b2d7cb81f829c2975ed18b06b7b727d0a1f97ab7b92fe2
+    "@metamask/network-controller": ^21.0.1
+  checksum: 10/f939ca497e0795de629a1574d8364cdaba14aaf2d1eb7def9c8c55a98948579c577503b20fe7862df75688fa08a9dfd559072fd2c716a5b2c393ef89f1bb373e
   languageName: node
   linkType: hard
 
@@ -26189,7 +26190,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^18.0.1"
-    "@metamask/signature-controller": "npm:@metamask-previews/signature-controller@19.1.0-preview-8c68b2ec"
+    "@metamask/signature-controller": "npm:@metamask-previews/signature-controller@19.1.0-preview-2c5a4f93"
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.7.0"
     "@metamask/snaps-execution-environments": "npm:^6.7.2"
