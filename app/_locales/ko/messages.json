@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
   },
-  "noConnectedAccountDescription": {
-    "message": "이 사이트에서 계속 사용하고자 하는 계정을 선택하세요."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
   },
