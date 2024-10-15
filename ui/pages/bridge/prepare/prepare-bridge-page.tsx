@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import {
+  resetBridgeState,
+  resetInputFields,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
@@ -74,6 +76,12 @@ const PrepareBridgePage = () => {
   );
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
+
+  useEffect(() => {
+    // Reset controller and inputs on load
+    dispatch(resetInputFields());
+    dispatch(resetBridgeState());
+  }, []);
 
   return (
     <div className="prepare-bridge-page">
