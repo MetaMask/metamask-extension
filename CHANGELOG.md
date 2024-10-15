@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.5.0]
-
 ### Added
 - Upgraded the network controller and revamped the UI for adding and editing networks ([#26433](https://github.com/MetaMask/metamask-extension/pull/26433))
 - Added new UI components for editing networks directly via the network picker ([#27085](https://github.com/MetaMask/metamask-extension/pull/27085))
