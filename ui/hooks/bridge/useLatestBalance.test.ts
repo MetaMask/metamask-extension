@@ -51,7 +51,7 @@ describe('useLatestBalance', () => {
     mockGetBalance.mockResolvedValue(BigNumber.from('1000000000000000000'));
 
     const { result, waitForNextUpdate } = renderUseLatestBalance(
-      { address: zeroAddress() },
+      { address: zeroAddress(), decimals: 18 },
       CHAIN_IDS.MAINNET,
       createBridgeMockStore(),
     );
