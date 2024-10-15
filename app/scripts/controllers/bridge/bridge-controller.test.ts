@@ -44,7 +44,6 @@ describe('BridgeController', function () {
   beforeAll(function () {
     bridgeController = new BridgeController({
       messenger: messengerMock,
-      provider: providerMock,
     });
   });
 
