@@ -66,6 +66,12 @@ describe('AppStateController', () => {
         },
       }),
     );
+    controllerMessenger.registerActionHandler(
+      'ApprovalController:addRequest',
+      jest.fn().mockReturnValue({
+        catch: jest.fn(),
+      }),
+    );
     appStateController = new AppStateController({
       addUnlockListener: jest.fn(),
       isUnlocked: jest.fn(() => true),
@@ -164,13 +170,6 @@ describe('AppStateController', () => {
     });
 
     it('creates approval request when waitForUnlock is called with shouldShowUnlockRequest as true', async () => {
-      const addRequestSpy = jest.fn().mockImplementation(() => ({
-        catch: jest.fn(),
-      }));
-      controllerMessenger.registerActionHandler(
-        'ApprovalController:addRequest',
-        addRequestSpy,
-      );
       createIsUnlockedMock(false);
 
       const resolveFn: () => void = jest.fn();
@@ -197,13 +196,6 @@ describe('AppStateController', () => {
       jest.clearAllMocks();
     });
     it('accepts approval request revolving all the related promises', async () => {
-      const addRequestSpy = jest.fn().mockImplementation(() => ({
-        catch: jest.fn(),
-      }));
-      controllerMessenger.registerActionHandler(
-        'ApprovalController:addRequest',
-        addRequestSpy,
-      );
       const emitSpy = jest.spyOn(appStateController, 'emit');
       const resolveFn: () => void = jest.fn();
       appStateController.waitForUnlock(resolveFn, true);
@@ -260,6 +252,24 @@ describe('AppStateController', () => {
 
   describe('setLastActiveTime', () => {
     it('sets the last active time to the current time', () => {
+      const spy = jest.spyOn(
+        appStateController as unknown as { _resetTimer: () => void },
+        '_resetTimer',
+      );
+      appStateController.setLastActiveTime();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('sets the timer if timeoutMinutes is set', () => {
+      const timeout = Date.now();
+      controllerMessenger.publish(
+        'PreferencesController:stateChange',
+        {
+          preferences: { autoLockTimeLimit: timeout },
+        } as unknown as PreferencesControllerState,
+        [],
+      );
       const spy = jest.spyOn(
         appStateController as unknown as { _resetTimer: () => void },
         '_resetTimer',
