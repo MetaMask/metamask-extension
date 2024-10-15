@@ -4,10 +4,7 @@ import classnames from 'classnames';
 
 import { isHexString } from '@metamask/utils';
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
-import {
-  isValidDomainName,
-  shortenAddress,
-} from '../../../../../helpers/utils/util';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,

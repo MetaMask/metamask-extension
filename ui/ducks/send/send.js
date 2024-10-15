@@ -95,11 +95,9 @@ import {
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
-  IS_FLASK,
   checkExistingAddresses,
   isDefaultMetaMaskChain,
   isOriginContractAddress,
-  isValidDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
