@@ -462,7 +462,7 @@ describe('MMIController', function () {
 
       mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue(mockKeyring);
       mmiController.keyringController.getAccounts = jest.fn().mockResolvedValue(['0x2']);
-      mmiController.keyringController.addNewAccountForKeyring = jest.fn().mockResolvedValue('0x3'); // Mock this method to return a valid address
+      mmiController.keyringController.addNewAccountForKeyring = jest.fn().mockResolvedValue('0x3');
       mmiController.custodyController.setAccountDetails = jest.fn();
       mmiController.accountTrackerController.syncWithAddresses = jest.fn();
       mmiController.storeCustodianSupportedChains = jest.fn();
