@@ -24,8 +24,7 @@ export const MAX_ALLOWED_SLIPPAGE = 15;
 
 // An address that the metaswap-api recognizes as the default token for the current network,
 // in place of the token address that ERC-20 tokens have
-export const DEFAULT_TOKEN_ADDRESS =
-  '0x0000000000000000000000000000000000000000';
+const DEFAULT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export type SwapsTokenObject = {
   /**

@@ -41,7 +41,6 @@ import {
 import { getGasFeeEstimates } from '../metamask/metamask';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
-import { DEFAULT_TOKEN_ADDRESS } from '../../../shared/constants/swaps';
 import {
   getEthUsdtApproveResetTxParams,
   isEthUsdt,
@@ -528,10 +527,10 @@ export const submitBridgeTransaction = (
       });
 
       // Add tokens if not the native gas token
-      if (quoteMeta.quote.srcAsset.address !== DEFAULT_TOKEN_ADDRESS) {
+      if (quoteMeta.quote.srcAsset.address !== zeroAddress()) {
         addSourceToken();
       }
-      if (quoteMeta.quote.destAsset.address !== DEFAULT_TOKEN_ADDRESS) {
+      if (quoteMeta.quote.destAsset.address !== zeroAddress()) {
         await addDestToken();
       }
 
