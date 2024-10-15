@@ -127,12 +127,11 @@ export const updateQuoteRequestParams = <T extends Partial<QuoteRequest>>(
 
 export const getBridgeERC20Allowance = async (
   contractAddress: string,
-  walletAddress: string,
   chainId: Hex,
 ): ReturnType<BridgeController['getBridgeERC20Allowance']> => {
   return await submitRequestToBackground(
     BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
-    [contractAddress, walletAddress, chainId],
+    [contractAddress, chainId],
   );
 };
 
@@ -197,11 +196,7 @@ export const submitBridgeTransaction = (
       maxPriorityFeePerGas: string | undefined;
     }) => {
       const allowance = new BigNumber(
-        await getBridgeERC20Allowance(
-          ETH_USDT_ADDRESS,
-          quoteMeta.approval.from,
-          hexChainId,
-        ),
+        await getBridgeERC20Allowance(ETH_USDT_ADDRESS, hexChainId),
       );
 
       // quote.srcTokenAmount is actually after the fees
