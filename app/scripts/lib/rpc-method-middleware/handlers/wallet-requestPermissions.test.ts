@@ -1,9 +1,13 @@
-import { invalidParams } from '@metamask/permission-controller';
+import {
+  invalidParams,
+  RequestedPermissions,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
 import * as Multichain from '@metamask/multichain';
+import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -19,6 +23,9 @@ jest.mock('@metamask/multichain', () => ({
 const MockMultichain = jest.mocked(Multichain);
 
 const getBaseRequest = () => ({
+  jsonrpc: '2.0' as const,
+  id: 0,
+  method: 'wallet_requestPermissions',
   networkClientId: 'mainnet',
   origin: 'http://test.com',
   params: [
@@ -111,17 +118,25 @@ const createMockedHandler = () => {
     approvedAccounts: ['0xdeadbeef'],
   });
   const getAccounts = jest.fn().mockResolvedValue([]);
-  const response = {};
-  const handler = (request) =>
-    requestPermissionsHandler.implementation(request, response, next, end, {
-      requestPermissionsForOrigin,
-      getPermissionsForOrigin,
-      updateCaveat,
-      grantPermissions,
-      requestPermissionApprovalForOrigin,
-      getAccounts,
-      request,
-    });
+  const response: PendingJsonRpcResponse<Json> = {
+    jsonrpc: '2.0' as const,
+    id: 0,
+  };
+  const handler = (request: unknown) =>
+    requestPermissionsHandler.implementation(
+      request as JsonRpcRequest<[RequestedPermissions]> & { origin: string },
+      response,
+      next,
+      end,
+      {
+        requestPermissionsForOrigin,
+        getPermissionsForOrigin,
+        updateCaveat,
+        grantPermissions,
+        requestPermissionApprovalForOrigin,
+        getAccounts,
+      },
+    );
 
   return {
     response,
@@ -546,13 +561,21 @@ describe('requestPermissionsHandler', () => {
 
     it('sets the approved accounts on the CAIP-25 caveat after the approved chainIds if origin is not snapId', async () => {
       const { handler } = createMockedHandler();
-      MockMultichain.setPermittedEthChainIds.mockReturnValue(
-        'caveatValueWithEthChainIdsSet',
-      );
+      MockMultichain.setPermittedEthChainIds.mockReturnValue({
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: { caveatValueWithEthChainIdsSet: true },
+        isMultichainOrigin: false,
+      });
 
       await handler(getBaseRequest());
       expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
-        'caveatValueWithEthChainIdsSet',
+        {
+          requiredScopes: {},
+          optionalScopes: {},
+          sessionProperties: { caveatValueWithEthChainIdsSet: true },
+          isMultichainOrigin: false,
+        },
         ['0xdeadbeef'],
       );
     });
@@ -582,7 +605,7 @@ describe('requestPermissionsHandler', () => {
       const { handler, getPermissionsForOrigin } = createMockedHandler();
 
       await handler(getBaseRequest());
-      expect(getPermissionsForOrigin).toHaveBeenCalledWith('http://test.com');
+      expect(getPermissionsForOrigin).toHaveBeenCalled();
     });
 
     it('throws an error when a CAIP-25 already exists that was granted from the multichain flow (isMultichainOrigin: true)', async () => {
@@ -612,14 +635,24 @@ describe('requestPermissionsHandler', () => {
 
     it('updates the caveat when a CAIP-25 already exists that was granted from the legacy flow (isMultichainOrigin: false)', async () => {
       const { handler, updateCaveat } = createMockedHandler();
-      MockMultichain.setEthAccounts.mockReturnValue('updatedCaveatValue');
+      MockMultichain.setEthAccounts.mockReturnValue({
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: { caveatValueWithEthChainIdsSet: true },
+        isMultichainOrigin: false,
+      });
 
       await handler(getBaseRequest());
       expect(updateCaveat).toHaveBeenCalledWith(
         'http://test.com',
         Caip25EndowmentPermissionName,
         Caip25CaveatType,
-        'updatedCaveatValue',
+        {
+          requiredScopes: {},
+          optionalScopes: {},
+          sessionProperties: { caveatValueWithEthChainIdsSet: true },
+          isMultichainOrigin: false,
+        },
       );
     });
 
@@ -627,7 +660,12 @@ describe('requestPermissionsHandler', () => {
       const { handler, getPermissionsForOrigin, grantPermissions } =
         createMockedHandler();
       getPermissionsForOrigin.mockReturnValue({});
-      MockMultichain.setEthAccounts.mockReturnValue('updatedCaveatValue');
+      MockMultichain.setEthAccounts.mockReturnValue({
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: { caveatValueWithEthChainIdsSet: true },
+        isMultichainOrigin: false,
+      });
 
       await handler(getBaseRequest());
       expect(grantPermissions).toHaveBeenCalledWith({
@@ -639,7 +677,12 @@ describe('requestPermissionsHandler', () => {
             caveats: [
               {
                 type: Caip25CaveatType,
-                value: 'updatedCaveatValue',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {},
+                  sessionProperties: { caveatValueWithEthChainIdsSet: true },
+                  isMultichainOrigin: false,
+                },
               },
             ],
           },

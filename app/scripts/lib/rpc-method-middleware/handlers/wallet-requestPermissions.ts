@@ -1,12 +1,32 @@
 import { pick } from 'lodash';
 import { isPlainObject } from '@metamask/controller-utils';
-import { invalidParams, MethodNames } from '@metamask/permission-controller';
+import {
+  Caveat,
+  CaveatSpecificationConstraint,
+  invalidParams,
+  MethodNames,
+  PermissionController,
+  PermissionSpecificationConstraint,
+  RequestedPermissions,
+  ValidPermission,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
+  Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/multichain';
+import {
+  Hex,
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
+import {
+  AsyncJsonRpcEngineNextCallback,
+  JsonRpcEngineEndCallback,
+} from 'json-rpc-engine';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -28,6 +48,15 @@ export const requestPermissionsHandler = {
   },
 };
 
+type AbstractPermissionController = PermissionController<
+  PermissionSpecificationConstraint,
+  CaveatSpecificationConstraint
+>;
+
+type GrantedPermissions = Awaited<
+  ReturnType<AbstractPermissionController['requestPermissions']>
+>[0];
+
 /**
  * Request Permissions implementation to be used in JsonRpcEngine middleware.
  *
@@ -45,10 +74,10 @@ export const requestPermissionsHandler = {
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
-  req,
-  res,
-  _next,
-  end,
+  req: JsonRpcRequest<[RequestedPermissions]> & { origin: string },
+  res: PendingJsonRpcResponse<Json>,
+  _next: AsyncJsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
   {
     requestPermissionsForOrigin,
     getPermissionsForOrigin,
@@ -56,6 +85,27 @@ async function requestPermissionsImplementation(
     grantPermissions,
     requestPermissionApprovalForOrigin,
     getAccounts,
+  }: {
+    requestPermissionsForOrigin: (
+      requestedPermissions: RequestedPermissions,
+    ) => Promise<[GrantedPermissions]>;
+    updateCaveat: (
+      origin: string,
+      permissionName: string,
+      caveatName: string,
+      caveatValue: Caip25CaveatValue,
+    ) => void;
+    grantPermissions: (
+      ...args: Parameters<AbstractPermissionController['grantPermissions']>
+    ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
+    requestPermissionApprovalForOrigin: (
+      requestedPermissions: RequestedPermissions,
+    ) => Promise<{ approvedAccounts: Hex[]; approvedChainIds: Hex[] }>;
+
+    getPermissionsForOrigin: () => ReturnType<
+      AbstractPermissionController['getPermissions']
+    >;
+    getAccounts: () => Promise<string[]>;
   },
 ) {
   const { origin, params } = req;
@@ -67,7 +117,9 @@ async function requestPermissionsImplementation(
   const [requestedPermissions] = params;
   delete requestedPermissions[Caip25EndowmentPermissionName];
 
-  const legacyRequestedPermissions = pick(requestedPermissions, [
+  const legacyRequestedPermissions: Partial<
+    Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
+  > = pick(requestedPermissions, [
     RestrictedMethods.eth_accounts,
     PermissionNames.permittedChains,
   ]);
@@ -101,7 +153,7 @@ async function requestPermissionsImplementation(
     );
   }
 
-  let grantedPermissions = {};
+  let grantedPermissions: GrantedPermissions = {};
   // Request permissions from the PermissionController for any permissions other
   // than eth_accounts and permittedChains in the params. If no permissions
   // are in the params, then request empty permissions from the PermissionController
@@ -123,27 +175,30 @@ async function requestPermissionsImplementation(
     // We assume that approvedAccounts and permittedChains are both defined here.
     // Until they are actually combined, when testing, you must request both
     // eth_accounts and permittedChains together.
-    let caveatValue = {
+    let newCaveatValue = {
       requiredScopes: {},
       optionalScopes: {},
       isMultichainOrigin: false,
     };
     if (!isSnapId(origin)) {
-      caveatValue = setPermittedEthChainIds(
-        caveatValue,
+      newCaveatValue = setPermittedEthChainIds(
+        newCaveatValue,
         legacyApproval.approvedChainIds,
       );
     }
 
-    caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
+    newCaveatValue = setEthAccounts(
+      newCaveatValue,
+      legacyApproval.approvedAccounts,
+    );
 
     const permissions = getPermissionsForOrigin() || {};
     let caip25Endowment = permissions[Caip25EndowmentPermissionName];
-    const existingCaveat = caip25Endowment?.caveats?.find(
+    const existingCaveatValue = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
-    );
-    if (existingCaveat) {
-      if (existingCaveat.value.isMultichainOrigin) {
+    )?.value as Caip25CaveatValue;
+    if (existingCaveatValue) {
+      if (existingCaveatValue.isMultichainOrigin) {
         return end(
           new Error('cannot modify permission granted from multichain flow'),
         ); // TODO: better error
@@ -153,7 +208,7 @@ async function requestPermissionsImplementation(
         origin,
         Caip25EndowmentPermissionName,
         Caip25CaveatType,
-        caveatValue,
+        newCaveatValue,
       );
     } else {
       caip25Endowment = grantPermissions({
@@ -163,7 +218,7 @@ async function requestPermissionsImplementation(
             caveats: [
               {
                 type: Caip25CaveatType,
-                value: caveatValue,
+                value: newCaveatValue,
               },
             ],
           },
@@ -200,6 +255,6 @@ async function requestPermissionsImplementation(
     }
   }
 
-  res.result = Object.values(grantedPermissions);
+  res.result = Object.values(grantedPermissions) as Json;
   return end();
 }
