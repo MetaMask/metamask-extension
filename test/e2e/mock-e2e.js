@@ -68,11 +68,15 @@ const browserAPIRequestDomains =
 
 /**
  * Some third-party providers might use random URLs that we don't want to track
- * in the privacy report "in clear". We use a pattern to match those URLs and
- * adds a generic `host` to the report so that we still keep track of those URLs
- * in a generic way.
+ * in the privacy report "in clear". We identify those private hosts with a
+ * `pattern` regexp and replace the original host by a more generic one (`host`).
+ * For example, "my-secret-host.provider.com" could be denoted as "*.provider.com" in
+ * the privacy report. This would prevent disclosing the "my-secret-host" subdomain
+ * in this case.
  */
-const privateHostMatchers = [];
+const privateHostMatchers = [
+  // { pattern: RegExp, host: string }
+];
 
 /**
  * @typedef {import('mockttp').Mockttp} Mockttp
