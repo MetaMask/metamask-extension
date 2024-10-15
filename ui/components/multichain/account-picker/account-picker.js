@@ -30,8 +30,8 @@ import {
 import { shortenAddress } from '../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-import { trace, TraceName } from '../../../../shared/lib/trace';
 ///: END:ONLY_INCLUDE_IF
+import { trace, TraceName } from '../../../../shared/lib/trace';
 
 export const AccountPicker = ({
   address,
