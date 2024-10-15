@@ -1548,7 +1548,7 @@
     "message": "MetaMask uses default settings to best balance safety and ease of use. Change these settings to further increase your privacy."
   },
   "defaultSettingsTitle": {
-    "message": "Default settings"
+    "message": "Default privacy settings"
   },
   "delete": {
     "message": "Delete"
@@ -2846,7 +2846,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
-    "message": "Manage default settings"
+    "message": "Manage default privacy settings"
   },
   "marketCap": {
     "message": "Market cap"
