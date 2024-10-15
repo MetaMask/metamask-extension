@@ -11,6 +11,10 @@ import {
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionNames } from './specifications';
 
+const snapsPrefixes = ['npm:', 'local:'];
+const isSnap = (origin) =>
+  snapsPrefixes.some((prefix) => origin.startsWith(prefix));
+
 export function getPermissionBackgroundApiMethods({
   permissionController,
   approvalController,
@@ -29,7 +33,9 @@ export function getPermissionBackgroundApiMethods({
     }
 
     if (!caip25Caveat) {
-      throw new Error('tried to add accounts when none have been permissioned'); // TODO: better error
+      throw new Error(
+        `Cannot add account permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
     }
 
     const ethAccounts = getEthAccounts(caip25Caveat.value);
@@ -64,7 +70,9 @@ export function getPermissionBackgroundApiMethods({
     }
 
     if (!caip25Caveat) {
-      throw new Error('tried to add chains when none have been permissioned'); // TODO: better error
+      throw new Error(
+        `Cannot add chain permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
     }
 
     // get the list of permitted eth accounts before we modify the permitted chains and potentially lose some
@@ -168,8 +176,8 @@ export function getPermissionBackgroundApiMethods({
 
       if (!caip25Caveat) {
         throw new Error(
-          'tried to remove accounts when none have been permissioned',
-        ); // TODO: better error
+          `Cannot remove account "${account}": No permissions exist for origin "${origin}".`,
+        );
       }
 
       const existingAccounts = getEthAccounts(caip25Caveat.value);
@@ -219,8 +227,8 @@ export function getPermissionBackgroundApiMethods({
 
       if (!caip25Caveat) {
         throw new Error(
-          'tried to remove chains when none have been permissioned',
-        ); // TODO: better error
+          `Cannot remove permission for chainId "${chainId}": No permissions exist for origin "${origin}".`,
+        );
       }
 
       const existingEthChainIds = getPermittedEthChainIds(caip25Caveat.value);
@@ -233,9 +241,7 @@ export function getPermissionBackgroundApiMethods({
         return;
       }
 
-      // TODO: Is this right? Do we want to revoke the entire
-      // CAIP-25 permission if no eip-155 chains are left?
-      if (remainingChainIds.length === 0) {
+      if (remainingChainIds.length === 0 && !isSnap(origin)) {
         permissionController.revokePermission(
           origin,
           Caip25EndowmentPermissionName,
