@@ -9,6 +9,7 @@ import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
  * The supported trace names.
  */
 export enum TraceName {
+  AccountList = 'Account List',
   BackgroundConnect = 'Background Connect',
   DeveloperTest = 'Developer Test',
   FirstRender = 'First Render',
