@@ -4,7 +4,7 @@ import { getSnapRoute } from '../../helpers/utils/util';
 
 const useSnapNavigation = () => {
   const history = useHistory();
-  const navigate = (url) => {
+  const navigate = (url: string) => {
     let path;
     const linkData = parseMetaMaskUrl(url);
     if (linkData.snapId) {
