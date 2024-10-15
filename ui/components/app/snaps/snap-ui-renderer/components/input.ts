@@ -9,6 +9,11 @@ export const input: UIComponentFactory<InputElement> = ({ element, form }) => ({
     placeholder: element.props.placeholder,
     textFieldProps: {
       type: element.props.type,
+      inputProps: {
+        step: element.props.step,
+        min: element.props.min,
+        max: element.props.max,
+      },
     },
     name: element.props.name,
     form,
