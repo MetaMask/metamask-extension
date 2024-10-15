@@ -9,18 +9,13 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   InternalAccount,
   KeyringAccountType,
-  KeyringClient,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { CaipChainId } from '@metamask/utils';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
-  BitcoinWalletSnapSender,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
+} from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
   Box,
@@ -59,6 +54,7 @@ import {
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getIsWatchEthereumAccountEnabled,
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -66,7 +62,6 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
-  getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -87,22 +82,23 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  ACCOUNT_WATCHER_NAME,
+  ACCOUNT_WATCHER_SNAP_ID,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { useBitcoinWalletSnapClient } from '../../../hooks/accounts/useBitcoinWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 import {
   InternalAccountWithBalance,
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import {
-  ACCOUNT_WATCHER_NAME,
-  ACCOUNT_WATCHER_SNAP_ID,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -112,9 +108,9 @@ const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for watch-only account)
   ADD_WATCH_ONLY: 'add-watch-only',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
   // Same but for testnet
@@ -138,9 +134,9 @@ export const getActionTitle = (
   switch (actionMode) {
     case ACTION_MODES.ADD:
     case ACTION_MODES.MENU:
-    case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    case ACTION_MODES.ADD_WATCH_ONLY:
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccount');
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
@@ -231,6 +227,7 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
@@ -248,7 +245,7 @@ export const AccountListMenu = ({
     onClose();
     history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
   }, [trackEvent, onClose, history]);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinTestnetSupportEnabled = useSelector(
     getIsBitcoinTestnetSupportEnabled,
@@ -260,15 +257,7 @@ export const AccountListMenu = ({
     hasCreatedBtcTestnetAccount,
   );
 
-  const createBitcoinAccount = async (scope: CaipChainId) => {
-    // Client to create the account using the Bitcoin Snap
-    const client = new KeyringClient(new BitcoinWalletSnapSender());
-
-    // This will trigger the Snap account creation flow (+ account renaming)
-    await client.createAccount({
-      scope,
-    });
-  };
+  const bitcoinWalletSnapClient = useBitcoinWalletSnapClient();
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -412,10 +401,12 @@ export const AccountListMenu = ({
 
                       // The account creation + renaming is handled by the
                       // Snap account bridge, so we need to close the current
-                      // model
+                      // modal
                       onClose();
 
-                      await createBitcoinAccount(MultichainNetworks.BITCOIN);
+                      await bitcoinWalletSnapClient.createAccount(
+                        MultichainNetworks.BITCOIN,
+                      );
                     }}
                     data-testid="multichain-account-menu-popover-add-btc-account"
                   >
@@ -435,10 +426,10 @@ export const AccountListMenu = ({
                     startIconName={IconName.Add}
                     onClick={async () => {
                       // The account creation + renaming is handled by the Snap account bridge, so
-                      // we need to close the current model
+                      // we need to close the current modal
                       onClose();
 
-                      await createBitcoinAccount(
+                      await bitcoinWalletSnapClient.createAccount(
                         MultichainNetworks.BITCOIN_TESTNET,
                       );
                     }}
@@ -550,19 +541,23 @@ export const AccountListMenu = ({
               </Box>
               ///: END:ONLY_INCLUDE_IF
             }
-            {isAddWatchEthereumAccountEnabled && (
-              <Box marginTop={4}>
-                <ButtonLink
-                  disabled={!isAddWatchEthereumAccountEnabled}
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Eye}
-                  onClick={handleAddWatchAccount}
-                  data-testid="multichain-account-menu-popover-add-watch-only-account"
-                >
-                  {t('addEthereumWatchOnlyAccount')}
-                </ButtonLink>
-              </Box>
-            )}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              isAddWatchEthereumAccountEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={!isAddWatchEthereumAccountEnabled}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Eye}
+                    onClick={handleAddWatchAccount}
+                    data-testid="multichain-account-menu-popover-add-watch-only-account"
+                  >
+                    {t('addEthereumWatchOnlyAccount')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
           </Box>
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (

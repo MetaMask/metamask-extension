@@ -38,11 +38,11 @@ import {
   ToastContainer,
   Toast,
 } from '../../components/multichain';
+import { SurveyToast } from '../../components/ui/survey-toast';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-import TokenDetailsPage from '../token-details';
 import Notifications from '../notifications';
 import NotificationsSettings from '../notifications-settings';
 import NotificationDetails from '../notification-details';
@@ -75,7 +75,6 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
-  TOKEN_DETAILS,
   CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
@@ -368,11 +367,6 @@ export default class Routes extends Component {
           component={ConfirmTransaction}
         />
         <Authenticated path={SEND_ROUTE} component={SendPage} exact />
-        <Authenticated
-          path={`${TOKEN_DETAILS}/:address/`}
-          component={TokenDetailsPage}
-          exact
-        />
         <Authenticated path={SWAPS_ROUTE} component={Swaps} />
         <Authenticated
           path={CROSS_CHAIN_SWAP_ROUTE}
@@ -564,6 +558,17 @@ export default class Routes extends Component {
       return true;
     }
 
+    const isReviewPermissionsPgae = Boolean(
+      matchPath(location.pathname, {
+        path: REVIEW_PERMISSIONS,
+        exact: false,
+      }),
+    );
+
+    if (isReviewPermissionsPgae) {
+      return true;
+    }
+
     if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
       return true;
     }
@@ -665,6 +670,7 @@ export default class Routes extends Component {
 
     return (
       <ToastContainer>
+        <SurveyToast />
         {showConnectAccountToast &&
         !this.state.hideConnectAccountToast &&
         isEvmAccount ? (
@@ -774,7 +780,7 @@ export default class Routes extends Component {
           />
         ) : null}
 
-        {process.env.CHAIN_PERMISSIONS && isPermittedNetworkToastOpen ? (
+        {isPermittedNetworkToastOpen ? (
           <Toast
             key="switched-permitted-network-toast"
             startAdornment={
