@@ -6,7 +6,7 @@ For [general questions](https://community.metamask.io/c/learn/26), [feature requ
 
 MetaMask supports Firefox, Google Chrome, and Chromium-based browsers. We recommend using the latest available browser version.
 
-For up to the minute news, follow our [Twitter](https://twitter.com/metamask) or [Medium](https://medium.com/metamask) pages.
+For up to the minute news, follow us on [X](https://x.com/MetaMask).
 
 To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
 

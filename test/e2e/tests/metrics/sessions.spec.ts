@@ -38,7 +38,7 @@ describe('Sessions', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {
-          sentry: { doNotForceSentryForThisTest: true },
+          sentry: { forceEnable: false },
         },
       },
       async ({ driver, mockedEndpoint }) => {
@@ -60,7 +60,7 @@ describe('Sessions', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {
-          sentry: { doNotForceSentryForThisTest: true },
+          sentry: { forceEnable: false },
         },
       },
       async ({ driver, mockedEndpoint }) => {

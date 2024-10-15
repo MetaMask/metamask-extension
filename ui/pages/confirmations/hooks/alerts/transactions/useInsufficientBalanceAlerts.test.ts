@@ -142,7 +142,7 @@ describe('useInsufficientBalanceAlerts', () => {
         isBlocking: true,
         key: 'insufficientBalance',
         message:
-          'You do not have enough ETH in your account to pay for transaction fees.',
+          'You do not have enough ETH in your account to pay for network fees.',
         reason: 'Insufficient funds',
         severity: Severity.Danger,
       },

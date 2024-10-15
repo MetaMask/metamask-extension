@@ -77,10 +77,11 @@ describe('Asset', () => {
       expect.objectContaining({
         tokenSymbol: 'WETH',
         tokenImage: 'token-icon-url',
-        primary: '10',
-        secondary: '$10.10',
+        primary: '$10.10',
+        secondary: '10 WETH',
         title: 'Token',
         tooltipText: 'tooltip',
+        isPrimaryTokenSymbolHidden: true,
       }),
       {},
     );

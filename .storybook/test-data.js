@@ -677,6 +677,11 @@ const state = {
     currentLocale: 'en',
     preferences: {
       showNativeTokenAsMainBalance: true,
+      tokenSortConfig: {
+        key: 'token-sort-key',
+        order: 'dsc',
+        sortCallback: 'stringNumeric',
+      },
     },
     incomingTransactionsPreferences: {
       [CHAIN_IDS.MAINNET]: true,

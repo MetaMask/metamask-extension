@@ -122,32 +122,6 @@ describe('Settings Search', function () {
       },
     );
   });
-  it('should find element inside the Alerts tab', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await openMenuSafe(driver);
-
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settingsSearch.alerts);
-
-        // Check if element redirects to the correct page
-        const page = 'Alerts';
-        await driver.clickElement({ text: page, tag: 'span' });
-        assert.equal(
-          await driver.isElementPresent({ text: page, tag: 'div' }),
-          true,
-          `${settingsSearch.alerts} item does not redirect to ${page} view`,
-        );
-      },
-    );
-  });
   it('should find element inside the Experimental tab', async function () {
     await withFixtures(
       {

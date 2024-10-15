@@ -8,14 +8,14 @@ import React, {
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { Display, TextVariant } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
 import NameDetails from './name-details/name-details';
@@ -98,7 +98,7 @@ const Name = memo(
     const hasDisplayName = Boolean(name);
 
     return (
-      <div>
+      <Box display={Display.Flex}>
         {!disableEdit && modalOpen && (
           <NameDetails value={value} type={type} onClose={handleModalClose} />
         )}
@@ -130,7 +130,7 @@ const Name = memo(
             </Text>
           )}
         </div>
-      </div>
+      </Box>
     );
   },
 );

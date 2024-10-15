@@ -38,12 +38,7 @@ describe('wallet_requestPermissions', function () {
         await switchToNotificationWindow(driver);
 
         await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
         });
 

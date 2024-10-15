@@ -23,6 +23,7 @@ export const RevokeStaticSimulation = () => {
           <Name
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
+            preferContractSymbol
           />
         </Box>
       </Box>
@@ -36,6 +37,7 @@ export const RevokeStaticSimulation = () => {
           <Name
             value={transactionMeta.txParams.from as string}
             type={NameType.ETHEREUM_ADDRESS}
+            preferContractSymbol
           />
         </Box>
       </Box>

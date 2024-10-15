@@ -28,6 +28,10 @@ import {
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
+import { ENVIRONMENT } from '../../../development/build/constants';
+///: END:ONLY_INCLUDE_IF
+
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
 export const overrideAnonymousEventNames = {
@@ -114,8 +118,9 @@ export default class MetaMetricsController {
    * @param {object} options
    * @param {object} options.segment - an instance of analytics for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {object} options.preferencesStore - The preferences controller store, used
-   *  to access and subscribe to preferences that will be attached to events
+   * @param {object} options.preferencesControllerState - The state of preferences controller
+   * @param {Function} options.onPreferencesStateChange - Used to attach a listener to the
+   *  stateChange event emitted by the PreferencesController
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
@@ -128,7 +133,8 @@ export default class MetaMetricsController {
    */
   constructor({
     segment,
-    preferencesStore,
+    preferencesControllerState,
+    onPreferencesStateChange,
     onNetworkDidChange,
     getCurrentChainId,
     version,
@@ -144,16 +150,15 @@ export default class MetaMetricsController {
         captureException(err);
       }
     };
-    const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
-    this.locale = prefState.currentLocale.replace('_', '-');
+    this.locale = preferencesControllerState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
     this.extension = extension;
     this.environment = environment;
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.selectedAddress = prefState.selectedAddress;
+    this.selectedAddress = preferencesControllerState.selectedAddress;
     ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
@@ -177,8 +182,8 @@ export default class MetaMetricsController {
       },
     });
 
-    preferencesStore.subscribe(({ currentLocale }) => {
-      this.locale = currentLocale.replace('_', '-');
+    onPreferencesStateChange(({ currentLocale }) => {
+      this.locale = currentLocale?.replace('_', '-');
     });
 
     onNetworkDidChange(() => {
@@ -484,8 +489,10 @@ export default class MetaMetricsController {
       this.setMarketingCampaignCookieId(null);
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+    if (this.environment !== ENVIRONMENT.DEVELOPMENT) {
+      this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+    }
     ///: END:ONLY_INCLUDE_IF
 
     return metaMetricsId;
@@ -862,6 +869,8 @@ export default class MetaMetricsController {
         metamaskState.participateInMetaMetrics,
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
+      [MetaMetricsUserTrait.TokenSortPreference]:
+        metamaskState.tokenSortConfig?.key || '',
     };
 
     if (!previousUserTraits) {

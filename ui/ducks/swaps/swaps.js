@@ -5,6 +5,7 @@ import log from 'loglevel';
 import { captureMessage } from '@sentry/browser';
 
 import { TransactionType } from '@metamask/transaction-controller';
+import { createProjectLogger } from '@metamask/utils';
 import {
   addToken,
   addTransactionAndWaitForPublish,
@@ -45,6 +46,7 @@ import {
   getSwapsLivenessForNetwork,
   parseSmartTransactionsError,
   StxErrorTypes,
+  getSwap1559GasFeeEstimates,
 } from '../../pages/swaps/swaps.util';
 import {
   addHexes,
@@ -95,6 +97,8 @@ import {
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
+
+const debugLog = createProjectLogger('swaps');
 
 export const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -1087,8 +1091,6 @@ export const signAndSendTransactions = (
     }
 
     const customSwapsGas = getCustomSwapsGas(state);
-    const customMaxFeePerGas = getCustomMaxFeePerGas(state);
-    const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
     const fetchParams = getFetchParams(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
@@ -1101,30 +1103,31 @@ export const signAndSendTransactions = (
 
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
 
-    let maxFeePerGas;
-    let maxPriorityFeePerGas;
-    let baseAndPriorityFeePerGas;
-    let decEstimatedBaseFee;
-
-    if (networkAndAccountSupports1559) {
-      const {
-        high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
-        estimatedBaseFee = '0',
-      } = getGasFeeEstimates(state);
-      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
-      maxFeePerGas =
-        customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
-      maxPriorityFeePerGas =
-        customMaxPriorityFeePerGas ||
-        decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
-      baseAndPriorityFeePerGas = addHexes(
-        decEstimatedBaseFee,
-        maxPriorityFeePerGas,
-      );
-    }
-
     const usedQuote = getUsedQuote(state);
     const usedTradeTxParams = usedQuote.trade;
+    const approveTxParams = getApproveTxParams(state);
+
+    let transactionGasFeeEstimates;
+
+    if (networkAndAccountSupports1559) {
+      const networkGasFeeEstimates = getGasFeeEstimates(state);
+      const { estimatedBaseFee = '0' } = networkGasFeeEstimates;
+
+      transactionGasFeeEstimates = await getSwap1559GasFeeEstimates(
+        usedQuote.trade,
+        approveTxParams,
+        estimatedBaseFee,
+        chainId,
+      );
+
+      debugLog('Received 1559 gas fee estimates', transactionGasFeeEstimates);
+    }
+
+    const tradeGasFeeEstimates =
+      transactionGasFeeEstimates?.tradeGasFeeEstimates;
+
+    const approveGasFeeEstimates =
+      transactionGasFeeEstimates?.approveGasFeeEstimates;
 
     const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || 0, 16)
       .round(0)
@@ -1139,38 +1142,57 @@ export const signAndSendTransactions = (
 
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;
+
     if (networkAndAccountSupports1559) {
-      usedTradeTxParams.maxFeePerGas = maxFeePerGas;
-      usedTradeTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+      usedTradeTxParams.maxFeePerGas = tradeGasFeeEstimates?.maxFeePerGas;
+      usedTradeTxParams.maxPriorityFeePerGas =
+        tradeGasFeeEstimates?.maxPriorityFeePerGas;
       delete usedTradeTxParams.gasPrice;
     } else {
       usedTradeTxParams.gasPrice = usedGasPrice;
     }
 
     const usdConversionRate = getUSDConversionRate(state);
+
     const destinationValue = calcTokenAmount(
       usedQuote.destinationAmount,
       destinationTokenInfo.decimals || 18,
     ).toPrecision(8);
+
     const usedGasLimitEstimate =
       usedQuote?.gasEstimateWithRefund ||
       `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
-    const totalGasLimitEstimate = new BigNumber(usedGasLimitEstimate, 16)
-      .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
-      .toString(16);
+
+    const tradeTotalGasEstimate = calcGasTotal(
+      usedGasLimitEstimate,
+      networkAndAccountSupports1559
+        ? tradeGasFeeEstimates?.baseAndPriorityFeePerGas
+        : usedGasPrice,
+    );
+
+    const approvalGasLimitEstimate = usedQuote.approvalNeeded?.gas;
+
+    const approvalTotalGasEstimate = approvalGasLimitEstimate
+      ? calcGasTotal(
+          approvalGasLimitEstimate,
+          networkAndAccountSupports1559
+            ? approveGasFeeEstimates?.baseAndPriorityFeePerGas
+            : usedGasPrice,
+        )
+      : '0x0';
+
     const gasEstimateTotalInUSD = getValueFromWeiHex({
-      value: calcGasTotal(
-        totalGasLimitEstimate,
-        networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : usedGasPrice,
-      ),
+      value: addHexes(tradeTotalGasEstimate, approvalTotalGasEstimate),
       toCurrency: 'usd',
       conversionRate: usdConversionRate,
       numberOfDecimals: 6,
     });
+
     const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
+
     const swapMetaData = {
       token_from: sourceTokenInfo.symbol,
       token_from_amount: String(swapTokenValue),
@@ -1201,10 +1223,13 @@ export const signAndSendTransactions = (
       stx_user_opt_in: smartTransactionsOptInStatus,
       ...additionalTrackingParams,
     };
+
     if (networkAndAccountSupports1559) {
-      swapMetaData.max_fee_per_gas = maxFeePerGas;
-      swapMetaData.max_priority_fee_per_gas = maxPriorityFeePerGas;
-      swapMetaData.base_and_priority_fee_per_gas = baseAndPriorityFeePerGas;
+      swapMetaData.max_fee_per_gas = tradeGasFeeEstimates?.maxFeePerGas;
+      swapMetaData.max_priority_fee_per_gas =
+        tradeGasFeeEstimates?.maxPriorityFeePerGas;
+      swapMetaData.base_and_priority_fee_per_gas =
+        tradeGasFeeEstimates?.baseAndPriorityFeePerGas;
     }
 
     trackEvent({
@@ -1227,7 +1252,6 @@ export const signAndSendTransactions = (
     }
 
     let finalApproveTxMeta;
-    const approveTxParams = getApproveTxParams(state);
 
     // For hardware wallets we go to the Awaiting Signatures page first and only after a user
     // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
@@ -1237,10 +1261,13 @@ export const signAndSendTransactions = (
 
     if (approveTxParams) {
       if (networkAndAccountSupports1559) {
-        approveTxParams.maxFeePerGas = maxFeePerGas;
-        approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        approveTxParams.maxFeePerGas = approveGasFeeEstimates?.maxFeePerGas;
+        approveTxParams.maxPriorityFeePerGas =
+          approveGasFeeEstimates?.maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
       }
+
+      debugLog('Creating approve transaction', approveTxParams);
 
       try {
         finalApproveTxMeta = await addTransactionAndWaitForPublish(
@@ -1258,11 +1285,14 @@ export const signAndSendTransactions = (
           },
         );
       } catch (e) {
+        debugLog('Approve transaction failed', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
         history.push(SWAPS_ERROR_ROUTE);
         return;
       }
     }
+
+    debugLog('Creating trade transaction', usedTradeTxParams);
 
     try {
       await addTransactionAndWaitForPublish(usedTradeTxParams, {
@@ -1271,7 +1301,7 @@ export const signAndSendTransactions = (
         swaps: {
           hasApproveTx: Boolean(approveTxParams),
           meta: {
-            estimatedBaseFee: decEstimatedBaseFee,
+            estimatedBaseFee: transactionGasFeeEstimates?.estimatedBaseFee,
             sourceTokenSymbol: sourceTokenInfo.symbol,
             destinationTokenSymbol: destinationTokenInfo.symbol,
             type: TransactionType.swap,
@@ -1287,7 +1317,7 @@ export const signAndSendTransactions = (
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR
         : SWAP_FAILED_ERROR;
-      console.error(e);
+      debugLog('Trade transaction failed', e);
       await dispatch(setSwapsErrorKey(errorKey));
       history.push(SWAPS_ERROR_ROUTE);
       return;

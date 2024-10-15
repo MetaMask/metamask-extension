@@ -1,22 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
+import { PRIMARY } from '../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import {
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getShouldHideZeroBalanceTokens,
   getSelectedAccount,
-  getPreferences,
 } from '../../../../selectors';
 import {
-  getMultichainCurrentNetwork,
-  getMultichainNativeCurrency,
   getMultichainIsEvm,
-  getMultichainShouldShowFiat,
-  getMultichainCurrencyImage,
-  getMultichainIsMainnet,
   getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
@@ -32,14 +25,10 @@ import {
 import DetectedToken from '../../detected-token/detected-token';
 import {
   DetectedTokensBanner,
-  TokenListItem,
   ImportTokenLink,
   ReceiveModal,
 } from '../../../multichain';
-import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
-import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
 import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
@@ -48,42 +37,30 @@ import {
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
+import AssetListControlBar from './asset-list-control-bar';
+import NativeToken from './native-token';
 
 export type TokenWithBalance = {
   address: string;
   symbol: string;
-  string: string;
+  string?: string;
   image: string;
+  secondary?: string;
+  tokenFiatAmount?: string;
+  isNative?: boolean;
 };
 
-type AssetListProps = {
+export type AssetListProps = {
   onClickAsset: (arg: string) => void;
-  showTokensLinks: boolean;
+  showTokensLinks?: boolean;
 };
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
-  const showFiat = useSelector(getMultichainShouldShowFiat);
-  const isMainnet = useSelector(getMultichainIsMainnet);
-  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
-  const { chainId, ticker, type, rpcUrl } = useSelector(
-    getMultichainCurrentNetwork,
-  );
-  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    chainId,
-    ticker,
-    type,
-    rpcUrl,
-  );
+  const selectedAccount = useSelector(getSelectedAccount);
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
-  const balanceIsLoading = !balance;
-  const selectedAccount = useSelector(getSelectedAccount);
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
 
   const {
     currency: primaryCurrency,
@@ -92,27 +69,12 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     ethNumberOfDecimals: 4,
     shouldCheckShowNativeToken: true,
   });
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, {
-    ethNumberOfDecimals: 4,
-    shouldCheckShowNativeToken: true,
+
+  const [, primaryCurrencyProperties] = useCurrencyDisplay(balance, {
+    numberOfDecimals: primaryNumberOfDecimals,
+    currency: primaryCurrency,
   });
 
-  const [primaryCurrencyDisplay, primaryCurrencyProperties] =
-    useCurrencyDisplay(balance, {
-      numberOfDecimals: primaryNumberOfDecimals,
-      currency: primaryCurrency,
-    });
-
-  const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(balance, {
-      numberOfDecimals: secondaryNumberOfDecimals,
-      currency: secondaryCurrency,
-    });
-
-  const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
   const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
@@ -126,23 +88,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     setShowReceiveModal(true);
   };
 
-  const accountTotalFiatBalance = useAccountTotalFiatBalance(
-    selectedAccount,
-    shouldHideZeroBalanceTokens,
-  );
-
-  const tokensWithBalances =
-    accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
-
-  const { loading } = accountTotalFiatBalance;
-
-  tokensWithBalances.forEach((token) => {
-    token.string = roundToDecimalPlacesRemovingExtraZeroes(
-      token.string,
-      5,
-    ) as string;
-  });
-
   const balanceIsZero = useSelector(
     getMultichainSelectedAccountCachedBalanceIsZero,
   );
@@ -150,21 +95,13 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
+  const isBtc = useSelector(getMultichainIsBitcoin);
   ///: END:ONLY_INCLUDE_IF
 
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const isBtc = useSelector(getMultichainIsBitcoin);
-  ///: END:ONLY_INCLUDE_IF
-
-  let isStakeable = isMainnet && isEvm;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isStakeable = false;
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -176,6 +113,21 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             margin={4}
           />
         )}
+      <AssetListControlBar showTokensLinks={showTokensLinks} />
+      <TokenList
+        nativeToken={<NativeToken onClickAsset={onClickAsset} />}
+        onTokenClick={(tokenAddress: string) => {
+          onClickAsset(tokenAddress);
+          trackEvent({
+            event: MetaMetricsEventName.TokenScreenOpened,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              token_symbol: primaryCurrencyProperties.suffix,
+              location: 'Home',
+            },
+          });
+        }}
+      />
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         shouldShowBuy ? (
@@ -192,43 +144,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
-      <TokenListItem
-        onClick={() => onClickAsset(nativeCurrency)}
-        title={nativeCurrency}
-        // The primary and secondary currencies are subject to change based on the user's settings
-        // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
-        primary={isOriginalNativeSymbol ? secondaryCurrencyDisplay : undefined}
-        tokenSymbol={
-          showNativeTokenAsMainBalance
-            ? primaryCurrencyProperties.suffix
-            : secondaryCurrencyProperties.suffix
-        }
-        secondary={
-          showFiat && isOriginalNativeSymbol
-            ? primaryCurrencyDisplay
-            : undefined
-        }
-        tokenImage={balanceIsLoading ? null : primaryTokenImage}
-        isOriginalTokenSymbol={isOriginalNativeSymbol}
-        isNativeCurrency
-        isStakeable={isStakeable}
-        showPercentage
-      />
-      <TokenList
-        tokens={tokensWithBalances}
-        loading={loading}
-        onTokenClick={(tokenAddress: string) => {
-          onClickAsset(tokenAddress);
-          trackEvent({
-            event: MetaMetricsEventName.TokenScreenOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: primaryCurrencyProperties.suffix,
-              location: 'Home',
-            },
-          });
-        }}
-      />
       {shouldShowTokensLinks && (
         <ImportTokenLink
           margin={4}

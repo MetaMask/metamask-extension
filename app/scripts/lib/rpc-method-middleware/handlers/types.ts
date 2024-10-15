@@ -1,4 +1,3 @@
-import { OriginString } from '@metamask/permission-controller';
 import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import { MessageType } from '../../../../../shared/constants/app';
 
@@ -9,5 +8,5 @@ export type HandlerWrapper = {
 
 export type HandlerRequestType<Params extends JsonRpcParams = JsonRpcParams> =
   Required<JsonRpcRequest<Params>> & {
-    origin: OriginString;
+    origin: string;
   };

@@ -243,6 +243,55 @@ exports[`Develop options tab should match snapshot 1`] = `
     <p
       class="mm-box mm-text settings-page__security-tab-sub-header__bold mm-text--body-md mm-box--color-text-default"
     >
+      Profile Sync
+    </p>
+    <div
+      class="settings-page__content-padded"
+    >
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      >
+        <div
+          class="settings-page__content-item"
+        >
+          <span>
+            Account syncing
+          </span>
+          <div
+            class="settings-page__content-description"
+          >
+            Deletes all user storage entries for the current SRP. This can help if you tested Account Syncing early on and have corrupted data. This will not remove internal accounts already created and renamed. If you want to start from scratch with only the first account and restart syncing from this point on, you will need to reinstall the extension after this action.
+          </div>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-theme="light"
+          >
+            Reset
+          </button>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <div
+            class="mm-box mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--align-items-center"
+            style="height: 40px; width: 40px;"
+          >
+            <span
+              class="mm-box settings-page-developer-options__icon-check mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-success-default"
+              hidden=""
+              style="mask-image: url('./images/icons/check.svg');"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text settings-page__security-tab-sub-header__bold mm-text--body-md mm-box--color-text-default"
+    >
       Sentry
     </p>
     <div

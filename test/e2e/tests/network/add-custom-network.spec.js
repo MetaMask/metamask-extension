@@ -369,13 +369,6 @@ describe('Custom network', function () {
             tag: 'button',
             text: 'Approve',
           });
-
-          const switchNetworkBtn = await driver.findElement({
-            tag: 'button',
-            text: 'Switch network',
-          });
-
-          await switchNetworkBtn.click();
         },
       );
     });

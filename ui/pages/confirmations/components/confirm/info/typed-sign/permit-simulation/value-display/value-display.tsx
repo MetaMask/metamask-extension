@@ -116,7 +116,11 @@ const PermitSimulationValueDisplay: React.FC<
             </Text>
           </Tooltip>
         </Box>
-        <Name value={tokenContract} type={NameType.ETHEREUM_ADDRESS} />
+        <Name
+          value={tokenContract}
+          type={NameType.ETHEREUM_ADDRESS}
+          preferContractSymbol
+        />
       </Box>
       <Box>
         {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} shorten />}

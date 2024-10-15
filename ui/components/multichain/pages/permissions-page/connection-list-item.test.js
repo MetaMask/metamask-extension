@@ -37,6 +37,10 @@ describe('ConnectionListItem', () => {
       iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
       networkIconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
       networkName: 'Test Dapp Network',
+      addresses: [
+        '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B',
+        '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1',
+      ],
     };
 
     const { getByText, getByTestId } = renderWithProvider(
@@ -69,37 +73,5 @@ describe('ConnectionListItem', () => {
 
     fireEvent.click(getByTestId('connection-list-item'));
     expect(onClickMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('renders badgewrapper correctly for non-Snap connection', () => {
-    const onClickMock = jest.fn();
-    const mockConnection2 = {
-      extensionId: null,
-      iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
-      name: 'MM Test Dapp',
-      origin: 'https://metamask.github.io',
-      subjectType: 'website',
-      addresses: ['0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da'],
-      addressToNameMap: {
-        '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da':
-          'Unreasonably long account name',
-      },
-      networkIconUrl: './images/eth_logo.svg',
-      networkName: 'Ethereum Mainnet',
-    };
-    const { getByTestId } = renderWithProvider(
-      <ConnectionListItem connection={mockConnection2} onClick={onClickMock} />,
-      store,
-    );
-
-    expect(
-      getByTestId('connection-list-item__avatar-network-badge'),
-    ).toBeInTheDocument();
-
-    expect(
-      document
-        .querySelector('.mm-avatar-network__network-image')
-        .getAttribute('src'),
-    ).toBe(mockConnection2.networkIconUrl);
   });
 });
