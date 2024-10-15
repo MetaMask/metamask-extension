@@ -5401,6 +5401,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-snap-keyring@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@metamask/eth-snap-keyring@npm:4.4.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/eth-sig-util": "npm:^7.0.3"
+    "@metamask/snaps-controllers": "npm:^9.10.0"
+    "@metamask/snaps-sdk": "npm:^6.7.0"
+    "@metamask/snaps-utils": "npm:^8.3.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.2.1"
+    "@types/uuid": "npm:^9.0.8"
+    uuid: "npm:^9.0.1"
+  peerDependencies:
+    "@metamask/keyring-api": ^8.1.3
+  checksum: 10/fd9926ba3706506bd9a16d1c2501e7c6cd7b7e3e7ea332bc7f28e0fca1f67f4514da51e6f9f4541a7354a2363d04c09c445f61b98fdc366432e1def9c2f27d07
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-token-tracker@npm:^8.0.0":
   version: 8.0.0
   resolution: "@metamask/eth-token-tracker@npm:8.0.0"
@@ -6272,7 +6291,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^9.11.1, @metamask/snaps-controllers@npm:^9.7.0":
+"@metamask/snaps-controllers@npm:^9.10.0, @metamask/snaps-controllers@npm:^9.11.1, @metamask/snaps-controllers@npm:^9.7.0":
   version: 9.11.1
   resolution: "@metamask/snaps-controllers@npm:9.11.1"
   dependencies:
@@ -6400,7 +6419,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^8.1.1, @metamask/snaps-utils@npm:^8.4.0, @metamask/snaps-utils@npm:^8.4.1":
+"@metamask/snaps-utils@npm:^8.1.1, @metamask/snaps-utils@npm:^8.3.0, @metamask/snaps-utils@npm:^8.4.0, @metamask/snaps-utils@npm:^8.4.1":
   version: 8.4.1
   resolution: "@metamask/snaps-utils@npm:8.4.1"
   dependencies:
@@ -26117,7 +26136,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^3.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/eth-snap-keyring": "npm:^4.3.6"
+    "@metamask/eth-snap-keyring": "npm:^4.4.0"
     "@metamask/eth-token-tracker": "npm:^8.0.0"
     "@metamask/eth-trezor-keyring": "npm:^3.1.3"
     "@metamask/etherscan-link": "npm:^3.0.0"
