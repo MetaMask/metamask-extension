@@ -217,12 +217,11 @@ export async function fetchBridgeQuotes(
   return filteredQuotes;
 }
 /**
- * A function to return tx for setting allowance to 0 for USDT on Ethereum
+ * A function to return the txParam data for setting allowance to 0 for USDT on Ethereum
  *
- * @param approval - The original transaction params for the required allowance
- * @returns Modified approval transaction params that will reset allowance to 0
+ * @returns The txParam data that will reset allowance to 0, combine it with the approval tx params received from Bridge API
  */
-export const getEthUsdtApproveResetTxParams = (approval: TransactionParams) => {
+export const getEthUsdtResetData = () => {
   const UsdtContractInterface = new Contract(ETH_USDT_ADDRESS, abiERC20)
     .interface;
   const data = UsdtContractInterface.encodeFunctionData('approve', [
@@ -230,10 +229,7 @@ export const getEthUsdtApproveResetTxParams = (approval: TransactionParams) => {
     '0',
   ]);
 
-  return {
-    ...approval,
-    data,
-  };
+  return data;
 };
 
 export const isEthUsdt = (chainId: Hex, address: string) =>

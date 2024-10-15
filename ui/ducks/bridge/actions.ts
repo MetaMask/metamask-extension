@@ -19,7 +19,11 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { FeeType, QuoteRequest } from '../../pages/bridge/types';
+import {
+  FeeType,
+  GasMultiplierByChainId,
+  QuoteRequest,
+} from '../../pages/bridge/types';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
   checkNetworkAndAccountSupports1559,
@@ -31,10 +35,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getGasFeeEstimates } from '../metamask/metamask';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
-import {
-  getEthUsdtApproveResetTxParams,
-  isEthUsdt,
-} from '../../pages/bridge/bridge.util';
+import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { bridgeSlice } from './bridge';
@@ -171,6 +172,66 @@ export const submitBridgeTransaction = (
       ).toPrefixedHexString();
     };
 
+    const handleTx = async ({
+      txType,
+      txParams,
+      gasMultipliers,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      meta,
+    }: {
+      txType: 'bridgeApproval' | 'bridge';
+      txParams: {
+        chainId: number;
+        to: string;
+        from: string;
+        value: string;
+        data: string;
+        gasLimit: number;
+      };
+      gasMultipliers: GasMultiplierByChainId;
+      maxFeePerGas: string | undefined;
+      maxPriorityFeePerGas: string | undefined;
+      meta: Record<string, unknown>;
+    }) => {
+      const hexChainId = new Numeric(
+        txParams.chainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
+      if (!hexChainId) {
+        throw new Error('Invalid chain ID');
+      }
+
+      const maxGasLimit = calcMaxGasLimit(
+        txParams.gasLimit,
+        gasMultipliers[hexChainId],
+      );
+
+      const finalTxParams = {
+        ...txParams,
+        chainId: hexChainId,
+        gasLimit: maxGasLimit,
+        gas: maxGasLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      };
+
+      const txMeta = await addTransactionAndWaitForPublish(finalTxParams, {
+        requireApproval: false,
+        // @ts-expect-error Need TransactionController v37+, TODO add this type
+        type: txType,
+        swaps: {
+          hasApproveTx:
+            txType === 'bridge' ? Boolean(quoteMeta?.approval) : true,
+          meta,
+        },
+      });
+
+      await forceUpdateMetamaskState(dispatch);
+
+      return txMeta;
+    };
+
     const handleEthUsdtAllowanceReset = async ({
       hexChainId,
       maxFeePerGas,
@@ -193,32 +254,21 @@ export const submitBridgeTransaction = (
       const shouldResetApproval = allowance.lt(sentAmount) && allowance.gt(0);
 
       if (shouldResetApproval) {
-        const maxGasLimit = calcMaxGasLimit(
-          quoteMeta.approval.gasLimit,
-          getApprovalGasMultipliers(state)[hexChainId],
-        );
-        const txParams = getEthUsdtApproveResetTxParams({
+        const resetData = getEthUsdtResetData();
+        const txParams = {
           ...quoteMeta.approval,
-          chainId: hexChainId,
-          gasLimit: maxGasLimit,
-          gas: maxGasLimit, // must set this field
+          data: resetData,
+        };
+        const gasMultipliers = getApprovalGasMultipliers(state);
+
+        await handleTx({
+          txType: 'bridgeApproval',
+          txParams,
+          gasMultipliers,
           maxFeePerGas,
           maxPriorityFeePerGas,
-        });
-
-        await addTransactionAndWaitForPublish(txParams, {
-          requireApproval: false,
-          // @ts-expect-error Need TransactionController v37+, TODO add this type
-          type: 'bridgeApproval', // TransactionType.bridgeApproval,
-
-          // TODO update TransactionController to change this to a bridge field
-          // swaps.meta is of type Partial<TransactionMeta>, will get merged with TransactionMeta by the TransactionController
-          swaps: {
-            hasApproveTx: true,
-            meta: {
-              type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
-              sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
-            },
+          meta: {
+            type: 'bridgeApproval', // TransactionType.bridgeApproval,
           },
         });
       }
@@ -231,14 +281,10 @@ export const submitBridgeTransaction = (
       maxFeePerGas: string | undefined;
       maxPriorityFeePerGas: string | undefined;
     }) => {
-      const { chainId } = quoteMeta.approval;
       const hexChainId = new Numeric(
-        chainId,
+        quoteMeta.approval.chainId,
         10,
       ).toPrefixedHexString() as `0x${string}`;
-      if (!hexChainId) {
-        throw new Error('Invalid chain ID');
-      }
 
       // On Ethereum, we need to reset the allowance to 0 for USDT first if we need to set a new allowance
       // https://www.google.com/url?q=https://docs.unizen.io/trade-api/before-you-get-started/token-allowance-management-for-non-updatable-allowance-tokens&sa=D&source=docs&ust=1727386175513609&usg=AOvVaw3Opm6BSJeu7qO0Ve5iLTOh
@@ -250,37 +296,20 @@ export const submitBridgeTransaction = (
         });
       }
 
-      const maxGasLimit = calcMaxGasLimit(
-        quoteMeta.approval.gasLimit,
-        getApprovalGasMultipliers(state)[hexChainId],
-      );
-      const txParams = {
-        ...quoteMeta.approval,
-        chainId: hexChainId,
-        gasLimit: maxGasLimit,
-        gas: maxGasLimit, // must set this field
+      const gasMultipliers = getApprovalGasMultipliers(state);
+      const txMeta = await handleTx({
+        txType: 'bridgeApproval',
+        txParams: quoteMeta.approval,
+        gasMultipliers,
         maxFeePerGas,
         maxPriorityFeePerGas,
-      };
-
-      const txMeta = await addTransactionAndWaitForPublish(txParams, {
-        requireApproval: false,
-        // @ts-expect-error Need TransactionController v37+, TODO add this type
-        type: 'bridgeApproval', // TransactionType.bridgeApproval,
-
-        // swaps.meta is of type Partial<TransactionMeta>, will get merged with TransactionMeta by the TransactionController
-        swaps: {
-          hasApproveTx: true,
-          meta: {
-            type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
-            sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
-          },
+        meta: {
+          type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
+          sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
         },
       });
 
-      await forceUpdateMetamaskState(dispatch);
-
-      return txMeta?.id;
+      return txMeta.id;
     };
 
     const handleBridgeTx = async ({
@@ -292,51 +321,28 @@ export const submitBridgeTransaction = (
       maxFeePerGas: string | undefined;
       maxPriorityFeePerGas: string | undefined;
     }) => {
-      const hexChainId = new Numeric(
-        quoteMeta.trade.chainId,
-        10,
-      ).toPrefixedHexString() as `0x${string}`;
-      if (!hexChainId) {
-        throw new Error('Invalid chain ID');
-      }
-
-      const maxGasLimit = calcMaxGasLimit(
-        quoteMeta.trade.gasLimit,
-        getBridgeGasMultipliers(state)[hexChainId],
-      );
-      const txParams = {
-        ...quoteMeta.trade,
-        chainId: hexChainId,
-        gasLimit: maxGasLimit,
-        gas: maxGasLimit, // must set this field
+      const gasMultipliers = getBridgeGasMultipliers(state);
+      const txMeta = await handleTx({
+        txType: 'bridge',
+        txParams: quoteMeta.trade,
+        gasMultipliers,
         maxFeePerGas,
         maxPriorityFeePerGas,
-      };
-      const txMeta = await addTransactionAndWaitForPublish(txParams, {
-        requireApproval: false,
-        // @ts-expect-error Need TransactionController v37+, TODO add this type
-        type: 'bridge', // TransactionType.bridge,
-
-        // TODO update TransactionController to change this to a bridge field
-        swaps: {
-          hasApproveTx: Boolean(quoteMeta?.approval),
-          meta: {
-            // estimatedBaseFee: decEstimatedBaseFee,
-            // swapMetaData,
-            type: 'bridge', // TransactionType.bridge, // TODO add this type
-            sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
-            destinationTokenSymbol: quoteMeta.quote.destAsset.symbol,
-            destinationTokenDecimals: quoteMeta.quote.destAsset.decimals,
-            destinationTokenAddress: quoteMeta.quote.destAsset.address,
-            approvalTxId,
-            // this is the decimal (non atomic) amount (not USD value) of source token to swap
-            swapTokenValue: new Numeric(quoteMeta.quote.srcTokenAmount, 10)
-              .shiftedBy(quoteMeta.quote.srcAsset.decimals)
-              .toString(),
-          },
+        meta: {
+          // estimatedBaseFee: decEstimatedBaseFee,
+          // swapMetaData,
+          type: 'bridge', // TransactionType.bridge, // TODO add this type
+          sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
+          destinationTokenSymbol: quoteMeta.quote.destAsset.symbol,
+          destinationTokenDecimals: quoteMeta.quote.destAsset.decimals,
+          destinationTokenAddress: quoteMeta.quote.destAsset.address,
+          approvalTxId,
+          // this is the decimal (non atomic) amount (not USD value) of source token to swap
+          swapTokenValue: new Numeric(quoteMeta.quote.srcTokenAmount, 10)
+            .shiftedBy(quoteMeta.quote.srcAsset.decimals)
+            .toString(),
         },
       });
-      await forceUpdateMetamaskState(dispatch);
 
       return txMeta.id;
     };
