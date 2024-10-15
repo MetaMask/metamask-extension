@@ -239,7 +239,7 @@ export class AppStateController extends EventEmitter {
       ({ preferences }: { preferences: Partial<Preferences> }) => {
         const currentState = this.store.getState();
         if (
-          preferences?.autoLockTimeLimit &&
+          typeof preferences?.autoLockTimeLimit === 'number' &&
           currentState.timeoutMinutes !== preferences.autoLockTimeLimit
         ) {
           this._setInactiveTimeout(preferences.autoLockTimeLimit);
@@ -256,8 +256,7 @@ export class AppStateController extends EventEmitter {
     );
 
     const { preferences } = messenger.call('PreferencesController:getState');
-
-    if (preferences.autoLockTimeLimit) {
+    if (typeof preferences.autoLockTimeLimit === 'number') {
       this._setInactiveTimeout(preferences.autoLockTimeLimit);
     }
 
