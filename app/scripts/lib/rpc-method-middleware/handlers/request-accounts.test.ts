@@ -1,35 +1,41 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { deferredPromise, shouldEmitDappViewedEvent } from '../../util';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
+import * as Multichain from '@metamask/multichain';
+import {
+  JsonRpcParams,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
+import { deferredPromise } from '../../util';
+import * as Util from '../../util';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
-import * as Multichain from '@metamask/multichain';
 import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import requestEthereumAccounts from './request-accounts';
 
-jest.mock(
-  '@metamask/multichain',
-  () => ({
-    ...jest.requireActual(
-      '@metamask/multichain',
-    ),
-    setPermittedEthChainIds: jest.fn(),
-    setEthAccounts: jest.fn(),
-  }),
-);
+jest.mock('@metamask/multichain', () => ({
+  ...jest.requireActual('@metamask/multichain'),
+  setPermittedEthChainIds: jest.fn(),
+  setEthAccounts: jest.fn(),
+}));
 const MockMultichain = jest.mocked(Multichain);
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
   shouldEmitDappViewedEvent: jest.fn(),
 }));
+const MockUtil = jest.mocked(Util);
 
 const baseRequest = {
+  jsonrpc: '2.0' as const,
+  id: 0,
+  method: 'eth_requestAccounts',
   networkClientId: 'mainnet',
   origin: 'http://test.com',
+  params: [],
 };
 
 const createMockedHandler = () => {
@@ -52,8 +58,14 @@ const createMockedHandler = () => {
     },
   };
   const grantPermissions = jest.fn();
-  const response = {};
-  const handler = (request) =>
+  const response: PendingJsonRpcResponse<string[]> = {
+    jsonrpc: '2.0' as const,
+    id: 0,
+    result: undefined,
+  };
+  const handler = (
+    request: JsonRpcRequest<JsonRpcParams> & { origin: string },
+  ) =>
     requestEthereumAccounts.implementation(request, response, next, end, {
       getAccounts,
       getUnlockPromise,
@@ -78,7 +90,7 @@ const createMockedHandler = () => {
 
 describe('requestEthereumAccountsHandler', () => {
   beforeEach(() => {
-    shouldEmitDappViewedEvent.mockReturnValue(true);
+    MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
     MockMultichain.setEthAccounts.mockImplementation(
       (caveatValue) => caveatValue,
     );
@@ -123,7 +135,11 @@ describe('requestEthereumAccountsHandler', () => {
       getAccounts.mockResolvedValue(['0xdead', '0xbeef']);
 
       handler(baseRequest);
-      expect(response).toStrictEqual({});
+      expect(response).toStrictEqual({
+        id: 0,
+        jsonrpc: '2.0',
+        result: undefined,
+      });
       expect(end).not.toHaveBeenCalled();
 
       await flushPromises();
@@ -135,7 +151,7 @@ describe('requestEthereumAccountsHandler', () => {
         ),
       );
       expect(end).toHaveBeenCalledTimes(1);
-      resolve();
+      resolve?.();
     });
   });
 
@@ -162,24 +178,21 @@ describe('requestEthereumAccountsHandler', () => {
     });
 
     it('throws an error if the eth_accounts and permittedChains approval is rejected', async () => {
-      const { handler, requestPermissionApprovalForOrigin, response, end } =
+      const { handler, requestPermissionApprovalForOrigin, end } =
         createMockedHandler();
       requestPermissionApprovalForOrigin.mockRejectedValue(
         new Error('approval rejected'),
       );
 
       await handler(baseRequest);
-      expect(response.error).toStrictEqual(new Error('approval rejected'));
-      expect(end).toHaveBeenCalled();
+      expect(end).toHaveBeenCalledWith(new Error('approval rejected'));
     });
 
     it('sets the approved chainIds on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is not snapId', async () => {
       const { handler } = createMockedHandler();
 
       await handler(baseRequest);
-      expect(
-        MockMultichain.setPermittedEthChainIds,
-      ).toHaveBeenCalledWith(
+      expect(MockMultichain.setPermittedEthChainIds).toHaveBeenCalledWith(
         {
           requiredScopes: {},
           optionalScopes: {},
@@ -192,13 +205,21 @@ describe('requestEthereumAccountsHandler', () => {
     it('sets the approved accounts on the CAIP-25 caveat after the approved chainIds if origin is not snapId', async () => {
       const { handler } = createMockedHandler();
 
-      MockMultichain.setPermittedEthChainIds.mockReturnValue(
-        'caveatValueWithEthChainIdsSet',
-      );
+      MockMultichain.setPermittedEthChainIds.mockReturnValue({
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: { caveatValueWithEthChainIdsSet: true },
+        isMultichainOrigin: false,
+      });
 
       await handler(baseRequest);
       expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
-        'caveatValueWithEthChainIdsSet',
+        {
+          requiredScopes: {},
+          optionalScopes: {},
+          sessionProperties: { caveatValueWithEthChainIdsSet: true },
+          isMultichainOrigin: false,
+        },
         ['0xdeadbeef'],
       );
     });
@@ -207,9 +228,7 @@ describe('requestEthereumAccountsHandler', () => {
       const { handler } = createMockedHandler();
 
       await handler({ baseRequest, origin: 'npm:snap' });
-      expect(
-        MockMultichain.setPermittedEthChainIds,
-      ).not.toHaveBeenCalled();
+      expect(MockMultichain.setPermittedEthChainIds).not.toHaveBeenCalled();
     });
 
     it('sets the approved accounts on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is snapId', async () => {
@@ -229,9 +248,12 @@ describe('requestEthereumAccountsHandler', () => {
     it('grants a CAIP-25 permission', async () => {
       const { handler, grantPermissions } = createMockedHandler();
 
-      MockMultichain.setEthAccounts.mockReturnValue(
-        'updatedCaveatValue',
-      );
+      MockMultichain.setEthAccounts.mockReturnValue({
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: { caveatValueWithEthAccountsSet: true },
+        isMultichainOrigin: false,
+      });
 
       await handler(baseRequest);
       expect(grantPermissions).toHaveBeenCalledWith({
@@ -243,7 +265,12 @@ describe('requestEthereumAccountsHandler', () => {
             caveats: [
               {
                 type: Caip25CaveatType,
-                value: 'updatedCaveatValue',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {},
+                  sessionProperties: { caveatValueWithEthAccountsSet: true },
+                  isMultichainOrigin: false,
+                },
               },
             ],
           },

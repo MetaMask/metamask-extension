@@ -5,10 +5,31 @@ import {
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/multichain';
+import {
+  Caveat,
+  CaveatSpecificationConstraint,
+  PermissionController,
+  PermissionSpecificationConstraint,
+  RequestedPermissions,
+  ValidPermission,
+} from '@metamask/permission-controller';
+import {
+  Hex,
+  Json,
+  JsonRpcParams,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
+import {
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+} from 'json-rpc-engine';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
+  MetaMetricsEventPayload,
+  MetaMetricsEventOptions,
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
@@ -38,34 +59,19 @@ const requestEthereumAccounts = {
 };
 export default requestEthereumAccounts;
 
+type AbstractPermissionController = PermissionController<
+  PermissionSpecificationConstraint,
+  CaveatSpecificationConstraint
+>;
+
 // Used to rate-limit pending requests to one per origin
 const locks = new Set();
 
-/**
- * @typedef {Record<string, string | Function>} RequestEthereumAccountsOptions
- * @property {Function} getAccounts - Gets the accounts for the requesting
- * origin.
- * @property {Function} getUnlockPromise - Gets a promise that resolves when
- * the extension unlocks.
- * @property {Function} hasPermission - Returns whether the requesting origin
- * has the specified permission.
- * @property {Function} requestAccountsPermission - Requests the `eth_accounts`
- * permission for the requesting origin.
- */
-
-/**
- *
- * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} req - The JSON-RPC request object.
- * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
- * @param {Function} _next - The json-rpc-engine 'next' callback.
- * @param {Function} end - The json-rpc-engine 'end' callback.
- * @param {RequestEthereumAccountsOptions} options - The RPC method hooks.
- */
 async function requestEthereumAccountsHandler(
-  req,
-  res,
-  _next,
-  end,
+  req: JsonRpcRequest<JsonRpcParams> & { origin: string },
+  res: PendingJsonRpcResponse<string[]>,
+  _next: JsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
   {
     getAccounts,
     getUnlockPromise,
@@ -73,6 +79,24 @@ async function requestEthereumAccountsHandler(
     sendMetrics,
     metamaskState,
     grantPermissions,
+  }: {
+    getAccounts: () => Promise<string[]>;
+    getUnlockPromise: (shouldShowUnlockRequest: true) => Promise<void>;
+    requestPermissionApprovalForOrigin: (
+      requestedPermissions: RequestedPermissions,
+    ) => Promise<{ approvedAccounts: Hex[]; approvedChainIds: Hex[] }>;
+    sendMetrics: (
+      payload: MetaMetricsEventPayload,
+      options?: MetaMetricsEventOptions,
+    ) => void;
+    metamaskState: {
+      metaMetricsId: string;
+      permissionHistory: Record<string, unknown>;
+      accounts: Record<string, unknown>;
+    };
+    grantPermissions: (
+      ...args: Parameters<AbstractPermissionController['grantPermissions']>
+    ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
   },
 ) {
   const { origin } = req;
@@ -94,7 +118,7 @@ async function requestEthereumAccountsHandler(
       res.result = ethAccounts;
       end();
     } catch (error) {
-      end(error);
+      end(error as unknown as Error);
     } finally {
       locks.delete(origin);
     }
@@ -109,9 +133,8 @@ async function requestEthereumAccountsHandler(
         [PermissionNames.permittedChains]: {},
       }),
     });
-  } catch (err) {
-    res.error = err;
-    return end();
+  } catch (error) {
+    return end(error as unknown as Error);
   }
 
   // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
