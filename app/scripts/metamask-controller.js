@@ -161,8 +161,9 @@ import {
   multichainMethodCallValidatorMiddleware,
   MultichainSubscriptionManager,
   MultichainMiddlewareManager,
-  walletRevokeSessionHandler,
-  walletGetSessionHandler,
+  walletGetSession,
+  walletRevokeSession,
+  walletInvokeMethod,
   mergeScopes,
   getEthAccounts,
   caipPermissionAdapterMiddleware,
@@ -298,6 +299,7 @@ import {
   createEip1193MethodMiddleware,
   createMultichainMethodMiddleware,
   createUnsupportedMethodMiddleware,
+  makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
@@ -380,7 +382,7 @@ import {
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import { walletCreateSessionHandler } from './lib/rpc-method-middleware/handlers/wallet-createSession';
+import { walletCreateSession, walletCreateSessionHandler } from './lib/rpc-method-middleware/handlers/wallet-createSession';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -6213,70 +6215,47 @@ export default class MetamaskController extends EventEmitter {
 
     // TODO: Uncomment this when wallet lifecycle methods are added to api-specs
     engine.push(multichainMethodCallValidatorMiddleware);
+    const middlewareMaker = makeMethodMiddlewareMaker([
+      walletRevokeSession,
+      walletGetSession,
+      walletInvokeMethod,
+      walletCreateSession,
+    ]);
 
     engine.push(
-      createScaffoldMiddleware({
-        [MESSAGE_TYPE.WALLET_CREATE_SESSION]: (
-          request,
-          response,
-          next,
-          end,
-        ) => {
-          return walletCreateSessionHandler(request, response, next, end, {
-            grantPermissions: this.permissionController.grantPermissions.bind(
-              this.permissionController,
-            ),
-            findNetworkClientIdByChainId:
-              this.networkController.findNetworkClientIdByChainId.bind(
-                this.networkController,
-              ),
-            listAccounts: this.accountsController.listAccounts.bind(
-              this.accountsController,
-            ),
-            addNetwork: this.networkController.addNetwork.bind(
-              this.networkController,
-            ),
-            removeNetwork: this.removeNetwork.bind(this),
-            requestPermissionApprovalForOrigin:
-              this.requestPermissionApprovalForOrigin.bind(this, origin),
-            sendMetrics: this.metaMetricsController.trackEvent.bind(
-              this.metaMetricsController,
-            ),
-            metamaskState: this.getState(),
-          });
-        },
-        [MESSAGE_TYPE.WALLET_INVOKE_METHOD]: (request, response, next, end) => {
-          return walletInvokeMethodHandler(request, response, next, end, {
-            findNetworkClientIdByChainId:
-              this.networkController.findNetworkClientIdByChainId.bind(
-                this.networkController,
-              ),
-            getCaveat: this.permissionController.getCaveat.bind(
-              this.permissionController,
-            ),
-            getSelectedNetworkClientId: () =>
-              this.networkController.state.selectedNetworkClientId,
-          });
-        },
-        [MESSAGE_TYPE.WALLET_REVOKE_SESSION]: (
-          request,
-          response,
-          next,
-          end,
-        ) => {
-          return walletRevokeSessionHandler(request, response, next, end, {
-            revokePermission: this.permissionController.revokePermission.bind(
-              this.permissionController,
-            ),
-          });
-        },
-        [MESSAGE_TYPE.WALLET_GET_SESSION]: (request, response, next, end) => {
-          return walletGetSessionHandler(request, response, next, end, {
-            getCaveat: this.permissionController.getCaveat.bind(
-              this.permissionController,
-            ),
-          });
-        },
+      middlewareMaker({
+        grantPermissions: this.permissionController.grantPermissions.bind(
+          this.permissionController,
+        ),
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
+        listAccounts: this.accountsController.listAccounts.bind(
+          this.accountsController,
+        ),
+        addNetwork: this.networkController.addNetwork.bind(
+          this.networkController,
+        ),
+        removeNetwork: this.removeNetwork.bind(this),
+        requestPermissionApprovalForOrigin:
+          this.requestPermissionApprovalForOrigin.bind(this, origin),
+        sendMetrics: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+        metamaskState: this.getState(),
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
+        getCaveat: this.permissionController.getCaveat.bind(
+          this.permissionController,
+        ),
+        getSelectedNetworkClientId: () =>
+          this.networkController.state.selectedNetworkClientId,
+        revokePermission: this.permissionController.revokePermission.bind(
+          this.permissionController,
+        ),
       }),
     );
 
