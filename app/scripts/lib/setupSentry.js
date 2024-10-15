@@ -238,7 +238,7 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
-    !getManifestFlags().sentry?.forceEnable ||
+    getManifestFlags().sentry?.forceEnable === false ||
     (process.env.IN_TEST && !SENTRY_DSN_DEV)
   ) {
     return SENTRY_DSN_FAKE;
