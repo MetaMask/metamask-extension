@@ -34,7 +34,7 @@ export async function getMethodFrom4Byte(
     functionName: 'getMethodFrom4Byte',
   })) as FourByteResponse;
 
-  if (!fourByteResponse.results || fourByteResponse.results.length === 0) {
+  if (!fourByteResponse.results?.length) {
     return undefined;
   }
 

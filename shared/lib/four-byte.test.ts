@@ -50,18 +50,18 @@ describe('Four Byte', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['undefined', { results: undefined }],
+      ['object', { results: {} }],
       ['empty', { results: [] }],
     ])(
       'returns `undefined` if fourByteResponse.results is %s',
       async (_: string, mockResponse: { results: unknown }) => {
         fetchMock.mockResolvedValue({
           ok: true,
-          json: async () => '0x913aa952',
+          json: async () => mockResponse,
         });
 
         const result = await getMethodFrom4Byte('0x913aa952');
 
-        console.log(`Test case: ${_}, Mock response:`, mockResponse);
         expect(result).toBeUndefined();
       },
     );
