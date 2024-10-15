@@ -1,9 +1,20 @@
-import { MethodNames } from '@metamask/permission-controller';
+import {
+  CaveatSpecificationConstraint,
+  MethodNames,
+  PermissionController,
+  PermissionSpecificationConstraint,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
+  Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/multichain';
+import {
+  AsyncJsonRpcEngineNextCallback,
+  JsonRpcEngineEndCallback,
+} from 'json-rpc-engine';
+import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { PermissionNames } from '../../../controllers/permissions';
 import {
   CaveatTypes,
@@ -32,21 +43,32 @@ export const getPermissionsHandler = {
  * @returns A promise that resolves to nothing
  */
 async function getPermissionsImplementation(
-  _req,
-  res,
-  _next,
-  end,
-  { getPermissionsForOrigin, getAccounts },
+  _req: JsonRpcRequest<Json[]>,
+  res: PendingJsonRpcResponse<Json>,
+  _next: AsyncJsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
+  {
+    getPermissionsForOrigin,
+    getAccounts,
+  }: {
+    getPermissionsForOrigin: () => ReturnType<
+      PermissionController<
+        PermissionSpecificationConstraint,
+        CaveatSpecificationConstraint
+      >['getPermissions']
+    >;
+    getAccounts: () => Promise<string[]>;
+  },
 ) {
   // permissions are frozen and must be cloned before modified
   const permissions = { ...getPermissionsForOrigin() } || {};
   const caip25Endowment = permissions[Caip25EndowmentPermissionName];
-  const caip25Caveat = caip25Endowment?.caveats?.find(
+  const caip25CaveatValue = caip25Endowment?.caveats?.find(
     ({ type }) => type === Caip25CaveatType,
-  );
+  )?.value as Caip25CaveatValue;
   delete permissions[Caip25EndowmentPermissionName];
 
-  if (caip25Caveat) {
+  if (caip25CaveatValue) {
     // We cannot derive ethAccounts directly from the CAIP-25 permission
     // because the accounts will not be in order of lastSelected
     const ethAccounts = await getAccounts();
@@ -64,7 +86,7 @@ async function getPermissionsImplementation(
       };
     }
 
-    const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
+    const ethChainIds = getPermittedEthChainIds(caip25CaveatValue);
 
     if (ethChainIds.length > 0) {
       permissions[PermissionNames.permittedChains] = {

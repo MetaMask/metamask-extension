@@ -1,8 +1,9 @@
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  getPermittedEthChainIds,
 } from '@metamask/multichain';
+import * as Multichain from '@metamask/multichain';
+import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -14,9 +15,12 @@ jest.mock('@metamask/multichain', () => ({
   ...jest.requireActual('@metamask/multichain'),
   getPermittedEthChainIds: jest.fn(),
 }));
+const MockMultichain = jest.mocked(Multichain);
 
 const baseRequest = {
-  origin: 'http://test.com',
+  jsonrpc: '2.0' as const,
+  id: 0,
+  method: 'wallet_getPermissions',
 };
 
 const createMockedHandler = () => {
@@ -70,8 +74,11 @@ const createMockedHandler = () => {
   const getAccounts = jest
     .fn()
     .mockResolvedValue(['0x1', '0x2', '0x3', '0xdeadbeef']);
-  const response = {};
-  const handler = (request) =>
+  const response: PendingJsonRpcResponse<Json> = {
+    jsonrpc: '2.0' as const,
+    id: 0,
+  };
+  const handler = (request: JsonRpcRequest<Json[]>) =>
     getPermissionsHandler.implementation(request, response, next, end, {
       getPermissionsForOrigin,
       getAccounts,
@@ -93,7 +100,7 @@ describe('getPermissionsHandler', () => {
   });
 
   beforeEach(() => {
-    getPermittedEthChainIds.mockReturnValue([]);
+    MockMultichain.getPermittedEthChainIds.mockReturnValue([]);
   });
 
   it('gets the permissions for the origin', async () => {
@@ -197,7 +204,7 @@ describe('getPermissionsHandler', () => {
     it('gets the permitted eip155 chainIds from the CAIP-25 caveat value', async () => {
       const { handler } = createMockedHandler();
       await handler(baseRequest);
-      expect(getPermittedEthChainIds).toHaveBeenCalledWith({
+      expect(MockMultichain.getPermittedEthChainIds).toHaveBeenCalledWith({
         requiredScopes: {
           'eip155:1': {
             methods: [],
@@ -223,7 +230,7 @@ describe('getPermissionsHandler', () => {
     it('returns the permissions with a permittedChains permission if some eip155 chainIds are permissioned', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockResolvedValue([]);
-      getPermittedEthChainIds.mockReturnValue(['0x1', '0x64']);
+      MockMultichain.getPermittedEthChainIds.mockReturnValue(['0x1', '0x64']);
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual([
@@ -254,7 +261,7 @@ describe('getPermissionsHandler', () => {
     it('returns the permissions with a eth_accounts and permittedChains permission if some eip155 accounts and chainIds are permissioned', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockResolvedValue(['0x1', '0x2', '0xdeadbeef']);
-      getPermittedEthChainIds.mockReturnValue(['0x1', '0x64']);
+      MockMultichain.getPermittedEthChainIds.mockReturnValue(['0x1', '0x64']);
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual([
