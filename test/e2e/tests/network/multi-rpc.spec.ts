@@ -396,11 +396,9 @@ describe('MultiRpc:', function (this: Suite) {
         await driver.delay(regularDelayMs);
 
         // go to advanced settigns
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Manage default settings',
         });
-
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement({
           text: 'General',
@@ -420,23 +418,18 @@ describe('MultiRpc:', function (this: Suite) {
           tag: 'button',
         });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Save',
           tag: 'button',
         });
 
-        await driver.delay(regularDelayMs);
-        await driver.waitForSelector('[data-testid="category-back-button"]');
         await driver.clickElement('[data-testid="category-back-button"]');
 
-        await driver.waitForSelector(
-          '[data-testid="privacy-settings-back-button"]',
-        );
-        await driver.clickElement(
+        await driver.clickElementAndWaitToDisappear(
           '[data-testid="privacy-settings-back-button"]',
         );
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Done',
           tag: 'button',
         });
@@ -446,7 +439,7 @@ describe('MultiRpc:', function (this: Suite) {
           tag: 'button',
         });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Done',
           tag: 'button',
         });
