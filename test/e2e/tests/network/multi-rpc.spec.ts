@@ -456,13 +456,10 @@ describe('MultiRpc:', function (this: Suite) {
         // Ensures popover backround doesn't kill test
         await driver.assertElementNotPresent('.popover-bg');
 
-        await driver.clickElementSafe({
-          tag: 'button',
-          text: 'Got it',
-        });
+        await driver.clickElementSafe({ tag: 'h6', text: 'Got it' });
 
         await driver.assertElementNotPresent({
-          tag: 'button',
+          tag: 'h6',
           text: 'Got it',
         });
 
