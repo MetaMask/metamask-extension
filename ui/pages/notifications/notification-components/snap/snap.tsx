@@ -20,6 +20,7 @@ import {
   BackgroundColor,
   Display,
   FlexDirection,
+  FontWeight,
   OverflowWrap,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -79,10 +80,10 @@ export const components: NotificationComponent<SnapNotification> = {
             <Box
               display={Display.Flex}
               style={{
-                border: '1px solid var(--color-border-muted)',
+                borderBottom: '1px solid var(--color-border-muted)',
               }}
               flexDirection={FlexDirection.Column}
-              padding={[4, 3, 4, 3]}
+              padding={[4, 2, 4, 4]}
             >
               <Box
                 display={Display.Flex}
@@ -90,7 +91,9 @@ export const components: NotificationComponent<SnapNotification> = {
                 paddingBottom={2}
               >
                 <SnapIcon snapId={snapId} avatarSize={IconSize.Xl} />
-                <Text paddingLeft={4}>{snapsNameGetter(snapId)}</Text>
+                <Text paddingLeft={4} fontWeight={FontWeight.Medium}>
+                  {snapsNameGetter(snapId)}
+                </Text>
               </Box>
               <Text overflowWrap={OverflowWrap.Normal}>
                 {notification.data.message}
