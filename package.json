@@ -311,7 +311,7 @@
     "@metamask/bitcoin-wallet-snap": "^0.6.1",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "^11.2.0",
+    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.3.0-preview-ada451da",
     "@metamask/design-tokens": "^4.0.0",
     "@metamask/ens-controller": "^13.0.0",
     "@metamask/ens-resolver-snap": "^0.1.2",
