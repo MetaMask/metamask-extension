@@ -72,7 +72,7 @@ const browserAPIRequestDomains =
  * adds a generic `host` to the report so that we still keep track of those URLs
  * in a generic way.
  */
-const privateDomains = [];
+const privateHostMatchers = [];
 
 /**
  * @typedef {import('mockttp').Mockttp} Mockttp
@@ -732,7 +732,7 @@ async function setupMocking(
   const matchPrivateHosts = (request) => {
     const privateHosts = new Set();
 
-    for (const { pattern, host: privateHost } of privateDomains) {
+    for (const { pattern, host: privateHost } of privateHostMatchers) {
       if (request.headers.host.match(pattern)) {
         privateHosts.add(privateHost);
       }
