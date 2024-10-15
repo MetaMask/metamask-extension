@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "जब आपका ट्रांसेक्शन ब्लॉक में शामिल हो जाता है, तो आपके अधिकतम बेस फ़ीस और वास्तविक बेस फ़ीस के बीच का कोई भी अंतर वापस कर दिया जाता है। कुल अमाउंट को अधिकतम बेस फ़ीस (GWEI में) * गैस लिमिट के रुप में कैलकुलेट किया जाता है।"
   },
-  "advancedConfiguration": {
-    "message": "एडवांस्ड कॉन्फ़िगरेशन"
-  },
   "advancedDetailsDataDesc": {
     "message": "डेटा"
   },
@@ -381,12 +378,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "गैस के विकल्प को अपडेट करें"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "यदि आप इस रिक्वेस्ट को एप्रूव करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है।"
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "एकाधिक एलर्ट!"
-  },
   "alertDisableTooltip": {
     "message": "इसे \"सेटिंग > अलर्ट\" में बदला जा सकता है"
   },
@@ -398,9 +389,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "इस ट्रांसेक्शन को जारी रखने के लिए, आपको गैस लिमिट को 21000 या अधिक तक बढ़ाना होगा।"
-  },
-  "alertMessageInsufficientBalance": {
-    "message": "ट्रांसेक्शन फीस का भुगतान करने के लिए आपके अकाउंट में पर्याप्त ETH नहीं है।"
   },
   "alertMessageNetworkBusy": {
     "message": "गैस प्राइसें अधिक हैं और अनुमान कम सटीक हैं।"
@@ -455,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "गलत अकाउंट"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "जो कनेक्टेड नहीं है वह अकाउंट चुनकर कोई वेबसाइट ब्राउज़ करना"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "यह चेतावनी पॉपअप में तब दिखाई जाती है, जब आप कनेक्टेड web3 साइट ब्राउज़ कर रहे होते हैं, लेकिन वर्तमान में चुना गया अकाउंट कनेक्ट नहीं होता है।"
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "जब कोई वेबसाइट हटाए गए window.web3 API का इस्तेमाल करने की कोशिश करती है"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "यह एलर्ट पॉपअप में तब दिखाया जाता है, जब आप ऐसी साइट ब्राउज़ कर रहे होते हैं, जो हटाए गए window.web3 API का इस्तेमाल करने की कोशिश करती है और परिणामस्वरूप उसमें गड़बड़ी आ सकती है।"
   },
   "alerts": {
     "message": "चेतावनियां"
@@ -720,12 +696,6 @@
   },
   "betaTerms": {
     "message": "बीटा के इस्तेमाल की शर्तें"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask बीटा आपका सीक्रेट रिकवरी फ्रेज़ रिकवर नहीं कर सकता।"
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask बीटा आपसे आपका गुप्त रिकवरी वाक्यांश कभी नहीं मांगेगा।"
   },
   "billionAbbreviation": {
     "message": "B",
@@ -1093,9 +1063,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask इस साइट से कनेक्टेड है, लेकिन अभी तक कोई अकाउंट कनेक्ट नहीं किया गया है"
-  },
-  "connectedWith": {
-    "message": "से कनेक्ट किया गया"
   },
   "connecting": {
     "message": "कनेक्ट किया जा रहा है"
@@ -1513,14 +1480,6 @@
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
-  "disconnectAllText": {
-    "message": "अगर आप अपने $1 को $2 से डिस्कनेक्ट करते हैं, तो आपको उन्हें दोबारा इस्तेमाल करने के लिए रिकनेक्ट करना होगा।",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "सभी $1 को डिस्कनेक्ट करें",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "$1 डिस्कनेक्ट करें"
   },
@@ -1873,10 +1832,6 @@
   "feeDetails": {
     "message": "फ़ीस का ब्यौरा"
   },
-  "fiat": {
-    "message": "फिएट",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
@@ -2107,9 +2062,6 @@
   },
   "hideSentitiveInfo": {
     "message": "संवेदनशील जानकारी छिपाएं"
-  },
-  "hideToken": {
-    "message": "टोकन छुपा दें"
   },
   "hideTokenPrompt": {
     "message": "टोकन छिपाएं?"
@@ -2435,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "जैज़आइकन्स"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "JSON फाइल",
@@ -2845,10 +2794,6 @@
     "message": "$1 निम्नलिखित के लिए आपका एप्रूवल मांग रहा है:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "क्या आप चाहते हैं कि यह साइट निम्नलिखित कार्य करे?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "इस नेटवर्क पर ओरिजिनल टोकन $1 है। यह गैस फ़ीस के लिए इस्तेमाल किया जाने वाला टोकन है।",
     "description": "$1 represents the name of the native token on the current network"
@@ -3086,14 +3031,8 @@
   "noAccountsFound": {
     "message": "दी गई खोज क्वेरी के लिए कोई अकाउंट नहीं मिला"
   },
-  "noConnectedAccountDescription": {
-    "message": "जारी रखने के लिए जिस अकाउंट को आप इस साइट पर उपयोग करना चाहते हैं वह अकाउंट चुनें।"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask इस साइट से कनेक्टेड नहीं है।"
-  },
-  "noConversionDateAvailable": {
-    "message": "कोई करेंसी कन्वर्शन तारीख उपलब्ध नहीं है"
   },
   "noConversionRateAvailable": {
     "message": "कोई भी कन्वर्शन दर उपलब्ध नहीं है"
@@ -3494,10 +3433,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "MetaMask Institutional को पिन करें"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "फिशिंग डिटेक्शन अलर्ट $1 के साथ संचार पर निर्भर करते हैं। jsDeliver की पहुंच आपके IP एड्रेस तक होगी। $2 देखें।",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1D",
@@ -3915,12 +3850,6 @@
   "priceUnavailable": {
     "message": "प्राइस अनुपलब्ध है"
   },
-  "primaryCurrencySetting": {
-    "message": "प्राथमिक मुद्रा"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "चेन की ओरिजिनल करेंसी (जैसे ETH) में प्रदर्शित वैल्यूज़ को प्राथमिकता देने के लिए ओरिजिनल को चुनें। अपनी चुना गया फिएट करेंसी में प्रदर्शित वैल्यूज़ को प्राथमिकता देने के लिए फिएट को चुनें।"
-  },
   "primaryType": {
     "message": "प्राइमरी टाइप"
   },
@@ -4144,9 +4073,6 @@
   },
   "rejected": {
     "message": "रिजेक्ट"
-  },
-  "remember": {
-    "message": "याद रखें:"
   },
   "remove": {
     "message": "हटाएं"
@@ -4555,9 +4481,6 @@
   "sepolia": {
     "message": "Sepolia टेस्ट नेटवर्क"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask उत्पाद की उपयोगिता और सुरक्षा को बढ़ाने के लिए इन विश्वसनीय तीसरे-पक्ष की सेवाओं का इस्तेमाल करता है।"
-  },
   "setApprovalForAll": {
     "message": "सभी के लिए स्वीकृति सेट करें"
   },
@@ -4746,13 +4669,6 @@
   },
   "smartTransactionSuccess": {
     "message": "आपका ट्रांसेक्शन पूरा हो गया है"
-  },
-  "smartTransactionTakingTooLong": {
-    "message": "माफ़ी चाहते हैं कि आपको इंतज़ार करना पड़ा"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "यदि आपका ट्रांसेक्शन $1 के भीतर फाइनलाइज़ नहीं होता है, तो इसे कैंसिल कर दिया जाएगा और आपसे गैस फ़ीस नहीं ली जाएगी।",
-    "description": "$1 is remaining time in seconds"
   },
   "smartTransactions": {
     "message": "स्मार्ट ट्रांसेक्शन"
@@ -5169,10 +5085,6 @@
   },
   "stxCancelledSubDescription": {
     "message": "अपना स्वैप फिर से कोशिश करें। अगली बार भी इस तरह के जोखिमों से आपको बचाने के लिए हम यहां होंगे।"
-  },
-  "stxEstimatedCompletion": {
-    "message": "<$1 में पूरा होने का अनुमान",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
   },
   "stxFailure": {
     "message": "स्वैप नहीं हो पाया"
@@ -5783,9 +5695,6 @@
   "tokenDecimalFetchFailed": {
     "message": "टोकन डेसीमल की आवश्यकता है। इसे: $1 पर पाएं"
   },
-  "tokenDecimalTitle": {
-    "message": "टोकन डेसीमल:"
-  },
   "tokenDetails": {
     "message": "टोकन विवरण"
   },
@@ -6085,9 +5994,6 @@
   "updateRequest": {
     "message": "अपडेट का अनुरोध"
   },
-  "updatedWithDate": {
-    "message": "अपडेट किया गया $1"
-  },
   "uploadDropFile": {
     "message": "अपनी फ़ाइल यहां छोड़ें"
   },
@@ -6222,26 +6128,6 @@
   },
   "walletConnectionGuide": {
     "message": "हमारी hardware wallet कनेक्शन गाइड"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "आपने अपने वॉलेट को सफलतापूर्वक सुरक्षित कर लिया है। अपने सीक्रेट रिकवरी फ्रेज को सुरक्षित और गुप्त रखें -- यह आपकी जिम्मेदारी है!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask आपके सीक्रेट रिकवरी फ्रेज को फिर से प्राप्त नहीं कर सकता है।"
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask कभी भी आपके सीक्रेट रिकवरी फ्रेज के बारे में नहीं पूछेगा।"
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 किसी के साथ या आपके फंड के चोरी होने का खतरा",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज को कभी शेयर ना करें",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "वॉलेट का निर्माण सफल हुआ"
   },
   "wantToAddThisNetwork": {
     "message": "इस नेटवर्क को जोड़ना चाहते हैं?"

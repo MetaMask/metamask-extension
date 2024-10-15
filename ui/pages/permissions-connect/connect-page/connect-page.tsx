@@ -33,12 +33,12 @@ import {
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
+import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import {
   CaveatTypes,
   EndowmentTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
-import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 
 export type ConnectPageRequest = {
   id: string;

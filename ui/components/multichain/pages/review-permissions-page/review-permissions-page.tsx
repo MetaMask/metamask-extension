@@ -5,11 +5,11 @@ import { NonEmptyArray } from '@metamask/utils';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
+  AlignItems,
   BlockSize,
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
-import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
@@ -60,7 +60,8 @@ export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const urlParams: { origin: string } = useParams();
+  const urlParams = useParams<{ origin: string }>();
+  // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
@@ -174,8 +175,6 @@ export const ReviewPermissions = () => {
     setShowAccountToast(true);
   };
 
-  const hostName = getURLHost(securedOrigin);
-
   return (
     <Page
       data-testid="connections-page"
@@ -221,11 +220,12 @@ export const ReviewPermissions = () => {
                 flexDirection={FlexDirection.Column}
                 width={BlockSize.Full}
                 gap={2}
+                alignItems={AlignItems.center}
               >
                 {showAccountToast ? (
                   <ToastContainer>
                     <Toast
-                      text={t('accountPermissionToast', [hostName])}
+                      text={t('accountPermissionToast')}
                       onClose={() => setShowAccountToast(false)}
                       startAdornment={
                         <AvatarFavicon
@@ -240,7 +240,7 @@ export const ReviewPermissions = () => {
                 {showNetworkToast ? (
                   <ToastContainer>
                     <Toast
-                      text={t('networkPermissionToast', [hostName])}
+                      text={t('networkPermissionToast')}
                       onClose={() => setShowNetworkToast(false)}
                       startAdornment={
                         <AvatarFavicon
@@ -259,19 +259,24 @@ export const ReviewPermissions = () => {
                   startIconName={IconName.Logout}
                   danger
                   onClick={() => setShowDisconnectAllModal(true)}
+                  data-test-id="disconnect-all"
                 >
                   {t('disconnect')}
                 </Button>
               </Box>
             ) : (
-              <ButtonPrimary
-                size={ButtonPrimarySize.Lg}
-                block
-                data-test-id="no-connections-button"
-                onClick={requestAccountsAndChainPermissions}
-              >
-                {t('connectAccounts')}
-              </ButtonPrimary>
+              <>
+                {connectedAccountAddresses.length > 0 ? (
+                  <ButtonPrimary
+                    size={ButtonPrimarySize.Lg}
+                    block
+                    data-test-id="no-connections-button"
+                    onClick={requestAccountsAndChainPermissions}
+                  >
+                    {t('connectAccounts')}
+                  </ButtonPrimary>
+                ) : null}
+              </>
             )}
           </>
         </Footer>
