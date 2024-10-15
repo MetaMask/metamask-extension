@@ -53,12 +53,7 @@ export default class BridgeController extends StaticIntervalPollingController<
 > {
   #abortController: AbortController | undefined;
 
-  constructor({
-    messenger,
-  }: {
-    provider: Provider;
-    messenger: BridgeControllerMessenger;
-  }) {
+  constructor({ messenger }: { messenger: BridgeControllerMessenger }) {
     super({
       name: BRIDGE_CONTROLLER_NAME,
       metadata,
@@ -296,7 +291,12 @@ export default class BridgeController extends StaticIntervalPollingController<
     contractAddress: string,
     chainId: Hex,
   ): Promise<string> => {
-    const web3Provider = new Web3Provider(this.#provider);
+    const provider = this.#getSelectedNetworkClient()?.provider;
+    if (!provider) {
+      throw new Error('No provider found');
+    }
+
+    const web3Provider = new Web3Provider(provider);
     const contract = new Contract(contractAddress, abiERC20, web3Provider);
     const { address: walletAddress } = this.#getSelectedAccount();
     const allowance = await contract.allowance(
