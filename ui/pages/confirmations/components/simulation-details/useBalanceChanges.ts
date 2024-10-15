@@ -11,7 +11,7 @@ import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { getCurrentChainId, getCurrentCurrency } from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
 
@@ -140,10 +140,13 @@ function getTokenBalanceChanges(
 }
 
 // Compiles a list of balance changes from simulation data
-export const useBalanceChanges = (
-  simulationData: SimulationData | undefined,
-): { pending: boolean; value: BalanceChange[] } => {
-  const chainId = useSelector(getCurrentChainId);
+export const useBalanceChanges = ({
+  chainId,
+  simulationData,
+}: {
+  chainId: Hex;
+  simulationData?: SimulationData;
+}): { pending: boolean; value: BalanceChange[] } => {
   const fiatCurrency = useSelector(getCurrentCurrency);
   const nativeFiatRate = useSelector(getConversionRate);
 

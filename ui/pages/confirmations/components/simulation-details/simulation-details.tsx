@@ -2,6 +2,7 @@ import {
   SimulationData,
   SimulationError,
   SimulationErrorCode,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
 import React from 'react';
 import {
@@ -30,10 +31,10 @@ import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
 
 export type SimulationDetailsProps = {
-  simulationData?: SimulationData;
-  transactionId: string;
   enableMetrics?: boolean;
   isTransactionsRedesign?: boolean;
+  simulationData?: SimulationData;
+  transaction: TransactionMeta;
 };
 
 /**
@@ -172,20 +173,19 @@ const SimulationDetailsLayout: React.FC<{
  * Preview of a transaction's effects using simulation data.
  *
  * @param props
- * @param props.simulationData - The simulation data to display.
- * @param props.transactionId - The ID of the transaction being simulated.
+ * @param props.transaction - Metadata of the transaction that was simulated.
  * @param props.enableMetrics - Whether to enable simulation metrics.
  * @param props.isTransactionsRedesign - Whether or not the component is being
  * used inside the transaction redesign flow.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
-  simulationData,
-  transactionId,
+  transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
-  const balanceChangesResult = useBalanceChanges(simulationData);
+  const { chainId, id: transactionId, simulationData } = transaction;
+  const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
 
   useSimulationMetrics({
