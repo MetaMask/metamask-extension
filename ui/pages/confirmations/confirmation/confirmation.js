@@ -554,13 +554,13 @@ export default function ConfirmationPage({
       )}
       <Box
         className="confirmation-page__content"
-        padding={process.env.CHAIN_PERMISSIONS && !isSnapCustomUIDialog ? 4 : 0}
+        padding={4}
         style={{
           marginTop: `${contentMargin}px`,
           overflowY: 'auto',
         }}
       >
-        {templatedValues.networkDisplay && !process.env.CHAIN_PERMISSIONS ? (
+        {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2} display={Display.Flex}>
             <NetworkDisplay />
           </Box>
