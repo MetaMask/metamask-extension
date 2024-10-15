@@ -20,9 +20,12 @@ import {
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
+  ChainId,
   FeeType,
   GasMultiplierByChainId,
   QuoteRequest,
+  QuoteResponse,
+  TxData,
 } from '../../pages/bridge/types';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
@@ -43,7 +46,6 @@ import {
   BridgeAppState,
   getApprovalGasMultipliers,
   getBridgeGasMultipliers,
-  getQuotes,
 } from './selectors';
 
 const {
@@ -130,6 +132,7 @@ export const getBridgeERC20Allowance = async (
 };
 
 export const submitBridgeTransaction = (
+  quoteResponse: QuoteResponse,
   history: ReturnType<typeof useHistory>,
 ) => {
   return async (
@@ -137,9 +140,6 @@ export const submitBridgeTransaction = (
     getState: () => MetaMaskReduxState & BridgeAppState,
   ) => {
     const state = getState();
-    const quoteMetas = getQuotes(state);
-    const quoteMeta = quoteMetas[0];
-
     // Track event TODO
 
     const calcFeePerGas = () => {
@@ -182,12 +182,12 @@ export const submitBridgeTransaction = (
     }: {
       txType: 'bridgeApproval' | 'bridge';
       txParams: {
-        chainId: number;
+        chainId: ChainId;
         to: string;
         from: string;
         value: string;
         data: string;
-        gasLimit: number;
+        gasLimit: number | null;
       };
       gasMultipliers: GasMultiplierByChainId;
       maxFeePerGas: string | undefined;
@@ -203,7 +203,7 @@ export const submitBridgeTransaction = (
       }
 
       const maxGasLimit = calcMaxGasLimit(
-        txParams.gasLimit,
+        txParams.gasLimit ?? 0,
         gasMultipliers[hexChainId],
       );
 
@@ -222,7 +222,7 @@ export const submitBridgeTransaction = (
         type: txType,
         swaps: {
           hasApproveTx:
-            txType === 'bridge' ? Boolean(quoteMeta?.approval) : true,
+            txType === 'bridge' ? Boolean(quoteResponse?.approval) : true,
           meta,
         },
       });
@@ -233,10 +233,12 @@ export const submitBridgeTransaction = (
     };
 
     const handleEthUsdtAllowanceReset = async ({
+      approval,
       hexChainId,
       maxFeePerGas,
       maxPriorityFeePerGas,
     }: {
+      approval: TxData;
       hexChainId: Hex;
       maxFeePerGas: string | undefined;
       maxPriorityFeePerGas: string | undefined;
@@ -247,8 +249,8 @@ export const submitBridgeTransaction = (
 
       // quote.srcTokenAmount is actually after the fees
       // so we need to add fees back in for total allowance to give
-      const sentAmount = new BigNumber(quoteMeta.quote.srcTokenAmount)
-        .plus(quoteMeta.quote.feeData[FeeType.METABRIDGE].amount)
+      const sentAmount = new BigNumber(quoteResponse.quote.srcTokenAmount)
+        .plus(quoteResponse.quote.feeData[FeeType.METABRIDGE].amount)
         .toString();
 
       const shouldResetApproval = allowance.lt(sentAmount) && allowance.gt(0);
@@ -256,7 +258,7 @@ export const submitBridgeTransaction = (
       if (shouldResetApproval) {
         const resetData = getEthUsdtResetData();
         const txParams = {
-          ...quoteMeta.approval,
+          ...approval,
           data: resetData,
         };
         const gasMultipliers = getApprovalGasMultipliers(state);
@@ -275,21 +277,24 @@ export const submitBridgeTransaction = (
     };
 
     const handleApprovalTx = async ({
+      approval,
       maxFeePerGas,
       maxPriorityFeePerGas,
     }: {
+      approval: TxData;
       maxFeePerGas: string | undefined;
       maxPriorityFeePerGas: string | undefined;
     }) => {
       const hexChainId = new Numeric(
-        quoteMeta.approval.chainId,
+        approval.chainId,
         10,
       ).toPrefixedHexString() as `0x${string}`;
 
       // On Ethereum, we need to reset the allowance to 0 for USDT first if we need to set a new allowance
       // https://www.google.com/url?q=https://docs.unizen.io/trade-api/before-you-get-started/token-allowance-management-for-non-updatable-allowance-tokens&sa=D&source=docs&ust=1727386175513609&usg=AOvVaw3Opm6BSJeu7qO0Ve5iLTOh
-      if (isEthUsdt(hexChainId, quoteMeta.quote.srcAsset.address)) {
+      if (isEthUsdt(hexChainId, quoteResponse.quote.srcAsset.address)) {
         await handleEthUsdtAllowanceReset({
+          approval,
           hexChainId,
           maxFeePerGas,
           maxPriorityFeePerGas,
@@ -299,13 +304,13 @@ export const submitBridgeTransaction = (
       const gasMultipliers = getApprovalGasMultipliers(state);
       const txMeta = await handleTx({
         txType: 'bridgeApproval',
-        txParams: quoteMeta.approval,
+        txParams: approval,
         gasMultipliers,
         maxFeePerGas,
         maxPriorityFeePerGas,
         meta: {
           type: 'bridgeApproval', // TransactionType.bridgeApproval, // TODO
-          sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
+          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
         },
       });
 
@@ -324,7 +329,7 @@ export const submitBridgeTransaction = (
       const gasMultipliers = getBridgeGasMultipliers(state);
       const txMeta = await handleTx({
         txType: 'bridge',
-        txParams: quoteMeta.trade,
+        txParams: quoteResponse.trade,
         gasMultipliers,
         maxFeePerGas,
         maxPriorityFeePerGas,
@@ -332,14 +337,14 @@ export const submitBridgeTransaction = (
           // estimatedBaseFee: decEstimatedBaseFee,
           // swapMetaData,
           type: 'bridge', // TransactionType.bridge, // TODO add this type
-          sourceTokenSymbol: quoteMeta.quote.srcAsset.symbol,
-          destinationTokenSymbol: quoteMeta.quote.destAsset.symbol,
-          destinationTokenDecimals: quoteMeta.quote.destAsset.decimals,
-          destinationTokenAddress: quoteMeta.quote.destAsset.address,
+          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
+          destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
+          destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
+          destinationTokenAddress: quoteResponse.quote.destAsset.address,
           approvalTxId,
           // this is the decimal (non atomic) amount (not USD value) of source token to swap
-          swapTokenValue: new Numeric(quoteMeta.quote.srcTokenAmount, 10)
-            .shiftedBy(quoteMeta.quote.srcAsset.decimals)
+          swapTokenValue: new Numeric(quoteResponse.quote.srcTokenAmount, 10)
+            .shiftedBy(quoteResponse.quote.srcAsset.decimals)
             .toString(),
         },
       });
@@ -355,10 +360,10 @@ export const submitBridgeTransaction = (
         symbol,
         icon: image,
         chainId,
-      } = quoteMeta.quote.srcAsset;
+      } = quoteResponse.quote.srcAsset;
 
       const srcHexChainId = new Numeric(
-        quoteMeta.quote.srcChainId,
+        quoteResponse.quote.srcChainId,
         10,
       ).toPrefixedHexString() as `0x${string}`;
       const tokenHexChainId = new Numeric(
@@ -383,7 +388,7 @@ export const submitBridgeTransaction = (
 
     const addDestToken = async () => {
       // Look up the destination chain
-      const hexDestChainId = new Numeric(quoteMeta.quote.destChainId, 10)
+      const hexDestChainId = new Numeric(quoteResponse.quote.destChainId, 10)
         .toPrefixedHexString()
         .toLowerCase() as `0x${string}`;
       const networkConfigurations = getNetworkConfigurationsByChainId(state);
@@ -417,7 +422,7 @@ export const submitBridgeTransaction = (
         decimals,
         symbol,
         icon: image,
-      } = quoteMeta.quote.destAsset;
+      } = quoteResponse.quote.destAsset;
       await dispatch(
         addToken({
           address,
@@ -434,8 +439,9 @@ export const submitBridgeTransaction = (
 
       // Execute transaction(s)
       let approvalTxId: string | undefined;
-      if (quoteMeta?.approval) {
+      if (quoteResponse?.approval) {
         approvalTxId = await handleApprovalTx({
+          approval: quoteResponse.approval,
           maxFeePerGas,
           maxPriorityFeePerGas,
         });
@@ -448,10 +454,10 @@ export const submitBridgeTransaction = (
       });
 
       // Add tokens if not the native gas token
-      if (quoteMeta.quote.srcAsset.address !== zeroAddress()) {
+      if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {
         addSourceToken();
       }
-      if (quoteMeta.quote.destAsset.address !== zeroAddress()) {
+      if (quoteResponse.quote.destAsset.address !== zeroAddress()) {
         await addDestToken();
       }
 
