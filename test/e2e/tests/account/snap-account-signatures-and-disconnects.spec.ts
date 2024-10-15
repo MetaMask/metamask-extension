@@ -4,15 +4,12 @@ import {
   withFixtures,
   multipleGanacheOptions,
   tempToggleSettingRedesignedConfirmations,
+  WINDOW_TITLES,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import {
-  installSnapSimpleKeyring,
-  makeNewAccountAndSwitch,
-  connectAccountToTestDapp,
-  disconnectFromTestDapp,
-  signData,
-} from './common';
+import { TestDapp } from '../page-objects/test-dapp';
+import { SnapAccountPage } from '../page-objects/snap-account-page';
+import { SignatureRequestPage } from '../page-objects/signature-request-page';
 
 describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
@@ -24,29 +21,36 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const flowType = 'approve';
+        const testDapp = new TestDapp(driver);
+        const snapAccountPage = new SnapAccountPage(driver);
+        const signatureRequestPage = new SignatureRequestPage(driver);
+
         const isAsyncFlow = true;
 
-        await installSnapSimpleKeyring(driver, isAsyncFlow);
+        await snapAccountPage.installSnapSimpleKeyring(isAsyncFlow);
 
-        const newPublicKey = await makeNewAccountAndSwitch(driver);
+        const newPublicKey = await snapAccountPage.makeNewAccountAndSwitch();
 
         await tempToggleSettingRedesignedConfirmations(driver);
 
         // open the Test Dapp and connect Account 2 to it
-        await connectAccountToTestDapp(driver);
+        await testDapp.connect();
 
         // do #signTypedDataV3
-        await signData(driver, '#signTypedDataV3', newPublicKey, flowType);
+        await testDapp.signTypedDataV3();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+        await signatureRequestPage.approveSignatureRequest();
 
         // disconnect from the Test Dapp
-        await disconnectFromTestDapp(driver);
+        await testDapp.disconnect();
 
         // reconnect Account 2 to the Test Dapp
-        await connectAccountToTestDapp(driver);
+        await testDapp.connect();
 
         // do #signTypedDataV4
-        await signData(driver, '#signTypedDataV4', newPublicKey, flowType);
+        await testDapp.signTypedDataV4();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+        await signatureRequestPage.approveSignatureRequest();
       },
     );
   });

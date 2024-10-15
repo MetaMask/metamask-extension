@@ -10090,6 +10090,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chai@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@types/chai@npm:5.0.0"
+  checksum: 10/a6c03aa6b6d59ad40ddb48d07807690efb874628c15b9d89c17d97045a9305a487933398c1e5b5f94087b1a6a9a67a7c828eb9b635104526fd25bb5f9d4c4175
+  languageName: node
+  linkType: hard
+
 "@types/chrome@npm:^0.0.268":
   version: 0.0.268
   resolution: "@types/chrome@npm:0.0.268"
@@ -10649,10 +10656,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.3":
-  version: 10.0.3
-  resolution: "@types/mocha@npm:10.0.3"
-  checksum: 10/31d44b6a45e20dba3f349a62b0f6fc23b054155e7b7e558e1be76b1bc5e91a6902062fdd7b9167beeed7b0083d351bd2b94352a677bf1a03b4d42c767497213f
+"@types/mocha@npm:^10.0.9":
+  version: 10.0.9
+  resolution: "@types/mocha@npm:10.0.9"
+  checksum: 10/aa34e61e6373c5a9e8f904302fc736c04d6757f079d8500689c589b610e8b8e28bdefc2da398569e6328c6b1e6dc5a59fb485211b2bacb465c2aad04d822c28c
   languageName: node
   linkType: hard
 
@@ -26212,6 +26219,7 @@ __metadata:
     "@tsconfig/node20": "npm:^20.1.2"
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
+    "@types/chai": "npm:^5.0.0"
     "@types/chrome": "npm:^0.0.268"
     "@types/currency-formatter": "npm:^1.5.1"
     "@types/fs-extra": "npm:^9.0.13"
@@ -26222,7 +26230,7 @@ __metadata:
     "@types/he": "npm:^1"
     "@types/jest": "npm:^29.5.12"
     "@types/luxon": "npm:^3.4.2"
-    "@types/mocha": "npm:^10.0.3"
+    "@types/mocha": "npm:^10.0.9"
     "@types/node": "npm:^20"
     "@types/path-browserify": "npm:^1.0.2"
     "@types/pify": "npm:^5.0.1"
