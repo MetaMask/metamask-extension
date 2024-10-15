@@ -4,6 +4,7 @@ import { DAPP_URL } from '../../../constants';
 import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import HomePage from '../../../page-objects/pages/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -12,7 +13,6 @@ import { Driver } from '../../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from '../helpers';
 import { mocked4BytesSetApprovalForAll } from './erc721-revoke-set-approval-for-all-redesign';
 import { TestSuiteArguments } from './shared';
-import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
