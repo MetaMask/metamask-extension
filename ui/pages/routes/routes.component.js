@@ -473,7 +473,7 @@ export default class Routes extends Component {
         })}
         dir={textDirection}
         onMouseUp={
-          deprecatedGetShowAutoNetworkSwitchTest(this.props)
+          getShowAutoNetworkSwitchTest(this.props)
             ? () => clearSwitchedNetworkDetails()
             : undefined
         }
@@ -549,6 +549,6 @@ export default class Routes extends Component {
 }
 
 // Will eventually delete this function
-function deprecatedGetShowAutoNetworkSwitchTest(props) {
+function getShowAutoNetworkSwitchTest(props) {
   return props.switchedNetworkDetails && !props.switchedNetworkNeverShowMessage;
 }

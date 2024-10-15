@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -14,7 +14,10 @@ import {
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  REVIEW_PERMISSIONS,
+} from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
@@ -44,10 +47,9 @@ import {
   selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
+  selectSwitchedNetworkNeverShowMessage,
 } from './selectors';
 import {
-  getShowAutoNetworkSwitchTest,
-  onHomeScreen,
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
@@ -56,8 +58,12 @@ import {
 } from './utils';
 
 export function ToastMaster() {
+  const location = useLocation();
+
+  const onHomeScreen = location.pathname === DEFAULT_ROUTE;
+
   return (
-    onHomeScreen() && (
+    onHomeScreen && (
       <ToastContainer>
         <SurveyToast />
         <ConnectAccountToast />
@@ -193,9 +199,14 @@ function SwitchedNetworkToast() {
   const dispatch = useDispatch();
 
   const switchedNetworkDetails = useSelector(getSwitchedNetworkDetails);
+  const switchedNetworkNeverShowMessage = useSelector(
+    selectSwitchedNetworkNeverShowMessage,
+  );
+
+  const show = switchedNetworkDetails && !switchedNetworkNeverShowMessage;
 
   return (
-    getShowAutoNetworkSwitchTest() && (
+    show && (
       <Toast
         key="switched-network-toast"
         startAdornment={
