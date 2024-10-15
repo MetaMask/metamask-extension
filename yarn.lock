@@ -26119,7 +26119,6 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.2.0"
     "@metamask-institutional/transaction-update": "npm:^0.2.6"
     "@metamask-institutional/types": "npm:^1.2.0"
-    "@metamask-institutional/websocket-client": "npm:^0.2.6"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.1"
     "@metamask/accounts-controller": "npm:^18.2.2"

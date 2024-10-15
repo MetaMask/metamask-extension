@@ -295,7 +295,6 @@
     "@metamask-institutional/sdk": "^0.2.0",
     "@metamask-institutional/transaction-update": "^0.2.6",
     "@metamask-institutional/types": "^1.2.0",
-    "@metamask-institutional/websocket-client": "^0.2.6",
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/account-watcher": "^4.1.1",
     "@metamask/accounts-controller": "^18.2.2",
