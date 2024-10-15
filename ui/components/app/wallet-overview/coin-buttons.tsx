@@ -63,7 +63,7 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName } from '../../component-library';
+import { Box, Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -87,6 +87,7 @@ const CoinButtons = ({
   defaultSwapsToken,
   ///: END:ONLY_INCLUDE_IF
   classPrefix = 'coin',
+  iconButtonClassName = '',
 }: {
   chainId: `0x${string}` | CaipChainId | number;
   trackingLocation: string;
@@ -98,6 +99,7 @@ const CoinButtons = ({
   defaultSwapsToken?: SwapsEthToken;
   ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
+  iconButtonClassName?: string;
 }) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -204,15 +206,27 @@ const CoinButtons = ({
       <>
         <IconButton
           className={`${classPrefix}-overview__button`}
-          Icon={<Icon name={IconName.Stake} color={IconColor.primaryInverse} />}
+          iconButtonClassName={iconButtonClassName}
+          Icon={
+            <Icon
+              name={IconName.Stake}
+              color={IconColor.primaryInverse}
+              size={IconSize.Sm}
+            />
+          }
           label={t('stake')}
           onClick={handleMmiStakingOnClick}
         />
         {mmiPortfolioEnabled && (
           <IconButton
             className={`${classPrefix}-overview__button`}
+            iconButtonClassName={iconButtonClassName}
             Icon={
-              <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
+              <Icon
+                name={IconName.Diagram}
+                color={IconColor.primaryInverse}
+                size={IconSize.Sm}
+              />
             }
             label={t('portfolio')}
             onClick={handleMmiPortfolioOnClick}
@@ -344,8 +358,13 @@ const CoinButtons = ({
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
+          iconButtonClassName={iconButtonClassName}
           Icon={
-            <Icon name={IconName.PlusMinus} color={IconColor.primaryInverse} />
+            <Icon
+              name={IconName.PlusMinus}
+              color={IconColor.primaryInverse}
+              size={IconSize.Sm}
+            />
           }
           disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
@@ -363,9 +382,9 @@ const CoinButtons = ({
         renderInstitutionalButtons()
         ///: END:ONLY_INCLUDE_IF
       }
-
       <IconButton
         className={`${classPrefix}-overview__button`}
+        iconButtonClassName={iconButtonClassName}
         disabled={
           !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
         }
@@ -373,6 +392,7 @@ const CoinButtons = ({
           <Icon
             name={IconName.SwapHorizontal}
             color={IconColor.primaryInverse}
+            size={IconSize.Sm}
           />
         }
         onClick={handleSwapOnClick}
@@ -386,10 +406,15 @@ const CoinButtons = ({
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
+          iconButtonClassName={iconButtonClassName}
           disabled={!isBridgeChain || !isSigningEnabled}
           data-testid={`${classPrefix}-overview-bridge`}
           Icon={
-            <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
+            <Icon
+              name={IconName.Bridge}
+              color={IconColor.primaryInverse}
+              size={IconSize.Sm}
+            />
           }
           label={t('bridge')}
           onClick={handleBridgeOnClick}
@@ -401,11 +426,13 @@ const CoinButtons = ({
       }
       <IconButton
         className={`${classPrefix}-overview__button`}
+        iconButtonClassName={iconButtonClassName}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
             name={IconName.Arrow2UpRight}
             color={IconColor.primaryInverse}
+            size={IconSize.Sm}
           />
         }
         disabled={!isSigningEnabled}
@@ -425,11 +452,13 @@ const CoinButtons = ({
           )}
           <IconButton
             className={`${classPrefix}-overview__button`}
+            iconButtonClassName={iconButtonClassName}
             data-testid={`${classPrefix}-overview-receive`}
             Icon={
               <Icon
                 name={IconName.ScanBarcode}
                 color={IconColor.primaryInverse}
+                size={IconSize.Sm}
               />
             }
             label={t('receive')}

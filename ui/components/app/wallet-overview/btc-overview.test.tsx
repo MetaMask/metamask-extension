@@ -23,6 +23,7 @@ const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
 const mockMetaMetricsId = 'deadbeef';
 const mockNonEvmBalance = '1';
+const mockNonEvmBalanceUsd = '1.00';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
@@ -111,17 +112,31 @@ describe('BtcOverview', () => {
     setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
   });
 
-  it('shows the primary balance', async () => {
-    const { queryByTestId, queryByText } = renderWithProvider(
-      <BtcOverview />,
-      getStore(),
-    );
+  it('shows the primary balance as BTC when showNativeTokenAsMainBalance if true', async () => {
+    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
 
     const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
     expect(primaryBalance).toBeInTheDocument();
     expect(primaryBalance).toHaveTextContent(`${mockNonEvmBalance}BTC`);
-    // For now we consider balance to be always cached
-    expect(queryByText('*')).toBeInTheDocument();
+  });
+
+  it('shows the primary balance as fiat when showNativeTokenAsMainBalance if false', async () => {
+    const { queryByTestId } = renderWithProvider(
+      <BtcOverview />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          // The balances won't be available
+          preferences: {
+            showNativeTokenAsMainBalance: false,
+          },
+        },
+      }),
+    );
+
+    const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
+    expect(primaryBalance).toBeInTheDocument();
+    expect(primaryBalance).toHaveTextContent(`$${mockNonEvmBalanceUsd}USD`);
   });
 
   it('shows a spinner if balance is not available', async () => {

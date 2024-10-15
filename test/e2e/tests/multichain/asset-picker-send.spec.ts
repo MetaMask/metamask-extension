@@ -71,7 +71,7 @@ describe('AssetPickerSendFlow @no-mmi', function () {
           )
         ).getText();
 
-        assert.equal(tokenListValue, '25 ETH');
+        assert.equal(tokenListValue, '$250,000.00');
 
         const tokenListSecondaryValue = await (
           await driver.findElement(
@@ -79,7 +79,7 @@ describe('AssetPickerSendFlow @no-mmi', function () {
           )
         ).getText();
 
-        assert.equal(tokenListSecondaryValue, '$250,000.00');
+        assert.equal(tokenListSecondaryValue, '25 ETH');
 
         // Search for CHZ
         const searchInputField = await driver.waitForSelector(

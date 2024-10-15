@@ -77,18 +77,6 @@
   "alertDisableTooltip": {
     "message": "這可以在「設定 > 提醒」裡變更"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "選擇尚未連結的帳戶瀏覽一個網站時"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "當您瀏覽一個使用 web3 的網站，但目前選擇的帳戶沒有連結時，這個提醒會顯示在一個彈跳視窗。"
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "當一個網站試著使用已經移除的 window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "當您瀏覽一個嘗試使用已經移除的 window.web3 API 的網站，可能會因此故障時，這個提醒會顯示在一個彈跳視窗。"
-  },
   "alerts": {
     "message": "提醒"
   },
@@ -511,10 +499,6 @@
   },
   "feeAssociatedRequest": {
     "message": "這個請求會附帶一筆手續費。"
-  },
-  "fiat": {
-    "message": "法定貨幣",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "檔案匯入失敗？點擊這裡！",
@@ -943,12 +927,6 @@
   },
   "prev": {
     "message": "前一頁"
-  },
-  "primaryCurrencySetting": {
-    "message": "主要貨幣"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "選擇原生來優先使用鏈上原生貨幣 (例如 ETH) 顯示金額。選擇法定貨幣來優先使用您選擇的法定貨幣顯示金額。"
   },
   "privacyMsg": {
     "message": "隱私政策"
@@ -1379,9 +1357,6 @@
   "unrecognizedChain": {
     "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "updatedWithDate": {
-    "message": "更新時間 $1"
   },
   "urlErrorMsg": {
     "message": "URL 需要以適當的 HTTP/HTTPS 作為開頭"

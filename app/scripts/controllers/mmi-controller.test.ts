@@ -99,7 +99,7 @@ describe('MMIController', function () {
           'NetworkController:infuraIsUnblocked',
         ],
       }),
-      state: mockNetworkState({chainId: CHAIN_IDS.SEPOLIA}),
+      state: mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
       infuraProjectId: 'mock-infura-project-id',
     });
 
@@ -203,10 +203,10 @@ describe('MMIController', function () {
     });
 
     metaMetricsController = new MetaMetricsController({
-      preferencesStore: {
-        getState: jest.fn().mockReturnValue({ currentLocale: 'en' }),
-        subscribe: jest.fn(),
+      preferencesControllerState: {
+        currentLocale: 'en'
       },
+      onPreferencesStateChange: jest.fn(),
       getCurrentChainId: jest.fn(),
       onNetworkDidChange: jest.fn(),
     });
@@ -245,13 +245,12 @@ describe('MMIController', function () {
         initState: {},
         onInactiveTimeout: jest.fn(),
         showUnlockRequest: jest.fn(),
-        preferencesStore: {
-          subscribe: jest.fn(),
-          getState: jest.fn(() => ({
+        preferencesController: {
+          state: {
             preferences: {
               autoLockTimeLimit: 0,
             },
-          })),
+          },
         },
         messenger: mockMessenger,
       }),
@@ -272,7 +271,7 @@ describe('MMIController', function () {
 
     mmiController.getState = jest.fn();
     mmiController.captureException = jest.fn();
-    mmiController.accountTracker = { syncWithAddresses: jest.fn() };
+    mmiController.accountTrackerController = { syncWithAddresses: jest.fn() };
 
     jest.spyOn(metaMetricsController.store, 'getState').mockReturnValue({
       metaMetricsId: mockMetaMetricsId,
@@ -385,7 +384,7 @@ describe('MMIController', function () {
       mmiController.keyringController.addNewAccountForKeyring = jest.fn();
 
       mmiController.custodyController.setAccountDetails = jest.fn();
-      mmiController.accountTracker.syncWithAddresses = jest.fn();
+      mmiController.accountTrackerController.syncWithAddresses = jest.fn();
       mmiController.storeCustodianSupportedChains = jest.fn();
       mmiController.custodyController.storeCustodyStatusMap = jest.fn();
 
@@ -400,7 +399,9 @@ describe('MMIController', function () {
       expect(
         mmiController.custodyController.setAccountDetails,
       ).toHaveBeenCalled();
-      expect(mmiController.accountTracker.syncWithAddresses).toHaveBeenCalled();
+      expect(
+        mmiController.accountTrackerController.syncWithAddresses,
+      ).toHaveBeenCalled();
       expect(mmiController.storeCustodianSupportedChains).toHaveBeenCalled();
       expect(
         mmiController.custodyController.storeCustodyStatusMap,
