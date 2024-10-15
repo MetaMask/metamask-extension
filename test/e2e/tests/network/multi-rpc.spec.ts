@@ -456,6 +456,8 @@ describe('MultiRpc:', function (this: Suite) {
         // Ensures popover backround doesn't kill test
         await driver.assertElementNotPresent('.popover-bg');
 
+        // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#27870)
+        // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
         await driver.clickElementSafe({ tag: 'h6', text: 'Got it' });
 
         await driver.assertElementNotPresent({
