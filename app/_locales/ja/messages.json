@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "指定された検索クエリでアカウントが見つかりませんでした"
   },
-  "noConnectedAccountDescription": {
-    "message": "続行するには、このサイトで使用するアカウントを選択してください。"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMaskはこのサイトに接続されていません"
   },
