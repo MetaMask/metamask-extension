@@ -425,7 +425,7 @@ describe('MultiRpc:', function (this: Suite) {
 
         await driver.clickElement('[data-testid="category-back-button"]');
 
-        await driver.clickElementAndWaitToDisappear(
+        await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
 
@@ -454,6 +454,8 @@ describe('MultiRpc:', function (this: Suite) {
           '“Arbitrum One” was successfully edited!',
         );
         // Ensures popover backround doesn't kill test
+        await driver.assertElementNotPresent('.popover-bg');
+
         await driver.clickElementSafe({
           tag: 'button',
           text: 'Got it',
