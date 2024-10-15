@@ -7,6 +7,7 @@ import {
   getFromAmount,
   getFromChain,
   getFromToken,
+  getRecommendedQuote,
   getToAmount,
   getToChain,
   getToToken,
@@ -28,6 +29,7 @@ export const BridgeCTAButton = () => {
   const toAmount = useSelector(getToAmount);
 
   const { isLoading } = useSelector(getBridgeQuotes);
+  const quoteResponse = useSelector(getRecommendedQuote);
 
   const isTxSubmittable =
     fromToken && toToken && fromChain && toChain && fromAmount && toAmount;
@@ -56,7 +58,7 @@ export const BridgeCTAButton = () => {
       data-testid="bridge-cta-button"
       onClick={() => {
         if (isTxSubmittable) {
-          dispatch(submitBridgeTransaction(history));
+          dispatch(submitBridgeTransaction(quoteResponse, history));
         }
       }}
       disabled={!isTxSubmittable}
