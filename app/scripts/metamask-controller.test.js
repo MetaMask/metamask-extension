@@ -116,22 +116,6 @@ const rpcMethodMiddlewareMock = {
 };
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
 
-jest.mock(
-  './controllers/preferences-controller',
-  () =>
-    function (...args) {
-      const PreferencesController = jest.requireActual(
-        './controllers/preferences-controller',
-      ).default;
-      const controller = new PreferencesController(...args);
-      // jest.spyOn gets hoisted to the top of this function before controller is initialized.
-      // This forces us to replace the function directly with a jest stub instead.
-      // eslint-disable-next-line jest/prefer-spy-on
-      controller.store.subscribe = jest.fn();
-      return controller;
-    },
-);
-
 const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
 
@@ -359,10 +343,10 @@ describe('MetaMaskController', () => {
     let metamaskController;
 
     async function simulatePreferencesChange(preferences) {
-      metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+      metamaskController.controllerMessenger.publish(
+        'PreferencesController:stateChange',
         preferences,
       );
-
       await flushPromises();
     }
 
@@ -519,6 +503,51 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#getAddTransactionRequest', () => {
+      it('formats the transaction for submission', () => {
+        const transactionParams = { from: '0xa', to: '0xb' };
+        const transactionOptions = { foo: true };
+        const result = metamaskController.getAddTransactionRequest({
+          transactionParams,
+          transactionOptions,
+        });
+        expect(result).toStrictEqual({
+          internalAccounts:
+            metamaskController.accountsController.listAccounts(),
+          dappRequest: undefined,
+          networkClientId:
+            metamaskController.networkController.state.selectedNetworkClientId,
+          selectedAccount:
+            metamaskController.accountsController.getAccountByAddress(
+              transactionParams.from,
+            ),
+          transactionController: expect.any(Object),
+          transactionOptions,
+          transactionParams,
+          userOperationController: expect.any(Object),
+          chainId: '0x1',
+          ppomController: expect.any(Object),
+          securityAlertsEnabled: expect.any(Boolean),
+          updateSecurityAlertResponse: expect.any(Function),
+        });
+      });
+      it('passes through any additional params to the object', () => {
+        const transactionParams = { from: '0xa', to: '0xb' };
+        const transactionOptions = { foo: true };
+        const result = metamaskController.getAddTransactionRequest({
+          transactionParams,
+          transactionOptions,
+          test: '123',
+        });
+
+        expect(result).toMatchObject({
+          transactionParams,
+          transactionOptions,
+          test: '123',
+        });
+      });
+    });
+
     describe('submitPassword', () => {
       it('removes any identities that do not correspond to known accounts.', async () => {
         const fakeAddress = '0xbad0';
@@ -561,8 +590,7 @@ describe('MetaMaskController', () => {
         await localMetaMaskController.submitPassword(password);
 
         const identities = Object.keys(
-          localMetaMaskController.preferencesController.store.getState()
-            .identities,
+          localMetaMaskController.preferencesController.state.identities,
         );
         const addresses =
           await localMetaMaskController.keyringController.getAccounts();
@@ -961,8 +989,7 @@ describe('MetaMaskController', () => {
 
           expect(
             Object.keys(
-              metamaskController.preferencesController.store.getState()
-                .identities,
+              metamaskController.preferencesController.state.identities,
             ),
           ).not.toContain(hardwareKeyringAccount);
           expect(

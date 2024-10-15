@@ -2583,6 +2583,33 @@ describe('Actions', () => {
     });
   });
 
+  describe('deleteAccountSyncingDataFromUserStorage', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls deleteAccountSyncingDataFromUserStorage in the background', async () => {
+      const store = mockStore();
+
+      const deleteAccountSyncingDataFromUserStorageStub = sinon
+        .stub()
+        .callsFake((_, cb) => {
+          return cb();
+        });
+
+      background.getApi.returns({
+        deleteAccountSyncingDataFromUserStorage:
+          deleteAccountSyncingDataFromUserStorageStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
+      expect(
+        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith('accounts'),
+      ).toBe(true);
+    });
+  });
+
   describe('removePermittedChain', () => {
     afterEach(() => {
       sinon.restore();

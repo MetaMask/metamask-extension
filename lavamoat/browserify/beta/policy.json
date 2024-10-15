@@ -698,8 +698,8 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
-        "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
@@ -715,14 +715,6 @@
         "uuid": true
       }
     },
-    "@metamask/assets-controllers>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/assets-controllers>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -730,7 +722,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/assets-controllers>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
       }
@@ -2031,11 +2023,18 @@
         "ethers>@ethersproject/sha2>hash.js": true
       }
     },
+    "@metamask/preferences-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true
+      }
+    },
     "@metamask/profile-sync-controller": {
       "globals": {
         "Event": true,
         "Headers": true,
         "TextDecoder": true,
+        "TextEncoder": true,
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
