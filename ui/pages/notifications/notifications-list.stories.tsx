@@ -4,6 +4,7 @@ import {
   type NotificationsListProps,
 } from './notifications-list';
 import { Meta } from '@storybook/react';
+import { TAB_KEYS } from './notifications';
 
 export default {
   title: 'Pages/Notifications/NotificationsListStates',
@@ -15,24 +16,31 @@ export default {
   },
 } as Meta;
 
+const defaultArgs: NotificationsListProps = {
+  activeTab: TAB_KEYS.ALL,
+  notifications: [],
+  isLoading: false,
+  isError: false,
+  notificationsCount: 0,
+};
+
 const Template = (args: NotificationsListProps) => (
   <NotificationsList {...args} />
 );
 
 export const NoNotifications = Template.bind({});
 NoNotifications.args = {
-  notifications: [],
-  isLoading: false,
+  ...defaultArgs,
 };
 
 export const Loading = Template.bind({});
 Loading.args = {
-  notifications: [],
+  ...defaultArgs,
   isLoading: true,
 };
 
 export const Error = Template.bind({});
 Error.args = {
-  notifications: [],
+  ...defaultArgs,
   isError: true,
 };
