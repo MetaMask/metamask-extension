@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Απόκρυψη ευαίσθητων πληροφοριών"
   },
-  "hideToken": {
-    "message": "Απόκρυψη token"
-  },
   "hideTokenPrompt": {
     "message": "Απόκρυψη του token;"
   },
@@ -3033,9 +3030,6 @@
   },
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Επιλέξτε έναν λογαριασμό που θέλετε να χρησιμοποιήσετε σε αυτόν τον ιστότοπο για να συνεχίσετε."
   },
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
@@ -5700,9 +5694,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Απαιτείται δεκαδικό token. Βρείτε το σε: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Δεκαδικά Ψηφία του token:"
   },
   "tokenDetails": {
     "message": "Λεπτομέρειες του token"

@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Masquer les informations sensibles"
   },
-  "hideToken": {
-    "message": "Masquer le token"
-  },
   "hideTokenPrompt": {
     "message": "Masquer le jeton ?"
   },
@@ -3033,9 +3030,6 @@
   },
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Sélectionnez un compte que vous souhaitez utiliser sur ce site pour continuer."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask n’est pas connecté à ce site"
@@ -5700,9 +5694,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "La décimale du jeton est requise. Trouvez-la sur : $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Nombre de décimales du token :"
   },
   "tokenDetails": {
     "message": "Détails du token"

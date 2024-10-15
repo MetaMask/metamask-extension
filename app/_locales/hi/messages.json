@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "संवेदनशील जानकारी छिपाएं"
   },
-  "hideToken": {
-    "message": "टोकन छुपा दें"
-  },
   "hideTokenPrompt": {
     "message": "टोकन छिपाएं?"
   },
@@ -3033,9 +3030,6 @@
   },
   "noAccountsFound": {
     "message": "दी गई खोज क्वेरी के लिए कोई अकाउंट नहीं मिला"
-  },
-  "noConnectedAccountDescription": {
-    "message": "जारी रखने के लिए जिस अकाउंट को आप इस साइट पर उपयोग करना चाहते हैं वह अकाउंट चुनें।"
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask इस साइट से कनेक्टेड नहीं है।"
@@ -5700,9 +5694,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "टोकन डेसीमल की आवश्यकता है। इसे: $1 पर पाएं"
-  },
-  "tokenDecimalTitle": {
-    "message": "टोकन डेसीमल:"
   },
   "tokenDetails": {
     "message": "टोकन विवरण"

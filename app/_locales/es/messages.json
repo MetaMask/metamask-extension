@@ -2060,9 +2060,6 @@
   "hideSentitiveInfo": {
     "message": "Ocultar información confidencial"
   },
-  "hideToken": {
-    "message": "Ocultar token"
-  },
   "hideTokenPrompt": {
     "message": "¿Ocultar token?"
   },
@@ -3030,9 +3027,6 @@
   },
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Seleccione una cuenta que desee utilizar en este sitio para continuar."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask no está conectado a este sitio"
@@ -5697,9 +5691,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Se requiere decimal del token. Encuéntrelo en: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Decimales del token:"
   },
   "tokenDetails": {
     "message": "Detalles del token"

@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "隐藏敏感信息"
   },
-  "hideToken": {
-    "message": "隐藏代币"
-  },
   "hideTokenPrompt": {
     "message": "隐藏代币？"
   },
@@ -3033,9 +3030,6 @@
   },
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
-  },
-  "noConnectedAccountDescription": {
-    "message": "选择要在此站点上使用的账户以继续。"
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask 未连接到此站点"
@@ -5700,9 +5694,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "需要代币小数位。请在下方查找：$1"
-  },
-  "tokenDecimalTitle": {
-    "message": "代币小数:"
   },
   "tokenDetails": {
     "message": "代币详情"

@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Скрыть конфиденциальную информацию"
   },
-  "hideToken": {
-    "message": "Скрыть токен"
-  },
   "hideTokenPrompt": {
     "message": "Скрыть токен?"
   },
@@ -3033,9 +3030,6 @@
   },
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Для продолжения выберите счет, который вы хотите использовать на этом сайте."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
@@ -5700,9 +5694,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Требуется десятичный токен. Найдите его здесь: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Десятичный токен:"
   },
   "tokenDetails": {
     "message": "Сведения о токене"

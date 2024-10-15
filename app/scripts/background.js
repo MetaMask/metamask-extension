@@ -235,7 +235,7 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      const prefState = theController.preferencesController.store.getState();
+      const prefState = theController.preferencesController.state;
       if (!prefState.usePhishDetect) {
         return {};
       }
@@ -783,8 +783,7 @@ export function setupController(
       controller.preferencesController,
     ),
     getUseAddressBarEnsResolution: () =>
-      controller.preferencesController.store.getState()
-        .useAddressBarEnsResolution,
+      controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
   });
 

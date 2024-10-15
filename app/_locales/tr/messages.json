@@ -2063,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Hassas bilgileri gizle"
   },
-  "hideToken": {
-    "message": "Tokeni gizle"
-  },
   "hideTokenPrompt": {
     "message": "Tokeni gizle?"
   },
@@ -3033,9 +3030,6 @@
   },
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Devam etmek için bu sitede kullanmak istediğiniz bir hesap seçin."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
@@ -5700,9 +5694,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Token ondalığı gereklidir. Şurada bulabilirsiniz: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Token ondalığı:"
   },
   "tokenDetails": {
     "message": "Token bilgileri"
