@@ -2284,9 +2284,6 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
-  "hideToken": {
-    "message": "Hide token"
-  },
   "hideTokenPrompt": {
     "message": "Hide token?"
   },
@@ -6119,9 +6116,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required. Find it on: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Token decimal:"
   },
   "tokenDetails": {
     "message": "Token details"

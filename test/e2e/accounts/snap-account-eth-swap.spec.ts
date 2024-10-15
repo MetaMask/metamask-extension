@@ -1,6 +1,7 @@
 import { withFixtures, defaultGanacheOptions, WINDOW_TITLES } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
+import { Ganache } from '../seeder/ganache';
 import {
   buildQuote,
   reviewQuote,
@@ -8,8 +9,9 @@ import {
   checkActivityTransaction,
 } from '../tests/swaps/shared';
 import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
+import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
-import { installSnapSimpleKeyring } from './common';
 
 const DAI = 'DAI';
 const TEST_ETH = 'TESTETH';
@@ -34,8 +36,15 @@ describe('Snap Account - Swap', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapsTransactionQuote,
       },
-      async ({ driver }: { driver: Driver }) => {
-        await installSnapSimpleKeyring(driver, false);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
+        await installSnapSimpleKeyring(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
