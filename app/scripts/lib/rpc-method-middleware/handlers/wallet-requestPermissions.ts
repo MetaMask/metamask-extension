@@ -200,8 +200,10 @@ async function requestPermissionsImplementation(
     if (existingCaveatValue) {
       if (existingCaveatValue.isMultichainOrigin) {
         return end(
-          new Error('cannot modify permission granted from multichain flow'),
-        ); // TODO: better error
+          new Error(
+            'Cannot modify permission granted via the Multichain API. Either modify the permission using the Multichain API or revoke permissions and request again.',
+          ),
+        );
       }
 
       updateCaveat(
