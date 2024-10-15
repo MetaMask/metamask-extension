@@ -37,6 +37,7 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
+      "tokenSortConfig": "object",
       "showMultiRpcModal": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
@@ -44,6 +45,7 @@
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
+    "showIncomingTransactions": "object",
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
     "nextNonce": null,
@@ -122,6 +124,7 @@
     "forgottenPassword": false,
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",

@@ -13,7 +13,7 @@ const render = (
 };
 
 describe('<WalletInitiatedHeader />', () => {
-  it.only('should match snapshot', () => {
+  it('should match snapshot', () => {
     const { container } = render();
 
     expect(container).toMatchSnapshot();
