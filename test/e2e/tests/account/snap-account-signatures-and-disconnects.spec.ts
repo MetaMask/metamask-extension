@@ -1,56 +1,77 @@
 import { Suite } from 'mocha';
-import FixtureBuilder from '../fixture-builder';
+import { Driver } from '../../webdriver/driver';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import ExperimentalSettings from '../../page-objects/pages/experimental-settings';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import SettingsPage from '../../page-objects/pages/settings-page';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
-  withFixtures,
-  multipleGanacheOptions,
-  tempToggleSettingRedesignedConfirmations,
-  WINDOW_TITLES,
-} from '../helpers';
-import { Driver } from '../webdriver/driver';
-import { TestDapp } from '../page-objects/test-dapp';
-import { SnapAccountPage } from '../page-objects/snap-account-page';
-import { SignatureRequestPage } from '../page-objects/signature-request-page';
+  signTypedDataV3WithSnapAccount,
+  signTypedDataV4WithSnapAccount,
+} from '../../page-objects/flows/sign.flow';
+import { error } from 'console';
 
-describe('Snap Account Signatures and Disconnects', function (this: Suite) {
+describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: multipleGanacheOptions,
-        title: this.test?.fullTitle(),
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp({
+            restrictReturnedAccounts: false,
+          })
+          .build(),
+          title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
+        await installSnapSimpleKeyring(driver, false);
+        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
+        const newPublicKey = await snapSimpleKeyringPage.createNewAccount();
+
+        // Check snap account is displayed after adding the snap account.
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_accountLabel('SSK Account');
+
+        // Navigate to experimental settings and disable redesigned signature.
+        await headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToExperimentalSettings();
+
+        const experimentalSettings = new ExperimentalSettings(driver);
+        await settingsPage.check_pageIsLoaded();
+        await experimentalSettings.toggleRedesignedSignature();
+
+        // Open the Test Dapp and signTypedDataV3
         const testDapp = new TestDapp(driver);
-        const snapAccountPage = new SnapAccountPage(driver);
-        const signatureRequestPage = new SignatureRequestPage(driver);
+        await testDapp.openTestDappPage();
+        await signTypedDataV3WithSnapAccount(
+          driver,
+          newPublicKey,
+          true,
+          true,
+        );
 
-        const isAsyncFlow = true;
-
-        await snapAccountPage.installSnapSimpleKeyring(isAsyncFlow);
-
-        const newPublicKey = await snapAccountPage.makeNewAccountAndSwitch();
-
-        await tempToggleSettingRedesignedConfirmations(driver);
-
-        // open the Test Dapp and connect Account 2 to it
-        await testDapp.connect();
-
-        // do #signTypedDataV3
-        await testDapp.signTypedDataV3();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-        await signatureRequestPage.approveSignatureRequest();
-
-        // disconnect from the Test Dapp
+        // disconnect from Test Dapp and reconnect to Test Dapp
         await testDapp.disconnect();
-
-        // reconnect Account 2 to the Test Dapp
         await testDapp.connect();
 
-        // do #signTypedDataV4
-        await testDapp.signTypedDataV4();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-        await signatureRequestPage.approveSignatureRequest();
+        // SignTypedDataV4 with Test Dapp
+        await signTypedDataV4WithSnapAccount(
+          driver,
+          newPublicKey,
+          true,
+          true,
+        );
+        throw error;
       },
     );
   });
