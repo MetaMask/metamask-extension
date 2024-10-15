@@ -560,11 +560,6 @@ export default function ConfirmationPage({
           overflowY: 'auto',
         }}
       >
-        {templatedValues.networkDisplay ? (
-          <Box justifyContent="center" marginTop={2} display={Display.Flex}>
-            <NetworkDisplay />
-          </Box>
-        ) : null}
         {isSnapCustomUIDialog ? (
           <SnapUIRenderer
             snapId={pendingConfirmation?.origin}
