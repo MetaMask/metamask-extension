@@ -33,7 +33,9 @@ export function getPermissionBackgroundApiMethods({
     }
 
     if (!caip25Caveat) {
-      throw new Error('tried to add accounts when none have been permissioned'); // TODO: better error
+      throw new Error(
+        `Cannot add account permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
     }
 
     const ethAccounts = getEthAccounts(caip25Caveat.value);
@@ -68,7 +70,9 @@ export function getPermissionBackgroundApiMethods({
     }
 
     if (!caip25Caveat) {
-      throw new Error('tried to add chains when none have been permissioned'); // TODO: better error
+      throw new Error(
+        `Cannot add chain permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
     }
 
     // get the list of permitted eth accounts before we modify the permitted chains and potentially lose some
