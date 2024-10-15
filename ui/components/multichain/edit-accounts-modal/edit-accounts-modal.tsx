@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -30,6 +30,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getURLHost } from '../../../helpers/utils/util';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 type EditAccountsModalProps = {
   activeTabOrigin: string;
@@ -47,6 +52,8 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
+
   const [showAddNewAccounts, setShowAddNewAccounts] = useState(false);
 
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
@@ -84,6 +91,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const isIndeterminate = !checked && selectedAccountAddresses.length > 0;
 
   const hostName = getURLHost(activeTabOrigin);
+
+  const defaultSet = new Set(defaultSelectedAccountAddresses);
+  const selectedSet = new Set(selectedAccountAddresses);
 
   return (
     <>
@@ -181,7 +191,29 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                     <ButtonPrimary
                       data-testid="connect-more-accounts-button"
                       onClick={() => {
+                        // Get accounts that are in `selectedAccountAddresses` but not in `defaultSelectedAccountAddresses`
+                        const addedAccounts = selectedAccountAddresses.filter(
+                          (address) => !defaultSet.has(address),
+                        );
+
+                        // Get accounts that are in `defaultSelectedAccountAddresses` but not in `selectedAccountAddresses`
+                        const removedAccounts =
+                          defaultSelectedAccountAddresses.filter(
+                            (address) => !selectedSet.has(address),
+                          );
+
                         onSubmit(selectedAccountAddresses);
+                        trackEvent({
+                          category: MetaMetricsEventCategory.Permissions,
+                          event:
+                            MetaMetricsEventName.UpdatePermissionedAccounts,
+                          properties: {
+                            addedAccounts: addedAccounts.length,
+                            removedAccounts: removedAccounts.length,
+                            location: 'Edit Accounts Modal',
+                          },
+                        });
+
                         onClose();
                       }}
                       size={ButtonPrimarySize.Lg}

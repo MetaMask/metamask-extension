@@ -123,7 +123,7 @@ function getTracesSampleRate(sentryTarget) {
 
   if (flags.circleci) {
     // Report very frequently on develop branch, and never on other branches
-    // (Unless you do a [flags.sentry.tracesSampleRate: x.xx] override)
+    // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
     if (flags.circleci.branch === 'develop') {
       return 0.03;
     }
@@ -238,7 +238,7 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
-    getManifestFlags().sentry?.doNotForceSentryForThisTest ||
+    !getManifestFlags().sentry?.forceEnable ||
     (process.env.IN_TEST && !SENTRY_DSN_DEV)
   ) {
     return SENTRY_DSN_FAKE;
@@ -272,7 +272,7 @@ async function getMetaMetricsEnabled() {
 
   if (
     METAMASK_BUILD_TYPE === 'mmi' ||
-    (flags.circleci && !flags.sentry?.doNotForceSentryForThisTest)
+    (flags.circleci && flags.sentry.forceEnable)
   ) {
     return true;
   }
@@ -302,7 +302,7 @@ async function getMetaMetricsEnabled() {
 
 function setSentryClient() {
   const clientOptions = getClientOptions();
-  const { dsn, environment, release } = clientOptions;
+  const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
@@ -322,6 +322,7 @@ function setSentryClient() {
     environment,
     dsn,
     release,
+    tracesSampleRate,
   });
 
   Sentry.registerSpanErrorInstrumentation();

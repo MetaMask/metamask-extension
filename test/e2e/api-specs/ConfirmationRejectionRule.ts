@@ -69,9 +69,23 @@ export class ConfirmationsRejectRule implements Rule {
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
               await this.driver.findClickableElements({
-                text: 'Next',
+                text: 'Connect',
                 tag: 'button',
               });
+
+              const editButtons = await this.driver.findElements(
+                '[data-testid="edit"]',
+              );
+              await editButtons[1].click();
+
+              await this.driver.clickElement({
+                text: 'Localhost 8545',
+                tag: 'p',
+              });
+
+              await this.driver.clickElement(
+                '[data-testid="connect-more-chains-button"]',
+              );
 
               const screenshotTwo = await this.driver.driver.takeScreenshot();
               call.attachments.push({
@@ -80,14 +94,25 @@ export class ConfirmationsRejectRule implements Rule {
               });
 
               await this.driver.clickElement({
-                text: 'Next',
+                text: 'Connect',
                 tag: 'button',
               });
 
-              await this.driver.clickElement({
-                text: 'Confirm',
-                tag: 'button',
+              await switchToOrOpenDapp(this.driver);
+
+              const switchEthereumChainRequest = JSON.stringify({
+                jsonrpc: '2.0',
+                method: 'wallet_switchEthereumChain',
+                params: [
+                  {
+                    chainId: '0x539', // 1337
+                  },
+                ],
               });
+
+              await this.driver.executeScript(
+                `window.ethereum.request(${switchEthereumChainRequest})`,
+              );
 
               await switchToOrOpenDapp(this.driver);
             }

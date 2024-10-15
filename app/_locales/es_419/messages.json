@@ -157,18 +157,6 @@
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Explorando un sitio web con una cuenta no conectada seleccionada"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Esta alerta aparece en la ventana emergente cuando explora un sitio conectado de Web3, pero la cuenta actualmente seleccionada no está conectada."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Cuando un sitio web intenta utilizar la API de window.web3 que se eliminó"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Esta alerta aparece en la ventana emergente cuando explora un sitio que intenta utilizar la API de window.web3 que se eliminó y que puede que no funcione."
-  },
   "alerts": {
     "message": "Alertas"
   },
@@ -782,10 +770,6 @@
   "feeAssociatedRequest": {
     "message": "Esta solicitud tiene asociada una tarifa."
   },
-  "fiat": {
-    "message": "Fiduciaria",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? ¡Haga clic aquí!",
     "description": "Helps user import their account from a JSON file"
@@ -1048,9 +1032,6 @@
   },
   "invalidSeedPhrase": {
     "message": "Frase secreta de recuperación no válida"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "Archivo JSON",
@@ -1321,9 +1302,6 @@
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
   },
-  "noConversionDateAvailable": {
-    "message": "No hay fecha de conversión de moneda disponible"
-  },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
   },
@@ -1489,12 +1467,6 @@
   "prev": {
     "message": "Ant."
   },
-  "primaryCurrencySetting": {
-    "message": "Moneda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Seleccione Nativa para dar prioridad a mostrar los valores en la moneda nativa de la cadena (p. ej., ETH). Seleccione Fiduciaria para dar prioridad a mostrar los valores en la moneda fiduciaria seleccionada."
-  },
   "priorityFee": {
     "message": "Tarifa de prioridad"
   },
@@ -1579,9 +1551,6 @@
   },
   "rejected": {
     "message": "Rechazado"
-  },
-  "remember": {
-    "message": "Recuerde:"
   },
   "remove": {
     "message": "Quitar"
@@ -1744,9 +1713,6 @@
   "sendingNativeAsset": {
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask utiliza estos servicios de terceros de confianza para mejorar la usabilidad y la seguridad de los productos."
   },
   "settings": {
     "message": "Configuración"
@@ -2405,9 +2371,6 @@
     "message": "El envío de tokens coleccionables (ERC-721) no se admite actualmente",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
-  "updatedWithDate": {
-    "message": "$1 actualizado"
-  },
   "urlErrorMsg": {
     "message": "Las direcciones URL requieren el prefijo HTTP/HTTPS adecuado."
   },
@@ -2469,26 +2432,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión de la cartera de hardware"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Ha protegido con éxito su cartera. Mantenga su frase secreta de recuperación a salvo y en secreto: ¡es su responsabilidad!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask no puede recuperar su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask nunca le pedirá su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 con nadie o se arriesga a que le roben los fondos",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Nunca comparta su frase secreta de recuperación",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Creación exitosa de la cartera"
   },
   "web3ShimUsageNotification": {
     "message": "Parece que el sitio web actual intentó utilizar la API de window.web3 que se eliminó. Si el sitio no funciona, haga clic en $1 para obtener más información.",

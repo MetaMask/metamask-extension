@@ -63,6 +63,8 @@ function wrapElementWithAPI(element, driver) {
         return await driver.wait(until.stalenessOf(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
+      case 'disabled':
+        return await driver.wait(until.elementIsDisabled(element), timeout);
       default:
         throw new Error(`Provided state: '${state}' is not supported`);
     }
@@ -1311,7 +1313,10 @@ function collectMetrics() {
       });
     });
 
-  return results;
+  return {
+    ...results,
+    ...window.stateHooks.getCustomTraces(),
+  };
 }
 
 module.exports = { Driver, PAGES };
