@@ -1558,8 +1558,8 @@
       "packages": {
         "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
         "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js>@open-rpc/meta-schema": true,
         "@metamask/multichain>@open-rpc/schema-utils-js>ajv": true,
+        "@open-rpc/meta-schema": true,
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
         "@open-rpc/schema-utils-js>is-url": true,
         "eth-rpc-errors>fast-safe-stringify": true
@@ -1567,7 +1567,7 @@
     },
     "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
-        "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
         "eth-rpc-errors>fast-safe-stringify": true
       }
