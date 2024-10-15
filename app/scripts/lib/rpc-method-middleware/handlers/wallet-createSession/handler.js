@@ -20,8 +20,6 @@ import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import { processScopedProperties, validateAndAddEip3085 } from './helpers';
 
 export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
-  // TODO: Does this handler need a rate limiter/lock like the one in eth_requestAccounts?
-
   const {
     origin,
     params: {
