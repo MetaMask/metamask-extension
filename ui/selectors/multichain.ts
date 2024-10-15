@@ -231,8 +231,11 @@ export function getMultichainProviderConfig(
   return getMultichainNetwork(state, account).network;
 }
 
-export function getMultichainCurrentNetwork(state: MultichainState) {
-  return getMultichainProviderConfig(state);
+export function getMultichainCurrentNetwork(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainProviderConfig(state, account);
 }
 
 export function getMultichainNativeCurrency(
@@ -244,10 +247,13 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export function getMultichainCurrentCurrency(state: MultichainState) {
+export function getMultichainCurrentCurrency(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
   const currentCurrency = getCurrentCurrency(state);
 
-  if (getMultichainIsEvm(state)) {
+  if (getMultichainIsEvm(state, account)) {
     return currentCurrency;
   }
 
@@ -256,7 +262,7 @@ export function getMultichainCurrentCurrency(state: MultichainState) {
   // fallback to the current ticker symbol value
   return currentCurrency && currentCurrency.toLowerCase() === 'usd'
     ? 'usd'
-    : getMultichainProviderConfig(state).ticker;
+    : getMultichainProviderConfig(state, account).ticker;
 }
 
 export function getMultichainCurrencyImage(
