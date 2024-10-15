@@ -216,6 +216,8 @@ export default class ConfirmTransactionBase extends Component {
       useMaxValue,
       hasPriorityApprovalRequest,
       mostRecentOverviewPage,
+      txData,
+      getNextNonce,
     } = this.props;
 
     const {
@@ -226,12 +228,17 @@ export default class ConfirmTransactionBase extends Component {
       isEthGasPriceFetched: prevIsEthGasPriceFetched,
       hexMaximumTransactionFee: prevHexMaximumTransactionFee,
       hasPriorityApprovalRequest: prevHasPriorityApprovalRequest,
+      txData: prevTxData,
     } = prevProps;
 
     const statusUpdated = transactionStatus !== prevTxStatus;
     const txDroppedOrConfirmed =
       transactionStatus === TransactionStatus.dropped ||
       transactionStatus === TransactionStatus.confirmed;
+
+    if (txData.id !== prevTxData.id) {
+      getNextNonce();
+    }
 
     if (
       nextNonce !== prevNextNonce ||
