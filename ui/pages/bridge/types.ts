@@ -128,7 +128,7 @@ export type QuoteResponse = {
   estimatedProcessingTimeInSeconds: number;
 };
 
-enum ChainId {
+export enum ChainId {
   ETH = 1,
   OPTIMISM = 10,
   BSC = 56,
