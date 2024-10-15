@@ -188,7 +188,7 @@ describe('revokePermissionsHandler', () => {
         ],
       });
       expect(end).toHaveBeenCalledWith(
-        new Error('cannot modify permission granted from multichain flow'),
+        new Error('Cannot modify permission granted via the Multichain API. Either modify the permission using the Multichain API or revoke permissions and request again.'),
       );
     });
   });
