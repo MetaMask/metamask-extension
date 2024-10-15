@@ -132,10 +132,10 @@ describe('Add existing token using search', function () {
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
-        const [, tkn] = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        await tkn.click();
+        await driver.clickElement({
+          tag: 'span',
+          text: 'Basic Attention Token',
+        });
 
         await driver.waitForSelector({
           css: '[data-testid="multichain-token-list-item-value"]',
@@ -176,19 +176,16 @@ describe('Add token using wallet_watchAsset', function () {
           })
         `);
 
-        const windowHandles = await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           tag: 'button',
           text: 'Add token',
         });
 
-        await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         await driver.waitForSelector({
           css: '[data-testid="multichain-token-list-item-value"]',
@@ -227,19 +224,16 @@ describe('Add token using wallet_watchAsset', function () {
           })
         `);
 
-        const windowHandles = await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           tag: 'button',
           text: 'Cancel',
         });
 
-        await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         const assetListItems = await driver.findElements(
           '.multichain-token-list-item',
