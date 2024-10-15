@@ -153,7 +153,11 @@
             "1": "string",
             "2": "string"
           }
-        }
+        },
+        "destTokens": {},
+        "destTopAssets": {},
+        "srcTokens": {},
+        "srcTopAssets": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

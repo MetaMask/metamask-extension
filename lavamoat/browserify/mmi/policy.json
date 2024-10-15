@@ -3038,7 +3038,7 @@
     },
     "@sentry/browser": {
       "globals": {
-        "PerformanceObserver.supportedEntryTypes.includes": true,
+        "PerformanceObserver.supportedEntryTypes": true,
         "Request": true,
         "URL": true,
         "XMLHttpRequest.prototype": true,
@@ -3135,7 +3135,8 @@
         "innerWidth": true,
         "location.href": true,
         "location.origin": true,
-        "parent": true
+        "parent": true,
+        "setTimeout": true
       },
       "packages": {
         "@sentry/browser>@sentry-internal/browser-utils": true,
@@ -4697,6 +4698,33 @@
         "localStorage": true,
         "log": "write",
         "navigator": true
+      }
+    },
+    "lottie-web": {
+      "globals": {
+        "Blob": true,
+        "Howl": true,
+        "OffscreenCanvas": true,
+        "URL.createObjectURL": true,
+        "Worker": true,
+        "XMLHttpRequest": true,
+        "bodymovin": "write",
+        "clearInterval": true,
+        "console": true,
+        "define": true,
+        "document.body": true,
+        "document.createElement": true,
+        "document.createElementNS": true,
+        "document.getElementsByClassName": true,
+        "document.getElementsByTagName": true,
+        "document.querySelectorAll": true,
+        "document.readyState": true,
+        "location.origin": true,
+        "location.pathname": true,
+        "navigator": true,
+        "requestAnimationFrame": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "luxon": {

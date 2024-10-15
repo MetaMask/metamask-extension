@@ -400,6 +400,10 @@ class FixtureBuilder {
           extensionSupport: false,
           srcNetworkAllowlist: [],
         },
+        destTokens: {},
+        destTopAssets: [],
+        srcTokens: {},
+        srcTopAssets: [],
       },
     };
     return this;
