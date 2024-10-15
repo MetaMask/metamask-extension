@@ -289,17 +289,16 @@ export default class BridgeController extends StaticIntervalPollingController<
   /**
    *
    * @param contractAddress - The address of the ERC20 token contract
-   * @param walletAddress - The address of the wallet
    * @param chainId - The hex chain ID of the bridge network
    * @returns The atomic allowance of the ERC20 token contract
    */
   getBridgeERC20Allowance = async (
     contractAddress: string,
-    walletAddress: string,
     chainId: Hex,
   ): Promise<string> => {
     const web3Provider = new Web3Provider(this.#provider);
     const contract = new Contract(contractAddress, abiERC20, web3Provider);
+    const { address: walletAddress } = this.#getSelectedAccount();
     const allowance = await contract.allowance(
       walletAddress,
       METABRIDGE_CHAIN_TO_ADDRESS_MAP[chainId],

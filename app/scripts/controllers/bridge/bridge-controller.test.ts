@@ -567,7 +567,6 @@ describe('BridgeController', function () {
     it('should return the atomic allowance of the ERC20 token contract', async () => {
       const allowance = await bridgeController.getBridgeERC20Allowance(
         '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        '0x0000000000000000000000000000000000000000',
         '0xa',
       );
       expect(allowance).toBe('100000000000000000000');
