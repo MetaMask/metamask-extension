@@ -39,11 +39,15 @@ const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
   },
 };
 
+const RESET_STATE_ABORT_MESSAGE = 'Reset controller state';
+
 export default class BridgeController extends StaticIntervalPollingController<
   typeof BRIDGE_CONTROLLER_NAME,
   { bridgeState: BridgeControllerState },
   BridgeControllerMessenger
 > {
+  #abortController: AbortController | undefined;
+
   constructor({ messenger }: { messenger: BridgeControllerMessenger }) {
     super({
       name: BRIDGE_CONTROLLER_NAME,
@@ -89,6 +93,8 @@ export default class BridgeController extends StaticIntervalPollingController<
     paramsToUpdate: Partial<QuoteRequest>,
   ) => {
     this.stopAllPolling();
+    this.#abortController?.abort('Quote request updated');
+
     const { bridgeState } = this.state;
     const updatedQuoteRequest = {
       ...DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
@@ -143,9 +149,10 @@ export default class BridgeController extends StaticIntervalPollingController<
 
   resetState = () => {
     this.stopAllPolling();
+    this.#abortController?.abort(RESET_STATE_ABORT_MESSAGE);
+
     this.update((_state) => {
       _state.bridgeState = {
-        ..._state.bridgeState,
         ...DEFAULT_BRIDGE_CONTROLLER_STATE,
         quotes: [],
         bridgeFeatureFlags: _state.bridgeState.bridgeFeatureFlags,
@@ -175,33 +182,47 @@ export default class BridgeController extends StaticIntervalPollingController<
   };
 
   #fetchBridgeQuotes = async (request: QuoteRequest) => {
+    this.#abortController?.abort('New quote request');
+    this.#abortController = new AbortController();
+    if (request.srcChainId === request.destChainId) {
+      return;
+    }
     const { bridgeState } = this.state;
     this.update((_state) => {
       _state.bridgeState = {
         ...bridgeState,
-        quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.LOADING,
         quoteRequest: request,
       };
     });
 
     try {
-      const quotes = await fetchBridgeQuotes(request);
+      const quotes = await fetchBridgeQuotes(
+        request,
+        this.#abortController.signal,
+      );
       this.update((_state) => {
         _state.bridgeState = {
           ..._state.bridgeState,
           quotes,
+          quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
         };
       });
     } catch (error) {
-      console.log('Failed to fetch bridge quotes', error);
+      const isAbortError = (error as Error).name === 'AbortError';
+      const isAbortedDueToReset = error === RESET_STATE_ABORT_MESSAGE;
+      if (isAbortedDueToReset || isAbortError) {
+        return;
+      }
+
       this.update((_state) => {
         _state.bridgeState = {
           ...bridgeState,
           quotesLoadingStatus: RequestStatus.ERROR,
         };
       });
+      console.log('Failed to fetch bridge quotes', error);
     }
   };
 
