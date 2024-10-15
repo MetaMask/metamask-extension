@@ -58,7 +58,7 @@ describe('Snap Account Signatures @no-mmi', function (this: Suite) {
           await settingsPage.goToExperimentalSettings();
 
           const experimentalSettings = new ExperimentalSettings(driver);
-          await settingsPage.check_pageIsLoaded();
+          await experimentalSettings.check_pageIsLoaded();
           await experimentalSettings.toggleRedesignedSignature();
 
           // Run all 5 signature types
