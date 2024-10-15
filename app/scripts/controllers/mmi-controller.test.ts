@@ -203,10 +203,10 @@ describe('MMIController', function () {
     });
 
     metaMetricsController = new MetaMetricsController({
-      preferencesStore: {
-        getState: jest.fn().mockReturnValue({ currentLocale: 'en' }),
-        subscribe: jest.fn(),
+      preferencesControllerState: {
+        currentLocale: 'en'
       },
+      onPreferencesStateChange: jest.fn(),
       getCurrentChainId: jest.fn(),
       onNetworkDidChange: jest.fn(),
     });
