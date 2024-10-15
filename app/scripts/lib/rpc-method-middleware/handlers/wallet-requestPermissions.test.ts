@@ -640,7 +640,7 @@ describe('requestPermissionsHandler', () => {
       MockMultichain.setEthAccounts.mockReturnValue({
         requiredScopes: {},
         optionalScopes: {},
-        sessionProperties: { caveatValueWithEthChainIdsSet: true },
+        sessionProperties: { caveatValueWithEthAccountsSet: true },
         isMultichainOrigin: false,
       });
 
@@ -652,7 +652,7 @@ describe('requestPermissionsHandler', () => {
         {
           requiredScopes: {},
           optionalScopes: {},
-          sessionProperties: { caveatValueWithEthChainIdsSet: true },
+          sessionProperties: { caveatValueWithEthAccountsSet: true },
           isMultichainOrigin: false,
         },
       );
@@ -665,7 +665,7 @@ describe('requestPermissionsHandler', () => {
       MockMultichain.setEthAccounts.mockReturnValue({
         requiredScopes: {},
         optionalScopes: {},
-        sessionProperties: { caveatValueWithEthChainIdsSet: true },
+        sessionProperties: { caveatValueWithEthAccountsSet: true },
         isMultichainOrigin: false,
       });
 
@@ -682,7 +682,7 @@ describe('requestPermissionsHandler', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: {},
-                  sessionProperties: { caveatValueWithEthChainIdsSet: true },
+                  sessionProperties: { caveatValueWithEthAccountsSet: true },
                   isMultichainOrigin: false,
                 },
               },
