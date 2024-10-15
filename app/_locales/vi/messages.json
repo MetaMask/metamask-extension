@@ -4162,12 +4162,6 @@
   "receive": {
     "message": "Nhận"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Nhập địa chỉ công khai (0x) hoặc tên ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Nhập địa chỉ công khai (0x) hoặc tên miền"
-  },
   "recommendedGasLabel": {
     "message": "Được đề xuất"
   },

@@ -4162,12 +4162,6 @@
   "receive": {
     "message": "받기"
   },
-  "recipientAddressPlaceholder": {
-    "message": "공개 주소(0x) 또는 ENS 제목 입력"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "공개 주소(0x) 또는 도메인 이름 입력"
-  },
   "recommendedGasLabel": {
     "message": "권장됨"
   },

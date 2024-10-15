@@ -4162,12 +4162,6 @@
   "receive": {
     "message": "Al"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Genel adres (0x) veya ENS adı girin"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Genel adres (0x) veya alan adı girin"
-  },
   "recommendedGasLabel": {
     "message": "Önerilen"
   },

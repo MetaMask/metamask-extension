@@ -4162,12 +4162,6 @@
   "receive": {
     "message": "Empfangen"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Öffentliche Adresse (0x) oder ENS-Name eingeben"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Öffentliche Adresse (0x) oder Domainname eingeben"
-  },
   "recommendedGasLabel": {
     "message": "Empfohlen"
   },

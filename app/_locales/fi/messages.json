@@ -542,9 +542,6 @@
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Haku, julkinen osoite (0x) tai ENS"
-  },
   "reject": {
     "message": "Hylkää"
   },

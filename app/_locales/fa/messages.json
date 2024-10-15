@@ -545,9 +545,6 @@
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."
   },
-  "recipientAddressPlaceholder": {
-    "message": "جستجو، آدرس عمومی (0x)، یا ENS"
-  },
   "reject": {
     "message": "عدم پذیرش"
   },

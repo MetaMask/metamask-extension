@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import { isHexString } from '@metamask/utils';
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
 import {
-  IS_FLASK,
   isValidDomainName,
   shortenAddress,
 } from '../../../../../helpers/utils/util';
@@ -87,9 +86,7 @@ export default class DomainInput extends Component {
       return null;
     }
 
-    if ((IS_FLASK && !isHexString(input)) || isValidDomainName(input)) {
-      lookupDomainName(input);
-    } else {
+    if (isHexString(input)) {
       resetDomainResolution();
       if (
         onValidAddressTyped &&
@@ -98,6 +95,8 @@ export default class DomainInput extends Component {
       ) {
         onValidAddressTyped(addHexPrefix(input));
       }
+    } else {
+      lookupDomainName(input);
     }
 
     return null;
@@ -167,11 +166,7 @@ export default class DomainInput extends Component {
                 className="ens-input__wrapper__input"
                 type="text"
                 dir="auto"
-                placeholder={
-                  IS_FLASK
-                    ? t('recipientAddressPlaceholderFlask')
-                    : t('recipientAddressPlaceholder')
-                }
+                placeholder={t('recipientAddressPlaceholderNew')}
                 onChange={this.onChange}
                 onPaste={this.onPaste}
                 spellCheck="false"

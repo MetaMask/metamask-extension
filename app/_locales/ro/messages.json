@@ -532,9 +532,6 @@
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Căutare, adresa publică (0x) sau ENS"
-  },
   "reject": {
     "message": "Respingeți"
   },

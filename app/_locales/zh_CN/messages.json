@@ -4162,12 +4162,6 @@
   "receive": {
     "message": "收款"
   },
-  "recipientAddressPlaceholder": {
-    "message": "输入公钥 (0x) 或 ENS 名称"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "输入公钥 (0x) 或域名"
-  },
   "recommendedGasLabel": {
     "message": "建议"
   },

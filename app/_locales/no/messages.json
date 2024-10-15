@@ -529,9 +529,6 @@
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Søk, offentlig adresse (0x) eller ENS"
-  },
   "reject": {
     "message": "Avslå"
   },

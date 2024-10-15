@@ -525,9 +525,6 @@
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Cari, alamat awam (0x), atau ENS"
-  },
   "reject": {
     "message": "Tolak"
   },
