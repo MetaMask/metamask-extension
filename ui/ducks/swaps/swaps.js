@@ -34,11 +34,11 @@ import {
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
-  BUILD_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
+  PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   fetchSwapsFeatureFlags,
@@ -335,15 +335,6 @@ export const getCurrentSmartTransactionsEnabled = (state) => {
   return smartTransactionsEnabled && !currentSmartTransactionsError;
 };
 
-export const getSwapRedesignEnabled = (state) => {
-  const swapRedesign =
-    state.metamask.swapsState?.swapsFeatureFlags?.swapRedesign;
-  if (swapRedesign === undefined) {
-    return true; // By default show the redesign if we don't have feature flags returned yet.
-  }
-  return swapRedesign.extensionActive;
-};
-
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
 
@@ -526,12 +517,12 @@ export {
   slice as swapsSlice,
 };
 
-export const navigateBackToBuildQuote = (history) => {
+export const navigateBackToPrepareSwap = (history) => {
   return async (dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
     await dispatch(setBackgroundSwapRouteState(''));
     dispatch(navigatedBackToBuildQuote());
-    history.push(BUILD_QUOTE_ROUTE);
+    history.push(PREPARE_SWAP_ROUTE);
   };
 };
 
