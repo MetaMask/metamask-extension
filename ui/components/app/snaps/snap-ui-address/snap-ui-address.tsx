@@ -59,15 +59,49 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
         : parsed.address,
     );
 
+  // For EVM addresses, we make sure they are checksummed.
+  const transformedAddress =
+    parsed.chain.namespace === 'eip155'
+      ? toChecksumHexAddress(parsed.address)
+      : parsed.address;
+  const formattedAddress = truncate
+    ? shortenAddress(transformedAddress)
+    : address;
+
   return (
-    <Box
-      className="snap-ui-renderer__address"
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      gap={2}
-    >
-      <SnapUIAvatar address={caipIdentifier} size={avatarSize} />
-      <Text color={TextColor.inherit}>{value}</Text>
+    <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+      {avatar &&
+        (useBlockie ? (
+          <BlockieIdenticon
+            address={parsed.address}
+            diameter={diameter}
+            borderRadius="50%"
+          />
+        ) : (
+          <Jazzicon
+            namespace={parsed.chain.namespace}
+            address={parsed.address}
+            diameter={diameter}
+            style={{ display: 'flex' }}
+          />
+        ))}
+      {showAddressName ? (
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.inherit}
+          style={{ lineBreak: 'anywhere' }}
+        >
+          {addressName}
+        </Text>
+      ) : (
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.inherit}
+          style={{ lineBreak: 'anywhere' }}
+        >
+          {formattedAddress}
+        </Text>
+      )}
     </Box>
   );
 };
