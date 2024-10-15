@@ -57,11 +57,12 @@ describe('PrepareBridgePage', () => {
       },
       {
         fromTokenInputValue: 1,
-        fromToken: { address: '0x3103910' },
+        fromToken: { address: '0x3103910', decimals: 6 },
         toToken: {
           iconUrl: 'http://url',
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          decimals: 6,
         },
         toChainId: CHAIN_IDS.LINEA_MAINNET,
       },
@@ -89,5 +90,29 @@ describe('PrepareBridgePage', () => {
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
 
     expect(getByTestId('switch-tokens').closest('button')).not.toBeDisabled();
+  });
+
+  it('should throw an error if token decimals are not defined', async () => {
+    const mockStore = createBridgeMockStore(
+      {
+        srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
+        destNetworkAllowlist: [CHAIN_IDS.LINEA_MAINNET],
+      },
+      {
+        fromTokenInputValue: 1,
+        fromToken: { address: '0x3103910' },
+        toToken: {
+          iconUrl: 'http://url',
+          symbol: 'UNI',
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        },
+        toChainId: CHAIN_IDS.LINEA_MAINNET,
+      },
+      {},
+    );
+
+    expect(() =>
+      renderWithProvider(<PrepareBridgePage />, configureStore(mockStore)),
+    ).toThrow();
   });
 });
