@@ -3,6 +3,13 @@ import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { GlobalMenu } from '.';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+
+const trackEventMock = jest.fn();
 
 const render = (metamaskStateChanges = {}) => {
   const store = configureStore({
@@ -11,12 +18,16 @@ const render = (metamaskStateChanges = {}) => {
       ...metamaskStateChanges,
     },
   });
+
   return renderWithProvider(
-    <GlobalMenu
-      anchorElement={document.body}
-      isOpen
-      closeMenu={() => undefined}
-    />,
+    <MetaMetricsContext.Provider value={trackEventMock}>
+      <GlobalMenu
+        anchorElement={document.body}
+        isOpen
+        closeMenu={() => undefined}
+      />
+    </MetaMetricsContext.Provider>,
+
     store,
   );
 };
@@ -84,6 +95,26 @@ describe('Global Menu', () => {
     );
     await waitFor(() => {
       expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
+    });
+  });
+
+  it('opens the spending caps URL and tracks the event when the spending caps item is clicked', async () => {
+    global.platform = { openTab: jest.fn() };
+    const { getByTestId } = render();
+    fireEvent.click(getByTestId('global-menu-spending-caps'));
+
+    await waitFor(() => {
+      expect(global.platform.openTab).toHaveBeenCalledWith({
+        url: expect.stringContaining('spending-caps'),
+      });
+      expect(trackEventMock).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.PortfolioLinkClicked,
+        properties: {
+          url: expect.stringContaining('spending-caps'),
+          location: 'Global Menu',
+        },
+      });
     });
   });
 });
