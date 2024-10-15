@@ -145,16 +145,6 @@ describe('permission background API methods', () => {
                 'wallet:eip155:0x4',
               ],
             },
-            wallet: {
-              methods: [],
-              notifications: [],
-              accounts: [
-                'wallet:eip155:0x2',
-                'wallet:eip155:0x3',
-                'wallet:eip155:0x1',
-                'wallet:eip155:0x4',
-              ],
-            },
           },
           isMultichainOrigin: true,
         },
@@ -286,17 +276,6 @@ describe('permission background API methods', () => {
               ],
             },
             'wallet:eip155': {
-              methods: [],
-              notifications: [],
-              accounts: [
-                'wallet:eip155:0x2',
-                'wallet:eip155:0x3',
-                'wallet:eip155:0x1',
-                'wallet:eip155:0x4',
-                'wallet:eip155:0x5',
-              ],
-            },
-            wallet: {
               methods: [],
               notifications: [],
               accounts: [
@@ -507,11 +486,6 @@ describe('permission background API methods', () => {
               notifications: [],
               accounts: ['wallet:eip155:0x3', 'wallet:eip155:0x1'],
             },
-            wallet: {
-              methods: [],
-              notifications: [],
-              accounts: ['wallet:eip155:0x3', 'wallet:eip155:0x1'],
-            },
           },
           isMultichainOrigin: true,
         },
@@ -600,11 +574,6 @@ describe('permission background API methods', () => {
                       accounts: ['eip155:5:0xdeadbeef'],
                     },
                     'wallet:eip155': {
-                      methods: [],
-                      notifications: [],
-                      accounts: ['wallet:eip155:0xdeadbeef'],
-                    },
-                    wallet: {
                       methods: [],
                       notifications: [],
                       accounts: ['wallet:eip155:0xdeadbeef'],
@@ -735,11 +704,6 @@ describe('permission background API methods', () => {
               notifications: [],
               accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
             },
-            wallet: {
-              methods: [],
-              notifications: [],
-              accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
-            },
           },
           isMultichainOrigin: true,
         },
@@ -863,11 +827,6 @@ describe('permission background API methods', () => {
               accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
             },
             'wallet:eip155': {
-              methods: [],
-              notifications: [],
-              accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
-            },
-            wallet: {
               methods: [],
               notifications: [],
               accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
