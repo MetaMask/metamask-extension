@@ -263,21 +263,25 @@ exports[`AssetPage should render a native asset 1`] = `
             Token details
           </h3>
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
             >
-              Spending caps
-            </p>
-            <a
-              class="asset-page__spending-caps mm-text--body-md-medium"
-              href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Edit in Portfolio
-            </a>
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+              >
+                Spending caps
+              </p>
+              <a
+                class="asset-page__spending-caps mm-text--body-md-medium"
+                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Edit in Portfolio
+              </a>
+            </div>
           </div>
         </div>
         <div
@@ -581,77 +585,85 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             Token details
           </h3>
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-            >
-              Contract address
-            </p>
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-9"
-                class=""
-                data-original-title="Copy to clipboard"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <button
-                  class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
-                  data-testid="address-copy-button-text"
-                >
-                  <span
-                    class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
-                  >
-                    <div
-                      class="mm-box mm-box--display-flex"
-                    >
-                      0x30937...C4936
-                    </div>
-                  </span>
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/copy.svg');"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-          <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
+            <div
+              class="mm-box"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                >
+                  Contract address
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-9"
+                    class=""
+                    data-original-title="Copy to clipboard"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <button
+                      class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
+                      data-testid="address-copy-button-text"
+                    >
+                      <span
+                        class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex"
+                        >
+                          0x30937...C4936
+                        </div>
+                      </span>
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/copy.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                  >
+                    Token decimal
+                  </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  >
+                    18
+                  </p>
+                </div>
+              </div>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
               >
-                Token decimal
+                Spending caps
               </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              <a
+                class="asset-page__spending-caps mm-text--body-md-medium"
+                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                18
-              </p>
+                Edit in Portfolio
+              </a>
             </div>
-          </div>
-          <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-            >
-              Spending caps
-            </p>
-            <a
-              class="asset-page__spending-caps mm-text--body-md-medium"
-              href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Edit in Portfolio
-            </a>
           </div>
         </div>
         <div
@@ -1081,77 +1093,85 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             Token details
           </h3>
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-            >
-              Contract address
-            </p>
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-10"
-                class=""
-                data-original-title="Copy to clipboard"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <button
-                  class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
-                  data-testid="address-copy-button-text"
-                >
-                  <span
-                    class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
-                  >
-                    <div
-                      class="mm-box mm-box--display-flex"
-                    >
-                      0xe4246...85f55
-                    </div>
-                  </span>
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/copy.svg');"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-          <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
+            <div
+              class="mm-box"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                >
+                  Contract address
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-10"
+                    class=""
+                    data-original-title="Copy to clipboard"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <button
+                      class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
+                      data-testid="address-copy-button-text"
+                    >
+                      <span
+                        class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex"
+                        >
+                          0xe4246...85f55
+                        </div>
+                      </span>
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/copy.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                  >
+                    Token decimal
+                  </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  >
+                    18
+                  </p>
+                </div>
+              </div>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
               >
-                Token decimal
+                Spending caps
               </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              <a
+                class="asset-page__spending-caps mm-text--body-md-medium"
+                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                18
-              </p>
+                Edit in Portfolio
+              </a>
             </div>
-          </div>
-          <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-            >
-              Spending caps
-            </p>
-            <a
-              class="asset-page__spending-caps mm-text--body-md-medium"
-              href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Edit in Portfolio
-            </a>
           </div>
         </div>
         <div
