@@ -425,6 +425,10 @@ export default class MMIController extends EventEmitter {
       },
     );
 
+    keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+      this.logAndStoreApiRequest(logData);
+    });
+
     if (!keyring) {
       throw new Error('Unable to get keyring');
     }
