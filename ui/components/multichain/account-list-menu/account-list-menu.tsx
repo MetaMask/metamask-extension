@@ -207,6 +207,7 @@ export const AccountListMenu = ({
   const trackEvent = useContext(MetaMetricsContext);
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
+    console.log('trace ended');
   }, []);
   const accounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,

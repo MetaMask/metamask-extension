@@ -61,6 +61,7 @@ export const AccountPicker = ({
       data-testid="account-menu-icon"
       onClick={() => {
         trace({ name: TraceName.AccountList });
+        console.log('trace started');
         onClick();
       }}
       backgroundColor={BackgroundColor.transparent}
