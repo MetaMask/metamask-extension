@@ -131,6 +131,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
+    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.3.0-preview-ada451da",
     "chokidar": "^3.6.0",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
@@ -311,7 +312,7 @@
     "@metamask/bitcoin-wallet-snap": "^0.6.1",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.3.0-preview-ada451da",
+    "@metamask/controller-utils": "^11.2.0",
     "@metamask/design-tokens": "^4.0.0",
     "@metamask/ens-controller": "^13.0.0",
     "@metamask/ens-resolver-snap": "^0.1.2",
