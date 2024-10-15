@@ -52,7 +52,11 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 .devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral
 
 # Confirmations team to own code for confirmations on UI.
-ui/pages/confirmations               @MetaMask/confirmations
+ui/pages/confirmations                  @MetaMask/confirmations
+app/scripts/lib/ppom                    @MetaMask/confirmations
+app/scripts/lib/transaction/decode      @MetaMask/confirmations
+app/scripts/lib/transaction/metrics.*   @MetaMask/confirmations
+app/scripts/lib/transaction/util.*      @MetaMask/confirmations
 
 # MMI team is responsible for code related with Institutioanl version of MetaMask
 ui/pages/institutional               @MetaMask/mmi
