@@ -51,16 +51,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithTitle(
@@ -86,16 +79,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -104,7 +90,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x3e8' }],
+          params: [{ chainId: '0x539' }],
         });
 
         // Initiate switchEthereumChain on Dapp Two
@@ -114,8 +100,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
-          text: 'Allow this site to switch the network?',
-          tag: 'h3',
+          text: 'Use your enabled networks',
+          tag: 'p',
         });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -124,7 +110,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -207,16 +193,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithTitle(
@@ -242,16 +221,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -260,7 +232,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x3e8' }],
+          params: [{ chainId: '0x539' }],
         });
 
         // Initiate switchEthereumChain on Dapp Two
@@ -270,8 +242,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
-          text: 'Allow this site to switch the network?',
-          tag: 'h3',
+          text: 'Use your enabled networks',
+          tag: 'p',
         });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
