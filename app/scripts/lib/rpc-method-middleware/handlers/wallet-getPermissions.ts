@@ -60,8 +60,7 @@ async function getPermissionsImplementation(
     getAccounts: () => Promise<string[]>;
   },
 ) {
-  // permissions are frozen and must be cloned before modified
-  const permissions = { ...getPermissionsForOrigin() } || {};
+  const permissions = { ...getPermissionsForOrigin() };
   const caip25Endowment = permissions[Caip25EndowmentPermissionName];
   const caip25CaveatValue = caip25Endowment?.caveats?.find(
     ({ type }) => type === Caip25CaveatType,
