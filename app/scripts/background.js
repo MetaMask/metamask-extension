@@ -56,6 +56,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
+import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -335,9 +336,9 @@ function overrideContentSecurityPolicyHeader() {
     ({ responseHeaders }) => {
       for (const header of responseHeaders) {
         if (header.name.toLowerCase() === 'content-security-policy') {
-          header.value = header.value.replace(
-            /(^|;[\t\n\f\r ]*)script-src([^;]*)/u,
-            (match) => `${match} 'nonce-${btoa(browser.runtime.getURL('/'))}'`,
+          header.value = addNonceToCsp(
+            header.value,
+            btoa(browser.runtime.getURL('/')),
           );
         }
       }
