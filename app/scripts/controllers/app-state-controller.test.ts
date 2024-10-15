@@ -648,18 +648,27 @@ describe('AppStateController', () => {
   });
 
   describe('isManifestV3', () => {
-  it('creates alarm when isManifestV3 is true', () => {
-    mockIsManifestV3.mockReturnValue(true);
-    ({ appStateController } = createAppStateController());
+    it('creates alarm when isManifestV3 is true', () => {
+      mockIsManifestV3.mockReturnValue(true);
+      ({ appStateController } = createAppStateController());
 
-    const spy = jest.spyOn(
-      appStateController as unknown as { _resetTimer: () => void },
-      '_resetTimer',
-    );
-    appStateController.setLastActiveTime();
+      const timeout = Date.now();
+      controllerMessenger.publish(
+        'PreferencesController:stateChange',
+        {
+          preferences: { autoLockTimeLimit: timeout },
+        } as unknown as PreferencesControllerState,
+        [],
+      );
+      const spy = jest.spyOn(
+        appStateController as unknown as { _resetTimer: () => void },
+        '_resetTimer',
+      );
+      appStateController.setLastActiveTime();
 
-    expect(spy).toHaveBeenCalled();
-    expect(extensionMock.alarms.clear).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
+      expect(extensionMock.alarms.clear).toHaveBeenCalled();
+      expect(extensionMock.alarms.onAlarm.addListener).toHaveBeenCalled();
+    });
   });
-});
 });
