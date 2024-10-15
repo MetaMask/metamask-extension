@@ -2,7 +2,6 @@
 // eslint-disable-next-line import/no-restricted-paths
 import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
-import { TransactionType } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { NetworkConfiguration } from '@metamask/network-controller';
@@ -21,19 +20,8 @@ import {
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { QuoteRequest } from '../../pages/bridge/types';
-import {
-  AssetWithDisplayData,
-  ERC20Asset,
-  NativeAsset,
-} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
-  SwapsTokenObject,
-  DEFAULT_TOKEN_ADDRESS,
-  DEFAULT_TOKEN_ADDRESS,
-} from '../../../shared/constants/swaps';
-import {
-  SwapsEthToken,
   checkNetworkAndAccountSupports1559,
   getIsBridgeChain,
   getIsBridgeEnabled,
@@ -45,7 +33,6 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getGasFeeEstimates } from '../metamask/metamask';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
-import { MetaMetricsNetworkEventSource } from '../../../shared/constants/metametrics';
 import {
   getEthUsdtApproveResetTxParams,
   isEthUsdt,
@@ -470,10 +457,10 @@ export const submitBridgeTransaction = (
       });
 
       // Add tokens if not the native gas token
-      if (quoteMeta.quote.srcAsset.address !== DEFAULT_TOKEN_ADDRESS) {
+      if (quoteMeta.quote.srcAsset.address !== zeroAddress()) {
         addSourceToken();
       }
-      if (quoteMeta.quote.destAsset.address !== DEFAULT_TOKEN_ADDRESS) {
+      if (quoteMeta.quote.destAsset.address !== zeroAddress()) {
         await addDestToken();
       }
 
