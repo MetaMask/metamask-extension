@@ -4,8 +4,8 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
-import { PermissionNames } from '../../controllers/permissions';
+import { RestrictedMethods } from '../../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
 
 export const revokePermissionsHandler = {
   methodNames: [MethodNames.revokePermissions],

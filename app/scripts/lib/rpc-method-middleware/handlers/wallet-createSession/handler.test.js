@@ -7,9 +7,9 @@ import {
   KnownRpcMethods,
   KnownNotifications,
 } from '@metamask/multichain';
-import { CaveatTypes } from '../../../../../shared/constants/permissions';
-import { shouldEmitDappViewedEvent } from '../../util';
-import { PermissionNames } from '../../../controllers/permissions';
+import { CaveatTypes } from '../../../../../../shared/constants/permissions';
+import { shouldEmitDappViewedEvent } from '../../../util';
+import { PermissionNames } from '../../../../controllers/permissions';
 import { processScopedProperties, validateAndAddEip3085 } from './helpers';
 import { walletCreateSessionHandler } from './handler';
 

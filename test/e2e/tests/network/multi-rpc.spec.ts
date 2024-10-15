@@ -396,11 +396,9 @@ describe('MultiRpc:', function (this: Suite) {
         await driver.delay(regularDelayMs);
 
         // go to advanced settigns
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Manage default settings',
         });
-
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement({
           text: 'General',
@@ -420,23 +418,18 @@ describe('MultiRpc:', function (this: Suite) {
           tag: 'button',
         });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Save',
           tag: 'button',
         });
 
-        await driver.delay(regularDelayMs);
-        await driver.waitForSelector('[data-testid="category-back-button"]');
         await driver.clickElement('[data-testid="category-back-button"]');
 
-        await driver.waitForSelector(
-          '[data-testid="privacy-settings-back-button"]',
-        );
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Done',
           tag: 'button',
         });
@@ -446,7 +439,7 @@ describe('MultiRpc:', function (this: Suite) {
           tag: 'button',
         });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Done',
           tag: 'button',
         });
@@ -461,7 +454,17 @@ describe('MultiRpc:', function (this: Suite) {
           '“Arbitrum One” was successfully edited!',
         );
         // Ensures popover backround doesn't kill test
-        await driver.delay(regularDelayMs);
+        await driver.assertElementNotPresent('.popover-bg');
+
+        // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#27870)
+        // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
+        await driver.clickElementSafe({ tag: 'h6', text: 'Got it' });
+
+        await driver.assertElementNotPresent({
+          tag: 'h6',
+          text: 'Got it',
+        });
+
         await driver.clickElement('[data-testid="network-display"]');
 
         const arbitrumRpcUsed = await driver.findElement({

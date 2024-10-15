@@ -144,7 +144,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { isValidHexAddress, toCaipChainId } from '@metamask/utils';
+import { isValidHexAddress } from '@metamask/utils';
 import {
   AuthenticationController,
   UserStorageController,
@@ -380,7 +380,7 @@ import {
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import { walletCreateSessionHandler } from './lib/multichain-api/wallet-createSession';
+import { walletCreateSessionHandler } from './lib/rpc-method-middleware/handlers/wallet-createSession';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5036,29 +5036,28 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Stops exposing the specified chain ID to all third parties.
+   * Stops exposing the specified scope to all third parties.
    *
-   * @param {string} targetChainId - The chain ID to stop exposing
+   * @param {string} scopeString - The scope to stop exposing
    * to third parties.
    */
-  removeAllChainIdPermissions(targetChainId) {
+  removeAllScopePermissions(scopeString) {
     this.permissionController.updatePermissionsByCaveat(
       Caip25CaveatType,
       (existingScopes) =>
         Caip25CaveatMutatorFactories[Caip25CaveatType].removeScope(
-          toCaipChainId('eip155', parseInt(targetChainId, 16)),
+          scopeString,
           existingScopes,
         ),
     );
   }
 
-  // Figure out what needs to be done with the middleware/subscription logic
   removeNetwork(chainId) {
     const scope = `eip155:${parseInt(chainId, 16)}`;
     this.multichainSubscriptionManager.unsubscribeByScope(scope);
     this.multichainMiddlewareManager.removeMiddlewareByScope(scope);
 
-    this.removeAllChainIdPermissions(chainId);
+    this.removeAllScopePermissions(scope);
 
     this.networkController.removeNetwork(chainId);
   }

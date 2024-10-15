@@ -40,15 +40,15 @@ jest.mock('@metamask/permission-controller', () => ({
   ...jest.requireActual('@metamask/permission-controller'),
 }));
 
-jest.mock('../multichain-api/wallet-getPermissions', () => ({
+jest.mock('./handlers/wallet-getPermissions', () => ({
   getPermissionsHandler: getHandler(),
 }));
 
-jest.mock('../multichain-api/wallet-requestPermissions', () => ({
+jest.mock('./handlers/wallet-requestPermissions', () => ({
   requestPermissionsHandler: getHandler(),
 }));
 
-jest.mock('../multichain-api/wallet-revokePermissions', () => ({
+jest.mock('./handlers/wallet-revokePermissions', () => ({
   revokePermissionsHandler: getHandler(),
 }));
 

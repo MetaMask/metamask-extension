@@ -1313,7 +1313,10 @@ function collectMetrics() {
       });
     });
 
-  return results;
+  return {
+    ...results,
+    ...window.stateHooks.getCustomTraces(),
+  };
 }
 
 module.exports = { Driver, PAGES };

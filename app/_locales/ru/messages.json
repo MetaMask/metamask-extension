@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
   },
-  "noConnectedAccountDescription": {
-    "message": "Для продолжения выберите счет, который вы хотите использовать на этом сайте."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
   },

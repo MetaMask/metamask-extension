@@ -6,8 +6,8 @@ import {
 import {
   CaveatTypes,
   RestrictedMethods,
-} from '../../../../shared/constants/permissions';
-import { PermissionNames } from '../../controllers/permissions';
+} from '../../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
 import { getPermissionsHandler } from './wallet-getPermissions';
 
 jest.mock('@metamask/multichain', () => ({

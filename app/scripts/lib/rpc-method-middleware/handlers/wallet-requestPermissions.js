@@ -10,10 +10,10 @@ import {
 import {
   CaveatTypes,
   RestrictedMethods,
-} from '../../../../shared/constants/permissions';
-import { PermissionNames } from '../../controllers/permissions';
+} from '../../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
 // eslint-disable-next-line import/no-restricted-paths
-import { isSnapId } from '../../../../ui/helpers/utils/snaps';
+import { isSnapId } from '../../../../../ui/helpers/utils/snaps';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.requestPermissions],

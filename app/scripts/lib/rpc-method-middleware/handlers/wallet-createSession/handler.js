@@ -10,13 +10,13 @@ import {
   bucketScopes,
   validateAndFlattenScopes,
 } from '@metamask/multichain';
-import { PermissionNames } from '../../../controllers/permissions';
+import { PermissionNames } from '../../../../controllers/permissions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { shouldEmitDappViewedEvent } from '../../util';
-import { CaveatTypes } from '../../../../../shared/constants/permissions';
+} from '../../../../../../shared/constants/metametrics';
+import { shouldEmitDappViewedEvent } from '../../../util';
+import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import { processScopedProperties, validateAndAddEip3085 } from './helpers';
 
 export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
