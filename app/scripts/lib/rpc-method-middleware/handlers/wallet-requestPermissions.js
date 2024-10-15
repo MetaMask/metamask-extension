@@ -137,7 +137,7 @@ async function requestPermissionsImplementation(
 
     caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
 
-    const permissions = getPermissionsForOrigin(origin) || {};
+    const permissions = getPermissionsForOrigin() || {};
     let caip25Endowment = permissions[Caip25EndowmentPermissionName];
     const existingCaveat = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,

@@ -76,7 +76,7 @@ export const getPermissionSpecifications = ({
         methodHooks: {
           findNetworkClientIdByChainId,
           getInternalAccounts,
-        }
+        },
       }),
   };
 };

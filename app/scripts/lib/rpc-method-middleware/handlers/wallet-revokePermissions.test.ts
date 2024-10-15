@@ -3,12 +3,15 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
+import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { PermissionNames } from '../../../controllers/permissions';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { revokePermissionsHandler } from './wallet-revokePermissions';
 
 const baseRequest = {
-  origin: 'http://test.com',
+  jsonrpc: '2.0' as const,
+  id: 0,
+  method: 'wallet_revokePermissions',
   params: [
     {
       [Caip25EndowmentPermissionName]: {},
@@ -39,8 +42,11 @@ const createMockedHandler = () => {
       },
     }),
   );
-  const response = {};
-  const handler = (request) =>
+  const response: PendingJsonRpcResponse<Json> = {
+    jsonrpc: '2.0' as const,
+    id: 0,
+  };
+  const handler = (request: JsonRpcRequest<Json[]>) =>
     revokePermissionsHandler.implementation(request, response, next, end, {
       revokePermissionsForOrigin,
       getPermissionsForOrigin,
@@ -100,10 +106,11 @@ describe('revokePermissionsHandler', () => {
     );
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   describe.each([
     [RestrictedMethods.eth_accounts],
     [PermissionNames.permittedChains],
-  ])('%s permission is specified', (permission) => {
+  ])('%s permission is specified', (permission: string) => {
     it('gets permissions for the origin', () => {
       const { handler, getPermissionsForOrigin } = createMockedHandler();
 

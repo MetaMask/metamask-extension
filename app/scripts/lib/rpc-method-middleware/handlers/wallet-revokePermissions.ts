@@ -1,9 +1,25 @@
-import { invalidParams, MethodNames } from '@metamask/permission-controller';
-import { isNonEmptyArray } from '@metamask/utils';
+import {
+  CaveatSpecificationConstraint,
+  invalidParams,
+  MethodNames,
+  PermissionController,
+  PermissionSpecificationConstraint,
+} from '@metamask/permission-controller';
+import {
+  isNonEmptyArray,
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 import {
   Caip25CaveatType,
+  Caip25CaveatValue,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
+import {
+  AsyncJsonRpcEngineNextCallback,
+  JsonRpcEngineEndCallback,
+} from 'json-rpc-engine';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 
@@ -30,13 +46,24 @@ export const revokePermissionsHandler = {
  * @returns A promise that resolves to nothing
  */
 function revokePermissionsImplementation(
-  req,
-  res,
-  _next,
-  end,
-  { revokePermissionsForOrigin, getPermissionsForOrigin },
+  req: JsonRpcRequest<Json[]>,
+  res: PendingJsonRpcResponse<Json>,
+  _next: AsyncJsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
+  {
+    revokePermissionsForOrigin,
+    getPermissionsForOrigin,
+  }: {
+    revokePermissionsForOrigin: (permissionKeys: string[]) => void;
+    getPermissionsForOrigin: () => ReturnType<
+      PermissionController<
+        PermissionSpecificationConstraint,
+        CaveatSpecificationConstraint
+      >['getPermissions']
+    >;
+  },
 ) {
-  const { params, origin } = req;
+  const { params } = req;
 
   const param = params?.[0];
 
@@ -55,10 +82,10 @@ function revokePermissionsImplementation(
   }
 
   const relevantPermissionKeys = permissionKeys.filter(
-    (name) =>
+    (name: string) =>
       ![
-        RestrictedMethods.eth_accounts,
-        PermissionNames.permittedChains,
+        RestrictedMethods.eth_accounts as string,
+        PermissionNames.permittedChains as string,
       ].includes(name),
   );
 
@@ -66,13 +93,13 @@ function revokePermissionsImplementation(
     relevantPermissionKeys.length !== permissionKeys.length;
 
   if (shouldRevokeLegacyPermission) {
-    const permissions = getPermissionsForOrigin(origin) || {};
+    const permissions = getPermissionsForOrigin() || {};
     const caip25Endowment = permissions?.[Caip25EndowmentPermissionName];
-    const caip25Caveat = caip25Endowment?.caveats?.find(
+    const caip25CaveatValue = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
-    );
+    )?.value as Caip25CaveatValue;
 
-    if (caip25Caveat && caip25Caveat.value.isMultichainOrigin) {
+    if (caip25CaveatValue?.isMultichainOrigin) {
       return end(
         new Error('cannot modify permission granted from multichain flow'),
       ); // TODO: better error
