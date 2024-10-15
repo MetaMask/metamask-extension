@@ -17,6 +17,9 @@ import { Box } from '../../component-library';
  * @returns {JSX.Element} A permission description node.
  */
 function getDescriptionNode(permission, index, accounts) {
+  const chainIds = permission.permissionValue.caveats.find(
+    (caveat) => caveat.type === 'restrictNetworkSwitching',
+  )?.value;
   return (
     <PermissionCell
       permissionName={permission.name}
@@ -26,7 +29,7 @@ function getDescriptionNode(permission, index, accounts) {
       avatarIcon={permission.leftIcon}
       key={`${permission.permissionName}-${index}`}
       accounts={accounts}
-      permissionValue={permission.permissionValue.restrictNetworkSwitching}
+      chainIds={chainIds}
     />
   );
 }
