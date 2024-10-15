@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
   },
-  "noConnectedAccountDescription": {
-    "message": "Sélectionnez un compte que vous souhaitez utiliser sur ce site pour continuer."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask n’est pas connecté à ce site"
   },
