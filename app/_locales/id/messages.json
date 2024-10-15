@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
-  "noConnectedAccountDescription": {
-    "message": "Pilih akun yang ingin Anda gunakan di situs ini untuk melanjutkan."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask tidak terhubung ke situs ini"
   },
