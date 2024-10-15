@@ -454,7 +454,16 @@ describe('MultiRpc:', function (this: Suite) {
           '“Arbitrum One” was successfully edited!',
         );
         // Ensures popover backround doesn't kill test
-        await driver.assertElementNotPresent('.popover-bg');
+        await driver.clickElementSafe({
+          tag: 'button',
+          text: 'Got it',
+        });
+
+        await driver.assertElementNotPresent({
+          tag: 'button',
+          text: 'Got it',
+        });
+
         await driver.clickElement('[data-testid="network-display"]');
 
         const arbitrumRpcUsed = await driver.findElement({
