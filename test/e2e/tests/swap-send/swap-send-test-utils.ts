@@ -21,7 +21,7 @@ export class SwapSendPage {
 
   fillRecipientAddressInput = async (address: string) => {
     await this.driver.fill(
-      'input[placeholder="Enter public address (0x) or ENS name"]',
+      'input[placeholder="Enter public address (0x) or domain name"]',
       address,
     );
   };

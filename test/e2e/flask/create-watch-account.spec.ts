@@ -47,7 +47,7 @@ async function watchEoaAddress(
 ): Promise<void> {
   await startCreateWatchAccountFlow(driver, unlockWalletFirst);
   await driver.fill(
-    '[placeholder="Enter a public address or ENS name"]',
+    '[placeholder="Enter a public address or domain name"]',
     address,
   );
   await driver.clickElement({ text: 'Watch account', tag: 'button' });
@@ -189,7 +189,7 @@ describe('Account-watcher snap', function (this: Suite) {
             await startCreateWatchAccountFlow(driver);
 
             await driver.fill(
-              '[placeholder="Enter a public address or ENS name"]',
+              '[placeholder="Enter a public address or domain name"]',
               input,
             );
             await driver.clickElement({ text: 'Watch account', tag: 'button' });
