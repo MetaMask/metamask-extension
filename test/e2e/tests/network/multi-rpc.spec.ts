@@ -331,7 +331,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-  it.only('should select rpc from settings @no-mmi', async function () {
+  it('should select rpc from settings @no-mmi', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
