@@ -243,47 +243,53 @@ const AssetPage = ({
               <Text variant={TextVariant.headingMd} paddingBottom={4}>
                 {t('tokenDetails')}
               </Text>
-              {type === AssetType.token && (
-                <>
-                  {renderRow(
-                    t('contractAddress'),
-                    <AddressCopyButton address={address} shorten />,
-                  )}
-                  <Box
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Column}
-                    gap={2}
-                  >
-                    {asset.decimals !== undefined &&
-                      renderRow(
-                        t('tokenDecimal'),
-                        <Text>{asset.decimals}</Text>,
-                      )}
-                    {asset.aggregators && asset.aggregators?.length > 0 && (
-                      <Box>
-                        <Text
-                          color={TextColor.textAlternative}
-                          variant={TextVariant.bodyMdMedium}
-                        >
-                          {t('tokenList')}
-                        </Text>
-                        <Text>{asset.aggregators?.join(', ')}</Text>
-                      </Box>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={2}
+              >
+                {type === AssetType.token && (
+                  <Box>
+                    {renderRow(
+                      t('contractAddress'),
+                      <AddressCopyButton address={address} shorten />,
                     )}
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      gap={2}
+                    >
+                      {asset.decimals !== undefined &&
+                        renderRow(
+                          t('tokenDecimal'),
+                          <Text>{asset.decimals}</Text>,
+                        )}
+                      {asset.aggregators && asset.aggregators?.length > 0 && (
+                        <Box>
+                          <Text
+                            color={TextColor.textAlternative}
+                            variant={TextVariant.bodyMdMedium}
+                          >
+                            {t('tokenList')}
+                          </Text>
+                          <Text>{asset.aggregators?.join(', ')}</Text>
+                        </Box>
+                      )}
+                    </Box>
                   </Box>
-                </>
-              )}
-              {renderRow(
-                t('spendingCaps'),
-                <a
-                  className="asset-page__spending-caps mm-text--body-md-medium"
-                  href={portfolioSpendingCapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('editInPortfolio')}
-                </a>,
-              )}
+                )}
+                {renderRow(
+                  t('spendingCaps'),
+                  <a
+                    className="asset-page__spending-caps mm-text--body-md-medium"
+                    href={portfolioSpendingCapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('editInPortfolio')}
+                  </a>,
+                )}
+              </Box>
             </Box>
           )}
           {conversionRate > 0 &&
