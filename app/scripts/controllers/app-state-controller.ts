@@ -196,9 +196,9 @@ const getDefaultAppStateControllerState = (
 });
 
 export class AppStateController extends EventEmitter {
-  #extension: AppStateControllerOptions['extension'];
+  readonly #extension: AppStateControllerOptions['extension'];
 
-  #onInactiveTimeout: () => void;
+  readonly #onInactiveTimeout: () => void;
 
   store: ObservableStore<AppStateControllerState>;
 
@@ -206,9 +206,9 @@ export class AppStateController extends EventEmitter {
 
   isUnlocked: () => boolean;
 
-  #waitingForUnlock: { resolve: () => void }[];
+  readonly #waitingForUnlock: { resolve: () => void }[];
 
-  #messagingSystem: AppStateControllerMessenger;
+  readonly #messagingSystem: AppStateControllerMessenger;
 
   #approvalRequestId: string | null;
 
