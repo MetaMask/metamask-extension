@@ -1230,6 +1230,8 @@ describe('MetaMaskController', () => {
         };
 
         const { promise, resolve } = deferredPromise();
+        const { promise: promiseStream, resolve: resolveStream } =
+          deferredPromise();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'metamask-phishing-safelist') {
             cb();
@@ -1252,10 +1254,12 @@ describe('MetaMaskController', () => {
           expect(
             metamaskController.backToSafetyPhishingWarning,
           ).toHaveBeenCalled();
+          resolveStream();
         });
 
         await promise;
         streamTest.end();
+        await promiseStream;
       });
     });
 
@@ -1298,6 +1302,8 @@ describe('MetaMaskController', () => {
         };
 
         const { promise, resolve } = deferredPromise();
+        const { promise: promiseStream, resolve: resolveStream } =
+          deferredPromise();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== METAMASK_COOKIE_HANDLER) {
             cb();
@@ -1315,10 +1321,12 @@ describe('MetaMaskController', () => {
           expect(
             localMetaMaskController.getCookieFromMarketingPage,
           ).toHaveBeenCalledWith({ ga_client_id: 'XYZ.ABC' });
+          resolveStream();
         });
 
         await promise;
         streamTest.end();
+        await promiseStream;
       });
     });
 
