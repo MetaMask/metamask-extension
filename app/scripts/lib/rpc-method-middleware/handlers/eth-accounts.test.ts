@@ -1,6 +1,14 @@
+import {
+  JsonRpcParams,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 import ethereumAccounts from './eth-accounts';
 
 const baseRequest = {
+  jsonrpc: '2.0' as const,
+  id: 0,
+  method: 'eth_accounts',
   origin: 'http://test.com',
 };
 
@@ -8,8 +16,11 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const getAccounts = jest.fn().mockResolvedValue(['0xdead', '0xbeef']);
-  const response = {};
-  const handler = (request) =>
+  const response: PendingJsonRpcResponse<string[]> = {
+    jsonrpc: '2.0' as const,
+    id: 0,
+  };
+  const handler = (request: JsonRpcRequest<JsonRpcParams>) =>
     ethereumAccounts.implementation(request, response, next, end, {
       getAccounts,
     });
