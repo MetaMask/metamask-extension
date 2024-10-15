@@ -46,7 +46,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).addPermittedAccount('foo.com', '0x1'),
       ).toThrow(
-        new Error('tried to add accounts when none have been permissioned'),
+        new Error(
+          `Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.`,
+        ),
       );
     });
 
@@ -183,7 +185,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).addPermittedAccounts('foo.com', ['0x1']),
       ).toThrow(
-        new Error('tried to add accounts when none have been permissioned'),
+        new Error(
+          `Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.`,
+        ),
       );
     });
 
@@ -324,7 +328,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).removePermittedAccount('foo.com', '0x1'),
       ).toThrow(
-        new Error('tried to remove accounts when none have been permissioned'),
+        new Error(
+          `Cannot remove account "0x1": No permissions exist for origin "foo.com".`,
+        ),
       );
     });
 
@@ -620,7 +626,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).addPermittedChain('foo.com', '0x1'),
       ).toThrow(
-        new Error('tried to add chains when none have been permissioned'),
+        new Error(
+          `Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.`,
+        ),
       );
     });
 
@@ -742,7 +750,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).addPermittedChains('foo.com', ['0x1']),
       ).toThrow(
-        new Error('tried to add chains when none have been permissioned'),
+        new Error(
+          `Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.`,
+        ),
       );
     });
 
@@ -869,7 +879,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).removePermittedChain('foo.com', '0x1'),
       ).toThrow(
-        new Error('tried to remove chains when none have been permissioned'),
+        new Error(
+          `Cannot remove permission for chainId "0x1": No permissions exist for origin "foo.com".`,
+        ),
       );
     });
 

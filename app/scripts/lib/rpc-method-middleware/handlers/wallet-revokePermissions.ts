@@ -101,7 +101,9 @@ function revokePermissionsImplementation(
 
     if (caip25CaveatValue?.isMultichainOrigin) {
       return end(
-        new Error('Cannot modify permission granted via the Multichain API. Either modify the permission using the Multichain API or revoke permissions and request again.'),
+        new Error(
+          'Cannot modify permission granted via the Multichain API. Either modify the permission using the Multichain API or revoke permissions and request again.',
+        ),
       ); // TODO: better error
     }
     relevantPermissionKeys.push(Caip25EndowmentPermissionName);

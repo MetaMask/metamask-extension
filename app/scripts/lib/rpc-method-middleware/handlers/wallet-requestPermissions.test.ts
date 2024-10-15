@@ -629,7 +629,9 @@ describe('requestPermissionsHandler', () => {
 
       await handler(getBaseRequest());
       expect(end).toHaveBeenCalledWith(
-        new Error('Cannot modify permission granted via the Multichain API. Either modify the permission using the Multichain API or revoke permissions and request again.'),
+        new Error(
+          'Cannot modify permission granted via the Multichain API. Either modify the permission using the Multichain API or revoke permissions and request again.',
+        ),
       );
     });
 
