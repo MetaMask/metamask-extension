@@ -28,7 +28,7 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BUILD_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -270,10 +270,10 @@ const CoinButtons = ({
       dispatch(setSwapsFromToken(defaultSwapsToken));
       if (usingHardwareWallet) {
         if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
         }
       } else {
-        history.push(BUILD_QUOTE_ROUTE);
+        history.push(PREPARE_SWAP_ROUTE);
       }
     }
     ///: END:ONLY_INCLUDE_IF
