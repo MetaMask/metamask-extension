@@ -302,7 +302,7 @@
     "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "^37.0.0",
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@38.3.0-preview-200beb79",
     "@metamask/base-controller": "^7.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.6.0",
     "@metamask/browser-passworder": "^4.3.0",
