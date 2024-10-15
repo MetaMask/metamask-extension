@@ -140,7 +140,7 @@ enum ChainId {
   LINEA = 59144,
 }
 
-enum FeeType {
+export enum FeeType {
   METABRIDGE = 'metabridge',
   REFUEL = 'refuel',
 }

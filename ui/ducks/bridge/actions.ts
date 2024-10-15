@@ -20,7 +20,7 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { QuoteRequest } from '../../pages/bridge/types';
+import { FeeType, QuoteRequest } from '../../pages/bridge/types';
 import {
   AssetWithDisplayData,
   ERC20Asset,
@@ -45,7 +45,7 @@ import {
   getEthUsdtApproveResetTxParams,
   isEthUsdt,
 } from '../../pages/bridge/bridge.util';
-import { ETH_USDT_ADDRESS, FeeType } from '../../../shared/constants/bridge';
+import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { bridgeSlice } from './bridge';
 import {
