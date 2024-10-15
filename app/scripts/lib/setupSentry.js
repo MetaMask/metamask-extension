@@ -58,6 +58,7 @@ export default function setupSentry() {
     .then((extensionInfo) => {
       if (extensionInfo.installType) {
         installType = extensionInfo.installType;
+        Sentry.setTag('installType', installType);
       }
     })
     .catch((error) => {
