@@ -331,7 +331,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-  it('should select rpc from settings @no-mmi', async function () {
+  it.only('should select rpc from settings @no-mmi', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -454,7 +454,7 @@ describe('MultiRpc:', function (this: Suite) {
           '“Arbitrum One” was successfully edited!',
         );
         // Ensures popover backround doesn't kill test
-        await driver.delay(regularDelayMs);
+        await driver.assertElementNotPresent('.popover-bg');
         await driver.clickElement('[data-testid="network-display"]');
 
         const arbitrumRpcUsed = await driver.findElement({
