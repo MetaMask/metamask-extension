@@ -5,7 +5,6 @@ import { BlockTracker, Provider } from '@metamask/network-controller';
 
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import { createTestProviderTools } from '../../../test/stub/provider';
-import PreferencesController from './preferences-controller';
 import type {
   AccountTrackerControllerOptions,
   AllowedActions,
@@ -166,13 +165,9 @@ function withController<ReturnValue>(
     provider: provider as Provider,
     blockTracker: blockTrackerStub as unknown as BlockTracker,
     getNetworkIdentifier: jest.fn(),
-    preferencesController: {
-      store: {
-        getState: () => ({
-          useMultiAccountBalanceChecker,
-        }),
-      },
-    } as PreferencesController,
+    preferencesControllerState: {
+      useMultiAccountBalanceChecker,
+    },
     messenger: controllerMessenger.getRestricted({
       name: 'AccountTrackerController',
       allowedActions: [
