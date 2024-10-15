@@ -14,6 +14,8 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
+import { isHexString, parseCaipAccountId } from '@metamask/utils';
+import { parsed } from 'yargs';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -593,6 +595,13 @@ export const getTokensMarketData = (state) => {
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
+  if (!state.metamask.addressBook[chainId]) {
+    return [];
+  }
+  return Object.values(state.metamask.addressBook[chainId]);
+}
+
+export function getAddressBookByNetwork(state, chainId) {
   if (!state.metamask.addressBook[chainId]) {
     return [];
   }
@@ -1543,6 +1552,47 @@ export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
   (state) => state.metamask.unapprovedTypedMessages,
   (unapprovedTypedMessages) => unapprovedTypedMessages,
 );
+
+/**
+ * Get the display name for an address.
+ * This selector will look into the internal accounts, address book, metadata contracts, and ENS to find a display name for the address.
+ *
+ * @param {object} state - The Redux state object.
+ * @param {string} address - The address to get the display name for.
+ * @returns {string} The display name for the address.
+ */
+export const getAddressDisplayName = createSelector((state, address) => {
+  const {
+    address: caipAddress,
+    chain: { namespace, reference },
+  } = parseCaipAccountId(
+    isHexString(address) ? `eip155:1:${address}` : address,
+  );
+
+  let parsedAddress;
+
+  if (namespace === 'eip155') {
+    parsedAddress = toChecksumHexAddress(caipAddress);
+  } else {
+    parsedAddress = caipAddress;
+  }
+
+  const accounts = getInternalAccounts(state);
+  const accountName = getAccountName(accounts, parsedAddress);
+  const metadataContractName = getMetadataContractName(state, parsedAddress);
+
+  // Address book and ENS entries will only work for EVM accounts.
+  const addressBookEntry = getAddressBookByNetwork(state, reference);
+  const ensName = getEnsResolutionByAddress(state, parsedAddress);
+
+  return (
+    accountName ||
+    addressBookEntry?.name ||
+    metadataContractName ||
+    ensName ||
+    shortenAddress(parsedAddress)
+  );
+});
 
 export function getSnaps(state) {
   return state.metamask.snaps;
