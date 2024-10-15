@@ -43,8 +43,8 @@ export const input: UIComponentFactory<InputElement> = ({ element, form }) => {
       id: element.props.name,
       placeholder: element.props.placeholder,
       ...constructInputProps(element.props),
+      name: element.props.name,
+      form,
     },
-    name: element.props.name,
-    form,
   };
 };
