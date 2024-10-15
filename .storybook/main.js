@@ -1,6 +1,9 @@
 const path = require('path');
 const { ProvidePlugin } = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.resolve(__dirname, '../.metamaskrc') });
+
 module.exports = {
   core: {
     disableTelemetry: true,
@@ -29,6 +32,7 @@ module.exports = {
   env: (config) => ({
     ...config,
     ENABLE_CONFIRMATION_REDESIGN: true,
+    INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
   }),
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({
@@ -86,7 +90,7 @@ module.exports = {
             sourceMap: true,
             implementation: require('sass-embedded'),
             sassOptions: {
-              includePaths: ['ui/css/', 'node_modules/',],
+              includePaths: ['ui/css/', 'node_modules/'],
             },
           },
         },
@@ -96,12 +100,7 @@ module.exports = {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: path.join(
-              'ui',
-              'css',
-              'utilities',
-              'fonts/',
-            ),
+            from: path.join('ui', 'css', 'utilities', 'fonts/'),
             to: 'fonts',
           },
           {
