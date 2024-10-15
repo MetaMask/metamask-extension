@@ -19,6 +19,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
+import { isSnapId } from '../../helpers/utils/snaps';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -328,6 +329,8 @@ export default class PermissionConnect extends Component {
       snapsInstallPrivacyWarningShown,
     } = this.state;
 
+    const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
+
     return (
       <div className="permissions-connect">
         {!hideTopBar && this.renderTopBar(permissionsRequestId)}
@@ -339,17 +342,7 @@ export default class PermissionConnect extends Component {
               path={connectPath}
               exact
               render={() =>
-                process.env.CHAIN_PERMISSIONS ? (
-                  <ConnectPage
-                    rejectPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    activeTabOrigin={this.state.origin}
-                    request={permissionsRequest}
-                    permissionsRequestId={permissionsRequestId}
-                    approveConnection={this.approveConnection}
-                  />
-                ) : (
+                isRequestingSnap ? (
                   <ChooseAccount
                     accounts={accounts}
                     nativeCurrency={nativeCurrency}
@@ -370,6 +363,16 @@ export default class PermissionConnect extends Component {
                     permissionsRequestId={permissionsRequestId}
                     selectedAccountAddresses={selectedAccountAddresses}
                     targetSubjectMetadata={targetSubjectMetadata}
+                  />
+                ) : (
+                  <ConnectPage
+                    rejectPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    activeTabOrigin={this.state.origin}
+                    request={permissionsRequest}
+                    permissionsRequestId={permissionsRequestId}
+                    approveConnection={this.approveConnection}
                   />
                 )
               }

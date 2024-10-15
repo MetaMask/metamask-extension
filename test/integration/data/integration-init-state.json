@@ -782,7 +782,6 @@
     "showFiatInTestnets": false,
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": false,
-    "useNativeCurrencyAsPrimaryCurrency": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false
   },

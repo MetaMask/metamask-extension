@@ -31,6 +31,7 @@ describe('Simple send eth', function (this: Suite) {
           '1.000042',
         );
         const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
         await homePage.check_confirmedTxNumberDisplayedInActivity();
         await homePage.check_txAmountInActivity();
       },

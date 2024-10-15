@@ -652,12 +652,35 @@ describe('Ducks - Swaps', () => {
   });
 
   describe('getSmartTransactionFees', () => {
-    it('returns unsigned transactions and estimates', () => {
+    it('returns estimates from the STX controller', () => {
       const state = createSwapsMockStore();
       const smartTransactionFees = swaps.getSmartTransactionFees(state);
       expect(smartTransactionFees).toMatchObject(
         state.metamask.smartTransactionsState.fees,
       );
+    });
+
+    it('returns estimates from a selected quote', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.quotes.TEST_AGG_2.isGasIncludedTrade = true;
+      const smartTransactionFees = swaps.getSmartTransactionFees(state);
+      expect(smartTransactionFees).toMatchObject({
+        approvalTxFees:
+          state.metamask.swapsState.quotes.TEST_AGG_2.approvalTxFees,
+        tradeTxFees: state.metamask.swapsState.quotes.TEST_AGG_2.tradeTxFees,
+      });
+    });
+
+    it('returns estimates from a top quote if no quote is selected', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.selectedAggId = null;
+      state.metamask.swapsState.quotes.TEST_AGG_BEST.isGasIncludedTrade = true;
+      const smartTransactionFees = swaps.getSmartTransactionFees(state);
+      expect(smartTransactionFees).toMatchObject({
+        approvalTxFees:
+          state.metamask.swapsState.quotes.TEST_AGG_BEST.approvalTxFees,
+        tradeTxFees: state.metamask.swapsState.quotes.TEST_AGG_BEST.tradeTxFees,
+      });
     });
   });
 
