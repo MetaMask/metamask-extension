@@ -120,7 +120,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
 
   // use to track when a quote is requested and received
   useEffect(() => {
-    if(isSwapQuoteLoading) {
+    if (isSwapQuoteLoading) {
       trackEvent(
         {
           event: MetaMetricsEventName.sendSwapQuoteRequested,
@@ -143,7 +143,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
         { excludeMetaMetricsId: false },
       );
     }
-  }, [isSwapQuoteLoading])
+  }, [isSwapQuoteLoading]);
 
   const infoText = useMemo(() => {
     if (isSwapQuoteLoading) {
