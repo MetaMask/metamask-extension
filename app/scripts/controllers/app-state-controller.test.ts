@@ -25,6 +25,13 @@ import {
 
 jest.mock('webextension-polyfill');
 
+const mockIsManifestV3 = jest.fn().mockReturnValue(false);
+jest.mock('../../../shared/modules/mv3.utils', () => ({
+  get isManifestV3() {
+    return mockIsManifestV3();
+  },
+}));
+
 let appStateController: AppStateController;
 let controllerMessenger: ControllerMessenger<
   | AppStateControllerActions
@@ -36,6 +43,17 @@ let controllerMessenger: ControllerMessenger<
   | PreferencesControllerStateChangeEvent
   | KeyringControllerQRKeyringStateChangeEvent
 >;
+
+const extensionMock = {
+  alarms: {
+    getAll: jest.fn(() => Promise.resolve([])),
+    create: jest.fn(),
+    clear: jest.fn(),
+    onAlarm: {
+      addListener: jest.fn(),
+    },
+  },
+} as unknown as jest.Mocked<Browser>;
 
 describe('AppStateController', () => {
   const createAppStateController = (
@@ -78,16 +96,7 @@ describe('AppStateController', () => {
       initState,
       onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
-      extension: {
-        alarms: {
-          getAll: jest.fn(() => Promise.resolve([])),
-          create: jest.fn(),
-          clear: jest.fn(),
-          onAlarm: {
-            addListener: jest.fn(),
-          },
-        },
-      } as unknown as jest.Mocked<Browser>,
+      extension: extensionMock,
     });
 
     return { appStateController, controllerMessenger };
@@ -637,4 +646,20 @@ describe('AppStateController', () => {
       );
     });
   });
+
+  describe('isManifestV3', () => {
+  it('creates alarm when isManifestV3 is true', () => {
+    mockIsManifestV3.mockReturnValue(true);
+    ({ appStateController } = createAppStateController());
+
+    const spy = jest.spyOn(
+      appStateController as unknown as { _resetTimer: () => void },
+      '_resetTimer',
+    );
+    appStateController.setLastActiveTime();
+
+    expect(spy).toHaveBeenCalled();
+    expect(extensionMock.alarms.clear).toHaveBeenCalled();
+  });
+});
 });
