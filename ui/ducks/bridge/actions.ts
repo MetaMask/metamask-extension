@@ -33,8 +33,6 @@ import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   checkNetworkAndAccountSupports1559,
-  getIsBridgeChain,
-  getIsBridgeEnabled,
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../selectors';
@@ -208,14 +206,6 @@ export const submitBridgeTransaction = (
     getState: () => MetaMaskReduxState & BridgeAppState,
   ) => {
     const state = getState();
-    const isBridgeEnabled = getIsBridgeEnabled(state);
-    const isBridgeChain = getIsBridgeChain(state);
-
-    if (!(isBridgeEnabled && isBridgeChain)) {
-      // TODO do we want to do something here?
-      return;
-    }
-
     const quoteMetas = getQuotes(state);
     const quoteMeta = quoteMetas[0];
 
