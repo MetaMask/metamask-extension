@@ -1,6 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { Hex, add0x } from '@metamask/utils';
 import { TransactionParams } from '@metamask/transaction-controller';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
@@ -51,7 +52,6 @@ import {
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
 } from './utils/validators';
-import { ETHEREUM_USDT_APPROVALS_ABI } from './EthUsdtApprovalsAbi';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
@@ -223,10 +223,8 @@ export async function fetchBridgeQuotes(
  * @returns Modified approval transaction params that will reset allowance to 0
  */
 export const getEthUsdtApproveResetTxParams = (approval: TransactionParams) => {
-  const UsdtContractInterface = new Contract(
-    ETH_USDT_ADDRESS,
-    ETHEREUM_USDT_APPROVALS_ABI,
-  ).interface;
+  const UsdtContractInterface = new Contract(ETH_USDT_ADDRESS, abiERC20)
+    .interface;
   const data = UsdtContractInterface.encodeFunctionData('approve', [
     METABRIDGE_ETHEREUM_ADDRESS,
     '0',
