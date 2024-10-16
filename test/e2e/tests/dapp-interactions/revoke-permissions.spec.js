@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   withFixtures,
   openDapp,
@@ -25,12 +24,10 @@ describe('Wallet Revoke Permissions', function () {
         // Get initial accounts permissions
         await driver.clickElement('#getPermissions');
 
-        const permissionsResult = await driver.findElement(
-          '#permissionsResult',
-        );
-
-        // Eth_accounts permission
-        assert.equal(await permissionsResult.getText(), 'eth_accounts');
+        await driver.findElement({
+          css: '#permissionsResult',
+          text: 'eth_accounts',
+        });
 
         // Revoke eth_accounts permissions
         await driver.clickElement('#revokeAccountsPermission');
@@ -39,10 +36,10 @@ describe('Wallet Revoke Permissions', function () {
         await driver.clickElement('#getPermissions');
 
         // Eth_accounts permissions removed
-        assert.equal(
-          await permissionsResult.getText(),
-          'No permissions found.',
-        );
+        await driver.findElement({
+          css: '#permissionsResult',
+          text: 'No permissions found.',
+        });
       },
     );
   });
