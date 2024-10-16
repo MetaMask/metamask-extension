@@ -94,6 +94,7 @@ import {
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   TokenBucketPriority,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -797,6 +798,10 @@ export default function PrepareSwapPage({
     isTokenEligibleForMaxBalance &&
     hasPositiveFromTokenBalance;
 
+  const isNonDefaultToToken = !isSwapsDefaultTokenSymbol(
+    selectedToToken.symbol,
+    chainId
+  );
   return (
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
