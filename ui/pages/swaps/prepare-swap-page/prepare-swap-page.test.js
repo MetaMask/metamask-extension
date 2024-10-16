@@ -171,7 +171,7 @@ describe('PrepareSwapPage', () => {
       <PrepareSwapPage {...props} />,
       store,
     );
-    const blockExplorer = getByText('etherscan.io');
+    const blockExplorer = getByText('Etherscan');
     expect(blockExplorer).toBeInTheDocument();
     fireEvent.click(blockExplorer);
     expect(global.platform.openTab).toHaveBeenCalledWith({
