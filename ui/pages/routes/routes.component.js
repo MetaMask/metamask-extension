@@ -71,7 +71,6 @@ import {
   SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
-  BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
@@ -490,13 +489,6 @@ export default class Routes extends Component {
     const { location } = this.props;
     return Boolean(
       matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
-    );
-  }
-
-  onSwapsBuildQuotePage() {
-    const { location } = this.props;
-    return Boolean(
-      matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
     );
   }
 

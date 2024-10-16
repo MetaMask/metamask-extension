@@ -10,7 +10,7 @@ import {
 } from '../../../../test/jest';
 import {
   setSwapsFromToken,
-  navigateBackToBuildQuote,
+  navigateBackToPrepareSwap,
 } from '../../../ducks/swaps/swaps';
 import CreateNewSwap from '.';
 
@@ -23,7 +23,7 @@ const createProps = (customProps = {}) => {
 };
 
 const backgroundConnection = {
-  navigateBackToBuildQuote: jest.fn(),
+  navigateBackToPrepareSwap: jest.fn(),
   setBackgroundSwapRouteState: jest.fn(),
   navigatedBackToBuildQuote: jest.fn(),
 };
@@ -35,7 +35,7 @@ jest.mock('../../../ducks/swaps/swaps', () => {
   return {
     ...actual,
     setSwapsFromToken: jest.fn(),
-    navigateBackToBuildQuote: jest.fn(),
+    navigateBackToPrepareSwap: jest.fn(),
   };
 });
 
@@ -63,12 +63,12 @@ describe('CreateNewSwap', () => {
       };
     });
     setSwapsFromToken.mockImplementation(setSwapFromTokenMock);
-    const navigateBackToBuildQuoteMock = jest.fn(() => {
+    const navigateBackToPrepareSwapMock = jest.fn(() => {
       return {
         type: 'MOCK_ACTION',
       };
     });
-    navigateBackToBuildQuote.mockImplementation(navigateBackToBuildQuoteMock);
+    navigateBackToPrepareSwap.mockImplementation(navigateBackToPrepareSwapMock);
     const store = configureMockStore(middleware)(createSwapsMockStore());
 
     const { getByText } = renderWithProvider(
@@ -77,6 +77,6 @@ describe('CreateNewSwap', () => {
     );
     await fireEvent.click(getByText('Create a new swap'));
     expect(setSwapFromTokenMock).toHaveBeenCalledTimes(1);
-    expect(navigateBackToBuildQuoteMock).toHaveBeenCalledTimes(1);
+    expect(navigateBackToPrepareSwapMock).toHaveBeenCalledTimes(1);
   });
 });
