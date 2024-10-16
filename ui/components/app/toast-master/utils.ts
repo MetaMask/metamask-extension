@@ -29,11 +29,13 @@ export function getIsPrivacyToastRecent(
 }
 
 export function setNewPrivacyPolicyToastShownDate(time: number) {
-  submitRequestToBackground('setNewPrivacyPolicyToastShownDate', [time]);
+  submitRequestToBackgroundAndCatch('setNewPrivacyPolicyToastShownDate', [
+    time,
+  ]);
 }
 
 export function setNewPrivacyPolicyToastClickedOrClosed() {
-  submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  submitRequestToBackgroundAndCatch('setNewPrivacyPolicyToastClickedOrClosed');
 }
 
 export function setShowNftDetectionEnablementToast(
@@ -46,11 +48,22 @@ export function setShowNftDetectionEnablementToast(
 }
 
 export function setSwitchedNetworkNeverShowMessage() {
-  submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [true]);
+  submitRequestToBackgroundAndCatch('setSwitchedNetworkNeverShowMessage', [
+    true,
+  ]);
 }
 
 export function setSurveyLinkLastClickedOrClosed(time: number) {
-  return async () => {
-    await submitRequestToBackground('setSurveyLinkLastClickedOrClosed', [time]);
-  };
+  submitRequestToBackgroundAndCatch('setSurveyLinkLastClickedOrClosed', [time]);
+}
+
+// May move this to a different file after discussion with team
+export function submitRequestToBackgroundAndCatch(
+  method: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  args?: any[],
+) {
+  submitRequestToBackground(method, args).catch((error) => {
+    console.error('Error caught in submitRequestToBackground', error);
+  });
 }
