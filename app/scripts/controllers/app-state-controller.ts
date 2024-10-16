@@ -196,19 +196,19 @@ const getDefaultAppStateControllerState = (
 });
 
 export class AppStateController extends EventEmitter {
-  readonly #extension: AppStateControllerOptions['extension'];
+  private readonly extension: AppStateControllerOptions['extension'];
 
-  readonly #onInactiveTimeout: () => void;
+  private readonly onInactiveTimeout: () => void;
 
   store: ObservableStore<AppStateControllerState>;
 
-  #timer: NodeJS.Timeout | null;
+  private timer: NodeJS.Timeout | null;
 
   isUnlocked: () => boolean;
 
-  readonly #waitingForUnlock: { resolve: () => void }[];
+  private readonly waitingForUnlock: { resolve: () => void }[];
 
-  readonly #messagingSystem: AppStateControllerMessenger;
+  private readonly messagingSystem: AppStateControllerMessenger;
 
   #approvalRequestId: string | null;
 
@@ -223,15 +223,15 @@ export class AppStateController extends EventEmitter {
     } = opts;
     super();
 
-    this.#extension = extension;
-    this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
+    this.extension = extension;
+    this.onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.store = new ObservableStore(
       getDefaultAppStateControllerState(initState),
     );
-    this.#timer = null;
+    this.timer = null;
 
     this.isUnlocked = isUnlocked;
-    this.#waitingForUnlock = [];
+    this.waitingForUnlock = [];
     addUnlockListener(this.handleUnlock.bind(this));
 
     messenger.subscribe(
@@ -260,7 +260,7 @@ export class AppStateController extends EventEmitter {
       this._setInactiveTimeout(preferences.autoLockTimeLimit);
     }
 
-    this.#messagingSystem = messenger;
+    this.messagingSystem = messenger;
     this.#approvalRequestId = null;
   }
 
@@ -293,7 +293,7 @@ export class AppStateController extends EventEmitter {
    * popup should be opened.
    */
   waitForUnlock(resolve: () => void, shouldShowUnlockRequest: boolean): void {
-    this.#waitingForUnlock.push({ resolve });
+    this.waitingForUnlock.push({ resolve });
     this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
     if (shouldShowUnlockRequest) {
       this._requestApproval();
@@ -304,9 +304,9 @@ export class AppStateController extends EventEmitter {
    * Drains the waitingForUnlock queue, resolving all the related Promises.
    */
   handleUnlock(): void {
-    if (this.#waitingForUnlock.length > 0) {
-      while (this.#waitingForUnlock.length > 0) {
-        this.#waitingForUnlock.shift()?.resolve();
+    if (this.waitingForUnlock.length > 0) {
+      while (this.waitingForUnlock.length > 0) {
+        this.waitingForUnlock.shift()?.resolve();
       }
       this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
     }
@@ -317,7 +317,7 @@ export class AppStateController extends EventEmitter {
   /**
    * Sets the default home tab
    *
-   * @param [defaultHomeActiveTabName] - the tab name
+   * @param defaultHomeActiveTabName - the tab name
    */
   setDefaultHomeActiveTabName(defaultHomeActiveTabName: string | null): void {
     this.store.updateState({
@@ -448,10 +448,10 @@ export class AppStateController extends EventEmitter {
   private _resetTimer(): void {
     const { timeoutMinutes } = this.store.getState();
 
-    if (this.#timer) {
-      clearTimeout(this.#timer);
+    if (this.timer) {
+      clearTimeout(this.timer);
     } else if (isManifestV3) {
-      this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+      this.extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
     }
 
     if (!timeoutMinutes) {
@@ -468,21 +468,21 @@ export class AppStateController extends EventEmitter {
     const timeoutToSet = Number(timeoutMinutes);
 
     if (isManifestV3) {
-      this.#extension.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
+      this.extension.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
         delayInMinutes: timeoutToSet,
         periodInMinutes: timeoutToSet,
       });
-      this.#extension.alarms.onAlarm.addListener(
+      this.extension.alarms.onAlarm.addListener(
         (alarmInfo: { name: string }) => {
           if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
-            this.#onInactiveTimeout();
-            this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+            this.onInactiveTimeout();
+            this.extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
           }
         },
       );
     } else {
-      this.#timer = setTimeout(
-        () => this.#onInactiveTimeout(),
+      this.timer = setTimeout(
+        () => this.onInactiveTimeout(),
         timeoutToSet * MINUTE,
       );
     }
@@ -794,8 +794,6 @@ export class AppStateController extends EventEmitter {
 
   /**
    * The function returns information about the last confirmation user interacted with
-   *
-   * @type {LastInteractedConfirmationInfo}: Information about the last confirmation user interacted with.
    */
   getLastInteractedConfirmationInfo():
     | LastInteractedConfirmationInfo
@@ -806,7 +804,7 @@ export class AppStateController extends EventEmitter {
   /**
    * Update the information about the last confirmation user interacted with
    *
-   * @type {LastInteractedConfirmationInfo} - information about transaction user last interacted with.
+   * @param lastInteractedConfirmationInfo
    */
   setLastInteractedConfirmationInfo(
     lastInteractedConfirmationInfo: LastInteractedConfirmationInfo | undefined,
@@ -830,7 +828,7 @@ export class AppStateController extends EventEmitter {
     }
     this.#approvalRequestId = uuid();
 
-    this.#messagingSystem
+    this.messagingSystem
       .call(
         'ApprovalController:addRequest',
         {
@@ -856,7 +854,7 @@ export class AppStateController extends EventEmitter {
       return;
     }
     try {
-      this.#messagingSystem.call(
+      this.messagingSystem.call(
         'ApprovalController:acceptRequest',
         this.#approvalRequestId,
       );
