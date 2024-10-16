@@ -497,12 +497,16 @@ export function isBalanceCached(state) {
 }
 
 export function getSelectedAccountCachedBalance(state) {
+  const cachedBalances = getMetaMaskCachedBalances(state);
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  return cachedBalances?.[selectedAddress];
+}
+
+export function getSelectedAccountCachedBalanceAllChains(state) {
   const cachedBalances = getSelectedAccountCachedBalancesByChainId(state);
-  console.log({ cachedBalances });
   // getMetaMaskCachedBalances(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-
-  return cachedBalances?.[selectedAddress];
+  return cachedBalances;
 }
 
 export function getAllTokens(state) {
@@ -1333,6 +1337,10 @@ export const getIsBridgeEnabled = createSelector(
 
 export function getNativeCurrencyImage(state) {
   const chainId = getCurrentChainId(state);
+  return CHAIN_ID_TOKEN_IMAGE_MAP[chainId];
+}
+
+export function getNativeCurrencyImageByChainId(chainId) {
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId];
 }
 

@@ -31,8 +31,10 @@ import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
+  getNativeCurrencyImageByChainId,
   getNetworkConfigurationsByChainId,
   getSelectedAccountCachedBalance,
+  getSelectedAccountCachedBalanceAllChains,
   getSelectedInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
@@ -311,6 +313,22 @@ export function getMultichainCurrencyImage(
   return provider.rpcPrefs?.imageUrl;
 }
 
+export function getMultichainCurrencyImageByChainId(
+  state: MultichainState,
+  chainId: string,
+  account?: InternalAccount,
+) {
+  if (getMultichainIsEvm(state, account)) {
+    return getNativeCurrencyImageByChainId(chainId);
+  }
+
+  const provider = getMultichainProviderConfig(
+    state,
+    account,
+  ) as MultichainProviderConfig;
+  return provider.rpcPrefs?.imageUrl;
+}
+
 export function getMultichainNativeCurrencyImage(
   state: MultichainState,
   account?: InternalAccount,
@@ -408,6 +426,14 @@ export function getMultichainSelectedAccountCachedBalance(
 ) {
   return getMultichainIsEvm(state)
     ? getSelectedAccountCachedBalance(state)
+    : getBtcCachedBalance(state);
+}
+
+export function getMultichainSelectedAccountCachedBalanceAllChains(
+  state: MultichainState,
+) {
+  return getMultichainIsEvm(state)
+    ? getSelectedAccountCachedBalanceAllChains(state)
     : getBtcCachedBalance(state);
 }
 
