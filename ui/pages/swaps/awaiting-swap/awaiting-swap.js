@@ -33,7 +33,7 @@ import {
   getApproveTxParams,
   getUsedSwapsGasPrice,
   fetchQuotesAndSetQuoteState,
-  navigateBackToBuildQuote,
+  navigateBackToPrepareSwap,
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
   getCurrentSmartTransactionsEnabled,
@@ -97,6 +97,9 @@ export default function AwaitingSwap({
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] =
     useState(false);
 
+  const destinationTokenSymbol =
+    usedQuote?.destinationTokenInfo?.symbol || swapMetaData?.token_to;
+
   let feeinUnformattedFiat;
 
   if (usedQuote && swapsGasPrice) {
@@ -107,7 +110,7 @@ export default function AwaitingSwap({
       currentCurrency,
       conversionRate: usdConversionRate,
       tradeValue: usedQuote?.trade?.value,
-      sourceSymbol: swapMetaData?.token_from,
+      sourceSymbol: usedQuote?.sourceTokenInfo?.symbol,
       sourceAmount: usedQuote.sourceAmount,
       chainId,
     });
@@ -123,13 +126,14 @@ export default function AwaitingSwap({
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const swapSlippage = swapMetaData?.slippage || usedQuote?.slippage;
   const sensitiveProperties = {
-    token_from: swapMetaData?.token_from,
+    token_from: swapMetaData?.token_from || usedQuote?.sourceTokenInfo?.symbol,
     token_from_amount: swapMetaData?.token_from_amount,
-    token_to: swapMetaData?.token_to,
+    token_to: destinationTokenSymbol,
     request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-    slippage: swapMetaData?.slippage,
-    custom_slippage: swapMetaData?.slippage === 2,
+    slippage: swapSlippage,
+    custom_slippage: swapSlippage === 2,
     gas_fees: feeinUnformattedFiat,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
@@ -137,7 +141,6 @@ export default function AwaitingSwap({
     current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
-
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
@@ -234,7 +237,7 @@ export default function AwaitingSwap({
         className="awaiting-swap__amount-and-symbol"
         data-testid="awaiting-swap-amount-and-symbol"
       >
-        {swapMetaData?.token_to}
+        {destinationTokenSymbol}
       </span>,
     ]);
     content = blockExplorerUrl && (
@@ -252,7 +255,7 @@ export default function AwaitingSwap({
         key="swapTokenAvailable-2"
         className="awaiting-swap__amount-and-symbol"
       >
-        {`${tokensReceived || ''} ${swapMetaData?.token_to}`}
+        {`${tokensReceived || ''} ${destinationTokenSymbol}`}
       </span>,
     ]);
     content = blockExplorerUrl && (
@@ -315,9 +318,9 @@ export default function AwaitingSwap({
               ),
             );
           } else if (errorKey) {
-            await dispatch(navigateBackToBuildQuote(history));
+            await dispatch(navigateBackToPrepareSwap(history));
           } else if (
-            isSwapsDefaultTokenSymbol(swapMetaData?.token_to, chainId) ||
+            isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
             swapComplete
           ) {
             history.push(DEFAULT_ROUTE);
@@ -326,7 +329,9 @@ export default function AwaitingSwap({
             history.push(DEFAULT_ROUTE);
           }
         }}
-        onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
+        onCancel={async () =>
+          await dispatch(navigateBackToPrepareSwap(history))
+        }
         submitText={submitText}
         disabled={submittingSwap}
         hideCancel={errorKey !== QUOTES_EXPIRED_ERROR}

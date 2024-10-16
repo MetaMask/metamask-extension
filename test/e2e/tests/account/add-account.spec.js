@@ -42,6 +42,9 @@ describe('Add account', function () {
         );
 
         await driver.fill('[placeholder="Account 2"]', '2nd account');
+        // needed to mitigate a race condition with the state update
+        // there is no condition we can wait for in the UI
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Add account', tag: 'button' });
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
@@ -86,6 +89,9 @@ describe('Add account', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
+        // needed to mitigate a race condition with the state update
+        // there is no condition we can wait for in the UI
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Add account', tag: 'button' });
 
         // Check address of 2nd account
@@ -109,16 +115,11 @@ describe('Add account', function () {
           '[data-testid="account-options-menu-button"]',
         );
 
-        await driver.delay(regularDelayMs);
-        await driver.waitForSelector('[data-testid="global-menu-lock"]');
         await driver.clickElement('[data-testid="global-menu-lock"]');
         await driver.waitForSelector('[data-testid="unlock-page"]');
 
         // Recover via SRP in "forget password" option
-        const restoreSeedLink = await driver.findClickableElement(
-          '.unlock-page__link',
-        );
-        await restoreSeedLink.click();
+        await driver.clickElement('.unlock-page__link');
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
           TEST_SEED_PHRASE,
@@ -126,7 +127,6 @@ describe('Add account', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
 
-        await driver.delay(regularDelayMs);
         await driver.clickElement(
           '[data-testid="create-new-vault-submit-button"]',
         );
@@ -171,6 +171,9 @@ describe('Add account', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
+        // needed to mitigate a race condition with the state update
+        // there is no condition we can wait for in the UI
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Add account', tag: 'button' });
 
         // Wait for 2nd account to be created

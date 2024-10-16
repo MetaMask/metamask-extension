@@ -1205,7 +1205,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               secondaryTokenDecimals={destinationTokenDecimals}
               secondaryTokenSymbol={destinationTokenSymbol}
               boldSymbols={false}
-              className="main-quote-summary__exchange-rate-display"
+              className="review-quote__exchange-rate-display"
               showIconForSwappingTokens={false}
             />
           </Box>

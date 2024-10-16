@@ -1,13 +1,14 @@
-const { withFixtures, unlockWallet } = require('../../helpers');
-const { SWAP_TEST_ETH_USDC_TRADES_MOCK } = require('../../../data/mock-data');
-const {
+import { Mockttp } from 'mockttp';
+import { withFixtures, unlockWallet } from '../../helpers';
+import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../../data/mock-data';
+import {
   withFixturesOptions,
   buildQuote,
   reviewQuote,
   checkNotification,
-} = require('./shared');
+} from './shared';
 
-async function mockSwapsTransactionQuote(mockServer) {
+async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
@@ -19,7 +20,7 @@ async function mockSwapsTransactionQuote(mockServer) {
 }
 
 describe('Swaps - notifications @no-mmi', function () {
-  async function mockTradesApiPriceSlippageError(mockServer) {
+  async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => {
@@ -71,7 +72,7 @@ describe('Swaps - notifications @no-mmi', function () {
       {
         ...withFixturesOptions,
         testSpecificMock: mockTradesApiPriceSlippageError,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -122,7 +123,7 @@ describe('Swaps - notifications @no-mmi', function () {
         ...withFixturesOptions,
         ganacheOptions: lowBalanceGanacheOptions,
         testSpecificMock: mockSwapsTransactionQuote,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -152,7 +153,7 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -174,12 +175,12 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
         await buildQuote(driver, {
-          amount: '.0001',
+          amount: 0.0001,
           swapTo: 'DAI',
         });
         await driver.clickElement('[title="Transaction settings"]');

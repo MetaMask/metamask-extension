@@ -4861,9 +4861,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:38.2.0":
-  version: 38.2.0
-  resolution: "@metamask/assets-controllers@npm:38.2.0"
+"@metamask/assets-controllers@npm:38.3.0":
+  version: 38.3.0
+  resolution: "@metamask/assets-controllers@npm:38.3.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4895,13 +4895,13 @@ __metadata:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/network-controller": ^21.0.0
     "@metamask/preferences-controller": ^13.0.0
-  checksum: 10/96ae724a002289e4df97bab568e0bba4d28ef18320298b12d828fc3b58c58ebc54b9f9d659c5e6402aad82088b699e52469d897dd4356e827e35b8f8cebb4483
+  checksum: 10/b6e69c9925c50f351b9de1e31cc5d9a4c0ab7cf1abf116c0669611ecb58b3890dd0de53d36bcaaea4f8c45d6ddc2c53eef80c42f93f8f303f1ee9d8df088872b
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A38.2.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.2.0-40af2afaa7.patch":
-  version: 38.2.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A38.2.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.2.0-40af2afaa7.patch::version=38.2.0&hash=e14ff8"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch":
+  version: 38.3.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch::version=38.3.0&hash=e14ff8"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4933,7 +4933,7 @@ __metadata:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/network-controller": ^21.0.0
     "@metamask/preferences-controller": ^13.0.0
-  checksum: 10/0ba3673bf9c87988d6c569a14512b8c9bb97db3516debfedf24cbcf38110e99afec8d9fc50cb0b627bfbc1d1a62069298e4e27278587197f67812cb38ee2c778
+  checksum: 10/1f57289a3a2a88f1f16e00a138b30b9a8e4ac894086732a463e6b47d5e984e0a7e05ef2ec345f0e1cd69857669253260d53d4c37b2b3d9b970999602fc01a21c
   languageName: node
   linkType: hard
 
@@ -26126,7 +26126,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.0"
     "@metamask/api-specs": "npm:^0.9.3"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A38.2.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.2.0-40af2afaa7.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^7.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.6.1"

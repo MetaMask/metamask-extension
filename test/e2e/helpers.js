@@ -566,7 +566,10 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await driver.findElement({ text: 'Congratulations!', tag: 'h2' });
 
   // opt-out from third party API on general section
-  await driver.clickElement({ text: 'Manage default settings', tag: 'button' });
+  await driver.clickElement({
+    text: 'Manage default privacy settings',
+    tag: 'button',
+  });
   await driver.clickElement({ text: 'General', tag: 'p' });
   await driver.clickElement(
     '[data-testid="basic-functionality-toggle"] .toggle-button',
