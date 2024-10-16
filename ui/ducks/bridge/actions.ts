@@ -23,7 +23,6 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import {
   ChainId,
   FeeType,
-  GasMultiplierByChainId,
   QuoteRequest,
   QuoteResponse,
   TxData,
@@ -35,14 +34,14 @@ import {
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { SwapsEthToken } from '../../selectors';
-import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
+  SwapsEthToken,
   checkNetworkAndAccountSupports1559,
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../selectors';
+import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getGasFeeEstimates } from '../metamask/metamask';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
@@ -50,11 +49,7 @@ import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { bridgeSlice } from './bridge';
-import {
-  BridgeAppState,
-  getApprovalGasMultipliers,
-  getBridgeGasMultipliers,
-} from './selectors';
+import { BridgeAppState } from './selectors';
 
 const {
   setToChainId: setToChainId_,
@@ -235,9 +230,10 @@ export const submitBridgeTransaction = (
       };
     };
 
-    const calcMaxGasLimit = (gasLimit: number, gasMultiplier = 1) => {
+    // We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
+    const getMaxGasLimit = (gasLimit: number) => {
       return new Numeric(
-        new BigNumber(gasLimit).times(gasMultiplier).round(0).toString(),
+        new BigNumber(gasLimit).toString(),
         10,
       ).toPrefixedHexString();
     };
@@ -245,7 +241,6 @@ export const submitBridgeTransaction = (
     const handleTx = async ({
       txType,
       txParams,
-      gasMultipliers,
       maxFeePerGas,
       maxPriorityFeePerGas,
       meta,
@@ -259,7 +254,6 @@ export const submitBridgeTransaction = (
         data: string;
         gasLimit: number | null;
       };
-      gasMultipliers: GasMultiplierByChainId;
       maxFeePerGas: string | undefined;
       maxPriorityFeePerGas: string | undefined;
       meta: Record<string, unknown>;
@@ -272,10 +266,7 @@ export const submitBridgeTransaction = (
         throw new Error('Invalid chain ID');
       }
 
-      const maxGasLimit = calcMaxGasLimit(
-        txParams.gasLimit ?? 0,
-        gasMultipliers[hexChainId],
-      );
+      const maxGasLimit = getMaxGasLimit(txParams.gasLimit ?? 0);
 
       const finalTxParams = {
         ...txParams,
@@ -331,12 +322,10 @@ export const submitBridgeTransaction = (
           ...approval,
           data: resetData,
         };
-        const gasMultipliers = getApprovalGasMultipliers(state);
 
         await handleTx({
           txType: 'bridgeApproval',
           txParams,
-          gasMultipliers,
           maxFeePerGas,
           maxPriorityFeePerGas,
           meta: {
@@ -371,11 +360,9 @@ export const submitBridgeTransaction = (
         });
       }
 
-      const gasMultipliers = getApprovalGasMultipliers(state);
       const txMeta = await handleTx({
         txType: 'bridgeApproval',
         txParams: approval,
-        gasMultipliers,
         maxFeePerGas,
         maxPriorityFeePerGas,
         meta: {
@@ -396,11 +383,9 @@ export const submitBridgeTransaction = (
       maxFeePerGas: string | undefined;
       maxPriorityFeePerGas: string | undefined;
     }) => {
-      const gasMultipliers = getBridgeGasMultipliers(state);
       const txMeta = await handleTx({
         txType: 'bridge',
         txParams: quoteResponse.trade,
-        gasMultipliers,
         maxFeePerGas,
         maxPriorityFeePerGas,
         meta: {
