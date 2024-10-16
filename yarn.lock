@@ -6150,17 +6150,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.1":
-  version: 6.3.1
-  resolution: "@metamask/rpc-errors@npm:6.3.1"
-  dependencies:
-    "@metamask/utils": "npm:^9.0.0"
-    fast-safe-stringify: "npm:^2.0.6"
-  checksum: 10/f968fb490b13b632c2ad4770a144d67cecdff8d539cb8b489c732b08dab7a62fae65d7a2908ce8c5b77260317aa618948a52463f093fa8d9f84aee1c5f6f5daf
-  languageName: node
-  linkType: hard
-
-"@metamask/rpc-errors@npm:^6.4.0":
+"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.1, @metamask/rpc-errors@npm:^6.4.0":
   version: 6.4.0
   resolution: "@metamask/rpc-errors@npm:6.4.0"
   dependencies:
