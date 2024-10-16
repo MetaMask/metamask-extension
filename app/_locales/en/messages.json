@@ -854,8 +854,14 @@
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
+  "bridgeFrom": {
+    "message": "Bridge from"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeTo": {
+    "message": "Bridge to"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -1640,8 +1646,7 @@
     "message": "Snaps"
   },
   "disconnectMessage": {
-    "message": "This will disconnect you from $1",
-    "description": "$1 is the name of the dapp"
+    "message": "This will disconnect you from this site"
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
@@ -5592,10 +5597,6 @@
   "swapAreYouStillThereDescription": {
     "message": "We’re ready to show you the latest quotes when you want to continue"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "No tokens available matching $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
   },
@@ -5660,9 +5661,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Error fetching quotes"
   },
-  "swapFetchingTokens": {
-    "message": "Fetching tokens..."
-  },
   "swapFromTo": {
     "message": "The swap of $1 to $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5697,9 +5695,6 @@
   "swapHighSlippage": {
     "message": "High slippage"
   },
-  "swapHighSlippageWarning": {
-    "message": "Slippage amount is very high."
-  },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Includes gas and a $1% MetaMask fee",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
@@ -5724,9 +5719,6 @@
   },
   "swapLowSlippage": {
     "message": "Low slippage"
-  },
-  "swapLowSlippageError": {
-    "message": "Transaction may fail, max slippage too low."
   },
   "swapMaxSlippage": {
     "message": "Max slippage"
@@ -5761,9 +5753,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Price difference of ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Price impact is the difference between the current market price and the amount received during transaction execution. Price impact is a function of the size of your trade relative to the size of the liquidity pool."
   },
   "swapPriceUnavailableDescription": {
     "message": "Price impact could not be determined due to lack of market price data. Please confirm that you are comfortable with the amount of tokens you are about to receive before swapping."
@@ -5811,12 +5800,6 @@
   "swapRequestForQuotation": {
     "message": "Request for quotation"
   },
-  "swapReviewSwap": {
-    "message": "Review swap"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Search name or paste address"
-  },
   "swapSelect": {
     "message": "Select"
   },
@@ -5848,9 +5831,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Low slippage"
-  },
-  "swapSlippageNegative": {
-    "message": "Slippage must be greater or equal to zero"
   },
   "swapSlippageNegativeDescription": {
     "message": "Slippage must be greater or equal to zero"
@@ -5920,20 +5900,6 @@
     "message": "Swap $1 to $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "This token has been added manually."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Always confirm the token address on $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Only verified on 1 source."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Verified on $1 sources.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 is only verified on 1 source. Consider verifying it on $2 before proceeding.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5954,29 +5920,11 @@
   "swapUnknown": {
     "message": "Unknown"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Multiple tokens can use the same name and symbol. Check $1 to verify this is the token you're looking for.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 available to swap",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% Slippage"
   },
-  "swapsAdvancedOptions": {
-    "message": "Advanced options"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%."
-  },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Not enough $1 to complete this transaction",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Not enough $1",
@@ -6491,14 +6439,6 @@
   },
   "verifyContractDetails": {
     "message": "Verify third-party details"
-  },
-  "verifyThisTokenOn": {
-    "message": "Verify this token on $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Verify this token on $1 and make sure this is the token you want to trade.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "Version"
