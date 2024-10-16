@@ -586,7 +586,7 @@ class Driver {
         return;
       } catch (error) {
         if (
-          error.name === 'StaleElementReferenceError' &&
+          (error.name === 'StaleElementReferenceError' || error.name === 'TimeoutError') &&
           attempt < retries - 1
         ) {
           await this.delay(1000);
