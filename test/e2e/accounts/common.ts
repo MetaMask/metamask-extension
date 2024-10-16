@@ -10,7 +10,6 @@ import {
   unlockWallet,
   validateContractDetails,
   multipleGanacheOptions,
-  regularDelayMs,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { DAPP_URL, TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
@@ -67,22 +66,15 @@ export async function installSnapSimpleKeyring(
 
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
 
-  await driver.waitForSelector({ text: 'Confirm' });
-
   await driver.clickElement({
     text: 'Confirm',
     tag: 'button',
   });
 
-  await driver.waitForSelector({ text: 'OK' });
-
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'OK',
     tag: 'button',
   });
-
-  // Wait until popup is closed before proceeding
-  await driver.waitUntilXWindowHandles(2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
@@ -159,7 +151,7 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
     text: 'Add account',
   });
   // Click the ok button on the success modal
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
   });
@@ -196,17 +188,40 @@ async function switchToAccount2(driver: Driver) {
 
 export async function connectAccountToTestDapp(driver: Driver) {
   await switchToOrOpenDapp(driver);
-
   await driver.clickElement('#connectButton');
 
-  await driver.delay(regularDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElementAndWaitForWindowToClose({
+
+  // Extra steps needed to preserve the current network.
+  // Those can be removed once the issue is fixed (#27891)
+  const edit = await driver.findClickableElements({
+    text: 'Edit',
+    tag: 'button',
+  });
+  await edit[1].click();
+
+  await driver.clickElement({
+    tag: 'p',
+    text: 'Localhost 8545',
+  });
+
+  await driver.clickElement({
+    text: 'Update',
+    tag: 'button',
+  });
+
+  // Connect to the test dapp
+  await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
 
   await driver.switchToWindowWithUrl(DAPP_URL);
+  // Ensure network is preserved after connecting
+  await driver.waitForSelector({
+    css: '[id="chainId"]',
+    text: '0x539',
+  });
 }
 
 export async function disconnectFromTestDapp(driver: Driver) {
@@ -296,11 +311,7 @@ export async function signData(
     },
     async () => {
       await switchToOrOpenDapp(driver);
-
       await driver.clickElement(locatorID);
-
-      // take extra time to load the popup
-      await driver.delay(500);
 
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     },
