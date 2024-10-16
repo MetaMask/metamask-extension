@@ -454,32 +454,29 @@ describe('Custom network', function () {
             text: 'Add',
           });
 
-          const [networkUrl, currencySymbol] = await driver.findElements(
+          const [currencySymbol, networkUrl] = await driver.findElements(
             '.definition-list dd',
           );
-
+          assert.equal(
+            await currencySymbol.getText(),
+            currencySYMBOL,
+            'Currency symbol is not correctly displayed',
+          );
           assert.equal(
             await networkUrl.getText(),
             networkURL,
             'Network Url is not correctly displayed',
           );
 
-          assert.equal(
-            await currencySymbol.getText(),
-            currencySYMBOL,
-            'Currency symbol is not correctly displayed',
-          );
-
           await driver.clickElement({ tag: 'a', text: 'See details' });
 
           const networkDetailsLabels = await driver.findElements('dd');
           assert.equal(
-            await networkDetailsLabels[8].getText(),
+            await networkDetailsLabels[4].getText(),
             blockExplorerURL,
             'Block Explorer URL is not correct',
           );
 
-          await driver.clickElement({ tag: 'button', text: 'Close' });
           await driver.clickElement({ tag: 'button', text: 'Approve' });
 
           // verify network switched
