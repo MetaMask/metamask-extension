@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   Box,
   ButtonIcon,
@@ -20,6 +21,7 @@ import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
+import { REDESIGN_USER_TRANSACTION_TYPES } from '../../../utils';
 
 type ContentProps = {
   /**
@@ -48,6 +50,13 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   } = useScrollRequired([currentConfirmation?.id, showAdvancedDetails], {
     offsetPxFromBottom: 0,
   });
+
+  const isTransaction = REDESIGN_USER_TRANSACTION_TYPES.includes(
+    currentConfirmation?.type as TransactionType,
+  );
+
+  const showScrollToBottom =
+    isScrollable && !isScrolledToBottom && !isTransaction;
 
   /**
    * Scroll to the top of the page when the confirmation changes. This happens
@@ -104,7 +113,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       >
         {children}
 
-        {isScrollable && !isScrolledToBottom && (
+        {showScrollToBottom && (
           <ButtonIcon
             className="confirm-scroll-to-bottom__button"
             onClick={scrollToBottom}
