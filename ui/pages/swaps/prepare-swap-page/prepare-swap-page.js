@@ -446,7 +446,8 @@ export default function PrepareSwapPage({
   );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ?? t('etherscan')
+    ? SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
+      t('etherscan')
     : t('etherscan');
 
   const { address: toAddress } = toToken || {};
@@ -799,7 +800,7 @@ export default function PrepareSwapPage({
 
   const isNonDefaultToToken = !isSwapsDefaultTokenSymbol(
     selectedToToken.symbol,
-    chainId
+    chainId,
   );
 
   return (
@@ -1027,7 +1028,10 @@ export default function PrepareSwapPage({
             <div className="prepare-swap-page__balance-message">
               {showReviewQuote && isNonDefaultToToken ? (
                 <>
-                  {t('swapTokenVerifiedSources', [occurrences, <BlockExplorerLink key="block-explorer-link" />])}
+                  {t('swapTokenVerifiedSources', [
+                    occurrences,
+                    <BlockExplorerLink key="block-explorer-link" />,
+                  ])}
                 </>
               ) : (
                 selectedToToken?.string && yourTokenToBalance
