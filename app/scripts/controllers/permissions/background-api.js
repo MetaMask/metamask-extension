@@ -100,61 +100,6 @@ export function getPermissionBackgroundApiMethods({
     );
   };
 
-  const requestAccountsAndChainPermissionsWithId = (origin) => {
-    const id = nanoid();
-    // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
-    // Until they are actually combined, when testing, you must request both
-    // eth_accounts and permittedChains together.
-    approvalController
-      .addAndShowApprovalRequest({
-        id,
-        origin,
-        requestData: {
-          metadata: {
-            id,
-            origin,
-          },
-          permissions: {
-            [RestrictedMethods.eth_accounts]: {},
-            [PermissionNames.permittedChains]: {},
-          },
-        },
-        type: MethodNames.requestPermissions,
-      })
-      .then((legacyApproval) => {
-        let caveatValue = {
-          requiredScopes: {},
-          optionalScopes: {},
-          isMultichainOrigin: false,
-        };
-        caveatValue = setPermittedEthChainIds(
-          caveatValue,
-          legacyApproval.approvedChainIds,
-        );
-
-        caveatValue = setEthAccounts(
-          caveatValue,
-          legacyApproval.approvedAccounts,
-        );
-
-        permissionController.grantPermissions({
-          subject: { origin },
-          approvedPermissions: {
-            [Caip25EndowmentPermissionName]: {
-              caveats: [
-                {
-                  type: Caip25CaveatType,
-                  value: caveatValue,
-                },
-              ],
-            },
-          },
-        });
-      });
-
-    return id;
-  };
-
   return {
     addPermittedAccount: (origin, account) =>
       addMoreAccounts(origin, [account]),
@@ -260,9 +205,56 @@ export function getPermissionBackgroundApiMethods({
       }
     },
 
-    requestAccountsAndChainPermissionsWithId,
+    requestAccountsAndChainPermissionsWithId: (origin) => {
+      const id = nanoid();
+      approvalController
+        .addAndShowApprovalRequest({
+          id,
+          origin,
+          requestData: {
+            metadata: {
+              id,
+              origin,
+            },
+            permissions: {
+              [RestrictedMethods.eth_accounts]: {},
+              [PermissionNames.permittedChains]: {},
+            },
+          },
+          type: MethodNames.requestPermissions,
+        })
+        .then((legacyApproval) => {
+          let caveatValue = {
+            requiredScopes: {},
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          };
+          caveatValue = setPermittedEthChainIds(
+            caveatValue,
+            legacyApproval.approvedChainIds,
+          );
 
-    // TODO: Remove this / DRY with requestAccountsAndChainPermissionsWithId
-    requestAccountsPermissionWithId: requestAccountsAndChainPermissionsWithId,
+          caveatValue = setEthAccounts(
+            caveatValue,
+            legacyApproval.approvedAccounts,
+          );
+
+          permissionController.grantPermissions({
+            subject: { origin },
+            approvedPermissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: caveatValue,
+                  },
+                ],
+              },
+            },
+          });
+        });
+
+      return id;
+    },
   };
 }

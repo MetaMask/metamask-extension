@@ -3878,19 +3878,6 @@ export function setInitialGasEstimate(
 
 // Permissions
 
-export function requestAccountsPermissionWithId(
-  origin: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const id = await submitRequestToBackground(
-      'requestAccountsPermissionWithId',
-      [origin],
-    );
-    await forceUpdateMetamaskState(dispatch);
-    return id;
-  };
-}
-
 export function requestAccountsAndChainPermissionsWithId(
   origin: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
