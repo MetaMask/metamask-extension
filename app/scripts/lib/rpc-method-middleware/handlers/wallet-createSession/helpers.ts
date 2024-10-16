@@ -9,7 +9,7 @@ import {
   ScopesObject,
 } from '@metamask/multichain';
 import { toHex } from '@metamask/controller-utils';
-import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
+import { validateAddEthereumChainParams } from '../ethereum-chain-utils';
 
 export const validateScopedPropertyEip3085 = (
   scopeString: string,
