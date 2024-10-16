@@ -566,7 +566,10 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await driver.findElement({ text: 'Congratulations!', tag: 'h2' });
 
   // opt-out from third party API on general section
-  await driver.clickElement({ text: 'Manage default settings', tag: 'button' });
+  await driver.clickElement({
+    text: 'Manage default privacy settings',
+    tag: 'button',
+  });
   await driver.clickElement({ text: 'General', tag: 'p' });
   await driver.clickElement(
     '[data-testid="basic-functionality-toggle"] .toggle-button',
@@ -1205,10 +1208,7 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   // Open settings menu button
-  const accountOptionsMenuSelector =
-    '[data-testid="account-options-menu-button"]';
-  await driver.waitForSelector(accountOptionsMenuSelector);
-  await driver.clickElement(accountOptionsMenuSelector);
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
 
   // fix race condition with mmi build
   if (process.env.MMI) {
