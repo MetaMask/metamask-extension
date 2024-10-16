@@ -5,6 +5,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
+import { Hex } from '@metamask/utils';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 import * as EthChainUtils from './ethereum-chain-utils';
@@ -21,8 +22,13 @@ describe('Ethereum Chain Utils', () => {
       updateCaveat: jest.fn(),
       grantPermissions: jest.fn(),
     };
-    const response = {};
-    const switchChain = (origin, chainId, networkClientId, approvalFlowId) =>
+    const response: { result?: true } = {};
+    const switchChain = (
+      origin: string,
+      chainId: Hex,
+      networkClientId: string,
+      approvalFlowId: string | null,
+    ) =>
       EthChainUtils.switchChain(
         response,
         end,
@@ -312,12 +318,13 @@ describe('Ethereum Chain Utils', () => {
       });
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     describe.each([
       ['legacy', false],
       ['multichain', true],
     ])(
       'with an existing CAIP-25 permission granted from the %s flow (isMultichainOrigin: %s) and the chainId is already permissioned',
-      (_, isMultichainOrigin) => {
+      (_type: string, isMultichainOrigin: boolean) => {
         it('does not request permittedChains approval', async () => {
           const { mocks, switchChain } = createMockedSwitchChain();
           mocks.getCaveat.mockReturnValue({
