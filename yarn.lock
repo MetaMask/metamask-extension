@@ -6170,12 +6170,22 @@ __metadata:
   linkType: hard
 
 "@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.1":
-  version: 6.3.1
-  resolution: "@metamask/rpc-errors@npm:6.3.1"
+  version: 6.4.0
+  resolution: "@metamask/rpc-errors@npm:6.4.0"
   dependencies:
     "@metamask/utils": "npm:^9.0.0"
     fast-safe-stringify: "npm:^2.0.6"
-  checksum: 10/f968fb490b13b632c2ad4770a144d67cecdff8d539cb8b489c732b08dab7a62fae65d7a2908ce8c5b77260317aa618948a52463f093fa8d9f84aee1c5f6f5daf
+  checksum: 10/9a17525aa8ce9ac142a94c04000dba7f0635e8e155c6c045f57eca36cc78c255318cca2fad4571719a427dfd2df64b70bc6442989523a8de555480668d666ad5
+  languageName: node
+  linkType: hard
+
+"@metamask/rpc-errors@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/rpc-errors@npm:7.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^9.0.0"
+    fast-safe-stringify: "npm:^2.0.6"
+  checksum: 10/f25e2a5506d4d0d6193c88aef8f035ec189a1177f8aee8fa01c9a33d73b1536ca7b5eea2fb33a477768bbd2abaf16529e68f0b3cf714387e5d6c9178225354fd
   languageName: node
   linkType: hard
 
@@ -26152,7 +26162,7 @@ __metadata:
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
-    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^18.0.1"
@@ -26306,7 +26316,6 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     eth-lattice-keyring: "npm:^0.12.4"
     eth-method-registry: "npm:^4.0.0"
-    eth-rpc-errors: "npm:^4.0.2"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:5.7.0"
     extension-port-stream: "npm:^3.0.0"

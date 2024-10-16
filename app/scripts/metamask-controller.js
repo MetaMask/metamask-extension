@@ -27,9 +27,9 @@ import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
   errorCodes as rpcErrorCodes,
-  EthereumRpcError,
-  ethErrors,
-} from 'eth-rpc-errors';
+  JsonRpcError,
+  providerErrors,
+} from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -471,7 +471,7 @@ export default class MetamaskController extends EventEmitter {
       this.encryptionPublicKeyController.clearUnapproved();
       this.decryptMessageController.clearUnapproved();
       this.signatureController.clearUnapproved();
-      this.approvalController.clear(ethErrors.provider.userRejectedRequest());
+      this.approvalController.clear(providerErrors.userRejectedRequest());
     };
 
     this.queuedRequestController = new QueuedRequestController({
@@ -6726,7 +6726,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.approvalController.reject(
         id,
-        new EthereumRpcError(error.code, error.message, error.data),
+        new JsonRpcError(error.code, error.message, error.data),
       );
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {
