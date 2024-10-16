@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.4.0",
+  "version": "12.4.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -53,7 +53,7 @@
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --build-type flask",
-    "test:e2e:chrome:webpack": "ENABLE_MV3=false SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
+    "test:e2e:chrome:webpack": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:api-specs": "SELENIUM_BROWSER=chrome ts-node test/e2e/run-openrpc-api-test-coverage.ts",
     "test:e2e:mmi:ci": "yarn playwright test --project=mmi --project=mmi.visual",
     "test:e2e:mmi:all": "yarn playwright test --project=mmi && yarn test:e2e:mmi:visual",
@@ -303,7 +303,7 @@
     "@metamask/approval-controller": "^7.0.0",
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch",
     "@metamask/base-controller": "^7.0.0",
-    "@metamask/bitcoin-wallet-snap": "^0.6.1",
+    "@metamask/bitcoin-wallet-snap": "^0.7.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.2.0",

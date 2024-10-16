@@ -67,6 +67,19 @@ const browserAPIRequestDomains =
   /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|mozilla\.org|gvt1\.com)$/iu;
 
 /**
+ * Some third-party providers might use random URLs that we don't want to track
+ * in the privacy report "in clear". We identify those private hosts with a
+ * `pattern` regexp and replace the original host by a more generic one (`host`).
+ * For example, "my-secret-host.provider.com" could be denoted as "*.provider.com" in
+ * the privacy report. This would prevent disclosing the "my-secret-host" subdomain
+ * in this case.
+ */
+const privateHostMatchers = [
+  // { pattern: RegExp, host: string }
+  { pattern: /^.*\.btc.*\.quiknode.pro$/iu, host: '*.btc*.quiknode.pro' },
+];
+
+/**
  * @typedef {import('mockttp').Mockttp} Mockttp
  * @typedef {import('mockttp').MockedEndpoint} MockedEndpoint
  */
@@ -713,6 +726,25 @@ async function setupMocking(
     request.headers.referer === 'https://portfolio.metamask.io/';
 
   /**
+   * Tests a request against private domains and returns a set of generic hostnames that
+   * match.
+   *
+   * @param request
+   * @returns A set of matched results.
+   */
+  const matchPrivateHosts = (request) => {
+    const privateHosts = new Set();
+
+    for (const { pattern, host: privateHost } of privateHostMatchers) {
+      if (request.headers.host.match(pattern)) {
+        privateHosts.add(privateHost);
+      }
+    }
+
+    return privateHosts;
+  };
+
+  /**
    * Listen for requests and add the hostname to the privacy report if it did
    * not previously exist. This is used to track which hosts are requested
    * during the current test suite and used to ask for extra scrutiny when new
@@ -721,6 +753,16 @@ async function setupMocking(
    * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
+    const privateHosts = matchPrivateHosts(request);
+    if (privateHosts.size) {
+      for (const privateHost of privateHosts) {
+        privacyReport.add(privateHost);
+      }
+      // At this point, we know the request at least one private doamin, so we just stops here to avoid
+      // using the request any further.
+      return;
+    }
+
     if (
       request.headers.host.match(browserAPIRequestDomains) === null &&
       !portfolioRequestsMatcher(request)

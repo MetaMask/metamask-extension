@@ -1,10 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  setBridgeFeatureFlags,
-  setFromChain,
-} from '../../ducks/bridge/actions';
+import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getCurrentKeyring,
@@ -54,13 +51,6 @@ const useBridging = () => {
   useEffect(() => {
     dispatch(setBridgeFeatureFlags());
   }, [dispatch, setBridgeFeatureFlags]);
-
-  useEffect(() => {
-    isBridgeChain &&
-      isBridgeSupported &&
-      providerConfig &&
-      dispatch(setFromChain(providerConfig.chainId));
-  }, []);
 
   const openBridgeExperience = useCallback(
     (
