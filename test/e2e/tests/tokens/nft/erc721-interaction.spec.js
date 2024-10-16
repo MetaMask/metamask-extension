@@ -225,25 +225,25 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Mint', tag: 'button' });
 
         // Notification
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
         });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Confirm',
+          tag: 'button',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        const transactionItem = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
-        assert.equal(await transactionItem.isDisplayed(), true);
         // verify the mint transaction has finished
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const nftsMintStatus = await driver.findElement({
@@ -255,7 +255,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // watch all nfts
         await driver.clickElement({ text: 'Watch all NFTs', tag: 'button' });
 
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // confirm watchNFT
@@ -277,8 +276,10 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
         await removeButtons[0].click();
 
-        await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Add NFTs',
+          tag: 'button',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
