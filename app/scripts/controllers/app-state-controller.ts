@@ -265,6 +265,9 @@ export class AppStateController extends EventEmitter {
       'AppStateController:getState',
       () => this.store.getState(),
     );
+    this.store.subscribe((state: AppStateControllerState) => {
+      this.messagingSystem.publish('AppStateController:stateChange', state, []);
+    });
     this.#approvalRequestId = null;
   }
 

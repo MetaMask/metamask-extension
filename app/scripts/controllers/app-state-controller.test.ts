@@ -700,6 +700,7 @@ describe('AppStateController', () => {
           }
         },
       );
+
       controllerMessenger.publish(
         'AppStateController:stateChange',
         {
@@ -707,6 +708,30 @@ describe('AppStateController', () => {
         } as unknown as AppStateControllerState,
         [],
       );
+
+      expect(
+        appStateController.store.getState().surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(timeNow);
+      expect(
+        controllerMessenger.call('AppStateController:getState')
+          .surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(timeNow);
+    });
+
+    it('state will be published when there is state change', () => {
+      expect(
+        appStateController.store.getState().surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(null);
+      const timeNow = Date.now();
+      controllerMessenger.subscribe(
+        'AppStateController:stateChange',
+        (state: Partial<AppStateControllerState>) => {
+          expect(state.surveyLinkLastClickedOrClosed).toStrictEqual(timeNow);
+        },
+      );
+
+      appStateController.setSurveyLinkLastClickedOrClosed(timeNow);
+
       expect(
         appStateController.store.getState().surveyLinkLastClickedOrClosed,
       ).toStrictEqual(timeNow);
