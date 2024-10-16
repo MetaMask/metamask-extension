@@ -196,6 +196,7 @@ const AssetPage = ({
             tokenImage={image}
             isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
             isNativeCurrency={true}
+            chainId={chainId}
           />
         ) : (
           <TokenCell
@@ -203,6 +204,7 @@ const AssetPage = ({
             image={image}
             symbol={symbol}
             string={balance.display}
+            chainId={chainId}
           />
         )}
         <Box

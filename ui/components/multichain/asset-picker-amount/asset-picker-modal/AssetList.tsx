@@ -17,6 +17,7 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
+import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
@@ -45,6 +46,7 @@ export default function AssetList({
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const chainId = useSelector(getMultichainCurrentChainId);
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,
@@ -109,6 +111,7 @@ export default function AssetList({
                     tokenImage={token.image}
                     isOriginalTokenSymbol={token.symbol === nativeCurrency}
                     isPrimaryTokenSymbolHidden
+                    chainId={chainId}
                   />
                 ) : (
                   <AssetComponent
