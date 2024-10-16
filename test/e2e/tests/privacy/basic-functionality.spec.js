@@ -5,13 +5,10 @@ const {
   importSRPOnboardingFlow,
   WALLET_PASSWORD,
   defaultGanacheOptions,
+  regularDelayMs,
 } = require('../../helpers');
 const { METAMASK_STALELIST_URL } = require('../phishing-controller/helpers');
 const FixtureBuilder = require('../../fixture-builder');
-
-// The animations that happen when switching advanced settings screens is causing
-// "Waiting until element is visible" timeouts
-const CLICK_ATTEMPTS = 5;
 
 async function mockApis(mockServer) {
   return [
@@ -73,20 +70,14 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
         await driver.clickElement('[data-testid="category-back-button"]');
-        await driver.clickElement(
-          '[data-testid="category-item-Assets"]',
-          CLICK_ATTEMPTS,
-        );
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="category-item-Assets"]');
         await driver.clickElement(
           '[data-testid="currency-rate-check-toggle"] .toggle-button',
         );
-        await driver.clickElement(
-          '[data-testid="category-back-button"]',
-          CLICK_ATTEMPTS,
-        );
+        await driver.clickElement('[data-testid="category-back-button"]');
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
-          CLICK_ATTEMPTS,
         );
 
         await driver.clickElement({ text: 'Done', tag: 'button' });
@@ -135,13 +126,10 @@ describe('MetaMask onboarding @no-mmi', function () {
           tag: 'button',
         });
         await driver.clickElement('[data-testid="category-item-General"]');
-        await driver.clickElement(
-          '[data-testid="category-back-button"]',
-          CLICK_ATTEMPTS,
-        );
+        await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.delay(regularDelayMs);
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
-          CLICK_ATTEMPTS,
         );
         await driver.clickElement({ text: 'Done', tag: 'button' });
         await driver.clickElement('[data-testid="pin-extension-next"]');
