@@ -650,7 +650,9 @@ export enum MetaMetricsEventName {
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
+  // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
+  // END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   DeeplinkClicked = 'Deeplink Clicked',
   ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',

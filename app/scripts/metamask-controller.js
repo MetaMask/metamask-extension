@@ -3306,10 +3306,12 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
+      ///: END:ONLY_INCLUDE_IF
       setBitcoinSupportEnabled:
         preferencesController.setBitcoinSupportEnabled.bind(
           preferencesController,
