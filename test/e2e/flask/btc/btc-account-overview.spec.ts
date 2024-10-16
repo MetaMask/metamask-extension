@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withBtcAccountSnap } from './common-btc';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
   it('has portfolio button enabled for BTC accounts', async function () {
@@ -49,7 +49,9 @@ describe('BTC Account - Overview', function (this: Suite) {
         // Wait for the balance to load up
         await driver.delay(2000);
 
-        const balanceElement = await driver.findElement('.coin-overview__balance');
+        const balanceElement = await driver.findElement(
+          '.coin-overview__balance',
+        );
         const balanceText = await balanceElement.getText();
 
         const [balance, unit] = balanceText.split('\n');
