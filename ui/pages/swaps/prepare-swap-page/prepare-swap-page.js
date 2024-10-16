@@ -1020,12 +1020,9 @@ export default function PrepareSwapPage({
           >
             <div className="prepare-swap-page__balance-message">
               {showReviewQuote ? (
-                <div>
-                  {t('swapTokenVerificationSources', [occurrences])}
-                  {t('verifyThisTokenOn', [
-                    <BlockExplorerLink key="block-explorer-link" />,
-                  ])}
-                </div>
+                <>
+                  {t('swapTokenVerifiedSources', [occurrences, <BlockExplorerLink key="block-explorer-link" />])}
+                </>
               ) : (
                 selectedToToken?.string && yourTokenToBalance
               )}
