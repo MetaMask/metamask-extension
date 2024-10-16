@@ -5858,9 +5858,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/notification-services-controller@npm:0.9.0"
+"@metamask/notification-services-controller@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/notification-services-controller@npm:0.7.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^7.0.1"
@@ -5872,7 +5872,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/profile-sync-controller": ^0.0.0
-  checksum: 10/b27f15938de78b43be2fb4b80b11c075ec4c17bb4b6d5b2ec3236f7ed7868184a8a5e138f92caad0bf965286ac17a73dbb8c4b14358d62d0aba63d6bc26fafe8
+  checksum: 10/1fc72086686aeef4c72d9eb7726d086a147a4079c178a6de23269fa39a3d861c54fe6dfe79bd9b5c8bf9afa278371408092bd37f3e8f814e65c7aca3573655f5
   languageName: node
   linkType: hard
 
@@ -26168,7 +26168,7 @@ __metadata:
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch"
     "@metamask/notification-controller": "npm:^6.0.0"
-    "@metamask/notification-services-controller": "npm:^0.9.0"
+    "@metamask/notification-services-controller": "npm:^0.7.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"
