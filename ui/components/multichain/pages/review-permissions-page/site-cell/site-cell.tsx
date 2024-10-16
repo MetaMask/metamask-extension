@@ -19,6 +19,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
@@ -59,7 +60,9 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
   const selectedAccounts = accounts.filter(({ address }) =>
-    selectedAccountAddresses.includes(address),
+    selectedAccountAddresses.some((selectedAccountAddress) =>
+      isEqualCaseInsensitive(selectedAccountAddress, address),
+    ),
   );
   const selectedNetworks = allNetworks.filter(({ chainId }) =>
     selectedChainIds.includes(chainId),
