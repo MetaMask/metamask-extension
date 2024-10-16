@@ -2006,6 +2006,57 @@ describe('#getConnectedSitesList', () => {
     });
   });
 
+  describe('getAddressBookByNetwork', () => {
+    it('returns the address book for the given network', () => {
+      expect(selectors.getAddressBookByNetwork(mockState, '0x5')).toStrictEqual(
+        [
+          {
+            address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            chainId: '0x5',
+            isEns: false,
+            memo: '',
+            name: 'Address Book Account 1',
+          },
+        ],
+      );
+    });
+
+    it('returns an empty object if no address book is found for the given network', () => {
+      expect(selectors.getAddressBookByNetwork(mockState, '0x1')).toStrictEqual(
+        [],
+      );
+    });
+  });
+
+  describe('getAddressBookEntryByNetwork', () => {
+    it('returns the address book entry for the given network and address', () => {
+      expect(
+        selectors.getAddressBookEntryByNetwork(
+          mockState,
+
+          '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+          '0x5',
+        ),
+      ).toStrictEqual({
+        address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        chainId: '0x5',
+        isEns: false,
+        memo: '',
+        name: 'Address Book Account 1',
+      });
+    });
+
+    it('returns `undefined` if no entry is found for the given network and address', () => {
+      expect(
+        selectors.getAddressBookEntryByNetwork(
+          mockState,
+          '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+          '0x1',
+        ),
+      ).toBe(undefined);
+    });
+  });
+
   describe('getAddressDisplayName', () => {
     it('returns the account name for a hex address', () => {
       expect(
