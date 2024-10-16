@@ -7,6 +7,7 @@ import {
 import {
   BridgeStatusControllerState,
   BridgeStatusControllerMessenger,
+  StatusRequest,
 } from './types';
 import { fetchBridgeTxStatus } from './utils';
 
@@ -24,15 +25,7 @@ export default class BridgeStatusController extends BaseController<
   { bridgeStatusState: BridgeStatusControllerState },
   BridgeStatusControllerMessenger
 > {
-  #provider: Provider;
-
-  constructor({
-    provider,
-    messenger,
-  }: {
-    provider: Provider;
-    messenger: BridgeStatusControllerMessenger;
-  }) {
+  constructor({ messenger }: { messenger: BridgeStatusControllerMessenger }) {
     super({
       name: BRIDGE_STATUS_CONTROLLER_NAME,
       metadata,
@@ -45,9 +38,6 @@ export default class BridgeStatusController extends BaseController<
       `${BRIDGE_STATUS_CONTROLLER_NAME}:getBridgeTxStatus`,
       this.getBridgeTxStatus.bind(this),
     );
-
-    // Assign vars
-    this.#provider = provider;
   }
 
   resetState = () => {
@@ -58,12 +48,18 @@ export default class BridgeStatusController extends BaseController<
     });
   };
 
-  getBridgeTxStatus = async () => {
+  getBridgeTxStatus = async (statusRequest: StatusRequest) => {
     const { bridgeStatusState } = this.state;
 
-    const bridgeStatus = await fetchBridgeTxStatus();
+    const bridgeStatus = await fetchBridgeTxStatus(statusRequest);
     this.update((_state) => {
-      _state.bridgeStatusState = { ...bridgeStatusState, bridgeStatus };
+      _state.bridgeStatusState = {
+        ...bridgeStatusState,
+        txStatuses: {
+          ...bridgeStatusState.txStatuses,
+          [statusRequest.srcTxHash]: bridgeStatus,
+        },
+      };
     });
   };
 }
