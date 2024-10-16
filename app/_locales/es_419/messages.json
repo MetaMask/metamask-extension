@@ -1562,9 +1562,6 @@
   "receive": {
     "message": "Recibir"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Búsqueda, dirección pública (0x) o ENS"
-  },
   "recommendedGasLabel": {
     "message": "Recomendado"
   },

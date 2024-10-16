@@ -529,9 +529,6 @@
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Sök, allmän adress (0x) eller ENS"
-  },
   "reject": {
     "message": "Avvisa"
   },

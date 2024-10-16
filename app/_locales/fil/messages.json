@@ -469,9 +469,6 @@
   "readdToken": {
     "message": "Puwede mong idagdag ulit ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon ng iyong mga accounts."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Maghanap, pampublikong address (0x), o ENS"
-  },
   "reject": {
     "message": "Tanggihan"
   },

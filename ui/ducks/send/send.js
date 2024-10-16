@@ -95,11 +95,9 @@ import {
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
-  IS_FLASK,
   checkExistingAddresses,
   isDefaultMetaMaskChain,
   isOriginContractAddress,
-  isValidDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -112,6 +110,7 @@ import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
   isValidHexAddress,
+  isPossibleAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
@@ -1607,11 +1606,10 @@ const slice = createSlice({
 
           if (
             isBurnAddress(state.recipientInput) ||
-            (!isValidHexAddress(state.recipientInput, {
-              mixedCaseUseChecksum: true,
-            }) &&
-              !IS_FLASK &&
-              !isValidDomainName(state.recipientInput))
+            (isPossibleAddress(state.recipientInput) &&
+              !isValidHexAddress(state.recipientInput, {
+                mixedCaseUseChecksum: true,
+              }))
           ) {
             draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
               ? INVALID_RECIPIENT_ADDRESS_ERROR

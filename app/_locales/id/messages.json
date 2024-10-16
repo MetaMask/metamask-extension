@@ -4162,12 +4162,6 @@
   "receive": {
     "message": "Terima"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Masukkan alamat publik (0x) atau nama ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Masukkan alamat publik (0x) atau nama domain"
-  },
   "recommendedGasLabel": {
     "message": "Direkomendasikan"
   },

@@ -539,9 +539,6 @@
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Szukaj, adres publiczny (0x) lub ENS"
-  },
   "reject": {
     "message": "Odrzuć"
   },

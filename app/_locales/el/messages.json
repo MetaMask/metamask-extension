@@ -4162,12 +4162,6 @@
   "receive": {
     "message": "Λήψη"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Εισάγετε τη δημόσια διεύθυνση (0x) ή το όνομα ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Εισαγάγετε τη δημόσια διεύθυνση (0x) ή το όνομα τομέα"
-  },
   "recommendedGasLabel": {
     "message": "Προτεινόμενο"
   },

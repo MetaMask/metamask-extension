@@ -4242,10 +4242,7 @@
   "receive": {
     "message": "Receive"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Enter public address (0x) or ENS name"
-  },
-  "recipientAddressPlaceholderFlask": {
+  "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
   "recommendedGasLabel": {
