@@ -1,6 +1,6 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import { ExternalScopeObject } from '@metamask/multichain';
-import * as EthereumChainUtils from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
+import * as EthereumChainUtils from '../ethereum-chain-utils';
 import {
   validateAndAddEip3085,
   validateScopedPropertyEip3085,
@@ -12,7 +12,7 @@ const validScopeObject: ExternalScopeObject = {
   notifications: [],
 };
 
-jest.mock('../../rpc-method-middleware/handlers/ethereum-chain-utils', () => ({
+jest.mock('../ethereum-chain-utils', () => ({
   validateAddEthereumChainParams: jest.fn(),
 }));
 const MockEthereumChainUtils = jest.mocked(EthereumChainUtils);

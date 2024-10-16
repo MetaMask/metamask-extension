@@ -17,6 +17,7 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { CaveatTypes } from '../../../../../../shared/constants/permissions';
+import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { processScopedProperties, validateAndAddEip3085 } from './helpers';
 
 export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
@@ -216,3 +217,18 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
     return end(err);
   }
 }
+
+export const walletCreateSession = {
+  methodNames: [MESSAGE_TYPE.WALLET_CREATE_SESSION],
+  implementation: walletCreateSessionHandler,
+  hookNames: {
+    removeNetwork: true,
+    findNetworkClientIdByChainId: true,
+    listAccounts: true,
+    addNetwork: true,
+    requestPermissionApprovalForOrigin: true,
+    grantPermissions: true,
+    sendMetrics: true,
+    metamaskState: true,
+  },
+};

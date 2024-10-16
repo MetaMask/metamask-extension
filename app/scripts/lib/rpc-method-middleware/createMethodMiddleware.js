@@ -38,7 +38,7 @@ export const createMultichainMethodMiddleware =
  * handler implementations.
  * @returns The method middleware factory function.
  */
-function makeMethodMiddlewareMaker(handlers) {
+export function makeMethodMiddlewareMaker(handlers) {
   const handlerMap = handlers.reduce((map, handler) => {
     for (const methodName of handler.methodNames) {
       map[methodName] = handler;
