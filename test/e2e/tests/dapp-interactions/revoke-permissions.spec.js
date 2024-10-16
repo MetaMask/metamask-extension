@@ -24,7 +24,7 @@ describe('Wallet Revoke Permissions', function () {
         // Get initial accounts permissions
         await driver.clickElement('#getPermissions');
 
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '#permissionsResult',
           text: 'eth_accounts',
         });
@@ -36,7 +36,7 @@ describe('Wallet Revoke Permissions', function () {
         await driver.clickElement('#getPermissions');
 
         // Eth_accounts permissions removed
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '#permissionsResult',
           text: 'No permissions found.',
         });
