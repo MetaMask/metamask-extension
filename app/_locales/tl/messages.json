@@ -4162,12 +4162,6 @@
   "receive": {
     "message": "Tumanggap"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Ilagay ang pampublikong address (0x) o ENS name"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Ilagay ang pampublikong address (0x) o pangalan ng domain"
-  },
   "recommendedGasLabel": {
     "message": "Nirekomenda"
   },

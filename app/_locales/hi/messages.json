@@ -4162,12 +4162,6 @@
   "receive": {
     "message": "प्राप्त करें"
   },
-  "recipientAddressPlaceholder": {
-    "message": "सार्वजनिक एड्रेस (0x) या ENS नाम डालें"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "पब्लिक एड्रेस (0x) या डोमेन नाम एंटर करें"
-  },
   "recommendedGasLabel": {
     "message": "अनुशंसित"
   },

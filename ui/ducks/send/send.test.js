@@ -768,7 +768,7 @@ describe('Send Slice', () => {
       it('should error with an invalid address error when user input is not a valid hex string', () => {
         const tokenAssetTypeState = {
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          recipientInput: '0xValidateError',
+          recipientInput: '0xAAAA6BF26964aF9D7eEd9e03E53415D37aA96045',
         };
         const action = {
           type: 'send/validateRecipientUserInput',
@@ -793,7 +793,7 @@ describe('Send Slice', () => {
       it('should error with an invalid network error when user input is not a valid hex string on a non default network', () => {
         const tokenAssetTypeState = {
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          recipientInput: '0xValidateError',
+          recipientInput: '0xAAAA6BF26964aF9D7eEd9e03E53415D37aA96045',
         };
         const action = {
           type: 'send/validateRecipientUserInput',

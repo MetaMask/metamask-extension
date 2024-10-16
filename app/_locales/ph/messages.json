@@ -1013,9 +1013,6 @@
   "receive": {
     "message": "Tumanggap"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Maghanap, pampublikong address (0x), o ENS"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Magsimula rito"
   },
