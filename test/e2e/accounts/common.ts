@@ -200,7 +200,7 @@ export async function connectAccountToTestDapp(driver: Driver) {
 
   await driver.clickElement({
     tag: 'p',
-    text: 'Localhost 8545'
+    text: 'Localhost 8545',
   });
 
   await driver.clickElement({

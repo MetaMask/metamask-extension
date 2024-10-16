@@ -1208,9 +1208,7 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   // Open settings menu button
-  await driver.clickElement(
-    '[data-testid="account-options-menu-button"]',
-  );
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
 
   // fix race condition with mmi build
   if (process.env.MMI) {
