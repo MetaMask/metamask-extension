@@ -4938,7 +4938,7 @@ export default class MetamaskController extends EventEmitter {
       Caip25CaveatType,
       (existingScopes) =>
         Caip25CaveatMutatorFactories[Caip25CaveatType].removeScope(
-          toCaipChainId('eip155', parseInt(targetChainId, 16)),
+          toCaipChainId('eip155', parseInt(targetChainId, 16).toString()),
           existingScopes,
         ),
     );
@@ -5035,7 +5035,7 @@ export default class MetamaskController extends EventEmitter {
         },
         permissions,
       },
-      type: MethodNames.requestPermissions,
+      type: MethodNames.RequestPermissions,
     });
   }
 

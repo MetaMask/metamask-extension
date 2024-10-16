@@ -534,7 +534,7 @@ describe('permission background API methods', () => {
               [PermissionNames.permittedChains]: {},
             },
           },
-          type: MethodNames.requestPermissions,
+          type: MethodNames.RequestPermissions,
         },
       );
     });

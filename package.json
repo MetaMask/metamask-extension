@@ -344,7 +344,7 @@
     "@metamask/notification-services-controller": "^0.7.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
-    "@metamask/permission-controller": "^10.0.0",
+    "@metamask/permission-controller": "^11.0.0",
     "@metamask/permission-log-controller": "^2.0.1",
     "@metamask/phishing-controller": "^12.0.1",
     "@metamask/post-message-stream": "^8.0.0",
