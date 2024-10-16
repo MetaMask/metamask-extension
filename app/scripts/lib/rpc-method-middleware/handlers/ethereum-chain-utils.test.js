@@ -132,6 +132,10 @@ describe('Ethereum Chain Utils', () => {
                         notifications: KnownNotifications.eip155,
                         accounts: [],
                       },
+                      'wallet:eip155': {
+                        methods: [],
+                        notifications: [],
+                      },
                     },
                     isMultichainOrigin: false,
                   },
@@ -230,6 +234,10 @@ describe('Ethereum Chain Utils', () => {
                 notifications: KnownNotifications.eip155,
                 accounts: [],
               },
+              'wallet:eip155': {
+                methods: [],
+                notifications: [],
+              },
             },
             isMultichainOrigin: false,
           },
@@ -298,7 +306,7 @@ describe('Ethereum Chain Utils', () => {
 
         expect(end).toHaveBeenCalledWith(
           new Error(
-            'cannot switch to chain that was not permissioned in the multichain flow',
+            "Cannot switch to or add permissions for chainId '0x1' because permissions were granted over the Multichain API.",
           ),
         );
       });
