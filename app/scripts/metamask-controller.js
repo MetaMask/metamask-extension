@@ -15,7 +15,7 @@ import {
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine, createScaffoldMiddleware } from 'json-rpc-engine';
+import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
@@ -154,7 +154,6 @@ import {
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
 import {
-  walletInvokeMethodHandler,
   Caip25CaveatMutatorFactories,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -382,7 +381,9 @@ import {
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import { walletCreateSession, walletCreateSessionHandler } from './lib/rpc-method-middleware/handlers/wallet-createSession';
+import {
+  walletCreateSession,
+} from './lib/rpc-method-middleware/handlers/wallet-createSession';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -6244,10 +6245,6 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
         metamaskState: this.getState(),
-        findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(
-            this.networkController,
-          ),
         getCaveat: this.permissionController.getCaveat.bind(
           this.permissionController,
         ),
