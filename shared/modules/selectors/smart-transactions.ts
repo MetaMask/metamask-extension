@@ -67,7 +67,7 @@ type SmartTransactionsMetaMaskState = {
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-const getSmartTransactionOptInStatusInternal = createSelector(
+const getSmartTransactionsOptInStatusInternal = createSelector(
   getPreferences,
   (preferences: {
     smartTransactionsOptInStatus?: boolean | null;
@@ -89,7 +89,7 @@ const getSmartTransactionOptInStatusInternal = createSelector(
  * or null if they have not explicitly opted in or out.
  */
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
-  getSmartTransactionOptInStatusInternal,
+  getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean | null): boolean | null => optInStatus,
 );
 
@@ -101,7 +101,7 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @returns
  */
 export const getSmartTransactionsPreferenceEnabled = createSelector(
-  getSmartTransactionOptInStatusInternal,
+  getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean | null): boolean => {
     // In the absence of an explicit opt-in or opt-out,
     // the Smart Transactions toggle is enabled.
@@ -134,8 +134,29 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   return rpcUrl?.hostname?.endsWith('.infura.io');
 };
 
-// TODO(dbrans): Remove the opt-in modal once default opt-in is stable.
-export const getIsSmartTransactionsOptInModalAvailable = () => false;
+/**
+ * Checks if the selected account has a non-zero balance.
+ *
+ * @param state - The state object containing account information.
+ * @returns true if the selected account has a non-zero balance, otherwise false.
+ */
+const hasNonZeroBalance = (state: SmartTransactionsMetaMaskState) => {
+  const selectedAccount = getSelectedAccount(
+    state as unknown as MultichainState,
+  );
+  return BigInt(selectedAccount?.balance || '0x0') > 0n;
+};
+
+export const getIsSmartTransactionsOptInModalAvailable = (
+  state: SmartTransactionsMetaMaskState,
+) => {
+  return (
+    getCurrentChainSupportsSmartTransactions(state) &&
+    getIsAllowedRpcUrlForSmartTransactions(state) &&
+    getSmartTransactionsOptInStatusInternal(state) === null &&
+    hasNonZeroBalance(state)
+  );
+};
 
 export const getSmartTransactionsEnabled = (
   state: SmartTransactionsMetaMaskState,

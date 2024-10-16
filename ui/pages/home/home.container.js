@@ -223,8 +223,10 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
-    isSmartTransactionsOptInModalAvailable:
-      getIsSmartTransactionsOptInModalAvailable(state),
+
+    // Set to false to prevent the opt-in modal from showing.
+    // TODO(dbrans): Remove opt-in modal once default opt-in is stable.
+    isSmartTransactionsOptInModalAvailable: false,
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };
