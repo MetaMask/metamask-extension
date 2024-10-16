@@ -12,10 +12,9 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { isHexString, parseCaipAccountId } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { isHexString, parseCaipAccountId } from '@metamask/utils';
-import { parsed } from 'yargs';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -94,6 +93,7 @@ import {
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import {
+  decimalToHex,
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
@@ -606,6 +606,13 @@ export function getAddressBookByNetwork(state, chainId) {
     return [];
   }
   return Object.values(state.metamask.addressBook[chainId]);
+}
+
+export function getAddressBookEntryByNetwork(state, address, chainId) {
+  const addressBook = getAddressBookByNetwork(state, chainId);
+  return addressBook.find((contact) =>
+    isEqualCaseInsensitive(contact.address, address),
+  );
 }
 
 export function getEnsResolutionByAddress(state, address) {
@@ -1553,15 +1560,17 @@ export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
   (unapprovedTypedMessages) => unapprovedTypedMessages,
 );
 
+export const selectAddress = (_, address) => address;
+
 /**
  * Get the display name for an address.
- * This selector will look into the internal accounts, address book, metadata contracts, and ENS to find a display name for the address.
+ * This selector will look into the internal accounts and address book to find a display name for the address.
  *
  * @param {object} state - The Redux state object.
  * @param {string} address - The address to get the display name for.
  * @returns {string} The display name for the address.
  */
-export const getAddressDisplayName = createSelector((state, address) => {
+export const getAddressDisplayName = (state, address) => {
   const {
     address: caipAddress,
     chain: { namespace, reference },
@@ -1569,30 +1578,26 @@ export const getAddressDisplayName = createSelector((state, address) => {
     isHexString(address) ? `eip155:1:${address}` : address,
   );
 
-  let parsedAddress;
+  const isEip155 = namespace === 'eip155';
 
-  if (namespace === 'eip155') {
-    parsedAddress = toChecksumHexAddress(caipAddress);
-  } else {
-    parsedAddress = caipAddress;
-  }
+  const parsedAddress = isEip155
+    ? toChecksumHexAddress(caipAddress)
+    : caipAddress;
 
   const accounts = getInternalAccounts(state);
   const accountName = getAccountName(accounts, parsedAddress);
-  const metadataContractName = getMetadataContractName(state, parsedAddress);
 
-  // Address book and ENS entries will only work for EVM accounts.
-  const addressBookEntry = getAddressBookByNetwork(state, reference);
-  const ensName = getEnsResolutionByAddress(state, parsedAddress);
+  // Address book will only work for EVM accounts.
+  const addressBookEntry =
+    isEip155 &&
+    getAddressBookEntryByNetwork(
+      state,
+      parsedAddress,
+      `0x${decimalToHex(reference)}`,
+    );
 
-  return (
-    accountName ||
-    addressBookEntry?.name ||
-    metadataContractName ||
-    ensName ||
-    shortenAddress(parsedAddress)
-  );
-});
+  return accountName || addressBookEntry?.name || shortenAddress(parsedAddress);
+};
 
 export function getSnaps(state) {
   return state.metamask.snaps;

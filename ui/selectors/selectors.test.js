@@ -2005,4 +2005,116 @@ describe('#getConnectedSitesList', () => {
       expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
     });
   });
+
+  describe('getAddressDisplayName', () => {
+    it('returns the account name for a hex address', () => {
+      expect(
+        selectors.getAddressDisplayName(
+          mockState,
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        ),
+      ).toBe('Test Account');
+    });
+
+    it('returns the account name for a CAIP-10 ID', () => {
+      expect(
+        selectors.getAddressDisplayName(
+          mockState,
+          'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        ),
+      ).toBe('Test Account');
+    });
+
+    it('returns the address book entry for a hex address', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: [],
+          },
+          addressBook: {
+            '0x1': {
+              '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+                address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+                chainId: '0x1',
+                isEns: false,
+                memo: '',
+                name: 'Address Book Account 1',
+              },
+            },
+          },
+        },
+      };
+
+      expect(
+        selectors.getAddressDisplayName(
+          state,
+          '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        ),
+      ).toBe('Address Book Account 1');
+    });
+
+    it('returns the address book entry for a CAIP-10 address', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: [],
+          },
+          addressBook: {
+            '0x1': {
+              '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+                address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+                chainId: '0x1',
+                isEns: false,
+                memo: '',
+                name: 'Address Book Account 1',
+              },
+            },
+          },
+        },
+      };
+
+      expect(
+        selectors.getAddressDisplayName(
+          state,
+          'eip155:1:0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        ),
+      ).toBe('Address Book Account 1');
+    });
+
+    it('returns the shorten address if no name is found for a hex address', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: [],
+          },
+          addressBook: {},
+        },
+      };
+
+      expect(
+        selectors.getAddressDisplayName(
+          state,
+          '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        ),
+      ).toBe('0xc42ED...D8813');
+    });
+
+    it('returns the shorten address if no name is found for a CAIP-10 address', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: [],
+          },
+          addressBook: {},
+        },
+      };
+
+      expect(
+        selectors.getAddressDisplayName(
+          state,
+          'eip155:1:0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        ),
+      ).toBe('0xc42ED...D8813');
+    });
+  });
 });
