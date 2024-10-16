@@ -243,6 +243,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatusForMetrics,
   );
+  const smartTransactionsPreferenceEnabled = useSelector(
+    getSmartTransactionsPreferenceEnabled,
+  );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const swapsSTXLoading = useSelector(getSwapsSTXLoading);
   const currentSmartTransactionsError = useSelector(
@@ -379,7 +382,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       chainId,
       smartTransactionEstimatedGas:
         smartTransactionsEnabled &&
-        smartTransactionsOptInStatus &&
+        smartTransactionsPreferenceEnabled &&
         smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
       multiLayerL1ApprovalFeeTotal,
@@ -396,7 +399,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     smartTransactionFees?.tradeTxFees,
     nativeCurrencySymbol,
     smartTransactionsEnabled,
-    smartTransactionsOptInStatus,
+    smartTransactionsPreferenceEnabled,
     multiLayerL1ApprovalFeeTotal,
   ]);
 
@@ -889,7 +892,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       (currentSmartTransactionsEnabled &&
         (currentSmartTransactionsError || smartTransactionsError)) ||
       (currentSmartTransactionsEnabled &&
-        smartTransactionsOptInStatus &&
+        smartTransactionsPreferenceEnabled &&
         !smartTransactionFees?.tradeTxFees),
   );
 
@@ -1138,7 +1141,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               initialAggId={usedQuote.aggregator}
               onQuoteDetailsIsOpened={trackQuoteDetailsOpened}
               hideEstimatedGasFee={
-                smartTransactionsEnabled && smartTransactionsOptInStatus
+                smartTransactionsEnabled && smartTransactionsPreferenceEnabled
               }
             />
           )

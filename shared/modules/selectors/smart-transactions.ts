@@ -180,8 +180,10 @@ export const getSmartTransactionsEnabled = (
 export const getIsSmartTransaction = (
   state: SmartTransactionsMetaMaskState,
 ): boolean => {
-  const smartTransactionsOptInStatus =
+  const smartTransactionsPreferenceEnabled =
     getSmartTransactionsPreferenceEnabled(state);
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
-  return Boolean(smartTransactionsOptInStatus && smartTransactionsEnabled);
+  return Boolean(
+    smartTransactionsPreferenceEnabled && smartTransactionsEnabled,
+  );
 };
