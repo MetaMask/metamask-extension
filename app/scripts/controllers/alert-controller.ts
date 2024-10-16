@@ -64,7 +64,7 @@ export type AlertControllerMessenger = RestrictedControllerMessenger<
  * strings to booleans indicating whether the "switch to connected" alert has
  * been shown (`true`) or otherwise (`false`).
  */
-type AlertControllerState = {
+export type AlertControllerState = {
   alertEnabledness: Record<string, boolean>;
   unconnectedAccountAlertShownOrigins: Record<string, boolean>;
   web3ShimUsageOrigins?: Record<string, number>;
@@ -111,6 +111,17 @@ export class AlertController {
 
     this.store = new ObservableStore(state);
     this.#controllerMessenger = opts.controllerMessenger;
+    this.#controllerMessenger.registerActionHandler(
+      'AlertController:getState',
+      () => this.store.getState(),
+    );
+    this.store.subscribe((alertState: AlertControllerState) => {
+      this.#controllerMessenger.publish(
+        'AlertController:stateChange',
+        alertState,
+        [],
+      );
+    });
 
     this.#selectedAddress = this.#controllerMessenger.call(
       'AccountsController:getSelectedAccount',

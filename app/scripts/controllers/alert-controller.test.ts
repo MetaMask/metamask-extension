@@ -11,6 +11,7 @@ import {
   AlertController,
   AllowedActions,
   AllowedEvents,
+  AlertControllerState,
 } from './alert-controller';
 
 const EMPTY_ACCOUNT = {
@@ -64,10 +65,6 @@ describe('AlertController', () => {
       },
       controllerMessenger: alertMessenger,
     });
-
-    controllerMessenger.registerActionHandler('AlertController:getState', () =>
-      alertController.store.getState(),
-    );
   });
 
   describe('default state', () => {
@@ -205,6 +202,55 @@ describe('AlertController', () => {
         controllerMessenger.call('AlertController:getState')
           .unconnectedAccountAlertShownOrigins,
       ).toStrictEqual({});
+    });
+  });
+
+
+  describe('AlertController:getState', () => {
+    it('should return the current state of the property', () => {
+      const defaultWeb3ShimUsageOrigins = {
+        testWeb3ShimUsageOrigin: 0,
+      };
+      expect(
+        alertController.store.getState().web3ShimUsageOrigins,
+      ).toStrictEqual(defaultWeb3ShimUsageOrigins);
+      expect(
+        controllerMessenger.call('AlertController:getState')
+          .web3ShimUsageOrigins,
+      ).toStrictEqual(defaultWeb3ShimUsageOrigins);
+    });
+  });
+
+  describe('AlertController:stateChange', () => {
+    it('state will be published when there is state change', () => {
+      expect(
+        alertController.store.getState().web3ShimUsageOrigins,
+      ).toStrictEqual({
+        testWeb3ShimUsageOrigin: 0,
+      });
+
+      controllerMessenger.subscribe(
+        'AlertController:stateChange',
+        (state: Partial<AlertControllerState>) => {
+          expect(state.web3ShimUsageOrigins).toStrictEqual({
+            testWeb3ShimUsageOrigin: 1,
+          });
+        },
+      );
+
+      alertController.setWeb3ShimUsageRecorded('testWeb3ShimUsageOrigin');
+
+      expect(
+        alertController.store.getState().web3ShimUsageOrigins,
+      ).toStrictEqual({
+        testWeb3ShimUsageOrigin: 1,
+      });
+      expect(
+        controllerMessenger.call('AlertController:getState')
+          .web3ShimUsageOrigins,
+      ).toStrictEqual({
+        testWeb3ShimUsageOrigin: 1,
+      });
     });
   });
 });
