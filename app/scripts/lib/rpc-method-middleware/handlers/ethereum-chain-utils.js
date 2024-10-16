@@ -187,10 +187,10 @@ export async function switchChain(
       if (!ethChainIds.includes(chainId)) {
         if (caip25Caveat.value.isMultichainOrigin) {
           return end(
-            new Error(
-              'cannot switch to chain that was not permissioned in the multichain flow',
+            ethErrors.provider.unauthorized(
+              `Cannot switch to or add permissions for chainId '${chainId}' because permissions were granted over the Multichain API.`,
             ),
-          ); // TODO: better error
+          );
         }
 
         // TODO: This behavior may have deviated from the original permittedChains add chain behavior

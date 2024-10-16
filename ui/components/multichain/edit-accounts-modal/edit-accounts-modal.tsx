@@ -30,7 +30,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getURLHost } from '../../../helpers/utils/util';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import {
+  isEqualCaseInsensitive,
+} from '../../../../shared/modules/string-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

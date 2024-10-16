@@ -397,7 +397,7 @@ describe('MultiRpc:', function (this: Suite) {
 
         // go to advanced settigns
         await driver.clickElementAndWaitToDisappear({
-          text: 'Manage default settings',
+          text: 'Manage default privacy settings',
         });
 
         await driver.clickElement({
