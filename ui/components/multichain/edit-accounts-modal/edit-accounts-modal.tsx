@@ -32,7 +32,6 @@ import { getURLHost } from '../../../helpers/utils/util';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import {
   isEqualCaseInsensitive,
-  isEqualCaseInsensitive,
 } from '../../../../shared/modules/string-utils';
 import {
   MetaMetricsEventCategory,
