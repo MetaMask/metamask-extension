@@ -209,18 +209,6 @@
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Navigazione su un sito con un account non connesso"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Questo avviso è mostrato nel popup quando stai visitando un sito Web3, ma l'account selezionato non è connesso al sito."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Quando un sito prova a usare la API window.web3 rimossa"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "L'avviso che viene mostrato nel popup quando stai visitando un sito che prova a usare la API window.web3 rimossa e che potrebbe non funzionare."
-  },
   "alerts": {
     "message": "Avvisi"
   },
@@ -1399,10 +1387,6 @@
     "message": "Devi avere $1 $2 in più per completare lo scambio",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Non ci sono token disponibile con questo nome $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapCustom": {
     "message": "personalizza"
   },
@@ -1430,12 +1414,6 @@
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Errore recuperando le quotazioni"
-  },
-  "swapFetchingTokens": {
-    "message": "Recuperando i token..."
-  },
-  "swapLowSlippageError": {
-    "message": "La transazione può fallire, il massimo slippage è troppo basso."
   },
   "swapMaxSlippage": {
     "message": "Slippage massimo"
@@ -1496,9 +1474,6 @@
   "swapRequestForQuotation": {
     "message": "Richiedi quotazione"
   },
-  "swapReviewSwap": {
-    "message": "Verifica Scambio"
-  },
   "swapSelect": {
     "message": "Selezione"
   },
@@ -1531,43 +1506,14 @@
     "message": "Scambia da $1 a $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationMessage": {
-    "message": "Verifica sempre l'indirizzo del token su $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Verificato solo su una fonte."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Verificato su $1 fonti.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTransactionComplete": {
     "message": "Transazione completata"
   },
   "swapUnknown": {
     "message": "Sconosciuto"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Più token possono usare lo stesso nome e simbolo. Verifica su $1 che questo sia il token che stai cercando.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 disponibili allo scambio",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
-  "swapsAdvancedOptions": {
-    "message": "Impostazioni Avanzate"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "L'importo di slippage è troppo alto e risulterà in una tariffa sconveniente. Riduci la tolleranza allo slippage ad un valore minore di 15%."
-  },
   "swapsMaxSlippage": {
     "message": "Tolleranza Slippage"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Non hai abbastanza $1 per completare la transazione",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Vedi in attività"
@@ -1702,10 +1648,6 @@
   },
   "userName": {
     "message": "Nome utente"
-  },
-  "verifyThisTokenOn": {
-    "message": "Verifica questo token su $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAllDetails": {
     "message": "Vedi tutti i dettagli"

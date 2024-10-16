@@ -43,7 +43,6 @@ import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-import TokenDetailsPage from '../token-details';
 import Notifications from '../notifications';
 import NotificationsSettings from '../notifications-settings';
 import NotificationDetails from '../notification-details';
@@ -72,11 +71,9 @@ import {
   SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
-  BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
-  TOKEN_DETAILS,
   CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
@@ -369,11 +366,6 @@ export default class Routes extends Component {
           component={ConfirmTransaction}
         />
         <Authenticated path={SEND_ROUTE} component={SendPage} exact />
-        <Authenticated
-          path={`${TOKEN_DETAILS}/:address/`}
-          component={TokenDetailsPage}
-          exact
-        />
         <Authenticated path={SWAPS_ROUTE} component={Swaps} />
         <Authenticated
           path={CROSS_CHAIN_SWAP_ROUTE}
@@ -497,13 +489,6 @@ export default class Routes extends Component {
     const { location } = this.props;
     return Boolean(
       matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
-    );
-  }
-
-  onSwapsBuildQuotePage() {
-    const { location } = this.props;
-    return Boolean(
-      matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
     );
   }
 

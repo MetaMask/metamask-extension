@@ -81,18 +81,6 @@
   "alertDisableTooltip": {
     "message": "Mababago ito sa \"Mga Setting > Mga Alerto\""
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Napili ang pag-browse ng website nang may hindi nakakonektang account"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Makikita ang alertong ito sa popup kapag nagba-browse ka sa isang nakakonektang web3 site, pero hindi nakakonekta ang kasalukuyang napiling account."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Kapag sinubukan ng isang website na gamitin ang inalis na window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Makikita ang alertong ito sa popup kapag nagba-browse ka sa isang site na sumusubok na gamitin ang inalis na window.web3 API, at posibleng sira bilang resulta."
-  },
   "alerts": {
     "message": "Mga Alerto"
   },
@@ -1280,10 +1268,6 @@
     "message": "Kailangan mo ng $1 pa $2 para makumpleto ang pag-swap na ito",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Walang available na token na tumutugma sa $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Kumpirmahin ang iyong hardware wallet"
   },
@@ -1325,21 +1309,12 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Nagka-error sa pagkuha ng mga quote"
   },
-  "swapFetchingTokens": {
-    "message": "Kinukuha ang mga token..."
-  },
   "swapFromTo": {
     "message": "Ang pag-swap ng $1 sa $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesSplit": {
     "message": "Hahatiin sa pagitan ng dalawang transaksyon na ito ang mga bayarin sa gas sa nakaraang screen."
-  },
-  "swapHighSlippageWarning": {
-    "message": "Sobrang laki ng halaga ng slippage."
-  },
-  "swapLowSlippageError": {
-    "message": "Posibleng hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
   },
   "swapMaxSlippage": {
     "message": "Max na slippage"
@@ -1366,9 +1341,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Kaibahan sa presyo na ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Ang epekto sa presyo ay ang pagkakaiba sa kasalukuyang presyo sa merkado at sa halagang natanggap sa pag-execute ng transaksyon. Ang epekto sa presyo ay isang function ng laki ng iyong trade kumpara sa laki ng liquidity pool."
   },
   "swapPriceUnavailableDescription": {
     "message": "Hindi natukoy ang epekto sa presyo dahil sa kakulangan ng data sa presyo sa merkado. Pakikumpirma na kumportable ka sa dami ng mga token na matatanggap mo bago makipag-swap."
@@ -1409,9 +1381,6 @@
   "swapRequestForQuotation": {
     "message": "Mag-request ng quotation"
   },
-  "swapReviewSwap": {
-    "message": "Suriin ang Pag-swap"
-  },
   "swapSelect": {
     "message": "Piliin"
   },
@@ -1423,9 +1392,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Makikita sa ibaba ang lahat ng quote na nakuha mula sa maraming pinagkukunan ng liquidity."
-  },
-  "swapSlippageNegative": {
-    "message": "Dapat ay mas malaki sa o katumbas ng zero ang slippage"
   },
   "swapSource": {
     "message": "Pinagkunan ng liquidity"
@@ -1454,20 +1420,6 @@
     "message": "I-swap ang $1 sa $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Manual na idinagdag ang token na ito."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Palaging kumpirmahin ang address ng token sa $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Na-verify lang sa 1 source."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Na-verify sa $1 source.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTransactionComplete": {
     "message": "Nakumpleto ang transaksyon"
   },
@@ -1477,29 +1429,11 @@
   "swapUnknown": {
     "message": "Hindi Alam"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Maaaring gamitin ng maraming token ang iisang pangalan at simbolo. Suriin ang $1 para ma-verify na ito ang token na hinahanap mo.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "Available ang $1 $2 na i-swap",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% Slippage"
   },
-  "swapsAdvancedOptions": {
-    "message": "Mga Advanced na Opsyon"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Masyadong mataas ang halaga ng slippage at magreresulta ito sa masamang rating. Pakibabaan ang iyong tolerance ng slippage sa value na mas mababa sa 15%."
-  },
   "swapsMaxSlippage": {
     "message": "Tolerance ng Slippage"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Hindi sapat ang $1 para makumpleto ang transaksyong ito",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Tingnan sa aktibidad"
@@ -1659,14 +1593,6 @@
   },
   "userName": {
     "message": "Username"
-  },
-  "verifyThisTokenOn": {
-    "message": "I-verify ang token na ito sa $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "I-verify ang token na ito sa $1 at tiyaking ito ang token na gusto mong i-trade.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAllDetails": {
     "message": "Tingnan ang lahat ng detalye"
