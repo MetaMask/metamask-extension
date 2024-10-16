@@ -261,6 +261,10 @@ export class AppStateController extends EventEmitter {
     }
 
     this.messagingSystem = messenger;
+    this.messagingSystem.registerActionHandler(
+      'AppStateController:getState',
+      () => this.store.getState(),
+    );
     this.#approvalRequestId = null;
   }
 

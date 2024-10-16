@@ -671,4 +671,49 @@ describe('AppStateController', () => {
       expect(extensionMock.alarms.onAlarm.addListener).toHaveBeenCalled();
     });
   });
+
+  describe('AppStateController:getState', () => {
+    it('should return the current state of the property', () => {
+      expect(
+        appStateController.store.getState().recoveryPhraseReminderHasBeenShown,
+      ).toStrictEqual(false);
+      expect(
+        controllerMessenger.call('AppStateController:getState')
+          .recoveryPhraseReminderHasBeenShown,
+      ).toStrictEqual(false);
+    });
+  });
+
+  describe('AppStateController:stateChange', () => {
+    it('subscribers will recieve the state when published', () => {
+      expect(
+        appStateController.store.getState().surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(null);
+      const timeNow = Date.now();
+      controllerMessenger.subscribe(
+        'AppStateController:stateChange',
+        (state: Partial<AppStateControllerState>) => {
+          if (typeof state.surveyLinkLastClickedOrClosed === 'number') {
+            appStateController.setSurveyLinkLastClickedOrClosed(
+              state.surveyLinkLastClickedOrClosed,
+            );
+          }
+        },
+      );
+      controllerMessenger.publish(
+        'AppStateController:stateChange',
+        {
+          surveyLinkLastClickedOrClosed: timeNow,
+        } as unknown as AppStateControllerState,
+        [],
+      );
+      expect(
+        appStateController.store.getState().surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(timeNow);
+      expect(
+        controllerMessenger.call('AppStateController:getState')
+          .surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(timeNow);
+    });
+  });
 });
