@@ -12,7 +12,7 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { isHexString, parseCaipAccountId } from '@metamask/utils';
+import { parseCaipAccountId } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
@@ -1564,38 +1564,43 @@ export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
  * Get the display name for an address.
  * This selector will look into the internal accounts and address book to find a display name for the address.
  *
- * @param {object} state - The Redux state object.
- * @param {string} address - The address to get the display name for.
+ * @param _state - The Redux state object.
+ * @param {string} address - The address to get the display name for in a CAIP-10 format.
  * @returns {string} The display name for the address.
  */
-export const getAddressDisplayName = (state, address) => {
-  const {
-    address: caipAddress,
-    chain: { namespace, reference },
-  } = parseCaipAccountId(
-    isHexString(address) ? `eip155:1:${address}` : address,
-  );
+export const getAddressDisplayName = createDeepEqualSelector(
+  [rawStateSelector, (_state, address) => address],
+  (state, address) => {
+    const {
+      address: caipAddress,
+      chain: { namespace, reference },
+    } = parseCaipAccountId(address);
 
-  const isEip155 = namespace === 'eip155';
+    const isEip155 = namespace === 'eip155';
 
-  const parsedAddress = isEip155
-    ? toChecksumHexAddress(caipAddress)
-    : caipAddress;
+    const parsedAddress = isEip155
+      ? toChecksumHexAddress(caipAddress)
+      : caipAddress;
 
-  const accounts = getInternalAccounts(state);
-  const accountName = getAccountName(accounts, parsedAddress);
+    const accounts = getInternalAccounts(state);
+    const accountName = getAccountName(accounts, parsedAddress);
 
-  // Address book will only work for EVM accounts.
-  const addressBookEntry =
-    isEip155 &&
-    getAddressBookEntryByNetwork(
-      state,
-      parsedAddress,
-      `0x${decimalToHex(reference)}`,
+    // Address book will only work for EVM accounts.
+    const addressBookEntry =
+      isEip155 &&
+      getAddressBookEntryByNetwork(
+        state,
+        parsedAddress,
+        `0x${decimalToHex(reference)}`,
+      );
+
+    return (
+      (accountName === '' ? undefined : accountName) ??
+      addressBookEntry?.name ??
+      undefined
     );
-
-  return accountName || addressBookEntry?.name || shortenAddress(parsedAddress);
-};
+  },
+);
 
 export function getSnaps(state) {
   return state.metamask.snaps;
