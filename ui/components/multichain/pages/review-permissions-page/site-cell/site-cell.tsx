@@ -16,7 +16,6 @@ import { EditAccountsModal, EditNetworksModal } from '../../..';
 import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
 import {
   isEqualCaseInsensitive,
-  isEqualCaseInsensitive,
 } from '../../../../../../shared/modules/string-utils';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
