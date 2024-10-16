@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
   IconColor,
@@ -154,6 +155,8 @@ export const EditNetworksModal = ({
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               gap={4}
+              alignItems={AlignItems.center}
+              width={BlockSize.Full}
             >
               <Box
                 display={Display.Flex}
