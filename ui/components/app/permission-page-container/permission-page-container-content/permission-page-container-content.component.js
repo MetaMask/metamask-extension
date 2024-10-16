@@ -46,7 +46,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       selectedPermissions,
       selectedAccounts,
       subjectMetadata,
-      requestedChainIds,s
+      requestedChainIds,
     } = this.props;
 
     const accounts = selectedAccounts.reduce((accumulator, account) => {
