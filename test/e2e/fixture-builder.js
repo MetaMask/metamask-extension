@@ -460,13 +460,13 @@ class FixtureBuilder {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
-                      'eip155:1': {
+                      'eip155:1337': {
                         methods: [],
                         notifications: [],
                         accounts: [
-                          `eip155:1:${selectedAccount.toLowerCase()}`,
-                          'eip155:1:0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                          `eip155:1:${ERC_4337_ACCOUNT.toLowerCase()}`,
+                          `eip155:1337:${selectedAccount.toLowerCase()}`,
+                          'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                          `eip155:1337:${ERC_4337_ACCOUNT.toLowerCase()}`,
                         ],
                       },
                     },
@@ -504,11 +504,11 @@ class FixtureBuilder {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
-                      'eip155:1': {
+                      'eip155:1337': {
                         methods: [],
                         notifications: [],
                         accounts: [
-                          'eip155:1:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                          'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                         ],
                       },
                     },
@@ -544,12 +544,12 @@ class FixtureBuilder {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
-                      'eip155:1': {
+                      'eip155:1337': {
                         methods: [],
                         notifications: [],
                         accounts: [
-                          'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                          'eip155:1:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                          'eip155:1337:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                          'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                         ],
                       },
                     },
@@ -574,12 +574,12 @@ class FixtureBuilder {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
-                      'eip155:1': {
+                      'eip155:1338': {
                         methods: [],
                         notifications: [],
                         accounts: [
-                          'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                          'eip155:1:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                          'eip155:1338:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                          'eip155:1338:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                         ],
                       },
                     },
@@ -1248,12 +1248,12 @@ class FixtureBuilder {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
-                      'eip155:1': {
+                      'eip155:1337': {
                         methods: [],
                         notifications: [],
                         accounts: [
-                          'eip155:1:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
-                          'eip155:1:0xb9504634e5788208933b51ae7440b478bfadf865',
+                          'eip155:1337:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                          'eip155:1337:0xb9504634e5788208933b51ae7440b478bfadf865',
                         ],
                       },
                     },
@@ -1278,12 +1278,12 @@ class FixtureBuilder {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
-                      'eip155:1': {
+                      'eip155:1337': {
                         methods: [],
                         notifications: [],
                         accounts: [
-                          'eip155:1:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
-                          'eip155:1:0xd1ca923697a701cba1364d803d72b4740fc39bc9',
+                          'eip155:1337:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                          'eip155:1337:0xd1ca923697a701cba1364d803d72b4740fc39bc9',
                         ],
                       },
                     },
@@ -1308,13 +1308,13 @@ class FixtureBuilder {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
-                      'eip155:1': {
+                      'eip155:1337': {
                         methods: [],
                         notifications: [],
                         accounts: [
-                          'eip155:1:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
-                          'eip155:1:0xa5c5293e124d04e2f85e8553851001fd2f192647',
-                          'eip155:1:0xb9504634e5788208933b51ae7440b478bfadf865',
+                          'eip155:1337:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                          'eip155:1337:0xa5c5293e124d04e2f85e8553851001fd2f192647',
+                          'eip155:1337:0xb9504634e5788208933b51ae7440b478bfadf865',
                         ],
                       },
                     },
@@ -1339,11 +1339,11 @@ class FixtureBuilder {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
-                      'eip155:1': {
+                      'eip155:1337': {
                         methods: [],
                         notifications: [],
                         accounts: [
-                          'eip155:1:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                          'eip155:1337:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
                         ],
                       },
                     },
