@@ -207,9 +207,6 @@
   "addCustomNetwork": {
     "message": "カスタムネットワークを追加"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "これにより、このネットワークはMetaMask内で使用できるようになります。"
-  },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMaskはカスタムネットワークを検証しません。"
   },
@@ -220,9 +217,6 @@
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "詐欺やネットワークセキュリティのリスク",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "このサイトにネットワークの追加を許可しますか？"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "このRPCプロバイダーは、確実に信頼できる場合のみ追加してください。$1",
@@ -6006,9 +6000,6 @@
   },
   "viewActivity": {
     "message": "アクティビティを表示"
-  },
-  "viewAllDetails": {
-    "message": "すべての詳細の表示"
   },
   "viewAllQuotes": {
     "message": "すべてのクォートを表示"

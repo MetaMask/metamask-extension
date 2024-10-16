@@ -207,9 +207,6 @@
   "addCustomNetwork": {
     "message": "Magdagdag ng custom na network"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Magpapahintulot ito sa network na ito na gamitin sa loob ng MetaMask."
-  },
   "addEthereumChainConfirmationRisks": {
     "message": "Ang MetaMask ay hindi nagve-verify ng mga custom na network."
   },
@@ -220,9 +217,6 @@
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "mga panloloko at panganib ng seguridad ng network",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Payagan ang site na ito na magdagdag ng network?"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Idagdag lamang ang RPC provider na ito kung sigurado kang mapagkakatiwalaan ito. $1",
@@ -6006,9 +6000,6 @@
   },
   "viewActivity": {
     "message": "Tingnan ang aktibidad"
-  },
-  "viewAllDetails": {
-    "message": "Tingnan ang lahat ng detalye"
   },
   "viewAllQuotes": {
     "message": "tingnan ang lahat ng quote"

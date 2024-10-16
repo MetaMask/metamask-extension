@@ -207,9 +207,6 @@
   "addCustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Thao tác này sẽ cho phép sử dụng mạng này trong MetaMask."
-  },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask không xác minh mạng tùy chỉnh."
   },
@@ -220,9 +217,6 @@
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "lừa đảo và các nguy cơ về an ninh mạng",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Cho phép trang này thêm một mạng?"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Chỉ thêm nhà cung cấp RPC này nếu bạn chắc chắn bạn có thể tin tưởng. $1",
@@ -6006,9 +6000,6 @@
   },
   "viewActivity": {
     "message": "Xem hoạt động"
-  },
-  "viewAllDetails": {
-    "message": "Xem toàn bộ chi tiết"
   },
   "viewAllQuotes": {
     "message": "xem tất cả báo giá"

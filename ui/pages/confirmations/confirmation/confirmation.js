@@ -35,7 +35,6 @@ import {
   getNetworkConfigurationsByChainId,
   getHideSnapBranding,
 } from '../../../selectors';
-import NetworkDisplay from '../../../components/app/network-display/network-display';
 import Callout from '../../../components/ui/callout';
 import { Box, Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
@@ -47,7 +46,6 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/cons
 import { DAY } from '../../../../shared/constants/time';
 import {
   BlockSize,
-  Display,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import ConfirmationFooter from './components/confirmation-footer';

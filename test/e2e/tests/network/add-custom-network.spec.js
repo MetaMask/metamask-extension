@@ -492,7 +492,7 @@ describe('Custom network', function () {
             'Currency symbol is not correctly displayed',
           );
 
-          await driver.clickElement({ tag: 'a', text: 'View all details' });
+          await driver.clickElement({ tag: 'a', text: 'See details' });
 
           const networkDetailsLabels = await driver.findElements('dd');
           assert.equal(
