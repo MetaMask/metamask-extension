@@ -171,10 +171,6 @@ async function requestPermissionsImplementation(
   }
 
   if (legacyApproval) {
-    // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
-    // We assume that approvedAccounts and permittedChains are both defined here.
-    // Until they are actually combined, when testing, you must request both
-    // eth_accounts and permittedChains together.
     let newCaveatValue = {
       requiredScopes: {},
       optionalScopes: {},
