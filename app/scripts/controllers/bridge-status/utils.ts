@@ -33,6 +33,6 @@ export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
   // Convert to Extension format
 
   // Return
-  console.log('fetchBridgeTxStatus', statusRequest);
-  return 'connected';
+  console.log('fetchBridgeTxStatus', { statusRequest, rawTxStatus });
+  return rawTxStatus;
 };
