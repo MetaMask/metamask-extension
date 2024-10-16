@@ -247,29 +247,6 @@ function getValues(pendingApproval, t, actions, history, data) {
   return {
     content: [
       {
-        hide: !originIsMetaMask,
-        element: 'Box',
-        key: 'network-box',
-        props: {
-          textAlign: TextAlign.Center,
-          display: Display.Flex,
-          justifyContent: JustifyContent.center,
-          marginTop: 4,
-          marginBottom: 2,
-        },
-        children: [
-          {
-            element: 'Chip',
-            key: 'network-chip',
-            props: {
-              label: pendingApproval.requestData.chainName,
-              backgroundColor: BackgroundColor.backgroundAlternative,
-              leftIconUrl: pendingApproval.requestData.imageUrl,
-            },
-          },
-        ],
-      },
-      {
         element: 'BannerAlert',
         key: 'only-add-networks-you-trust',
         children: [

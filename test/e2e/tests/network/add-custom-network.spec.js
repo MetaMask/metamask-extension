@@ -119,9 +119,7 @@ const inputData = {
 };
 
 describe('Custom network', function () {
-  const chainID = '42161';
   const networkURL = 'https://arbitrum-mainnet.infura.io';
-  const networkNAME = 'Arbitrum One';
   const currencySYMBOL = 'ETH';
   const blockExplorerURL = 'https://explorer.arbitrum.io';
 
@@ -456,36 +454,16 @@ describe('Custom network', function () {
             text: 'Add',
           });
 
-          // verify network details
-          const title = await driver.findElement({
-            tag: 'span',
-            text: 'Arbitrum One',
-          });
-
-          assert.equal(
-            await title.getText(),
-            'Arbitrum One',
-            'Title of popup should be selected network',
+          const [networkUrl, currencySymbol] = await driver.findElements(
+            '.definition-list dd',
           );
 
-          const [networkName, networkUrl, chainIdElement, currencySymbol] =
-            await driver.findElements('.definition-list dd');
-
-          assert.equal(
-            await networkName.getText(),
-            networkNAME,
-            'Network name is not correctly displayed',
-          );
           assert.equal(
             await networkUrl.getText(),
             networkURL,
             'Network Url is not correctly displayed',
           );
-          assert.equal(
-            await chainIdElement.getText(),
-            chainID.toString(),
-            'Chain Id is not correctly displayed',
-          );
+
           assert.equal(
             await currencySymbol.getText(),
             currencySYMBOL,
