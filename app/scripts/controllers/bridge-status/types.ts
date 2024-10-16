@@ -19,21 +19,21 @@ export interface StatusRequest {
   refuel?: boolean; //lifi
 }
 
-export interface Asset {
+export type Asset = {
   chainId: DecChainId;
   address: string;
   symbol: string;
   name: string;
   decimals: number;
   icon?: string;
-}
+};
 
-export interface ChainStatus {
+export type ChainStatus = {
   chainId: DecChainId;
   txHash: string;
   amount?: string;
   token?: Asset;
-}
+};
 
 export enum StatusTypes {
   UNKNOWN = 'UNKNOWN',
@@ -57,7 +57,7 @@ export enum BridgeId {
   STARGATE = 'stargate',
 }
 
-export interface StatusResponse {
+export type StatusResponse = {
   status: StatusTypes;
   srcChain: ChainStatus;
   destChain?: ChainStatus;
@@ -65,7 +65,7 @@ export interface StatusResponse {
   isExpectedToken?: boolean;
   isUnrecognizedRouterAddress?: boolean;
   refuel?: RefuelStatusResponse;
-}
+};
 
 export enum FeeType {
   METABRIDGE = 'metabridge',
@@ -135,7 +135,12 @@ export type BridgeHistoryItem = {
   targetContractAddress?: string;
 };
 
-export type BridgeStatusControllerState = {};
+// All fields need to be types not interfaces, same with their children fields
+// o/w you get a type error
+export type BridgeStatusControllerState = {
+  txStatuses: Record<string, StatusResponse>;
+  // txHistory: Record<string, BridgeHistoryItem>;
+};
 
 export enum BridgeStatusAction {
   GET_BRIDGE_TX_STATUS = 'getBridgeTxStatus',
