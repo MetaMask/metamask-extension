@@ -641,8 +641,9 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const numberOfConnectedAccounts = controller.getPermittedAccounts(origin);
-  if (numberOfConnectedAccounts.length === 0) {
+  const numberOfConnectedAccounts =
+    controller.getPermittedAccounts(origin).length;
+  if (numberOfConnectedAccounts === 0) {
     return;
   }
 
