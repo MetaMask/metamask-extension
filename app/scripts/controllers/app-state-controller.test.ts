@@ -1,53 +1,135 @@
-import { ObservableStore } from '@metamask/obs-store';
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
-import AppStateController from './app-state';
+import {
+  AcceptRequest,
+  AddApprovalRequest,
+} from '@metamask/approval-controller';
+import { ControllerMessenger } from '@metamask/base-controller';
+import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
+import { Browser } from 'webextension-polyfill';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ORIGIN_METAMASK,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+} from '../../../shared/constants/app';
+import { AppStateController } from './app-state-controller';
+import type {
+  AllowedActions,
+  AllowedEvents,
+  AppStateControllerActions,
+  AppStateControllerEvents,
+  AppStateControllerState,
+} from './app-state-controller';
+import {
+  PreferencesControllerState,
+  PreferencesControllerStateChangeEvent,
+} from './preferences-controller';
 
-let appStateController, mockStore;
+jest.mock('webextension-polyfill');
+
+const mockIsManifestV3 = jest.fn().mockReturnValue(false);
+jest.mock('../../../shared/modules/mv3.utils', () => ({
+  get isManifestV3() {
+    return mockIsManifestV3();
+  },
+}));
+
+let appStateController: AppStateController;
+let controllerMessenger: ControllerMessenger<
+  | AppStateControllerActions
+  | AllowedActions
+  | AddApprovalRequest
+  | AcceptRequest,
+  | AppStateControllerEvents
+  | AllowedEvents
+  | PreferencesControllerStateChangeEvent
+  | KeyringControllerQRKeyringStateChangeEvent
+>;
+
+const extensionMock = {
+  alarms: {
+    getAll: jest.fn(() => Promise.resolve([])),
+    create: jest.fn(),
+    clear: jest.fn(),
+    onAlarm: {
+      addListener: jest.fn(),
+    },
+  },
+} as unknown as jest.Mocked<Browser>;
 
 describe('AppStateController', () => {
-  mockStore = new ObservableStore();
-  const createAppStateController = (initState = {}) => {
-    return new AppStateController({
+  const createAppStateController = (
+    initState: Partial<AppStateControllerState> = {},
+  ): {
+    appStateController: AppStateController;
+    controllerMessenger: typeof controllerMessenger;
+  } => {
+    controllerMessenger = new ControllerMessenger();
+    jest.spyOn(ControllerMessenger.prototype, 'call');
+    const appStateMessenger = controllerMessenger.getRestricted({
+      name: 'AppStateController',
+      allowedActions: [
+        `ApprovalController:addRequest`,
+        `ApprovalController:acceptRequest`,
+        `PreferencesController:getState`,
+      ],
+      allowedEvents: [
+        `PreferencesController:stateChange`,
+        `KeyringController:qrKeyringStateChange`,
+      ],
+    });
+    controllerMessenger.registerActionHandler(
+      'PreferencesController:getState',
+      jest.fn().mockReturnValue({
+        preferences: {
+          autoLockTimeLimit: 0,
+        },
+      }),
+    );
+    controllerMessenger.registerActionHandler(
+      'ApprovalController:addRequest',
+      jest.fn().mockReturnValue({
+        catch: jest.fn(),
+      }),
+    );
+    appStateController = new AppStateController({
       addUnlockListener: jest.fn(),
       isUnlocked: jest.fn(() => true),
       initState,
       onInactiveTimeout: jest.fn(),
-      showUnlockRequest: jest.fn(),
-      preferencesController: {
-        state: {
-          preferences: {
-            autoLockTimeLimit: 0,
-          },
-        },
-      },
-      messenger: {
-        call: jest.fn(() => ({
-          catch: jest.fn(),
-        })),
-        subscribe: jest.fn(),
-      },
+      messenger: appStateMessenger,
+      extension: extensionMock,
     });
+
+    return { appStateController, controllerMessenger };
+  };
+
+  const createIsUnlockedMock = (isUnlocked: boolean) => {
+    return jest
+      .spyOn(
+        appStateController as unknown as { isUnlocked: () => boolean },
+        'isUnlocked',
+      )
+      .mockReturnValue(isUnlocked);
   };
 
   beforeEach(() => {
-    appStateController = createAppStateController({ store: mockStore });
+    ({ appStateController } = createAppStateController());
   });
 
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', () => {
-      appStateController = createAppStateController();
-      const date = new Date();
+      ({ appStateController } = createAppStateController());
+      const timestamp: number = Date.now();
 
-      appStateController.setOutdatedBrowserWarningLastShown(date);
+      appStateController.setOutdatedBrowserWarningLastShown(timestamp);
 
       expect(
         appStateController.store.getState().outdatedBrowserWarningLastShown,
-      ).toStrictEqual(date);
+      ).toStrictEqual(timestamp);
     });
 
     it('sets outdated browser warning last shown timestamp', () => {
-      const lastShownTimestamp = Date.now();
-      appStateController = createAppStateController();
+      const lastShownTimestamp: number = Date.now();
+      ({ appStateController } = createAppStateController());
       const updateStateSpy = jest.spyOn(
         appStateController.store,
         'updateState',
@@ -66,10 +148,8 @@ describe('AppStateController', () => {
 
   describe('getUnlockPromise', () => {
     it('waits for unlock if the extension is locked', async () => {
-      appStateController = createAppStateController();
-      const isUnlockedMock = jest
-        .spyOn(appStateController, 'isUnlocked')
-        .mockReturnValue(false);
+      ({ appStateController } = createAppStateController());
+      const isUnlockedMock = createIsUnlockedMock(false);
       const waitForUnlockSpy = jest.spyOn(appStateController, 'waitForUnlock');
 
       appStateController.getUnlockPromise(true);
@@ -78,10 +158,8 @@ describe('AppStateController', () => {
     });
 
     it('resolves immediately if the extension is already unlocked', async () => {
-      appStateController = createAppStateController();
-      const isUnlockedMock = jest
-        .spyOn(appStateController, 'isUnlocked')
-        .mockReturnValue(true);
+      ({ appStateController } = createAppStateController());
+      const isUnlockedMock = createIsUnlockedMock(true);
 
       await expect(
         appStateController.getUnlockPromise(false),
@@ -94,20 +172,20 @@ describe('AppStateController', () => {
   describe('waitForUnlock', () => {
     it('resolves immediately if already unlocked', async () => {
       const emitSpy = jest.spyOn(appStateController, 'emit');
-      const resolveFn = jest.fn();
+      const resolveFn: () => void = jest.fn();
       appStateController.waitForUnlock(resolveFn, false);
       expect(emitSpy).toHaveBeenCalledWith('updateBadge');
-      expect(appStateController.messagingSystem.call).toHaveBeenCalledTimes(0);
+      expect(controllerMessenger.call).toHaveBeenCalledTimes(1);
     });
 
     it('creates approval request when waitForUnlock is called with shouldShowUnlockRequest as true', async () => {
-      jest.spyOn(appStateController, 'isUnlocked').mockReturnValue(false);
+      createIsUnlockedMock(false);
 
-      const resolveFn = jest.fn();
+      const resolveFn: () => void = jest.fn();
       appStateController.waitForUnlock(resolveFn, true);
 
-      expect(appStateController.messagingSystem.call).toHaveBeenCalledTimes(1);
-      expect(appStateController.messagingSystem.call).toHaveBeenCalledWith(
+      expect(controllerMessenger.call).toHaveBeenCalledTimes(2);
+      expect(controllerMessenger.call).toHaveBeenCalledWith(
         'ApprovalController:addRequest',
         expect.objectContaining({
           id: expect.any(String),
@@ -121,22 +199,22 @@ describe('AppStateController', () => {
 
   describe('handleUnlock', () => {
     beforeEach(() => {
-      jest.spyOn(appStateController, 'isUnlocked').mockReturnValue(false);
+      createIsUnlockedMock(false);
     });
     afterEach(() => {
       jest.clearAllMocks();
     });
     it('accepts approval request revolving all the related promises', async () => {
       const emitSpy = jest.spyOn(appStateController, 'emit');
-      const resolveFn = jest.fn();
+      const resolveFn: () => void = jest.fn();
       appStateController.waitForUnlock(resolveFn, true);
 
       appStateController.handleUnlock();
 
       expect(emitSpy).toHaveBeenCalled();
       expect(emitSpy).toHaveBeenCalledWith('updateBadge');
-      expect(appStateController.messagingSystem.call).toHaveBeenCalled();
-      expect(appStateController.messagingSystem.call).toHaveBeenCalledWith(
+      expect(controllerMessenger.call).toHaveBeenCalled();
+      expect(controllerMessenger.call).toHaveBeenCalledWith(
         'ApprovalController:acceptRequest',
         expect.any(String),
       );
@@ -172,7 +250,7 @@ describe('AppStateController', () => {
 
   describe('setRecoveryPhraseReminderLastShown', () => {
     it('sets the last shown time of recovery phrase reminder', () => {
-      const timestamp = Date.now();
+      const timestamp: number = Date.now();
       appStateController.setRecoveryPhraseReminderLastShown(timestamp);
 
       expect(
@@ -183,7 +261,28 @@ describe('AppStateController', () => {
 
   describe('setLastActiveTime', () => {
     it('sets the last active time to the current time', () => {
-      const spy = jest.spyOn(appStateController, '_resetTimer');
+      const spy = jest.spyOn(
+        appStateController as unknown as { _resetTimer: () => void },
+        '_resetTimer',
+      );
+      appStateController.setLastActiveTime();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('sets the timer if timeoutMinutes is set', () => {
+      const timeout = Date.now();
+      controllerMessenger.publish(
+        'PreferencesController:stateChange',
+        {
+          preferences: { autoLockTimeLimit: timeout },
+        } as unknown as PreferencesControllerState,
+        [],
+      );
+      const spy = jest.spyOn(
+        appStateController as unknown as { _resetTimer: () => void },
+        '_resetTimer',
+      );
       appStateController.setLastActiveTime();
 
       expect(spy).toHaveBeenCalled();
@@ -204,7 +303,8 @@ describe('AppStateController', () => {
 
   describe('addPollingToken', () => {
     it('adds a pollingToken for a given environmentType', () => {
-      const pollingTokenType = 'popupGasPollTokens';
+      const pollingTokenType =
+        POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_POPUP];
       appStateController.addPollingToken('token1', pollingTokenType);
       expect(appStateController.store.getState()[pollingTokenType]).toContain(
         'token1',
@@ -214,7 +314,8 @@ describe('AppStateController', () => {
 
   describe('removePollingToken', () => {
     it('removes a pollingToken for a given environmentType', () => {
-      const pollingTokenType = 'popupGasPollTokens';
+      const pollingTokenType =
+        POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_POPUP];
       appStateController.addPollingToken('token1', pollingTokenType);
       appStateController.removePollingToken('token1', pollingTokenType);
       expect(
@@ -268,7 +369,7 @@ describe('AppStateController', () => {
 
   describe('setCurrentPopupId', () => {
     it('sets the currentPopupId in the appState', () => {
-      const popupId = 'popup1';
+      const popupId = 12345;
 
       appStateController.setCurrentPopupId(popupId);
       expect(appStateController.store.getState().currentPopupId).toBe(popupId);
@@ -277,7 +378,7 @@ describe('AppStateController', () => {
 
   describe('getCurrentPopupId', () => {
     it('retrieves the currentPopupId saved in the appState', () => {
-      const popupId = 'popup1';
+      const popupId = 54321;
 
       appStateController.setCurrentPopupId(popupId);
       expect(appStateController.getCurrentPopupId()).toBe(popupId);
@@ -318,7 +419,7 @@ describe('AppStateController', () => {
 
   describe('setSnapsInstallPrivacyWarningShownStatus', () => {
     it('updates the status of snaps install privacy warning', () => {
-      appStateController = createAppStateController();
+      ({ appStateController } = createAppStateController());
       const updateStateSpy = jest.spyOn(
         appStateController.store,
         'updateState',
@@ -337,13 +438,16 @@ describe('AppStateController', () => {
 
   describe('institutional', () => {
     it('set the interactive replacement token with a url and the old refresh token', () => {
-      appStateController = createAppStateController();
+      ({ appStateController } = createAppStateController());
       const updateStateSpy = jest.spyOn(
         appStateController.store,
         'updateState',
       );
 
-      const mockParams = { url: 'https://example.com', oldRefreshToken: 'old' };
+      const mockParams = {
+        url: 'https://example.com',
+        oldRefreshToken: 'old',
+      };
 
       appStateController.showInteractiveReplacementTokenBanner(mockParams);
 
@@ -356,13 +460,16 @@ describe('AppStateController', () => {
     });
 
     it('set the setCustodianDeepLink with the fromAddress and custodyId', () => {
-      appStateController = createAppStateController();
+      ({ appStateController } = createAppStateController());
       const updateStateSpy = jest.spyOn(
         appStateController.store,
         'updateState',
       );
 
-      const mockParams = { fromAddress: '0x', custodyId: 'custodyId' };
+      const mockParams = {
+        fromAddress: '0x',
+        custodyId: 'custodyId',
+      };
 
       appStateController.setCustodianDeepLink(mockParams);
 
@@ -375,7 +482,7 @@ describe('AppStateController', () => {
     });
 
     it('set the setNoteToTraderMessage with a message', () => {
-      appStateController = createAppStateController();
+      ({ appStateController } = createAppStateController());
       const updateStateSpy = jest.spyOn(
         appStateController.store,
         'updateState',
@@ -391,6 +498,247 @@ describe('AppStateController', () => {
       });
 
       updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setSurveyLinkLastClickedOrClosed', () => {
+    it('set the surveyLinkLastClickedOrClosed time', () => {
+      ({ appStateController } = createAppStateController());
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = Date.now();
+
+      appStateController.setSurveyLinkLastClickedOrClosed(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        surveyLinkLastClickedOrClosed: mockParams,
+      });
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setOnboardingDate', () => {
+    it('set the onboardingDate', () => {
+      ({ appStateController } = createAppStateController());
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      appStateController.setOnboardingDate();
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setLastViewedUserSurvey', () => {
+    it('set the lastViewedUserSurvey with id 1', () => {
+      ({ appStateController } = createAppStateController());
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = 1;
+
+      appStateController.setLastViewedUserSurvey(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        lastViewedUserSurvey: mockParams,
+      });
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setNewPrivacyPolicyToastClickedOrClosed', () => {
+    it('set the newPrivacyPolicyToastClickedOrClosed to true', () => {
+      ({ appStateController } = createAppStateController());
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      appStateController.setNewPrivacyPolicyToastClickedOrClosed();
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(
+        appStateController.store.getState()
+          .newPrivacyPolicyToastClickedOrClosed,
+      ).toStrictEqual(true);
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setNewPrivacyPolicyToastShownDate', () => {
+    it('set the newPrivacyPolicyToastShownDate', () => {
+      ({ appStateController } = createAppStateController());
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = Date.now();
+
+      appStateController.setNewPrivacyPolicyToastShownDate(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        newPrivacyPolicyToastShownDate: mockParams,
+      });
+      expect(
+        appStateController.store.getState().newPrivacyPolicyToastShownDate,
+      ).toStrictEqual(mockParams);
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('setTermsOfUseLastAgreed', () => {
+    it('set the termsOfUseLastAgreed timestamp', () => {
+      ({ appStateController } = createAppStateController());
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = Date.now();
+
+      appStateController.setTermsOfUseLastAgreed(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        termsOfUseLastAgreed: mockParams,
+      });
+      expect(
+        appStateController.store.getState().termsOfUseLastAgreed,
+      ).toStrictEqual(mockParams);
+
+      updateStateSpy.mockRestore();
+    });
+  });
+
+  describe('onPreferencesStateChange', () => {
+    it('should update the timeoutMinutes with the autoLockTimeLimit', () => {
+      ({ appStateController, controllerMessenger } =
+        createAppStateController());
+      const timeout = Date.now();
+
+      controllerMessenger.publish(
+        'PreferencesController:stateChange',
+        {
+          preferences: { autoLockTimeLimit: timeout },
+        } as unknown as PreferencesControllerState,
+        [],
+      );
+
+      expect(appStateController.store.getState().timeoutMinutes).toStrictEqual(
+        timeout,
+      );
+    });
+  });
+
+  describe('isManifestV3', () => {
+    it('creates alarm when isManifestV3 is true', () => {
+      mockIsManifestV3.mockReturnValue(true);
+      ({ appStateController } = createAppStateController());
+
+      const timeout = Date.now();
+      controllerMessenger.publish(
+        'PreferencesController:stateChange',
+        {
+          preferences: { autoLockTimeLimit: timeout },
+        } as unknown as PreferencesControllerState,
+        [],
+      );
+      const spy = jest.spyOn(
+        appStateController as unknown as { _resetTimer: () => void },
+        '_resetTimer',
+      );
+      appStateController.setLastActiveTime();
+
+      expect(spy).toHaveBeenCalled();
+      expect(extensionMock.alarms.clear).toHaveBeenCalled();
+      expect(extensionMock.alarms.onAlarm.addListener).toHaveBeenCalled();
+    });
+  });
+
+  describe('AppStateController:getState', () => {
+    it('should return the current state of the property', () => {
+      expect(
+        appStateController.store.getState().recoveryPhraseReminderHasBeenShown,
+      ).toStrictEqual(false);
+      expect(
+        controllerMessenger.call('AppStateController:getState')
+          .recoveryPhraseReminderHasBeenShown,
+      ).toStrictEqual(false);
+    });
+  });
+
+  describe('AppStateController:stateChange', () => {
+    it('subscribers will recieve the state when published', () => {
+      expect(
+        appStateController.store.getState().surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(null);
+      const timeNow = Date.now();
+      controllerMessenger.subscribe(
+        'AppStateController:stateChange',
+        (state: Partial<AppStateControllerState>) => {
+          if (typeof state.surveyLinkLastClickedOrClosed === 'number') {
+            appStateController.setSurveyLinkLastClickedOrClosed(
+              state.surveyLinkLastClickedOrClosed,
+            );
+          }
+        },
+      );
+
+      controllerMessenger.publish(
+        'AppStateController:stateChange',
+        {
+          surveyLinkLastClickedOrClosed: timeNow,
+        } as unknown as AppStateControllerState,
+        [],
+      );
+
+      expect(
+        appStateController.store.getState().surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(timeNow);
+      expect(
+        controllerMessenger.call('AppStateController:getState')
+          .surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(timeNow);
+    });
+
+    it('state will be published when there is state change', () => {
+      expect(
+        appStateController.store.getState().surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(null);
+      const timeNow = Date.now();
+      controllerMessenger.subscribe(
+        'AppStateController:stateChange',
+        (state: Partial<AppStateControllerState>) => {
+          expect(state.surveyLinkLastClickedOrClosed).toStrictEqual(timeNow);
+        },
+      );
+
+      appStateController.setSurveyLinkLastClickedOrClosed(timeNow);
+
+      expect(
+        appStateController.store.getState().surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(timeNow);
+      expect(
+        controllerMessenger.call('AppStateController:getState')
+          .surveyLinkLastClickedOrClosed,
+      ).toStrictEqual(timeNow);
     });
   });
 });
