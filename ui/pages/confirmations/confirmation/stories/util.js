@@ -7,7 +7,6 @@ import { Box } from '../../../../components/component-library';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 
 const STORE_MOCK = {
-  ...testData,
   metamask: {
     approvalFlows: [],
     currentCurrency: 'USD',

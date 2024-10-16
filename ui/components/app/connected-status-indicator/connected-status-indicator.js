@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { findKey } from 'lodash';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import {
   STATUS_CONNECTED,
@@ -14,9 +15,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getAddressConnectedSubjectMap,
+  getOriginOfCurrentTab,
   getPermissionsForActiveTab,
   getSelectedInternalAccount,
-  getPermittedAccountsForCurrentTab,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
 
@@ -31,15 +33,17 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
     .map((permission) => permission.key)
     .includes(WALLET_SNAP_PERMISSION_KEY);
 
-  const permittedAccounts = useSelector(getPermittedAccountsForCurrentTab);
-  const currentTabIsConnectedToSelectedAddress = permittedAccounts.find(
-    (account) => account === selectedAddress,
-  );
+  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
+  const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
+  const selectedAddressSubjectMap = addressConnectedSubjectMap[selectedAddress];
+  const currentTabIsConnectedToSelectedAddress = Boolean(
+    selectedAddressSubjectMap && selectedAddressSubjectMap[originOfCurrentTab],
+  );
   let status;
   if (currentTabIsConnectedToSelectedAddress) {
     status = STATUS_CONNECTED;
-  } else if (permittedAccounts.length > 0) {
+  } else if (findKey(addressConnectedSubjectMap, originOfCurrentTab)) {
     status = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   } else if (activeWalletSnap) {
     status = STATUS_CONNECTED_TO_SNAP;

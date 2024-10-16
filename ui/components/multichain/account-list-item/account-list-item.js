@@ -46,7 +46,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  isAccountConnectedToCurrentTab,
+  getAddressConnectedSubjectMap,
   getShowFiatInTestnets,
   getUseBlockie,
 } from '../../../selectors';
@@ -142,8 +142,10 @@ const AccountListItem = ({
     getMultichainNativeCurrency,
     account,
   );
-  const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
-    isAccountConnectedToCurrentTab(state, account.address),
+  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
+  const selectedAddressSubjectMap = addressConnectedSubjectMap[account.address];
+  const currentTabIsConnectedToSelectedAddress = Boolean(
+    selectedAddressSubjectMap && selectedAddressSubjectMap[currentTabOrigin],
   );
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
