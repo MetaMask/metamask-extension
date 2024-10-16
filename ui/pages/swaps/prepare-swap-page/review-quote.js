@@ -58,8 +58,9 @@ import {
   getUSDConversionRate,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
+  getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
@@ -240,7 +241,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const swapsSTXLoading = useSelector(getSwapsSTXLoading);
@@ -280,7 +281,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const unsignedTransaction = usedQuote.trade;
   const { isGasIncludedTrade } = usedQuote;
   const isSmartTransaction =
-    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
+    useSelector(getSmartTransactionsPreferenceEnabled) &&
+    currentSmartTransactionsEnabled;
 
   const [slippageErrorKey] = useState(() => {
     const slippage = Number(fetchParams?.slippage);

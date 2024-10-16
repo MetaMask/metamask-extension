@@ -2,11 +2,12 @@ import { createSwapsMockStore } from '../../../test/jest';
 import { CHAIN_IDS } from '../../constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import {
-  getSmartTransactionsOptInStatus,
+  getSmartTransactionsOptInStatusForMetrics,
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsEnabled,
   getIsSmartTransaction,
   getIsSmartTransactionsOptInModalAvailable,
+  getSmartTransactionsPreferenceEnabled,
 } from '.';
 
 describe('Selectors', () => {
@@ -65,11 +66,56 @@ describe('Selectors', () => {
     };
   };
 
-  describe('getSmartTransactionsOptInStatus', () => {
-    it('should return the smart transactions opt-in status', () => {
-      const state = createMockState();
-      const result = getSmartTransactionsOptInStatus(state);
-      expect(result).toBe(true);
+  describe('getSmartTransactionsOptInStatusForMetrics and getSmartTransactionsPreferenceEnabled', () => {
+    const createMockOptInStatusState = (status: boolean | null) => {
+      return {
+        metamask: {
+          preferences: {
+            smartTransactionsOptInStatus: status,
+          },
+        },
+      };
+    };
+    describe('getSmartTransactionsOptInStatusForMetrics', () => {
+      it('should return the smart transactions opt-in status', () => {
+        const state = createMockState();
+        const result = getSmartTransactionsOptInStatusForMetrics(state);
+        expect(result).toBe(true);
+      });
+
+      it.each([
+        { status: true, expected: true },
+        { status: false, expected: false },
+        { status: null, expected: null },
+      ])(
+        'should return $expected if the smart transactions opt-in status is $status',
+        ({ status, expected }) => {
+          const state = createMockOptInStatusState(status);
+          const result = getSmartTransactionsOptInStatusForMetrics(state);
+          expect(result).toBe(expected);
+        },
+      );
+    });
+
+    describe('getSmartTransactionsPreferenceEnabled', () => {
+      it('should return the smart transactions preference enabled status', () => {
+        const state = createMockState();
+        const result = getSmartTransactionsPreferenceEnabled(state);
+        expect(result).toBe(true);
+      });
+
+      it.each([
+        { status: true, expected: true },
+        { status: false, expected: false },
+        { status: null, expected: true },
+      ])(
+        'should return $expected if the smart transactions opt-in status is $status',
+        ({ status, expected }) => {
+          const state = createMockOptInStatusState(status);
+          const result = getSmartTransactionsPreferenceEnabled(state);
+          expect(result).toBe(expected);
+        },
+      );
     });
   });
 

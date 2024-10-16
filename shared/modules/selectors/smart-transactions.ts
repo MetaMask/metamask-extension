@@ -1,3 +1,4 @@
+import { createSelector } from 'reselect';
 import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
@@ -7,6 +8,7 @@ import {
   getCurrentNetwork,
   accountSupportsSmartTx,
   getSelectedAccount,
+  getPreferences,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
@@ -56,11 +58,57 @@ type SmartTransactionsMetaMaskState = {
   };
 };
 
-export const getSmartTransactionsOptInStatus = (
-  state: SmartTransactionsMetaMaskState,
-): boolean | null => {
-  return state.metamask.preferences?.smartTransactionsOptInStatus ?? null;
-};
+/**
+ * Returns the user's explicit opt-in status for the smart transactions feature.
+ *
+ * Do not export this selector. It should only be used internally within this file.
+ *
+ * @param state - The state object.
+ * @returns true if the user has explicitly opted in, false if they have opted out,
+ * or null if they have not explicitly opted in or out.
+ */
+const getSmartTransactionOptInStatusInternal = createSelector(
+  getPreferences,
+  (preferences: {
+    smartTransactionsOptInStatus?: boolean | null;
+  }): boolean | null => {
+    return preferences?.smartTransactionsOptInStatus ?? null;
+  },
+);
+
+/**
+ * Returns the user's explicit opt-in status for the smart transactions feature.
+ * This should only be used for metrics collection, and not for determining if the
+ * smart transactions user preference is enabled.
+ *
+ * To determine if the smart transactions user preference is enabled, use
+ * getSmartTransactionsPreferenceEnabled instead.
+ *
+ * @param state - The state object.
+ * @returns true if the user has explicitly opted in, false if they have opted out,
+ * or null if they have not explicitly opted in or out.
+ */
+export const getSmartTransactionsOptInStatusForMetrics = createSelector(
+  getSmartTransactionOptInStatusInternal,
+  (optInStatus: boolean | null): boolean | null => optInStatus,
+);
+
+/**
+ * Returns the user's preference for the smart transactions feature.
+ * Defaults to `true` if the user has not set a preference.
+ *
+ * @param state
+ * @returns
+ */
+export const getSmartTransactionsPreferenceEnabled = createSelector(
+  getSmartTransactionOptInStatusInternal,
+  (optInStatus: boolean | null): boolean => {
+    // In the absence of an explicit opt-in or opt-out,
+    // the Smart Transactions toggle is enabled.
+    const DEFAULT_SMART_TRANSACTIONS_ENABLED = true;
+    return optInStatus ?? DEFAULT_SMART_TRANSACTIONS_ENABLED;
+  },
+);
 
 export const getCurrentChainSupportsSmartTransactions = (
   state: SmartTransactionsMetaMaskState,
@@ -105,7 +153,7 @@ export const getIsSmartTransactionsOptInModalAvailable = (
   return (
     getCurrentChainSupportsSmartTransactions(state) &&
     getIsAllowedRpcUrlForSmartTransactions(state) &&
-    getSmartTransactionsOptInStatus(state) === null &&
+    getSmartTransactionsOptInStatusForMetrics(state) === null &&
     hasNonZeroBalance(state)
   );
 };
@@ -132,7 +180,8 @@ export const getSmartTransactionsEnabled = (
 export const getIsSmartTransaction = (
   state: SmartTransactionsMetaMaskState,
 ): boolean => {
-  const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+  const smartTransactionsOptInStatus =
+    getSmartTransactionsPreferenceEnabled(state);
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
   return Boolean(smartTransactionsOptInStatus && smartTransactionsEnabled);
 };
