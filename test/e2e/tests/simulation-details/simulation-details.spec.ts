@@ -124,7 +124,7 @@ export async function mockRequest(
     .thenJson(200, response);
 }
 
-describe('Simulation Details', () => {
+describe('Simulation Details', function () {
   it('renders send eth transaction', async function (this: Mocha.Context) {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
