@@ -1,6 +1,8 @@
+import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import Name from '../../../../../../components/app/name';
 import {
   Box,
   Icon,
@@ -17,7 +19,6 @@ import {
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
-import { NameOrAddressDisplay } from './name-or-address-display';
 
 export const TransactionFlowSection = () => {
   const { currentConfirmation: transactionMeta } =
@@ -25,9 +26,9 @@ export const TransactionFlowSection = () => {
 
   const { value, pending } = useDecodedTransactionData();
 
-  const recipientAddress =
-    value?.data[0].params.find((param) => param.type === 'address')?.value ||
-    '0x0000000000000000000000000000000000000000';
+  const recipientAddress = value?.data[0].params.find(
+    (param) => param.type === 'address',
+  )?.value;
 
   if (pending) {
     return <ConfirmLoader />;
@@ -42,13 +43,18 @@ export const TransactionFlowSection = () => {
         alignItems={AlignItems.center}
         padding={3}
       >
-        <NameOrAddressDisplay address={transactionMeta.txParams.from} />
+        <Name
+          value={transactionMeta.txParams.from}
+          type={NameType.ETHEREUM_ADDRESS}
+        />
         <Icon
           name={IconName.ArrowRight}
           size={IconSize.Md}
           color={IconColor.iconMuted}
         />
-        <NameOrAddressDisplay address={recipientAddress} />
+        {recipientAddress && (
+          <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
+        )}
       </Box>
     </ConfirmInfoSection>
   );

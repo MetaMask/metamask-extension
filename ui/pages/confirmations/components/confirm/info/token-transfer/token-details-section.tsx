@@ -23,10 +23,7 @@ import {
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../../selectors';
 import { useConfirmContext } from '../../../../context/confirm';
 
 export const TokenDetailsSection = () => {
@@ -34,7 +31,7 @@ export const TokenDetailsSection = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const chainId = useSelector(getCurrentChainId);
+  const { chainId } = transactionMeta;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const networkName = networkConfigurations[chainId].name;
 

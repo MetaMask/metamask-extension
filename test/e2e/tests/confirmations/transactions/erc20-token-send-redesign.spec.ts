@@ -11,7 +11,6 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from '../helpers';
-import { mocked4BytesSetApprovalForAll } from './erc721-revoke-set-approval-for-all-redesign';
 import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
@@ -43,7 +42,31 @@ describe('Confirmation Redesign ERC20 Token Send @no-mmi', function () {
 });
 
 async function mocks(server: Mockttp) {
-  return [await mocked4BytesSetApprovalForAll(server)];
+  return [await mockedSourcifyTokenSend(server)];
+}
+
+export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .withQuery({ hex_signature: '0xa9059cbb' })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [
+          {
+            bytes_signature: '©\u0005»',
+            created_at: '2016-07-09T03:58:28.234977Z',
+            hex_signature: '0xa9059cbb',
+            id: 145,
+            text_signature: 'transfer(address,uint256)',
+          },
+        ],
+      },
+    }));
 }
 
 async function createTransactionAndAssertDetails(
@@ -58,7 +81,7 @@ async function createTransactionAndAssertDetails(
 
   const testDapp = new TestDapp(driver);
 
-  await testDapp.open({ contractAddress, url: DAPP_URL });
+  await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
   await testDapp.clickERC20WatchAssetButton();
 
