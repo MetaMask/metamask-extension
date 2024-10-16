@@ -5032,9 +5032,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:@metamask-previews/controller-utils@11.3.0-preview-ada451da":
-  version: 11.3.0-preview-ada451da
-  resolution: "@metamask-previews/controller-utils@npm:11.3.0-preview-ada451da"
+"@metamask/controller-utils@npm:@metamask-previews/controller-utils@11.3.0-preview-597e8377":
+  version: 11.3.0-preview-597e8377
+  resolution: "@metamask-previews/controller-utils@npm:11.3.0-preview-597e8377"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -5045,7 +5045,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/48c4ff542a080bf64dd45a78b6717eac73512f95d86e127a197166e652af79700db7cc81a23ebba602f6fe921498bf382ea138723f97ce287b94597a7507c3d7
+  checksum: 10/e099557ac30660ff16ef941c1996f85e2b5d0a732d38fa58eebcba5835a8144fbfadb8f9be07241bf8c4034e09be8ece4d301af5313278d19b27f73cebe8b371
   languageName: node
   linkType: hard
 

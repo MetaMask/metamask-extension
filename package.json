@@ -132,7 +132,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
-    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.3.0-preview-ada451da",
+    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.3.0-preview-597e8377",
     "chokidar": "^3.6.0",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
