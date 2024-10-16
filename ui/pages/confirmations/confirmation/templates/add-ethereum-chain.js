@@ -19,7 +19,6 @@ import {
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
-import { BannerAlertSeverity } from '../../../../components/component-library';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
@@ -270,17 +269,17 @@ function getValues(pendingApproval, t, actions, history, data) {
         ],
       },
       {
-        element: 'BannerAlert',
+        element: 'Typography',
         key: 'only-add-networks-you-trust',
         children: [
           {
-            element: 'Typography',
-            key: 'description',
+            element: 'b',
+            key: 'bolded-text',
             props: {
               style: { display: originIsMetaMask && '-webkit-box' },
             },
             children: [
-              `${t('unknownChainWarning')} `,
+              `${t('addEthereumChainConfirmationRisks')} `,
               {
                 hide: !originIsMetaMask,
                 element: 'Tooltip',
@@ -297,6 +296,7 @@ function getValues(pendingApproval, t, actions, history, data) {
                         textAlign: 'left',
                       }}
                     >
+                      {t('someNetworksMayPoseSecurity')}{' '}
                       <a
                         key="zendesk_page_link"
                         href={ZENDESK_URLS.UNKNOWN_NETWORK}
@@ -326,19 +326,28 @@ function getValues(pendingApproval, t, actions, history, data) {
             ],
           },
           {
-            element: 'a',
-            children: t('learnMoreUpperCase'),
-            key: 'learnMoreUpperCase',
+            element: 'MetaMaskTranslation',
+            key: 'learn-about-risks',
             props: {
-              href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
-              target: '__blank',
+              translationKey: 'addEthereumChainConfirmationRisksLearnMore',
+              variables: [
+                {
+                  element: 'a',
+                  children: t('addEthereumChainConfirmationRisksLearnMoreLink'),
+                  key: 'addEthereumChainConfirmationRisksLearnMoreLink',
+                  props: {
+                    href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
+                    target: '__blank',
+                  },
+                },
+              ],
             },
           },
         ],
         props: {
-          severity: BannerAlertSeverity.Warning,
+          variant: TypographyVariant.H7,
           boxProps: {
-            margin: [0, 4],
+            margin: originIsMetaMask ? [0, 8] : 0,
             display: Display.Flex,
             flexDirection: FlexDirection.Column,
             alignItems: AlignItems.center,
