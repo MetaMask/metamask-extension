@@ -6304,9 +6304,6 @@
   "unknown": {
     "message": "Unknown"
   },
-  "unknownChainWarning": {
-    "message": "We can’t verify custom networks. To avoid malicious providers from recording your network activity, only add networks you trust."
-  },
   "unknownCollection": {
     "message": "Unnamed collection"
   },
