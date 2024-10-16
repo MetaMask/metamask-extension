@@ -120,10 +120,10 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
 
   // use to track when a quote is requested and received
   useEffect(() => {
-    if (bestQuote && !isSwapQuoteLoading) {
+    if (isSwapQuoteLoading) {
       trackEvent(
         {
-          event: MetaMetricsEventName.sendSwapQuoteReceived,
+          event: MetaMetricsEventName.sendSwapQuoteRequested,
           category: MetaMetricsEventCategory.Send,
           sensitiveProperties: {
             ...sendAnalytics,
@@ -131,10 +131,10 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
         },
         { excludeMetaMetricsId: false },
       );
-    } else {
+    } else if (bestQuote) {
       trackEvent(
         {
-          event: MetaMetricsEventName.sendSwapQuoteRequested,
+          event: MetaMetricsEventName.sendSwapQuoteReceived,
           category: MetaMetricsEventCategory.Send,
           sensitiveProperties: {
             ...sendAnalytics,
