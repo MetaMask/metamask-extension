@@ -1,23 +1,29 @@
-import React, { useMemo } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
-  InternalAccountWithBalance,
   getCurrentChainId,
-  getMetaMaskAccountsOrdered,
+  getCurrentNetwork,
+  getIsTestnet,
   getPreferences,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
-  getTokenExchangeRates,
+  getNetworkConfigurationsByChainId,
 } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
-import { getConversionRate } from '../../../../../ducks/metamask/metamask';
-import { useMultichainAccountTotalFiatBalance } from '../../../../../hooks/useMultichainAccountTotalFiatBalance';
-import { getMultichainBalances } from '../../../../../selectors/multichain';
-// import { Text } from '../../../../component-library/text/text';
-// import { Box } from '../../../../component-library/box/box';
+import { Text } from '../../../../component-library/text/text';
+import {
+  Display,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import { Box } from '../../../../component-library/box/box';
+import { AvatarNetwork } from '../../../../component-library';
+import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -28,16 +34,14 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const dispatch = useDispatch();
   const chainId = useSelector(getCurrentChainId);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
-  const accounts: InternalAccountWithBalance[] = useSelector(
-    getMetaMaskAccountsOrdered,
-  );
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const isTestnet = useSelector(getIsTestnet);
+  const { tokenNetworkFilter, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-
-  const balances = useSelector(getMultichainBalances);
-  console.log('BALANCES: ', balances);
 
   const { totalFiatBalance: selectedAccountBalance, loading } =
     useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
@@ -58,13 +62,75 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         isSelected={!Object.keys(tokenNetworkFilter).length}
         onClick={() => handleFilter({})}
       >
-        All Networks
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Box>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+            >
+              All Networks
+            </Text>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+            >
+              $1,000.00
+            </Text>
+          </Box>
+          <Box display={Display.Flex}>
+            {Object.values(allNetworks).map((network, index) => {
+              if (index >= 5) return null; // only show a max of 5 icons overlapping
+              const chainId =
+                network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+              return (
+                <AvatarNetwork
+                  name="All"
+                  src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId] ?? undefined}
+                  // overlap the icons
+                  style={{
+                    marginLeft: index === 0 ? 0 : '-20px',
+                    zIndex: Object.values(allNetworks).length - index,
+                  }}
+                />
+              );
+            })}
+          </Box>
+        </Box>
       </SelectableListItem>
       <SelectableListItem
         isSelected={tokenNetworkFilter[chainId]}
         onClick={() => handleFilter({ [chainId]: true })}
       >
-        Current Network {!loading && selectedAccountBalance}
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Box>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+            >
+              Current Network
+            </Text>
+            <UserPreferencedCurrencyDisplay
+              value={selectedAccountBalance}
+              type="PRIMARY"
+              ethNumberOfDecimals={4}
+              hideTitle
+              shouldCheckShowNativeToken
+              isAggregatedFiatOverviewBalance={
+                !showNativeTokenAsMainBalance && !isTestnet
+              }
+            />
+          </Box>
+          <AvatarNetwork
+            name="Current"
+            src={currentNetwork?.rpcPrefs?.imageUrl}
+          />
+        </Box>
       </SelectableListItem>
     </>
   );
