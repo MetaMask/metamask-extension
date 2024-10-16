@@ -54,7 +54,6 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const trackEvent = useContext(MetaMetricsContext);
 
   const [showAddNewAccounts, setShowAddNewAccounts] = useState(false);
-
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultSelectedAccountAddresses,
   );
@@ -82,10 +81,8 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
     }
   };
 
-  const allAreSelected = () => {
-    return accounts.length === selectedAccountAddresses.length;
-  };
-
+  const allAreSelected = () =>
+    accounts.length === selectedAccountAddresses.length;
   const checked = allAreSelected();
   const isIndeterminate = !checked && selectedAccountAddresses.length > 0;
 
@@ -133,46 +130,30 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                   {t('newAccount')}
                 </ButtonLink>
               </Box>
-            ) : (
-              <>
-                <Box
-                  padding={4}
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.spaceBetween}
-                >
-                  <Checkbox
-                    label={t('selectAll')}
-                    isChecked={checked}
-                    gap={4}
-                    onClick={() =>
-                      allAreSelected() ? deselectAll() : selectAll()
-                    }
-                    isIndeterminate={isIndeterminate}
-                  />
-                  <ButtonLink onClick={() => setShowAddNewAccounts(true)}>
-                    {t('newAccount')}
-                  </ButtonLink>
-                </Box>
-                {accounts.map((account) => (
-                  <AccountListItem
-                    onClick={() => handleAccountClick(account.address)}
-                    account={account}
-                    key={account.address}
-                    isPinned={Boolean(account.pinned)}
-                    startAccessory={
-                      <Checkbox
-                        isChecked={selectedAccountAddresses.some(
-                          (selectedAccountAddress) =>
-                            isEqualCaseInsensitive(
-                              selectedAccountAddress,
-                              account.address,
-                            ),
-                        )}
-                      />
-                    }
-                    selected={false}
-                  />
-                ))}
+
+              {accounts.map((account) => (
+                <AccountListItem
+                  onClick={() => handleAccountClick(account.address)}
+                  account={account}
+                  key={account.address}
+                  isPinned={Boolean(account.pinned)}
+                  startAccessory={
+                    <Checkbox
+                      isChecked={selectedAccountAddresses.some(
+                        (selectedAccountAddress) =>
+                          isEqualCaseInsensitive(
+                            selectedAccountAddress,
+                            account.address,
+                          ),
+                      )}
+                    />
+                  }
+                  selected={false}
+                />
+              ))}
+            </>
+          )}
+        </ModalBody>
 
         <ModalFooter>
           {selectedAccountAddresses.length === 0 ? (
@@ -217,12 +198,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
             <ButtonPrimary
               data-testid="connect-more-accounts-button"
               onClick={() => {
-                // Get accounts that are in `selectedAccountAddresses` but not in `defaultSelectedAccountAddresses`
                 const addedAccounts = selectedAccountAddresses.filter(
                   (address) => !defaultSet.has(address),
                 );
-
-                // Get accounts that are in `defaultSelectedAccountAddresses` but not in `selectedAccountAddresses`
                 const removedAccounts = defaultSelectedAccountAddresses.filter(
                   (address) => !selectedSet.has(address),
                 );
