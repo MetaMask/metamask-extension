@@ -14,6 +14,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
 import { getConversionRate } from '../../../../../ducks/metamask/metamask';
+import { useMultichainAccountTotalFiatBalance } from '../../../../../hooks/useMultichainAccountTotalFiatBalance';
+import { getMultichainBalances } from '../../../../../selectors/multichain';
 // import { Text } from '../../../../component-library/text/text';
 // import { Box } from '../../../../component-library/box/box';
 
@@ -34,16 +36,14 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     getShouldHideZeroBalanceTokens,
   );
 
+  const balances = useSelector(getMultichainBalances);
+  console.log('BALANCES: ', balances);
+
   const { totalFiatBalance: selectedAccountBalance, loading } =
     useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
 
-  const multiAccountBalance = accounts.reduce((acc, account) => {
-    const { totalFiatBalance } = useAccountTotalFiatBalance(
-      account,
-      shouldHideZeroBalanceTokens,
-    );
-    return acc + parseFloat(totalFiatBalance);
-  }, 0);
+  // TODO: fetch balances across networks
+  // const multiNetworkAccountBalance = useMultichainAccountBalance()
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
     dispatch(setTokenNetworkFilter(chainFilters));
@@ -58,13 +58,13 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         isSelected={!Object.keys(tokenNetworkFilter).length}
         onClick={() => handleFilter({})}
       >
-        All Networks {!loading && multiAccountBalance}
+        All Networks
       </SelectableListItem>
       <SelectableListItem
         isSelected={tokenNetworkFilter[chainId]}
         onClick={() => handleFilter({ [chainId]: true })}
       >
-        Current Network {selectedAccountBalance}
+        Current Network {!loading && selectedAccountBalance}
       </SelectableListItem>
     </>
   );
