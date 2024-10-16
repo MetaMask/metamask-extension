@@ -60,14 +60,17 @@ type SmartTransactionsMetaMaskState = {
 
 /**
  * Returns the user's explicit opt-in status for the smart transactions feature.
+ * This should only be used for reading the user's internal opt-in status, and
+ * not for determining if the smart transactions user preference is enabled.
  *
- * Do not export this selector. It should only be used internally within this file.
+ * To determine if the smart transactions user preference is enabled, use
+ * getSmartTransactionsPreferenceEnabled instead.
  *
  * @param state - The state object.
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-const getSmartTransactionsOptInStatusInternal = createSelector(
+export const getSmartTransactionsOptInStatusInternal = createSelector(
   getPreferences,
   (preferences: {
     smartTransactionsOptInStatus?: boolean | null;

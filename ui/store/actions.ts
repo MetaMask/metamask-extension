@@ -102,7 +102,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getSmartTransactionsOptInStatusForMetrics } from '../../shared/modules/selectors';
+import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import {
   fetchLocale,
@@ -3095,7 +3095,7 @@ export function setSmartTransactionsPreferenceEnabled(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
     const smartTransactionsOptInStatus =
-      getSmartTransactionsOptInStatusForMetrics(getState());
+      getSmartTransactionsOptInStatusInternal(getState());
     trackMetaMetricsEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
