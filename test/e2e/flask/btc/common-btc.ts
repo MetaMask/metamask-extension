@@ -11,7 +11,7 @@ export async function mockBtcBalanceQuote(
   address: string = DEFAULT_BTC_ACCOUNT,
 ) {
   return await mockServer
-    .forPost(/^https:\/\/.*\.btc.*\.quiknode\.pro/u)
+    .forPost(/^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u)
     .withJsonBodyIncluding({
       method: 'bb_getaddress',
     })
