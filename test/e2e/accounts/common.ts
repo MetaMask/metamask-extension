@@ -6,11 +6,9 @@ import {
   PRIVATE_KEY_TWO,
   WINDOW_TITLES,
   clickSignOnSignatureConfirmation,
-  switchToOrOpenDapp,
   unlockWallet,
   validateContractDetails,
   multipleGanacheOptions,
-  regularDelayMs,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { DAPP_URL, TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
@@ -66,7 +64,6 @@ export async function installSnapSimpleKeyring(
   await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
 
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
-
 
   await driver.clickElement({
     text: 'Confirm',
