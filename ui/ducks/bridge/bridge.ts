@@ -2,13 +2,16 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { Hex } from '@metamask/utils';
 import { swapsSlice } from '../swaps/swaps';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { SwapsEthToken } from '../../selectors';
+import {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NativeAsset,
+} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 
 export type BridgeState = {
   toChainId: Hex | null;
-  fromToken: SwapsTokenObject | SwapsEthToken | null;
-  toToken: SwapsTokenObject | SwapsEthToken | null;
+  fromToken: AssetWithDisplayData<ERC20Asset | NativeAsset> | null;
+  toToken: AssetWithDisplayData<ERC20Asset | NativeAsset> | null;
   fromTokenInputValue: string | null;
 };
 
