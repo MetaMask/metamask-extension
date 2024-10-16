@@ -205,7 +205,6 @@ describe('AlertController', () => {
     });
   });
 
-
   describe('AlertController:getState', () => {
     it('should return the current state of the property', () => {
       const defaultWeb3ShimUsageOrigins = {
@@ -245,6 +244,9 @@ describe('AlertController', () => {
       ).toStrictEqual({
         testWeb3ShimUsageOrigin: 1,
       });
+      expect(
+        alertController.getWeb3ShimUsageState('testWeb3ShimUsageOrigin'),
+      ).toStrictEqual(1);
       expect(
         controllerMessenger.call('AlertController:getState')
           .web3ShimUsageOrigins,
