@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { I18nContext } from '../../../contexts/i18n';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 import {
   AlignItems,
   BackgroundColor,

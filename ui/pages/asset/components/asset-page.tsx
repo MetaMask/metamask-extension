@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
+import { Hex } from '@metamask/utils';
 import {
   getCurrentCurrency,
   getIsBridgeChain,
@@ -62,8 +63,8 @@ export type Asset = (
       aggregators?: [];
     }
 ) & {
-  /** The hexadecimal chain id */
-  chainId: `0x${string}`;
+  /** The hexadecimal or CAIP chain id */
+  chainId: Hex;
   /** The asset's symbol, e.g. 'ETH' */
   symbol: string;
   /** The asset's name, e.g. 'Ethereum' */

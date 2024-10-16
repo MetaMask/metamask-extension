@@ -7,6 +7,7 @@ import { AccountType, CustodyStatus } from '../../shared/constants/custody';
 import { getMostRecentOverviewPage } from '../ducks/history/history';
 import { clearConfirmTransaction } from '../ducks/confirm-transaction/confirm-transaction.duck';
 import { getAccountType } from '../selectors/selectors';
+import { getProviderConfig } from '../selectors/networks';
 import { mmiActionsFactory } from '../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../store/institutional/institution-actions';
 import {
@@ -19,7 +20,6 @@ import { getConfirmationSender } from '../pages/confirmations/components/confirm
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getSmartTransactionsEnabled } from '../../shared/modules/selectors';
 import { CHAIN_ID_TO_RPC_URL_MAP } from '../../shared/constants/network';
-import { getProviderConfig } from '../ducks/metamask/metamask';
 
 type MMITransactionMeta = TransactionMeta & {
   txParams: { from: string };

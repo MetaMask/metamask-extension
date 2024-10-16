@@ -24,7 +24,6 @@ import {
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
-  NetworkStatus,
   SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,
@@ -77,7 +76,6 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
-  getProviderConfig,
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
@@ -109,6 +107,10 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import {
+  getProviderConfig,
+  getNetworkConfigurationsByChainId,
+} from './networks';
+import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -124,25 +126,6 @@ import {
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
-
-/**
- * Returns true if the currently selected network is inaccessible or whether no
- * provider has been set yet for the currently selected network.
- *
- * @param {object} state - Redux state object.
- */
-export function isNetworkLoading(state) {
-  const selectedNetworkClientId = getSelectedNetworkClientId(state);
-  return (
-    selectedNetworkClientId &&
-    state.metamask.networksMetadata[selectedNetworkClientId].status !==
-      NetworkStatus.Available
-  );
-}
-
-export function getSelectedNetworkClientId(state) {
-  return state.metamask.selectedNetworkClientId;
-}
 
 export function getNetworkIdentifier(state) {
   const { type, nickname, rpcUrl } = getProviderConfig(state);
@@ -666,15 +649,6 @@ export function getNeverShowSwitchedNetworkMessage(state) {
   return state.metamask.switchedNetworkNeverShowMessage;
 }
 
-export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
-  (state) => state.metamask.networkConfigurationsByChainId,
-  /**
-   * @param networkConfigurationsByChainId
-   * @returns { import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']}
-   */
-  (networkConfigurationsByChainId) => networkConfigurationsByChainId,
-);
-
 export function getRequestingNetworkInfo(state, chainIds) {
   // If chainIds is undefined, set it to an empty array
   let processedChainIds = chainIds === undefined ? [] : chainIds;
@@ -1171,7 +1145,7 @@ export const getMultipleTargetsSubjectMetadata = createDeepEqualSelector(
 
 export function getRpcPrefsForCurrentProvider(state) {
   const { rpcPrefs } = getProviderConfig(state);
-  return rpcPrefs || {};
+  return rpcPrefs;
 }
 
 export function getKnownMethodData(state, data) {
@@ -1205,13 +1179,6 @@ export function getIpfsGateway(state) {
 
 export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
-}
-
-export function getInfuraBlocked(state) {
-  return (
-    state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
-      .status === NetworkStatus.Blocked
-  );
 }
 
 export function getUSDConversionRate(state) {
