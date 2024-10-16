@@ -6,6 +6,7 @@ import {
   PRIVATE_KEY_TWO,
   WINDOW_TITLES,
   clickSignOnSignatureConfirmation,
+  switchToOrOpenDapp,
   unlockWallet,
   validateContractDetails,
   multipleGanacheOptions,
@@ -186,15 +187,37 @@ async function switchToAccount2(driver: Driver) {
 }
 
 export async function connectAccountToTestDapp(driver: Driver) {
+  await switchToOrOpenDapp(driver);
   await driver.clickElement('#connectButton');
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElementAndWaitForWindowToClose({
+
+  const edit = await driver.findClickableElements({
+    text: 'Edit',
+    tag: 'button',
+  });
+  await edit[1].click();
+
+  await driver.clickElement({
+    tag: 'p',
+    text: 'Localhost 8545'
+  });
+
+  await driver.clickElement({
+    text: 'Update',
+    tag: 'button',
+  });
+
+  await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
 
   await driver.switchToWindowWithUrl(DAPP_URL);
+  await driver.waitForSelector({
+    css: '[id="chainId"]',
+    text: '0x539',
+  });
 }
 
 export async function disconnectFromTestDapp(driver: Driver) {
@@ -283,6 +306,7 @@ export async function signData(
       delay: 2000,
     },
     async () => {
+      await switchToOrOpenDapp(driver);
       await driver.clickElement(locatorID);
 
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

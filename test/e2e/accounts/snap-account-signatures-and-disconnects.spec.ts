@@ -1,12 +1,9 @@
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import {
-  DAPP_URL,
-  multipleGanacheOptions,
-  openDapp,
-  tempToggleSettingRedesignedConfirmations,
-  WINDOW_TITLES,
   withFixtures,
+  multipleGanacheOptions,
+  tempToggleSettingRedesignedConfirmations,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
@@ -37,7 +34,6 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         await tempToggleSettingRedesignedConfirmations(driver);
 
         // open the Test Dapp and connect Account 2 to it
-        await openDapp(driver, undefined, DAPP_URL);
         await connectAccountToTestDapp(driver);
 
         // do #signTypedDataV3
@@ -47,7 +43,6 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         await disconnectFromTestDapp(driver);
 
         // reconnect Account 2 to the Test Dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await connectAccountToTestDapp(driver);
 
         // do #signTypedDataV4
