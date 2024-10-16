@@ -53,7 +53,7 @@
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --build-type flask",
-    "test:e2e:chrome:webpack": "ENABLE_MV3=false SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
+    "test:e2e:chrome:webpack": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:api-specs": "SELENIUM_BROWSER=chrome ts-node test/e2e/run-openrpc-api-test-coverage.ts",
     "test:e2e:mmi:ci": "yarn playwright test --project=mmi --project=mmi.visual",
     "test:e2e:mmi:all": "yarn playwright test --project=mmi && yarn test:e2e:mmi:visual",
