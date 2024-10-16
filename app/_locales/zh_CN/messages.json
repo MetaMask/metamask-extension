@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
   },
-  "noConnectedAccountDescription": {
-    "message": "选择要在此站点上使用的账户以继续。"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask 未连接到此站点"
   },
@@ -5195,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "如果您想继续，我们准备好为您显示最新报价"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "没有与 $1 匹配的代币",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"
   },
@@ -5263,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "获取报价出错"
   },
-  "swapFetchingTokens": {
-    "message": "获取代币中……"
-  },
   "swapFromTo": {
     "message": "$1 到 $2 的交换",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5285,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "高滑点"
-  },
-  "swapHighSlippageWarning": {
-    "message": "滑点金额非常高。"
   },
   "swapIncludesMMFee": {
     "message": "包括 $1% 的 MetaMask 费用。",
@@ -5309,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "低滑点"
-  },
-  "swapLowSlippageError": {
-    "message": "交易可能会失败，最大滑点过低。"
   },
   "swapMaxSlippage": {
     "message": "最大滑点"
@@ -5346,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "~$1% 的价差",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "价格影响是当前市场价格与交易执行期间收到的金额之间的差异。价格影响是您的交易规模相对于流动性池规模的一个函数。"
   },
   "swapPriceUnavailableDescription": {
     "message": "由于缺乏市场价格数据，无法确定价格影响。在交换之前，请确认您对即将收到的代币数量感到满意。"
@@ -5396,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "请求报价"
   },
-  "swapReviewSwap": {
-    "message": "审查交换"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "搜索名称或粘贴地址"
-  },
   "swapSelect": {
     "message": "选择"
   },
@@ -5433,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "低滑点"
-  },
-  "swapSlippageNegative": {
-    "message": "滑点必须大于或等于0"
   },
   "swapSlippageNegativeDescription": {
     "message": "滑点必须大于或等于 0"
@@ -5505,20 +5477,6 @@
     "message": "用 $1 交换 $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "此代币已手动添加。"
-  },
-  "swapTokenVerificationMessage": {
-    "message": "始终在 $1 上确认代币地址。",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "仅在1个来源上进行了验证。"
-  },
-  "swapTokenVerificationSources": {
-    "message": "在 $1 个来源上进行了验证。",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 仅在 1 个源上进行了验证。在继续之前，考虑在 $2 上进行验证。",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5539,29 +5497,11 @@
   "swapUnknown": {
     "message": "未知"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "多个代币可以使用相同的名称和符号。检查 $1 以确认这是您正在寻找的代币。",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 可用于交换",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0%滑点"
   },
-  "swapsAdvancedOptions": {
-    "message": "高级选项"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "滑点金额太高，会导致不良率。请将最大滑点降低到低于15%的值。"
-  },
   "swapsMaxSlippage": {
     "message": "最大滑点"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "没有足够的 $1 来完成此交易",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "$1 不足",
@@ -6057,14 +5997,6 @@
   },
   "verifyContractDetails": {
     "message": "验证第三方详情"
-  },
-  "verifyThisTokenOn": {
-    "message": "在 $1 上验证此代币",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "在 $1 上验证此代币，并确保这是您想要交易的代币。",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "版本"
