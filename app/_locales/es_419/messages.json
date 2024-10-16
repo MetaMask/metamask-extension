@@ -100,17 +100,6 @@
   "addContact": {
     "message": "Agregar contacto"
   },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask no verifica redes personalizadas."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Obtenga más información sobre $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "estafas y riesgos de seguridad de la red",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
   "addFriendsAndAddresses": {
     "message": "Agregue amigos y direcciones de confianza"
   },
@@ -2328,14 +2317,6 @@
   },
   "userName": {
     "message": "Nombre de usuario"
-  },
-  "verifyThisTokenOn": {
-    "message": "Verificar este token en $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Verifique este token en $1 y asegúrese de que sea el token con el que quiere realizar la transacción.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewContact": {
     "message": "Ver contacto"

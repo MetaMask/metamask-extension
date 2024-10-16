@@ -207,17 +207,6 @@
   "addCustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
   },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask không xác minh mạng tùy chỉnh."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Tìm hiểu về $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "lừa đảo và các nguy cơ về an ninh mạng",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Chỉ thêm nhà cung cấp RPC này nếu bạn chắc chắn bạn có thể tin tưởng. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4851,9 +4840,6 @@
   "snapsUIError": {
     "message": "Liên hệ với những người tạo ra $1 để được hỗ trợ thêm.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "someNetworksMayPoseSecurity": {
-    "message": "Một số mạng có thể gây ra rủi ro về bảo mật và/hoặc quyền riêng tư. Bạn cần hiểu rõ các rủi ro này trước khi thêm và sử dụng mạng."
   },
   "somethingDoesntLookRight": {
     "message": "Có gì đó không ổn? $1",

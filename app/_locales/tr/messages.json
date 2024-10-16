@@ -207,17 +207,6 @@
   "addCustomNetwork": {
     "message": "Özel ağ ekle"
   },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask özel ağları doğrulamaz."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "$1 hakkında bilgi edinin.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "dolandırıcılık ve ağ güvenliği riskleri",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Bu RPC sağlayıcısını sadece ona güvenebileceğinizden eminseniz ekleyin. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4851,9 +4840,6 @@
   "snapsUIError": {
     "message": "Daha fazla destek için $1 oluşturucuları ile iletişime geçin.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "someNetworksMayPoseSecurity": {
-    "message": "Bazı ağlar güvenlik ve/veya gizlilik riskleri teşkil edebilir. Bir ağ eklemeden ve kullanmadan önce riskleri anlayın."
   },
   "somethingDoesntLookRight": {
     "message": "Doğru görünmeyen bir şeyler mi var? $1",

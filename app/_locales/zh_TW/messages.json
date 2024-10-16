@@ -42,17 +42,6 @@
   "addContact": {
     "message": "新增合約"
   },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask 不會對自訂的網路做驗證。"
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "了解更多關於$1的事。",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "詐騙與網路安全風險",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
   "addFriendsAndAddresses": {
     "message": "新增朋友和您信任的位址"
   },
@@ -1363,10 +1352,6 @@
   },
   "userName": {
     "message": "使用者名稱"
-  },
-  "verifyThisTokenOn": {
-    "message": "在 $1 驗證這個代幣的資訊",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewContact": {
     "message": "觀看聯絡資訊"

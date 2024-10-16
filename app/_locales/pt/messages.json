@@ -207,17 +207,6 @@
   "addCustomNetwork": {
     "message": "Adicionar rede personalizada"
   },
-  "addEthereumChainConfirmationRisks": {
-    "message": "A MetaMask não verifica redes personalizadas."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Saiba mais sobre $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "golpes e riscos de segurança nas redes",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Adicione esse provedor de RPC apenas se tiver certeza de que é confiável. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4851,9 +4840,6 @@
   "snapsUIError": {
     "message": "Contate os criadores de $1 para receber mais suporte.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "someNetworksMayPoseSecurity": {
-    "message": "Algumas redes podem representar riscos de segurança e/ou privacidade. Tenha os riscos em mente antes de adicionar e usar uma rede."
   },
   "somethingDoesntLookRight": {
     "message": "Alguma coisa não parece certa? $1",

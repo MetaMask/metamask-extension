@@ -42,17 +42,6 @@
   "addContact": {
     "message": "Magdagdag ng contact"
   },
-  "addEthereumChainConfirmationRisks": {
-    "message": "Hindi vine-verify ng MetaMask ang mga custom na network."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Matuto tungkol sa $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "mga scam at panganib sa seguridad ng network",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
   "addFriendsAndAddresses": {
     "message": "Magdagdag ng mga kaibigan at address na pinagkakatiwalaan mo"
   },
@@ -1587,14 +1576,6 @@
   },
   "userName": {
     "message": "Username"
-  },
-  "verifyThisTokenOn": {
-    "message": "I-verify ang token na ito sa $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "I-verify ang token na ito sa $1 at tiyaking ito ang token na gusto mong i-trade.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewContact": {
     "message": "Tingnan ang Contact"
