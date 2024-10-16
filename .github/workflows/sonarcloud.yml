@@ -38,6 +38,18 @@ jobs:
           github-token: ${{ github.token }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ github.event.workflow_run.id }} # Use the workflow id that triggered the workflow
 
+      - name: Download sonar-project.properties
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          sonar_project_properties=$(gh api -H "Accept: application/vnd.github.raw" "repos/$REPOSITORY/contents/sonar-project.properties")
+          if [ -z "$sonar_project_properties" ]; then
+            echo "::error::sonar-project.properties not found in $REPOSITORY. Please make sure this file exists on the default branch."
+            exit 1
+          fi
+          echo "$sonar_project_properties" > sonar-project.properties
+
       - name: SonarCloud Scan
         # This is SonarSource/sonarcloud-github-action@v2.0.0
         uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
