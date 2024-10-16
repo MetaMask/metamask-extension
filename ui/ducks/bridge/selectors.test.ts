@@ -30,7 +30,7 @@ describe('Bridge selectors', () => {
         { srcNetworkAllowlist: [CHAIN_IDS.ARBITRUM] },
         { toChainId: '0xe708' },
         {},
-        { ...mockNetworkState(FEATURED_RPCS[0]) },
+        { ...mockNetworkState(FEATURED_RPCS[1]) },
       );
 
       const result = getFromChain(state as never);
@@ -89,7 +89,7 @@ describe('Bridge selectors', () => {
       );
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(7);
+      expect(result).toHaveLength(8);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
       );
@@ -190,21 +190,20 @@ describe('Bridge selectors', () => {
         },
         {},
         {},
-        mockNetworkState(...FEATURED_RPCS, {
-          chainId: CHAIN_IDS.LINEA_MAINNET,
-        }),
+        mockNetworkState(...FEATURED_RPCS),
       );
       const result = getToChains(state as never);
+      console.log('result: ', result);
 
       expect(result).toHaveLength(3);
       expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.OPTIMISM }),
+        expect.objectContaining({ chainId: CHAIN_IDS.ARBITRUM }),
       );
       expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.POLYGON }),
+        expect.objectContaining({ chainId: CHAIN_IDS.OPTIMISM }),
       );
       expect(result[2]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+        expect.objectContaining({ chainId: CHAIN_IDS.POLYGON }),
       );
     });
 
@@ -297,7 +296,9 @@ describe('Bridge selectors', () => {
         {
           ...mockNetworkState(
             ...Object.values(BUILT_IN_NETWORKS),
-            ...FEATURED_RPCS,
+            ...FEATURED_RPCS.filter(
+              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea mainnet is both a built in network, as well as featured RPC
+            ),
           ),
           useExternalServices: true,
         },
