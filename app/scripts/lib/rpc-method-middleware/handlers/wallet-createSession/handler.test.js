@@ -2,7 +2,7 @@ import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  validateAndFlattenScopes,
+  validateAndNormalizeScopes,
   bucketScopes,
   KnownRpcMethods,
   KnownNotifications,
@@ -13,14 +13,14 @@ import { PermissionNames } from '../../../../controllers/permissions';
 import { processScopedProperties, validateAndAddEip3085 } from './helpers';
 import { walletCreateSessionHandler } from './handler';
 
-jest.mock('../../util', () => ({
-  ...jest.requireActual('../../util'),
+jest.mock('../../../util', () => ({
+  ...jest.requireActual('../../../util'),
   shouldEmitDappViewedEvent: jest.fn(),
 }));
 
 jest.mock('@metamask/multichain', () => ({
   ...jest.requireActual('@metamask/multichain'),
-  validateAndFlattenScopes: jest.fn(),
+  validateAndNormalizeScopes: jest.fn(),
   bucketScopes: jest.fn(),
 }));
 
@@ -106,9 +106,9 @@ const createMockedHandler = () => {
 
 describe('wallet_createSession', () => {
   beforeEach(() => {
-    validateAndFlattenScopes.mockReturnValue({
-      flattenedRequiredScopes: {},
-      flattenedOptionalScopes: {},
+    validateAndNormalizeScopes.mockReturnValue({
+      normalizedRequiredScopes: {},
+      normalizedOptionalScopes: {},
     });
     bucketScopes.mockReturnValue({
       supportedScopes: {},
@@ -147,7 +147,7 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(validateAndFlattenScopes).toHaveBeenCalledWith(
+    expect(validateAndNormalizeScopes).toHaveBeenCalledWith(
       baseRequest.params.requiredScopes,
       { foo: 'bar' },
     );
@@ -155,7 +155,7 @@ describe('wallet_createSession', () => {
 
   it('throws an error when processing scopes fails', async () => {
     const { handler, end } = createMockedHandler();
-    validateAndFlattenScopes.mockImplementation(() => {
+    validateAndNormalizeScopes.mockImplementation(() => {
       throw new Error('failed to process scopes');
     });
     await handler(baseRequest);
@@ -164,15 +164,15 @@ describe('wallet_createSession', () => {
 
   it('processes the scopedProperties', async () => {
     const { handler } = createMockedHandler();
-    validateAndFlattenScopes.mockReturnValue({
-      flattenedRequiredScopes: {
+    validateAndNormalizeScopes.mockReturnValue({
+      normalizedRequiredScopes: {
         'eip155:1': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged', 'chainChanged'],
           accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
         },
       },
-      flattenedOptionalScopes: {
+      normalizedOptionalScopes: {
         'eip155:100': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged', 'chainChanged'],
@@ -222,15 +222,15 @@ describe('wallet_createSession', () => {
 
   it('buckets the required scopes', async () => {
     const { handler } = createMockedHandler();
-    validateAndFlattenScopes.mockReturnValue({
-      flattenedRequiredScopes: {
+    validateAndNormalizeScopes.mockReturnValue({
+      normalizedRequiredScopes: {
         'eip155:1': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged', 'chainChanged'],
           accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
         },
       },
-      flattenedOptionalScopes: {},
+      normalizedOptionalScopes: {},
     });
     await handler(baseRequest);
 
@@ -259,9 +259,9 @@ describe('wallet_createSession', () => {
 
   it('buckets the optional scopes', async () => {
     const { handler } = createMockedHandler();
-    validateAndFlattenScopes.mockReturnValue({
-      flattenedRequiredScopes: {},
-      flattenedOptionalScopes: {
+    validateAndNormalizeScopes.mockReturnValue({
+      normalizedRequiredScopes: {},
+      normalizedOptionalScopes: {
         'eip155:100': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged', 'chainChanged'],
@@ -501,6 +501,11 @@ describe('wallet_createSession', () => {
                     notifications: KnownNotifications.eip155,
                     accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
                   },
+                  'wallet:eip155': {
+                    methods: [],
+                    notifications: [],
+                    accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
+                  },
                 },
                 isMultichainOrigin: true,
               },
@@ -598,6 +603,11 @@ describe('wallet_createSession', () => {
           methods: ['eth_sendTransaction'],
           notifications: ['chainChanged'],
           accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
+        },
+        'wallet:eip155': {
+          methods: [],
+          notifications: [],
+          accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
         },
       },
     });

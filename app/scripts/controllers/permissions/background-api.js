@@ -221,7 +221,7 @@ export function getPermissionBackgroundApiMethods({
               [PermissionNames.permittedChains]: {},
             },
           },
-          type: MethodNames.requestPermissions,
+          type: MethodNames.RequestPermissions,
         })
         .then((legacyApproval) => {
           let caveatValue = {
