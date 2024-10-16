@@ -397,10 +397,6 @@ export const createSwapsMockStore = () => {
             mobileActive: true,
             extensionActive: true,
           },
-          swapRedesign: {
-            mobileActive: true,
-            extensionActive: true,
-          },
         },
         quotes: {
           TEST_AGG_1: {
