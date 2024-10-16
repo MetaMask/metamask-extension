@@ -26100,7 +26100,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
-    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/base-controller": "npm:^7.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.7.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"

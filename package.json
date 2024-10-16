@@ -469,7 +469,6 @@
     "@lydell/node-pty": "^1.0.1",
     "@metamask/api-specs": "^0.9.3",
     "@metamask/auto-changelog": "^2.1.0",
-    "@metamask/base-controller": "^7.0.1",
     "@metamask/build-utils": "^3.0.0",
     "@metamask/eslint-config": "^9.0.0",
     "@metamask/eslint-config-jest": "^9.0.0",
