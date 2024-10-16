@@ -9,6 +9,8 @@ class SelectNetwork {
 
   private closeButton: string;
 
+  private toggleButton: string;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.addNetworkButton = {
@@ -16,11 +18,12 @@ class SelectNetwork {
       text: 'Add a custom network',
     };
     this.closeButton = 'button[aria-label="Close"]';
+    this.toggleButton = '.toggle-button > div';
   }
 
   async clickNetworkName(networkName: string): Promise<void> {
-    console.log('Click ${networkName}');
-    this.networkName = '[data-testid="${networkName}"]';
+    console.log(`Click ${networkName}`);
+    this.networkName = `[data-testid="${networkName}"]`;
     await this.driver.clickElement(this.networkName);
   }
   async addNewNetwork(): Promise<void> {
@@ -31,6 +34,11 @@ class SelectNetwork {
   async clickCloseButton(): Promise<void> {
     console.log('Click Close Button');
     await this.driver.clickElement(this.closeButton);
+  }
+
+  async clickToggleButton(): Promise<void> {
+    console.log('Click Toggle Button');
+    await this.driver.clickElement(this.toggleButton);
   }
 }
 
