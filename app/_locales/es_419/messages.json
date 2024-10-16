@@ -1894,10 +1894,6 @@
     "message": "Necesita $1 más $2 para realizar este canje",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "No hay tokens disponibles que coincidan con $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirmar con la cartera de hardware"
   },
@@ -1949,9 +1945,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Error al capturar cotizaciones"
   },
-  "swapFetchingTokens": {
-    "message": "Capturando tokens..."
-  },
   "swapFromTo": {
     "message": "El canje de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -1969,15 +1962,9 @@
     "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
-  "swapHighSlippageWarning": {
-    "message": "El monto del desfase es muy alto."
-  },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapLowSlippageError": {
-    "message": "Es posible que la transacción tenga errores, el desfase máximo es demasiado bajo."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -2008,9 +1995,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Diferencia de precio de ~$1 %",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "El impacto sobre el precio es la diferencia entre el precio actual del mercado y el monto recibido durante la ejecución de la transacción. El impacto sobre el precio es una función del tamaño de su transacción respecto de la dimensión del fondo de liquidez."
   },
   "swapPriceUnavailableDescription": {
     "message": "No se pudo determinar el impacto sobre el precio debido a la falta de datos de los precios del mercado. Antes de realizar el canje, confirme que está de acuerdo con la cantidad de tokens que está a punto de recibir."
@@ -2051,9 +2035,6 @@
   "swapRequestForQuotation": {
     "message": "Solicitud de cotización"
   },
-  "swapReviewSwap": {
-    "message": "Revisar canje"
-  },
   "swapSelect": {
     "message": "Seleccionar"
   },
@@ -2065,9 +2046,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "A continuación se muestran todas las cotizaciones recopiladas de diversas fuentes de liquidez."
-  },
-  "swapSlippageNegative": {
-    "message": "El desfase debe ser mayor o igual que cero"
   },
   "swapSource": {
     "message": "Fuente de liquidez"
@@ -2102,20 +2080,6 @@
     "message": "Canjear $1 por $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Este token se añadió de forma manual."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Siempre confirme la dirección del token en $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Solo se verificó en una fuente."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Verificar en $1 fuentes.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTooManyDecimalsError": {
     "message": "$1 permite hasta $2 decimales",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -2129,29 +2093,11 @@
   "swapUnknown": {
     "message": "Desconocido"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Varios tokens pueden usar el mismo nombre y símbolo. Revise $1 para comprobar que este es el token que busca.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 disponible para canje",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0 % de desfase"
   },
-  "swapsAdvancedOptions": {
-    "message": "Opciones avanzadas"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "El monto del desfase es muy alto, por lo que recibirá una tasa de conversión desfavorable. Disminuya su tolerancia de desfase a un valor menor al 15 %."
-  },
   "swapsMaxSlippage": {
     "message": "Tolerancia de desfase"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "No hay $1 suficientes para finalizar esta transacción",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Ver en actividad"
@@ -2388,14 +2334,6 @@
   },
   "userName": {
     "message": "Nombre de usuario"
-  },
-  "verifyThisTokenOn": {
-    "message": "Verificar este token en $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Verifique este token en $1 y asegúrese de que sea el token con el que quiere realizar la transacción.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAllDetails": {
     "message": "Ver todos los detalles"
