@@ -265,6 +265,14 @@ export function getAddressConnectedSubjectMap(state) {
   return addressConnectedIconMap;
 }
 
+export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
+  getPermittedAccountsForCurrentTab,
+  (_state, address) => address,
+  (permittedAccounts, address) => {
+    return permittedAccounts.some((account) => account === address);
+  },
+);
+
 // selector helpers
 
 function getAccountsFromSubject(subject) {
