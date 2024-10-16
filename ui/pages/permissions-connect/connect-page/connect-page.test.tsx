@@ -2,6 +2,11 @@ import React from 'react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 import { ConnectPage, ConnectPageRequest } from './connect-page';
 
 const render = (
@@ -73,5 +78,37 @@ describe('ConnectPage', () => {
     const cancelButton = getByText('Cancel');
     expect(confirmButton).toBeDefined();
     expect(cancelButton).toBeDefined();
+  });
+
+  it('should render with defaults from the requested permissions', () => {
+    const { container } = render({
+      request: {
+        id: '1',
+        origin: 'https://test.dapp',
+        permissions: {
+          [RestrictedMethods.eth_accounts]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+              },
+            ],
+          },
+          [EndowmentTypes.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x1'],
+              },
+            ],
+          },
+        },
+      },
+      permissionsRequestId: '1',
+      rejectPermissionsRequest: jest.fn(),
+      approveConnection: jest.fn(),
+      activeTabOrigin: 'https://test.dapp',
+    });
+    expect(container).toMatchSnapshot();
   });
 });
