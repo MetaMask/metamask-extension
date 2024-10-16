@@ -934,7 +934,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     rpcEndpoints: [
       {
-        url: LINEA_MAINNET_RPC_URL,
+        url: `https://linea-mainnet.infura.io/v3/${infuraProjectId}`,
         type: RpcEndpointType.Custom,
       },
     ],
