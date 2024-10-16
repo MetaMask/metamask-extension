@@ -67,22 +67,16 @@ export async function installSnapSimpleKeyring(
 
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
 
-  await driver.waitForSelector({ text: 'Confirm' });
 
   await driver.clickElement({
     text: 'Confirm',
     tag: 'button',
   });
 
-  await driver.waitForSelector({ text: 'OK' });
-
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'OK',
     tag: 'button',
   });
-
-  // Wait until popup is closed before proceeding
-  await driver.waitUntilXWindowHandles(2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
@@ -159,7 +153,7 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
     text: 'Add account',
   });
   // Click the ok button on the success modal
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
   });
@@ -195,11 +189,8 @@ async function switchToAccount2(driver: Driver) {
 }
 
 export async function connectAccountToTestDapp(driver: Driver) {
-  await switchToOrOpenDapp(driver);
-
   await driver.clickElement('#connectButton');
 
-  await driver.delay(regularDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElementAndWaitForWindowToClose({
     text: 'Connect',
@@ -295,12 +286,7 @@ export async function signData(
       delay: 2000,
     },
     async () => {
-      await switchToOrOpenDapp(driver);
-
       await driver.clickElement(locatorID);
-
-      // take extra time to load the popup
-      await driver.delay(500);
 
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     },

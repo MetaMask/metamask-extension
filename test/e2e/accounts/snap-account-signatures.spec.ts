@@ -1,5 +1,7 @@
 import { Suite } from 'mocha';
 import {
+  DAPP_URL,
+  openDapp,
   tempToggleSettingRedesignedConfirmations,
   withFixtures,
 } from '../helpers';
@@ -41,6 +43,7 @@ describe('Snap Account Signatures', function (this: Suite) {
             '#signPermit',
           ];
 
+          await openDapp(driver, undefined, DAPP_URL);
           for (const locatorID of locatorIDs) {
             await signData(driver, locatorID, newPublicKey, flowType);
           }
