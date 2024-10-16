@@ -5946,25 +5946,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/permission-controller@npm:10.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/controller-utils": "npm:^11.0.0"
-    "@metamask/json-rpc-engine": "npm:^9.0.0"
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/utils": "npm:^8.3.0"
-    "@types/deep-freeze-strict": "npm:^1.1.0"
-    deep-freeze-strict: "npm:^1.1.1"
-    immer: "npm:^9.0.6"
-    nanoid: "npm:^3.1.31"
-  peerDependencies:
-    "@metamask/approval-controller": ^7.0.0
-  checksum: 10/0c72e205be760fc471b2a6892a9ad52d5c6a40b4cf1757464e992a5ada2dec57efbb24b09351ce8c29990b59f1d731cd2b338caaef37ce7690ea2d1919afe061
-  languageName: node
-  linkType: hard
-
 "@metamask/permission-controller@npm:^11.0.0":
   version: 11.0.0
   resolution: "@metamask/permission-controller@npm:11.0.0"
@@ -26189,7 +26170,7 @@ __metadata:
     "@metamask/notification-services-controller": "npm:^0.7.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
-    "@metamask/permission-controller": "npm:^10.0.0"
+    "@metamask/permission-controller": "npm:^11.0.0"
     "@metamask/permission-log-controller": "npm:^2.0.1"
     "@metamask/phishing-controller": "npm:^12.0.1"
     "@metamask/phishing-warning": "npm:^4.0.0"

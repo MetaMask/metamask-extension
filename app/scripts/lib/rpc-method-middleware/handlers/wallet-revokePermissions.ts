@@ -24,7 +24,7 @@ import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 
 export const revokePermissionsHandler = {
-  methodNames: [MethodNames.revokePermissions],
+  methodNames: [MethodNames.RevokePermissions],
   implementation: revokePermissionsImplementation,
   hookNames: {
     revokePermissionsForOrigin: true,
