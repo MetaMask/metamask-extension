@@ -161,14 +161,25 @@ class SnapSimpleKeyringPage {
    * Approves or rejects a transaction from a snap account on Snap Simple Keyring page.
    *
    * @param approveTransaction - Indicates if the transaction should be approved. Defaults to true.
+   * @param isSignatureRequest - Indicates if the request is a signature request. Defaults to false.
    */
   async approveRejectSnapAccountTransaction(
     approveTransaction: boolean = true,
+    isSignatureRequest: boolean = false,
   ): Promise<void> {
     console.log(
       'Approve/Reject snap account transaction on Snap Simple Keyring page',
     );
-    await this.driver.clickElement(this.confirmationSubmitButton);
+    if (isSignatureRequest) {
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmationSubmitButton,
+      );
+    } else {
+      // For send eth requests, the origin screen is not closed automatically, so we cannot call clickElementAndWaitForWindowToClose here.
+      await this.driver.clickElementAndWaitToDisappear(
+        this.confirmationSubmitButton,
+      );
+    }
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
