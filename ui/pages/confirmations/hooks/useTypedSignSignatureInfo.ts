@@ -37,7 +37,6 @@ export const useTypedSignSignatureInfo = (
     if (primaryType !== TypedSignSignaturePrimaryTypes.PERMIT) {
       return undefined;
     }
-    console.log(confirmation, confirmation?.msgParams?.data);
     const {
       message: { tokenId },
     } = parseTypedDataMessage(confirmation?.msgParams?.data as string);
