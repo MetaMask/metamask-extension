@@ -1,15 +1,17 @@
-// NativeTokens.tsx
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   MultichainNetwork,
-  getChains,
-  getMultichainSelectedAccountCachedBalanceAllChains,
-  getMultichainCurrencyImageByChainId,
+  getMultichainCurrentNetwork,
+  getMultichainNativeCurrency,
+  getMultichainIsEvm,
+  getMultichainCurrencyImage,
+  getMultichainIsMainnet,
+  getMultichainSelectedAccountCachedBalance,
 } from '../../../../../selectors/multichain';
 import { TokenListItem } from '../../../../multichain';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { useNativeTokenBalanceForChain } from './use-native-token-balance';
+import { useNativeTokenBalance } from './use-native-token-balance';
 
 export type NativeTokenProps = {
   onClickAsset: (arg: string) => void;
@@ -18,43 +20,35 @@ export type NativeTokenProps = {
 };
 
 const NativeToken = ({ onClickAsset, chain }: NativeTokenProps) => {
-  const {
-    chainId,
-    network: { ticker, type, rpcUrl },
-  } = chain;
-
+  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const isMainnet = useSelector(getMultichainIsMainnet);
+  const { ticker, type, rpcUrl } = useSelector(getMultichainCurrentNetwork);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    chainId,
+    chain.chainId,
     ticker,
     type,
     rpcUrl,
   );
+  const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  const balanceIsLoading = !balance;
 
-  const {
-    string: primaryBalance,
-    symbol,
-    secondary,
-  } = useNativeTokenBalanceForChain(chain);
+  const { string, symbol, secondary } = useNativeTokenBalance(chain.chainId);
 
-  const primaryTokenImage = useSelector((state) =>
-    getMultichainCurrencyImageByChainId(state, chainId),
-  );
+  const primaryTokenImage = useSelector(getMultichainCurrencyImage);
 
-  console.log('balance?', { primaryBalance, symbol, secondary });
+  const isEvm = useSelector(getMultichainIsEvm);
 
-  const balanceIsLoading = primaryBalance === undefined;
-
-  let isStakeable = false; //isMainnet && isEvm;
+  let isStakeable = isMainnet && isEvm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  // isStakeable = false;
+  isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
   return (
     <TokenListItem
       chain={chain}
-      onClick={() => onClickAsset(ticker)}
-      title={ticker}
-      primary={primaryBalance}
+      onClick={() => onClickAsset(nativeCurrency)}
+      title={nativeCurrency}
+      primary={string}
       tokenSymbol={symbol}
       secondary={secondary}
       tokenImage={balanceIsLoading ? null : primaryTokenImage}
@@ -66,49 +60,4 @@ const NativeToken = ({ onClickAsset, chain }: NativeTokenProps) => {
   );
 };
 
-export type NativeTokensProps = {
-  onClickAsset: (arg: string) => void;
-  showTokensLinks?: boolean;
-};
-
-const NativeTokens = ({ onClickAsset, showTokensLinks }: NativeTokensProps) => {
-  const allChainBalances = useSelector(
-    getMultichainSelectedAccountCachedBalanceAllChains,
-  );
-
-  const chains = useSelector(getChains);
-
-  if (!allChainBalances || !chains) {
-    // Handle loading state
-    return null;
-  }
-
-  const chainIds = Object.keys(allChainBalances);
-
-  return (
-    <>
-      {chainIds.map((chainId) => {
-        const chain = chains.find(
-          (_chain) => _chain.network.chainId === chainId,
-        );
-
-        console.log({ chain });
-
-        if (!chain) {
-          return null;
-        }
-
-        return (
-          <NativeToken
-            key={chainId}
-            onClickAsset={onClickAsset}
-            showTokensLinks={showTokensLinks}
-            chain={chain}
-          />
-        );
-      })}
-    </>
-  );
-};
-
-export default NativeTokens;
+export default NativeToken;

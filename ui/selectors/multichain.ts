@@ -185,13 +185,19 @@ export function getMultichainNetwork(
   };
 }
 
-function caipChainIdToHex(chainId: CaipChainId): string {
+export function caipChainIdToHex(chainId: CaipChainId): string {
   const [namespace, reference] = chainId.split(':');
   if (namespace === 'eip155') {
     const chainIdDecimal = parseInt(reference, 10);
     return `0x${chainIdDecimal.toString(16)}`;
   }
   return chainId;
+}
+
+export function hexToCaipChainId(hex: string): CaipChainId {
+  const hexValue = hex.startsWith('0x') ? hex.slice(2) : hex;
+  const chainIdDecimal = parseInt(hexValue, 16);
+  return `eip155:${chainIdDecimal}`;
 }
 
 export function getChains(

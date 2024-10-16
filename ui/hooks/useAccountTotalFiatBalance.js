@@ -24,11 +24,11 @@ import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
 import { useTokenTracker } from './useTokenTracker';
 
-export const useAccountTotalFiatBalance = (
+export const useAccountTotalFiatBalanceByChainId = (
   account,
   shouldHideZeroBalanceTokens,
+  chainId,
 ) => {
-  const currentChainId = useSelector(getCurrentChainId);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
 
@@ -48,7 +48,8 @@ export const useAccountTotalFiatBalance = (
   });
 
   const detectedTokens = useSelector(getAllTokens);
-  const tokens = detectedTokens?.[currentChainId]?.[account?.address] ?? [];
+  console.log({ detectedTokens });
+  const tokens = detectedTokens?.[chainId]?.[account?.address] ?? [];
   // This selector returns all the tokens, we need it to get the image of token
   const allTokenList = useSelector(getTokenList);
   const allTokenListValues = Object.values(allTokenList);
@@ -187,4 +188,16 @@ export const useAccountTotalFiatBalance = (
     orderedTokenList,
     mergedRates,
   };
+};
+
+export const useAccountTotalFiatBalance = (
+  account,
+  shouldHideZeroBalanceTokens,
+) => {
+  const currentChainId = useSelector(getCurrentChainId);
+  return useAccountTotalFiatBalanceByChainId(
+    account,
+    shouldHideZeroBalanceTokens,
+    currentChainId,
+  );
 };
