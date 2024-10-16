@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
   },
-  "noConnectedAccountDescription": {
-    "message": "이 사이트에서 계속 사용하고자 하는 계정을 선택하세요."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
   },
@@ -5195,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "계속하기 원하시면 최신 견적을 보여드리겠습니다"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "$1와(과) 일치하는 토큰이 없습니다.",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 컨펌합니다."
   },
@@ -5263,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "견적을 가져오는 중 오류 발생"
   },
-  "swapFetchingTokens": {
-    "message": "토큰 가져오는 중..."
-  },
   "swapFromTo": {
     "message": "$1을(를) $2(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5285,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "높은 슬리피지"
-  },
-  "swapHighSlippageWarning": {
-    "message": "슬리패지 금액이 아주 큽니다."
   },
   "swapIncludesMMFee": {
     "message": "$1%의 MetaMask 요금이 포함됩니다.",
@@ -5309,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "낮은 슬리피지"
-  },
-  "swapLowSlippageError": {
-    "message": "트랜잭션이 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
   },
   "swapMaxSlippage": {
     "message": "최대 슬리패지"
@@ -5346,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "~$1%의 가격 차이",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "가격 영향은 현재 시장 가격과 트랜잭션 실행 도중 받은 금액 사이의 차이입니다. 가격 영향은 유동성 풀의 크기 대비 트랜잭션의 크기를 나타내는 함수입니다."
   },
   "swapPriceUnavailableDescription": {
     "message": "시장 가격 데이터가 부족하여 가격 영향을 파악할 수 없습니다. 스왑하기 전에 받게 될 토큰 수가 만족스러운지 컨펌하시기 바랍니다."
@@ -5396,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "견적 요청"
   },
-  "swapReviewSwap": {
-    "message": "스왑 검토"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "이름 검색 또는 주소 붙여넣기"
-  },
   "swapSelect": {
     "message": "선택"
   },
@@ -5433,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "낮은 슬리피지"
-  },
-  "swapSlippageNegative": {
-    "message": "슬리패지는 0보다 크거나 같아야 합니다."
   },
   "swapSlippageNegativeDescription": {
     "message": "슬리피지는 0보다 크거나 같아야 합니다."
@@ -5505,20 +5477,6 @@
     "message": "$1에서 $2(으)로 스왑",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "이 토큰은 직접 추가되었습니다."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "항상 $1에서 토큰 주소를 컨펌하세요.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "1개의 소스에서만 확인됩니다."
-  },
-  "swapTokenVerificationSources": {
-    "message": "$1개 소스에서 확인되었습니다.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 토큰은 1 소스에서만 확인됩니다. 계속 진행하기 전에 $2에서도 확인하세요.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5539,29 +5497,11 @@
   "swapUnknown": {
     "message": "알 수 없음"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. $1에서 원하는 토큰인지 확인하세요.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 스왑 가능",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% 슬리패지"
   },
-  "swapsAdvancedOptions": {
-    "message": "고급 옵션"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "슬리패지 금액이 너무 커서 전환율이 좋지 않습니다. 슬리패지 허용치를 15% 값 이하로 줄이세요."
-  },
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "$1이(가) 부족하여 이 트랜잭션을 완료할 수 없습니다.",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "$1 부족",
@@ -6057,14 +5997,6 @@
   },
   "verifyContractDetails": {
     "message": "타사 세부 정보 확인"
-  },
-  "verifyThisTokenOn": {
-    "message": "$1에서 이 토큰 확인",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "$1에서 이 토큰이 트랜잭션할 토큰이 맞는지 확인하세요.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "버전"
