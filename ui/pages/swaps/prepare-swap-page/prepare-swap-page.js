@@ -93,6 +93,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
   TokenBucketPriority,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -445,7 +446,7 @@ export default function PrepareSwapPage({
   );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? getURLHostName(blockExplorerTokenLink)
+    ? SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ?? t('etherscan')
     : t('etherscan');
 
   const { address: toAddress } = toToken || {};
