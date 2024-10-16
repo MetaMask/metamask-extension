@@ -4478,9 +4478,6 @@
       }
     },
     "extension-port-stream": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "browserify>buffer": true,
         "extension-port-stream>readable-stream": true
