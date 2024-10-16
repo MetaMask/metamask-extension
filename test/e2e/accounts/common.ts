@@ -192,6 +192,8 @@ export async function connectAccountToTestDapp(driver: Driver) {
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+  // Extra steps needed to preserve the current network.
+  // Those can be removed once the issue is fixed (#27891)
   const edit = await driver.findClickableElements({
     text: 'Edit',
     tag: 'button',
@@ -208,12 +210,14 @@ export async function connectAccountToTestDapp(driver: Driver) {
     tag: 'button',
   });
 
+  // Connect to the test dapp
   await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
 
   await driver.switchToWindowWithUrl(DAPP_URL);
+  // Ensure network is preserved after connecting
   await driver.waitForSelector({
     css: '[id="chainId"]',
     text: '0x539',
