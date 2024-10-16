@@ -24,6 +24,7 @@ export const personalSignWithSnapAccount = async (
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
+      true,
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
@@ -56,6 +57,7 @@ export const signTypedDataWithSnapAccount = async (
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
+      true,
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
@@ -88,6 +90,7 @@ export const signTypedDataV3WithSnapAccount = async (
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
+      true,
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
@@ -120,6 +123,7 @@ export const signTypedDataV4WithSnapAccount = async (
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
+      true,
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
@@ -152,6 +156,7 @@ export const signPermitWithSnapAccount = async (
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
+      true,
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {

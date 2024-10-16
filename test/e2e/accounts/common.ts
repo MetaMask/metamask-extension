@@ -6,6 +6,8 @@ import {
   PRIVATE_KEY_TWO,
   WINDOW_TITLES,
   multipleGanacheOptions,
+  switchToOrOpenDapp,
+  DAPP_URL,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 
@@ -82,6 +84,44 @@ async function switchToAccount2(driver: Driver) {
   await driver.assertElementNotPresent({
     tag: 'header',
     text: 'Select an account',
+  });
+}
+
+export async function connectAccountToTestDapp(driver: Driver) {
+  await switchToOrOpenDapp(driver);
+  await driver.clickElement('#connectButton');
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  // Extra steps needed to preserve the current network.
+  // Those can be removed once the issue is fixed (#27891)
+  const edit = await driver.findClickableElements({
+    text: 'Edit',
+    tag: 'button',
+  });
+  await edit[1].click();
+
+  await driver.clickElement({
+    tag: 'p',
+    text: 'Localhost 8545',
+  });
+
+  await driver.clickElement({
+    text: 'Update',
+    tag: 'button',
+  });
+
+  // Connect to the test dapp
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
+
+  await driver.switchToWindowWithUrl(DAPP_URL);
+  // Ensure network is preserved after connecting
+  await driver.waitForSelector({
+    css: '[id="chainId"]',
+    text: '0x539',
   });
 }
 

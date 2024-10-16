@@ -67,6 +67,7 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
+  sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
 
 import {
@@ -108,6 +109,7 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 // eslint-disable-next-line import/no-restricted-paths
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -387,6 +389,23 @@ export function getInternalAccount(state, accountId) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
+export const getEvmInternalAccounts = createSelector(
+  getInternalAccounts,
+  (accounts) => {
+    return accounts.filter((account) => isEvmAccountType(account.type));
+  },
+);
+
+export const getSelectedEvmInternalAccount = createSelector(
+  getEvmInternalAccounts,
+  (accounts) => {
+    // We should always have 1 EVM account (if not, it would be `undefined`, same
+    // as `getSelectedInternalAccount` selector.
+    const [evmAccountSelected] = sortSelectedInternalAccounts(accounts);
+    return evmAccountSelected;
+  },
+);
+
 /**
  * Returns an array of internal accounts sorted by keyring.
  *
@@ -536,6 +555,24 @@ export const getSelectedAccount = createDeepEqualSelector(
     return undefined;
   },
 );
+
+export const getWatchedToken = (transactionMeta) =>
+  createSelector(
+    [getSelectedAccount, getAllTokens],
+    (selectedAccount, detectedTokens) => {
+      const { chainId } = transactionMeta;
+
+      const selectedToken = detectedTokens?.[chainId]?.[
+        selectedAccount.address
+      ]?.find(
+        (token) =>
+          toChecksumHexAddress(token.address) ===
+          toChecksumHexAddress(transactionMeta.txParams.to),
+      );
+
+      return selectedToken;
+    },
+  );
 
 export function getTargetAccount(state, targetAddress) {
   const accounts = getMetaMaskAccounts(state);

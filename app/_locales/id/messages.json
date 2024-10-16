@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Saat transaksi Anda dimasukkan ke dalam blok, selisih antara biaya dasar maks dan biaya dasar aktual akan dikembalikan. Jumlah total dihitung sebagai biaya dasar maks (dalam GWEI) * batas gas."
   },
-  "advancedConfiguration": {
-    "message": "Konfigurasi lanjutan"
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "Untuk melanjutkan transaksi ini, Anda perlu meningkatkan batas gas menjadi 21000 atau lebih tinggi."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Anda tidak memiliki cukup ETH di akun untuk membayar biaya transaksi."
-  },
   "alertMessageNetworkBusy": {
     "message": "Harga gas tinggi dan estimasinya kurang akurat."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Akun salah"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Memilih untuk menjelajahi situs web dengan akun yang tidak terhubung"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Peringatan ini ditampilkan dalam sembulan saat Anda menelusuri situs web3 yang terhubung, tetapi akun yang baru saja dipilih tidak terhubung."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Saat situs web mencoba menggunakan API window.web3 yang dihapus"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Peringatan ini ditampilkan dalam sembulan saat Anda menelusuri situs yang mencoba menggunakan API window.web3 yang dihapus, dan bisa mengakibatkan kerusakan."
   },
   "alerts": {
     "message": "Peringatan"
@@ -714,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Ketentuan penggunaan Beta"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask Beta tidak dapat memulihkan Frasa Pemulihan Rahasia Anda."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask Beta tidak akan pernah menanyakan Frasa Pemulihan Rahasia Anda."
   },
   "billionAbbreviation": {
     "message": "M",
@@ -2087,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Sembunyikan informasi sensitif"
   },
-  "hideToken": {
-    "message": "Sembunyikan token"
-  },
   "hideTokenPrompt": {
     "message": "Sembunyikan token?"
   },
@@ -2414,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "File JSON",
@@ -3061,9 +3031,6 @@
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
-  "noConnectedAccountDescription": {
-    "message": "Pilih akun yang ingin Anda gunakan di situs ini untuk melanjutkan."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask tidak terhubung ke situs ini"
   },
@@ -3466,10 +3433,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "Sematkan MetaMask Institutional"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Peringatan deteksi pengelabuan bergantung pada komunikasi dengan $1. jsDeliver akan mendapat akses ke alamat IP Anda. Lihat $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1H",
@@ -4111,9 +4074,6 @@
   "rejected": {
     "message": "Ditolak"
   },
-  "remember": {
-    "message": "Ingatlah:"
-  },
   "remove": {
     "message": "Hapus"
   },
@@ -4520,9 +4480,6 @@
   },
   "sepolia": {
     "message": "Jaringan uji Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask menggunakan layanan pihak ketiga tepercaya ini untuk meningkatkan kegunaan dan keamanan produk."
   },
   "setApprovalForAll": {
     "message": "Atur persetujuan untuk semua"
@@ -5235,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Kami siap menampilkan kuotasi terbaru jika Anda ingin melanjutkan"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Tidak ada token yang cocok yang tersedia $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Konfirmasikan dengan dompet perangkat keras Anda"
   },
@@ -5303,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Terjadi kesalahan saat mengambil kuota"
   },
-  "swapFetchingTokens": {
-    "message": "Mengambil token..."
-  },
   "swapFromTo": {
     "message": "Pertukaran dari $1 ke $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5325,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "Selip tinggi"
-  },
-  "swapHighSlippageWarning": {
-    "message": "Jumlah slippage sangat tinggi."
   },
   "swapIncludesMMFee": {
     "message": "Termasuk $1% biaya MetaMask.",
@@ -5349,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "Selip rendah"
-  },
-  "swapLowSlippageError": {
-    "message": "Transaksi berpotensi gagal, selip maks terlalu rendah."
   },
   "swapMaxSlippage": {
     "message": "Selipi maks"
@@ -5386,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Perbedaan harga ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Dampak harga adalah selisih antara harga pasar saat ini dan jumlah yang diterima selama terjadinya transaksi. Dampak harga adalah fungsi ukuran dagang relatif terhadap ukuran pul likuiditas."
   },
   "swapPriceUnavailableDescription": {
     "message": "Dampak harga tidak dapat ditentukan karena kurangnya data harga pasar. Harap konfirmasi bahwa Anda setuju dengan jumlah token yang akan Anda terima sebelum penukaran."
@@ -5436,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "Minta kuotasi"
   },
-  "swapReviewSwap": {
-    "message": "Tinjau pertukaran"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Cari nama atau tempel alamat"
-  },
   "swapSelect": {
     "message": "Pilih"
   },
@@ -5473,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Selip rendah"
-  },
-  "swapSlippageNegative": {
-    "message": "Selip harus lebih besar atau sama dengan nol"
   },
   "swapSlippageNegativeDescription": {
     "message": "Selip harus lebih besar atau sama dengan nol"
@@ -5545,20 +5477,6 @@
     "message": "Tukar $1 ke $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Token ini telah ditambahkan secara manual."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Selalu konfirmasikan alamat token di $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Hanya diverifikasi di 1 sumber."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Diverifikasi di $1 sumber.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 hanya diverifikasi di 1 sumber. Pertimbangkan untuk memverifikasinya di $2 sebelum melanjutkan.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5579,29 +5497,11 @@
   "swapUnknown": {
     "message": "Tidak diketahui"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Beberapa token dapat menggunakan simbol dan nama yang sama. Periksa $1 untuk memverifikasi inilah token yang Anda cari.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 tersedia untuk ditukar",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "Selip 0%"
   },
-  "swapsAdvancedOptions": {
-    "message": "Opsi lanjutan"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Jumlah selip terlalu tinggi dan akan mengakibatkan tarif yang buruk. Kurangi toleransi selip Anda ke nilai di bawah 15%."
-  },
   "swapsMaxSlippage": {
     "message": "Toleransi selip"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "$1 tidak cukup untuk menyelesaikan transaksi ini",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "$1 tidak cukup",
@@ -5737,9 +5637,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Desimal token diperlukan. Temukan di: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Desimal token:"
   },
   "tokenDetails": {
     "message": "Detail token"
@@ -6101,14 +5998,6 @@
   "verifyContractDetails": {
     "message": "Verifikasikan detail pihak ketiga"
   },
-  "verifyThisTokenOn": {
-    "message": "Verifikasikan token ini di $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Verifikasikan token ini di $1 dan pastikan ini adalah token yang ingin Anda perdagangkan.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "version": {
     "message": "Versi"
   },
@@ -6174,26 +6063,6 @@
   },
   "walletConnectionGuide": {
     "message": "panduan koneksi dompet perangkat keras kami"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Anda telah berhasil melindungi dompet Anda. Jaga agar Frasa Pemulihan Rahasia tetap aman dan terlindungi. Ini merupakan tanggung jawab Anda!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask tidak dapat memulihkan Frasa Pemulihan Rahasia Anda."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask tidak akan pernah menanyakan Frasa Pemulihan Rahasia Anda."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 dengan siapa pun atau dana Anda berisiko dicuri",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Jangan pernah membagikan Frasa Pemulihan Rahasia Anda",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Dompet berhasil dibuat"
   },
   "wantToAddThisNetwork": {
     "message": "Ingin menambahkan jaringan ini?"

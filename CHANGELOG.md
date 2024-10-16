@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.4.1]
+### Fixed
+- Fix crash on swaps review page ([#27708](https://github.com/MetaMask/metamask-extension/pull/27708))
+- Fix bug that could prevent the phishing detection feature from having the most up to date info on which web pages to block ([#27743](https://github.com/MetaMask/metamask-extension/pull/27743))
+
 ## [12.4.0]
 ### Added
 - Added a receive button to the home screen, allowing users to easily get their address or QR-code for receiving cryptocurrency ([#26148](https://github.com/MetaMask/metamask-extension/pull/26148))
@@ -5139,7 +5144,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.4.1...HEAD
+[12.4.1]: https://github.com/MetaMask/metamask-extension/compare/v12.4.0...v12.4.1
 [12.4.0]: https://github.com/MetaMask/metamask-extension/compare/v12.3.1...v12.4.0
 [12.3.1]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...v12.3.1
 [12.3.0]: https://github.com/MetaMask/metamask-extension/compare/v12.2.4...v12.3.0

@@ -28,6 +28,7 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  GasFeeEstimates,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -4019,7 +4020,7 @@ export function resolvePendingApproval(
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
     const { pendingApprovals } = await forceUpdateMetamaskState(_dispatch);
     if (Object.values(pendingApprovals).length === 0) {
       _dispatch(closeCurrentNotificationWindow());
@@ -4486,6 +4487,14 @@ export function captureSingleException(
 
 export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
+}
+
+export function estimateGasFee(request: {
+  transactionParams: TransactionParams;
+  chainId?: Hex;
+  networkClientId?: NetworkClientId;
+}): Promise<{ estimates: GasFeeEstimates }> {
+  return submitRequestToBackground('estimateGasFee', [request]);
 }
 
 export async function updateTokenType(

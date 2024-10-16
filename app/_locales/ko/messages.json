@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "트랜잭션이 블록에 포함되면 최대 기본 요금과 실제 기본 요금 간의 차액이 환불됩니다. 총 금액은 최대 기본 요금(GWEI 단위) 곱하기 가스 한도로 계산합니다."
   },
-  "advancedConfiguration": {
-    "message": "고급 옵션"
-  },
   "advancedDetailsDataDesc": {
     "message": "데이터"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "이 트랜잭션을 계속 진행하려면, 가스 한도를 21000 이상으로 늘려야 합니다."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "계정에 트랜잭션 수수료를 지불할 수 있는 이더리움이 충분하지 않습니다."
-  },
   "alertMessageNetworkBusy": {
     "message": "가스비가 높고 견적의 정확도도 떨어집니다."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "잘못된 계정"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "연결되지 않은 계정을 선택하여 웹사이트 탐색"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "이 경고는 연결된 web3 사이트를 탐색하고 있지만 현재 선택한 계정이 연결되지 않은 경우 팝업에 표시됩니다."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "웹사이트가 제거된 window.web3 API를 이용하는 경우"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "이 경고는 제거된 window.web3 API를 이용하려다가 작동이 정지된 사이트를 탐색할 때 팝업으로 표시됩니다."
   },
   "alerts": {
     "message": "경고"
@@ -714,12 +696,6 @@
   },
   "betaTerms": {
     "message": "베타 이용약관"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask 베타는 비밀복구구문을 복구할 수 없습니다."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask 베타는 비밀복구구문을 절대 묻지 않습니다."
   },
   "billionAbbreviation": {
     "message": "B",
@@ -2087,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "민감한 정보 숨기기"
   },
-  "hideToken": {
-    "message": "토큰 숨기기"
-  },
   "hideTokenPrompt": {
     "message": "토큰을 숨기겠습니까?"
   },
@@ -2414,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "JSON 파일",
@@ -3061,9 +3031,6 @@
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
   },
-  "noConnectedAccountDescription": {
-    "message": "이 사이트에서 계속 사용하고자 하는 계정을 선택하세요."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
   },
@@ -3466,10 +3433,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "MetaMask Institutional 고정"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "피싱 감지 경고는 $1과(와)의 통신에 의존합니다. jsDeliver는 회원님의 IP 주소에 액세스할 수 있습니다. $2 보기.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1일",
@@ -4111,9 +4074,6 @@
   "rejected": {
     "message": "거부됨"
   },
-  "remember": {
-    "message": "참고:"
-  },
   "remove": {
     "message": "제거"
   },
@@ -4520,9 +4480,6 @@
   },
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
   },
   "setApprovalForAll": {
     "message": "모두 승인 설정"
@@ -5235,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "계속하기 원하시면 최신 견적을 보여드리겠습니다"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "$1와(과) 일치하는 토큰이 없습니다.",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 컨펌합니다."
   },
@@ -5303,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "견적을 가져오는 중 오류 발생"
   },
-  "swapFetchingTokens": {
-    "message": "토큰 가져오는 중..."
-  },
   "swapFromTo": {
     "message": "$1을(를) $2(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5325,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "높은 슬리피지"
-  },
-  "swapHighSlippageWarning": {
-    "message": "슬리패지 금액이 아주 큽니다."
   },
   "swapIncludesMMFee": {
     "message": "$1%의 MetaMask 요금이 포함됩니다.",
@@ -5349,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "낮은 슬리피지"
-  },
-  "swapLowSlippageError": {
-    "message": "트랜잭션이 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
   },
   "swapMaxSlippage": {
     "message": "최대 슬리패지"
@@ -5386,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "~$1%의 가격 차이",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "가격 영향은 현재 시장 가격과 트랜잭션 실행 도중 받은 금액 사이의 차이입니다. 가격 영향은 유동성 풀의 크기 대비 트랜잭션의 크기를 나타내는 함수입니다."
   },
   "swapPriceUnavailableDescription": {
     "message": "시장 가격 데이터가 부족하여 가격 영향을 파악할 수 없습니다. 스왑하기 전에 받게 될 토큰 수가 만족스러운지 컨펌하시기 바랍니다."
@@ -5436,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "견적 요청"
   },
-  "swapReviewSwap": {
-    "message": "스왑 검토"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "이름 검색 또는 주소 붙여넣기"
-  },
   "swapSelect": {
     "message": "선택"
   },
@@ -5473,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "낮은 슬리피지"
-  },
-  "swapSlippageNegative": {
-    "message": "슬리패지는 0보다 크거나 같아야 합니다."
   },
   "swapSlippageNegativeDescription": {
     "message": "슬리피지는 0보다 크거나 같아야 합니다."
@@ -5545,20 +5477,6 @@
     "message": "$1에서 $2(으)로 스왑",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "이 토큰은 직접 추가되었습니다."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "항상 $1에서 토큰 주소를 컨펌하세요.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "1개의 소스에서만 확인됩니다."
-  },
-  "swapTokenVerificationSources": {
-    "message": "$1개 소스에서 확인되었습니다.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 토큰은 1 소스에서만 확인됩니다. 계속 진행하기 전에 $2에서도 확인하세요.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5579,29 +5497,11 @@
   "swapUnknown": {
     "message": "알 수 없음"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. $1에서 원하는 토큰인지 확인하세요.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 스왑 가능",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% 슬리패지"
   },
-  "swapsAdvancedOptions": {
-    "message": "고급 옵션"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "슬리패지 금액이 너무 커서 전환율이 좋지 않습니다. 슬리패지 허용치를 15% 값 이하로 줄이세요."
-  },
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "$1이(가) 부족하여 이 트랜잭션을 완료할 수 없습니다.",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "$1 부족",
@@ -5737,9 +5637,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "토큰 십진수가 필요합니다. $1에서 찾아보세요"
-  },
-  "tokenDecimalTitle": {
-    "message": "토큰 소수점:"
   },
   "tokenDetails": {
     "message": "토큰 상세 정보"
@@ -6101,14 +5998,6 @@
   "verifyContractDetails": {
     "message": "타사 세부 정보 확인"
   },
-  "verifyThisTokenOn": {
-    "message": "$1에서 이 토큰 확인",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "$1에서 이 토큰이 트랜잭션할 토큰이 맞는지 확인하세요.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "version": {
     "message": "버전"
   },
@@ -6174,26 +6063,6 @@
   },
   "walletConnectionGuide": {
     "message": "당사의 하드웨어 지갑 연결 가이드"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "지갑을 성공적으로 보호했습니다. 비밀복구구문을 안전하게 비밀로 유지하세요. 이는 회원님의 책임입니다!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask는 비밀복구구문을 복구할 수 없습니다."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask는 비밀복구구문을 절대 묻지 않습니다."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "누군가와 $1 또는 회원님의 자금을 도난당할 위험이 있습니다.",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "비밀복구구문을 절대 공유하지 마세요.",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "지갑 생성 성공"
   },
   "wantToAddThisNetwork": {
     "message": "이 네트워크를 추가하시겠습니까?"

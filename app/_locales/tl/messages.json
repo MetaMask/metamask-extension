@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Kapag nakasama ang iyong transaksyon sa block, ire-refund ang anumang difference sa pagitan ng iyong pinakamataas na batayang bayad at ang aktwal na batayang bayad. Ang kabuuang halaga ay kinakalkula bilang pinakamataas na batayang bayad (sa GWEI) * ng limitasyon ng gas."
   },
-  "advancedConfiguration": {
-    "message": "Advanced na pagsasaayos"
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 21000 o mas mataas."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Wala kang sapat na ETH sa iyong account para bayaran ang mga bayad sa transaksyon."
-  },
   "alertMessageNetworkBusy": {
     "message": "Ang mga presyo ng gas ay mataas at ang pagtantiya ay hindi gaanong tumpak."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Maling account"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Nagba-browse sa isang website na may napiling hindi konektadong account"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Ang alertong ito ay ipinapakita sa popup kapag nagba-browse ka ng konektadong web3 site, ngunit ang kasalukuyang napiling account ay hindi nakakonekta."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Kapag sinubukan ng isang website na gamitin ang inalis na window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Ang alertong ito ay ipinapakita sa popup kapag nagba-browse ka sa isang site na sumusubok na gamitin ang inalis na window.web3 API, at maaaring masira bilang resulta."
   },
   "alerts": {
     "message": "Mga Alerto"
@@ -714,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Mga tuntunin sa paggamit ng Beta"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "Hindi mabawi ng MetaMask Beta ang iyong Lihim na Parirala sa Pagbawi."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "Hindi kailanman hihingiin sa iyo ng MetaMask Beta ang iyong Lihim na Parirala sa Pagbawi."
   },
   "billionAbbreviation": {
     "message": "B",
@@ -2087,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Itago ang sensitibong impormasyon"
   },
-  "hideToken": {
-    "message": "Itago ang token"
-  },
   "hideTokenPrompt": {
     "message": "Itago ang token?"
   },
@@ -2414,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Mga Jazzicon"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "File na JSON",
@@ -3061,9 +3031,6 @@
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
-  "noConnectedAccountDescription": {
-    "message": "Pumili ng account na gusto mong gamitin sa site na ito para magpatuloy."
-  },
   "noConnectedAccountTitle": {
     "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
   },
@@ -3466,10 +3433,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "I-pin ang MetaMask Institutional"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Ang mga alerto sa pagtuklas ng phishing ay umaasa sa komunikasyon sa $1. Ang jsDeliver ay magkakaroon ng access sa iyong IP address. Tingnan ang $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1D",
@@ -4111,9 +4074,6 @@
   "rejected": {
     "message": "Tinanggihan"
   },
-  "remember": {
-    "message": "Tandaan:"
-  },
   "remove": {
     "message": "Alisin"
   },
@@ -4520,9 +4480,6 @@
   },
   "sepolia": {
     "message": "Sepolia test network"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "Ginagamit ng MetaMask ang mga pinagkakatiwalaang serbisyo ng third-party na ito para mapahusay ang kakayahang magamit at kaligtasan ng produkto."
   },
   "setApprovalForAll": {
     "message": "Itakda ang Pag-apruba para sa Lahat"
@@ -5235,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Handa kaming ipakita sa iyo ang mga pinakabagong quote kapag gusto mo ng magpatuloy"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Walang available na token na tumutugma sa $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Kumpirmahin gamit ang iyong wallet na hardware"
   },
@@ -5303,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Nagka-error sa pagkuha ng mga quote"
   },
-  "swapFetchingTokens": {
-    "message": "Kinukuha ang mga token..."
-  },
   "swapFromTo": {
     "message": "Ang pag-swap ng $1 sa $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5325,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "Mataas na slippage"
-  },
-  "swapHighSlippageWarning": {
-    "message": "Napakataas ng halaga ng slippage."
   },
   "swapIncludesMMFee": {
     "message": "Kasama ang $1% MetaMask fee.",
@@ -5349,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "Mababang slippage"
-  },
-  "swapLowSlippageError": {
-    "message": "Maaaring hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
   },
   "swapMaxSlippage": {
     "message": "Max na slippage"
@@ -5386,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Deperensya ng presyo ng ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Ang price impact ay ang pagkakaiba sa pagitan ng kasalukuyang market price at ang halagang natanggap sa panahon ng pagpapatupad ng transaksyon. Ang price impact ay isang function ng laki ng iyong trade kaugnay sa laki ng pool ng liquidity."
   },
   "swapPriceUnavailableDescription": {
     "message": "Hindi matukoy ang price impact dahil sa kakulangan ng data ng market price. Pakikumpirma na komportable ka sa dami ng mga token na matatanggap mo bago mag-swap."
@@ -5436,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "Humiling ng quotation"
   },
-  "swapReviewSwap": {
-    "message": "I-review ang pag-swap"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Hanapin ang pangalan o i-paste ang address"
-  },
   "swapSelect": {
     "message": "Piliin"
   },
@@ -5473,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Mababang slippage"
-  },
-  "swapSlippageNegative": {
-    "message": "Ang slippage ay dapat mas malaki o katumbas ng zero"
   },
   "swapSlippageNegativeDescription": {
     "message": "Dapat na mas malaki o katumbas ng zero ang slippage"
@@ -5545,20 +5477,6 @@
     "message": "I-swap ang $1 sa $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Manwal na naidagdag ang token na ito."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Palaging kumpirmahin ang token address sa $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Na-verify sa 1 pinagmulan lang."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Na-verify sa $1 na source.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "Na-verify $1 sa 1 pinagmulan lang. Pag-isipang i-verify ito sa $2 bago magpatuloy.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5579,29 +5497,11 @@
   "swapUnknown": {
     "message": "Hindi Alam"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Maaaring gamitin ng maraming token ang iisang pangalan at simbolo. Suriin ang $1 para ma-verify na ito ang token na hinahanap mo.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "Available ang $1 $2 na i-swap",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% Slippage"
   },
-  "swapsAdvancedOptions": {
-    "message": "Mga Advanced na Opsyon"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Masyadong mataas ang halaga ng slippage at magreresulta sa masamang rate. Mangyaring bawasan ang iyong slippage tolerance sa halagang mas mababa sa 15%."
-  },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Hindi sapat ang $1 para makumpleto ang transaksyong ito",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Hindi sapat ang $1",
@@ -5737,9 +5637,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Kailangan ng decimal ng token. Hanapin ito sa: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Mga Decimal ng Katumpakan:"
   },
   "tokenDetails": {
     "message": "Mga detalye ng token"
@@ -6101,14 +5998,6 @@
   "verifyContractDetails": {
     "message": "I-verify ang mga detalye ng third-party"
   },
-  "verifyThisTokenOn": {
-    "message": "I-verify ang token na ito sa $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "I-verify ang token na ito sa $1 at siguruhin na ito ang token na gusto mong i-trade.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "version": {
     "message": "Bersyon"
   },
@@ -6174,26 +6063,6 @@
   },
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng wallet na hardware"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Matagumpay mong naprotektahan ang iyong wallet. Panatilihing ligtas at sikreto ang iyong Lihim na Parirala sa Pagbawi - pananagutan mo ito!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "Di mababawi ng MetaMask ang iyong Lihim na Parirala sa Pagbawi."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "Kailanman ay hindi hihingin ng MetaMask ang iyong Lihim na Parirala sa Pagbawi."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 sa sinuman o panganib na manakaw ang iyong pondo",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Huwag kailanman ibahagi ang iyong Lihim na Parirala sa Pagbawi",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Matagumpay ang paggawa ng wallet"
   },
   "wantToAddThisNetwork": {
     "message": "Gusto mo bang idagdag ang network na ito?"
