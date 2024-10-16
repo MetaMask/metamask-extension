@@ -1475,6 +1475,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.phishingController.name}:testOrigin`,
           `${this.approvalController.name}:hasRequest`,
           `${this.approvalController.name}:acceptRequest`,
+          `${this.snapController.name}:get`,
         ],
       });
 
@@ -5147,7 +5148,7 @@ export default class MetamaskController extends EventEmitter {
         },
         permissions,
       },
-      type: MethodNames.requestPermissions,
+      type: MethodNames.RequestPermissions,
     });
   }
 
@@ -6152,6 +6153,19 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getAll',
         ),
+        getCurrencyRate: (currency) => {
+          const rate = this.multichainRatesController.state.rates[currency];
+          const { fiatCurrency } = this.multichainRatesController.state;
+
+          if (!rate) {
+            return undefined;
+          }
+
+          return {
+            ...rate,
+            currency: fiatCurrency,
+          };
+        },
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,

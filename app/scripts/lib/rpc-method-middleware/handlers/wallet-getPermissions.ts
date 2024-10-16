@@ -22,7 +22,7 @@ import {
 } from '../../../../../shared/constants/permissions';
 
 export const getPermissionsHandler = {
-  methodNames: [MethodNames.getPermissions],
+  methodNames: [MethodNames.GetPermissions],
   implementation: getPermissionsImplementation,
   hookNames: {
     getPermissionsForOrigin: true,

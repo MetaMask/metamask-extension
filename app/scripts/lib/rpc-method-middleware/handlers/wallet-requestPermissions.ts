@@ -36,7 +36,7 @@ import { PermissionNames } from '../../../controllers/permissions';
 import { isSnapId } from '../../../../../ui/helpers/utils/snaps';
 
 export const requestPermissionsHandler = {
-  methodNames: [MethodNames.requestPermissions],
+  methodNames: [MethodNames.RequestPermissions],
   implementation: requestPermissionsImplementation,
   hookNames: {
     requestPermissionsForOrigin: true,
