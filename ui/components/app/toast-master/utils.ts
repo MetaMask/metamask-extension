@@ -63,7 +63,7 @@ export function submitRequestToBackgroundAndCatch(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args?: any[],
 ) {
-  submitRequestToBackground(method, args).catch((error) => {
+  submitRequestToBackground(method, args)?.catch((error) => {
     console.error('Error caught in submitRequestToBackground', error);
   });
 }
