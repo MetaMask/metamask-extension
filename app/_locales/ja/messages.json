@@ -5605,18 +5605,6 @@
     "message": "移動先: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "これにより、選択した単一のネットワークをすべてのサイトで使用するのではなく、サイトごとにネットワークを選択できます。この機能により、特定のサイトでのユーザーエクスペリエンスの妨げとなる、ネットワークの手動切り替えが不要になります。"
-  },
-  "toggleRequestQueueField": {
-    "message": "サイトごとにネットワークを選択する"
-  },
-  "toggleRequestQueueOff": {
-    "message": "オフ"
-  },
-  "toggleRequestQueueOn": {
-    "message": "オン"
-  },
   "token": {
     "message": "トークン"
   },

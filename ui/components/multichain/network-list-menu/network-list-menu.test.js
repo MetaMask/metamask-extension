@@ -135,7 +135,6 @@ const render = ({
       preferences: {
         showTestNetworks,
       },
-      useRequestQueue: true,
       domains: {
         ...(selectedTabOriginInDomainsState
           ? { [origin]: selectedNetworkClientId }

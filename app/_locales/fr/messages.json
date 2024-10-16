@@ -5605,18 +5605,6 @@
     "message": "Vers : $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "Cette fonction vous permet de sélectionner un réseau pour chaque site au lieu d’un seul réseau pour tous les sites. Vous n’aurez donc pas à changer manuellement de réseau, ce qui pourrait nuire à l’expérience utilisateur sur certains sites."
-  },
-  "toggleRequestQueueField": {
-    "message": "Sélectionnez les réseaux pour chaque site"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Désactiver"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Activer"
-  },
   "token": {
     "message": "Jeton"
   },

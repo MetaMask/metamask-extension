@@ -6026,18 +6026,6 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
-  },
-  "toggleRequestQueueField": {
-    "message": "Select networks for each site"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Off"
-  },
-  "toggleRequestQueueOn": {
-    "message": "On"
-  },
   "token": {
     "message": "Token"
   },

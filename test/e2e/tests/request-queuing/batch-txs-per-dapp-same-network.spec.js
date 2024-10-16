@@ -23,7 +23,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         dappOptions: { numberOfDapps: 3 },
         ganacheOptions: {

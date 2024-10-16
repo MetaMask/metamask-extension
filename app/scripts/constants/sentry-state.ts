@@ -248,7 +248,6 @@ export const SENTRY_BACKGROUND_STATE = {
     useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
-    useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
   },

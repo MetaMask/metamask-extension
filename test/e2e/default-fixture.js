@@ -234,7 +234,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: true,
         isMultiAccountBalancesEnabled: true,
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,

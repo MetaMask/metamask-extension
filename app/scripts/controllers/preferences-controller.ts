@@ -136,7 +136,6 @@ export type PreferencesControllerState = Omit<
   useSafeChainsListValidation: boolean;
   use4ByteResolution: boolean;
   useCurrencyRateCheck: boolean;
-  useRequestQueue: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
@@ -179,7 +178,6 @@ export const getDefaultPreferencesControllerState =
     useNftDetection: true,
     use4ByteResolution: true,
     useCurrencyRateCheck: true,
-    useRequestQueue: true,
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
@@ -318,10 +316,6 @@ const controllerMetadata = {
     anonymous: true,
   },
   useCurrencyRateCheck: {
-    persist: true,
-    anonymous: true,
-  },
-  useRequestQueue: {
     persist: true,
     anonymous: true,
   },
@@ -608,17 +602,6 @@ export class PreferencesController extends BaseController<
   }
 
   /**
-   * Setter for the `useRequestQueue` property
-   *
-   * @param val - Whether or not the user wants to have requests queued if network change is required.
-   */
-  setUseRequestQueue(val: boolean): void {
-    this.update((state) => {
-      state.useRequestQueue = val;
-    });
-  }
-
-  /**
    * Setter for the `openSeaEnabled` property
    *
    * @param openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
@@ -814,15 +797,6 @@ export class PreferencesController extends BaseController<
     );
 
     return selectedAccount.address;
-  }
-
-  /**
-   * Getter for the `useRequestQueue` property
-   *
-   * @returns whether this option is on or off.
-   */
-  getUseRequestQueue(): boolean {
-    return this.state.useRequestQueue;
   }
 
   /**

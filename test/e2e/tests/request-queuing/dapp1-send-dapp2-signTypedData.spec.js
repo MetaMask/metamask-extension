@@ -20,7 +20,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },

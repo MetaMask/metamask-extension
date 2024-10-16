@@ -1057,14 +1057,10 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
-      let pendingApprovalCount =
+      const pendingApprovalCount =
         controller.appStateController.waitingForUnlock.length +
-        controller.approvalController.getTotalApprovalCount();
-
-      if (controller.preferencesController.getUseRequestQueue()) {
-        pendingApprovalCount +=
-          controller.queuedRequestController.state.queuedRequestCount;
-      }
+        controller.approvalController.getTotalApprovalCount() +
+        controller.queuedRequestController.state.queuedRequestCount;
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);

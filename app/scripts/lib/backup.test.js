@@ -174,7 +174,6 @@ const jsonData = JSON.stringify({
     theme: 'light',
     customNetworkListEnabled: false,
     textDirection: 'auto',
-    useRequestQueue: true,
   },
   internalAccounts: {
     accounts: {

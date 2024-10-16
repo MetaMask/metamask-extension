@@ -22,7 +22,7 @@ describe('Request Queueing chainId proxy sync', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleGanache()
-            .withPreferencesControllerUseRequestQueueEnabled()
+
             .withSelectedNetworkControllerPerDomain()
             .build(),
           ganacheOptions: {

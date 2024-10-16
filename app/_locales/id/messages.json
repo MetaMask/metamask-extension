@@ -5605,18 +5605,6 @@
     "message": "Ke: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "Hal ini memungkinkan Anda memilih jaringan untuk setiap situs, daripada satu jaringan yang dipilih untuk semua situs. Fitur ini akan mencegah Anda berpindah jaringan secara manual, yang dapat merusak pengalaman pengguna di situs tertentu."
-  },
-  "toggleRequestQueueField": {
-    "message": "Pilih jaringan untuk setiap situs"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Nonaktif"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Aktif"
-  },
   "token": {
     "message": "Token"
   },
