@@ -7,6 +7,11 @@ const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
 
+// Load the NPM package eslint-plugin-rulesdir
+const rulesDirPlugin = require('eslint-plugin-rulesdir');
+
+rulesDirPlugin.RULES_DIR = 'development/custom-rules';
+
 /**
  * @type {import('eslint').Linter.Config }
  */
@@ -18,7 +23,7 @@ module.exports = {
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
   // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
   parser: '@babel/eslint-parser',
-  plugins: ['@metamask/design-tokens'],
+  plugins: ['@metamask/design-tokens', 'rulesdir'],
   rules: {
     '@metamask/design-tokens/color-no-hex': 'warn',
     'import/no-restricted-paths': [
@@ -287,13 +292,14 @@ module.exports = {
      * Mocha library.
      */
     {
-      files: ['test/e2e/**/*.spec.js'],
+      files: ['test/e2e/**/*.spec.{js,jsx,ts,tsx}'],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         // In Mocha tests, it is common to use `this` to store values or do
         // things like force the test to fail.
         '@babel/no-invalid-this': 'off',
         'mocha/no-setup-in-describe': 'off',
+        'rulesdir/get-text-anti-pattern': 'warn',
       },
     },
     /**
@@ -464,9 +470,9 @@ module.exports = {
      */
     {
       files: [
-        '**/*.test.{js,ts,tsx}',
-        '**/*.spec.{js,ts,tsx}',
-        '**/*.stories.{js,ts,tsx}',
+        '**/*.test.{js,jsx,ts,tsx}',
+        '**/*.spec.{js,jsx,ts,tsx}',
+        '**/*.stories.{js,jsx,ts,tsx}',
       ],
       rules: {
         '@metamask/design-tokens/color-no-hex': 'off',
