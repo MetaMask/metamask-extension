@@ -8,7 +8,7 @@ import {
   setPermittedEthChainIds,
   mergeScopes,
   bucketScopes,
-  validateAndFlattenScopes,
+  validateAndNormalizeScopes,
 } from '@metamask/multichain';
 import { PermissionNames } from '../../../../controllers/permissions';
 import {
@@ -39,12 +39,12 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
   const chainIdsForNetworksAdded = [];
 
   try {
-    const { flattenedRequiredScopes, flattenedOptionalScopes } =
-      validateAndFlattenScopes(requiredScopes, optionalScopes);
+    const { normalizedRequiredScopes, normalizedOptionalScopes } =
+      validateAndNormalizeScopes(requiredScopes, optionalScopes);
 
     const validScopedProperties = processScopedProperties(
-      flattenedRequiredScopes,
-      flattenedOptionalScopes,
+      normalizedRequiredScopes,
+      normalizedOptionalScopes,
       scopedProperties,
     );
 
@@ -66,7 +66,7 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
       supportedScopes: supportedRequiredScopes,
       supportableScopes: supportableRequiredScopes,
       unsupportableScopes: unsupportableRequiredScopes,
-    } = bucketScopes(flattenedRequiredScopes, {
+    } = bucketScopes(normalizedRequiredScopes, {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
     });
@@ -75,7 +75,7 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
       supportedScopes: supportedOptionalScopes,
       supportableScopes: supportableOptionalScopes,
       unsupportableScopes: unsupportableOptionalScopes,
-    } = bucketScopes(flattenedOptionalScopes, {
+    } = bucketScopes(normalizedOptionalScopes, {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
     });
