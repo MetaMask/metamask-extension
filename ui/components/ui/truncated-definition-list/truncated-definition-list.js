@@ -48,7 +48,10 @@ export default function TruncatedDefinitionList({
 
   return (
     <Box
-      margin={6}
+      marginTop={6}
+      marginBottom={6}
+      marginLeft={0}
+      marginRight={0}
       padding={4}
       paddingBottom={3}
       borderRadius={Size.LG}

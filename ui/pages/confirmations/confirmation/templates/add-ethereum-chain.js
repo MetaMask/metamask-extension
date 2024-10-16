@@ -1,22 +1,19 @@
 import { providerErrors } from '@metamask/rpc-errors';
-import React from 'react';
 import { RpcEndpointType } from '@metamask/network-controller';
-
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
 } from '../../../../../shared/constants/network';
 import {
-  Severity,
-  TypographyVariant,
+  AlignItems,
   Display,
   FlexDirection,
-  AlignItems,
+  Severity,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
-import { BannerAlertSeverity } from '../../../../components/component-library';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
@@ -244,83 +241,6 @@ function getValues(pendingApproval, t, actions, history, data) {
   return {
     content: [
       {
-        element: 'BannerAlert',
-        key: 'only-add-networks-you-trust',
-        children: [
-          {
-            element: 'Typography',
-            key: 'description',
-            props: {
-              style: { display: originIsMetaMask && '-webkit-box' },
-            },
-            children: [
-              `${t('unknownChainWarning')} `,
-              {
-                hide: !originIsMetaMask,
-                element: 'Tooltip',
-                key: 'tooltip-info',
-                props: {
-                  position: 'bottom',
-                  interactive: true,
-                  trigger: 'mouseenter',
-                  html: (
-                    <div
-                      style={{
-                        width: '180px',
-                        margin: '16px',
-                        textAlign: 'left',
-                      }}
-                    >
-                      <a
-                        key="zendesk_page_link"
-                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
-                        rel="noreferrer"
-                        target="_blank"
-                        style={{ color: 'var(--color-primary-default)' }}
-                      >
-                        {t('learnMoreUpperCase')}
-                      </a>
-                    </div>
-                  ),
-                },
-                children: [
-                  {
-                    element: 'i',
-                    key: 'info-circle',
-                    props: {
-                      className: 'fas fa-info-circle',
-                      style: {
-                        marginLeft: '4px',
-                        color: 'var(--color-icon-default)',
-                      },
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            element: 'a',
-            children: t('learnMoreUpperCase'),
-            key: 'learnMoreUpperCase',
-            props: {
-              href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
-              target: '__blank',
-            },
-          },
-        ],
-        props: {
-          severity: BannerAlertSeverity.Warning,
-          boxProps: {
-            margin: [0, 4],
-            display: Display.Flex,
-            flexDirection: FlexDirection.Column,
-            alignItems: AlignItems.center,
-          },
-        },
-      },
-
-      {
         element: 'Typography',
         key: 'title',
         children: title,
@@ -376,6 +296,39 @@ function getValues(pendingApproval, t, actions, history, data) {
               pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
           },
           prefaceKeys: [t('currencySymbol'), t('networkURL')],
+        },
+      },
+      {
+        element: 'Typography',
+        key: 'only-add-networks-you-trust',
+        children: [
+          {
+            element: 'MetaMaskTranslation',
+            key: 'learn-about-risks',
+            props: {
+              translationKey: 'watchOutMessage',
+              variables: [
+                {
+                  element: 'a',
+                  children: t('securityMessageLinkForNetworks'),
+                  key: 'securityMessageLinkForNetworks',
+                  props: {
+                    href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
+                    target: '__blank',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        props: {
+          variant: TypographyVariant.H6,
+          boxProps: {
+            margin: originIsMetaMask ? [0, 8] : 0,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
+          },
         },
       },
     ],

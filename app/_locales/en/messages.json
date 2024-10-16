@@ -4651,6 +4651,9 @@
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
+  "securityMessageLinkForNetworks": {
+    "message": "network scams and security risks"
+  },
   "securityPrivacyPath": {
     "message": "Settings > Security & Privacy."
   },
@@ -6516,6 +6519,10 @@
   },
   "watchEthereumAccountsToggle": {
     "message": "Watch Ethereum Accounts (Beta)"
+  },
+  "watchOutMessage": {
+    "message": "Beware of $1.",
+    "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
   "weak": {
     "message": "Weak"
