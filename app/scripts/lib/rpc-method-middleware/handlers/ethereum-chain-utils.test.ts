@@ -141,6 +141,7 @@ describe('Ethereum Chain Utils', () => {
                       'wallet:eip155': {
                         methods: [],
                         notifications: [],
+                        accounts: [],
                       },
                     },
                     isMultichainOrigin: false,
