@@ -9,12 +9,9 @@ import {
 import {
   Severity,
   TypographyVariant,
-  TextAlign,
   Display,
   FlexDirection,
   AlignItems,
-  JustifyContent,
-  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
