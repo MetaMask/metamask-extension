@@ -193,8 +193,6 @@ export async function switchChain(
           );
         }
 
-        // TODO: This behavior may have deviated from the original permittedChains add chain behavior
-        // Verify that this helper behaves as expected
         if (!isAddFlow) {
           await requestPermissionApprovalForOrigin({
             [PermissionNames.permittedChains]: {
