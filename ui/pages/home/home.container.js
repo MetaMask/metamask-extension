@@ -51,7 +51,6 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
