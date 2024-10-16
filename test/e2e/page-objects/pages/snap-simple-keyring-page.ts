@@ -168,7 +168,7 @@ class SnapSimpleKeyringPage {
     console.log(
       'Approve/Reject snap account transaction on Snap Simple Keyring page',
     );
-    await this.driver.clickElementAndWaitForWindowToClose(this.confirmationSubmitButton);
+    await this.driver.clickElement(this.confirmationSubmitButton);
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
