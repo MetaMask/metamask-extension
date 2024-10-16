@@ -8,17 +8,16 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { AccountAddress } from '../../../controllers/account-order';
 import { HandlerWrapper } from './types';
 
 type EthAccountsHandlerOptions = {
-  getAccounts: () => Promise<AccountAddress[]>;
+  getAccounts: () => Promise<string[]>;
 };
 
 type EthAccountsConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
   implementation: (
     _req: JsonRpcRequest<Params>,
-    res: PendingJsonRpcResponse<AccountAddress[]>,
+    res: PendingJsonRpcResponse<string[]>,
     _next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,
     { getAccounts }: EthAccountsHandlerOptions,
@@ -49,7 +48,7 @@ export default ethAccounts;
  */
 async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
   _req: JsonRpcRequest<Params>,
-  res: PendingJsonRpcResponse<AccountAddress[]>,
+  res: PendingJsonRpcResponse<string[]>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   { getAccounts }: EthAccountsHandlerOptions,

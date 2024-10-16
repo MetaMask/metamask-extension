@@ -45,7 +45,7 @@ export type ConnectPageRequest = {
   origin: string;
   permissions?: Record<
     string,
-    { caveats: { type: string; value: string[] }[] }
+    { caveats?: { type: string; value: string[] }[] }
   >;
 };
 

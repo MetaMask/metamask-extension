@@ -46,7 +46,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).addPermittedAccount('foo.com', '0x1'),
       ).toThrow(
-        new Error('tried to add accounts when none have been permissioned'),
+        new Error(
+          `Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.`,
+        ),
       );
     });
 
@@ -145,16 +147,6 @@ describe('permission background API methods', () => {
                 'wallet:eip155:0x4',
               ],
             },
-            wallet: {
-              methods: [],
-              notifications: [],
-              accounts: [
-                'wallet:eip155:0x2',
-                'wallet:eip155:0x3',
-                'wallet:eip155:0x1',
-                'wallet:eip155:0x4',
-              ],
-            },
           },
           isMultichainOrigin: true,
         },
@@ -193,7 +185,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).addPermittedAccounts('foo.com', ['0x1']),
       ).toThrow(
-        new Error('tried to add accounts when none have been permissioned'),
+        new Error(
+          `Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.`,
+        ),
       );
     });
 
@@ -296,17 +290,6 @@ describe('permission background API methods', () => {
                 'wallet:eip155:0x5',
               ],
             },
-            wallet: {
-              methods: [],
-              notifications: [],
-              accounts: [
-                'wallet:eip155:0x2',
-                'wallet:eip155:0x3',
-                'wallet:eip155:0x1',
-                'wallet:eip155:0x4',
-                'wallet:eip155:0x5',
-              ],
-            },
           },
           isMultichainOrigin: true,
         },
@@ -345,7 +328,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).removePermittedAccount('foo.com', '0x1'),
       ).toThrow(
-        new Error('tried to remove accounts when none have been permissioned'),
+        new Error(
+          `Cannot remove account "0x1": No permissions exist for origin "foo.com".`,
+        ),
       );
     });
 
@@ -507,11 +492,6 @@ describe('permission background API methods', () => {
               notifications: [],
               accounts: ['wallet:eip155:0x3', 'wallet:eip155:0x1'],
             },
-            wallet: {
-              methods: [],
-              notifications: [],
-              accounts: ['wallet:eip155:0x3', 'wallet:eip155:0x1'],
-            },
           },
           isMultichainOrigin: true,
         },
@@ -604,11 +584,6 @@ describe('permission background API methods', () => {
                       notifications: [],
                       accounts: ['wallet:eip155:0xdeadbeef'],
                     },
-                    wallet: {
-                      methods: [],
-                      notifications: [],
-                      accounts: ['wallet:eip155:0xdeadbeef'],
-                    },
                   },
                   isMultichainOrigin: false,
                 },
@@ -651,7 +626,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).addPermittedChain('foo.com', '0x1'),
       ).toThrow(
-        new Error('tried to add chains when none have been permissioned'),
+        new Error(
+          `Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.`,
+        ),
       );
     });
 
@@ -735,11 +712,6 @@ describe('permission background API methods', () => {
               notifications: [],
               accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
             },
-            wallet: {
-              methods: [],
-              notifications: [],
-              accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
-            },
           },
           isMultichainOrigin: true,
         },
@@ -778,7 +750,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).addPermittedChains('foo.com', ['0x1']),
       ).toThrow(
-        new Error('tried to add chains when none have been permissioned'),
+        new Error(
+          `Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.`,
+        ),
       );
     });
 
@@ -867,11 +841,6 @@ describe('permission background API methods', () => {
               notifications: [],
               accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
             },
-            wallet: {
-              methods: [],
-              notifications: [],
-              accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
-            },
           },
           isMultichainOrigin: true,
         },
@@ -910,7 +879,9 @@ describe('permission background API methods', () => {
           permissionController,
         }).removePermittedChain('foo.com', '0x1'),
       ).toThrow(
-        new Error('tried to remove chains when none have been permissioned'),
+        new Error(
+          `Cannot remove permission for chainId "0x1": No permissions exist for origin "foo.com".`,
+        ),
       );
     });
 

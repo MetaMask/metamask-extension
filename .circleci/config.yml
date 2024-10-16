@@ -1284,7 +1284,7 @@ jobs:
           command: mv ./builds-test-flask-mv2 ./builds
       - run:
           name: test:e2e:firefox:flask
-          command: ENABLE_MV3=false .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox:flask
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox:flask
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1427,7 +1427,7 @@ jobs:
           command: mv ./builds-test-mv2 ./builds
       - run:
           name: test:e2e:firefox
-          command: ENABLE_MV3=false .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts

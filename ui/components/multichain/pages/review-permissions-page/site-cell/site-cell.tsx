@@ -14,7 +14,10 @@ import {
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
 import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import {
+  isEqualCaseInsensitive,
+  isEqualCaseInsensitive,
+} from '../../../../../../shared/modules/string-utils';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

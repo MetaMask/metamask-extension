@@ -1677,6 +1677,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getState',
           'NetworkController:getNetworkClientById',
           'OnboardingController:getState',
+          'PreferencesController:getState',
         ],
         allowedEvents: [
           'AccountsController:selectedEvmAccountChange',
@@ -1694,7 +1695,6 @@ export default class MetamaskController extends EventEmitter {
           });
         return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
-      preferencesControllerState: this.preferencesController.state,
     });
 
     // start and stop polling for balances based on activeControllerConnections

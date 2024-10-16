@@ -73,8 +73,10 @@ export const getPermissionSpecifications = ({
   return {
     [caip25EndowmentBuilder.targetName]:
       caip25EndowmentBuilder.specificationBuilder({
-        findNetworkClientIdByChainId,
-        getInternalAccounts,
+        methodHooks: {
+          findNetworkClientIdByChainId,
+          getInternalAccounts,
+        },
       }),
   };
 };
