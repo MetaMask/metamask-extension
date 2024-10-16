@@ -19,8 +19,6 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { SwapsEthToken } from '../../selectors';
 import { bridgeSlice } from './bridge';
 
 const {
@@ -143,8 +141,8 @@ export const setToChain = (chainId: Hex) => {
 export const switchToAndFromInputs =
   (
     fromChainId: Hex,
-    fromToken: SwapsTokenObject | SwapsEthToken,
-    toToken: SwapsTokenObject | SwapsEthToken,
+    fromToken: AssetWithDisplayData<ERC20Asset | NativeAsset>,
+    toToken: AssetWithDisplayData<ERC20Asset | NativeAsset>,
   ) =>
   async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(setFromToken(toToken));
