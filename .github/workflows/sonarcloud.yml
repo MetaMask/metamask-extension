@@ -41,7 +41,7 @@ jobs:
       - name: Download sonar-project.properties
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPOSITORY: metamask/metamask-extension
+          REPOSITORY: MetaMask/metamask-extension
         run: |
           sonar_project_properties=$(gh api -H "Accept: application/vnd.github.raw" "repos/$REPOSITORY/contents/sonar-project.properties")
           if [ -z "$sonar_project_properties" ]; then
