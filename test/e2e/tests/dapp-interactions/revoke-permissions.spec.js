@@ -30,6 +30,7 @@ describe('Wallet Revoke Permissions', function () {
         );
 
         // Eth_accounts permission
+        await driver.waitForSelector({ text: 'eth_accounts' });
         assert.equal(await permissionsResult.getText(), 'eth_accounts');
 
         // Revoke eth_accounts permissions
@@ -39,6 +40,7 @@ describe('Wallet Revoke Permissions', function () {
         await driver.clickElement('#getPermissions');
 
         // Eth_accounts permissions removed
+        await driver.waitForSelector({ text: 'No permissions found.' });
         assert.equal(
           await permissionsResult.getText(),
           'No permissions found.',
