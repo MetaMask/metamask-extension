@@ -1589,8 +1589,6 @@ export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
   (unapprovedTypedMessages) => unapprovedTypedMessages,
 );
 
-export const selectAddress = (_, address) => address;
-
 /**
  * Get the display name for an address.
  * This selector will look into the internal accounts and address book to find a display name for the address.
