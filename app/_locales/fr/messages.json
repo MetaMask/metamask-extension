@@ -207,17 +207,6 @@
   "addCustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
   },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask ne vérifie pas les réseaux personnalisés."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "En savoir plus sur $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "les risques de fraude et de sécurité des réseaux",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "N’ajoutez ce fournisseur de RPC que si vous lui faites confiance. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4851,9 +4840,6 @@
   "snapsUIError": {
     "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "someNetworksMayPoseSecurity": {
-    "message": "Certains réseaux peuvent présenter des risques pour la sécurité et/ou la vie privée. Informez-vous sur les risques avant d’ajouter et d’utiliser un réseau."
   },
   "somethingDoesntLookRight": {
     "message": "On dirait que quelque chose ne va pas ? $1",

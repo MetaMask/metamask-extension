@@ -207,17 +207,6 @@
   "addCustomNetwork": {
     "message": "Добавить пользовательскую сеть"
   },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask не проверяет пользовательские сети."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Подробнее о $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "мошенничестве и угрозах безопасности в сети",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Добавляйте этого поставщика RPC только в том случае, если уверены, что ему можно доверять. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4851,9 +4840,6 @@
   "snapsUIError": {
     "message": "Свяжитесь с авторами $1 для получения дополнительной поддержки.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "someNetworksMayPoseSecurity": {
-    "message": "Некоторые сети могут представлять угрозу безопасности и/или конфиденциальности. Прежде чем добавлять и использовать сеть, ознакомьтесь с рисками."
   },
   "somethingDoesntLookRight": {
     "message": "Что-то не так? $1",
