@@ -338,7 +338,7 @@ function getValues(pendingApproval, t, actions, history, data) {
         key: 'description',
         children: subtitle,
         props: {
-          variant: TypographyVariant.H7,
+          variant: TypographyVariant.H6,
           align: 'center',
           boxProps: {
             margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
