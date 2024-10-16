@@ -36,7 +36,6 @@ export class DummyAppPage {
     await popup1.waitForLoadState();
     // Check which account is selected and select if required
     await popup1.locator('.check-box__indeterminate');
-    await popup1.locator('button:has-text("Next")').click();
     await popup1.locator('button:has-text("Confirm")').click();
     await popup1.close();
   }
