@@ -35,6 +35,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 type EditAccountsModalProps = {
   activeTabOrigin: string;
@@ -141,8 +142,12 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                     isPinned={Boolean(account.pinned)}
                     startAccessory={
                       <Checkbox
-                        isChecked={selectedAccountAddresses.includes(
-                          account.address,
+                        isChecked={selectedAccountAddresses.some(
+                          (selectedAccountAddress) =>
+                            isEqualCaseInsensitive(
+                              selectedAccountAddress,
+                              account.address,
+                            ),
                         )}
                       />
                     }

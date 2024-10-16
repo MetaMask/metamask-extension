@@ -34,10 +34,19 @@ import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 
 export type ConnectPageRequest = {
   id: string;
   origin: string;
+  permissions?: Record<
+    string,
+    { caveats?: { type: string; value: string[] }[] }
+  >;
 };
 
 type ConnectPageProps = {
@@ -57,6 +66,20 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
 
+  const ethAccountsPermission =
+    request?.permissions?.[RestrictedMethods.eth_accounts];
+  const requestedAccounts =
+    ethAccountsPermission?.caveats?.find(
+      (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+    )?.value || [];
+
+  const permittedChainsPermission =
+    request?.permissions?.[EndowmentTypes.permittedChains];
+  const requestedChainIds =
+    permittedChainsPermission?.caveats?.find(
+      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+    )?.value || [];
+
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -70,7 +93,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ),
     [networkConfigurations],
   );
-  const defaultSelectedChainIds = nonTestNetworks.map(({ chainId }) => chainId);
+  const defaultSelectedChainIds =
+    requestedChainIds.length > 0
+      ? requestedChainIds
+      : nonTestNetworks.map(({ chainId }) => chainId);
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
   );
@@ -84,7 +110,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [accounts, internalAccounts]);
 
   const currentAccount = useSelector(getSelectedInternalAccount);
-  const defaultAccountsAddresses = [currentAccount?.address];
+  const defaultAccountsAddresses =
+    requestedAccounts.length > 0
+      ? requestedAccounts
+      : [currentAccount?.address];
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultAccountsAddresses,
   );

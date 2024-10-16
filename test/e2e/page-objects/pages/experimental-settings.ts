@@ -9,8 +9,11 @@ class ExperimentalSettings {
 
   private readonly experimentalPageTitle: object = {
     text: 'Experimental',
-    css: '.h4',
+    tag: 'h4',
   };
+
+  private readonly redesignedSignatureToggle: string =
+    '[data-testid="toggle-redesigned-confirmations-container"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -32,6 +35,11 @@ class ExperimentalSettings {
   async toggleAddAccountSnap(): Promise<void> {
     console.log('Toggle Add Account Snap on experimental setting page');
     await this.driver.clickElement(this.addAccountSnapToggle);
+  }
+
+  async toggleRedesignedSignature(): Promise<void> {
+    console.log('Toggle Redesigned Signature on experimental setting page');
+    await this.driver.clickElement(this.redesignedSignatureToggle);
   }
 }
 
