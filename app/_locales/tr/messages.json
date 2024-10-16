@@ -207,9 +207,6 @@
   "addCustomNetwork": {
     "message": "Özel ağ ekle"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Bu, bu ağın MetaMas dahilinde kullanılmasına olanak tanıyacaktır."
-  },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask özel ağları doğrulamaz."
   },
@@ -220,9 +217,6 @@
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "dolandırıcılık ve ağ güvenliği riskleri",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Bu sitenin ağ eklemesine izin ver?"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Bu RPC sağlayıcısını sadece ona güvenebileceğinizden eminseniz ekleyin. $1",
@@ -6006,9 +6000,6 @@
   },
   "viewActivity": {
     "message": "Aktiviteyi görüntüle"
-  },
-  "viewAllDetails": {
-    "message": "Tüm bilgileri görüntüle"
   },
   "viewAllQuotes": {
     "message": "tüm teklifleri görüntüle"

@@ -207,9 +207,6 @@
   "addCustomNetwork": {
     "message": "맞춤 네트워크 추가"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "이렇게 하면 MetaMask 내에서 이 네트워크를 사용할 수 있습니다."
-  },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask는 맞춤 네트워크를 검증하지 않습니다."
   },
@@ -220,9 +217,6 @@
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "사기 및 네트워크 보안 위험",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "이 사이트에서 네트워크를 추가하도록 허용하시겠습니까?"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "신뢰할 수 있는 경우에만 이 RPC 공급입체를 추가하세요. $1",
@@ -6006,9 +6000,6 @@
   },
   "viewActivity": {
     "message": "활동 보기"
-  },
-  "viewAllDetails": {
-    "message": "모든 세부 정보 보기"
   },
   "viewAllQuotes": {
     "message": "모든 견적 보기"

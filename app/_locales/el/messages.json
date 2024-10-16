@@ -207,9 +207,6 @@
   "addCustomNetwork": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Αυτό θα επιτρέψει σε αυτό το δίκτυο να χρησιμοποιηθεί στο MetaMask."
-  },
   "addEthereumChainConfirmationRisks": {
     "message": "Το MetaMask δεν επαληθεύει τα προσαρμοσμένα δίκτυα."
   },
@@ -220,9 +217,6 @@
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "απάτες και κίνδυνοι ασφάλειας δικτύου",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Επιτρέπετε σε αυτήν την ιστοσελίδα να προσθέσει ένα δίκτυο;"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Προσθέστε αυτόν τον πάροχο RPC μόνο αν είστε σίγουροι ότι μπορείτε να τον εμπιστευτείτε. $1",
@@ -6006,9 +6000,6 @@
   },
   "viewActivity": {
     "message": "Προβολή δραστηριότητας"
-  },
-  "viewAllDetails": {
-    "message": "Προβολή όλων των λεπτομερειών"
   },
   "viewAllQuotes": {
     "message": "προβολή όλων των προσφορών"

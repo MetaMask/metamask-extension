@@ -207,9 +207,6 @@
   "addCustomNetwork": {
     "message": "Добавить пользовательскую сеть"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Это позволит использовать эту сеть в MetaMask."
-  },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask не проверяет пользовательские сети."
   },
@@ -220,9 +217,6 @@
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "мошенничестве и угрозах безопасности в сети",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Разрешить этому сайту добавить сеть?"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Добавляйте этого поставщика RPC только в том случае, если уверены, что ему можно доверять. $1",
@@ -6006,9 +6000,6 @@
   },
   "viewActivity": {
     "message": "Смотреть активность"
-  },
-  "viewAllDetails": {
-    "message": "Смотреть все сведения"
   },
   "viewAllQuotes": {
     "message": "смотреть все котировки"

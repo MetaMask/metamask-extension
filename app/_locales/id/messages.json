@@ -207,9 +207,6 @@
   "addCustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Tindakan ini akan membantu jaringan ini agar dapat digunakan di MetaMask."
-  },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask tidak memverifikasi jaringan kustom."
   },
@@ -220,9 +217,6 @@
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "penipuan dan risiko keamanan jaringan",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Izinkan situs ini untuk menambahkan jaringan?"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Cukup tambahkan penyedia RPC ini jika Anda yakin dapat memercayainya. $1",
@@ -6006,9 +6000,6 @@
   },
   "viewActivity": {
     "message": "Lihat aktivitas"
-  },
-  "viewAllDetails": {
-    "message": "Lihat semua detail"
   },
   "viewAllQuotes": {
     "message": "lihat semua kuotasi"

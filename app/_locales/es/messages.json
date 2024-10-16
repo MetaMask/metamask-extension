@@ -207,9 +207,6 @@
   "addCustomNetwork": {
     "message": "Agregar red personalizada"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Esto permitirá que la red se utilice en MetaMask."
-  },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask no verifica redes personalizadas."
   },
@@ -220,9 +217,6 @@
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "estafas y riesgos de seguridad de la red",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "¿Permitir que este sitio agregue una red?"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Agregue este proveedor de RPC solo si está seguro de que puede confiar en él. $1",
@@ -6003,9 +5997,6 @@
   },
   "viewActivity": {
     "message": "Ver actividad"
-  },
-  "viewAllDetails": {
-    "message": "Ver todos los detalles"
   },
   "viewAllQuotes": {
     "message": "ver todas las cotizaciones"
