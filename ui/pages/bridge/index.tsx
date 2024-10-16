@@ -51,11 +51,20 @@ const CrossChainSwap = () => {
       dispatch(setFromChain(providerConfig.chainId));
   }, [isBridgeChain, isBridgeEnabled, providerConfig]);
 
+  const resetControllerAndInputStates = async () => {
+    dispatch(resetInputFields());
+    await dispatch(resetBridgeState());
+  };
+
   useEffect(() => {
     // Reset controller and inputs before unloading the page
+    resetControllerAndInputStates();
+
+    window.addEventListener('beforeunload', resetControllerAndInputStates);
+
     return () => {
-      dispatch(resetInputFields());
-      dispatch(resetBridgeState());
+      window.removeEventListener('beforeunload', resetControllerAndInputStates);
+      resetControllerAndInputStates();
     };
   }, []);
 
@@ -66,6 +75,7 @@ const CrossChainSwap = () => {
     });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
+    await resetControllerAndInputStates();
   };
 
   return (
