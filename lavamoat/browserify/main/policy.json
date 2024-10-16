@@ -1449,46 +1449,17 @@
         "console.log": true
       },
       "packages": {
+        "@metamask/api-specs": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
-        "@metamask/multichain>@metamask/api-specs": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js": true,
         "@metamask/multichain>jsonschema": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
+        "@open-rpc/schema-utils-js": true,
         "browserify>assert": true,
         "lodash": true
-      }
-    },
-    "@metamask/multichain>@open-rpc/schema-utils-js": {
-      "packages": {
-        "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js>ajv": true,
-        "@open-rpc/meta-schema": true,
-        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
-        "@open-rpc/schema-utils-js>is-url": true,
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
-      "packages": {
-        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
-        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@metamask/multichain>@open-rpc/schema-utils-js>ajv": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "@metamask/multichain>@open-rpc/schema-utils-js>ajv>json-schema-traverse": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "eslint>fast-deep-equal": true,
-        "uri-js": true
       }
     },
     "@metamask/multichain>jsonschema": {
@@ -2110,34 +2081,11 @@
     },
     "@metamask/queued-request-controller": {
       "packages": {
-        "@metamask/queued-request-controller>@metamask/base-controller": true,
-        "@metamask/queued-request-controller>@metamask/utils": true,
+        "@metamask/base-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/selected-network-controller": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true
-      }
-    },
-    "@metamask/queued-request-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/queued-request-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -2921,10 +2869,39 @@
         "crypto": true
       }
     },
+    "@open-rpc/schema-utils-js": {
+      "packages": {
+        "@open-rpc/meta-schema": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
+        "@open-rpc/schema-utils-js>ajv": true,
+        "@open-rpc/schema-utils-js>is-url": true,
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
+      "packages": {
+        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
     "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver>@json-schema-spec/json-pointer": true,
         "@open-rpc/test-coverage>isomorphic-fetch": true
+      }
+    },
+    "@open-rpc/schema-utils-js>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@open-rpc/schema-utils-js>ajv>json-schema-traverse": true,
+        "eslint>fast-deep-equal": true,
+        "uri-js": true
       }
     },
     "@open-rpc/test-coverage>isomorphic-fetch": {
