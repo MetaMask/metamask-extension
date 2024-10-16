@@ -22,6 +22,7 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
           >
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+              style="overflow: hidden;"
             >
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"

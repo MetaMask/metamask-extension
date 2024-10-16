@@ -1,15 +1,12 @@
-import { SHARED_FOLDER_JS_REGEX } from '../common/constants';
+import { JS_REGEX } from '../common/constants';
 import {
-  filterDiffByFilePath,
   filterDiffFileCreations,
+  restrictedFilePresent,
 } from '../common/shared';
 
 function preventJavaScriptFileAdditions(diff: string): boolean {
-  const sharedFolderDiff = filterDiffByFilePath(diff, SHARED_FOLDER_JS_REGEX);
-  const sharedFolderCreationDiff = filterDiffFileCreations(sharedFolderDiff);
-
-  const hasCreatedAtLeastOneJSFileInShared = sharedFolderCreationDiff !== '';
-  if (hasCreatedAtLeastOneJSFileInShared) {
+  const diffAdditions = filterDiffFileCreations(diff);
+  if (restrictedFilePresent(diffAdditions, JS_REGEX)) {
     return false;
   }
   return true;

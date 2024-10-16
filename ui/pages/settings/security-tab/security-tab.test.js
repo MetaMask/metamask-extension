@@ -13,6 +13,8 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
 import SecurityTab from './security-tab.container';
 
+const mockOpenDeleteMetaMetricsDataModal = jest.fn();
+
 const mockSetSecurityAlertsEnabled = jest
   .fn()
   .mockImplementation(() => () => undefined);
@@ -35,6 +37,14 @@ jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   setSecurityAlertsEnabled: (val) => mockSetSecurityAlertsEnabled(val),
 }));
+
+jest.mock('../../../ducks/app/app.ts', () => {
+  return {
+    openDeleteMetaMetricsDataModal: () => {
+      return mockOpenDeleteMetaMetricsDataModal;
+    },
+  };
+});
 
 describe('Security Tab', () => {
   mockState.appState.warning = 'warning'; // This tests an otherwise untested render branch
@@ -214,7 +224,23 @@ describe('Security Tab', () => {
     await user.click(screen.getByText(tEn('addCustomNetwork')));
     expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
   });
+  it('clicks "Delete MetaMetrics Data"', async () => {
+    mockState.metamask.participateInMetaMetrics = true;
+    mockState.metamask.metaMetricsId = 'fake-metametrics-id';
 
+    const localMockStore = configureMockStore([thunk])(mockState);
+    renderWithProvider(<SecurityTab />, localMockStore);
+
+    expect(
+      screen.queryByTestId(`delete-metametrics-data-button`),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Delete MetaMetrics data' }),
+    );
+
+    expect(mockOpenDeleteMetaMetricsDataModal).toHaveBeenCalled();
+  });
   describe('Blockaid', () => {
     afterEach(() => {
       jest.clearAllMocks();

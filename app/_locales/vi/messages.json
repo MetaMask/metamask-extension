@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Khi các giao dịch của bạn được đưa vào khối, mọi phần chênh lệch giữa phí cơ sở tối đa và phí cơ sở thực tế đều sẽ được hoàn lại. Tổng số tiền sẽ được tính bằng phí cơ sở tối đa (theo GWEI) * hạn mức phí gas."
   },
-  "advancedConfiguration": {
-    "message": "Cấu hình nâng cao"
-  },
   "advancedDetailsDataDesc": {
     "message": "Dữ liệu"
   },
@@ -381,12 +378,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Cập nhật tùy chọn phí gas"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo có thể lấy hết tài sản của bạn."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Có nhiều cảnh báo!"
-  },
   "alertDisableTooltip": {
     "message": "Bạn có thể thay đổi trong phần \"Cài đặt > Cảnh báo\""
   },
@@ -398,9 +389,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Để tiếp tục giao dịch này, bạn cần tăng giới hạn phí gas lên 21000 hoặc cao hơn."
-  },
-  "alertMessageInsufficientBalance": {
-    "message": "Bạn không có đủ ETH trong tài khoản để thanh toán phí giao dịch."
   },
   "alertMessageNetworkBusy": {
     "message": "Phí gas cao và ước tính kém chính xác hơn."
@@ -455,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Tài khoản không đúng"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Đang duyệt trang web khi chọn một tài khoản không được kết nối"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Cảnh báo này hiển thị trong cửa sổ bật lên khi bạn đang duyệt một trang web đã được kết nối trên web3, nhưng tài khoản đang chọn không được kết nối."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Khi một trang web cố dùng API window.web3 đã bị xóa"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Cảnh báo này hiển thị trong cửa sổ bật lên khi bạn đang duyệt một trang web cố sử dụng API window.web3 đã bị xóa nên có thể bị lỗi."
   },
   "alerts": {
     "message": "Cảnh báo"
@@ -721,12 +697,6 @@
   "betaTerms": {
     "message": "Điều khoản sử dụng phiên bản Beta"
   },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask Beta không thể khôi phục Cụm từ khôi phục bí mật của bạn."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask Beta sẽ không bao giờ hỏi về Cụm từ khôi phục bí mật của bạn."
-  },
   "billionAbbreviation": {
     "message": "Tỷ",
     "description": "Shortened form of 'billion'"
@@ -972,12 +942,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Tôi đã hiểu rõ cảnh báo và vẫn muốn tiếp tục"
   },
-  "confirmAlertModalDetails": {
-    "message": "Nếu bạn đăng nhập, một bên thứ ba nổi tiếng là lừa đảo có thể lấy tất cả tài sản của bạn. Vui lòng xem lại các cảnh báo trước khi tiếp tục."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Tài sản của bạn có thể gặp rủi ro"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Chúng tôi sẽ chuyển hướng bạn đến $1 sau khi nhấn vào tiếp tục."
   },
@@ -1099,9 +1063,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask được kết nối với trang web này, nhưng chưa có tài khoản nào được kết nối"
-  },
-  "connectedWith": {
-    "message": "Đã kết nối với"
   },
   "connecting": {
     "message": "Đang kết nối"
@@ -1519,14 +1480,6 @@
   "disconnectAllSnapsText": {
     "message": "Snap"
   },
-  "disconnectAllText": {
-    "message": "Nếu bạn ngắt kết nối $1 khỏi $2, bạn sẽ cần kết nối lại để sử dụng lại.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Ngắt kết nối tất cả $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "Ngắt kết nối $1"
   },
@@ -1879,10 +1832,6 @@
   "feeDetails": {
     "message": "Chi tiết phí"
   },
-  "fiat": {
-    "message": "Pháp định",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Tính năng nhập tập tin không hoạt động? Nhấp vào đây!",
     "description": "Helps user import their account from a JSON file"
@@ -2113,9 +2062,6 @@
   },
   "hideSentitiveInfo": {
     "message": "Ẩn thông tin nhạy cảm"
-  },
-  "hideToken": {
-    "message": "Ẩn token"
   },
   "hideTokenPrompt": {
     "message": "Ẩn token?"
@@ -2441,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "Tập tin JSON",
@@ -2851,10 +2794,6 @@
     "message": "$1 đang yêu cầu sự chấp thuận của bạn cho:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Bạn có muốn trang web này thực hiện những điều sau không?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "Token gốc của mạng này là $1. Token này được dùng làm phí gas.",
     "description": "$1 represents the name of the native token on the current network"
@@ -2864,10 +2803,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Mạng này không trùng khớp với tên hoặc ID chuỗi liên quan của nó. Nhiều token phổ biến sử dụng tên $1, khiến nó trở thành mục tiêu của các hành vi lừa đảo. Kẻ lừa đảo có thể lừa bạn gửi lại cho họ loại tiền tệ có giá trị hơn. Hãy xác minh mọi thứ trước khi tiếp tục.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Đây có khả năng là một hành vi lừa đảo"
+    "message": "Đây có khả năng là một hành vi lừa đảo",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Bạn cần trợ giúp? Liên hệ $1",
@@ -3091,14 +3031,8 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noConnectedAccountDescription": {
-    "message": "Chọn tài khoản mà bạn muốn sử dụng trên trang web này để tiếp tục."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
-  },
-  "noConversionDateAvailable": {
-    "message": "Hiện không có ngày quy đổi tiền tệ nào"
   },
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
@@ -3499,10 +3433,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "Ghim MetaMask Institutional"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Thông báo phát hiện dấu hiệu lừa đảo tùy thuộc vào quá trình truyền tin với $1. jsDeliver sẽ có quyền truy cập vào địa chỉ IP của bạn. Xem $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1 Ngày",
@@ -3920,12 +3850,6 @@
   "priceUnavailable": {
     "message": "giá không khả dụng"
   },
-  "primaryCurrencySetting": {
-    "message": "Tiền tệ chính"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Chọn Gốc để ưu tiên hiển thị giá trị bằng đơn vị tiền tệ gốc của chuỗi (ví dụ: ETH). Chọn Pháp định để ưu tiên hiển thị giá trị bằng đơn vị tiền pháp định mà bạn chọn."
-  },
   "primaryType": {
     "message": "Loại chính"
   },
@@ -4149,9 +4073,6 @@
   },
   "rejected": {
     "message": "Đã từ chối"
-  },
-  "remember": {
-    "message": "Ghi nhớ:"
   },
   "remove": {
     "message": "Xóa"
@@ -4560,9 +4481,6 @@
   "sepolia": {
     "message": "Mạng thử nghiệm Sepolia"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask sử dụng các dịch vụ của bên thứ ba đáng tin cậy này để nâng cao sự hữu ích và an toàn của sản phẩm."
-  },
   "setApprovalForAll": {
     "message": "Thiết lập chấp thuận tất cả"
   },
@@ -4751,13 +4669,6 @@
   },
   "smartTransactionSuccess": {
     "message": "Giao dịch của bạn đã hoàn tất"
-  },
-  "smartTransactionTakingTooLong": {
-    "message": "Xin lỗi đã để bạn đợi lâu"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Nếu giao dịch của bạn không được hoàn thành trong vòng $1, thì giao dịch sẽ bị hủy và bạn sẽ không bị tính phí gas.",
-    "description": "$1 is remaining time in seconds"
   },
   "smartTransactions": {
     "message": "Giao dịch thông minh"
@@ -5175,10 +5086,6 @@
   "stxCancelledSubDescription": {
     "message": "Hãy thử hoán đổi lại. Chúng tôi ở đây để bảo vệ bạn trước những rủi ro tương tự trong lần tới."
   },
-  "stxEstimatedCompletion": {
-    "message": "Dự kiến hoàn thành sau < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
-  },
   "stxFailure": {
     "message": "Hoán đổi không thành công"
   },
@@ -5285,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Chúng tôi sẵn sàng cho bạn xem báo giá mới nhất khi bạn muốn tiếp tục"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Không có token nào khớp với $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Xác nhận ví cứng của bạn"
   },
@@ -5353,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Lỗi tìm nạp báo giá"
   },
-  "swapFetchingTokens": {
-    "message": "Đang tìm nạp token..."
-  },
   "swapFromTo": {
     "message": "Giao dịch hoán đổi $1 sang $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5375,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "Mức trượt giá cao"
-  },
-  "swapHighSlippageWarning": {
-    "message": "Số tiền trượt giá rất cao."
   },
   "swapIncludesMMFee": {
     "message": "Bao gồm $1% phí của MetaMask.",
@@ -5399,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "Mức trượt giá thấp"
-  },
-  "swapLowSlippageError": {
-    "message": "Giao dịch có thể không thành công, mức trượt giá tối đa quá thấp."
   },
   "swapMaxSlippage": {
     "message": "Mức trượt giá tối đa"
@@ -5436,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Chênh lệch giá ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Tác động về giá là mức chênh lệch giữa giá thị trường hiện tại và số tiền nhận được trong quá trình thực hiện giao dịch. Tác động giá là một hàm trong quy mô giao dịch của bạn so với quy mô của nhóm thanh khoản."
   },
   "swapPriceUnavailableDescription": {
     "message": "Không thể xác định tác động giá do thiếu dữ liệu giá thị trường. Vui lòng xác nhận rằng bạn cảm thấy thoải mái với số lượng token bạn sắp nhận được trước khi hoán đổi."
@@ -5486,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "Yêu cầu báo giá"
   },
-  "swapReviewSwap": {
-    "message": "Xem lại giao dịch hoán đổi"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Tìm kiếm tên hoặc dán địa chỉ"
-  },
   "swapSelect": {
     "message": "Chọn"
   },
@@ -5523,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Mức trượt giá thấp"
-  },
-  "swapSlippageNegative": {
-    "message": "Mức trượt giá phải lớn hơn hoặc bằng 0"
   },
   "swapSlippageNegativeDescription": {
     "message": "Mức trượt giá phải lớn hơn hoặc bằng 0"
@@ -5595,20 +5477,6 @@
     "message": "Hoán đổi $1 sang $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Token này đã được thêm theo cách thủ công."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Luôn xác nhận địa chỉ token trên $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Chỉ được xác minh trên 1 nguồn."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Đã xác minh trên $1 nguồn.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 chỉ được xác minh trên 1 nguồn. Hãy xem xét xác minh nó trên $2 trước khi tiếp tục.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5629,29 +5497,11 @@
   "swapUnknown": {
     "message": "Không xác định"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Nhiều token có thể dùng cùng một tên và ký hiệu. Hãy kiểm tra $1 để xác minh xem đây có phải là token bạn đang tìm kiếm không.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "Có sẵn $1 $2 để hoán đổi",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "Mức trượt giá 0%"
   },
-  "swapsAdvancedOptions": {
-    "message": "Tùy chọn nâng cao"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Mức trượt giá quá cao và sẽ dẫn đến tỷ giá không sinh lời. Vui lòng giảm giới hạn trượt giá xuống một giá trị thấp hơn 15%."
-  },
   "swapsMaxSlippage": {
     "message": "Giới hạn trượt giá"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Không đủ $1 để hoàn thành giao dịch này",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Không đủ $1",
@@ -5787,9 +5637,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Yêu cầu số thập phân của token. Tìm trên: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Số thập phân của token:"
   },
   "tokenDetails": {
     "message": "Chi tiết token"
@@ -6090,9 +5937,6 @@
   "updateRequest": {
     "message": "Yêu cầu cập nhật"
   },
-  "updatedWithDate": {
-    "message": "Đã cập nhật $1"
-  },
   "uploadDropFile": {
     "message": "Thả tập tin của bạn vào đây"
   },
@@ -6153,14 +5997,6 @@
   },
   "verifyContractDetails": {
     "message": "Xác minh thông tin bên thứ ba"
-  },
-  "verifyThisTokenOn": {
-    "message": "Xác minh token này trên $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Hãy xác minh token này trên $1 và đảm bảo đây là token bạn muốn giao dịch.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "Phiên bản"
@@ -6227,26 +6063,6 @@
   },
   "walletConnectionGuide": {
     "message": "hướng dẫn của chúng tôi về cách kết nối ví cứng"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Bạn đã bảo vệ thành công ví của mình. Hãy đảm bảo an toàn và bí mật cho Cụm từ khôi phục bí mật của bạn -- đây là trách nhiệm của bạn!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask không thể khôi phục Cụm từ khôi phục bí mật của bạn."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask sẽ không bao giờ hỏi về Cụm từ khôi phục bí mật của bạn."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 với bất kỳ ai, nếu không bạn sẽ có nguy cơ bị mất tiền",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Không bao giờ chia sẻ Cụm từ khôi phục bí mật của bạn",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Tạo ví thành công"
   },
   "wantToAddThisNetwork": {
     "message": "Bạn muốn thêm mạng này?"

@@ -3,19 +3,44 @@ import { Driver } from '../../webdriver/driver';
 class HeaderNavbar {
   private driver: Driver;
 
-  private accountMenuButton: string;
+  private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private accountOptionMenu: string;
+  private readonly accountOptionMenu =
+    '[data-testid="account-options-menu-button"]';
 
-  private lockMetaMaskButton: string;
+  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
-  public switchNetworkDropDown: string;
+  private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
+
+  private readonly mmiPortfolioButton =
+    '[data-testid="global-menu-mmi-portfolio"]';
+
+  private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.accountMenuButton = '[data-testid="account-menu-icon"]';
-    this.accountOptionMenu = '[data-testid="account-options-menu-button"]';
-    this.lockMetaMaskButton = '[data-testid="global-menu-lock"]';
+  }
+
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.accountMenuButton,
+        this.accountOptionMenu,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for header navbar to be loaded', e);
+      throw e;
+    }
+    console.log('Header navbar is loaded');
+  }
+
+  async lockMetaMask(): Promise<void> {
+    await this.driver.clickElement(this.accountOptionMenu);
+    // fix race condition with mmi build
+    if (process.env.MMI) {
+      await this.driver.waitForSelector(this.mmiPortfolioButton);
+    }
+    await this.driver.clickElement(this.lockMetaMaskButton);
     this.switchNetworkDropDown = '[data-testid="network-display"]';
   }
 
@@ -23,9 +48,20 @@ class HeaderNavbar {
     await this.driver.clickElement(this.accountMenuButton);
   }
 
-  async lockMetaMask(): Promise<void> {
+  async openSnapListPage(): Promise<void> {
+    console.log('Open account snap page');
     await this.driver.clickElement(this.accountOptionMenu);
-    await this.driver.clickElement(this.lockMetaMaskButton);
+    await this.driver.clickElement(this.accountSnapButton);
+  }
+
+  async openSettingsPage(): Promise<void> {
+    console.log('Open settings page');
+    await this.driver.clickElement(this.accountOptionMenu);
+    // fix race condition with mmi build
+    if (process.env.MMI) {
+      await this.driver.waitForSelector(this.mmiPortfolioButton);
+    }
+    await this.driver.clickElement(this.settingsButton);
   }
 
   async clickSwitchNetworkDropDown(): Promise<void> {
