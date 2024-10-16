@@ -63,7 +63,6 @@ describe('add-ethereum-chain confirmation', () => {
     const store = configureMockStore(middleware)(testStore);
     const { container } = renderWithProvider(<Confirmation />, store);
     await waitFor(() => {
-      expect(container.querySelector('.mm-banner-base')).toBeDefined();
       expect(container).toMatchSnapshot();
     });
   });
