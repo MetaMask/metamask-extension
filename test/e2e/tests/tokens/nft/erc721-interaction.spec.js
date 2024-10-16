@@ -240,6 +240,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
+
+        // We need to wait until the transaction is confirmed before looking for the tx
+        // otherwise the element becomes stale, as it updates from 'pending' to 'confirmed'
+        await driver.waitForSelector('.transaction-status-label--confirmed');
+
         await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
