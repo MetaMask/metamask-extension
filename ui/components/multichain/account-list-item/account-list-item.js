@@ -503,6 +503,10 @@ AccountListItem.propTypes = {
    * Represents start accessory
    */
   startAccessory: PropTypes.node,
+  /**
+   * Determines if list item should be scrolled to when selected
+   */
+  shouldScrollToWhenSelected: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';
