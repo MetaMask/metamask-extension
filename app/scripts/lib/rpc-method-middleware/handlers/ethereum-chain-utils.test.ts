@@ -1,4 +1,4 @@
-import { errorCodes } from 'eth-rpc-errors';
+import { errorCodes } from '@metamask/rpc-errors';
 import {
   KnownNotifications,
   KnownRpcMethods,

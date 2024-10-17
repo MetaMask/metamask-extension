@@ -662,8 +662,8 @@
       },
       "packages": {
         "@metamask/approval-controller>@metamask/base-controller": true,
-        "@metamask/approval-controller>nanoid": true,
-        "@metamask/rpc-errors": true
+        "@metamask/approval-controller>@metamask/rpc-errors": true,
+        "@metamask/approval-controller>nanoid": true
       }
     },
     "@metamask/approval-controller>@metamask/base-controller": {
@@ -672,6 +672,12 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/approval-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/approval-controller>nanoid": {
@@ -699,13 +705,13 @@
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/rpc-errors": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
-        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "bn.js": true,
         "cockatiel": true,
@@ -725,6 +731,12 @@
         "@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/base-controller": {
@@ -851,9 +863,30 @@
     },
     "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": {
       "packages": {
+        "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/rpc-errors": true,
         "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/utils": true,
-        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true
+      }
+    },
+    "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/rpc-errors>@metamask/utils": true,
+        "@metamask/rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/utils": {
@@ -886,11 +919,17 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/eth-json-rpc-middleware>@metamask/rpc-errors": true,
         "@metamask/eth-json-rpc-middleware>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/eth-json-rpc-middleware>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
         "@metamask/utils": true
       }
     },
@@ -1452,14 +1491,20 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
         "@metamask/multichain>@metamask/api-specs": true,
+        "@metamask/multichain>@metamask/rpc-errors": true,
         "@metamask/multichain>@open-rpc/schema-utils-js": true,
         "@metamask/multichain>jsonschema": true,
         "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
         "browserify>assert": true,
         "lodash": true
+      }
+    },
+    "@metamask/multichain>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/multichain>@open-rpc/schema-utils-js": {
@@ -1467,17 +1512,17 @@
         "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
         "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
         "@metamask/multichain>@open-rpc/schema-utils-js>ajv": true,
+        "@metamask/rpc-errors>fast-safe-stringify": true,
         "@open-rpc/meta-schema": true,
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
-        "@open-rpc/schema-utils-js>is-url": true,
-        "eth-rpc-errors>fast-safe-stringify": true
+        "@open-rpc/schema-utils-js>is-url": true
       }
     },
     "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
         "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
-        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
-        "eth-rpc-errors>fast-safe-stringify": true
+        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true
       }
     },
     "@metamask/multichain>@open-rpc/schema-utils-js>ajv": {
@@ -1553,9 +1598,9 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
+        "@metamask/network-controller>@metamask/rpc-errors": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/network-controller>reselect": true,
-        "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
         "browserify>assert": true,
@@ -1599,8 +1644,8 @@
       "packages": {
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/rpc-errors": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": true,
-        "@metamask/rpc-errors": true,
         "node-fetch": true
       }
     },
@@ -1612,9 +1657,30 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": {
       "packages": {
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/rpc-errors": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": true,
-        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/rpc-errors>@metamask/utils": true,
+        "@metamask/rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": {
@@ -1643,7 +1709,7 @@
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-sig-util": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/utils": true,
-        "@metamask/rpc-errors": true,
+        "@metamask/network-controller>@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "bn.js": true,
         "pify": true
@@ -1666,10 +1732,22 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/rpc-errors": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "uuid": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/network-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/network-controller>reselect": {
@@ -1880,8 +1958,8 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/permission-controller>@metamask/base-controller": true,
+        "@metamask/permission-controller>@metamask/rpc-errors": true,
         "@metamask/permission-controller>nanoid": true,
-        "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
@@ -1894,6 +1972,12 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -1971,9 +2055,9 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-query>json-rpc-random-id": true,
         "@metamask/ppom-validator>@metamask/base-controller": true,
+        "@metamask/ppom-validator>@metamask/rpc-errors": true,
         "@metamask/ppom-validator>crypto-js": true,
         "@metamask/ppom-validator>elliptic": true,
-        "@metamask/rpc-errors": true,
         "await-semaphore": true,
         "browserify>buffer": true
       }
@@ -1984,6 +2068,27 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/ppom-validator>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/ppom-validator>@metamask/rpc-errors>@metamask/utils": true,
+        "@metamask/rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/ppom-validator>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/ppom-validator>crypto-js": {
@@ -2096,8 +2201,8 @@
     "@metamask/queued-request-controller": {
       "packages": {
         "@metamask/queued-request-controller>@metamask/base-controller": true,
+        "@metamask/queued-request-controller>@metamask/rpc-errors": true,
         "@metamask/queued-request-controller>@metamask/utils": true,
-        "@metamask/rpc-errors": true,
         "@metamask/selected-network-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true
       }
@@ -2108,6 +2213,27 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/queued-request-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/queued-request-controller>@metamask/rpc-errors>@metamask/utils": true,
+        "@metamask/rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/queued-request-controller>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/queued-request-controller>@metamask/utils": {
@@ -2131,8 +2257,8 @@
       },
       "packages": {
         "@metamask/rate-limit-controller>@metamask/base-controller": true,
-        "@metamask/rate-limit-controller>@metamask/utils": true,
-        "@metamask/rpc-errors": true
+        "@metamask/rate-limit-controller>@metamask/rpc-errors": true,
+        "@metamask/rate-limit-controller>@metamask/utils": true
       }
     },
     "@metamask/rate-limit-controller>@metamask/base-controller": {
@@ -2141,6 +2267,27 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/rate-limit-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rate-limit-controller>@metamask/rpc-errors>@metamask/utils": true,
+        "@metamask/rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/rate-limit-controller>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/rate-limit-controller>@metamask/utils": {
@@ -2160,8 +2307,8 @@
     },
     "@metamask/rpc-errors": {
       "packages": {
-        "@metamask/utils": true,
-        "eth-rpc-errors>fast-safe-stringify": true
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/rpc-methods-flask>nanoid": {
@@ -2310,11 +2457,11 @@
         "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/network-controller": true,
-        "@metamask/rpc-errors": true,
         "@metamask/smart-transactions-controller>@metamask/base-controller": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/rpc-errors": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/utils": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": true,
         "bn.js": true,
@@ -2362,6 +2509,12 @@
       },
       "packages": {
         "@swc/helpers>tslib": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/utils": {
@@ -2450,10 +2603,10 @@
         "@metamask/object-multiplex": true,
         "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
-        "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
+        "@metamask/snaps-controllers>@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
@@ -2486,8 +2639,14 @@
     },
     "@metamask/snaps-controllers>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine>@metamask/rpc-errors": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/json-rpc-engine>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
         "@metamask/utils": true
       }
     },
@@ -2500,6 +2659,12 @@
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
@@ -2560,7 +2725,7 @@
     "@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
+        "@metamask/snaps-rpc-methods>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/snaps-utils": true,
@@ -2569,12 +2734,18 @@
         "@noble/hashes": true
       }
     },
+    "@metamask/snaps-rpc-methods>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/snaps-sdk": {
       "globals": {
         "fetch": true
       },
       "packages": {
-        "@metamask/rpc-errors": true,
+        "@metamask/snaps-sdk>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true
       }
@@ -2586,6 +2757,12 @@
         "@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
         "@noble/hashes": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-utils": {
@@ -2605,9 +2782,9 @@
       },
       "packages": {
         "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/snaps-utils>@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
@@ -2621,6 +2798,12 @@
         "@noble/hashes": true,
         "chalk": true,
         "semver": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
@@ -2695,8 +2878,8 @@
         "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/network-controller": true,
-        "@metamask/rpc-errors": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/transaction-controller>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -2723,6 +2906,12 @@
         "@swc/helpers>tslib": true
       }
     },
+    "@metamask/transaction-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/user-operation-controller": {
       "globals": {
         "fetch": true
@@ -2732,9 +2921,9 @@
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/gas-fee-controller>@metamask/polling-controller": true,
-        "@metamask/rpc-errors": true,
         "@metamask/transaction-controller": true,
         "@metamask/user-operation-controller>@metamask/base-controller": true,
+        "@metamask/user-operation-controller>@metamask/rpc-errors": true,
         "@metamask/user-operation-controller>@metamask/utils": true,
         "bn.js": true,
         "lodash": true,
@@ -2749,6 +2938,27 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/user-operation-controller>@metamask/rpc-errors>@metamask/utils": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/user-operation-controller>@metamask/utils": {
@@ -4023,11 +4233,6 @@
         "@metamask/ethjs-query": true
       }
     },
-    "eth-rpc-errors": {
-      "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
     "ethereumjs-util": {
       "packages": {
         "bn.js": true,
@@ -4409,6 +4614,9 @@
       }
     },
     "extension-port-stream": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "browserify>buffer": true,
         "extension-port-stream>readable-stream": true
@@ -4481,8 +4689,8 @@
     },
     "json-rpc-engine": {
       "packages": {
-        "eth-rpc-errors": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "json-rpc-engine>eth-rpc-errors": true
       }
     },
     "json-rpc-engine>@metamask/safe-event-emitter": {
@@ -4491,6 +4699,11 @@
       },
       "packages": {
         "webpack>events": true
+      }
+    },
+    "json-rpc-engine>eth-rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true
       }
     },
     "json-rpc-middleware-stream": {

@@ -1,6 +1,6 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import { selectHooks } from '@metamask/snaps-rpc-methods';
 import { hasProperty } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import {
   handlers as localHandlers,
@@ -79,7 +79,7 @@ function makeMethodMiddlewareMaker(handlers) {
           return end(
             error instanceof Error
               ? error
-              : ethErrors.rpc.internal({ data: error }),
+              : rpcErrors.internal({ data: error }),
           );
         }
       }

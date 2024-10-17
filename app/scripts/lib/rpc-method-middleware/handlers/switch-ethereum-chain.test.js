@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -96,7 +96,7 @@ describe('switchEthereumChainHandler', () => {
     });
 
     expect(end).toHaveBeenCalledWith(
-      ethErrors.provider.custom({
+      providerErrors.custom({
         code: 4902,
         message: `Unrecognized chain ID "${NON_INFURA_CHAIN_ID}". Try adding the chain using wallet_addEthereumChain first.`,
       }),
@@ -152,7 +152,7 @@ describe('switchEthereumChainHandler', () => {
     });
 
     expect(end).toHaveBeenCalledWith(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
       }),
     );
@@ -167,7 +167,7 @@ describe('switchEthereumChainHandler', () => {
     });
 
     expect(end).toHaveBeenCalledWith(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\ninvalid_chain_id`,
       }),
     );

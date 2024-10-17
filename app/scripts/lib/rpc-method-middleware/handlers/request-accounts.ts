@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -101,7 +101,7 @@ async function requestEthereumAccountsHandler(
 ) {
   const { origin } = req;
   if (locks.has(origin)) {
-    res.error = ethErrors.rpc.resourceUnavailable(
+    res.error = rpcErrors.resourceUnavailable(
       `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
     );
     return end();

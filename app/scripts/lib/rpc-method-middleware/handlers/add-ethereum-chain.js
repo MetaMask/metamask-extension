@@ -1,7 +1,7 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import * as URI from 'uri-js';
+import { ApprovalType } from '@metamask/controller-utils';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { cloneDeep } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -75,7 +75,7 @@ async function addEthereumChainHandler(
     existingNetwork.nativeCurrency !== ticker
   ) {
     return end(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\n${ticker}`,
       }),
     );
