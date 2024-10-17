@@ -1,6 +1,5 @@
-import { jsonrpc2 } from '@metamask/utils';
+import { jsonrpc2, Json } from '@metamask/utils';
 import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
-import { Json } from '@metamask/json-rpc-engine';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware, {
   EvmMethodsToNonEvmAccountFilterMessenger,
 } from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';

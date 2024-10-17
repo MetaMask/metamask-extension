@@ -6,14 +6,13 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Hex } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { Json } from '@metamask/json-rpc-engine';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
