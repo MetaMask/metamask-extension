@@ -44,7 +44,6 @@ const render = (
     <EditAccountsModal
       accounts={accounts}
       defaultSelectedAccountAddresses={[accounts[0].address]}
-      activeTabOrigin={'https://test.dapp'}
       {...props}
     />,
     store,

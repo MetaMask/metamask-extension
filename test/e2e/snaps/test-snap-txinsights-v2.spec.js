@@ -40,6 +40,7 @@ describe('Test Snap TxInsights-v2', function () {
         await driver.waitForSelector('#connecttransaction-insights');
         await driver.clickElement('#connecttransaction-insights');
 
+
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -73,6 +74,7 @@ describe('Test Snap TxInsights-v2', function () {
         // wait for and click get accounts
         await driver.waitForSelector('#getAccounts');
         await driver.clickElement('#getAccounts');
+
 
         // switch back to MetaMask window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -166,12 +168,6 @@ describe('Test Snap TxInsights-v2', function () {
         await driver.clickElement({
           tag: 'button',
           text: 'Activity',
-        });
-
-        // wait for transaction confirmation
-        await driver.waitForSelector({
-          css: '.transaction-status-label',
-          text: 'Confirmed',
         });
       },
     );

@@ -1,12 +1,17 @@
-import { NftContract } from '@metamask/assets-controllers';
+import { Nft, NftContract } from '@metamask/assets-controllers';
 import { createSelector } from 'reselect';
 import { getMemoizedCurrentChainId } from './selectors';
 
-type NftState = {
+export type NftState = {
   metamask: {
     allNftContracts: {
       [account: string]: {
         [chainId: string]: NftContract[];
+      };
+    };
+    allNfts: {
+      [account: string]: {
+        [chainId: string]: Nft[];
       };
     };
   };
@@ -14,6 +19,16 @@ type NftState = {
 
 function getNftContractsByChainByAccount(state: NftState) {
   return state.metamask.allNftContracts ?? {};
+}
+
+/**
+ * Get all NFTs owned by the user.
+ *
+ * @param state - Metamask state.
+ * @returns All NFTs owned by the user, keyed by chain ID then account address.
+ */
+function getNftsByChainByAccount(state: NftState) {
+  return state.metamask.allNfts ?? {};
 }
 
 export const getNftContractsByAddressByChain = createSelector(
@@ -51,5 +66,23 @@ export const getNftContractsByAddressOnCurrentChain = createSelector(
   getMemoizedCurrentChainId,
   (nftContractsByAddressByChain, currentChainId) => {
     return nftContractsByAddressByChain[currentChainId] ?? {};
+  },
+);
+
+/**
+ * Get a flattened list of all NFTs owned by the user.
+ * Includes all NFTs from all chains and accounts.
+ *
+ * @param state - Metamask state.
+ * @returns All NFTs owned by the user in a single array.
+ */
+export const selectAllNftsFlat = createSelector(
+  getNftsByChainByAccount,
+  (nftsByChainByAccount) => {
+    const nftsByChainArray = Object.values(nftsByChainByAccount);
+    return nftsByChainArray.reduce<Nft[]>((acc, nftsByChain) => {
+      const nftsArrays = Object.values(nftsByChain);
+      return acc.concat(...nftsArrays);
+    }, []);
   },
 );

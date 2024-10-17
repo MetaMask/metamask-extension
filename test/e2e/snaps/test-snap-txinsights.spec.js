@@ -40,6 +40,7 @@ describe('Test Snap TxInsights', function () {
         await driver.waitForSelector('#connecttransaction-insights');
         await driver.clickElement('#connecttransaction-insights');
 
+
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -48,6 +49,7 @@ describe('Test Snap TxInsights', function () {
           text: 'Connect',
           tag: 'button',
         });
+
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -104,6 +106,7 @@ describe('Test Snap TxInsights', function () {
 
         // delay added for rendering (deflake)
         await driver.delay(2000);
+
 
         // switch back to MetaMask window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
