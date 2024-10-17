@@ -2768,7 +2768,7 @@ export default class MetamaskController extends EventEmitter {
               'PhishingController:maybeUpdateState',
             );
           },
-          isOnPhishingList: (sender) => {
+          isOnPhishingList: (url) => {
             const { usePhishDetect } =
               this.preferencesController.store.getState();
 
@@ -2778,7 +2778,7 @@ export default class MetamaskController extends EventEmitter {
 
             return this.controllerMessenger.call(
               'PhishingController:testOrigin',
-              sender.url,
+              url,
             ).result;
           },
           createInterface: this.controllerMessenger.call.bind(
@@ -5595,7 +5595,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createTracingMiddleware());
 
-    // PPOMMiddleware come after the SelectedNetworkMiddleware
     engine.push(
       createPPOMMiddleware(
         this.ppomController,
