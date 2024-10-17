@@ -1948,7 +1948,6 @@
         "@metamask/ppom-validator>@metamask/controller-utils": true,
         "@metamask/ppom-validator>crypto-js": true,
         "@metamask/ppom-validator>elliptic": true,
-        "@metamask/rpc-errors": true,
         "await-semaphore": true,
         "browserify>buffer": true
       }
