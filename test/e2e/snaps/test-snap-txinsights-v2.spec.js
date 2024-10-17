@@ -167,6 +167,12 @@ describe('Test Snap TxInsights-v2', function () {
           tag: 'button',
           text: 'Activity',
         });
+
+        // wait for transaction confirmation
+        await driver.waitForSelector({
+          css: '.transaction-status-label',
+          text: 'Confirmed',
+        });
       },
     );
   });
