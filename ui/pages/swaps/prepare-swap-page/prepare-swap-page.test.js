@@ -128,7 +128,7 @@ describe('PrepareSwapPage', () => {
     expect(
       getByText('USDC is only verified on 1 source', { exact: false }),
     ).toBeInTheDocument();
-    expect(getByText('etherscan.io')).toBeInTheDocument();
+    expect(getByText('Etherscan')).toBeInTheDocument();
     expect(getByText('Continue swapping')).toBeInTheDocument();
   });
 
@@ -151,7 +151,7 @@ describe('PrepareSwapPage', () => {
     expect(
       getByText('Verify this token on', { exact: false }),
     ).toBeInTheDocument();
-    expect(getByText('etherscan.io')).toBeInTheDocument();
+    expect(getByText('Etherscan')).toBeInTheDocument();
     expect(getByText('Continue swapping')).toBeInTheDocument();
   });
 
