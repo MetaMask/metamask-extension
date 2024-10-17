@@ -5022,14 +5022,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-mocha@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/eslint-config-mocha@npm:9.0.0"
+"@metamask/eslint-config-mocha@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "@metamask/eslint-config-mocha@npm:13.0.0"
   peerDependencies:
-    "@metamask/eslint-config": ^9.0.0
-    eslint: ^7.23.0
-    eslint-plugin-mocha: ^8.1.0
-  checksum: 10/0d8a9a450740646a11b719a808b2f6830fcc69cda77fd1fd730a9d3e5d9e9f6c74433313db64db17d2a5d238a8c8f4588c1e8f7c45d333db9f42d20a6acfb4cc
+    "@metamask/eslint-config": ^13.0.0
+    eslint: ^8.57.0
+    eslint-plugin-mocha: ^10.4.1
+  checksum: 10/4e6bfeadf4215d91f71975fe59f4d629ebd8f9315a44617f6e3e6eabecf127018cf82ef436abacf1be347b8ddaafba26d11f4eceaf105190a1c5c6a6e109a5ea
   languageName: node
   linkType: hard
 
@@ -20100,16 +20100,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-tsconfig@npm:^4.7.0":
-  version: 4.7.5
-  resolution: "get-tsconfig@npm:4.7.5"
-  dependencies:
-    resolve-pkg-maps: "npm:^1.0.0"
-  checksum: 10/de7de5e4978354e8e6d9985baf40ea32f908a13560f793bc989930c229cc8d5c3f7b6b2896d8e43eb1a9b4e9e30018ef4b506752fd2a4b4d0dfee4af6841b119
-  languageName: node
-  linkType: hard
-
-"get-tsconfig@npm:^4.7.5":
+"get-tsconfig@npm:^4.7.0, get-tsconfig@npm:^4.7.5":
   version: 4.8.1
   resolution: "get-tsconfig@npm:4.8.1"
   dependencies:
@@ -25942,7 +25933,7 @@ __metadata:
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
-    "@metamask/eslint-config-mocha": "npm:^9.0.0"
+    "@metamask/eslint-config-mocha": "npm:^13.0.0"
     "@metamask/eslint-config-nodejs": "npm:^9.0.0"
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
