@@ -8,6 +8,7 @@ import { Hex } from '@metamask/utils';
 import {
   SimulationErrorCode,
   SimulationTokenStandard,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -71,19 +72,11 @@ const storeMock = configureStore({
   },
 });
 
-const storeMockPolygon = configureStore({
-  metamask: {
-    ...mockState.metamask,
-    ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
-  },
-});
-
-const storeMockArbitrum = configureStore({
-  metamask: {
-    ...mockState.metamask,
-    ...mockNetworkState({ chainId: CHAIN_IDS.ARBITRUM }),
-  },
-});
+function createTransactionMeta(
+  metadata: Partial<TransactionMeta>,
+): TransactionMeta {
+  return metadata as TransactionMeta;
+}
 
 const meta: Meta<typeof SimulationDetails> = {
   title: 'Components/App/SimulationDetails',
@@ -96,180 +89,206 @@ type Story = StoryObj<typeof SimulationDetails>;
 
 export const MultipleTokens: Story = {
   args: {
-    simulationData: {
-      nativeBalanceChange: {
-        ...DUMMY_BALANCE_CHANGE,
-        difference: '0x12345678912345678',
-        isDecrease: true,
+    transaction: createTransactionMeta({
+      chainId: CHAIN_ID_MOCK,
+      simulationData: {
+        nativeBalanceChange: {
+          ...DUMMY_BALANCE_CHANGE,
+          difference: '0x12345678912345678',
+          isDecrease: true,
+        },
+        tokenBalanceChanges: [
+          {
+            ...DUMMY_BALANCE_CHANGE,
+            address: ERC20_TOKEN_1_MOCK,
+            difference: '0x123456',
+            isDecrease: false,
+            standard: SimulationTokenStandard.erc20,
+          },
+          {
+            ...DUMMY_BALANCE_CHANGE,
+            address: ERC20_TOKEN_2_MOCK,
+            difference: '0x123456901',
+            isDecrease: false,
+            standard: SimulationTokenStandard.erc20,
+          },
+          {
+            ...DUMMY_BALANCE_CHANGE,
+            address: ERC721_TOKEN_MOCK,
+            difference: '0x1',
+            isDecrease: false,
+            id: '0x721',
+            standard: SimulationTokenStandard.erc721,
+          },
+          {
+            ...DUMMY_BALANCE_CHANGE,
+            address: ERC1155_TOKEN_MOCK,
+            difference: '0x13',
+            isDecrease: false,
+            id: '0x1155',
+            standard: SimulationTokenStandard.erc1155,
+          },
+        ],
       },
-      tokenBalanceChanges: [
-        {
-          ...DUMMY_BALANCE_CHANGE,
-          address: ERC20_TOKEN_1_MOCK,
-          difference: '0x123456',
-          isDecrease: false,
-          standard: SimulationTokenStandard.erc20,
-        },
-        {
-          ...DUMMY_BALANCE_CHANGE,
-          address: ERC20_TOKEN_2_MOCK,
-          difference: '0x123456901',
-          isDecrease: false,
-          standard: SimulationTokenStandard.erc20,
-        },
-        {
-          ...DUMMY_BALANCE_CHANGE,
-          address: ERC721_TOKEN_MOCK,
-          difference: '0x1',
-          isDecrease: false,
-          id: '0x721',
-          standard: SimulationTokenStandard.erc721,
-        },
-        {
-          ...DUMMY_BALANCE_CHANGE,
-          address: ERC1155_TOKEN_MOCK,
-          difference: '0x13',
-          isDecrease: false,
-          id: '0x1155',
-          standard: SimulationTokenStandard.erc1155,
-        },
-      ],
-    },
+    }),
   },
 };
 
 export const SendSmallAmount: Story = {
   args: {
-    simulationData: {
-      nativeBalanceChange: {
-        ...DUMMY_BALANCE_CHANGE,
-        difference: '0x123',
-        isDecrease: true,
+    transaction: createTransactionMeta({
+      simulationData: {
+        nativeBalanceChange: {
+          ...DUMMY_BALANCE_CHANGE,
+          difference: '0x123',
+          isDecrease: true,
+        },
+        tokenBalanceChanges: [],
       },
-      tokenBalanceChanges: [],
-    },
+    }),
   },
 };
 
 export const LongValuesAndNames: Story = {
   args: {
-    simulationData: {
-      nativeBalanceChange: {
-        ...DUMMY_BALANCE_CHANGE,
-        difference: '0x12345678912345678',
-        isDecrease: true,
+    transaction: createTransactionMeta({
+      chainId: CHAIN_ID_MOCK,
+      simulationData: {
+        nativeBalanceChange: {
+          ...DUMMY_BALANCE_CHANGE,
+          difference: '0x12345678912345678',
+          isDecrease: true,
+        },
+        tokenBalanceChanges: [
+          {
+            ...DUMMY_BALANCE_CHANGE,
+            address: ERC20_TOKEN_1_MOCK,
+            difference: '0x42345909',
+            isDecrease: false,
+            standard: SimulationTokenStandard.erc20,
+          },
+          {
+            ...DUMMY_BALANCE_CHANGE,
+            address: ERC20_TOKEN_2_MOCK,
+            difference: '0x123456901',
+            isDecrease: false,
+            standard: SimulationTokenStandard.erc20,
+          },
+        ],
       },
-      tokenBalanceChanges: [
-        {
-          ...DUMMY_BALANCE_CHANGE,
-          address: ERC20_TOKEN_1_MOCK,
-          difference: '0x42345909',
-          isDecrease: false,
-          standard: SimulationTokenStandard.erc20,
-        },
-        {
-          ...DUMMY_BALANCE_CHANGE,
-          address: ERC20_TOKEN_2_MOCK,
-          difference: '0x123456901',
-          isDecrease: false,
-          standard: SimulationTokenStandard.erc20,
-        },
-      ],
-    },
+    }),
   },
 };
 
 export const PolygonNativeAsset: Story = {
   args: {
-    simulationData: {
-      nativeBalanceChange: {
-        ...DUMMY_BALANCE_CHANGE,
-        difference: '0x9345678923456789',
-        isDecrease: true,
+    transaction: createTransactionMeta({
+      chainId: CHAIN_IDS.POLYGON,
+      simulationData: {
+        nativeBalanceChange: {
+          ...DUMMY_BALANCE_CHANGE,
+          difference: '0x9345678923456789',
+          isDecrease: true,
+        },
+        tokenBalanceChanges: [],
       },
-      tokenBalanceChanges: [],
-    },
+    }),
   },
-  decorators: [
-    (story) => <Provider store={storeMockPolygon}>{story()}</Provider>,
-  ],
 };
 
 export const ArbitrumNativeAsset: Story = {
   args: {
-    simulationData: {
-      nativeBalanceChange: {
-        ...DUMMY_BALANCE_CHANGE,
-        difference: '0x9345678923456789',
-        isDecrease: true,
+    transaction: createTransactionMeta({
+      chainId: CHAIN_IDS.ARBITRUM,
+      simulationData: {
+        nativeBalanceChange: {
+          ...DUMMY_BALANCE_CHANGE,
+          difference: '0x9345678923456789',
+          isDecrease: true,
+        },
+        tokenBalanceChanges: [],
       },
-      tokenBalanceChanges: [],
-    },
+    }),
   },
-  decorators: [
-    (story) => <Provider store={storeMockArbitrum}>{story()}</Provider>,
-  ],
 };
 
 export const ReceiveOnly: Story = {
   args: {
-    simulationData: {
-      nativeBalanceChange: {
-        previousBalance: '0x2',
-        newBalance: '0x1',
-        difference: '0x12345678912345678',
-        isDecrease: false,
+    transaction: createTransactionMeta({
+      chainId: CHAIN_ID_MOCK,
+      simulationData: {
+        nativeBalanceChange: {
+          previousBalance: '0x2',
+          newBalance: '0x1',
+          difference: '0x12345678912345678',
+          isDecrease: false,
+        },
+        tokenBalanceChanges: [],
       },
-      tokenBalanceChanges: [],
-    },
+    }),
   },
 };
 
 export const SendOnly: Story = {
   args: {
-    simulationData: {
-      nativeBalanceChange: {
-        previousBalance: '0x1',
-        newBalance: '0x2',
-        difference: '0x12345678912345678',
-        isDecrease: true,
+    transaction: createTransactionMeta({
+      chainId: CHAIN_ID_MOCK,
+      simulationData: {
+        nativeBalanceChange: {
+          previousBalance: '0x1',
+          newBalance: '0x2',
+          difference: '0x12345678912345678',
+          isDecrease: true,
+        },
+        tokenBalanceChanges: [],
       },
-      tokenBalanceChanges: [],
-    },
+    }),
   },
 };
 
 export const NoBalanceChanges: Story = {
   args: {
-    simulationData: {
-      nativeBalanceChange: undefined,
-      tokenBalanceChanges: [],
-    },
+    transaction: createTransactionMeta({
+      chainId: CHAIN_ID_MOCK,
+      simulationData: {
+        nativeBalanceChange: undefined,
+        tokenBalanceChanges: [],
+      },
+    }),
   },
 };
 
 export const Loading: Story = {
   args: {
-    simulationData: undefined,
+    transaction: createTransactionMeta({
+      chainId: CHAIN_ID_MOCK,
+      simulationData: undefined,
+    }),
   },
 };
 
 export const TransactionReverted: Story = {
   args: {
-    simulationData: {
-      error: { code: SimulationErrorCode.Reverted },
-      nativeBalanceChange: undefined,
-      tokenBalanceChanges: [],
-    },
+    transaction: createTransactionMeta({
+      chainId: CHAIN_ID_MOCK,
+      simulationData: {
+        error: { code: SimulationErrorCode.Reverted },
+        nativeBalanceChange: undefined,
+        tokenBalanceChanges: [],
+      },
+    }),
   },
 };
 
 export const GenericError: Story = {
   args: {
-    simulationData: {
-      error: {},
-      nativeBalanceChange: undefined,
-      tokenBalanceChanges: [],
-    },
+    transaction: createTransactionMeta({
+      chainId: CHAIN_ID_MOCK,
+      simulationData: {
+        error: {},
+        nativeBalanceChange: undefined,
+        tokenBalanceChanges: [],
+      },
+    }),
   },
 };
