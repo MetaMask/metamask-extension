@@ -5046,13 +5046,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^1.12.0":
-  version: 1.13.0
-  resolution: "@metamask/design-tokens@npm:1.13.0"
-  checksum: 10/a76d10ad3ad6f1f30bf3b8e749e70c71587fd543fafd355b6185fb191994547acb63408c6d5ac4a53c4aa1f9e4022cd63ad83bd98cbac79f21f5bc7df15e63ab
-  languageName: node
-  linkType: hard
-
 "@metamask/design-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/design-tokens@npm:4.0.0"
@@ -5981,18 +5974,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/phishing-warning@npm:4.0.0"
+"@metamask/phishing-warning@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/phishing-warning@npm:4.1.0"
   dependencies:
-    "@metamask/design-tokens": "npm:^1.12.0"
+    "@metamask/design-tokens": "npm:^4.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.3.1"
     readable-stream: "npm:^3.6.2"
     ses: "npm:^1.1.0"
-  checksum: 10/0f85b92880d47a5d9810605574231b5a4b4ab7ac4192d9799c1c95187efd4da3ca5ea7412aeb6aa00eb0aaac3aaad987d28868fdaad1347e24e0d72ce95c6524
+  checksum: 10/6bb1ef9dc2f9dcbcfd3472855dca579e6f7b155082e95bf16259ef734ca8baeb0cd5ab3f06b583c7fc73393e4b03e5ec3937130e19aa98e9a003378c0179a2ed
   languageName: node
   linkType: hard
 
@@ -26161,7 +26154,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^10.0.0"
     "@metamask/permission-log-controller": "npm:^2.0.1"
     "@metamask/phishing-controller": "npm:^12.0.1"
-    "@metamask/phishing-warning": "npm:^4.0.0"
+    "@metamask/phishing-warning": "npm:^4.1.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
     "@metamask/preferences-controller": "npm:^13.0.2"

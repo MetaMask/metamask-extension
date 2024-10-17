@@ -6652,12 +6652,31 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - the domain to safelist
    */
   safelistPhishingDomain(origin) {
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Phishing,
+      event: MetaMetricsEventName.ProceedAnywayPhishingPage,
+      properties: {
+        origin,
+      },
+    });
+
     return this.phishingController.bypass(origin);
   }
 
   async backToSafetyPhishingWarning() {
-    const extensionURL = this.platform.getExtensionURL();
-    await this.platform.switchToAnotherURL(undefined, extensionURL);
+    const portfolioURL =
+      'https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button&marketingEnabled=true';
+
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PortfolioLinkClicked,
+      properties: {
+        location: 'Phishing Warning',
+        text: 'Portfolio',
+      },
+    });
+
+    await this.platform.switchToAnotherURL(undefined, portfolioURL);
   }
 
   /**
