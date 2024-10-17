@@ -10,7 +10,10 @@ const {
   openDapp,
   WINDOW_TITLES,
 } = require('../../../helpers');
-const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
+const {
+  scrollAndConfirmAndAssertConfirm,
+  confirmAndAssertConfirm,
+} = require('../helpers');
 
 export type TestSuiteArguments = {
   driver: Driver;
@@ -111,7 +114,7 @@ export async function confirmDepositTransaction(driver: Driver) {
   });
 
   await driver.delay(veryLargeDelayMs);
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await confirmAndAssertConfirm(driver);
 }
 
 export async function confirmDepositTransactionWithCustomNonce(

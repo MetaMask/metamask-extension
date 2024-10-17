@@ -2,7 +2,7 @@
 import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import { confirmAndAssertConfirm } from '../helpers';
 import {
   openDAppWithContract,
   TestSuiteArguments,
@@ -126,7 +126,7 @@ export async function confirmMintTransaction(driver: Driver) {
     text: 'Transaction request',
   });
 
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await confirmAndAssertConfirm(driver);
 
   // Verify Mint Transaction is Confirmed before proceeding
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
@@ -192,7 +192,7 @@ async function assertApproveDetails(driver: Driver) {
 }
 
 async function confirmApproveTransaction(driver: Driver) {
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await confirmAndAssertConfirm(driver);
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
