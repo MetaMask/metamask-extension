@@ -1028,7 +1028,7 @@ export default function PrepareSwapPage({
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.stretch}
           >
-            <div className="prepare-swap-page__balance-message" style={{ width: "100%" }}>
+            <div className="prepare-swap-page__balance-message">
               {selectedToToken?.string && yourTokenToBalance}
             </div>
           </Box>
@@ -1039,10 +1039,10 @@ export default function PrepareSwapPage({
           >
             <div className="prepare-swap-page__balance-message">
               {isNonDefaultToToken &&
-                  t('swapTokenVerifiedSources', [
-                    occurrences,
-                    <BlockExplorerLink key="block-explorer-link" />,
-                  ])}
+                t('swapTokenVerifiedSources', [
+                  occurrences,
+                  <BlockExplorerLink key="block-explorer-link" />,
+                ])}
             </div>
           </Box>
         </div>
