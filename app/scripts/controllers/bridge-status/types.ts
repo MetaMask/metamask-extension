@@ -126,7 +126,7 @@ export type BridgeStatusControllerState = {
 };
 
 export enum BridgeStatusAction {
-  FETCH_BRIDGE_TX_STATUS = 'fetchBridgeTxStatus',
+  START_POLLING_FOR_BRIDGE_TX_STATUS = 'startPollingForBridgeTxStatus',
 }
 
 type BridgeStatusControllerAction<
@@ -138,7 +138,7 @@ type BridgeStatusControllerAction<
 
 // Maps to BridgeController function names
 type BridgeStatusControllerActions =
-  BridgeStatusControllerAction<BridgeStatusAction.FETCH_BRIDGE_TX_STATUS>;
+  BridgeStatusControllerAction<BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS>;
 
 type BridgeStatusControllerEvents = ControllerStateChangeEvent<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
