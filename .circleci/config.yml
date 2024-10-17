@@ -114,7 +114,7 @@ workflows:
       - trigger-beta-build:
           requires:
             - prep-deps
-      - check-pr-tag
+      - check-mmi-trigger
       - prep-deps
       - get-changed-files-with-git-diff:
           filters:
@@ -179,7 +179,7 @@ workflows:
       - prep-build-test-mmi-playwright:
           requires:
             - prep-deps
-            - check-pr-tag
+            - check-mmi-trigger
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -420,39 +420,6 @@ jobs:
       - run:
           name: Create GitHub Pull Request for version
           command: .circleci/scripts/release-create-release-pr.sh
-
-  check-pr-tag:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - run:
-          name: Check for MMI Team Tag
-          command: |
-            #!/bin/bash
-
-            GH_LABEL=team-mmi
-            if [ -z "$CIRCLE_PULL_REQUESTS" ]; then
-              echo "Skipping tag check; this is not a PR."
-              echo "false" > ./RUN_MMI_OPTIONAL
-              exit 0
-            fi
-
-            echo $CIRCLE_PULL_REQUESTS | sed 's/,/\n/g'
-
-            # See if any associated PRs have matching label
-            HAS_MATCHING_PR=$(echo $CIRCLE_PULL_REQUESTS \
-              | sed -e 's#,#\n#g' -e 's#/github.com/#/api.github.com/repos/#g' -e 's#/pull/#/pulls/#g' \
-              | xargs -n1 curl -s \
-              | jq -s "map((.labels|map(select(.name==\"${GH_LABEL}\"))))|flatten|length > 0")
-
-            echo "${GH_LABEL} tag presence: ${HAS_MATCHING_PR}"
-
-            # assign the RUN_MMI_OPTIONAL variable
-            echo "${HAS_MATCHING_PR}" > ./RUN_MMI_OPTIONAL
-      - persist_to_workspace:
-          root: .
-          paths:
-            - RUN_MMI_OPTIONAL
 
   prep-deps:
     executor: node-browsers-medium
@@ -1743,3 +1710,20 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'whew - everything passed!'
+
+  check-mmi-trigger:
+    executor: node-browsers-medium
+    steps:
+      - checkout
+      - run:
+          name: Check for MMI Team Label or Reviewer
+          command: |
+            chmod +x .circleci/scripts/check_mmi_trigger.sh
+            ./.circleci/scripts/check_mmi_trigger.sh "team-mmi" "mmi"
+      - store_artifacts:
+          path: mmi_trigger.env
+          destination: mmi_trigger.env
+      - persist_to_workspace:
+          root: .
+          paths:
+            - mmi_trigger.env
