@@ -59,7 +59,7 @@ describe('Phishing Detection', function () {
         await openDapp(driver);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({
-          text: 'continue to the site.',
+          text: 'Proceed anyway',
         });
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       },
@@ -104,7 +104,7 @@ describe('Phishing Detection', function () {
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({
-          text: 'continue to the site.',
+          text: 'Proceed anyway',
         });
 
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
@@ -170,7 +170,7 @@ describe('Phishing Detection', function () {
         });
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({
-          text: 'continue to the site.',
+          text: 'Proceed anyway',
         });
 
         // We don't really know what we're going to see at this blocked site, so a waitAtLeast guard of 1000ms is the best choice
