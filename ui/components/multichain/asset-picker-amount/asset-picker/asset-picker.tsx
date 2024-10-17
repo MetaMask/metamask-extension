@@ -33,6 +33,7 @@ import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
+
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import {
   AssetWithDisplayData,
