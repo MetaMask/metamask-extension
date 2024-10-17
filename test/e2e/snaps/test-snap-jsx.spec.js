@@ -38,8 +38,10 @@ describe('Test Snap JSX', function () {
         await driver.waitForSelector('#connectjsx');
         await driver.clickElement('#connectjsx');
 
-        // switch to dialog window and click connect
+        // switch to dialog window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
           tag: 'button',

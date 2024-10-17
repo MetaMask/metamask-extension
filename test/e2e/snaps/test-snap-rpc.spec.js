@@ -38,8 +38,14 @@ describe('Test Snap RPC', function () {
         await driver.waitForSelector('#connectbip32');
         await driver.clickElement('#connectbip32');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -67,9 +73,9 @@ describe('Test Snap RPC', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -108,9 +114,9 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });

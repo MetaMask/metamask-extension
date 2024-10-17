@@ -38,8 +38,14 @@ describe('Test Snap update', function () {
         await driver.waitForSelector('#connectUpdate');
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',

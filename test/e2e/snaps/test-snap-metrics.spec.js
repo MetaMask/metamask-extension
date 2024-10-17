@@ -203,8 +203,14 @@ describe('Test Snap Metrics', function () {
         await driver.waitForSelector('#connectnotifications');
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask popup and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -217,9 +223,9 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -293,13 +299,18 @@ describe('Test Snap Metrics', function () {
         await driver.waitForSelector('#connectnotifications');
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask popup and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
-
         // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
@@ -376,8 +387,14 @@ describe('Test Snap Metrics', function () {
         await driver.waitForSelector('#connectnotifications');
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask popup and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -451,8 +468,14 @@ describe('Test Snap Metrics', function () {
         await driver.waitForSelector('#connectnotifications');
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask popup and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -465,9 +488,9 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -574,8 +597,14 @@ describe('Test Snap Metrics', function () {
         await driver.waitForSelector('#connectUpdate');
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask popup and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -609,9 +638,9 @@ describe('Test Snap Metrics', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -651,9 +680,9 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -738,8 +767,14 @@ describe('Test Snap Metrics', function () {
         await driver.waitForSelector('#connectUpdate');
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask popup and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -773,9 +808,9 @@ describe('Test Snap Metrics', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -809,8 +844,8 @@ describe('Test Snap Metrics', function () {
         // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
 
-        // click cancel
-        await driver.clickElement({
+        // click cancel and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
           tag: 'button',
         });
@@ -890,8 +925,14 @@ describe('Test Snap Metrics', function () {
         await driver.waitForSelector('#connectUpdate');
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask popup and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -925,9 +966,9 @@ describe('Test Snap Metrics', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });

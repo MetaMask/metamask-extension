@@ -38,8 +38,14 @@ describe('Test Snap Dialog', function () {
         await driver.waitForSelector('#connectdialogs');
         await driver.clickElement('#connectdialogs');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -52,7 +58,7 @@ describe('Test Snap Dialog', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
@@ -83,7 +89,7 @@ describe('Test Snap Dialog', function () {
           text: 'It has a single button: "OK"',
         });
 
-        // click ok button
+        // click ok button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
@@ -105,7 +111,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click reject
+        // click reject and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Reject',
           tag: 'button',
@@ -126,7 +132,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click accept
+        // click accept and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Approve',
           tag: 'button',
@@ -148,7 +154,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click cancel button
+        // click cancel button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
           tag: 'button',
@@ -172,7 +178,7 @@ describe('Test Snap Dialog', function () {
         // fill '2323' in form field
         await driver.pasteIntoField('.mm-input', '2323');
 
-        // click submit button
+        // click submit button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Submit',
           tag: 'button',
@@ -194,7 +200,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click cancel button
+        // click cancel button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
           tag: 'span',
@@ -218,7 +224,7 @@ describe('Test Snap Dialog', function () {
         // fill '2323' in form field
         await driver.pasteIntoField('#custom-input', '2323');
 
-        // click confirm button
+        // click confirm button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'span',

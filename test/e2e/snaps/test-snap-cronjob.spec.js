@@ -38,8 +38,14 @@ describe('Test Snap Cronjob', function () {
         await driver.waitForSelector('#connectcronjobs');
         await driver.clickElement('#connectcronjobs');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -52,9 +58,9 @@ describe('Test Snap Cronjob', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -77,8 +83,8 @@ describe('Test Snap Cronjob', function () {
           text: 'This dialog was triggered by a cronjob',
         });
 
-        // try to click on the Ok button and pass test if it works
-        await driver.clickElement({
+        // try to click on the Ok button and pass test if window closes
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });

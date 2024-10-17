@@ -39,8 +39,14 @@ describe('Test Snap Interactive UI', function () {
         await driver.waitForSelector('#connectinteractive-ui');
         await driver.clickElement('#connectinteractive-ui');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -59,9 +65,9 @@ describe('Test Snap Interactive UI', function () {
           tag: 'button',
         });
 
-        // wait for and click OK
+        // wait for and click OK and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -105,8 +111,10 @@ describe('Test Snap Interactive UI', function () {
         await driver.waitForSelector({ text: 'option3', tag: 'p' });
         await driver.waitForSelector({ text: 'true', tag: 'p' });
 
-        // try to click on approve
-        await driver.clickElement('[data-testid="confirmation-submit-button"]');
+        // click on approve and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="confirmation-submit-button"]',
+        );
 
         // switch to test snaps tab
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);

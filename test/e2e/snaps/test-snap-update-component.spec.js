@@ -77,9 +77,9 @@ describe('Test Snap update via snaps component', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click OK button
+        // wait for and click OK button and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });

@@ -38,8 +38,14 @@ describe('Test Snap Homepage', function () {
         await driver.waitForSelector('#connecthomepage');
         await driver.clickElement('#connecthomepage');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -52,9 +58,9 @@ describe('Test Snap Homepage', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for windows to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });

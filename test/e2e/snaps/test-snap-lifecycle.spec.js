@@ -38,8 +38,14 @@ describe('Test Snap Lifecycle Hooks', function () {
         await driver.waitForSelector('#connectlifecycle-hooks');
         await driver.clickElement('#connectlifecycle-hooks');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -53,7 +59,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         });
 
         // wait for and click ok
-        await driver.waitForSelector({ text: 'OK' });
+        await driver.waitForSelector({ text: 'OK', tag: 'button' });
         await driver.clickElement({
           text: 'OK',
           tag: 'button',

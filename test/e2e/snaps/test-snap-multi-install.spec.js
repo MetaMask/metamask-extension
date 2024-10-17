@@ -39,8 +39,14 @@ describe('Test Snap Multi Install', function () {
         await driver.waitForSelector('#multi-install-connect');
         await driver.clickElement('#multi-install-connect');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',

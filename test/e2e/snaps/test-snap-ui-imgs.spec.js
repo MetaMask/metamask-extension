@@ -63,7 +63,7 @@ describe('Test Snap Images', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
@@ -88,7 +88,7 @@ describe('Test Snap Images', function () {
         // check snaps ui image using waitForSelector
         await driver.waitForSelector('[data-testid="snaps-ui-image"]');
 
-        // click ok to close window
+        // click ok to close window and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirmation-submit-button"]',
         );

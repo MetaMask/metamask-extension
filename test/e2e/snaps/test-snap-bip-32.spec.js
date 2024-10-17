@@ -49,10 +49,13 @@ describe('Test Snap bip-32', function () {
           tag: 'button',
         });
 
+        // wait for confirm to appear
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -68,8 +71,9 @@ describe('Test Snap bip-32', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
+        // wait for and click OK and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -107,20 +111,15 @@ describe('Test Snap bip-32', function () {
         await driver.fill('#bip32Message-secp256k1', 'foo bar');
         await driver.clickElement('#sendBip32-secp256k1');
 
-        // hit 'approve' on the signature confirmation
+        // hit 'approve' on the signature confirmation and wait for window to close
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Approve',
           tag: 'button',
         });
 
         // switch back to the test-snaps window
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          1,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check results of the secp256k1 signature with waitForSelector
         await driver.waitForSelector({
@@ -137,15 +136,21 @@ describe('Test Snap bip-32', function () {
         await driver.fill('#bip32Message-ed25519', 'foo bar');
         await driver.clickElement('#sendBip32-ed25519');
 
-        // hit 'approve' on the custom confirm
+        // switch to dialog window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement({
+
+        // wait for and click 'approve' and wait for window to close
+        await driver.waitForSelector({
+          text: 'Approve',
+          tag: 'button',
+        });
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Approve',
           tag: 'button',
         });
 
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
-        await driver.switchToWindow(windowHandles[0]);
+        // switch back to test-snaps window
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check results of ed25519 signature with waitForSelector
         await driver.waitForSelector({

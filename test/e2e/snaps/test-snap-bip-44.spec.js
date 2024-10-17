@@ -63,9 +63,9 @@ describe('Test Snap bip-44', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // deal with OK button
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -95,20 +95,21 @@ describe('Test Snap bip-44', function () {
         await driver.waitForSelector('#signBip44Message');
         await driver.clickElement('#signBip44Message');
 
-        // Switch to approve signature message window and approve
+        // Switch to approve signature message window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement({
+
+        // wait for and click approve and wait for window to close
+        await driver.waitForSelector({
+          text: 'Approve',
+          tag: 'button',
+        });
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Approve',
           tag: 'button',
         });
 
         // switch back to test-snaps page
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          1,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({

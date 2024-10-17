@@ -47,8 +47,14 @@ describe('Test Snap Signature Insights', function () {
         await driver.waitForSelector('#connectsignature-insights');
         await driver.clickElement('#connectsignature-insights');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -61,7 +67,7 @@ describe('Test Snap Signature Insights', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
@@ -157,7 +163,7 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-button"]',
         );
@@ -271,7 +277,7 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-button"]',
         );
@@ -322,8 +328,14 @@ describe('Test Snap Signature Insights', function () {
         await driver.waitForSelector('#connectsignature-insights');
         await driver.clickElement('#connectsignature-insights');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -336,7 +348,7 @@ describe('Test Snap Signature Insights', function () {
           tag: 'button',
         });
 
-        // wait for and click ok
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
@@ -377,7 +389,7 @@ describe('Test Snap Signature Insights', function () {
         });
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="snapInsightsButtonConfirm"]',
         );
@@ -419,7 +431,7 @@ describe('Test Snap Signature Insights', function () {
         });
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="snapInsightsButtonConfirm"]',
         );
@@ -465,7 +477,7 @@ describe('Test Snap Signature Insights', function () {
         });
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="snapInsightsButtonConfirm"]',
         );
@@ -511,7 +523,7 @@ describe('Test Snap Signature Insights', function () {
         });
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="snapInsightsButtonConfirm"]',
         );
