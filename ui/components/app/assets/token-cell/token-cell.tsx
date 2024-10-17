@@ -32,7 +32,6 @@ export default function TokenCell({
       isEqualCaseInsensitive(token.address, address),
   );
 
-  console.log({ tokenData });
   const title = tokenData?.name || symbol;
   const tokenImage = tokenData?.iconUrl || image;
   const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, false);

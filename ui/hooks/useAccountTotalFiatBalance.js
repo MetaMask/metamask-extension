@@ -48,7 +48,6 @@ export const useAccountTotalFiatBalanceByChainId = (
   });
 
   const detectedTokens = useSelector(getAllTokens);
-  console.log({ detectedTokens });
   const tokens = detectedTokens?.[chainId]?.[account?.address] ?? [];
   // This selector returns all the tokens, we need it to get the image of token
   const allTokenList = useSelector(getTokenList);

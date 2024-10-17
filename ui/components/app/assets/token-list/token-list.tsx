@@ -44,7 +44,6 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
   const chains = useSelector(getChains);
 
   if (!chains || chains.length === 0) {
-    // Handle loading state or no chains available
     return (
       <Box
         display={Display.Flex}
@@ -124,6 +123,8 @@ function TokenListForChain({
     contractExchangeRates,
     nativeTokenWithBalance,
   ]);
+
+  console.log({ sortedTokens });
 
   return loading ? (
     <Box
