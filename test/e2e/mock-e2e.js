@@ -83,6 +83,7 @@ const browserAPIRequestDomains =
  */
 const privateHostMatchers = [
   // { pattern: RegExp, host: string }
+  { pattern: /^.*\.btc.*\.quiknode.pro$/iu, host: '*.btc*.quiknode.pro' },
 ];
 
 /**

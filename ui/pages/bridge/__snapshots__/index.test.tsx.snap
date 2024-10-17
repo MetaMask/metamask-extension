@@ -9,27 +9,61 @@ exports[`Bridge renders the component with initial props 1`] = `
       class="bridge__container"
     >
       <div
-        class="bridge__header"
+        class="mm-box mm-header-base multichain-page-header bridge__header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--margin-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-1/12"
-          tabindex="0"
+          class="mm-box"
+          style="min-width: 0px;"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"
-            style="mask-image: url('./images/icons/arrow-2-left.svg'); cursor: pointer;"
-            title="Cancel"
-          />
+          <button
+            aria-label="Back"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-left.svg');"
+            />
+          </button>
         </div>
         <div
-          class="bridge__title"
+          class="mm-box"
         >
-          Bridge
+          <p
+            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          >
+            Bridge
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+          style="min-width: 0px;"
+        >
+          <button
+            aria-label="Settings"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/setting.svg');"
+            />
+          </button>
         </div>
       </div>
       <div
-        class="bridge__content bridge__content--redesign-enabled"
+        class="mm-box multichain-page-content bridge__content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
       />
+      <div
+        class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="bridge-cta-button"
+          data-theme="light"
+          disabled=""
+        >
+          Select token
+        </button>
+      </div>
     </div>
   </div>
 </div>

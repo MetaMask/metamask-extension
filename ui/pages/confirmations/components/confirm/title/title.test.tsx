@@ -11,7 +11,10 @@ import {
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../test/data/confirmations/helper';
 import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
-import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
+import {
+  permitNFTSignatureMsg,
+  permitSignatureMsg,
+} from '../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import {
@@ -68,6 +71,21 @@ describe('ConfirmTitle', () => {
     expect(getByText('Spending cap request')).toBeInTheDocument();
     expect(
       getByText('This site wants permission to spend your tokens.'),
+    ).toBeInTheDocument();
+  });
+
+  it('should render the title and description for a NFT permit signature', () => {
+    const mockStore = configureMockStore([])(
+      getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg),
+    );
+    const { getByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(getByText('Withdrawal request')).toBeInTheDocument();
+    expect(
+      getByText('This site wants permission to withdraw your NFTs'),
     ).toBeInTheDocument();
   });
 

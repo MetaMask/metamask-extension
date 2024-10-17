@@ -751,7 +751,7 @@ export const fetchQuotesAndSetQuoteState = (
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
     trackEvent({
-      event: 'Quotes Requested',
+      event: MetaMetricsEventName.QuotesRequested,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         token_from: fromTokenSymbol,
@@ -839,7 +839,7 @@ export const fetchQuotesAndSetQuoteState = (
         const tokenToAmountToString = tokenToAmountBN.toString(10);
 
         trackEvent({
-          event: 'Quotes Received',
+          event: MetaMetricsEventName.QuotesReceived,
           category: MetaMetricsEventCategory.Swaps,
           sensitiveProperties: {
             token_from: fromTokenSymbol,

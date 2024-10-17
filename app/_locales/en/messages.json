@@ -854,8 +854,14 @@
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
+  "bridgeFrom": {
+    "message": "Bridge from"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeTo": {
+    "message": "Bridge to"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -1640,8 +1646,7 @@
     "message": "Snaps"
   },
   "disconnectMessage": {
-    "message": "This will disconnect you from $1",
-    "description": "$1 is the name of the dapp"
+    "message": "This will disconnect you from this site"
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"

@@ -27,9 +27,9 @@ import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
   errorCodes as rpcErrorCodes,
-  EthereumRpcError,
-  ethErrors,
-} from 'eth-rpc-errors';
+  JsonRpcError,
+  providerErrors,
+} from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -42,6 +42,7 @@ import {
   LedgerIframeBridge,
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from '@metamask/eth-query';
 import EthJSQuery from '@metamask/ethjs-query';
@@ -169,6 +170,7 @@ import {
 } from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
+  CHAIN_SPEC_URL,
   NETWORK_TYPES,
   NetworkStatus,
   MAINNET_DISPLAY_NAME,
@@ -200,6 +202,10 @@ import {
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
 
+import {
+  getStorageItem,
+  setStorageItem,
+} from '../../shared/lib/storage-helpers';
 import {
   getTokenIdParam,
   fetchTokenBalance,
@@ -413,6 +419,8 @@ export default class MetamaskController extends EventEmitter {
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
+    this.initializeChainlist();
+
     this.controllerMessenger = new ControllerMessenger();
 
     this.loggingController = new LoggingController({
@@ -471,7 +479,7 @@ export default class MetamaskController extends EventEmitter {
       this.encryptionPublicKeyController.clearUnapproved();
       this.decryptMessageController.clearUnapproved();
       this.signatureController.clearUnapproved();
-      this.approvalController.clear(ethErrors.provider.userRejectedRequest());
+      this.approvalController.clear(providerErrors.userRejectedRequest());
     };
 
     this.queuedRequestController = new QueuedRequestController({
@@ -1479,6 +1487,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.phishingController.name}:testOrigin`,
           `${this.approvalController.name}:hasRequest`,
           `${this.approvalController.name}:acceptRequest`,
+          `${this.snapController.name}:get`,
         ],
       });
 
@@ -5975,6 +5984,19 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getAll',
         ),
+        getCurrencyRate: (currency) => {
+          const rate = this.multichainRatesController.state.rates[currency];
+          const { fiatCurrency } = this.multichainRatesController.state;
+
+          if (!rate) {
+            return undefined;
+          }
+
+          return {
+            ...rate,
+            currency: fiatCurrency,
+          };
+        },
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,
@@ -6287,6 +6309,23 @@ export default class MetamaskController extends EventEmitter {
     return this.smartTransactionsController.getTransactions({
       addressFrom: address,
       status: 'pending',
+    });
+  }
+
+  /**
+   * The chain list is fetched live at runtime, falling back to a cache.
+   * This preseeds the cache at startup with a static list provided at build.
+   */
+  async initializeChainlist() {
+    const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
+    const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
+    if (cachedResponse) {
+      return;
+    }
+    await setStorageItem(cacheKey, {
+      cachedResponse: rawChainData(),
+      // Cached value is immediately invalidated
+      cachedTime: 0,
     });
   }
 
@@ -6712,7 +6751,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.approvalController.reject(
         id,
-        new EthereumRpcError(error.code, error.message, error.data),
+        new JsonRpcError(error.code, error.message, error.data),
       );
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {
