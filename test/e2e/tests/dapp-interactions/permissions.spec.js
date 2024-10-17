@@ -28,19 +28,15 @@ describe('Permissions', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-        await driver.clickElement({
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // shows connected sites
         await driver.clickElement(
@@ -64,21 +60,17 @@ describe('Permissions', function () {
         assert.equal(domains.length, 1);
 
         // can get accounts within the dapp
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await driver.clickElement({
           text: 'eth_accounts',
           tag: 'button',
         });
 
-        const getAccountsResult = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '#getAccountsResult',
           text: publicAddress,
         });
-        assert.equal(
-          (await getAccountsResult.getText()).toLowerCase(),
-          publicAddress.toLowerCase(),
-        );
       },
     );
   });
