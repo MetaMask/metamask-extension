@@ -75,7 +75,10 @@ export default function AssetList({
                 ? BackgroundColor.primaryMuted
                 : BackgroundColor.transparent
             }
-            className="multichain-asset-picker-list-items"
+            className={classnames('multichain-asset-picker-list-items', {
+              'multichain-asset-picker-list-items--selected': isSelected,
+              'multichain-asset-picker-list-items--disabled': isDisabled,
+            })}
             data-testid="asset-list-item"
             onClick={() => {
               if (isDisabled) {
