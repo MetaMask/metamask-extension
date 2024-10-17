@@ -1214,7 +1214,7 @@ export default class MetamaskController extends EventEmitter {
       caveatSpecifications: getCaveatSpecifications(),
       permissionSpecifications: {
         ...getPermissionSpecifications({
-          getInternalAccounts: this.accountsController.listAccounts.bind(
+          listAccounts: this.accountsController.listAccounts.bind(
             this.accountsController,
           ),
           findNetworkClientIdByChainId:

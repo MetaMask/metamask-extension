@@ -131,7 +131,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
-    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.3.0-preview-afb2e2c0",
+    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.3.0-preview-dae4f73d",
     "chokidar": "^3.6.0",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
@@ -336,7 +336,7 @@
     "@metamask/message-manager": "^10.1.0",
     "@metamask/message-signing-snap": "^0.3.3",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-afb2e2c0",
+    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-dae4f73d",
     "@metamask/name-controller": "^8.0.0",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/notification-controller": "^6.0.0",

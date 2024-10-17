@@ -5028,9 +5028,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:@metamask-previews/controller-utils@11.3.0-preview-afb2e2c0":
-  version: 11.3.0-preview-afb2e2c0
-  resolution: "@metamask-previews/controller-utils@npm:11.3.0-preview-afb2e2c0"
+"@metamask/controller-utils@npm:@metamask-previews/controller-utils@11.3.0-preview-dae4f73d":
+  version: 11.3.0-preview-dae4f73d
+  resolution: "@metamask-previews/controller-utils@npm:11.3.0-preview-dae4f73d"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -5041,7 +5041,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/0ce0d41c9c53b1fd5965c53e16e606a6889f19eb4b7eec1204fb3a11d5835b14fb30ef7b0b9085b7a7f460d54d222dc54264b89a0cafff9e58d3508f5fbe8bcf
+  checksum: 10/568559942f0c70307473b8078b37f4c82b4bc13d8b5ce7952eed5ac5bed5bc58f1a30e382b3d71f85fd704408c5058e88150c5815a9abd004cd8a811e9c6fd7a
   languageName: node
   linkType: hard
 
@@ -5748,9 +5748,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain@npm:@metamask-previews/multichain@0.0.0-preview-afb2e2c0":
-  version: 0.0.0-preview-afb2e2c0
-  resolution: "@metamask-previews/multichain@npm:0.0.0-preview-afb2e2c0"
+"@metamask/multichain@npm:@metamask-previews/multichain@0.0.0-preview-dae4f73d":
+  version: 0.0.0-preview-dae4f73d
+  resolution: "@metamask-previews/multichain@npm:0.0.0-preview-dae4f73d"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
     "@metamask/controller-utils": "npm:^11.3.0"
@@ -5761,7 +5761,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^21.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/40e7b66aa6f320e7001fc00d30f5734456ff9232fdf3c255c5fd7e860635ffa24437b297767f3de73f5b9d76853c39bea2a0f26976db81d157f85e4d5f494d86
+  checksum: 10/3531a9802694b7581d132513e06cd569ccfb40c693b03f272941d007d1314a44283851855540a6c879c17e138313115ef9500f8d60de3a75540a20e1f3238549
   languageName: node
   linkType: hard
 
@@ -26149,7 +26149,7 @@ __metadata:
     "@metamask/message-manager": "npm:^10.1.0"
     "@metamask/message-signing-snap": "npm:^0.3.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-afb2e2c0"
+    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-dae4f73d"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch"
     "@metamask/notification-controller": "npm:^6.0.0"

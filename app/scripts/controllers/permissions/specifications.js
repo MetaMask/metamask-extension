@@ -59,7 +59,7 @@ export const getCaveatSpecifications = () => {
  * }} options - Options bag.
  * @param options.getAllAccounts - A function that returns all Ethereum accounts
  * in the current MetaMask instance.
- * @param options.getInternalAccounts - A function that returns the
+ * @param options.listAccounts - A function that returns the
  * `AccountsController` internalAccount objects for all accounts in the
  * @param options.captureKeyringTypesWithMissingIdentities - A function that
  * captures extra error information about the "Missing identity for address"
@@ -67,7 +67,7 @@ export const getCaveatSpecifications = () => {
  * current MetaMask instance.
  */
 export const getPermissionSpecifications = ({
-  getInternalAccounts,
+  listAccounts,
   findNetworkClientIdByChainId,
 }) => {
   return {
@@ -75,7 +75,7 @@ export const getPermissionSpecifications = ({
       caip25EndowmentBuilder.specificationBuilder({
         methodHooks: {
           findNetworkClientIdByChainId,
-          getInternalAccounts,
+          listAccounts,
         },
       }),
   };
