@@ -5,7 +5,6 @@
   "app/scripts/constants/on-ramp.js",
   "app/scripts/contentscript.js",
   "app/scripts/controllers/alert.js",
-  "app/scripts/controllers/app-state.js",
   "app/scripts/controllers/cached-balances.js",
   "app/scripts/controllers/cached-balances.test.js",
   "app/scripts/controllers/ens/ens.js",
