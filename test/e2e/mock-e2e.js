@@ -697,8 +697,27 @@ async function setupMocking(
     async (url) =>
       await server.forGet(url).thenCallback(() => {
         return {
-          statusCode: 201,
+          statusCode: 200,
           json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+        };
+      }),
+  );
+
+  [
+    `${SECURITY_ALERTS_DEV_API_BASE_URL}/validate/0x1`,
+    `${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`,
+  ].forEach(
+    async (url) =>
+      await server.forPost(url).thenCallback(async () => {
+        return {
+          statusCode: 201,
+          json: {
+            block: 20733513,
+            result_type: 'Benign',
+            reason: '',
+            description: '',
+            features: [],
+          },
         };
       }),
   );
