@@ -120,6 +120,7 @@ export type Preferences = {
     order: string;
     sortCallback: string;
   };
+  tokenNetworkFilter: Record<string, string>;
   shouldShowAggregatedBalancePopover: boolean;
 };
 
@@ -471,6 +472,8 @@ export class PreferencesController extends BaseController<
           ...addedNonMainNetwork,
           ...testNetworks,
         },
+        tokenNetworkFilter: {},
+        shouldShowAggregatedBalancePopover: true, // by default user should see popover;
         ...state,
       },
     });
