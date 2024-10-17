@@ -146,6 +146,7 @@ export const CHAIN_IDS = {
   CHZ: '0x15b38',
   NUMBERS: '0x290b',
   SEI: '0x531',
+  BITROCK: '0x1c03',
   BERACHAIN: '0x138d5',
   METACHAIN_ONE: '0x1b6e6',
   ARBITRUM_SEPOLIA: '0x66eee',
@@ -206,6 +207,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   ZORA_MAINNET: '0x76adf1',
   FILECOIN: '0x13a',
   NUMBERS: '0x290b',
+  BITROCK: '0x1c03',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -447,6 +449,7 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
+export const BITROCK_MAINNET_IMAGE_URL = './images/bitrock.svg';
 export const NEAR_IMAGE_URL = './images/near.svg';
 
 export const INFURA_PROVIDER_TYPES = [
@@ -783,6 +786,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.NUMBERS]: NUMBERS_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SEI]: SEI_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.BITROCK]: BITROCK_MAINNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -809,6 +813,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
+  [CHAIN_IDS.BITROCK]: BITROCK_MAINNET_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
   [CHAIN_IDS.MOONRIVER]: MOONRIVER_TOKEN_IMAGE_URL,
