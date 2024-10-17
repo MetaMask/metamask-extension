@@ -46,8 +46,8 @@ import {
 } from '../../ducks/swaps/swaps';
 import { getCurrentNetworkTransactions } from '../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../shared/modules/selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -133,7 +133,7 @@ export default function Swap() {
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(

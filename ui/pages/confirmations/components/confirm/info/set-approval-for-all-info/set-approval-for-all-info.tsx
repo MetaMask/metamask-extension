@@ -1,8 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../../../context/confirm';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { ApproveDetails } from '../approve/approve-details/approve-details';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -15,10 +13,6 @@ import { SetApprovalForAllStaticSimulation } from './set-approval-for-all-static
 const SetApprovalForAllInfo = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
 
   const decodedResponse = useDecodedTransactionData();
 
@@ -45,7 +39,7 @@ const SetApprovalForAllInfo = () => {
       )}
       <ApproveDetails isSetApprovalForAll />
       <GasFeesSection />
-      {showAdvancedDetails && <AdvancedDetails />}
+      <AdvancedDetails />
     </>
   );
 };
