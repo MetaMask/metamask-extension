@@ -704,8 +704,6 @@
       "@storybook/api>core-js": false,
       "@storybook/core>@storybook/core-client>@storybook/ui>core-js-pure": false,
       "@storybook/test-runner>@storybook/core-common>esbuild": false,
-      "eth-json-rpc-filters>eth-json-rpc-middleware>ethereumjs-util>keccak": false,
-      "eth-json-rpc-filters>eth-json-rpc-middleware>ethereumjs-util>secp256k1": false,
       "eth-lattice-keyring>gridplus-sdk": false,
       "ethereumjs-util>ethereum-cryptography>keccak": false,
       "ganache>@trufflesuite/bigint-buffer": false,
