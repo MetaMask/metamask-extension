@@ -1,4 +1,4 @@
-import { errorCodes } from 'eth-rpc-errors';
+import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 
 import MetaMetricsController from '../controllers/metametrics';
@@ -58,13 +58,11 @@ const metaMetricsController = new MetaMetricsController({
   segment: createSegmentMock(2, 10000),
   getCurrentChainId: () => '0x1338',
   onNetworkDidChange: jest.fn(),
-  preferencesStore: {
-    subscribe: jest.fn(),
-    getState: jest.fn(() => ({
-      currentLocale: 'en_US',
-      preferences: {},
-    })),
+  preferencesControllerState: {
+    currentLocale: 'en_US',
+    preferences: {},
   },
+  onPreferencesStateChange: jest.fn(),
   version: '0.0.1',
   environment: 'test',
   initState: {

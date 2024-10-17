@@ -1,38 +1,44 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { isHexString } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
+import { isBoolean } from 'lodash';
 import { useMemo, useState } from 'react';
-import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-controller-utils';
-import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
-import { useTokenTracker } from '../../../../../../hooks/useTokenTracker';
-import { SelectedToken } from '../shared/selected-token';
+import { useAssetDetails } from '../../../../hooks/useAssetDetails';
+import { useDecodedTransactionData } from './useDecodedTransactionData';
 
-export const useTokenValues = (
-  transactionMeta: TransactionMeta,
-  selectedToken: SelectedToken,
-) => {
-  const [tokensWithBalances, setTokensWithBalances] = useState<
-    { balance: string; address: string; decimals: number; string: string }[]
-  >([]);
+export const useTokenValues = (transactionMeta: TransactionMeta) => {
+  const { decimals } = useAssetDetails(
+    transactionMeta.txParams.to,
+    transactionMeta.txParams.from,
+    transactionMeta.txParams.data,
+  );
 
-  const fetchTokenBalances = async () => {
-    const result: {
-      tokensWithBalances: {
-        balance: string;
-        address: string;
-        decimals: number;
-        string: string;
-      }[];
-    } = await useTokenTracker({
-      tokens: [selectedToken],
-      address: undefined,
-    });
+  const decodedResponse = useDecodedTransactionData();
+  const { value, pending } = decodedResponse;
 
-    setTokensWithBalances(result.tokensWithBalances);
-  };
+  const decodedTransferValue = useMemo(() => {
+    if (!value || !decimals) {
+      return 0;
+    }
 
-  fetchTokenBalances();
+    const paramIndex = value.data[0].params.findIndex(
+      (param) =>
+        param.value !== undefined &&
+        !isHexString(param.value) &&
+        param.value.length === undefined &&
+        !isBoolean(param.value),
+    );
+    if (paramIndex === -1) {
+      return 0;
+    }
+
+    return new BigNumber(value.data[0].params[paramIndex].value.toString())
+      .dividedBy(new BigNumber(10).pow(Number(decimals)))
+      .toNumber();
+  }, [value, decimals]);
 
   const [exchangeRate, setExchangeRate] = useState<Numeric | undefined>();
   const fetchExchangeRate = async () => {
@@ -40,38 +46,19 @@ export const useTokenValues = (
 
     setExchangeRate(result);
   };
-
   fetchExchangeRate();
 
-  const tokenBalance = useMemo(() => {
-    const tokenWithBalance = tokensWithBalances.find(
-      (token: {
-        balance: string;
-        address: string;
-        decimals: number;
-        string: string;
-      }) =>
-        toChecksumHexAddress(token.address) ===
-        toChecksumHexAddress(transactionMeta?.txParams?.to as string),
-    );
-
-    if (!tokenWithBalance) {
-      return undefined;
-    }
-
-    return calcTokenAmount(tokenWithBalance.balance, tokenWithBalance.decimals);
-  }, [tokensWithBalances]);
-
   const fiatValue =
-    exchangeRate && tokenBalance && exchangeRate.times(tokenBalance).toNumber();
-
+    exchangeRate &&
+    decodedTransferValue &&
+    exchangeRate.times(decodedTransferValue, 10).toNumber();
   const fiatFormatter = useFiatFormatter();
-
   const fiatDisplayValue =
     fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
   return {
+    decodedTransferValue,
     fiatDisplayValue,
-    tokenBalance: tokenBalance && String(tokenBalance.toNumber()),
+    pending,
   };
 };

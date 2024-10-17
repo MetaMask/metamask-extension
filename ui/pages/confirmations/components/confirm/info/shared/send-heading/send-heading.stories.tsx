@@ -13,7 +13,9 @@ const Story = {
   component: SendHeading,
   decorators: [
     (story: () => Meta<typeof SendHeading>) => (
-      <Provider store={store}>{story()}</Provider>
+      <Provider store={store}>
+        <ConfirmContextProvider>{story()}</ConfirmContextProvider>
+      </Provider>
     ),
   ],
 };

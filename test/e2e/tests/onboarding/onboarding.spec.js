@@ -280,7 +280,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           );
 
           await driver.clickElement({
-            text: 'Manage default settings',
+            text: 'Manage default privacy settings',
             tag: 'button',
           });
 
@@ -328,28 +328,24 @@ describe('MetaMask onboarding @no-mmi', function () {
             tag: 'button',
           });
 
-          await driver.clickElement({ text: 'Save', tag: 'button' });
+          await driver.clickElementAndWaitToDisappear({
+            tag: 'button',
+            text: 'Save',
+          });
 
-          await driver.delay(largeDelayMs);
-          await driver.waitForSelector('[data-testid="category-back-button"]');
-          const generalBackButton = await driver.waitForSelector(
-            '[data-testid="category-back-button"]',
-          );
-          await generalBackButton.click();
+          await driver.clickElement('[data-testid="category-back-button"]');
 
-          await driver.delay(largeDelayMs);
-
-          await driver.waitForSelector(
+          // Wait until the onboarding carousel has stopped moving
+          // otherwise the click has no effect.
+          await driver.waitForElementToStopMoving(
             '[data-testid="privacy-settings-back-button"]',
           );
-          const defaultSettingsBackButton = await driver.findElement(
+
+          await driver.clickElement(
             '[data-testid="privacy-settings-back-button"]',
           );
-          await defaultSettingsBackButton.click();
 
-          await driver.delay(largeDelayMs);
-
-          await driver.clickElement({
+          await driver.clickElementAndWaitToDisappear({
             text: 'Done',
             tag: 'button',
           });
@@ -359,9 +355,14 @@ describe('MetaMask onboarding @no-mmi', function () {
             tag: 'button',
           });
 
-          await driver.delay(largeDelayMs);
+          // Wait until the onboarding carousel has stopped moving
+          // otherwise the click has no effect.
+          await driver.waitForElementToStopMoving({
+            text: 'Done',
+            tag: 'button',
+          });
 
-          await driver.clickElement({
+          await driver.clickElementAndWaitToDisappear({
             text: 'Done',
             tag: 'button',
           });
@@ -402,7 +403,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         );
 
         await driver.clickElement({
-          text: 'Manage default settings',
+          text: 'Manage default privacy settings',
           tag: 'button',
         });
         await driver.clickElement('[data-testid="category-item-General"]');
@@ -412,6 +413,12 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
         await driver.clickElement('[data-testid="category-back-button"]');
+
+        // Wait until the onboarding carousel has stopped moving
+        // otherwise the click has no effect.
+        await driver.waitForElementToStopMoving(
+          '[data-testid="privacy-settings-back-button"]',
+        );
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );

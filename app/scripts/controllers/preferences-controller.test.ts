@@ -3,13 +3,7 @@
  */
 import { ControllerMessenger } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
-import {
-  KeyringControllerGetAccountsAction,
-  KeyringControllerGetKeyringsByTypeAction,
-  KeyringControllerGetKeyringForAccountAction,
-  KeyringControllerStateChangeEvent,
-  KeyringControllerAccountRemovedEvent,
-} from '@metamask/keyring-controller';
+import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -18,10 +12,10 @@ import { ThemeType } from '../../../shared/constants/preferences';
 import type {
   AllowedActions,
   AllowedEvents,
-  PreferencesControllerActions,
-  PreferencesControllerEvents,
+  PreferencesControllerMessenger,
+  PreferencesControllerState,
 } from './preferences-controller';
-import PreferencesController from './preferences-controller';
+import { PreferencesController } from './preferences-controller';
 
 const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   {
@@ -40,102 +34,104 @@ const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   },
 ).networkConfigurationsByChainId;
 
-describe('preferences controller', () => {
-  let controllerMessenger: ControllerMessenger<
-    | PreferencesControllerActions
-    | AllowedActions
-    | KeyringControllerGetAccountsAction
-    | KeyringControllerGetKeyringsByTypeAction
-    | KeyringControllerGetKeyringForAccountAction,
-    | PreferencesControllerEvents
-    | KeyringControllerStateChangeEvent
-    | KeyringControllerAccountRemovedEvent
-    | SnapControllerStateChangeEvent
+const setupController = ({
+  state,
+}: {
+  state?: Partial<PreferencesControllerState>;
+}) => {
+  const controllerMessenger = new ControllerMessenger<
+    AllowedActions,
     | AllowedEvents
-  >;
-  let preferencesController: PreferencesController;
-  let accountsController: AccountsController;
-
-  beforeEach(() => {
-    controllerMessenger = new ControllerMessenger();
-
-    const accountsControllerMessenger = controllerMessenger.getRestricted({
-      name: 'AccountsController',
-      allowedEvents: [
-        'SnapController:stateChange',
-        'KeyringController:accountRemoved',
-        'KeyringController:stateChange',
-      ],
-      allowedActions: [
-        'KeyringController:getAccounts',
-        'KeyringController:getKeyringsByType',
-        'KeyringController:getKeyringForAccount',
-      ],
-    });
-
-    const mockAccountsControllerState = {
-      internalAccounts: {
-        accounts: {},
-        selectedAccount: '',
-      },
-    };
-    accountsController = new AccountsController({
-      messenger: accountsControllerMessenger,
-      state: mockAccountsControllerState,
-    });
-
-    const preferencesMessenger = controllerMessenger.getRestricted({
+    | KeyringControllerStateChangeEvent
+    | SnapControllerStateChangeEvent
+  >();
+  const preferencesControllerMessenger: PreferencesControllerMessenger =
+    controllerMessenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [
-        `AccountsController:setSelectedAccount`,
-        `AccountsController:getAccountByAddress`,
-        `AccountsController:setAccountName`,
+        'AccountsController:getAccountByAddress',
+        'AccountsController:setAccountName',
+        'AccountsController:getSelectedAccount',
+        'AccountsController:setSelectedAccount',
+        'NetworkController:getState',
       ],
-      allowedEvents: [`AccountsController:stateChange`],
+      allowedEvents: ['AccountsController:stateChange'],
     });
 
-    preferencesController = new PreferencesController({
-      initLangCode: 'en_US',
+  controllerMessenger.registerActionHandler(
+    'NetworkController:getState',
+    jest.fn().mockReturnValue({
       networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
-      messenger: preferencesMessenger,
-    });
+    }),
+  );
+  const controller = new PreferencesController({
+    messenger: preferencesControllerMessenger,
+    state,
   });
 
+  const accountsControllerMessenger = controllerMessenger.getRestricted({
+    name: 'AccountsController',
+    allowedEvents: [
+      'KeyringController:stateChange',
+      'SnapController:stateChange',
+    ],
+    allowedActions: [],
+  });
+  const mockAccountsControllerState = {
+    internalAccounts: {
+      accounts: {},
+      selectedAccount: '',
+    },
+  };
+  const accountsController = new AccountsController({
+    messenger: accountsControllerMessenger,
+    state: mockAccountsControllerState,
+  });
+
+  return {
+    controller,
+    messenger: controllerMessenger,
+    accountsController,
+  };
+};
+
+describe('preferences controller', () => {
   describe('useBlockie', () => {
     it('defaults useBlockie to false', () => {
-      expect(preferencesController.store.getState().useBlockie).toStrictEqual(
-        false,
-      );
+      const { controller } = setupController({});
+      expect(controller.state.useBlockie).toStrictEqual(false);
     });
 
     it('setUseBlockie to true', () => {
-      preferencesController.setUseBlockie(true);
-      expect(preferencesController.store.getState().useBlockie).toStrictEqual(
-        true,
-      );
+      const { controller } = setupController({});
+      controller.setUseBlockie(true);
+      expect(controller.state.useBlockie).toStrictEqual(true);
     });
   });
 
   describe('setCurrentLocale', () => {
     it('checks the default currentLocale', () => {
-      const { currentLocale } = preferencesController.store.getState();
-      expect(currentLocale).toStrictEqual('en_US');
+      const { controller } = setupController({});
+      const { currentLocale } = controller.state;
+      expect(currentLocale).toStrictEqual('');
     });
 
     it('sets current locale in preferences controller', () => {
-      preferencesController.setCurrentLocale('ja');
-      const { currentLocale } = preferencesController.store.getState();
+      const { controller } = setupController({});
+      controller.setCurrentLocale('ja');
+      const { currentLocale } = controller.state;
       expect(currentLocale).toStrictEqual('ja');
     });
   });
 
   describe('setAccountLabel', () => {
+    const { controller, messenger, accountsController } = setupController({});
     const mockName = 'mockName';
     const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
     const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
 
     it('updating name from preference controller will update the name in accounts controller and preferences controller', () => {
-      controllerMessenger.publish(
+      messenger.publish(
         'KeyringController:stateChange',
         {
           isUnlocked: true,
@@ -150,21 +146,20 @@ describe('preferences controller', () => {
       );
 
       let [firstAccount, secondAccount] = accountsController.listAccounts();
-      const { identities } = preferencesController.store.getState();
+      const { identities } = controller.state;
       const firstPreferenceAccount = identities[firstAccount.address];
       const secondPreferenceAccount = identities[secondAccount.address];
 
       expect(firstAccount.metadata.name).toBe(firstPreferenceAccount.name);
       expect(secondAccount.metadata.name).toBe(secondPreferenceAccount.name);
 
-      preferencesController.setAccountLabel(firstAccount.address, mockName);
+      controller.setAccountLabel(firstAccount.address, mockName);
 
       // refresh state after state changed
 
       [firstAccount, secondAccount] = accountsController.listAccounts();
 
-      const { identities: updatedIdentities } =
-        preferencesController.store.getState();
+      const { identities: updatedIdentities } = controller.state;
 
       const updatedFirstPreferenceAccount =
         updatedIdentities[firstAccount.address];
@@ -181,7 +176,7 @@ describe('preferences controller', () => {
     });
 
     it('updating name from accounts controller updates the name in preferences controller', () => {
-      controllerMessenger.publish(
+      messenger.publish(
         'KeyringController:stateChange',
         {
           isUnlocked: true,
@@ -197,7 +192,7 @@ describe('preferences controller', () => {
 
       let [firstAccount, secondAccount] = accountsController.listAccounts();
 
-      const { identities } = preferencesController.store.getState();
+      const { identities } = controller.state;
 
       const firstPreferenceAccount = identities[firstAccount.address];
       const secondPreferenceAccount = identities[secondAccount.address];
@@ -210,8 +205,7 @@ describe('preferences controller', () => {
 
       [firstAccount, secondAccount] = accountsController.listAccounts();
 
-      const { identities: updatedIdentities } =
-        preferencesController.store.getState();
+      const { identities: updatedIdentities } = controller.state;
 
       const updatedFirstPreferenceAccount =
         updatedIdentities[firstAccount.address];
@@ -229,10 +223,11 @@ describe('preferences controller', () => {
   });
 
   describe('setSelectedAddress', () => {
+    const { controller, messenger, accountsController } = setupController({});
     it('updating selectedAddress from preferences controller updates the selectedAccount in accounts controller and preferences controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      controllerMessenger.publish(
+      messenger.publish(
         'KeyringController:stateChange',
         {
           isUnlocked: true,
@@ -248,25 +243,26 @@ describe('preferences controller', () => {
 
       const selectedAccount = accountsController.getSelectedAccount();
 
-      const { selectedAddress } = preferencesController.store.getState();
+      const { selectedAddress } = controller.state;
 
       expect(selectedAddress).toBe(selectedAccount.address);
 
-      preferencesController.setSelectedAddress(secondAddress);
+      controller.setSelectedAddress(secondAddress);
       // refresh state after state changed
 
-      const { selectedAddress: updatedSelectedAddress } =
-        preferencesController.store.getState();
+      const { selectedAddress: updatedSelectedAddress } = controller.state;
 
       const updatedSelectedAccount = accountsController.getSelectedAccount();
 
       expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
+
+      expect(controller.getSelectedAddress()).toBe(secondAddress);
     });
 
     it('updating selectedAccount from accounts controller updates the selectedAddress in preferences controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      controllerMessenger.publish(
+      messenger.publish(
         'KeyringController:stateChange',
         {
           isUnlocked: true,
@@ -283,15 +279,14 @@ describe('preferences controller', () => {
       const selectedAccount = accountsController.getSelectedAccount();
       const accounts = accountsController.listAccounts();
 
-      const { selectedAddress } = preferencesController.store.getState();
+      const { selectedAddress } = controller.state;
 
       expect(selectedAddress).toBe(selectedAccount.address);
 
       accountsController.setSelectedAccount(accounts[1].id);
       // refresh state after state changed
 
-      const { selectedAddress: updatedSelectedAddress } =
-        preferencesController.store.getState();
+      const { selectedAddress: updatedSelectedAddress } = controller.state;
 
       const updatedSelectedAccount = accountsController.getSelectedAccount();
 
@@ -300,173 +295,142 @@ describe('preferences controller', () => {
   });
 
   describe('setPasswordForgotten', () => {
+    const { controller } = setupController({});
     it('should default to false', () => {
-      expect(
-        preferencesController.store.getState().forgottenPassword,
-      ).toStrictEqual(false);
+      expect(controller.state.forgottenPassword).toStrictEqual(false);
     });
 
     it('should set the forgottenPassword property in state', () => {
-      preferencesController.setPasswordForgotten(true);
-      expect(
-        preferencesController.store.getState().forgottenPassword,
-      ).toStrictEqual(true);
+      controller.setPasswordForgotten(true);
+      expect(controller.state.forgottenPassword).toStrictEqual(true);
     });
   });
 
   describe('setUsePhishDetect', () => {
+    const { controller } = setupController({});
     it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().usePhishDetect,
-      ).toStrictEqual(true);
+      expect(controller.state.usePhishDetect).toStrictEqual(true);
     });
 
     it('should set the usePhishDetect property in state', () => {
-      preferencesController.setUsePhishDetect(false);
-      expect(
-        preferencesController.store.getState().usePhishDetect,
-      ).toStrictEqual(false);
+      controller.setUsePhishDetect(false);
+      expect(controller.state.usePhishDetect).toStrictEqual(false);
     });
   });
 
   describe('setUseMultiAccountBalanceChecker', () => {
+    const { controller } = setupController({});
     it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().useMultiAccountBalanceChecker,
-      ).toStrictEqual(true);
+      expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
+        true,
+      );
     });
 
     it('should set the setUseMultiAccountBalanceChecker property in state', () => {
-      preferencesController.setUseMultiAccountBalanceChecker(false);
-      expect(
-        preferencesController.store.getState().useMultiAccountBalanceChecker,
-      ).toStrictEqual(false);
+      controller.setUseMultiAccountBalanceChecker(false);
+      expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
+        false,
+      );
     });
   });
 
   describe('isRedesignedConfirmationsFeatureEnabled', () => {
+    const { controller } = setupController({});
     it('isRedesignedConfirmationsFeatureEnabled should default to false', () => {
       expect(
-        preferencesController.store.getState().preferences
-          .isRedesignedConfirmationsDeveloperEnabled,
+        controller.state.preferences.isRedesignedConfirmationsDeveloperEnabled,
       ).toStrictEqual(false);
     });
   });
 
   describe('setUseSafeChainsListValidation', function () {
+    const { controller } = setupController({});
     it('should default to true', function () {
-      const state = preferencesController.store.getState();
+      const { state } = controller;
 
       expect(state.useSafeChainsListValidation).toStrictEqual(true);
     });
 
     it('should set the `setUseSafeChainsListValidation` property in state', function () {
-      expect(
-        preferencesController.store.getState().useSafeChainsListValidation,
-      ).toStrictEqual(true);
+      expect(controller.state.useSafeChainsListValidation).toStrictEqual(true);
 
-      preferencesController.setUseSafeChainsListValidation(false);
+      controller.setUseSafeChainsListValidation(false);
 
-      expect(
-        preferencesController.store.getState().useSafeChainsListValidation,
-      ).toStrictEqual(false);
+      expect(controller.state.useSafeChainsListValidation).toStrictEqual(false);
     });
   });
 
   describe('setUseTokenDetection', function () {
+    const { controller } = setupController({});
     it('should default to true for new users', function () {
-      const state = preferencesController.store.getState();
+      const { state } = controller;
 
       expect(state.useTokenDetection).toStrictEqual(true);
     });
 
     it('should set the useTokenDetection property in state', () => {
-      preferencesController.setUseTokenDetection(true);
-      expect(
-        preferencesController.store.getState().useTokenDetection,
-      ).toStrictEqual(true);
+      controller.setUseTokenDetection(true);
+      expect(controller.state.useTokenDetection).toStrictEqual(true);
     });
 
     it('should keep initial value of useTokenDetection for existing users', function () {
-      // TODO: Remove unregisterActionHandler and clearEventSubscriptions once the PreferencesController has been refactored to use the withController pattern.
-      controllerMessenger.unregisterActionHandler(
-        'PreferencesController:getState',
-      );
-      controllerMessenger.clearEventSubscriptions(
-        'PreferencesController:stateChange',
-      );
-      const preferencesControllerExistingUser = new PreferencesController({
-        messenger: controllerMessenger.getRestricted({
-          name: 'PreferencesController',
-          allowedActions: [],
-          allowedEvents: ['AccountsController:stateChange'],
-        }),
-        initLangCode: 'en_US',
-        initState: {
-          useTokenDetection: false,
+      const { controller: preferencesControllerExistingUser } = setupController(
+        {
+          state: {
+            useTokenDetection: false,
+          },
         },
-        networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
-      });
-      const state = preferencesControllerExistingUser.store.getState();
+      );
+      const { state } = preferencesControllerExistingUser;
       expect(state.useTokenDetection).toStrictEqual(false);
     });
   });
 
   describe('setUseNftDetection', () => {
+    const { controller } = setupController({});
     it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().useNftDetection,
-      ).toStrictEqual(true);
+      expect(controller.state.useNftDetection).toStrictEqual(true);
     });
 
     it('should set the useNftDetection property in state', () => {
-      preferencesController.setOpenSeaEnabled(true);
-      preferencesController.setUseNftDetection(true);
-      expect(
-        preferencesController.store.getState().useNftDetection,
-      ).toStrictEqual(true);
+      controller.setOpenSeaEnabled(true);
+      controller.setUseNftDetection(true);
+      expect(controller.state.useNftDetection).toStrictEqual(true);
     });
   });
 
   describe('setUse4ByteResolution', () => {
+    const { controller } = setupController({});
     it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().use4ByteResolution,
-      ).toStrictEqual(true);
+      expect(controller.state.use4ByteResolution).toStrictEqual(true);
     });
 
     it('should set the use4ByteResolution property in state', () => {
-      preferencesController.setUse4ByteResolution(false);
-      expect(
-        preferencesController.store.getState().use4ByteResolution,
-      ).toStrictEqual(false);
+      controller.setUse4ByteResolution(false);
+      expect(controller.state.use4ByteResolution).toStrictEqual(false);
     });
   });
 
   describe('setOpenSeaEnabled', () => {
+    const { controller } = setupController({});
     it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().openSeaEnabled,
-      ).toStrictEqual(true);
+      expect(controller.state.openSeaEnabled).toStrictEqual(true);
     });
 
     it('should set the openSeaEnabled property in state', () => {
-      preferencesController.setOpenSeaEnabled(true);
-      expect(
-        preferencesController.store.getState().openSeaEnabled,
-      ).toStrictEqual(true);
+      controller.setOpenSeaEnabled(true);
+      expect(controller.state.openSeaEnabled).toStrictEqual(true);
     });
   });
 
   describe('setAdvancedGasFee', () => {
+    const { controller } = setupController({});
     it('should default to an empty object', () => {
-      expect(
-        preferencesController.store.getState().advancedGasFee,
-      ).toStrictEqual({});
+      expect(controller.state.advancedGasFee).toStrictEqual({});
     });
 
     it('should set the setAdvancedGasFee property in state', () => {
-      preferencesController.setAdvancedGasFee({
+      controller.setAdvancedGasFee({
         chainId: CHAIN_IDS.GOERLI,
         gasFeePreferences: {
           maxBaseFee: '1.5',
@@ -474,51 +438,44 @@ describe('preferences controller', () => {
         },
       });
       expect(
-        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
-          .maxBaseFee,
+        controller.state.advancedGasFee[CHAIN_IDS.GOERLI].maxBaseFee,
       ).toStrictEqual('1.5');
       expect(
-        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
-          .priorityFee,
+        controller.state.advancedGasFee[CHAIN_IDS.GOERLI].priorityFee,
       ).toStrictEqual('2');
     });
   });
 
   describe('setTheme', () => {
+    const { controller } = setupController({});
     it('should default to value "OS"', () => {
-      expect(preferencesController.store.getState().theme).toStrictEqual('os');
+      expect(controller.state.theme).toStrictEqual('os');
     });
 
     it('should set the setTheme property in state', () => {
-      preferencesController.setTheme(ThemeType.dark);
-      expect(preferencesController.store.getState().theme).toStrictEqual(
-        'dark',
-      );
+      controller.setTheme(ThemeType.dark);
+      expect(controller.state.theme).toStrictEqual('dark');
     });
   });
 
   describe('setUseCurrencyRateCheck', () => {
+    const { controller } = setupController({});
     it('should default to false', () => {
-      expect(
-        preferencesController.store.getState().useCurrencyRateCheck,
-      ).toStrictEqual(true);
+      expect(controller.state.useCurrencyRateCheck).toStrictEqual(true);
     });
 
     it('should set the useCurrencyRateCheck property in state', () => {
-      preferencesController.setUseCurrencyRateCheck(false);
-      expect(
-        preferencesController.store.getState().useCurrencyRateCheck,
-      ).toStrictEqual(false);
+      controller.setUseCurrencyRateCheck(false);
+      expect(controller.state.useCurrencyRateCheck).toStrictEqual(false);
     });
   });
 
   describe('setIncomingTransactionsPreferences', () => {
+    const { controller } = setupController({});
     const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
 
     it('should have default value combined', () => {
-      const state: {
-        incomingTransactionsPreferences: Record<string, boolean>;
-      } = preferencesController.store.getState();
+      const { state } = controller;
       expect(state.incomingTransactionsPreferences).toStrictEqual({
         [CHAIN_IDS.MAINNET]: true,
         [CHAIN_IDS.LINEA_MAINNET]: true,
@@ -533,13 +490,11 @@ describe('preferences controller', () => {
     });
 
     it('should update incomingTransactionsPreferences with given value set', () => {
-      preferencesController.setIncomingTransactionsPreferences(
+      controller.setIncomingTransactionsPreferences(
         CHAIN_IDS.LINEA_MAINNET,
         false,
       );
-      const state: {
-        incomingTransactionsPreferences: Record<string, boolean>;
-      } = preferencesController.store.getState();
+      const { state } = controller;
       expect(state.incomingTransactionsPreferences).toStrictEqual({
         [CHAIN_IDS.MAINNET]: true,
         [CHAIN_IDS.LINEA_MAINNET]: false,
@@ -555,10 +510,11 @@ describe('preferences controller', () => {
   });
 
   describe('AccountsController:stateChange subscription', () => {
+    const { controller, messenger, accountsController } = setupController({});
     it('sync the identities with the accounts in the accounts controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      controllerMessenger.publish(
+      messenger.publish(
         'KeyringController:stateChange',
         {
           isUnlocked: true,
@@ -574,7 +530,7 @@ describe('preferences controller', () => {
 
       const accounts = accountsController.listAccounts();
 
-      const { identities } = preferencesController.store.getState();
+      const { identities } = controller.state;
 
       expect(accounts.map((account) => account.address)).toStrictEqual(
         Object.keys(identities),
@@ -584,68 +540,313 @@ describe('preferences controller', () => {
 
   ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   describe('setUseExternalNameSources', () => {
+    const { controller } = setupController({});
     it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().useExternalNameSources,
-      ).toStrictEqual(true);
+      expect(controller.state.useExternalNameSources).toStrictEqual(true);
     });
 
     it('should set the useExternalNameSources property in state', () => {
-      preferencesController.setUseExternalNameSources(false);
-      expect(
-        preferencesController.store.getState().useExternalNameSources,
-      ).toStrictEqual(false);
+      controller.setUseExternalNameSources(false);
+      expect(controller.state.useExternalNameSources).toStrictEqual(false);
     });
   });
   ///: END:ONLY_INCLUDE_IF
 
   describe('setUseTransactionSimulations', () => {
+    const { controller } = setupController({});
     it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().useExternalNameSources,
-      ).toStrictEqual(true);
+      expect(controller.state.useExternalNameSources).toStrictEqual(true);
     });
 
     it('should set the setUseTransactionSimulations property in state', () => {
-      preferencesController.setUseTransactionSimulations(false);
-      expect(
-        preferencesController.store.getState().useTransactionSimulations,
-      ).toStrictEqual(false);
+      controller.setUseTransactionSimulations(false);
+      expect(controller.state.useTransactionSimulations).toStrictEqual(false);
     });
   });
 
   describe('setServiceWorkerKeepAlivePreference', () => {
+    const { controller } = setupController({});
     it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().enableMV3TimestampSave,
-      ).toStrictEqual(true);
+      expect(controller.state.enableMV3TimestampSave).toStrictEqual(true);
     });
 
     it('should set the setServiceWorkerKeepAlivePreference property in state', () => {
-      preferencesController.setServiceWorkerKeepAlivePreference(false);
-      expect(
-        preferencesController.store.getState().enableMV3TimestampSave,
-      ).toStrictEqual(false);
+      controller.setServiceWorkerKeepAlivePreference(false);
+      expect(controller.state.enableMV3TimestampSave).toStrictEqual(false);
     });
   });
 
   describe('setBitcoinSupportEnabled', () => {
+    const { controller } = setupController({});
     it('has the default value as false', () => {
-      expect(
-        preferencesController.store.getState().bitcoinSupportEnabled,
-      ).toStrictEqual(false);
+      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
     });
 
     it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
-      preferencesController.setBitcoinSupportEnabled(true);
-      expect(
-        preferencesController.store.getState().bitcoinSupportEnabled,
-      ).toStrictEqual(true);
+      controller.setBitcoinSupportEnabled(true);
+      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(true);
 
-      preferencesController.setBitcoinSupportEnabled(false);
+      controller.setBitcoinSupportEnabled(false);
+      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
+    });
+  });
+
+  describe('useNonceField', () => {
+    it('defaults useNonceField to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.useNonceField).toStrictEqual(false);
+    });
+
+    it('setUseNonceField to true', () => {
+      const { controller } = setupController({});
+      controller.setUseNonceField(true);
+      expect(controller.state.useNonceField).toStrictEqual(true);
+    });
+  });
+
+  describe('globalThis.setPreference', () => {
+    it('setFeatureFlags to true', () => {
+      const { controller } = setupController({});
+      globalThis.setPreference('showFiatInTestnets', true);
+      expect(controller.state.featureFlags.showFiatInTestnets).toStrictEqual(
+        true,
+      );
+    });
+  });
+
+  describe('useExternalServices', () => {
+    it('defaults useExternalServices to true', () => {
+      const { controller } = setupController({});
+      expect(controller.state.useExternalServices).toStrictEqual(true);
+      expect(controller.state.useExternalServices).toStrictEqual(true);
+      expect(controller.state.useTokenDetection).toStrictEqual(true);
+      expect(controller.state.useCurrencyRateCheck).toStrictEqual(true);
+      expect(controller.state.usePhishDetect).toStrictEqual(true);
+      expect(controller.state.useAddressBarEnsResolution).toStrictEqual(true);
+      expect(controller.state.openSeaEnabled).toStrictEqual(true);
+      expect(controller.state.useNftDetection).toStrictEqual(true);
+    });
+
+    it('useExternalServices to false', () => {
+      const { controller } = setupController({});
+      controller.toggleExternalServices(false);
+      expect(controller.state.useExternalServices).toStrictEqual(false);
+      expect(controller.state.useTokenDetection).toStrictEqual(false);
+      expect(controller.state.useCurrencyRateCheck).toStrictEqual(false);
+      expect(controller.state.usePhishDetect).toStrictEqual(false);
+      expect(controller.state.useAddressBarEnsResolution).toStrictEqual(false);
+      expect(controller.state.openSeaEnabled).toStrictEqual(false);
+      expect(controller.state.useNftDetection).toStrictEqual(false);
+    });
+  });
+
+  describe('useRequestQueue', () => {
+    it('defaults useRequestQueue to true', () => {
+      const { controller } = setupController({});
+      expect(controller.state.useRequestQueue).toStrictEqual(true);
+    });
+
+    it('setUseRequestQueue to false', () => {
+      const { controller } = setupController({});
+      controller.setUseRequestQueue(false);
+      expect(controller.state.useRequestQueue).toStrictEqual(false);
+    });
+  });
+
+  describe('addSnapAccountEnabled', () => {
+    it('defaults addSnapAccountEnabled to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.addSnapAccountEnabled).toStrictEqual(false);
+    });
+
+    it('setAddSnapAccountEnabled to true', () => {
+      const { controller } = setupController({});
+      controller.setAddSnapAccountEnabled(true);
+      expect(controller.state.addSnapAccountEnabled).toStrictEqual(true);
+    });
+  });
+
+  describe('watchEthereumAccountEnabled', () => {
+    it('defaults watchEthereumAccountEnabled to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.watchEthereumAccountEnabled).toStrictEqual(false);
+    });
+
+    it('setWatchEthereumAccountEnabled to true', () => {
+      const { controller } = setupController({});
+      controller.setWatchEthereumAccountEnabled(true);
+      expect(controller.state.watchEthereumAccountEnabled).toStrictEqual(true);
+    });
+  });
+
+  describe('bitcoinTestnetSupportEnabled', () => {
+    it('defaults bitcoinTestnetSupportEnabled to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(
+        false,
+      );
+    });
+
+    it('setBitcoinTestnetSupportEnabled to true', () => {
+      const { controller } = setupController({});
+      controller.setBitcoinTestnetSupportEnabled(true);
+      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(true);
+    });
+  });
+
+  describe('knownMethodData', () => {
+    it('defaults knownMethodData', () => {
+      const { controller } = setupController({});
+      expect(controller.state.knownMethodData).toStrictEqual({});
+    });
+
+    it('addKnownMethodData', () => {
+      const { controller } = setupController({});
+      controller.addKnownMethodData('0x60806040', 'testMethodName');
+      expect(controller.state.knownMethodData).toStrictEqual({
+        '0x60806040': 'testMethodName',
+      });
+    });
+  });
+
+  describe('featureFlags', () => {
+    it('defaults featureFlags', () => {
+      const { controller } = setupController({});
+      expect(controller.state.featureFlags).toStrictEqual({});
+    });
+
+    it('setFeatureFlags', () => {
+      const { controller } = setupController({});
+      controller.setFeatureFlag('showConfirmationAdvancedDetails', true);
       expect(
-        preferencesController.store.getState().bitcoinSupportEnabled,
-      ).toStrictEqual(false);
+        controller.state.featureFlags.showConfirmationAdvancedDetails,
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('preferences', () => {
+    it('defaults preferences', () => {
+      const { controller } = setupController({});
+      expect(controller.state.preferences).toStrictEqual({
+        autoLockTimeLimit: undefined,
+        showExtensionInFullSizeView: false,
+        showFiatInTestnets: false,
+        showTestNetworks: false,
+        smartTransactionsOptInStatus: null,
+        useNativeCurrencyAsPrimaryCurrency: true,
+        hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        redesignedTransactionsEnabled: true,
+        shouldShowAggregatedBalancePopover: true,
+        featureNotificationsEnabled: false,
+        isRedesignedConfirmationsDeveloperEnabled: false,
+        showConfirmationAdvancedDetails: false,
+        showMultiRpcModal: false,
+        showNativeTokenAsMainBalance: false,
+        tokenSortConfig: {
+          key: 'tokenFiatAmount',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+      });
+    });
+
+    it('setPreference', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showConfirmationAdvancedDetails', true);
+      expect(controller.getPreferences()).toStrictEqual({
+        autoLockTimeLimit: undefined,
+        showExtensionInFullSizeView: false,
+        showFiatInTestnets: false,
+        showTestNetworks: false,
+        smartTransactionsOptInStatus: null,
+        useNativeCurrencyAsPrimaryCurrency: true,
+        hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        redesignedTransactionsEnabled: true,
+        shouldShowAggregatedBalancePopover: true,
+        featureNotificationsEnabled: false,
+        isRedesignedConfirmationsDeveloperEnabled: false,
+        showConfirmationAdvancedDetails: true,
+        showMultiRpcModal: false,
+        showNativeTokenAsMainBalance: false,
+        tokenSortConfig: {
+          key: 'tokenFiatAmount',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+      });
+    });
+  });
+
+  describe('ipfsGateway', () => {
+    it('defaults ipfsGate to dweb.link', () => {
+      const { controller } = setupController({});
+      expect(controller.state.ipfsGateway).toStrictEqual('dweb.link');
+    });
+
+    it('setIpfsGateway to test.link', () => {
+      const { controller } = setupController({});
+      controller.setIpfsGateway('test.link');
+      expect(controller.getIpfsGateway()).toStrictEqual('test.link');
+    });
+  });
+
+  describe('isIpfsGatewayEnabled', () => {
+    it('defaults isIpfsGatewayEnabled to true', () => {
+      const { controller } = setupController({});
+      expect(controller.state.isIpfsGatewayEnabled).toStrictEqual(true);
+    });
+
+    it('set isIpfsGatewayEnabled to false', () => {
+      const { controller } = setupController({});
+      controller.setIsIpfsGatewayEnabled(false);
+      expect(controller.state.isIpfsGatewayEnabled).toStrictEqual(false);
+    });
+  });
+
+  describe('useAddressBarEnsResolution', () => {
+    it('defaults useAddressBarEnsResolution to true', () => {
+      const { controller } = setupController({});
+      expect(controller.state.useAddressBarEnsResolution).toStrictEqual(true);
+    });
+
+    it('set useAddressBarEnsResolution to false', () => {
+      const { controller } = setupController({});
+      controller.setUseAddressBarEnsResolution(false);
+      expect(controller.state.useAddressBarEnsResolution).toStrictEqual(false);
+    });
+  });
+
+  describe('dismissSeedBackUpReminder', () => {
+    it('defaults dismissSeedBackUpReminder to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.dismissSeedBackUpReminder).toStrictEqual(false);
+    });
+
+    it('set dismissSeedBackUpReminder to true', () => {
+      const { controller } = setupController({});
+      controller.setDismissSeedBackUpReminder(true);
+      expect(controller.state.dismissSeedBackUpReminder).toStrictEqual(true);
+    });
+  });
+
+  describe('snapsAddSnapAccountModalDismissed', () => {
+    it('defaults snapsAddSnapAccountModalDismissed to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
+        false,
+      );
+    });
+
+    it('set snapsAddSnapAccountModalDismissed to true', () => {
+      const { controller } = setupController({});
+      controller.setSnapsAddSnapAccountModalDismissed(true);
+      expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
+        true,
+      );
     });
   });
 });
