@@ -9,6 +9,7 @@ import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
+  Text,
 } from '../../component-library';
 import {
   BackgroundColor,
@@ -125,6 +126,5 @@ NftItem.propTypes = {
   /**
    * Whether the src url resolve to ipfs
    */
-  isIpfsURL: PropTypes.bool,
   badgeWrapperClassname: PropTypes.string,
 };
