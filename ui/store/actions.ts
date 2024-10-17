@@ -105,7 +105,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getSmartTransactionsOptInStatus } from '../../shared/modules/selectors';
+import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import {
   fetchLocale,
@@ -3092,13 +3092,12 @@ export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }
 
-export function setSmartTransactionsOptInStatus(
+export function setSmartTransactionsPreferenceEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
-    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(
-      getState(),
-    );
+    const smartTransactionsOptInStatus =
+      getSmartTransactionsOptInStatusInternal(getState());
     trackMetaMetricsEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
