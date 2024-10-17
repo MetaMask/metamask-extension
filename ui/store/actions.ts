@@ -1715,7 +1715,8 @@ export function setSelectedAccount(
     const state = getState();
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
-    const activeTabOrigin = state.activeTab.origin;
+    const activeTabOrigin = (state.metamask.appActiveTab || state.activeTab)
+      .origin;
     const internalAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(state);

@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
+import classnames from 'classnames';
 import { I18nContext } from '../../../../../contexts/i18n';
 import Box from '../../../../../components/ui/box';
 import { Text } from '../../../../../components/component-library';
@@ -17,6 +18,8 @@ import {
   FontWeight,
 } from '../../../../../helpers/constants/design-system';
 import SignatureRequestData from '../signature-request-data';
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../../shared/constants/app';
 
 export default function SignatureRequestMessage({
   data,
@@ -28,6 +31,7 @@ export default function SignatureRequestMessage({
 }) {
   const t = useContext(I18nContext);
   const [messageIsScrolled, setMessageIsScrolled] = useState(false);
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const setMessageIsScrolledAtBottom = () => {
     if (!messageRootRef || messageIsScrolled) {
       return;
@@ -47,7 +51,9 @@ export default function SignatureRequestMessage({
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       onScroll={debounce(setMessageIsScrolledAtBottom, 25)}
-      className="signature-request-message"
+      className={classnames('signature-request-message', {
+        'signature-request-message--high': isSidePanel,
+      })}
     >
       {messageIsScrollable ? (
         <Box

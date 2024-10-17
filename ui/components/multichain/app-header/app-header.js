@@ -21,13 +21,19 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { getUnapprovedTransactions } from '../../../selectors';
+import {
+  getUnapprovedConfirmations,
+  getUnapprovedTransactions,
+} from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import { getMultichainNetwork } from '../../../selectors/multichain';
@@ -39,6 +45,7 @@ import { AppHeaderLockedContent } from './app-header-locked-content';
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const menuRef = useRef(null);
+  const pendingConfirmations = useSelector(getUnapprovedConfirmations);
   const isUnlocked = useSelector(getIsUnlocked);
 
   const multichainNetwork = useSelector(getMultichainNetwork);
@@ -46,6 +53,7 @@ export const AppHeader = ({ location }) => {
 
   const dispatch = useDispatch();
 
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   // Disable the network and account pickers if the user is in
@@ -117,6 +125,8 @@ export const AppHeader = ({ location }) => {
     gap: 2,
   };
 
+  const hideAppHeader = isSidePanel && pendingConfirmations.length > 0;
+
   return (
     <>
       {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
@@ -136,6 +146,7 @@ export const AppHeader = ({ location }) => {
               },
             )}
             {...(isUnlocked ? unlockedStyling : lockStyling)}
+            display={hideAppHeader ? Display.None : Display.Flex}
           >
             {isUnlocked ? (
               <AppHeaderUnlockedContent

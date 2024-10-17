@@ -10,6 +10,7 @@ import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
@@ -32,6 +33,8 @@ const getEnvironmentTypeMemo = memoize((url) => {
     return ENVIRONMENT_TYPE_FULLSCREEN;
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;
+  } else if (parsedUrl.pathname === '/sidepanel.html') {
+    return ENVIRONMENT_TYPE_SIDEPANEL;
   }
   return ENVIRONMENT_TYPE_BACKGROUND;
 });
