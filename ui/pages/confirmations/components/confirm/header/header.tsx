@@ -22,6 +22,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { Confirmation } from '../../../types/confirm';
+import { DAppInitiatedHeader } from './dapp-initiated-header';
 import HeaderInfo from './header-info';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
@@ -39,6 +40,7 @@ const Header = () => {
     if (isWalletInitiated) {
       return <WalletInitiatedHeader />;
     }
+    return <DAppInitiatedHeader />;
   }
 
   return (
