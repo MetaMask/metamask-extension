@@ -7,6 +7,9 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 class TestDapp {
   private driver: Driver;
 
+  private readonly confirmDepositButton =
+    '[data-testid="confirm-footer-button"]';
+
   private readonly confirmDialogButton = '[data-testid="confirm-btn"]';
 
   private readonly confirmDialogScrollButton =
@@ -24,6 +27,13 @@ class TestDapp {
 
   private readonly connectedAccount = '#accounts';
 
+  private readonly depositPiggyBankContractButton = '#depositButton';
+
+  private readonly editConnectButton = {
+    text: 'Edit',
+    tag: 'button',
+  };
+
   private readonly erc1155RevokeSetApprovalForAllButton =
     '#revokeERC1155Button';
 
@@ -33,6 +43,16 @@ class TestDapp {
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
 
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
+
+  private readonly localhostCheckbox = {
+    tag: 'p',
+    text: 'Localhost 8545',
+  };
+
+  private readonly localhostNetworkMessage = {
+    css: '#chainId',
+    text: '0x539',
+  };
 
   private readonly mmlogo = '#mm-logo';
 
@@ -96,6 +116,16 @@ class TestDapp {
 
   private readonly signTypedDataVerifyResult = '#signTypedDataVerifyResult';
 
+  private readonly transactionRequestMessage = {
+    css: 'h2',
+    text: 'Transaction request',
+  };
+
+  private readonly updateNetworkButton = {
+    text: 'Update',
+    tag: 'button',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -113,27 +143,24 @@ class TestDapp {
   /**
    * Go to the currently open test dapp or open a new test dapp page.
    *
-   * @param options - The options for opening the test dapp page.
-   * @param options.contractAddress - The contract address to open the dapp with. Defaults to null.
-   * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
-   * @returns A promise that resolves when the new page is opened.
+   * @param contractAddress - The contract address to open the dapp with. Defaults to null.
+   * @param url - The URL of the dapp. Defaults to DAPP_URL.
+   * @returns A promise that resolves when the page is opened and loaded.
    */
-  async openTestDappPage({
-    contractAddress = null,
-    url = DAPP_URL,
-  }: {
-    contractAddress?: string | null;
-    url?: string;
-  } = {}): Promise<void> {
+  async openTestDappPage(
+    contractAddress: string | null = null,
+    url: string = DAPP_URL,
+  ): Promise<void> {
     const handle = await this.driver.windowHandles.switchToWindowIfKnown(
       WINDOW_TITLES.TestDApp,
     );
     if (!handle) {
       const dappUrl = contractAddress
-      ? `${url}/?contract=${contractAddress}`
-      : url;
+        ? `${url}/?contract=${contractAddress}`
+        : url;
       await this.driver.openNewPage(dappUrl);
     }
+    await this.check_pageIsLoaded();
   }
 
   async clickERC721SetApprovalForAllButton() {
@@ -162,12 +189,35 @@ class TestDapp {
     await this.driver.clickElement(this.connectAccountButton);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.connectMetaMaskMessage);
-    await this.driver.clickElementAndWaitForWindowToClose(this.confirmDialogButton);
+
+    // TODO:Extra steps needed to preserve the current network.
+    // Following steps can be removed once the issue is fixed (#27891)
+    const editNetworkButton = await this.driver.findClickableElements(
+      this.editConnectButton,
+    );
+    await editNetworkButton[1].click();
+    await this.driver.clickElement(this.localhostCheckbox);
+    await this.driver.clickElement(this.updateNetworkButton);
+
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmDialogButton,
+    );
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.waitForSelector({
       css: this.connectedAccount,
       text: publicAddress.toLowerCase(),
     });
+    await this.driver.waitForSelector(this.localhostNetworkMessage);
+  }
+
+  async createDepositTransaction() {
+    console.log('Create a deposit transaction on test dapp page');
+    await this.driver.clickElement(this.depositPiggyBankContractButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.transactionRequestMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmDepositButton,
+    );
   }
 
   /**

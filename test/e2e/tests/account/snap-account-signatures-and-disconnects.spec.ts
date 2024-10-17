@@ -24,7 +24,7 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
             restrictReturnedAccounts: false,
           })
           .build(),
-          title: this.test?.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -52,24 +52,14 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
         // Open the Test Dapp and signTypedDataV3
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await signTypedDataV3WithSnapAccount(
-          driver,
-          newPublicKey,
-          false,
-          true,
-        );
+        await signTypedDataV3WithSnapAccount(driver, newPublicKey, false, true);
 
         // disconnect from Test Dapp and reconnect to Test Dapp
         await testDapp.disconnectAccount(newPublicKey);
         await testDapp.connectAccount(newPublicKey);
 
         // SignTypedDataV4 with Test Dapp
-        await signTypedDataV4WithSnapAccount(
-          driver,
-          newPublicKey,
-          false,
-          true,
-        );
+        await signTypedDataV4WithSnapAccount(driver, newPublicKey, false, true);
       },
     );
   });

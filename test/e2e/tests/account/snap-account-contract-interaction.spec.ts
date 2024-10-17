@@ -1,21 +1,24 @@
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
-import { Driver } from '../webdriver/driver';
-import { TestDapp } from '../page-objects/test-dapp';
-import { TransactionConfirmation } from '../page-objects/transaction-confirmation';
-import { ActivityList } from '../page-objects/activity-list';
-import { AccountMenu } from '../page-objects/account-menu';
-import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import { SMART_CONTRACTS } from '../seeder/smart-contracts';
-import { importKeyAndSwitch } from './common';
-import { withFixtures, WINDOW_TITLES, multipleGanacheOptionsForType2Transactions } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
-import GanacheContractAddressRegistry from '../seeder/ganache-contract-address-registry';
+import { Suite } from 'mocha';
+import { Driver } from '../../webdriver/driver';
+import FixtureBuilder from '../../fixture-builder';
+import { Ganache } from '../../seeder/ganache';
+import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
+import {
+  multipleGanacheOptionsForType2Transactions,
+  PRIVATE_KEY_TWO,
+  withFixtures,
+  WINDOW_TITLES,
+} from '../../helpers';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/homepage';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Snap Account Contract interaction', function () {
+describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
-
   it('deposits to piggybank contract', async function () {
     await withFixtures(
       {
@@ -33,36 +36,46 @@ describe('Snap Account Contract interaction', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry, ganacheServer }: { driver: Driver; contractRegistry: GanacheContractAddressRegistry; ganacheServer: any }) => {
-        const testDapp = new TestDapp(driver);
-        const transactionConfirmation = new TransactionConfirmation(driver);
-        const activityList = new ActivityList(driver);
-        const accountMenu = new AccountMenu(driver);
-
-        // Install Snap Simple Keyring and import key
+      async ({
+        driver,
+        contractRegistry,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        contractRegistry: GanacheContractAddressRegistry;
+        ganacheServer?: Ganache;
+      }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
         await installSnapSimpleKeyring(driver);
-        await importKeyAndSwitch(driver);
+        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
+
+        // Import snap account with private key on snap simple keyring page.
+        await snapSimpleKeyringPage.importAccountWithPrivateKey(
+          PRIVATE_KEY_TWO,
+        );
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_accountLabel('SSK Account');
 
         // Open DApp with contract
-        const contractAddress = await contractRegistry.getContractAddress(smartContract);
-        await testDapp.open(contractAddress);
-
-        // Create and confirm deposit transaction
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+        const testDapp = new TestDapp(driver);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
+        await testDapp.openTestDappPage(contractAddress);
         await testDapp.createDepositTransaction();
 
-        await transactionConfirmation.confirmTransaction();
-        await transactionConfirmation.waitForTransactionResult();
-
-        // Confirm the transaction activity
-        await activityList.waitForActivityEntry('Contract Interaction');
-        await activityList.openActivityDetails('Contract Interaction');
-        await activityList.verifyTransactionDetails({ 'Amount': '-4 ETH' });
-
-        // Check account balance
-        const balance = await accountMenu.getAccountBalance();
-        expect(parseFloat(balance)).to.be.lessThan(96); // Assuming initial balance was 100 ETH
+        // Confirm the transaction in activity list on MetaMask
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity('-4 ETH');
       },
     );
   });
