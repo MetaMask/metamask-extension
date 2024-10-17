@@ -1552,11 +1552,16 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/multichain>jsonschema": true,
+        "@metamask/message-manager>jsonschema": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "uuid": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/message-manager>jsonschema": {
+      "packages": {
+        "browserify>url": true
       }
     },
     "@metamask/message-signing-snap>@noble/ciphers": {
@@ -1576,61 +1581,16 @@
     },
     "@metamask/multichain": {
       "globals": {
-        "console.error": true,
         "console.log": true
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/eth-json-rpc-filters": true,
         "@metamask/multichain>@metamask/api-specs": true,
-        "@metamask/multichain>@metamask/rpc-errors": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js": true,
-        "@metamask/multichain>jsonschema": true,
         "@metamask/permission-controller": true,
-        "@metamask/safe-event-emitter": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "browserify>assert": true,
         "lodash": true
-      }
-    },
-    "@metamask/multichain>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/multichain>@open-rpc/schema-utils-js": {
-      "packages": {
-        "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js>ajv": true,
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@open-rpc/meta-schema": true,
-        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
-        "@open-rpc/schema-utils-js>is-url": true
-      }
-    },
-    "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
-      "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
-        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true
-      }
-    },
-    "@metamask/multichain>@open-rpc/schema-utils-js>ajv": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "@metamask/multichain>@open-rpc/schema-utils-js>ajv>json-schema-traverse": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "eslint>fast-deep-equal": true,
-        "uri-js": true
-      }
-    },
-    "@metamask/multichain>jsonschema": {
-      "packages": {
-        "browserify>url": true
       }
     },
     "@metamask/name-controller": {
@@ -3105,33 +3065,6 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
-      }
-    },
-    "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": {
-      "packages": {
-        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver>@json-schema-spec/json-pointer": true,
-        "@open-rpc/test-coverage>isomorphic-fetch": true
-      }
-    },
-    "@open-rpc/test-coverage>isomorphic-fetch": {
-      "globals": {
-        "fetch.bind": true
-      },
-      "packages": {
-        "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
-      }
-    },
-    "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": {
-      "globals": {
-        "AbortController": true,
-        "Blob": true,
-        "FileReader": true,
-        "FormData": true,
-        "URLSearchParams.prototype.isPrototypeOf": true,
-        "XMLHttpRequest": true,
-        "console.warn": true,
-        "define": true,
-        "setTimeout": true
       }
     },
     "@popperjs/core": {
@@ -4676,6 +4609,9 @@
       }
     },
     "extension-port-stream": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "browserify>buffer": true,
         "extension-port-stream>readable-stream": true
