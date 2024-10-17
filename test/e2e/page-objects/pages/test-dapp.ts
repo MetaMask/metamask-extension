@@ -1,5 +1,5 @@
-import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../helpers';
+import { Driver } from '../../webdriver/driver';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
@@ -21,8 +21,8 @@ class TestDapp {
   private readonly connectAccountButton = '#connectButton';
 
   private readonly connectMetaMaskMessage = {
-    text: 'Connect with MetaMask',
     tag: 'h2',
+    text: 'Connect with MetaMask',
   };
 
   private readonly connectedAccount = '#accounts';
@@ -30,8 +30,8 @@ class TestDapp {
   private readonly depositPiggyBankContractButton = '#depositButton';
 
   private readonly editConnectButton = {
-    text: 'Edit',
     tag: 'button',
+    text: 'Edit',
   };
 
   private readonly erc1155RevokeSetApprovalForAllButton =
@@ -39,6 +39,8 @@ class TestDapp {
 
   private readonly erc1155SetApprovalForAllButton =
     '#setApprovalForAllERC1155Button';
+
+  private readonly erc20WatchAssetButton = '#watchAssets';
 
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
 
@@ -61,8 +63,8 @@ class TestDapp {
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
 
   private readonly personalSignSignatureRequestMessage = {
-    text: 'personal_sign',
     tag: 'div',
+    text: 'personal_sign',
   };
 
   private readonly personalSignVerifyButton = '#personalSignVerify';
@@ -74,8 +76,8 @@ class TestDapp {
   private readonly signPermitResult = '#signPermitResult';
 
   private readonly signPermitSignatureRequestMessage = {
-    text: 'Permit',
     tag: 'p',
+    text: 'Permit',
   };
 
   private readonly signPermitVerifyButton = '#signPermitVerify';
@@ -87,8 +89,8 @@ class TestDapp {
   private readonly signTypedDataResult = '#signTypedDataResult';
 
   private readonly signTypedDataSignatureRequestMessage = {
-    text: 'Hi, Alice!',
     tag: 'div',
+    text: 'Hi, Alice!',
   };
 
   private readonly signTypedDataV3Button = '#signTypedDataV3';
@@ -96,8 +98,8 @@ class TestDapp {
   private readonly signTypedDataV3Result = '#signTypedDataV3Result';
 
   private readonly signTypedDataV3V4SignatureRequestMessage = {
-    text: 'Hello, Bob!',
     tag: 'div',
+    text: 'Hello, Bob!',
   };
 
   private readonly signTypedDataV3VerifyButton = '#signTypedDataV3Verify';
@@ -122,8 +124,8 @@ class TestDapp {
   };
 
   private readonly updateNetworkButton = {
-    text: 'Update',
     tag: 'button',
+    text: 'Update',
   };
 
   constructor(driver: Driver) {
@@ -185,6 +187,10 @@ class TestDapp {
 
   async clickERC1155RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc1155RevokeSetApprovalForAllButton);
+  }
+
+  public async clickERC20WatchAssetButton() {
+    await this.driver.clickElement(this.erc20WatchAssetButton);
   }
 
   /**
