@@ -11,6 +11,7 @@ import PreinstalledExampleSnap from '@metamask/preinstalled-example-snap/dist/pr
 const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
   MessageSigningSnap as PreinstalledSnap,
   EnsResolverSnap as PreinstalledSnap,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   AccountWatcherSnap as PreinstalledSnap,
   BitcoinWalletSnap as unknown as PreinstalledSnap,
   PreinstalledExampleSnap as unknown as PreinstalledSnap,
