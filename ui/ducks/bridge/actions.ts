@@ -316,6 +316,13 @@ export const submitBridgeTransaction = (
       maxFeePerGas: string | undefined;
       maxPriorityFeePerGas: string | undefined;
     }) => {
+      const sentAmount = new BigNumber(quoteResponse.quote.srcTokenAmount).plus(
+        quoteResponse.quote.feeData[FeeType.METABRIDGE].amount,
+      );
+      const sentAmountDec = new Numeric(sentAmount, 10)
+        .shiftedBy(quoteResponse.quote.srcAsset.decimals)
+        .toString();
+
       const txMeta = await handleTx({
         txType: 'bridge',
         txParams: quoteResponse.trade,
@@ -332,9 +339,7 @@ export const submitBridgeTransaction = (
           destinationTokenAddress: quoteResponse.quote.destAsset.address,
           approvalTxId,
           // this is the decimal (non atomic) amount (not USD value) of source token to swap
-          swapTokenValue: new Numeric(quoteResponse.quote.srcTokenAmount, 10)
-            .shiftedBy(quoteResponse.quote.srcAsset.decimals)
-            .toString(),
+          swapTokenValue: sentAmountDec,
         },
       });
 
