@@ -1,18 +1,23 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Button } from '../../../components/component-library';
 import {
   getBridgeQuotes,
   getFromAmount,
   getFromChain,
   getFromToken,
+  getRecommendedQuote,
   getToAmount,
   getToChain,
   getToToken,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { submitBridgeTransaction } from '../../../ducks/bridge/actions';
 
 export const BridgeCTAButton = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const t = useI18nContext();
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
@@ -24,6 +29,7 @@ export const BridgeCTAButton = () => {
   const toAmount = useSelector(getToAmount);
 
   const { isLoading } = useSelector(getBridgeQuotes);
+  const quoteResponse = useSelector(getRecommendedQuote);
 
   const isTxSubmittable =
     fromToken && toToken && fromChain && toChain && fromAmount && toAmount;
@@ -52,7 +58,7 @@ export const BridgeCTAButton = () => {
       data-testid="bridge-cta-button"
       onClick={() => {
         if (isTxSubmittable) {
-          // dispatch tx submission
+          dispatch(submitBridgeTransaction(quoteResponse, history));
         }
       }}
       disabled={!isTxSubmittable || isLoading}
