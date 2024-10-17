@@ -4981,10 +4981,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:0.7.0"
-  checksum: 10/be4eceef1715c5e6d33d095d5b4aaa974656d945ff0ed0304fdc1244eb8940eb8978f304378367642aa8fd60d6b375eecc2a4653c38ba62ec306c03955c96682
+"@metamask/bitcoin-wallet-snap@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:0.8.0"
+  checksum: 10/3fec77f3dc138a7bf06ab6c8b17fcf704cb0e31c23a098baec17bc7b778c5eb77e3577414f7b5854f9e56db8bf76fee9d5686066a6632a17eff03be246c11fb5
   languageName: node
   linkType: hard
 
@@ -26115,7 +26115,7 @@ __metadata:
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^7.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^0.7.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^0.8.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
