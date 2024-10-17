@@ -1,4 +1,10 @@
-import React, { useContext, useState, useMemo, useCallback } from 'react';
+import React, {
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -99,6 +105,7 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -198,6 +205,9 @@ export const AccountListMenu = ({
 }: AccountListMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountList });
+  }, []);
   const accounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );
