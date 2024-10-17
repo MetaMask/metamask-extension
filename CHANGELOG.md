@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.5.0]
 
+## [12.4.2]
+### Fixed
+- Fix a problem where certain name lookup Snaps would not be triggered ([#27880](https://github.com/MetaMask/metamask-extension/pull/27880))
+
 ## [12.4.1]
 ### Fixed
 - Fix crash on swaps review page ([#27708](https://github.com/MetaMask/metamask-extension/pull/27708))
@@ -5147,7 +5151,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...HEAD
-[12.5.0]: https://github.com/MetaMask/metamask-extension/compare/v12.4.1...v12.5.0
+[12.5.0]: https://github.com/MetaMask/metamask-extension/compare/v12.4.2...v12.5.0
+[12.4.2]: https://github.com/MetaMask/metamask-extension/compare/v12.4.1...v12.4.2
 [12.4.1]: https://github.com/MetaMask/metamask-extension/compare/v12.4.0...v12.4.1
 [12.4.0]: https://github.com/MetaMask/metamask-extension/compare/v12.3.1...v12.4.0
 [12.3.1]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...v12.3.1
