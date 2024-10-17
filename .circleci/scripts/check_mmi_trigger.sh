@@ -1,30 +1,37 @@
-#!/bin/bash
-set -euo pipefail
+#!/bin/bash -eo pipefail
 
-GH_LABEL="${1:-team-mmi}"
-MMI_TEAM_SLUG="${2:-mmi}"
+# Arguments: label_name reviewer_team
+LABEL_NAME="$1"
+REVIEWER_TEAM="$2"
 
-# Check if this is a PR
-if [ -z "${CIRCLE_PULL_REQUEST}" ]; then
-  echo "Not a pull request. Skipping MMI trigger."
-  echo "run_mmi_tests=false" > mmi_trigger.env
-  exit 0
+# Ensure required environment variables are set
+if [ -z "$CIRCLE_PULL_REQUEST" ] || [ -z "$GITHUB_TOKEN" ]; then
+  echo "CIRCLE_PULL_REQUEST and GITHUB_TOKEN must be set."
+  exit 1
 fi
 
-PR_NUMBER=$(echo "${CIRCLE_PULL_REQUEST}" | awk -F'/' '{print $NF}')
-REPO="${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+# Extract PR number from the pull request URL
+PR_NUMBER=$(echo "$CIRCLE_PULL_REQUEST" | awk -F'/' '{print $NF}')
+
+# Define repository details
+REPO_OWNER=$(echo "$CIRCLE_PROJECT_USERNAME")
+REPO_NAME=$(basename "$CIRCLE_REPOSITORY_URL" .git)
 
 # Fetch PR details using GitHub API
-PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPO}/pulls/${PR_NUMBER}")
+PR_DETAILS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+  "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER")
 
-# Check for specific label
-HAS_MMI_LABEL=$(echo "${PR_RESPONSE}" | jq -r --arg label "${GH_LABEL}" '.labels[] | select(.name == $label) | .name' || true)
+# Check for label
+LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "$LABEL_NAME" '[.labels[].name] | index($label)')
 
-# Check if specific team is requested as reviewer
-MMI_TEAM_REQUESTED=$(echo "${PR_RESPONSE}" | jq -r --arg team "${MMI_TEAM_SLUG}" '.requested_teams[]?.slug | select(. == $team)' || true)
+# Check for reviewer team
+REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" '[.requested_reviewers[].login] | index($team)')
 
-if [[ -n "${HAS_MMI_LABEL}" || -n "${MMI_TEAM_REQUESTED}" ]]; then
+# Determine if tests should run
+if [[ "$LABEL_EXISTS" != "null" ]] || [[ "$REVIEWER_EXISTS" != "null" ]]; then
   echo "run_mmi_tests=true" > mmi_trigger.env
+  echo "Conditions met: Label '$LABEL_NAME' found or Reviewer '$REVIEWER_TEAM' assigned."
 else
   echo "run_mmi_tests=false" > mmi_trigger.env
+  echo "Conditions not met: Label '$LABEL_NAME' not found and Reviewer '$REVIEWER_TEAM' not assigned."
 fi
