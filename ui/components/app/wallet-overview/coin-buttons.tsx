@@ -245,8 +245,12 @@ const CoinButtons = ({
 
   useEffect(() => {
     const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
-      (approval) =>
-        approval.type === 'snap_dialog' && approval.origin === 'metamask',
+      (approval) => {
+        return (
+          approval.type === 'snap_dialog' &&
+          approval.origin === 'npm:@metamask/bitcoin-wallet-snap'
+        );
+      },
     );
 
     if (templatedSnapApproval) {
