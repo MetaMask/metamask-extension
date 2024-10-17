@@ -347,7 +347,7 @@
     "@metamask/permission-log-controller": "^2.0.1",
     "@metamask/phishing-controller": "^12.0.1",
     "@metamask/post-message-stream": "^8.0.0",
-    "@metamask/ppom-validator": "0.34.0",
+    "@metamask/ppom-validator": "0.35.1",
     "@metamask/preinstalled-example-snap": "^0.2.0",
     "@metamask/profile-sync-controller": "^0.9.7",
     "@metamask/providers": "^14.0.2",
