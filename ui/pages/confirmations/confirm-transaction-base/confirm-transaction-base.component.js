@@ -178,7 +178,7 @@ export default class ConfirmTransactionBase extends Component {
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
-    smartTransactionsOptInStatus: PropTypes.bool,
+    smartTransactionsPreferenceEnabled: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
     selectedNetworkClientId: PropTypes.string,
     isSmartTransactionsEnabled: PropTypes.bool,
@@ -215,6 +215,8 @@ export default class ConfirmTransactionBase extends Component {
       useMaxValue,
       hasPriorityApprovalRequest,
       mostRecentOverviewPage,
+      txData,
+      getNextNonce,
     } = this.props;
 
     const {
@@ -225,12 +227,17 @@ export default class ConfirmTransactionBase extends Component {
       isEthGasPriceFetched: prevIsEthGasPriceFetched,
       hexMaximumTransactionFee: prevHexMaximumTransactionFee,
       hasPriorityApprovalRequest: prevHasPriorityApprovalRequest,
+      txData: prevTxData,
     } = prevProps;
 
     const statusUpdated = transactionStatus !== prevTxStatus;
     const txDroppedOrConfirmed =
       transactionStatus === TransactionStatus.dropped ||
       transactionStatus === TransactionStatus.confirmed;
+
+    if (txData.id !== prevTxData.id) {
+      getNextNonce();
+    }
 
     if (
       nextNonce !== prevNextNonce ||
@@ -1012,7 +1019,7 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin, chainId: txChainId } = {},
       getNextNonce,
       tryReverseResolveAddress,
-      smartTransactionsOptInStatus,
+      smartTransactionsPreferenceEnabled,
       currentChainSupportsSmartTransactions,
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
@@ -1064,7 +1071,10 @@ export default class ConfirmTransactionBase extends Component {
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
 
-    if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
+    if (
+      smartTransactionsPreferenceEnabled &&
+      currentChainSupportsSmartTransactions
+    ) {
       // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
       // Long-term, we want to have a new proxy service specifically for feature flags.
       Promise.all([

@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TokenDetailsSection renders correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__transaction-flow"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <div
+              class="mm-avatar-account__jazzicon"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 119);"
+              >
+                <svg
+                  height="16"
+                  width="16"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#FB188D"
+                    height="16"
+                    transform="translate(-0.03888059901998558 -0.3611719722869608) rotate(292.9 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F90E01"
+                    height="16"
+                    transform="translate(6.546320180202683 5.992209110554258) rotate(106.5 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26E02"
+                    height="16"
+                    transform="translate(8.96370841230271 -9.40372192765907) rotate(416.7 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+            data-testid="confirm-info-row-display-name"
+          >
+            0x07614...3ad68
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
