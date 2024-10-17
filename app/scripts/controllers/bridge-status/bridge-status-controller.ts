@@ -1,4 +1,3 @@
-import { Provider } from '@metamask/network-controller';
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
@@ -51,6 +50,7 @@ export default class BridgeStatusController extends BaseController<
   getBridgeTxStatus = async (statusRequest: StatusRequest) => {
     // Need to subscribe since if we try to fetch status too fast, API will fail with 500 error
     // So fetch on tx confirmed
+
     this.messagingSystem.subscribe(
       'TransactionController:transactionConfirmed',
       async (txMeta) => {
