@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -140,8 +140,7 @@ export default function NftsItems({
           }
         }
       }
-      const settled = await Promise.all(promisesArr);
-      setUpdatedNfts(settled);
+      await Promise.all(promisesArr);
     };
 
     modifyItems();
@@ -257,7 +256,11 @@ export default function NftsItems({
                   key={`nft-${i}`}
                   className="nfts-items__item-wrapper"
                 >
-                  <NftItem nft={{...nft, chainId}} onClick={handleImageClick} clickable />
+                  <NftItem
+                    nft={{ ...nft, chainId }}
+                    onClick={handleImageClick}
+                    clickable
+                  />
                   {showTokenId ? <Text>{`${t('id')}: ${tokenId}`}</Text> : null}
                 </Box>
               );

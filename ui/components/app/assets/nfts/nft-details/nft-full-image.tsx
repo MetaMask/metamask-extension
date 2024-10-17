@@ -69,7 +69,10 @@ export default function NftFullImage() {
             paddingTop={4}
           >
             <Box>
-              <NftItem nft={{...nft, chainId}} badgeWrapperClassname="badge-wrapper" />
+              <NftItem
+                nft={{ ...nft, chainId }}
+                badgeWrapperClassname="badge-wrapper"
+              />
             </Box>
           </Box>
         </Content>

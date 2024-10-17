@@ -38,6 +38,7 @@ import {
   BadgeWrapperPosition,
   IconName,
 } from '../../../../components/component-library';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -112,15 +113,16 @@ export const components: NotificationComponent<ERC721Notification> = {
       type: 'body_onchain_notification',
       Image: ({ notification }) => {
         const chainId = decimalToHex(notification.chain_id);
-        const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
         return (
           <NotificationDetailNft
-            networkSrc={nativeCurrencyLogo}
-            tokenId={notification.data.nft.token_id}
-            tokenName={notification.data.nft.name}
-            tokenSrc={notification.data.nft.image}
-            networkName={nativeCurrencyName}
+            nft={{
+              address: notification.data.nft?.collection.address || '',
+              chainId,
+              image: notification.data.nft?.image || '',
+              name: notification.data.nft?.name || '',
+              standard: TokenStandard.ERC1155,
+              tokenId: notification.data.nft?.token_id || '',
+            }}
           />
         );
       },

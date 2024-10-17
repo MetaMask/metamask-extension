@@ -6,32 +6,28 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 
 export type NotificationDetailNftProps = {
-  networkName: string;
-  networkSrc: string;
-  tokenName: string;
-  tokenId: string;
-  tokenSrc: string;
+  nft: {
+    address: string;
+    chainId: string;
+    image: string;
+    name: string;
+    standard: TokenStandard;
+    tokenId: string;
+  };
 };
 
 /**
  * A component that renders a notification detail for an NFT.
  *
  * @param props - The component props.
- * @param props.networkSrc - The URL of the badge icon.
- * @param props.tokenId - The ID of the NFT.
- * @param props.tokenName - The name of the NFT.
- * @param props.tokenSrc - The URL of the NFT icon.
- * @param props.networkName - The name of the network.
+ * @param props.nft - NFT properties.
  * @returns The NotificationDetailNft component.
  */
 export const NotificationDetailNft: FC<NotificationDetailNftProps> = ({
-  networkSrc,
-  tokenId,
-  tokenName,
-  tokenSrc,
-  networkName,
+  nft,
 }) => (
   <Box
     paddingTop={1}
@@ -41,14 +37,7 @@ export const NotificationDetailNft: FC<NotificationDetailNftProps> = ({
     justifyContent={JustifyContent.center}
   >
     <Box className="notification-detail-nft__image">
-      <NftItem
-        networkSrc={networkSrc}
-        src={tokenSrc}
-        name={tokenName}
-        alt={tokenName}
-        networkName={networkName}
-        tokenId={tokenId}
-      />
+      <NftItem nft={nft} />
     </Box>
   </Box>
 );

@@ -327,7 +327,11 @@ export default function NftDetails({ nft }: { nft: Nft }) {
           marginTop={1}
         >
           <Box className="nft-details__nft-item">
-            <NftItem nft={nft} onClick={handleImageClick} clickable />
+            <NftItem
+              nft={{ ...nft, chainId }}
+              onClick={handleImageClick}
+              clickable
+            />
           </Box>
         </Box>
         <Box>
