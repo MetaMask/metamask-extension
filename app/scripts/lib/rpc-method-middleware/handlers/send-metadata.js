@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 /**
@@ -50,7 +50,7 @@ function sendMetadataHandler(
       origin,
     });
   } else {
-    return end(ethErrors.rpc.invalidParams({ data: params }));
+    return end(rpcErrors.invalidParams({ data: params }));
   }
 
   res.result = true;
