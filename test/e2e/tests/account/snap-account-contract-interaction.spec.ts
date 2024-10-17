@@ -65,6 +65,7 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
           contractRegistry as GanacheContractAddressRegistry
         ).getContractAddress(smartContract);
         await testDapp.openTestDappPage({ contractAddress });
+        await testDapp.check_pageIsLoaded();
         await testDapp.createDepositTransaction();
 
         // Confirm the transaction in activity list on MetaMask
