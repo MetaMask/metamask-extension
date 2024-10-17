@@ -1,4 +1,4 @@
-import { EthereumRpcError } from 'eth-rpc-errors';
+import { JsonRpcError } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -131,7 +131,7 @@ describe('wallet_createSession', () => {
       },
     });
     expect(end).toHaveBeenCalledWith(
-      new EthereumRpcError(5302, 'Invalid sessionProperties requested'),
+      new JsonRpcError(5302, 'Invalid sessionProperties requested'),
     );
   });
 

@@ -1,4 +1,4 @@
-import { errorCodes, ethErrors } from 'eth-rpc-errors';
+import { errorCodes, rpcErrors, providerErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -17,13 +17,13 @@ import { PermissionNames } from '../../../controllers/permissions';
 export function validateChainId(chainId) {
   const _chainId = typeof chainId === 'string' ? chainId.toLowerCase() : '';
   if (!isPrefixedFormattedHexString(_chainId)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
   }
 
   if (!isSafeChainId(parseInt(_chainId, 16))) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
     });
   }
@@ -33,7 +33,7 @@ export function validateChainId(chainId) {
 
 export function validateSwitchEthereumChainParams(req) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
         req.params,
       )}`,
@@ -42,7 +42,7 @@ export function validateSwitchEthereumChainParams(req) {
   const { chainId, ...otherParams } = req.params[0];
 
   if (Object.keys(otherParams).length > 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
         otherParams,
       )}`,
@@ -54,7 +54,7 @@ export function validateSwitchEthereumChainParams(req) {
 
 export function validateAddEthereumChainParams(params) {
   if (!params || typeof params !== 'object') {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
         params,
       )}`,
@@ -76,14 +76,14 @@ export function validateAddEthereumChainParams(params) {
   );
 
   if (otherKeys.length > 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
     });
   }
 
   const _chainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
@@ -106,13 +106,13 @@ export function validateAddEthereumChainParams(params) {
     : null;
 
   if (!firstValidRPCUrl) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
 
   if (typeof chainName !== 'string' || !chainName) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected non-empty string 'chainName'. Received:\n${chainName}`,
     });
   }
@@ -122,18 +122,18 @@ export function validateAddEthereumChainParams(params) {
 
   if (nativeCurrency !== null) {
     if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
       });
     }
     if (nativeCurrency.decimals !== 18) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${nativeCurrency.decimals}`,
       });
     }
 
     if (!nativeCurrency.symbol || typeof nativeCurrency.symbol !== 'string') {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected a string 'nativeCurrency.symbol'. Received: ${nativeCurrency.symbol}`,
       });
     }
@@ -144,7 +144,7 @@ export function validateAddEthereumChainParams(params) {
     ticker !== UNKNOWN_TICKER_SYMBOL &&
     (typeof ticker !== 'string' || ticker.length < 1 || ticker.length > 6)
   ) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected 1-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
     });
   }
@@ -187,7 +187,7 @@ export async function switchChain(
       if (!ethChainIds.includes(chainId)) {
         if (caip25Caveat.value.isMultichainOrigin) {
           return end(
-            ethErrors.provider.unauthorized(
+            providerErrors.unauthorized(
               `Cannot switch to or add permissions for chainId '${chainId}' because permissions were granted over the Multichain API.`,
             ),
           );

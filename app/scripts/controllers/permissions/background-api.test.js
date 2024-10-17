@@ -60,6 +60,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
+                accounts: [],
               },
               'eip155:10': {
                 methods: [],
@@ -199,6 +200,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
+                accounts: [],
               },
               'eip155:10': {
                 methods: [],
@@ -342,6 +344,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
+                accounts: [],
               },
               'eip155:10': {
                 methods: [],
@@ -386,6 +389,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
+                accounts: [],
               },
               'eip155:10': {
                 methods: [],
@@ -426,6 +430,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
+                accounts: [],
               },
               'eip155:10': {
                 methods: [],
@@ -640,6 +645,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
+                accounts: [],
               },
               'eip155:10': {
                 methods: [],
@@ -764,6 +770,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
+                accounts: [],
               },
               'eip155:10': {
                 methods: [],
@@ -893,6 +900,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
+                accounts: [],
               },
               'eip155:10': {
                 methods: [],
@@ -967,6 +975,7 @@ describe('permission background API methods', () => {
               'eip155:1': {
                 methods: [],
                 notifications: [],
+                accounts: [],
               },
               'eip155:10': {
                 methods: [],
@@ -1002,6 +1011,7 @@ describe('permission background API methods', () => {
             'eip155:1': {
               methods: [],
               notifications: [],
+              accounts: [],
             },
           },
           optionalScopes: {
