@@ -1102,8 +1102,7 @@ export const getAnySnapUpdateAvailable = createSelector(
 export const getHideSnapBranding = createSelector(
   [selectInstalledSnaps, selectSnapId],
   () => {
-    return true;
-    // return installedSnaps[snapId]?.hideSnapBranding;
+    return selectInstalledSnaps[selectSnapId]?.hideSnapBranding;
   },
 );
 

@@ -13,11 +13,10 @@ describe('BTC Account - Overview', function (this: Suite) {
           text: 'Bitcoin Account',
         });
 
-        // await driver.waitForSelector({
-        //   text: 'Send',
-        //   tag: 'button',
-        //   css: '[disabled]',
-        // });
+        await driver.waitForSelector({
+          text: 'Send',
+          tag: 'button',
+        });
 
         await driver.waitForSelector({
           text: 'Swap',

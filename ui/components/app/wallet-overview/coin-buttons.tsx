@@ -245,7 +245,8 @@ const CoinButtons = ({
 
   useEffect(() => {
     const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
-      (approval) => approval.type === 'snap_dialog', // approval.origin === 'metamask', TODO: uncomment this when snap is released
+      (approval) =>
+        approval.type === 'snap_dialog' && approval.origin === 'metamask',
     );
 
     if (templatedSnapApproval) {
