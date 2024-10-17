@@ -119,8 +119,6 @@ async function createMintTransaction(driver: Driver) {
 }
 
 export async function confirmMintTransaction(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
-
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -129,6 +127,12 @@ export async function confirmMintTransaction(driver: Driver) {
   });
 
   await scrollAndConfirmAndAssertConfirm(driver);
+
+  // Verify Mint Transaction is Confirmed before proceeding
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
+  await driver.waitForSelector('.transaction-status-label--confirmed');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 }
 
 async function createApproveTransaction(driver: Driver) {
@@ -137,8 +141,6 @@ async function createApproveTransaction(driver: Driver) {
 }
 
 async function assertApproveDetails(driver: Driver) {
-  await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -192,8 +194,6 @@ async function assertApproveDetails(driver: Driver) {
 async function confirmApproveTransaction(driver: Driver) {
   await scrollAndConfirmAndAssertConfirm(driver);
 
-  await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });
