@@ -218,6 +218,7 @@ const ConfirmPageContainer = (props) => {
                 recipientEns={toEns}
                 recipientNickname={toNickname}
                 recipientIsOwnedAccount={recipientIsOwnedAccount}
+                chainId={currentTransaction.chainId}
               />
             )}
           </ConfirmPageContainerHeader>
