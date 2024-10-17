@@ -12,7 +12,6 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import type { Hex, Json } from '@metamask/utils';
-import { v4 as uuidv4 } from 'uuid';
 import {
   AssetsContractController,
   BalanceMap,
@@ -44,7 +43,6 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Patch } from 'immer';
-import { KeyringClient, BtcMethod } from '@metamask/keyring-api';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -72,7 +70,6 @@ import {
   getSelectedNetworkClientId,
 } from '../selectors';
 // eslint-disable-next-line import/no-restricted-paths
-import { BitcoinWalletSnapSender } from '../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 import {
   computeEstimatedGasLimit,
   initializeSendState,
@@ -145,7 +142,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { HandlerType } from '@metamask/snaps-utils';
 
 type CustomGasSettings = {
   gas?: string;
