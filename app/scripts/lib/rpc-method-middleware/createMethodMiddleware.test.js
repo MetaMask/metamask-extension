@@ -139,7 +139,7 @@ describe.each([
     });
     assertIsJsonRpcFailure(response);
 
-    expect(response.error.message).toBe('Internal JSON-RPC error.');
+    expect(response.error.message).toBe('test error');
     expect(response.error.data.cause.message).toBe('test error');
   });
 
@@ -156,7 +156,7 @@ describe.each([
     });
     assertIsJsonRpcFailure(response);
 
-    expect(response.error.message).toBe('Internal JSON-RPC error.');
+    expect(response.error.message).toBe('test error');
     expect(response.error.data.cause.message).toBe('test error');
   });
 
