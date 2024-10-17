@@ -56,6 +56,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
+import { CSP } from '../../shared/modules/content-security-policy';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -331,6 +332,34 @@ function maybeDetectPhishing(theController) {
   );
 }
 
+/**
+ * Overrides the Content-Security-Policy Header, acting as a workaround for an MV2 Firefox Bug.
+ */
+function overrideContentSecurityPolicyHeader() {
+  browser.webRequest.onHeadersReceived.addListener(
+    ({ responseHeaders }) => {
+      for (const header of responseHeaders) {
+        if (header.name.toLowerCase() === 'content-security-policy') {
+          const contentSecurityPolicy = CSP.parse(header.value);
+          const nonce = `'nonce-${btoa(browser.runtime.getURL('/'))}'`;
+          const scriptSrc = Object.keys(contentSecurityPolicy).find(
+            (directive) => directive.toLowerCase() === 'script-src',
+          );
+          if (scriptSrc) {
+            contentSecurityPolicy[scriptSrc].push(nonce);
+          } else {
+            contentSecurityPolicy['script-src'] = [nonce];
+          }
+          header.value = CSP.stringify(contentSecurityPolicy);
+        }
+      }
+      return { responseHeaders };
+    },
+    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    ['blocking', 'responseHeaders'],
+  );
+}
+
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -477,6 +506,10 @@ async function initialize() {
 
     if (!isManifestV3) {
       await loadPhishingWarningPage();
+      const platform = getPlatform();
+      if (platform === PLATFORM_FIREFOX) {
+        overrideContentSecurityPolicyHeader();
+      }
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
