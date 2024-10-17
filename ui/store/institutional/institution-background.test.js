@@ -1,8 +1,4 @@
-import {
-  hideLoadingIndication,
-  showLoadingIndication,
-  forceUpdateMetamaskState,
-} from '../actions';
+import { hideLoadingIndication, showLoadingIndication } from '../actions';
 import { submitRequestToBackground } from '../background-connection';
 import {
   mmiActionsFactory,
@@ -140,7 +136,6 @@ describe('Institution Actions', () => {
         'setTypedMessageInProgress',
         ['testMsgId'],
       );
-      expect(forceUpdateMetamaskState).toHaveBeenCalledWith(dispatch);
       expect(hideLoadingIndication).toHaveBeenCalled();
     });
   });
@@ -156,7 +151,6 @@ describe('Institution Actions', () => {
         'setPersonalMessageInProgress',
         ['testMsgId'],
       );
-      expect(forceUpdateMetamaskState).toHaveBeenCalledWith(dispatch);
       expect(hideLoadingIndication).toHaveBeenCalled();
     });
   });

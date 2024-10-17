@@ -51,11 +51,10 @@ export function setCustodianDeepLink({
   fromAddress: string;
   custodyId: string;
 }) {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('setCustodianDeepLink', [
       { fromAddress, custodyId },
     ]);
-    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -85,7 +84,6 @@ export function setTypedMessageInProgress(msgId: string) {
       log.error(error);
       dispatch(displayWarning(error));
     } finally {
-      await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
     }
   };
@@ -102,7 +100,6 @@ export function setPersonalMessageInProgress(msgId: string) {
       log.error(error);
       dispatch(displayWarning(error));
     } finally {
-      await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
     }
   };
