@@ -1,10 +1,17 @@
+@use "design-system";
+
 .snap-ui-renderer {
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
   &__content {
     margin-bottom: 0 !important;
   }
 
   &__container {
     & > *:first-child {
+      gap: 16px;
       padding: 16px;
     }
   }
@@ -40,7 +47,7 @@
   }
 
   &__panel {
-    gap: 16px;
+    gap: 8px;
 
     .mm-icon--size-inherit {
       top: 0;
@@ -68,5 +75,17 @@
 
   &__footer {
     margin-top: auto;
+
+    @include design-system.screen-sm-min {
+      max-width: $width-screen-sm-min;
+    }
+
+    @include design-system.screen-md-min {
+      max-width: $width-screen-md-min;
+    }
+
+    @include design-system.screen-lg-min {
+      max-width: $width-screen-lg-min;
+    }
   }
 }

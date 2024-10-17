@@ -86,13 +86,14 @@ const styles = {
     border: '1px solid var(--color-border-default)',
     color: 'var(--color-text-default)',
     height: '48px',
-    borderRadius: '6px',
     padding: '0 16px',
     display: 'flex',
     alignItems: 'center',
     '&$inputFocused': {
       border: '1px solid var(--color-primary-default)',
     },
+    borderRadius: '8px',
+    fontSize: '0.875rem',
   },
   largeInputLabel: {
     ...inputLabelBase,
@@ -212,6 +213,7 @@ const getBorderedThemeInputProps = ({
       max,
       autoComplete,
     },
+    disableUnderline: 'true',
   },
 });
 

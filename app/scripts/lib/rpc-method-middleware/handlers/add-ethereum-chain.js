@@ -1,7 +1,7 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import * as URI from 'uri-js';
+import { ApprovalType } from '@metamask/controller-utils';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { cloneDeep } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -23,7 +23,7 @@ const addEthereumChain = {
     getCurrentChainIdForDomain: true,
     getCaveat: true,
     requestPermittedChainsPermission: true,
-    getChainPermissionsFeatureFlag: true,
+    grantPermittedChainsPermissionIncremental: true,
   },
 };
 
@@ -45,7 +45,7 @@ async function addEthereumChainHandler(
     getCurrentChainIdForDomain,
     getCaveat,
     requestPermittedChainsPermission,
-    getChainPermissionsFeatureFlag,
+    grantPermittedChainsPermissionIncremental,
   },
 ) {
   let validParams;
@@ -65,9 +65,6 @@ async function addEthereumChainHandler(
   const { origin } = req;
 
   const currentChainIdForDomain = getCurrentChainIdForDomain(origin);
-  const currentNetworkConfiguration = getNetworkConfigurationByChainId(
-    currentChainIdForDomain,
-  );
   const existingNetwork = getNetworkConfigurationByChainId(chainId);
 
   if (
@@ -76,7 +73,7 @@ async function addEthereumChainHandler(
     existingNetwork.nativeCurrency !== ticker
   ) {
     return end(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\n${ticker}`,
       }),
     );
@@ -196,28 +193,14 @@ async function addEthereumChainHandler(
     const { networkClientId } =
       updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
-    const requestData = {
-      toNetworkConfiguration: updatedNetwork,
-      fromNetworkConfiguration: currentNetworkConfiguration,
-    };
-
-    return switchChain(
-      res,
-      end,
-      origin,
-      chainId,
-      requestData,
-      networkClientId,
-      approvalFlowId,
-      {
-        getChainPermissionsFeatureFlag,
-        setActiveNetwork,
-        requestUserApproval,
-        getCaveat,
-        requestPermittedChainsPermission,
-        endApprovalFlow,
-      },
-    );
+    return switchChain(res, end, chainId, networkClientId, approvalFlowId, {
+      isAddFlow: true,
+      setActiveNetwork,
+      endApprovalFlow,
+      getCaveat,
+      requestPermittedChainsPermission,
+      grantPermittedChainsPermissionIncremental,
+    });
   } else if (approvalFlowId) {
     endApprovalFlow({ id: approvalFlowId });
   }

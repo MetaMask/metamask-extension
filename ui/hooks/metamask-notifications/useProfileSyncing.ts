@@ -8,12 +8,16 @@ import {
   setIsProfileSyncingEnabled as setIsProfileSyncingEnabledAction,
   hideLoadingIndication,
   syncInternalAccountsWithUserStorage,
+  deleteAccountSyncingDataFromUserStorage,
 } from '../../store/actions';
 
 import { selectIsSignedIn } from '../../selectors/metamask-notifications/authentication';
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import { getUseExternalServices } from '../../selectors';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import {
+  getIsUnlocked,
+  getCompletedOnboarding,
+} from '../../ducks/metamask/metamask';
 
 // Define KeyringType interface
 export type KeyringType = {
@@ -134,21 +138,32 @@ export const useAccountSyncing = () => {
   const basicFunctionality = useSelector(getUseExternalServices);
   const isUnlocked = useSelector(getIsUnlocked);
   const isSignedIn = useSelector(selectIsSignedIn);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
 
   const shouldDispatchAccountSyncing = useMemo(
     () =>
-      basicFunctionality && isProfileSyncingEnabled && isUnlocked && isSignedIn,
-    [basicFunctionality, isProfileSyncingEnabled, isUnlocked, isSignedIn],
+      basicFunctionality &&
+      isProfileSyncingEnabled &&
+      isUnlocked &&
+      isSignedIn &&
+      completedOnboarding,
+    [
+      basicFunctionality,
+      isProfileSyncingEnabled,
+      isUnlocked,
+      isSignedIn,
+      completedOnboarding,
+    ],
   );
 
-  const dispatchAccountSyncing = useCallback(async () => {
+  const dispatchAccountSyncing = useCallback(() => {
     setError(null);
 
     try {
       if (!shouldDispatchAccountSyncing) {
         return;
       }
-      await dispatch(syncInternalAccountsWithUserStorage());
+      dispatch(syncInternalAccountsWithUserStorage());
     } catch (e) {
       log.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
@@ -158,6 +173,32 @@ export const useAccountSyncing = () => {
   return {
     dispatchAccountSyncing,
     shouldDispatchAccountSyncing,
+    error,
+  };
+};
+
+/**
+ * Custom hook to delete a user's account syncing data from user storage
+ */
+
+export const useDeleteAccountSyncingDataFromUserStorage = () => {
+  const dispatch = useDispatch();
+
+  const [error, setError] = useState<unknown>(null);
+
+  const dispatchDeleteAccountSyncingDataFromUserStorage = useCallback(() => {
+    setError(null);
+
+    try {
+      dispatch(deleteAccountSyncingDataFromUserStorage());
+    } catch (e) {
+      log.error(e);
+      setError(e instanceof Error ? e.message : 'An unexpected error occurred');
+    }
+  }, [dispatch]);
+
+  return {
+    dispatchDeleteAccountSyncingDataFromUserStorage,
     error,
   };
 };

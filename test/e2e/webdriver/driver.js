@@ -63,6 +63,8 @@ function wrapElementWithAPI(element, driver) {
         return await driver.wait(until.stalenessOf(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
+      case 'disabled':
+        return await driver.wait(until.elementIsDisabled(element), timeout);
       default:
         throw new Error(`Provided state: '${state}' is not supported`);
     }
@@ -317,8 +319,12 @@ class Driver {
    * Waits for an element that matches the given locator to reach the specified state within the timeout period.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds)
+   * @param {object} [options] - parameter object
+   * @param {number} [options.timeout] - specifies the maximum amount of time (in milliseconds)
    * to wait for the condition to be met and desired state of the element to wait for.
+   * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
+   * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+   * @param {string} [options.state] - specifies the state of the element to wait for.
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
    * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
@@ -777,12 +783,25 @@ class Driver {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
-      await this.driver.wait(
-        until.elementLocated(this.buildLocator('.controller-loaded')),
-        10 * 1000,
-      );
+      await this.waitForControllersLoaded();
     }
     return response;
+  }
+
+  /**
+   * Waits for the controllers to be loaded on the page.
+   *
+   * This function waits until an element with the class 'controller-loaded' is located,
+   * indicating that the controllers have finished loading.
+   *
+   * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
+   * @throws {Error} Will throw an error if the element is not located within the timeout period.
+   */
+  async waitForControllersLoaded() {
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.controller-loaded')),
+      10 * 1000,
+    );
   }
 
   /**
@@ -1298,7 +1317,10 @@ function collectMetrics() {
       });
     });
 
-  return results;
+  return {
+    ...results,
+    ...window.stateHooks.getCustomTraces(),
+  };
 }
 
 module.exports = { Driver, PAGES };
