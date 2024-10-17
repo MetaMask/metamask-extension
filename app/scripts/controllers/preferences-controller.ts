@@ -13,7 +13,7 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { Json } from 'json-rpc-engine';
+import { Json } from '@metamask/json-rpc-engine';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
