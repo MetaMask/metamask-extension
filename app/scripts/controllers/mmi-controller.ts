@@ -13,12 +13,14 @@ import {
 import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
+  API_REQUEST_LOG_EVENT,
 } from '@metamask-institutional/sdk';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
+import { CustodyController } from '@metamask-institutional/custody-controller';
+import { IApiCallLogEntry } from '@metamask-institutional/types';
+import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CustodyController } from '@metamask-institutional/custody-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import {
   MessageParamsPersonal,
   MessageParamsTyped,
@@ -305,6 +307,10 @@ export default class MMIController extends EventEmitter {
           },
         );
 
+        keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+          this.logAndStoreApiRequest(logData);
+        });
+
         // store the supported chains for this custodian type
         const accounts = await keyring.getAccounts();
         addresses = addresses.concat(...accounts);
@@ -419,6 +425,10 @@ export default class MMIController extends EventEmitter {
         this.appStateController.showInteractiveReplacementTokenBanner(payload);
       },
     );
+
+    keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+      this.logAndStoreApiRequest(logData);
+    });
 
     if (!keyring) {
       throw new Error('Unable to get keyring');
@@ -884,5 +894,15 @@ export default class MMIController extends EventEmitter {
     await this.appStateController.getUnlockPromise(true);
     this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
     return true;
+  }
+
+  async logAndStoreApiRequest(logData: IApiCallLogEntry) {
+    try {
+      const logs = await this.custodyController.sanitizeAndLogApiCall(logData);
+      return logs;
+    } catch (error) {
+      log.error('Error fetching extension request logs:', error);
+      throw error;
+    }
   }
 }

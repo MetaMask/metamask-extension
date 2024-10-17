@@ -535,7 +535,10 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
 
   await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
 
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    tag: 'button',
+    text: 'Confirm',
+  });
 };
 
 /**
@@ -566,7 +569,7 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await driver.findElement({ text: 'Congratulations!', tag: 'h2' });
 
   // opt-out from third party API on general section
-  await driver.clickElement({
+  await driver.clickElementAndWaitToDisappear({
     text: 'Manage default privacy settings',
     tag: 'button',
   });
@@ -575,7 +578,10 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
     '[data-testid="basic-functionality-toggle"] .toggle-button',
   );
   await driver.clickElement('[id="basic-configuration-checkbox"]');
-  await driver.clickElement({ text: 'Turn off', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    tag: 'button',
+    text: 'Turn off',
+  });
 
   // opt-out from third party API on assets section
   await driver.clickElement('[data-testid="category-back-button"]');
@@ -588,10 +594,19 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
     ).map((toggle) => toggle.click()),
   );
   await driver.clickElement('[data-testid="category-back-button"]');
+
+  // Wait until the onboarding carousel has stopped moving
+  // otherwise the click has no effect.
+  await driver.waitForElementToStopMoving(
+    '[data-testid="privacy-settings-back-button"]',
+  );
   await driver.clickElement('[data-testid="privacy-settings-back-button"]');
 
   // complete onboarding
-  await driver.clickElement({ text: 'Done', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    tag: 'button',
+    text: 'Done',
+  });
   await onboardingPinExtension(driver);
 };
 
@@ -1208,10 +1223,7 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   // Open settings menu button
-  const accountOptionsMenuSelector =
-    '[data-testid="account-options-menu-button"]';
-  await driver.waitForSelector(accountOptionsMenuSelector);
-  await driver.clickElement(accountOptionsMenuSelector);
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
 
   // fix race condition with mmi build
   if (process.env.MMI) {
