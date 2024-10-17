@@ -9,6 +9,7 @@ import ActionableMessage from '../../../../components/ui/actionable-message/acti
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   getCurrentChainId,
+  getCurrentNetwork,
   getRpcPrefsForCurrentProvider,
   getUseCurrencyRateCheck,
 } from '../../../../selectors';
@@ -16,6 +17,11 @@ import { MetaMetricsEventCategory } from '../../../../../shared/constants/metame
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
+} from '../../../../components/component-library';
 
 export default function ItemList({
   results = [],
@@ -33,6 +39,7 @@ export default function ItemList({
   const t = useContext(I18nContext);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const currentChain = useSelector(getCurrentNetwork);
   const blockExplorerLink =
     rpcPrefs.blockExplorerUrl ??
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
@@ -105,7 +112,18 @@ export default function ItemList({
               title={blocked ? t('swapTokenNotAvailable') : null}
             >
               {iconUrl || primaryLabel ? (
-                <UrlIcon url={iconUrl} name={primaryLabel} />
+                <BadgeWrapper
+                  badge={
+                    <AvatarNetwork
+                      size={AvatarNetworkSize.Xs}
+                      name={currentChain?.nickname || ''}
+                      src={currentChain?.rpcPrefs?.imageUrl}
+                    />
+                  }
+                  marginRight={4}
+                >
+                  <UrlIcon url={iconUrl} name={primaryLabel} />
+                </BadgeWrapper>
               ) : null}
               {!(iconUrl || primaryLabel) && identiconAddress ? (
                 <div className="searchable-item-list__identicon">
