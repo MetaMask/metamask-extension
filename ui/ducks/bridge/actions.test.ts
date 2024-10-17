@@ -4,8 +4,11 @@ import thunk from 'redux-thunk';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import * as actions from '../../store/actions';
 import * as selectors from '../../selectors';
+import {
+  DummyQuotesNoApproval,
+  DummyQuotesWithApproval,
+} from '../../../test/data/bridge/dummy-quotes';
 import { submitBridgeTransaction } from './actions';
-import { DummyQuotesNoApproval, DummyQuotesWithApproval } from './dummy-quotes';
 
 jest.mock('../../store/actions', () => {
   const original = jest.requireActual('../../store/actions');
