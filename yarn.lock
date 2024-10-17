@@ -6218,9 +6218,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:@metamask-previews/signature-controller@19.1.0-preview-8c68b2ec":
-  version: 19.1.0-preview-8c68b2ec
-  resolution: "@metamask-previews/signature-controller@npm:19.1.0-preview-8c68b2ec"
+"@metamask/signature-controller@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@metamask/signature-controller@npm:20.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.1"
     "@metamask/controller-utils": "npm:^11.3.0"
@@ -6233,7 +6233,7 @@ __metadata:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/logging-controller": ^6.0.0
-  checksum: 10/37bed84a55344de3b823c6988a2b409f887d1b449aed19dd038f5e455b913d6dbc2aa1e842ce555638b2d7cb81f829c2975ed18b06b7b727d0a1f97ab7b92fe2
+  checksum: 10/5647e362b4478d9cdb9f04027d7bad950efbe310496fc0347a92649a084bb92fc92a7fc5f911f8835e0d6b4e7ed6cf572594a79a57a31240948b87dd2267cdf8
   languageName: node
   linkType: hard
 
@@ -26189,7 +26189,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^18.0.1"
-    "@metamask/signature-controller": "npm:@metamask-previews/signature-controller@19.1.0-preview-8c68b2ec"
+    "@metamask/signature-controller": "npm:^20.0.0"
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.7.0"
     "@metamask/snaps-execution-environments": "npm:^6.7.2"
