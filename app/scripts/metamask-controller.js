@@ -27,9 +27,9 @@ import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
   errorCodes as rpcErrorCodes,
-  EthereumRpcError,
-  ethErrors,
-} from 'eth-rpc-errors';
+  JsonRpcError,
+  providerErrors,
+} from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -42,6 +42,7 @@ import {
   LedgerIframeBridge,
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from '@metamask/eth-query';
 import EthJSQuery from '@metamask/ethjs-query';
@@ -169,6 +170,7 @@ import {
 } from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
+  CHAIN_SPEC_URL,
   NETWORK_TYPES,
   NetworkStatus,
   MAINNET_DISPLAY_NAME,
@@ -201,6 +203,10 @@ import {
 import { LOG_EVENT } from '../../shared/constants/logs';
 
 import {
+  getStorageItem,
+  setStorageItem,
+} from '../../shared/lib/storage-helpers';
+import {
   getTokenIdParam,
   fetchTokenBalance,
   fetchERC1155Balance,
@@ -215,9 +221,9 @@ import {
   getIsSmartTransaction,
   isHardwareWallet,
   getFeatureFlagsByChainId,
-  getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
   getHardwareWalletType,
+  getSmartTransactionsPreferenceEnabled,
 } from '../../shared/modules/selectors';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
@@ -292,7 +298,7 @@ import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { PreferencesController } from './controllers/preferences-controller';
 import AppStateController from './controllers/app-state';
-import AlertController from './controllers/alert';
+import { AlertController } from './controllers/alert-controller';
 import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
@@ -413,6 +419,8 @@ export default class MetamaskController extends EventEmitter {
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
+    this.initializeChainlist();
+
     this.controllerMessenger = new ControllerMessenger();
 
     this.loggingController = new LoggingController({
@@ -471,7 +479,7 @@ export default class MetamaskController extends EventEmitter {
       this.encryptionPublicKeyController.clearUnapproved();
       this.decryptMessageController.clearUnapproved();
       this.signatureController.clearUnapproved();
-      this.approvalController.clear(ethErrors.provider.userRejectedRequest());
+      this.approvalController.clear(providerErrors.userRejectedRequest());
     };
 
     this.queuedRequestController = new QueuedRequestController({
@@ -1781,7 +1789,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.alertController = new AlertController({
-      initState: initState.AlertController,
+      state: initState.AlertController,
       controllerMessenger: this.controllerMessenger.getRestricted({
         name: 'AlertController',
         allowedEvents: ['AccountsController:selectedAccountChange'],
@@ -1896,7 +1904,7 @@ export default class MetamaskController extends EventEmitter {
         isResubmitEnabled: () => {
           const state = this._getMetaMaskState();
           return !(
-            getSmartTransactionsOptInStatus(state) &&
+            getSmartTransactionsPreferenceEnabled(state) &&
             getCurrentChainSupportsSmartTransactions(state)
           );
         },
@@ -3768,6 +3776,9 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setCustodianDeepLink.bind(appStateController),
       setNoteToTraderMessage:
         appStateController.setNoteToTraderMessage.bind(appStateController),
+      logAndStoreApiRequest: this.mmiController.logAndStoreApiRequest.bind(
+        this.mmiController,
+      ),
       ///: END:ONLY_INCLUDE_IF
 
       // snaps
@@ -6305,6 +6316,23 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * The chain list is fetched live at runtime, falling back to a cache.
+   * This preseeds the cache at startup with a static list provided at build.
+   */
+  async initializeChainlist() {
+    const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
+    const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
+    if (cachedResponse) {
+      return;
+    }
+    await setStorageItem(cacheKey, {
+      cachedResponse: rawChainData(),
+      // Cached value is immediately invalidated
+      cachedTime: 0,
+    });
+  }
+
+  /**
    * Returns the nonce that will be associated with a transaction once approved
    *
    * @param {string} address - The hex string address for the transaction
@@ -6726,7 +6754,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.approvalController.reject(
         id,
-        new EthereumRpcError(error.code, error.message, error.data),
+        new JsonRpcError(error.code, error.message, error.data),
       );
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {
