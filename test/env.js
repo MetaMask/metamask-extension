@@ -16,3 +16,4 @@ process.env.PUSH_NOTIFICATIONS_SERVICE_URL =
 process.env.PORTFOLIO_URL = 'https://portfolio.test';
 process.env.METAMASK_VERSION = 'MOCK_VERSION';
 process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
+process.env.TZ = 'UTC';
