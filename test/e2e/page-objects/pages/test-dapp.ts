@@ -143,14 +143,18 @@ class TestDapp {
   /**
    * Go to the currently open test dapp or open a new test dapp page.
    *
-   * @param contractAddress - The contract address to open the dapp with. Defaults to null.
-   * @param url - The URL of the dapp. Defaults to DAPP_URL.
+   * @param options - An object containing the contract address and URL of the dapp.
+   * @param options.contractAddress - The contract address to open the dapp with. Defaults to null.
+   * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
    * @returns A promise that resolves when the page is opened and loaded.
    */
-  async openTestDappPage(
-    contractAddress: string | null = null,
-    url: string = DAPP_URL,
-  ): Promise<void> {
+  async openTestDappPage({
+    contractAddress = null,
+    url = DAPP_URL,
+  }: {
+    contractAddress?: string | null;
+    url?: string;
+  } = {}): Promise<void> {
     const handle = await this.driver.windowHandles.switchToWindowIfKnown(
       WINDOW_TITLES.TestDApp,
     );
@@ -161,6 +165,15 @@ class TestDapp {
       await this.driver.openNewPage(dappUrl);
     }
     await this.check_pageIsLoaded();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async request(method: string, params: any[]) {
+    await this.openTestDappPage({
+      url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
+        params,
+      )}`,
+    });
   }
 
   async clickERC721SetApprovalForAllButton() {

@@ -61,9 +61,9 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
 
         // Open DApp with contract
         const testDapp = new TestDapp(driver);
-        const contractAddress = await contractRegistry.getContractAddress(
+        const contractAddress = await contractRegistry.getContractAddress({
           smartContract,
-        );
+        });
         await testDapp.openTestDappPage(contractAddress);
         await testDapp.createDepositTransaction();
 
