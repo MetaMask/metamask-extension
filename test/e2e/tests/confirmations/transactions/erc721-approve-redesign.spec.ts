@@ -193,7 +193,7 @@ async function assertApproveDetails(driver: Driver) {
 
 async function confirmApproveTransaction(driver: Driver) {
   await scrollAndConfirmAndAssertConfirm(driver);
-
+  await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });
