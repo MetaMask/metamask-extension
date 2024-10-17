@@ -17,6 +17,7 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
+import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
@@ -45,6 +46,7 @@ export default function AssetList({
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const chainId = useSelector(getMultichainCurrentChainId);
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,
@@ -73,9 +75,9 @@ export default function AssetList({
                 ? BackgroundColor.primaryMuted
                 : BackgroundColor.transparent
             }
-            className={classnames('multichain-asset-picker-list-item', {
-              'multichain-asset-picker-list-item--selected': isSelected,
-              'multichain-asset-picker-list-item--disabled': isDisabled,
+            className={classnames('multichain-asset-picker-list-items', {
+              'multichain-asset-picker-list-items--selected': isSelected,
+              'multichain-asset-picker-list-items--disabled': isDisabled,
             })}
             data-testid="asset-list-item"
             onClick={() => {
@@ -85,13 +87,6 @@ export default function AssetList({
               handleAssetChange(token);
             }}
           >
-            {isSelected ? (
-              <Box
-                className="multichain-asset-picker-list-item__selected-indicator"
-                borderRadius={BorderRadius.pill}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            ) : null}
             <Box
               key={token.address}
               padding={0}
@@ -99,7 +94,20 @@ export default function AssetList({
               flexWrap={FlexWrap.NoWrap}
               alignItems={AlignItems.center}
             >
-              <Box marginInlineStart={2}>
+              {isSelected ? (
+                <Box
+                  className="multichain-asset-picker-list-items__selected-indicator"
+                  borderRadius={BorderRadius.pill}
+                  backgroundColor={BackgroundColor.primaryDefault}
+                />
+              ) : null}
+              <Box
+                marginInlineStart={2}
+                className={classnames('multichain-asset-picker-list-items', {
+                  'multichain-asset-picker-list-items--selected': isSelected,
+                  'multichain-asset-picker-list-items--disabled': isDisabled,
+                })}
+              >
                 {token.type === AssetType.native ? (
                   <TokenListItem
                     title={token.symbol}
@@ -109,6 +117,7 @@ export default function AssetList({
                     tokenImage={token.image}
                     isOriginalTokenSymbol={token.symbol === nativeCurrency}
                     isPrimaryTokenSymbolHidden
+                    chainId={chainId}
                   />
                 ) : (
                   <AssetComponent

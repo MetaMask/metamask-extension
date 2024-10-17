@@ -39,6 +39,7 @@ export default {
     tokenSymbol: CURRENCY_SYMBOLS.ETH,
     title: 'Ethereum',
     isOriginalTokenSymbol: true,
+    chainId: CHAIN_IDS.MAINNET,
   },
 };
 

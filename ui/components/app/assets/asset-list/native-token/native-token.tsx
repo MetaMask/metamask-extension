@@ -52,6 +52,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
       isNativeCurrency
       isStakeable={isStakeable}
       showPercentage
+      chainId={chainId}
     />
   );
 };
