@@ -17,6 +17,11 @@ const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
 } = require('./tests/bridge/constants');
 
+const {
+  WHITE_LISTED_HOSTS,
+  WHITE_LISTED_URLS,
+} = require('./mock-e2e-whitelisted');
+
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
 const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
@@ -107,20 +112,38 @@ async function setupMocking(
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
-    beforeRequest: (req) => {
-      const { host } = req.headers;
+    beforeRequest: ({ headers: { host }, url }) => {
       if (blacklistedHosts.includes(host)) {
         return {
           url: 'http://localhost:8545',
         };
-      }
-      return {};
+      } else if (
+        WHITE_LISTED_URLS.includes(url) ||
+        WHITE_LISTED_HOSTS.includes(host) ||
+        host.includes('gvt1.com')
+      ) {
+        // If the URL is whitelisted, we pass the request as it is, to the live server.
+        return {};
+        }
+      console.log("URL NOT WHITLISTED DEBUG===============", url)
+      return {
+        // If the URL is not whitelisted nor blacklisted, we send the request to a mocked endpoint.
+        url: 'mock-all',
+        method: 'GET',
+      };
     },
   });
 
   const mockedEndpoint = await testSpecificMock(server);
 
   // Mocks below this line can be overridden by test-specific mocks
+
+  // Catch-all mock for any request not whitelisted nor blacklisted
+  await server.forGet('mock-all').thenCallback(() => {
+    return {
+      statusCode: 200,
+    };
+  });
 
   // Account link
   const accountLinkRegex =
