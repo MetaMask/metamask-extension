@@ -594,6 +594,9 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
     ).map((toggle) => toggle.click()),
   );
   await driver.clickElement('[data-testid="category-back-button"]');
+
+  // Wait until the onboarding carousel has stopped moving
+  // otherwise the click has no effect.
   await driver.waitForElementToStopMoving({
     driver,
     locator: '[data-testid="privacy-settings-back-button"]',
