@@ -355,6 +355,8 @@ describe('MetaMask onboarding @no-mmi', function () {
             tag: 'button',
           });
 
+          // Wait until the onboarding carousel has stopped moving
+          // otherwise the click has no effect.
           await driver.waitForElementToStopMoving({
             text: 'Done',
             tag: 'button',
@@ -411,10 +413,12 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
         await driver.clickElement('[data-testid="category-back-button"]');
+
+        // Wait until the onboarding carousel has stopped moving
+        // otherwise the click has no effect.
         await driver.waitForElementToStopMoving(
           '[data-testid="privacy-settings-back-button"]',
         );
-
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );

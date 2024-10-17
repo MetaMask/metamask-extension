@@ -604,7 +604,7 @@ class Driver {
    * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
    */
   async isElementMoving(rawLocator) {
-    const element = await this.driver.findElement(rawLocator);
+    const element = await this.findElement(rawLocator);
     const initialPosition = await element.getRect();
 
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
