@@ -69,48 +69,36 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
-        assert.equal(
-          await transactionItem.isDisplayed(),
-          true,
-          `transaction item should be displayed in activity tab`,
-        );
         await driver.clickElement('[data-testid="activity-list-item-action"]');
         await driver.clickElement({
           text: 'View on block explorer',
           tag: 'a',
         });
+
         // Switch to block explorer
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('E2E Test Page', windowHandles);
+        await driver.switchToWindowWithTitle('E2E Test Page');
         await driver.findElement('[data-testid="empty-page-body"]');
         // Verify block explorer
         await driver.waitForUrl({
           url: 'https://etherscan.io/tx/0xfe4428397f7913875783c5c0dad182937b596148295bc33c7f08d74fdee8897f',
         });
+
         // switch to Dapp
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.fill('#watchAssetInput', '1');
         await driver.clickElement('#watchAssetButton');
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="page-container-footer-next"]',
         );
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        [extension] = windowHandles;
-        await driver.switchToWindow(extension);
-        await driver.findClickableElement(
-          '[data-testid="account-overview__nfts-tab"]',
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        await driver.clickElementSafe('[data-testid="popover-close"]');
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('[data-testid="nft-item"]');
       },
