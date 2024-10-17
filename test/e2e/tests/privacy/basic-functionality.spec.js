@@ -81,15 +81,36 @@ describe('MetaMask onboarding @no-mmi', function () {
           '[data-testid="currency-rate-check-toggle"] .toggle-button',
         );
         await driver.clickElement('[data-testid="category-back-button"]');
-        await driver.delay(regularDelayMs);
+        await driver.waitForElementToStopMoving({
+          driver,
+          locator: '[data-testid="privacy-settings-back-button"]',
+        });
+
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
-        await driver.delay(regularDelayMs);
 
-        await driver.clickElement({ text: 'Done', tag: 'button' });
-        await driver.clickElement('[data-testid="pin-extension-next"]');
-        await driver.clickElement({ text: 'Done', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Done',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+        });
+
+        await driver.waitForElementToStopMoving({
+          driver,
+          locator: {
+            text: 'Done',
+            tag: 'button',
+          },
+        });
+
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Done',
+          tag: 'button',
+        });
 
         await driver.clickElement('[data-testid="network-display"]');
 
