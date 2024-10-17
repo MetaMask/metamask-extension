@@ -83,9 +83,7 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
-import {
-  isSwapsDefaultTokenAddress,
-} from '../../../../shared/modules/swaps.utils';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
@@ -241,7 +239,8 @@ export default function PrepareSwapPage({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    !isSwapsDefaultTokenAddress(fromToken?.address, chainId) && fromToken?.balance
+    !isSwapsDefaultTokenAddress(fromToken?.address, chainId) &&
+    fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -310,7 +309,10 @@ export default function PrepareSwapPage({
     { showFiat: true },
     true,
   );
-  const swapFromFiatValue = isSwapsDefaultTokenAddress(fromTokenAddress, chainId)
+  const swapFromFiatValue = isSwapsDefaultTokenAddress(
+    fromTokenAddress,
+    chainId,
+  )
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
@@ -793,7 +795,7 @@ export default function PrepareSwapPage({
   );
   const hasPositiveFromTokenBalance = rawFromTokenBalance > 0;
   const isTokenEligibleForMaxBalance =
-    isSmartTransaction || (!isSmartTransaction && isNonDefaultToken);
+    isSmartTransaction || (!isSmartTransaction && isNonDefaultFromToken);
   const showMaxBalanceLink =
     fromTokenSymbol &&
     isTokenEligibleForMaxBalance &&
