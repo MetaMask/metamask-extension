@@ -1,7 +1,5 @@
 import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
 import { detectSIWE, SIWEMessage } from '@metamask/controller-utils';
-
-import { detectSIWE, SIWEMessage } from '@metamask/controller-utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
