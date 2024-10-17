@@ -1,6 +1,5 @@
 import { privateToAddress } from 'ethereumjs-util';
 import messages from '../../../app/_locales/en/messages.json';
-import FixtureBuilder from '../fixture-builder';
 import {
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
@@ -9,31 +8,10 @@ import {
   switchToOrOpenDapp,
   unlockWallet,
   validateContractDetails,
-  multipleGanacheOptions,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { DAPP_URL, TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 import { retry } from '../../../development/lib/retry';
-
-/**
- * These are fixtures specific to Account Snap E2E tests:
- * -- connected to Test Dapp
- * -- two private keys with 25 ETH each
- *
- * @param title
- */
-export const accountSnapFixtures = (title: string | undefined) => {
-  return {
-    dapp: true,
-    fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp({
-        restrictReturnedAccounts: false,
-      })
-      .build(),
-    ganacheOptions: multipleGanacheOptions,
-    title,
-  };
-};
 
 // convert PRIVATE_KEY to public key
 export const PUBLIC_KEY = privateToAddress(

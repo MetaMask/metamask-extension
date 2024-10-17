@@ -16,6 +16,7 @@ import {
 import SettingsPage from '../../page-objects/pages/settings-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import { DAPP_URL } from '../../constants';
 
 describe('Snap Account Signatures @no-mmi', function (this: Suite) {
   // Run sync, async approve, and async reject flows
@@ -29,11 +30,7 @@ describe('Snap Account Signatures @no-mmi', function (this: Suite) {
       await withFixtures(
         {
           dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp({
-              restrictReturnedAccounts: false,
-            })
-            .build(),
+          fixtures: new FixtureBuilder().build(),
           title,
         },
         async ({ driver }: { driver: Driver }) => {
@@ -61,8 +58,22 @@ describe('Snap Account Signatures @no-mmi', function (this: Suite) {
           await experimentalSettings.check_pageIsLoaded();
           await experimentalSettings.toggleRedesignedSignature();
 
-          // Run all 5 signature types
+          // Connect the SSK account
           await new TestDapp(driver).openTestDappPage();
+
+          await driver.findClickableElement({ text: 'Connect', tag: 'button' });
+          await driver.clickElement('#connectButton');
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Connect',
+            tag: 'button',
+          });
+
+          await driver.switchToWindowWithUrl(DAPP_URL);
+
+          // Run all 5 signature types
           await personalSignWithSnapAccount(
             driver,
             newPublicKey,

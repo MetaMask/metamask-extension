@@ -48,6 +48,11 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
+function getRequestedChainIds(permissionsRequest) {
+  return permissionsRequest?.permissions?.[PermissionNames.permittedChains]
+    ?.caveats[0]?.value;
+}
+
 export default class PermissionConnect extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
@@ -149,8 +154,10 @@ export default class PermissionConnect extends Component {
       history.replace(DEFAULT_ROUTE);
       return;
     }
+
     // if this is an incremental permission request for permitted chains, skip the account selection
     if (
+      // TODO pretty sure this is not needed anymore.
       permissionsRequest?.diff?.permissionDiffMap?.[
         PermissionNames.permittedChains
       ]
@@ -393,6 +400,7 @@ export default class PermissionConnect extends Component {
                   selectedAccounts={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
+                  requestedChainIds={getRequestedChainIds(permissionsRequest)}
                   targetSubjectMetadata={targetSubjectMetadata}
                   history={this.props.history}
                   connectPath={connectPath}
