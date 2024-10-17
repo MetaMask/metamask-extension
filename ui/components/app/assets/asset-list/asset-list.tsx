@@ -60,6 +60,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
   const chains = useSelector(getChains);
+  console.log('bar:', { chains });
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);

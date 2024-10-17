@@ -504,8 +504,6 @@ export function getSelectedAccountCachedBalance(state) {
 
 export function getSelectedAccountCachedBalanceAllChains(state) {
   const cachedBalances = getSelectedAccountCachedBalancesByChainId(state);
-  // getMetaMaskCachedBalances(state);
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
   return cachedBalances;
 }
 

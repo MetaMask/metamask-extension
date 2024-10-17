@@ -124,8 +124,7 @@ export const TokenListItem = ({
   const shouldShowPercentage = isEvm && showPercentage;
 
   // Scam warning
-  const showScamWarning =
-    isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
+  const showScamWarning = false;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);

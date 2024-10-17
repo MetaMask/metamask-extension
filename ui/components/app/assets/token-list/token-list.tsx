@@ -23,13 +23,16 @@ import {
 } from '../../../../selectors/multichain';
 import { useAccountTotalFiatBalanceByChainId } from '../../../../hooks/useAccountTotalFiatBalance';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { useNativeTokenBalanceForChain } from '../asset-list/native-token/use-native-token-balance';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;
+  nativeToken: React.ReactNode;
 };
 
-export default function TokenList({ onTokenClick }: TokenListProps) {
+export default function TokenList({
+  onTokenClick,
+  nativeToken,
+}: TokenListProps) {
   const t = useI18nContext();
   const { tokenSortConfig } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -59,20 +62,18 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
 
   return (
     <div>
+      <>{nativeToken}</>
       {chains.map((chain) => (
-        <>
-          <div>{chain.chainId}</div>
-          <TokenListForChain
-            key={chain.network.chainId}
-            chain={chain}
-            onTokenClick={onTokenClick}
-            tokenSortConfig={tokenSortConfig}
-            selectedAccount={selectedAccount}
-            conversionRate={conversionRate}
-            contractExchangeRates={contractExchangeRates}
-            shouldHideZeroBalanceTokens={shouldHideZeroBalanceTokens}
-          />
-        </>
+        <TokenListForChain
+          key={chain.network.chainId}
+          chain={chain}
+          onTokenClick={onTokenClick}
+          tokenSortConfig={tokenSortConfig}
+          selectedAccount={selectedAccount}
+          conversionRate={conversionRate}
+          contractExchangeRates={contractExchangeRates}
+          shouldHideZeroBalanceTokens={shouldHideZeroBalanceTokens}
+        />
       ))}
     </div>
   );
@@ -99,7 +100,6 @@ function TokenListForChain({
 }: TokenListForChainProps) {
   const { chainId } = chain;
   const t = useI18nContext();
-  const nativeTokenWithBalance = useNativeTokenBalanceForChain(chain);
   const { tokensWithBalances, loading } = useAccountTotalFiatBalanceByChainId(
     selectedAccount,
     shouldHideZeroBalanceTokens,
@@ -112,19 +112,13 @@ function TokenListForChain({
   };
 
   const sortedTokens = useMemo(() => {
-    return sortAssets(
-      [nativeTokenWithBalance, ...tokensWithBalances],
-      tokenSortConfig,
-    );
+    return sortAssets(tokensWithBalances, tokenSortConfig);
   }, [
     tokensWithBalances,
     tokenSortConfig,
     conversionRate,
     contractExchangeRates,
-    nativeTokenWithBalance,
   ]);
-
-  console.log({ sortedTokens });
 
   return loading ? (
     <Box

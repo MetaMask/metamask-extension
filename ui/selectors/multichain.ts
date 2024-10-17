@@ -200,33 +200,93 @@ export function hexToCaipChainId(hex: string): CaipChainId {
   return `eip155:${chainIdDecimal}`;
 }
 
-export function getChains(
-  state: MultichainState,
-): MultichainNetwork[] | undefined {
-  const nonEvmProviders = getMultichainNetworkProviders(state);
+export function getChains(state: MultichainState): MultichainNetwork[] {
+  // const nonEvmProviders = getMultichainNetworkProviders(state);
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
-  const evmProviders: MultichainProviderConfig[] = Object.values(
+  const evmNetworks: MultichainNetwork[] = Object.values(
     networkConfigurations,
   ).map((networkConfig) => {
-    const chainIdDecimal = parseInt(networkConfig.chainId, 16);
-    const chainId =
+    const isHex = networkConfig.chainId.startsWith('0x');
+    const chainIdHex = isHex
+      ? networkConfig.chainId.toLowerCase()
+      : `0x${parseInt(networkConfig.chainId, 10).toString(16)}`;
+    const chainIdDecimal = parseInt(chainIdHex, 16);
+    const chainIdCaip =
       `${KnownCaipNamespace.Eip155}:${chainIdDecimal}` as CaipChainId;
 
+    // Handle defaultBlockExplorerUrlIndex possibly being undefined
+    let blockExplorerUrl: string | undefined;
+    if (
+      Array.isArray(networkConfig.blockExplorerUrls) &&
+      networkConfig.blockExplorerUrls.length > 0
+    ) {
+      const explorerIndex = networkConfig.defaultBlockExplorerUrlIndex ?? 0;
+      blockExplorerUrl = networkConfig.blockExplorerUrls[explorerIndex];
+    }
+
+    // Build rpcPrefs
+    const rpcPrefs: { blockExplorerUrl?: string } = {};
+    if (blockExplorerUrl) {
+      rpcPrefs.blockExplorerUrl = blockExplorerUrl;
+    }
+
+    // Determine network type based on chain ID or name
+    let networkType: NetworkType = 'rpc'; // default to 'rpc' if no match found
+
+    // Map chain IDs to NetworkType values
+    switch (chainIdHex) {
+      case '0x1':
+        networkType = 'mainnet';
+        break;
+      case '0xaa36a7':
+        networkType = 'sepolia';
+        break;
+      case '0xe705':
+        networkType = 'linea-sepolia';
+        break;
+      case '0xe708':
+        networkType = 'linea-mainnet';
+        break;
+      // Add more cases as needed
+      default:
+        // If networkConfig.type matches NetworkType, use it
+        if (
+          networkConfig.type &&
+          Object.values(NetworkType).includes(networkConfig.type)
+        ) {
+          networkType = networkConfig.type as NetworkType;
+        } else {
+          networkType = 'rpc'; // Fallback to 'rpc' if no match
+        }
+    }
+
+    // Build network object
+    const network: ProviderConfigWithImageUrlAndExplorerUrl = {
+      chainId: chainIdHex as `0x${string}`,
+      ticker: networkConfig.nativeCurrency,
+      rpcPrefs,
+      type: networkType,
+    };
+
     return {
-      chainId: caipChainIdToHex(chainId),
-    } as MultichainProviderConfig;
+      nickname: networkConfig.name,
+      isEvmNetwork: true,
+      chainId: chainIdCaip,
+      network,
+    };
   });
 
-  const allProviders = [...evmProviders, ...nonEvmProviders];
+  // const nonEvmNetworks: MultichainNetwork[] = nonEvmProviders.map(
+  //   (provider) => ({
+  //     nickname: provider.nickname,
+  //     isEvmNetwork: false,
+  //     chainId: provider.chainId,
+  //     network: provider,
+  //   }),
+  // );
 
-  const compatibleChainIdsInHex = allProviders.map((provider) =>
-    caipChainIdToHex(provider.chainId),
-  );
-
-  return compatibleChainIdsInHex.map((hex) =>
-    getMultichainNetworkByChainId(state, hex as `0x${string}`),
-  );
+  return [...evmNetworks]; //, ...nonEvmNetworks];
 }
 
 // FIXME: All the following might have side-effect, like if the current account is a bitcoin one and that

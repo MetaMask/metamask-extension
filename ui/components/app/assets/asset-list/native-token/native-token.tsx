@@ -8,6 +8,7 @@ import {
   getMultichainCurrencyImage,
   getMultichainIsMainnet,
   getMultichainSelectedAccountCachedBalance,
+  getMultichainSelectedAccountCachedBalanceAllChains,
 } from '../../../../../selectors/multichain';
 import { TokenListItem } from '../../../../multichain';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
@@ -20,9 +21,9 @@ export type NativeTokenProps = {
 };
 
 const NativeToken = ({ onClickAsset, chain }: NativeTokenProps) => {
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const { ticker } = chain.network;
   const isMainnet = useSelector(getMultichainIsMainnet);
-  const { ticker, type, rpcUrl } = useSelector(getMultichainCurrentNetwork);
+  const { type, rpcUrl } = useSelector(getMultichainCurrentNetwork);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chain.chainId,
     ticker,
@@ -30,13 +31,23 @@ const NativeToken = ({ onClickAsset, chain }: NativeTokenProps) => {
     rpcUrl,
   );
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  const balanceAll = useSelector(
+    getMultichainSelectedAccountCachedBalanceAllChains,
+  );
   const balanceIsLoading = !balance;
 
-  const { string, symbol, secondary } = useNativeTokenBalance(chain.chainId);
+  const balb = useNativeTokenBalance(chain.network.chainId);
+  console.log({ balance, balb });
 
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
 
   const isEvm = useSelector(getMultichainIsEvm);
+
+  console.log({ balanceAll, chain, balance });
+
+  if (!balb) {
+    return null;
+  }
 
   let isStakeable = isMainnet && isEvm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -46,11 +57,11 @@ const NativeToken = ({ onClickAsset, chain }: NativeTokenProps) => {
   return (
     <TokenListItem
       chain={chain}
-      onClick={() => onClickAsset(nativeCurrency)}
-      title={nativeCurrency}
-      primary={string}
-      tokenSymbol={symbol}
-      secondary={secondary}
+      onClick={() => onClickAsset(ticker)}
+      title={ticker}
+      primary={balb.string}
+      tokenSymbol={balb.symbol}
+      secondary={balb.secondary}
       tokenImage={balanceIsLoading ? null : primaryTokenImage}
       isOriginalTokenSymbol={isOriginalNativeSymbol}
       isNativeCurrency
