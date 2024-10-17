@@ -1028,17 +1028,21 @@ export default function PrepareSwapPage({
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.stretch}
           >
+            <div className="prepare-swap-page__balance-message" style={{ width: "100%" }}>
+              {selectedToToken?.string && yourTokenToBalance}
+            </div>
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
+          >
             <div className="prepare-swap-page__balance-message">
-              {showReviewQuote && isNonDefaultToToken ? (
-                <>
-                  {t('swapTokenVerifiedSources', [
+              {isNonDefaultToToken &&
+                  t('swapTokenVerifiedSources', [
                     occurrences,
                     <BlockExplorerLink key="block-explorer-link" />,
                   ])}
-                </>
-              ) : (
-                selectedToToken?.string && yourTokenToBalance
-              )}
             </div>
           </Box>
         </div>
