@@ -5,12 +5,11 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   Json,
   JsonRpcParams,
-  Hex,
   JsonRpcResponse,
+  Hex,
 } from '@metamask/utils';
 import { hasProperty, isObject, JsonRpcRequest } from '@metamask/utils';
 import type {
-  JsonRpcResponse,
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
