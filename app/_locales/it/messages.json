@@ -753,10 +753,6 @@
     "message": "Codice: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Dettagli Errore",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "Messaggio: $1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"

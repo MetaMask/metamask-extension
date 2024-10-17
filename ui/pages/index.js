@@ -11,7 +11,7 @@ import {
 } from '../contexts/metametrics';
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { CurrencyRateProvider } from '../contexts/currencyRate';
-import ErrorPage from './error';
+import ErrorPage from './error-page/error-page.component';
 import Routes from './routes';
 
 class Index extends PureComponent {
