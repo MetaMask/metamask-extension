@@ -70,7 +70,6 @@ import {
   getInternalAccounts,
   getSelectedNetworkClientId,
 } from '../selectors';
-// eslint-disable-next-line import/no-restricted-paths
 import {
   computeEstimatedGasLimit,
   initializeSendState,
