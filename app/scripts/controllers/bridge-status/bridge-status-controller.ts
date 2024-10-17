@@ -49,17 +49,25 @@ export default class BridgeStatusController extends BaseController<
   };
 
   getBridgeTxStatus = async (statusRequest: StatusRequest) => {
-    const { bridgeStatusState } = this.state;
-
-    const bridgeStatus = await fetchBridgeTxStatus(statusRequest);
-    this.update((_state) => {
-      _state.bridgeStatusState = {
-        ...bridgeStatusState,
-        txStatuses: {
-          ...bridgeStatusState.txStatuses,
-          [statusRequest.srcTxHash]: bridgeStatus,
-        },
-      };
-    });
+    // Need to subscribe since if we try to fetch status too fast, API will fail with 500 error
+    // So fetch on tx confirmed
+    this.messagingSystem.subscribe(
+      'TransactionController:transactionConfirmed',
+      async (txMeta) => {
+        if (txMeta.hash === statusRequest.srcTxHash) {
+          const { bridgeStatusState } = this.state;
+          const bridgeTxStatus = await fetchBridgeTxStatus(statusRequest);
+          this.update((_state) => {
+            _state.bridgeStatusState = {
+              ...bridgeStatusState,
+              txStatuses: {
+                ...bridgeStatusState.txStatuses,
+                [statusRequest.srcTxHash]: bridgeTxStatus,
+              },
+            };
+          });
+        }
+      },
+    );
   };
 }

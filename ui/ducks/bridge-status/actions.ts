@@ -21,7 +21,9 @@ export const getBridgeTxStatus = (statusRequest: StatusRequest) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return dispatch(
       callBridgeStatusControllerMethod<
-        Parameters<BridgeStatusController['getBridgeTxStatus']>
+        Parameters<
+          BridgeStatusController[BridgeStatusAction.GET_BRIDGE_TX_STATUS]
+        >
       >(BridgeStatusAction.GET_BRIDGE_TX_STATUS, [statusRequest]),
     );
   };

@@ -2,25 +2,24 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
+import { Hex } from '@metamask/utils';
+import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
+import { ChainId, Quote } from '../../../../ui/pages/bridge/types';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
 import BridgeStatusController from './bridge-status-controller';
-import { Hex } from '@metamask/utils';
 
-type HexChainId = Hex;
-type DecChainId = number;
-
-export interface StatusRequest {
-  bridgeId: string; //lifi, socket, squid
-  srcTxHash: string; //lifi, socket, squid
-  bridge: string; //lifi, socket, squid
-  srcChainId: HexChainId; //lifi, socket, squid
-  destChainId: HexChainId; //lifi, socket, squid
-  quote?: Quote; //squid
-  refuel?: boolean; //lifi
-}
+export type StatusRequest = {
+  bridgeId: string; // lifi, socket, squid
+  srcTxHash: string; // lifi, socket, squid
+  bridge: string; // lifi, socket, squid
+  srcChainId: ChainId; // lifi, socket, squid
+  destChainId: ChainId; // lifi, socket, squid
+  quote?: Quote; // squid
+  refuel?: boolean; // lifi
+};
 
 export type Asset = {
-  chainId: DecChainId;
+  chainId: ChainId;
   address: string;
   symbol: string;
   name: string;
@@ -29,7 +28,7 @@ export type Asset = {
 };
 
 export type ChainStatus = {
-  chainId: DecChainId;
+  chainId: ChainId;
   txHash: string;
   amount?: string;
   token?: Asset;
@@ -42,7 +41,7 @@ export enum StatusTypes {
   COMPLETE = 'COMPLETE',
 }
 
-export interface RefuelStatusResponse extends StatusResponse {}
+export type RefuelStatusResponse = {} & StatusResponse;
 
 export enum BridgeId {
   HOP = 'hop',
@@ -72,16 +71,16 @@ export enum FeeType {
   REFUEL = 'refuel',
 }
 
-export interface FeeData {
+export type FeeData = {
   amount: string;
   asset: Asset;
-}
+};
 
-export interface Protocol {
+export type Protocol = {
   displayName?: string;
   icon?: string;
   name?: string; // for legacy quotes
-}
+};
 
 export enum ActionTypes {
   BRIDGE = 'bridge',
@@ -89,33 +88,17 @@ export enum ActionTypes {
   REFUEL = 'refuel',
 }
 
-export interface Step {
+export type Step = {
   action: ActionTypes;
-  srcChainId: HexChainId;
-  destChainId?: HexChainId;
+  srcChainId: ChainId;
+  destChainId?: ChainId;
   srcAsset: Asset;
   destAsset: Asset;
   srcAmount: string;
   destAmount: string;
   protocol: Protocol;
-}
-export interface RefuelData extends Step {}
-
-export interface Quote {
-  requestId: string;
-  srcChainId: HexChainId;
-  srcAsset: Asset;
-  srcTokenAmount: string;
-  destChainId: HexChainId;
-  destAsset: Asset;
-  destTokenAmount: string;
-  feeData: Record<FeeType.METABRIDGE, FeeData> &
-    Partial<Record<FeeType, FeeData>>;
-  bridgeId: string;
-  bridges: string[];
-  steps: Step[];
-  refuel?: RefuelData;
-}
+};
+export type RefuelData = {} & Step;
 
 export type BridgeHistoryItem = {
   quote: Quote;
@@ -162,13 +145,15 @@ type BridgeStatusControllerEvents = ControllerStateChangeEvent<
   BridgeStatusControllerState
 >;
 
+type AllowedEvents = TransactionControllerTransactionConfirmedEvent;
+
 /**
  * The messenger for the BridgeStatusController.
  */
 export type BridgeStatusControllerMessenger = RestrictedControllerMessenger<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusControllerActions,
-  BridgeStatusControllerEvents,
+  BridgeStatusControllerEvents | AllowedEvents,
   never,
-  never
+  AllowedEvents['type']
 >;
