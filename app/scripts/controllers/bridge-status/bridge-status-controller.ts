@@ -34,8 +34,8 @@ export default class BridgeStatusController extends BaseController<
 
     // Register action handlers
     this.messagingSystem.registerActionHandler(
-      `${BRIDGE_STATUS_CONTROLLER_NAME}:getBridgeTxStatus`,
-      this.getBridgeTxStatus.bind(this),
+      `${BRIDGE_STATUS_CONTROLLER_NAME}:fetchBridgeTxStatus`,
+      this.fetchBridgeTxStatus.bind(this),
     );
   }
 
@@ -47,10 +47,9 @@ export default class BridgeStatusController extends BaseController<
     });
   };
 
-  getBridgeTxStatus = async (statusRequest: StatusRequest) => {
+  fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
     // Need to subscribe since if we try to fetch status too fast, API will fail with 500 error
     // So fetch on tx confirmed
-
     this.messagingSystem.subscribe(
       'TransactionController:transactionConfirmed',
       async (txMeta) => {
