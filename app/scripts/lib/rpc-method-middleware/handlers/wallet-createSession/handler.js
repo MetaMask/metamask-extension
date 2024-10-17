@@ -91,7 +91,7 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
       unsupportableOptionalScopes,
     });
 
-    // These should be EVM accounts already although the name does not necessary imply that
+    // Fetch EVM accounts from native wallet keyring
     // These addresses are lowercased already
     const existingEvmAddresses = hooks
       .listAccounts()
