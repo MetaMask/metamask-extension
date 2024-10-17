@@ -75,8 +75,14 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
     // TODO: Convert this to superstruct schema
     const isWalletRequestPermission =
       req.method === 'wallet_requestPermissions';
-    if (isWalletRequestPermission && req?.params && Array.isArray(req.params)) {
-      const permissionsMethodRequest = Object.keys(req.params[0] as {});
+    if (
+      isWalletRequestPermission &&
+      req?.params &&
+      Array.isArray(req.params) &&
+      req.params.length > 0 &&
+      req.params[0]
+    ) {
+      const permissionsMethodRequest = Object.keys(req.params[0]);
 
       const isEvmPermissionRequest = METHODS_TO_CHECK.some((method) =>
         permissionsMethodRequest.includes(method),
