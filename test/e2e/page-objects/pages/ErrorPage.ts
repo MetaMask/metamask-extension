@@ -1,8 +1,7 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from './header-navbar';
 import SettingsPage from './settings-page';
-import DevelopOptions from './deveoper-options';
+import DevelopOptionsPage from './developer-options-page';
 
 class ErrorPage {
   private readonly driver: Driver;
@@ -44,21 +43,16 @@ class ErrorPage {
     await settingsPage.check_pageIsLoaded();
     await settingsPage.goToDevelopOptionSettings();
 
-    const developOptionsPage = new DevelopOptions(this.driver);
+    const developOptionsPage = new DevelopOptionsPage(this.driver);
     await developOptionsPage.check_pageIsLoaded();
     await developOptionsPage.clickGenerateCrashButton();
   }
 
   async validate_errorMessage(): Promise<void> {
-    const errorMessageTextDOM = await this.driver.waitForSelector(
-      this.errorMessage,
-    );
-    const errorMessageText = await errorMessageTextDOM.getText();
-    assert.equal(
-      errorMessageText,
-      `Message: Unable to find value of key "developerOptions" for locale "en"`,
-      `Error in loading error page`,
-    );
+    await this.driver.waitForSelector({
+      text: `Message: Unable to find value of key "developerOptions" for locale "en"`,
+      css: this.errorMessage,
+    });
   }
 
   async submitToSentryUserFeedbackForm(): Promise<void> {
@@ -67,8 +61,9 @@ class ErrorPage {
     await this.driver.waitForSelector(this.sentryReportForm);
   }
 
-  async contactAndValidateMetamaskSupport(): Promise<void> {
+  async contactAndValidateMetaMaskSupport(): Promise<void> {
     console.log(`Contact metamask support form in a separate page`);
+    await this.driver.waitUntilXWindowHandles(1);
     await this.driver.clickElement(this.contactSupportButton);
     // metamask, help page
     await this.driver.waitUntilXWindowHandles(2);
