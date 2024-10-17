@@ -290,11 +290,11 @@ describe('Phishing Detection', function () {
           text: 'Back to safety',
         });
 
-        // Ensure we're redirected to wallet home page
-        const homePage = await driver.findElement('.home__main-view');
-        const homePageDisplayed = await homePage.isDisplayed();
+        const currentUrl = await driver.getCurrentUrl();
+        const expectedPortfolioUrl =
+          'https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button&marketingEnabled=true';
 
-        assert.equal(homePageDisplayed, true);
+        assert.equal(currentUrl, expectedPortfolioUrl);
       },
     );
   });
