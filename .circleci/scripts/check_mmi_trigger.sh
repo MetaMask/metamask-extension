@@ -1,4 +1,5 @@
-#!/bin/bash -eo pipefail
+#!/bin/bash
+set -eo pipefail
 
 # Arguments: label_name reviewer_team
 LABEL_NAME="$1"
@@ -14,7 +15,7 @@ fi
 PR_NUMBER=$(echo "$CIRCLE_PULL_REQUEST" | awk -F'/' '{print $NF}')
 
 # Define repository details
-REPO_OWNER=$(echo "$CIRCLE_PROJECT_USERNAME")
+REPO_OWNER="$CIRCLE_PROJECT_USERNAME"
 REPO_NAME=$(basename "$CIRCLE_REPOSITORY_URL" .git)
 
 # Fetch PR details using GitHub API
