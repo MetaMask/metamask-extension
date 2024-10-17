@@ -8,12 +8,17 @@ import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './constants';
 
 export enum BridgeFeatureFlagsKey {
+  EXTENSION_CONFIG = 'extensionConfig',
   EXTENSION_SUPPORT = 'extensionSupport',
   NETWORK_SRC_ALLOWLIST = 'srcNetworkAllowlist',
   NETWORK_DEST_ALLOWLIST = 'destNetworkAllowlist',
 }
 
 export type BridgeFeatureFlags = {
+  [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
+    refreshRate: number;
+    maxRefreshCount: number;
+  };
   [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: boolean;
   [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: Hex[];
   [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: Hex[];

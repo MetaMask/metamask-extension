@@ -29,6 +29,10 @@ describe('BridgeController', function () {
     nock(BRIDGE_API_BASE_URL)
       .get('/getAllFeatureFlags')
       .reply(200, {
+        'extension-config': {
+          refreshRate: 3,
+          maxRefreshCount: 1,
+        },
         'extension-support': true,
         'src-network-allowlist': [10, 534352],
         'dest-network-allowlist': [137, 42161],
@@ -66,6 +70,10 @@ describe('BridgeController', function () {
       extensionSupport: true,
       destNetworkAllowlist: [CHAIN_IDS.POLYGON, CHAIN_IDS.ARBITRUM],
       srcNetworkAllowlist: [CHAIN_IDS.OPTIMISM, CHAIN_IDS.SCROLL],
+      extensionConfig: {
+        maxRefreshCount: 1,
+        refreshRate: 3,
+      },
     };
     expect(bridgeController.state).toStrictEqual(EMPTY_INIT_STATE);
 
