@@ -460,6 +460,7 @@
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.23.2",
     "@babel/register": "^7.22.15",
+    "@jest/globals": "^29.7.0",
     "@lavamoat/allow-scripts": "^3.0.4",
     "@lavamoat/lavadome-core": "0.0.10",
     "@lavamoat/lavapack": "^6.1.0",

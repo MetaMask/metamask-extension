@@ -221,9 +221,9 @@ import {
   getIsSmartTransaction,
   isHardwareWallet,
   getFeatureFlagsByChainId,
-  getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
   getHardwareWalletType,
+  getSmartTransactionsPreferenceEnabled,
 } from '../../shared/modules/selectors';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
@@ -1904,7 +1904,7 @@ export default class MetamaskController extends EventEmitter {
         isResubmitEnabled: () => {
           const state = this._getMetaMaskState();
           return !(
-            getSmartTransactionsOptInStatus(state) &&
+            getSmartTransactionsPreferenceEnabled(state) &&
             getCurrentChainSupportsSmartTransactions(state)
           );
         },
