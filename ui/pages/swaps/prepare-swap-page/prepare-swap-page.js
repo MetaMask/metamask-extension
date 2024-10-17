@@ -69,8 +69,9 @@ import {
   getDataCollectionForMarketing,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import {
   getValueFromWeiHex,
@@ -213,14 +214,15 @@ export default function PrepareSwapPage({
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
   const isSmartTransaction =
-    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
+    useSelector(getSmartTransactionsPreferenceEnabled) &&
+    currentSmartTransactionsEnabled;
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;

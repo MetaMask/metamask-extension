@@ -7,7 +7,7 @@ import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import { setSmartTransactionsOptInStatus } from '../../../store/actions';
+import { setSmartTransactionsPreferenceEnabled } from '../../../store/actions';
 import SmartTransactionsOptInModal from './smart-transactions-opt-in-modal';
 
 const middleware = [thunk];
@@ -35,8 +35,8 @@ describe('SmartTransactionsOptInModal', () => {
   });
 
   it('calls setSmartTransactionsOptInStatus with false when the "No thanks" link is clicked', () => {
-    (setSmartTransactionsOptInStatus as jest.Mock).mockImplementationOnce(() =>
-      jest.fn(),
+    (setSmartTransactionsPreferenceEnabled as jest.Mock).mockImplementationOnce(
+      () => jest.fn(),
     );
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const { getByText } = renderWithProvider(
@@ -48,12 +48,12 @@ describe('SmartTransactionsOptInModal', () => {
     );
     const noThanksLink = getByText('No thanks');
     fireEvent.click(noThanksLink);
-    expect(setSmartTransactionsOptInStatus).toHaveBeenCalledWith(false);
+    expect(setSmartTransactionsPreferenceEnabled).toHaveBeenCalledWith(false);
   });
 
   it('calls setSmartTransactionsOptInStatus with true when the "Enable" button is clicked', () => {
-    (setSmartTransactionsOptInStatus as jest.Mock).mockImplementationOnce(() =>
-      jest.fn(),
+    (setSmartTransactionsPreferenceEnabled as jest.Mock).mockImplementationOnce(
+      () => jest.fn(),
     );
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const { getByText } = renderWithProvider(
@@ -65,6 +65,6 @@ describe('SmartTransactionsOptInModal', () => {
     );
     const enableButton = getByText('Enable');
     fireEvent.click(enableButton);
-    expect(setSmartTransactionsOptInStatus).toHaveBeenCalledWith(true);
+    expect(setSmartTransactionsPreferenceEnabled).toHaveBeenCalledWith(true);
   });
 });

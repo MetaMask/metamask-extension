@@ -6183,6 +6183,9 @@
   "transactionFee": {
     "message": "Transaction fee"
   },
+  "transactionFlowNetwork": {
+    "message": "Network"
+  },
   "transactionHistoryBaseFee": {
     "message": "Base fee (GWEI)"
   },
