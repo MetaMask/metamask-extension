@@ -37,6 +37,7 @@ type Story = StoryObj<typeof Skeleton>;
 export const DefaultStory: Story = {
   args: {
     height: 32,
+    width: 300,
   },
 };
 
