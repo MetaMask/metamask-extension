@@ -1,4 +1,5 @@
-import { BaseController, StateMetadata } from '@metamask/base-controller';
+import { StateMetadata } from '@metamask/base-controller';
+import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
@@ -19,7 +20,7 @@ const metadata: StateMetadata<{
   },
 };
 
-export default class BridgeStatusController extends BaseController<
+export default class BridgeStatusController extends StaticIntervalPollingController<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   { bridgeStatusState: BridgeStatusControllerState },
   BridgeStatusControllerMessenger
@@ -34,8 +35,8 @@ export default class BridgeStatusController extends BaseController<
 
     // Register action handlers
     this.messagingSystem.registerActionHandler(
-      `${BRIDGE_STATUS_CONTROLLER_NAME}:fetchBridgeTxStatus`,
-      this.fetchBridgeTxStatus.bind(this),
+      `${BRIDGE_STATUS_CONTROLLER_NAME}:startPollingForBridgeTxStatus`,
+      this.startPollingForBridgeTxStatus.bind(this),
     );
   }
 
@@ -47,26 +48,30 @@ export default class BridgeStatusController extends BaseController<
     });
   };
 
-  fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
+  startPollingForBridgeTxStatus = async (statusRequest: StatusRequest) => {
     // Need to subscribe since if we try to fetch status too fast, API will fail with 500 error
     // So fetch on tx confirmed
     this.messagingSystem.subscribe(
       'TransactionController:transactionConfirmed',
       async (txMeta) => {
         if (txMeta.hash === statusRequest.srcTxHash) {
-          const { bridgeStatusState } = this.state;
-          const bridgeTxStatus = await fetchBridgeTxStatus(statusRequest);
-          this.update((_state) => {
-            _state.bridgeStatusState = {
-              ...bridgeStatusState,
-              txStatuses: {
-                ...bridgeStatusState.txStatuses,
-                [statusRequest.srcTxHash]: bridgeTxStatus,
-              },
-            };
-          });
+          this.#fetchBridgeTxStatus(statusRequest);
         }
       },
     );
+  };
+
+  #fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
+    const { bridgeStatusState } = this.state;
+    const bridgeTxStatus = await fetchBridgeTxStatus(statusRequest);
+    this.update((_state) => {
+      _state.bridgeStatusState = {
+        ...bridgeStatusState,
+        txStatuses: {
+          ...bridgeStatusState.txStatuses,
+          [statusRequest.srcTxHash]: bridgeTxStatus,
+        },
+      };
+    });
   };
 }
