@@ -24,8 +24,6 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
     [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: false,
     [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
     [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
-    [BridgeFeatureFlagsKey.APPROVAL_GAS_MULTIPLIER]: {},
-    [BridgeFeatureFlagsKey.BRIDGE_GAS_MULTIPLIER]: {},
   },
   srcTokens: {},
   srcTopAssets: [],
