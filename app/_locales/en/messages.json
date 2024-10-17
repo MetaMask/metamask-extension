@@ -851,8 +851,14 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeCalculatingAmount": {
+    "message": "Calculating..."
+  },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
+  },
+  "bridgeEnterAmount": {
+    "message": "Enter amount"
   },
   "bridgeFrom": {
     "message": "Bridge from"
@@ -862,6 +868,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectTokenAndAmount": {
+    "message": "Select token and amount"
   },
   "bridgeTimingMinutes": {
     "message": "$1 minutes",
