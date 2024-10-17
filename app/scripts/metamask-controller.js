@@ -6654,7 +6654,7 @@ export default class MetamaskController extends EventEmitter {
   safelistPhishingDomain(origin) {
     this.metaMetricsController.trackEvent({
       category: MetaMetricsEventCategory.Phishing,
-      event: MetaMetricsEventName.ProceedAnywayPhishingPage,
+      event: MetaMetricsEventName.ProceedAnywayClicked,
       properties: {
         url: origin,
         referrer: {
@@ -6673,7 +6673,7 @@ export default class MetamaskController extends EventEmitter {
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.PortfolioLinkClicked,
       properties: {
-        location: 'Phishing Warning',
+        location: 'phishing_page',
         text: 'Back to safety',
       },
     });

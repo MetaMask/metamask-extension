@@ -601,7 +601,7 @@ export enum MetaMetricsEventName {
   PetnameModalOpened = 'Petname Modal Opened',
   PetnameUpdated = 'Petname Updated',
   PhishingPageDisplayed = 'Phishing Page Displayed',
-  ProceedAnywayPhishingPage = 'Proceed Anyway Phishing Page',
+  ProceedAnywayClicked = 'Proceed Anyway Clicked',
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
