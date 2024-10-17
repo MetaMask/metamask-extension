@@ -16,8 +16,6 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     transactionMeta.txParams.data,
   );
 
-  console.log({ decimals });
-
   const decodedResponse = useDecodedTransactionData();
   const { value, pending } = decodedResponse;
 
