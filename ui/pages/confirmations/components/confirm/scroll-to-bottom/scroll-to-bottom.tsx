@@ -51,12 +51,12 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     offsetPxFromBottom: 0,
   });
 
-  const isTransaction = REDESIGN_USER_TRANSACTION_TYPES.includes(
+  const isTransactionRedesign = REDESIGN_USER_TRANSACTION_TYPES.includes(
     currentConfirmation?.type as TransactionType,
   );
 
   const showScrollToBottom =
-    isScrollable && !isScrolledToBottom && !isTransaction;
+    isScrollable && !isScrolledToBottom && !isTransactionRedesign;
 
   /**
    * Scroll to the top of the page when the confirmation changes. This happens
@@ -80,6 +80,11 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   }, [currentConfirmation?.id, previousId, ref?.current]);
 
   useEffect(() => {
+    if (isTransactionRedesign) {
+      setIsScrollToBottomCompleted(true);
+      return;
+    }
+
     setIsScrollToBottomCompleted(!isScrollable || hasScrolledToBottom);
   }, [isScrollable, hasScrolledToBottom]);
 
