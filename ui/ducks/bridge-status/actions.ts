@@ -7,7 +7,7 @@ import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
 
-const callBridgeStatusControllerMethod = <T extends any[]>(
+const callBridgeStatusControllerMethod = <T extends unknown[]>(
   bridgeAction: BridgeStatusAction,
   args?: T,
 ) => {
@@ -22,9 +22,9 @@ export const getBridgeTxStatus = (statusRequest: StatusRequest) => {
     return dispatch(
       callBridgeStatusControllerMethod<
         Parameters<
-          BridgeStatusController[BridgeStatusAction.GET_BRIDGE_TX_STATUS]
+          BridgeStatusController[BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS]
         >
-      >(BridgeStatusAction.GET_BRIDGE_TX_STATUS, [statusRequest]),
+      >(BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS, [statusRequest]),
     );
   };
 };
