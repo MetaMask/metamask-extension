@@ -82,8 +82,6 @@ export default function NftsItems({
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
-  const [updatedNfts, setUpdatedNfts] = useState([]);
-
   useEffect(() => {
     if (
       chainId !== undefined &&
@@ -143,8 +141,7 @@ export default function NftsItems({
           }
         }
       }
-      const settled = await Promise.all(promisesArr);
-      setUpdatedNfts(settled);
+      await Promise.all(promisesArr);
     };
 
     modifyItems();
@@ -201,20 +198,6 @@ export default function NftsItems({
       return null;
     }
 
-    const getSource = (isImageHosted, nft) => {
-      if (!isImageHosted) {
-        const found = updatedNfts.find(
-          (elm) =>
-            elm.tokenId === nft.tokenId &&
-            isEqualCaseInsensitive(elm.address, nft.address),
-        );
-        if (found) {
-          return found.ipfsImageUpdated;
-        }
-      }
-      return nft.image;
-    };
-
     const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
     return (
       <div className="nfts-items__collection" key={`collection-${key}`}>
@@ -260,11 +243,7 @@ export default function NftsItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {nfts.map((nft, i) => {
-              const { address, tokenId, image } = nft;
-              const isImageHosted =
-                image?.startsWith('https:') || image?.startsWith('http:');
-
-              const source = getSource(isImageHosted, nft);
+              const { address, tokenId } = nft;
 
               const handleImageClick = () => {
                 if (isModal) {
@@ -280,7 +259,7 @@ export default function NftsItems({
                   className="nfts-items__item-wrapper"
                 >
                   <NftItem
-                    nft={{ ...nft, image: source, chainId }}
+                    nft={{ ...nft, chainId }}
                     onClick={handleImageClick}
                     clickable
                   />
