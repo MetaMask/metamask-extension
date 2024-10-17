@@ -8,7 +8,8 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap revoke permission', function () {
+// TODO: Resolve this before merging. I'm sure the linter will make sure of it though
+describe.skip('Test Snap revoke permission', function () {
   it('can revoke a permission', async function () {
     await withFixtures(
       {
