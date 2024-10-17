@@ -11,9 +11,7 @@ import { Driver } from '../../webdriver/driver';
 
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-  await driver.clickElementAndWaitForWindowToClose(
-    '[data-testid="confirm-footer-button"]',
-  );
+  await driver.clickElement('[data-testid="confirm-footer-button"]');
 }
 
 export function withRedesignConfirmationFixtures(
