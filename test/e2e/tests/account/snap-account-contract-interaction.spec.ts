@@ -59,7 +59,7 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_accountLabel('SSK Account');
 
-        // Open DApp with contract
+        // Open Dapp with contract
         const testDapp = new TestDapp(driver);
         const contractAddress = await (
           contractRegistry as GanacheContractAddressRegistry
