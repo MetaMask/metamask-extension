@@ -203,10 +203,10 @@ function SwitchedNetworkToast() {
     selectSwitchedNetworkNeverShowMessage,
   );
 
-  const show = switchedNetworkDetails && !switchedNetworkNeverShowMessage;
+  const isShown = switchedNetworkDetails && !switchedNetworkNeverShowMessage;
 
   return (
-    show && (
+    isShown && (
       <Toast
         key="switched-network-toast"
         startAdornment={
