@@ -248,7 +248,7 @@ const CoinButtons = ({
       (approval) => {
         return (
           approval.type === 'snap_dialog' &&
-          approval.origin === 'npm:@metamask/bitcoin-wallet-snap'
+          approval.origin === BITCOIN_WALLET_SNAP_ID
         );
       },
     );
