@@ -21,8 +21,8 @@ class TestDapp {
   private readonly connectAccountButton = '#connectButton';
 
   private readonly connectMetaMaskMessage = {
-    tag: 'h2',
     text: 'Connect with MetaMask',
+    tag: 'h2',
   };
 
   private readonly connectedAccount = '#accounts';
@@ -30,8 +30,8 @@ class TestDapp {
   private readonly depositPiggyBankContractButton = '#depositButton';
 
   private readonly editConnectButton = {
-    tag: 'button',
     text: 'Edit',
+    tag: 'button',
   };
 
   private readonly erc1155RevokeSetApprovalForAllButton =
@@ -47,8 +47,8 @@ class TestDapp {
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
 
   private readonly localhostCheckbox = {
-    tag: 'p',
     text: 'Localhost 8545',
+    tag: 'p',
   };
 
   private readonly localhostNetworkMessage = {
@@ -63,8 +63,8 @@ class TestDapp {
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
 
   private readonly personalSignSignatureRequestMessage = {
-    tag: 'div',
     text: 'personal_sign',
+    tag: 'div',
   };
 
   private readonly personalSignVerifyButton = '#personalSignVerify';
@@ -76,8 +76,8 @@ class TestDapp {
   private readonly signPermitResult = '#signPermitResult';
 
   private readonly signPermitSignatureRequestMessage = {
-    tag: 'p',
     text: 'Permit',
+    tag: 'p',
   };
 
   private readonly signPermitVerifyButton = '#signPermitVerify';
@@ -89,8 +89,8 @@ class TestDapp {
   private readonly signTypedDataResult = '#signTypedDataResult';
 
   private readonly signTypedDataSignatureRequestMessage = {
-    tag: 'div',
     text: 'Hi, Alice!',
+    tag: 'div',
   };
 
   private readonly signTypedDataV3Button = '#signTypedDataV3';
@@ -98,8 +98,8 @@ class TestDapp {
   private readonly signTypedDataV3Result = '#signTypedDataV3Result';
 
   private readonly signTypedDataV3V4SignatureRequestMessage = {
-    tag: 'div',
     text: 'Hello, Bob!',
+    tag: 'div',
   };
 
   private readonly signTypedDataV3VerifyButton = '#signTypedDataV3Verify';
@@ -119,13 +119,13 @@ class TestDapp {
   private readonly signTypedDataVerifyResult = '#signTypedDataVerifyResult';
 
   private readonly transactionRequestMessage = {
-    css: 'h2',
     text: 'Transaction request',
+    tag: 'h2',
   };
 
   private readonly updateNetworkButton = {
-    tag: 'button',
     text: 'Update',
+    tag: 'button',
   };
 
   constructor(driver: Driver) {
