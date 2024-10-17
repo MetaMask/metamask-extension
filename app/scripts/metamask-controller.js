@@ -6672,7 +6672,7 @@ export default class MetamaskController extends EventEmitter {
       event: MetaMetricsEventName.PortfolioLinkClicked,
       properties: {
         location: 'Phishing Warning',
-        text: 'Portfolio',
+        text: 'Back to safety',
       },
     });
 
