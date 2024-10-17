@@ -197,7 +197,7 @@ class TestDapp {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.connectMetaMaskMessage);
 
-    // TODO:Extra steps needed to preserve the current network.
+    // TODO: Extra steps needed to preserve the current network.
     // Following steps can be removed once the issue is fixed (#27891)
     const editNetworkButton = await this.driver.findClickableElements(
       this.editConnectButton,
