@@ -348,7 +348,7 @@ function overrideContentSecurityPolicyHeader() {
       }
       return { responseHeaders };
     },
-    { urls: ['http://*/*', 'https://*/*'] },
+    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
     ['blocking', 'responseHeaders'],
   );
 }
