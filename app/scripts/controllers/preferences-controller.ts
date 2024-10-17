@@ -136,6 +136,7 @@ export type PreferencesControllerState = Omit<
   useSafeChainsListValidation: boolean;
   use4ByteResolution: boolean;
   useCurrencyRateCheck: boolean;
+  useRequestQueue: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
@@ -179,6 +180,7 @@ export const getDefaultPreferencesControllerState =
     use4ByteResolution: true,
     useCurrencyRateCheck: true,
     openSeaEnabled: true,
+    useRequestQueue: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
     bitcoinSupportEnabled: false,
@@ -316,6 +318,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   useCurrencyRateCheck: {
+    persist: true,
+    anonymous: true,
+  },
+  useRequestQueue: {
     persist: true,
     anonymous: true,
   },

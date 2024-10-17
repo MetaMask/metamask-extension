@@ -34,7 +34,7 @@ function transformState(
     isObject(state.PreferencesController) &&
     hasProperty(state.PreferencesController, 'useRequestQueue')
   ) {
-      delete state.PreferencesController.useRequestQueue;
+    delete state.PreferencesController.useRequestQueue;
   }
   return state;
 }
