@@ -193,9 +193,6 @@ export const submitBridgeTransaction = (
         txParams.chainId,
         10,
       ).toPrefixedHexString() as `0x${string}`;
-      if (!hexChainId) {
-        throw new Error('Invalid chain ID');
-      }
 
       const maxGasLimit = getMaxGasLimit(txParams.gasLimit ?? 0);
 
@@ -353,22 +350,7 @@ export const submitBridgeTransaction = (
         decimals,
         symbol,
         icon: image,
-        chainId,
       } = quoteResponse.quote.srcAsset;
-
-      const srcHexChainId = new Numeric(
-        quoteResponse.quote.srcChainId,
-        10,
-      ).toPrefixedHexString() as `0x${string}`;
-      const tokenHexChainId = new Numeric(
-        chainId,
-        10,
-      ).toPrefixedHexString() as `0x${string}`;
-
-      if (tokenHexChainId !== srcHexChainId) {
-        throw new Error('Token chain ID does not match source chain ID');
-      }
-
       dispatch(
         addToken({
           address,
