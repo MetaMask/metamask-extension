@@ -11,8 +11,22 @@ const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
 
 export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
+  console.log('fetchBridgeTxStatus', { statusRequest });
+
+  // Assemble params
+  const { quote, ...statusRequestNoQuote } = statusRequest;
+  const statusRequestNoQuoteFormatted = Object.fromEntries(
+    Object.entries(statusRequestNoQuote).map(([key, value]) => [
+      key,
+      value.toString(),
+    ]),
+  );
+  const params = new URLSearchParams(statusRequestNoQuoteFormatted);
+
   // Fetch
-  const url = `${BRIDGE_API_BASE_URL}/getTxStatus`;
+  const baseUrl = `${BRIDGE_API_BASE_URL}/getTxStatus`;
+  const url = `${baseUrl}?${params.toString()}`;
+
   const rawTxStatus = await fetchWithCache({
     url,
     fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
@@ -24,7 +38,7 @@ export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
   const isValid = validateResponse<StatusResponse, unknown>(
     validators,
     rawTxStatus,
-    url,
+    baseUrl,
   );
   if (!isValid) {
     throw new Error('Invalid response from bridge');
@@ -33,6 +47,6 @@ export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
   // Convert to Extension format
 
   // Return
-  console.log('fetchBridgeTxStatus', { statusRequest, rawTxStatus });
+  console.log('fetchBridgeTxStatus', { rawTxStatus });
   return rawTxStatus;
 };
