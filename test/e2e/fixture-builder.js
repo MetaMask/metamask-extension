@@ -442,151 +442,144 @@ class FixtureBuilder {
     return this;
   }
 
-  withPermissionControllerConnectedToTestDapp({
-    restrictReturnedAccounts = true,
-    account = '',
-  } = {}) {
+  withPermissionControllerConnectedToTestDapp({ account = '' } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     const subjects = {
-        [DAPP_URL]: {
-          origin: DAPP_URL,
-          permissions: {
-            'endowment:caip25': {
-              caveats: [
-                {
-                  type: 'authorizedScopes',
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      'eip155:1337': {
-                        methods: [],
-                        notifications: [],
-                        accounts: restrictReturnedAccounts ? [] : [
-                          `eip155:1337:${selectedAccount.toLowerCase()}`,
-                          'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                          `eip155:1337:${ERC_4337_ACCOUNT.toLowerCase()}`,
-                        ],
-                      },
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1337': {
+                      methods: [],
+                      notifications: [],
+                      accounts: [
+                        `eip155:1337:${selectedAccount.toLowerCase()}`,
+                        'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                        `eip155:1337:${ERC_4337_ACCOUNT.toLowerCase()}`,
+                      ],
                     },
-                    isMultichainOrigin: false,
                   },
+                  isMultichainOrigin: false,
                 },
-              ],
-              id: 'ZaqPEWxyhNCJYACFw93jE',
-              date: 1664388714636,
-              invoker: DAPP_URL,
-              parentCapability: 'endowment:caip25',
-            },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
           },
         },
-      };
+      },
+    };
     return this.withPermissionController({
       subjects,
     });
   }
 
-  withPermissionControllerSnapAccountConnectedToTestDapp(
-    restrictReturnedAccounts = true,
-  ) {
+  withPermissionControllerSnapAccountConnectedToTestDapp() {
     const subjects = {
-        [DAPP_URL]: {
-          origin: DAPP_URL,
-          permissions: {
-            'endowment:caip25': {
-              caveats: [
-                {
-                  type: 'authorizedScopes',
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      'eip155:1337': {
-                        methods: [],
-                        notifications: [],
-                        accounts: restrictReturnedAccounts ? [] : [
-                          'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                        ],
-                      },
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1337': {
+                      methods: [],
+                      notifications: [],
+                      accounts: [
+                        'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                      ],
                     },
-                    isMultichainOrigin: false,
                   },
+                  isMultichainOrigin: false,
                 },
-              ],
-              id: 'ZaqPEWxyhNCJYACFw93jE',
-              date: 1664388714636,
-              invoker: DAPP_URL,
-              parentCapability: 'endowment:caip25',
-            },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
           },
         },
-      };
+      },
+    };
     return this.withPermissionController({ subjects });
   }
 
-  withPermissionControllerConnectedToTwoTestDapps(
-    restrictReturnedAccounts = true,
-  ) {
+  withPermissionControllerConnectedToTwoTestDapps() {
     const subjects = {
-        [DAPP_URL]: {
-          origin: DAPP_URL,
-          permissions: {
-            'endowment:caip25': {
-              caveats: [
-                {
-                  type: 'authorizedScopes',
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      'eip155:1337': {
-                        methods: [],
-                        notifications: [],
-                        accounts: restrictReturnedAccounts ? [] : [
-                          'eip155:1337:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                          'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                        ],
-                      },
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1337': {
+                      methods: [],
+                      notifications: [],
+                      accounts: [
+                        'eip155:1337:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                        'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                      ],
                     },
-                    isMultichainOrigin: false,
                   },
+                  isMultichainOrigin: false,
                 },
-              ],
-              id: 'ZaqPEWxyhNCJYACFw93jE',
-              date: 1664388714636,
-              invoker: DAPP_URL,
-              parentCapability: 'endowment:caip25',
-            },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
           },
         },
-        [DAPP_ONE_URL]: {
-          origin: DAPP_ONE_URL,
-          permissions: {
-            'endowment:caip25': {
-              caveats: [
-                {
-                  type: 'authorizedScopes',
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      'eip155:1338': {
-                        methods: [],
-                        notifications: [],
-                        accounts: restrictReturnedAccounts ? [] : [
-                          'eip155:1338:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                          'eip155:1338:0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                        ],
-                      },
+      },
+      [DAPP_ONE_URL]: {
+        origin: DAPP_ONE_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1338': {
+                      methods: [],
+                      notifications: [],
+                      accounts: [
+                        'eip155:1338:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                        'eip155:1338:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                      ],
                     },
-                    isMultichainOrigin: false,
                   },
+                  isMultichainOrigin: false,
                 },
-              ],
-              id: 'ZaqPEWxyhNCJYACFw93jE',
-              date: 1664388714636,
-              invoker: DAPP_ONE_URL,
-              parentCapability: 'endowment:caip25',
-            },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_ONE_URL,
+            parentCapability: 'endowment:caip25',
           },
         },
-      };
+      },
+    };
     return this.withPermissionController({ subjects });
   }
 
