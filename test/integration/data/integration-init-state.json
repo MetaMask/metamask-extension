@@ -1209,10 +1209,6 @@
         "extension_active": true,
         "mobile_active": true
       },
-      "swapRedesign": {
-        "extensionActive": true,
-        "mobileActive": false
-      },
       "zksync": {
         "extensionActive": true,
         "extension_active": true,

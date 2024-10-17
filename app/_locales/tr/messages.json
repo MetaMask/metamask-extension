@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noConnectedAccountDescription": {
-    "message": "Devam etmek için bu sitede kullanmak istediğiniz bir hesap seçin."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
   },
@@ -5195,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Devam etmek istediğinizde size en yeni kotaları göstermeye hazırız"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "$1 ile eşleşen token yok",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Donanım cüzdanınızla onaylayın"
   },
@@ -5263,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Teklifler alınırken hata"
   },
-  "swapFetchingTokens": {
-    "message": "Tokenler alınıyor..."
-  },
   "swapFromTo": {
     "message": "$1 ile $2 swap işlemi",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5285,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "Yüksek kayma"
-  },
-  "swapHighSlippageWarning": {
-    "message": "Kayma tutarı çok yüksek."
   },
   "swapIncludesMMFee": {
     "message": "%$1 MetaMask ücreti dahildir.",
@@ -5309,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "Düşük kayma"
-  },
-  "swapLowSlippageError": {
-    "message": "İşlem başarısız olabilir, maks. kayma çok düşük."
   },
   "swapMaxSlippage": {
     "message": "Maks. kayma"
@@ -5346,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "~%$1 fiyat farkı",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Fiyat etkisi, mevcut piyasa fiyatı ile işlem gerçekleştirildiği sırada alınan tutar arasındaki farktır. Fiyat etkisi, likidite havuzunun boyutuna bağlı olarak işleminizin boyutunun bir fonksiyonudur."
   },
   "swapPriceUnavailableDescription": {
     "message": "Fiyat etkisi, piyasa fiyat verisinin mevcut olmaması nedeniyle belirlenememiştir. Swap işlemini gerçekleştirmeden önce lütfen almak üzere olduğunuz token tutarının sizin için uygun olduğunu onaylayın."
@@ -5396,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "Teklif talebi"
   },
-  "swapReviewSwap": {
-    "message": "Swap'ı incele"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "İsmi arayın veya adresi yapıştırın"
-  },
   "swapSelect": {
     "message": "Seç"
   },
@@ -5433,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Düşük kayma"
-  },
-  "swapSlippageNegative": {
-    "message": "Kayma en az sıfır olmalıdır"
   },
   "swapSlippageNegativeDescription": {
     "message": "Kayma en az sıfır olmalıdır"
@@ -5505,20 +5477,6 @@
     "message": "$1 ile $2 swap gerçekleştir",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Bu token manuel olarak eklendi."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Her zaman token adresini $1 üzerinde onaylayın.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Sadece 1 kaynakta doğrulandı."
-  },
-  "swapTokenVerificationSources": {
-    "message": "$1 kaynakta doğrulandı.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 sadece 1 kaynakta doğrulandı. İlerlemeden önce $2 üzerinde doğrulamayı deneyin.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5539,29 +5497,11 @@
   "swapUnknown": {
     "message": "Bilinmiyor"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Birden fazla token aynı adı ve sembolü kullanabilir. Aradığınız tokenin bu olup olmadığını $1 alanında kontrol edin.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 için swap işlemi yapılabilir",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "%0 Kayma"
   },
-  "swapsAdvancedOptions": {
-    "message": "Gelişmiş seçenekler"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Kayma tutarı çok yüksek ve kötü bir orana neden olacak. Lütfen kayma toleransınızı %15'in altında bir değere düşürün."
-  },
   "swapsMaxSlippage": {
     "message": "Kayma toleransı"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Bu işlemi tamamlamak için yeterli $1 yok",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Yeterli $1 yok",
@@ -6057,14 +5997,6 @@
   },
   "verifyContractDetails": {
     "message": "Üçüncü taraf bilgilerini doğrula"
-  },
-  "verifyThisTokenOn": {
-    "message": "Şurada bu tokeni doğrula: $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Bu tokeni $1 ile doğrulayın ve işlem yapmak istediğiniz tokenin bu olduğundan emin olun.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "Sürüm"

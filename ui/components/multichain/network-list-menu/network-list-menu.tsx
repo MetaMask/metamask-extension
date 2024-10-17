@@ -26,6 +26,8 @@ import {
   setEditedNetwork,
   grantPermittedChain,
   showPermittedNetworkToast,
+  updateCustomNonce,
+  setNextNonce,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -277,6 +279,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             network.rpcEndpoints[network.defaultRpcEndpointIndex];
           dispatch(setActiveNetwork(networkClientId));
           dispatch(toggleNetworkMenu());
+          dispatch(updateCustomNonce(''));
+          dispatch(setNextNonce(''));
 
           if (permittedAccountAddresses.length > 0) {
             grantPermittedChain(selectedTabOrigin, network.chainId);

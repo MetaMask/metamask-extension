@@ -96,6 +96,7 @@ export const NETWORK_NAMES = {
   HOMESTEAD: 'homestead',
 };
 
+export const CHAIN_SPEC_URL = 'https://chainid.network/chains.json';
 /**
  * An object containing all of the chain ids for networks both built in and
  * those that we have added custom code to support our feature set.

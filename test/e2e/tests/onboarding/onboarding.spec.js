@@ -280,7 +280,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           );
 
           await driver.clickElement({
-            text: 'Manage default settings',
+            text: 'Manage default privacy settings',
             tag: 'button',
           });
 
@@ -402,7 +402,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         );
 
         await driver.clickElement({
-          text: 'Manage default settings',
+          text: 'Manage default privacy settings',
           tag: 'button',
         });
         await driver.clickElement('[data-testid="category-item-General"]');

@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   validateSwitchEthereumChainParams,
@@ -57,7 +57,7 @@ async function switchEthereumChainHandler(
 
   if (!networkClientIdToSwitchTo) {
     return end(
-      ethErrors.provider.custom({
+      providerErrors.custom({
         code: 4902,
         message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
       }),

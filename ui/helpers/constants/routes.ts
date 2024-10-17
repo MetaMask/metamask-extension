@@ -241,12 +241,6 @@ PATH_NAME_MAP[PREPARE_SWAP_ROUTE] = 'Prepare Swap Page';
 export const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
 PATH_NAME_MAP[SWAPS_NOTIFICATION_ROUTE] = 'Swaps Notification Page';
 
-export const BUILD_QUOTE_ROUTE = '/swaps/build-quote';
-PATH_NAME_MAP[BUILD_QUOTE_ROUTE] = 'Swaps Build Quote Page';
-
-export const VIEW_QUOTE_ROUTE = '/swaps/view-quote';
-PATH_NAME_MAP[VIEW_QUOTE_ROUTE] = 'Swaps View Quotes Page';
-
 export const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
 PATH_NAME_MAP[LOADING_QUOTES_ROUTE] = 'Swaps Loading Quotes Page';
 

@@ -50,6 +50,23 @@
       },
       "snapsInstallPrivacyWarningShown": true
     },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          },
+          "destNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          }
+        }
+      }
+    },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -138,7 +155,9 @@
     "SmartTransactionsController": {
       "smartTransactionsState": {
         "fees": {},
+        "feesByChainId": "object",
         "liveness": true,
+        "livenessByChainId": "object",
         "smartTransactions": "object"
       }
     },

@@ -6,7 +6,7 @@ import { shuffle } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import {
-  navigateBackToBuildQuote,
+  navigateBackToPrepareSwap,
   getFetchParams,
   getQuotesFetchStartTime,
   getCurrentSmartTransactionsEnabled,
@@ -183,7 +183,7 @@ export default function LoadingSwapsQuotes({
         submitText={t('back')}
         onSubmit={async () => {
           trackEvent(quotesRequestCancelledEventConfig);
-          await dispatch(navigateBackToBuildQuote(history));
+          await dispatch(navigateBackToPrepareSwap(history));
         }}
         hideCancel
       />
