@@ -6,10 +6,6 @@ on:
     - cron: 0 0 * * *
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   run-tests:
     name: Run tests
@@ -27,6 +23,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
       - name: Update coverage
         run: |
@@ -34,8 +32,8 @@ jobs:
 
       - name: Checkout/create branch, commit, and force push
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "MetaMask Bot"
+          git config user.email "metamaskbot@users.noreply.github.com"
           git checkout -b metamaskbot/update-coverage
           git add coverage.json
           git commit -m "chore: Update coverage.json"
@@ -43,6 +41,6 @@ jobs:
 
       - name: Create/update pull request
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
         run: |
           gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%." --base develop --head metamaskbot/update-coverage || gh pr edit --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%."
