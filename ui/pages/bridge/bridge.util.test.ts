@@ -1,6 +1,13 @@
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { fetchBridgeFeatureFlags, fetchBridgeTokens } from './bridge.util';
+import { mockBridgeQuotesErc20Erc20 } from '../../../test/data/bridge/mock-quotes-erc20-erc20';
+import { mockBridgeQuotesNativeErc20 } from '../../../test/data/bridge/mock-quotes-native-erc20';
+import { zeroAddress } from '../../__mocks__/ethereumjs-util';
+import {
+  fetchBridgeFeatureFlags,
+  fetchBridgeQuotes,
+  fetchBridgeTokens,
+} from './bridge.util';
 
 jest.mock('../../../shared/lib/fetch-with-cache');
 
@@ -139,6 +146,94 @@ describe('Bridge utils', () => {
       (fetchWithCache as jest.Mock).mockRejectedValue(mockError);
 
       await expect(fetchBridgeTokens('0xa')).rejects.toThrowError(mockError);
+    });
+  });
+
+  describe('fetchBridgeQuotes', () => {
+    it('should fetch bridge quotes successfully, no approvals', async () => {
+      (fetchWithCache as jest.Mock).mockResolvedValue(
+        mockBridgeQuotesNativeErc20,
+      );
+
+      const result = await fetchBridgeQuotes({
+        walletAddress: '0x123',
+        srcChainId: 1,
+        destChainId: 10,
+        srcTokenAddress: zeroAddress(),
+        destTokenAddress: zeroAddress(),
+        srcTokenAmount: '20000',
+        slippage: 0.5,
+      });
+
+      expect(fetchWithCache).toHaveBeenCalledWith({
+        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5',
+        fetchOptions: {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+        },
+        cacheOptions: { cacheRefreshTime: 0 },
+        functionName: 'fetchBridgeQuotes',
+      });
+
+      expect(result).toStrictEqual(mockBridgeQuotesNativeErc20);
+    });
+
+    it('should fetch bridge quotes successfully, with approvals', async () => {
+      (fetchWithCache as jest.Mock).mockResolvedValue(
+        mockBridgeQuotesErc20Erc20,
+      );
+
+      const result = await fetchBridgeQuotes({
+        walletAddress: '0x123',
+        srcChainId: 1,
+        destChainId: 10,
+        srcTokenAddress: zeroAddress(),
+        destTokenAddress: zeroAddress(),
+        srcTokenAmount: '20000',
+        slippage: 0.5,
+      });
+
+      expect(fetchWithCache).toHaveBeenCalledWith({
+        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5',
+        fetchOptions: {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+        },
+        cacheOptions: { cacheRefreshTime: 0 },
+        functionName: 'fetchBridgeQuotes',
+      });
+
+      expect(result).toStrictEqual(mockBridgeQuotesErc20Erc20);
+    });
+
+    it('should filter out malformed bridge quotes', async () => {
+      (fetchWithCache as jest.Mock).mockResolvedValue(
+        mockBridgeQuotesErc20Erc20.map(
+          ({ quote, ...restOfQuote }) => restOfQuote,
+        ),
+      );
+
+      const result = await fetchBridgeQuotes({
+        walletAddress: '0x123',
+        srcChainId: 1,
+        destChainId: 10,
+        srcTokenAddress: zeroAddress(),
+        destTokenAddress: zeroAddress(),
+        srcTokenAmount: '20000',
+        slippage: 0.5,
+      });
+
+      expect(fetchWithCache).toHaveBeenCalledWith({
+        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5',
+        fetchOptions: {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+        },
+        cacheOptions: { cacheRefreshTime: 0 },
+        functionName: 'fetchBridgeQuotes',
+      });
+
+      expect(result).toStrictEqual([]);
     });
   });
 });

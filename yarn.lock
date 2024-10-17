@@ -26147,6 +26147,7 @@ __metadata:
     "@metamask/permission-log-controller": "npm:^2.0.1"
     "@metamask/phishing-controller": "npm:^12.0.1"
     "@metamask/phishing-warning": "npm:^4.0.0"
+    "@metamask/polling-controller": "npm:^10.0.1"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.35.1"
     "@metamask/preferences-controller": "npm:^13.0.2"
