@@ -45,7 +45,6 @@ import {
   getIsEthGasPriceFetched,
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
-  getPreferences,
   doesAddressRequireLedgerHidConnection,
   getTokenList,
   getEnsResolutionByAddress,
@@ -266,7 +265,6 @@ const mapStateToProps = (state, ownProps) => {
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPriceFetched = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
-  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
@@ -347,7 +345,6 @@ const mapStateToProps = (state, ownProps) => {
     noGasPrice,
     supportsEIP1559,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
-    useNativeCurrencyAsPrimaryCurrency,
     maxFeePerGas: gasEstimationObject.maxFeePerGas,
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,

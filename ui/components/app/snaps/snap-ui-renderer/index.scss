@@ -1,4 +1,10 @@
+@use "design-system";
+
 .snap-ui-renderer {
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
   &__content {
     margin-bottom: 0 !important;
   }
@@ -69,5 +75,17 @@
 
   &__footer {
     margin-top: auto;
+
+    @include design-system.screen-sm-min {
+      max-width: $width-screen-sm-min;
+    }
+
+    @include design-system.screen-md-min {
+      max-width: $width-screen-md-min;
+    }
+
+    @include design-system.screen-lg-min {
+      max-width: $width-screen-lg-min;
+    }
   }
 }

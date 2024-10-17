@@ -49,19 +49,9 @@ describe('Request Queueing', function () {
         await switchToNotificationWindow(driver);
 
         await driver.clickElement({
-          text: 'Next',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        // Wait for Connecting notification to close.
-        await driver.waitUntilXWindowHandles(2);
 
         // Navigate to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

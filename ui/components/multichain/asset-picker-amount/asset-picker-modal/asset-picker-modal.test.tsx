@@ -4,6 +4,7 @@ import configureStore from 'redux-mock-store';
 import { useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
@@ -14,7 +15,6 @@ import {
   getCurrentChainId,
   getCurrentCurrency,
   getNativeCurrencyImage,
-  getPreferences,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
@@ -70,6 +70,7 @@ describe('AssetPickerModal', () => {
 
   const defaultProps = {
     header: 'sendSelectReceiveAsset',
+    onNetworkPickerClick: jest.fn(),
     isOpen: true,
     onClose: onCloseMock,
     asset: {
@@ -134,9 +135,7 @@ describe('AssetPickerModal', () => {
       if (selector === getTopAssets) {
         return [];
       }
-      if (selector === getPreferences) {
-        return { useNativeCurrencyAsPrimaryCurrency: false };
-      }
+
       if (selector === getSwapsBlockedTokens) {
         return new Set(['0xtoken1']);
       }
@@ -293,5 +292,68 @@ describe('AssetPickerModal', () => {
         address: '0xtoken1',
       }),
     ).toBe(true);
+  });
+
+  it('should render network picker when onNetworkPickerClick prop is defined', () => {
+    const { getByText, getAllByRole } = renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        header="selectNetworkHeader"
+        network={{
+          nativeCurrency: 'ETH',
+          chainId: '0x1',
+          defaultBlockExplorerUrlIndex: 0,
+          blockExplorerUrls: ['https://explorerurl'],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'test1',
+              url: 'https://rpcurl',
+              type: RpcEndpointType.Custom,
+            },
+          ],
+          name: 'Network name',
+        }}
+      />,
+      store,
+    );
+
+    const modalTitle = getByText('selectNetworkHeader');
+    expect(modalTitle).toBeInTheDocument();
+
+    expect(getAllByRole('img')).toHaveLength(2);
+    const modalContent = getByText('Network name');
+    expect(modalContent).toBeInTheDocument();
+  });
+
+  it('should not render network picker when onNetworkPickerClick prop is not defined', () => {
+    const { getByText, getAllByRole } = renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        onNetworkPickerClick={undefined}
+        header="selectNetworkHeader"
+        network={{
+          nativeCurrency: 'ETH',
+          chainId: '0x1',
+          defaultBlockExplorerUrlIndex: 0,
+          blockExplorerUrls: ['https://explorerurl'],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'test1',
+              url: 'https://rpcurl',
+              type: RpcEndpointType.Custom,
+            },
+          ],
+          name: 'Network name',
+        }}
+      />,
+      store,
+    );
+
+    const modalTitle = getByText('selectNetworkHeader');
+    expect(modalTitle).toBeInTheDocument();
+
+    expect(getAllByRole('img')).toHaveLength(1);
   });
 });

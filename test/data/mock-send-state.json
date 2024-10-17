@@ -131,8 +131,7 @@
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
-      "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "showTestNetworks": true
     },
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},

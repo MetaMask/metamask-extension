@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getIsMainnet,
-  getPreferences,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
   transactionFeeSelector,
@@ -34,7 +33,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
   // state selectors
   const isMainnet = useSelector(getIsMainnet);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const transactionData = useDraftTransactionWithTxParams();
   const txData = useSelector((state) => txDataSelector(state));
@@ -108,7 +106,7 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               value={estimatedHexMinFeeTotal}
-              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+              hideLabel
             />
           </div>
         )
@@ -119,7 +117,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
             value={estimatedHexMinFeeTotal}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
             suffixProps={{
               color: TextColor.textDefault,
               variant: TextVariant.bodyMdBold,
@@ -143,7 +140,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
               key="editGasSubTextFeeAmount"
               type={PRIMARY}
               value={estimatedHexMaxFeeTotal}
-              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
             />
           </div>
         </>

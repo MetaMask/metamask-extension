@@ -224,7 +224,6 @@
     "showFiatInTestnets": false,
     "showTestNetworks": false,
     "smartTransactionsOptInStatus": null,
-    "useNativeCurrencyAsPrimaryCurrency": true,
     "hideZeroBalanceTokens": false,
     "petnamesEnabled": true,
     "redesignedConfirmationsEnabled": true,

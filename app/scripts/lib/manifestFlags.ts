@@ -11,7 +11,7 @@ export type ManifestFlags = {
   };
   sentry?: {
     tracesSampleRate?: number;
-    doNotForceSentryForThisTest?: boolean;
+    forceEnable?: boolean;
   };
 };
 

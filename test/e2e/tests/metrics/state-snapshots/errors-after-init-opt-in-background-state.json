@@ -38,6 +38,7 @@
     "showAccountBanner": true,
     "trezorModel": null,
     "onboardingDate": null,
+    "lastViewedUserSurvey": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -62,17 +63,13 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionSupport": "boolean",
-        "srcNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        },
-        "destNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        }
-      }
+        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
+        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
+      },
+      "destTokens": {},
+      "destTopAssets": {},
+      "srcTokens": {},
+      "srcTopAssets": {}
     }
   },
   "CronjobController": { "jobs": "object" },
@@ -180,6 +177,7 @@
     "permissionActivityLog": "object"
   },
   "PreferencesController": {
+    "selectedAddress": "string",
     "useBlockie": false,
     "useNonceField": false,
     "usePhishDetect": true,
@@ -211,12 +209,14 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
+      "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
+      "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "showMultiRpcModal": "boolean"
+      "tokenSortConfig": "object",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -229,7 +229,8 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
-    "selectedAddress": "string"
+    "isMultiAccountBalancesEnabled": "boolean",
+    "showIncomingTransactions": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
@@ -242,7 +243,9 @@
   "SmartTransactionsController": {
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     }
   },
@@ -305,8 +308,10 @@
   },
   "TxController": {
     "methodData": "object",
+    "submitHistory": "object",
     "transactions": "object",
-    "lastFetchedBlockNumbers": "object"
+    "lastFetchedBlockNumbers": "object",
+    "submitHistory": "object"
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {

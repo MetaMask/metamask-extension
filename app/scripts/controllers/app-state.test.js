@@ -13,13 +13,12 @@ describe('AppStateController', () => {
       initState,
       onInactiveTimeout: jest.fn(),
       showUnlockRequest: jest.fn(),
-      preferencesStore: {
-        subscribe: jest.fn(),
-        getState: jest.fn(() => ({
+      preferencesController: {
+        state: {
           preferences: {
             autoLockTimeLimit: 0,
           },
-        })),
+        },
       },
       messenger: {
         call: jest.fn(() => ({

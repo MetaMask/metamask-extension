@@ -1,20 +1,19 @@
+import { act } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
-import { act } from '@testing-library/react';
-import {
-  orderSignatureMsg,
-  permitSignatureMsg,
-  permitSingleSignatureMsg,
-  permitBatchSignatureMsg,
-} from '../../../../test/data/confirmations/typed_sign';
-import mockState from '../../../../test/data/mock-state.json';
 import {
   getMockPersonalSignConfirmState,
   getMockTypedSignConfirmState,
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../test/data/confirmations/helper';
+import {
+  orderSignatureMsg,
+  permitBatchSignatureMsg,
+  permitSignatureMsg,
+  permitSingleSignatureMsg,
+} from '../../../../test/data/confirmations/typed_sign';
+import mockState from '../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
@@ -81,13 +80,15 @@ describe('Confirm', () => {
     const mockStatePersonalSign = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore(middleware)(mockStatePersonalSign);
 
+    let container;
     await act(async () => {
-      const { container } = await renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
-      expect(container).toMatchSnapshot();
+      const { container: renderContainer } =
+        await renderWithConfirmContextProvider(<Confirm />, mockStore);
+
+      container = renderContainer;
     });
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot signature - typed sign - order', async () => {
@@ -106,8 +107,8 @@ describe('Confirm', () => {
     });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
-    let container;
 
+    let container;
     await act(async () => {
       const { container: renderContainer } = renderWithConfirmContextProvider(
         <Confirm />,
@@ -123,13 +124,15 @@ describe('Confirm', () => {
     const mockStateTypedSign = getMockTypedSignConfirmState();
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
 
+    let container;
     await act(async () => {
-      const { container } = await renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
-      expect(container).toMatchSnapshot();
+      const { container: renderContainer } =
+        await renderWithConfirmContextProvider(<Confirm />, mockStore);
+
+      container = renderContainer;
     });
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot for signature - typed sign - V4 - PermitSingle', async () => {

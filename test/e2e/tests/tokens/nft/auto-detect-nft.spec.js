@@ -1,8 +1,9 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
   defaultGanacheOptions,
+  openMenuSafe,
   unlockWallet,
+  withFixtures,
 } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { setupAutoDetectMocking } = require('./mocks');
@@ -25,9 +26,8 @@ describe('NFT detection', function () {
         await unlockWallet(driver);
 
         // go to settings
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
         await driver.clickElement(

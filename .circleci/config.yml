@@ -118,11 +118,9 @@ workflows:
       - prep-deps
       - get-changed-files-with-git-diff:
           filters:
-              branches:
-                ignore:
-                  - master
-          requires:
-            - prep-deps
+            branches:
+              ignore:
+                - master
       - test-deps-audit:
           requires:
             - prep-deps
@@ -360,11 +358,10 @@ workflows:
         value: << pipeline.git.branch >>
     jobs:
       - prep-deps
-      - get-changed-files-with-git-diff:
-          requires:
-            - prep-deps
+      - get-changed-files-with-git-diff
       - validate-locales-only:
           requires:
+            - prep-deps
             - get-changed-files-with-git-diff
       - test-lint:
           requires:
@@ -501,7 +498,6 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
-      - gh/install
       - run:
           name: Get changed files with git diff
           command: npx tsx .circleci/scripts/git-diff-develop.ts
@@ -1254,7 +1250,7 @@ jobs:
           command: mv ./builds-test-flask-mv2 ./builds
       - run:
           name: test:e2e:firefox:flask
-          command: ENABLE_MV3=false .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox:flask
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox:flask
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1397,7 +1393,7 @@ jobs:
           command: mv ./builds-test-mv2 ./builds
       - run:
           name: test:e2e:firefox
-          command: ENABLE_MV3=false .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts

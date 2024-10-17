@@ -1,18 +1,17 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { merge } from 'lodash';
 
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   Confirmation,
   SignatureRequestType,
 } from '../../../ui/pages/confirmations/types/confirm';
 import mockState from '../mock-state.json';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  genUnapprovedApproveConfirmation,
-  genUnapprovedContractInteractionConfirmation,
-  genUnapprovedSetApprovalForAllConfirmation,
-} from './contract-interaction';
+import { genUnapprovedContractInteractionConfirmation } from './contract-interaction';
 import { unapprovedPersonalSignMsg } from './personal_sign';
+import { genUnapprovedSetApprovalForAllConfirmation } from './set-approval-for-all';
+import { genUnapprovedApproveConfirmation } from './token-approve';
+import { genUnapprovedTokenTransferConfirmation } from './token-transfer';
 import { unapprovedTypedSignMsgV4 } from './typed_sign';
 
 type RootState = { metamask: Record<string, unknown> } & Record<
@@ -181,5 +180,18 @@ export const getMockApproveConfirmState = () => {
 export const getMockSetApprovalForAllConfirmState = () => {
   return getMockConfirmStateForTransaction(
     genUnapprovedSetApprovalForAllConfirmation({ chainId: '0x5' }),
+  );
+};
+
+export const getMockTokenTransferConfirmState = ({
+  isWalletInitiatedConfirmation = false,
+}: {
+  isWalletInitiatedConfirmation?: boolean;
+}) => {
+  return getMockConfirmStateForTransaction(
+    genUnapprovedTokenTransferConfirmation({
+      chainId: '0x5',
+      isWalletInitiatedConfirmation,
+    }),
   );
 };

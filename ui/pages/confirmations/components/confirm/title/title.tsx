@@ -3,8 +3,9 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
+
+import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
-import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   TextAlign,
@@ -13,54 +14,45 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
-import {
-  isPermitSignatureRequest,
-  isSIWESignatureRequest,
-} from '../../../utils';
+import { isSIWESignatureRequest } from '../../../utils';
+import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
-  const t = useI18nContext();
   const { generalAlerts } = useAlerts(ownerId);
 
   if (generalAlerts.length === 0) {
     return null;
   }
 
-  const hasMultipleAlerts = generalAlerts.length > 1;
-  const singleAlert = generalAlerts[0];
-  const highestSeverity = hasMultipleAlerts
-    ? getHighestSeverity(generalAlerts)
-    : singleAlert.severity;
   return (
-    <Box marginTop={4}>
-      <GeneralAlert
-        data-testid="confirm-banner-alert"
-        title={
-          hasMultipleAlerts
-            ? t('alertBannerMultipleAlertsTitle')
-            : singleAlert.reason
-        }
-        description={
-          hasMultipleAlerts
-            ? t('alertBannerMultipleAlertsDescription')
-            : singleAlert.message
-        }
-        severity={highestSeverity}
-        provider={hasMultipleAlerts ? undefined : singleAlert.provider}
-        details={hasMultipleAlerts ? undefined : singleAlert.alertDetails}
-        reportUrl={singleAlert.reportUrl}
-      />
+    <Box marginTop={3}>
+      {generalAlerts.map((alert) => (
+        <Box marginTop={1} key={alert.key}>
+          <GeneralAlert
+            data-testid="confirm-banner-alert"
+            title={alert.reason}
+            description={alert.message}
+            severity={alert.severity}
+            provider={alert.provider}
+            details={alert.alertDetails}
+            reportUrl={alert.reportUrl}
+          />
+        </Box>
+      ))}
     </Box>
   );
 }
 
 type IntlFunction = (str: string) => string;
+
+// todo: getTitle and getDescription can be merged to remove code duplication.
 
 const getTitle = (
   t: IntlFunction,
@@ -68,7 +60,14 @@ const getTitle = (
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
+  pending?: boolean,
+  primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
+  tokenStandard?: string,
 ) => {
+  if (pending) {
+    return '';
+  }
+
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
@@ -80,9 +79,13 @@ const getTitle = (
       }
       return t('confirmTitleSignature');
     case TransactionType.signTypedData:
-      return isPermitSignatureRequest(confirmation as SignatureRequestType)
-        ? t('confirmTitlePermitTokens')
-        : t('confirmTitleSignature');
+      if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
+        if (tokenStandard === TokenStandard.ERC721) {
+          return t('setApprovalForAllRedesignedTitle');
+        }
+        return t('confirmTitlePermitTokens');
+      }
+      return t('confirmTitleSignature');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleApproveTransaction');
@@ -109,7 +112,14 @@ const getDescription = (
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
+  pending?: boolean,
+  primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
+  tokenStandard?: string,
 ) => {
+  if (pending) {
+    return '';
+  }
+
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return '';
@@ -121,9 +131,13 @@ const getDescription = (
       }
       return t('confirmTitleDescSign');
     case TransactionType.signTypedData:
-      return isPermitSignatureRequest(confirmation as SignatureRequestType)
-        ? t('confirmTitleDescPermitSignature')
-        : t('confirmTitleDescSign');
+      if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
+        if (tokenStandard === TokenStandard.ERC721) {
+          return t('confirmTitleDescApproveTransaction');
+        }
+        return t('confirmTitleDescPermitSignature');
+      }
+      return t('confirmTitleDescSign');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleDescApproveTransaction');
@@ -151,9 +165,15 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
-  const { customSpendingCap } = useCurrentSpendingCap(currentConfirmation);
+  const { primaryType, tokenStandard } = useTypedSignSignatureInfo(
+    currentConfirmation as SignatureRequestType,
+  );
+
+  const { customSpendingCap, pending: spendingCapPending } =
+    useCurrentSpendingCap(currentConfirmation);
 
   let isRevokeSetApprovalForAll = false;
+  let revokePending = false;
   if (
     currentConfirmation?.type === TransactionType.tokenMethodSetApprovalForAll
   ) {
@@ -162,6 +182,7 @@ const ConfirmTitle: React.FC = memo(() => {
     isRevokeSetApprovalForAll = getIsRevokeSetApprovalForAll(
       decodedResponse.value,
     );
+    revokePending = decodedResponse.pending;
   }
 
   const title = useMemo(
@@ -172,8 +193,20 @@ const ConfirmTitle: React.FC = memo(() => {
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
+        spendingCapPending || revokePending,
+        primaryType,
+        tokenStandard,
       ),
-    [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],
+    [
+      currentConfirmation,
+      isNFT,
+      customSpendingCap,
+      isRevokeSetApprovalForAll,
+      spendingCapPending,
+      revokePending,
+      primaryType,
+      tokenStandard,
+    ],
   );
 
   const description = useMemo(
@@ -184,9 +217,20 @@ const ConfirmTitle: React.FC = memo(() => {
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
+        spendingCapPending || revokePending,
+        primaryType,
+        tokenStandard,
       ),
-
-    [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],
+    [
+      currentConfirmation,
+      isNFT,
+      customSpendingCap,
+      isRevokeSetApprovalForAll,
+      spendingCapPending,
+      revokePending,
+      primaryType,
+      tokenStandard,
+    ],
   );
 
   if (!currentConfirmation) {
@@ -196,21 +240,25 @@ const ConfirmTitle: React.FC = memo(() => {
   return (
     <>
       <ConfirmBannerAlert ownerId={currentConfirmation.id} />
-      <Text
-        variant={TextVariant.headingLg}
-        paddingTop={4}
-        paddingBottom={2}
-        textAlign={TextAlign.Center}
-      >
-        {title}
-      </Text>
-      <Text
-        paddingBottom={4}
-        color={TextColor.textAlternative}
-        textAlign={TextAlign.Center}
-      >
-        {description}
-      </Text>
+      {title !== '' && (
+        <Text
+          variant={TextVariant.headingLg}
+          paddingTop={4}
+          paddingBottom={4}
+          textAlign={TextAlign.Center}
+        >
+          {title}
+        </Text>
+      )}
+      {description !== '' && (
+        <Text
+          paddingBottom={4}
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Center}
+        >
+          {description}
+        </Text>
+      )}
     </>
   );
 });

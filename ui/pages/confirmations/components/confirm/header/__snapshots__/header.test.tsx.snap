@@ -113,6 +113,170 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
 </div>
 `;
 
+exports[`Header should match snapshot with token transfer confirmation initiated in a dApp 1`] = `
+<div>
+  <div
+    class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+    data-testid="confirm-header"
+  >
+    <div
+      class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
+    >
+      <div
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex"
+      >
+        <div
+          class=""
+        >
+          <div
+            class="identicon"
+            style="height: 32px; width: 32px; border-radius: 16px;"
+          >
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 100, 242);"
+            >
+              <svg
+                height="32"
+                width="32"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#C81420"
+                  height="32"
+                  transform="translate(-5.505236904904678 -5.265123363737541) rotate(385.9 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#E9F500"
+                  height="32"
+                  transform="translate(10.674469406726399 12.429928159193388) rotate(184.5 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#FAB300"
+                  height="32"
+                  transform="translate(1.815455199236231 -26.03028190637629) rotate(431.3 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
+          G
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--margin-inline-start-4"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+          data-testid="header-account-name"
+        />
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="header-network-display-name"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+        style="align-self: flex-end;"
+      >
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-3"
+            class=""
+            data-original-title="Account details"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
+          >
+            <button
+              aria-label="Account details"
+              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              data-testid="header-info__account-details-button"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/info.svg');"
+              />
+            </button>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-right-1 mm-box--background-color-transparent mm-box--rounded-md"
+        >
+          <button
+            aria-label="Advanced tx details"
+            class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            data-testid="header-advanced-details-button"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/customize.svg');"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Header should match snapshot with token transfer confirmation initiated in the wallet 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-background-default"
+    style="z-index: 2;"
+  >
+    <button
+      aria-label="Back"
+      class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+      data-testid="wallet-initiated-header-back-button"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-left.svg');"
+      />
+    </button>
+    <h3
+      class="mm-box mm-text mm-text--heading-md mm-box--color-inherit"
+    >
+      Review
+    </h3>
+    <div
+      class="mm-box mm-box--margin-right-1 mm-box--background-color-transparent mm-box--rounded-md"
+    >
+      <button
+        aria-label="Advanced tx details"
+        class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        data-testid="header-advanced-details-button"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/customize.svg');"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Header should match snapshot with transaction confirmation 1`] = `
 <div>
   <div
@@ -219,7 +383,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-left-4 mm-box--background-color-transparent mm-box--rounded-md"
+          class="mm-box mm-box--margin-right-1 mm-box--background-color-transparent mm-box--rounded-md"
         >
           <button
             aria-label="Advanced tx details"

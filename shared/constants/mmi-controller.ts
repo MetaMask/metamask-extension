@@ -6,13 +6,13 @@ import { SignatureController } from '@metamask/signature-controller';
 import { NetworkController } from '@metamask/network-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import PreferencesController from '../../app/scripts/controllers/preferences-controller';
+import { PreferencesController } from '../../app/scripts/controllers/preferences-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { AppStateController } from '../../app/scripts/controllers/app-state';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import AccountTracker from '../../app/scripts/lib/account-tracker';
+import AccountTrackerController from '../../app/scripts/controllers/account-tracker-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import MetaMetricsController from '../../app/scripts/controllers/metametrics';
@@ -35,7 +35,7 @@ export type MMIControllerOptions = {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getPendingNonce: (address: string) => Promise<any>;
-  accountTracker: AccountTracker;
+  accountTrackerController: AccountTrackerController;
   metaMetricsController: MetaMetricsController;
   networkController: NetworkController;
   // TODO: Replace `any` with type

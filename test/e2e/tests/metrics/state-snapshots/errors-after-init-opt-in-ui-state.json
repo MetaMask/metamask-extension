@@ -17,7 +17,6 @@
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
     "networkConfigurations": "object",
-    "networkConfigurationsByChainId": "object",
     "addressBook": "object",
     "confirmationExchangeRates": {},
     "pendingTokens": "object",
@@ -32,17 +31,21 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
+      "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
+      "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "showMultiRpcModal": "boolean"
+      "tokenSortConfig": "object",
+      "showMultiRpcModal": "boolean",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
+    "showIncomingTransactions": "object",
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
     "nextNonce": null,
@@ -70,6 +73,7 @@
     "showAccountBanner": true,
     "trezorModel": null,
     "onboardingDate": null,
+    "lastViewedUserSurvey": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -95,7 +99,9 @@
         "status": "available"
       }
     },
+    "networkConfigurationsByChainId": "object",
     "keyrings": "object",
+    "selectedAddress": "string",
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
@@ -118,6 +124,7 @@
     "forgottenPassword": false,
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
@@ -127,16 +134,15 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
-    "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
-    "metaMetricsDataDeletionId": null,
-    "metaMetricsDataDeletionTimestamp": 0,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0,
     "currentCurrency": "usd",
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "unconnectedAccountAlertShownOrigins": "object",
@@ -167,7 +173,9 @@
     "allDetectedTokens": {},
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     },
     "allNftContracts": "object",
@@ -177,6 +185,7 @@
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
+    "submitHistory": "object",
     "fiatCurrency": "usd",
     "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
     "cryptocurrencies": ["btc"],
@@ -194,6 +203,7 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
+    "submitHistory": "object",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",
@@ -248,17 +258,13 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionSupport": "boolean",
-        "srcNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        },
-        "destNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        }
-      }
+        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
+        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
+      },
+      "destTokens": {},
+      "destTopAssets": {},
+      "srcTokens": {},
+      "srcTopAssets": {}
     },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",

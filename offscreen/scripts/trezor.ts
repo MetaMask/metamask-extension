@@ -47,7 +47,7 @@ export default function init() {
 
           TrezorConnectSDK.init({
             ...msg.params,
-            env: 'web',
+            env: 'webextension',
           }).then(() => {
             sendResponse();
           });

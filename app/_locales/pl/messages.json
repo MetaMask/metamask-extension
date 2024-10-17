@@ -244,10 +244,6 @@
   "fast": {
     "message": "Szybko"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Importowanie pliku nie działa? Kliknij tutaj!",
     "description": "Helps user import their account from a JSON file"
@@ -502,12 +498,6 @@
   "prev": {
     "message": "Poprzednie"
   },
-  "primaryCurrencySetting": {
-    "message": "Waluta podstawowa"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Wybierz walutę natywną, aby preferować wyświetlanie wartości w walucie natywnej łańcucha (np. ETH). Wybierz walutę fiat, aby preferować wyświetlanie wartości w wybranej przez siebie walucie fiat."
-  },
   "privacyMsg": {
     "message": "Polityka prywatności"
   },
@@ -752,9 +742,6 @@
   },
   "unlockMessage": {
     "message": "Zdecentralizowana sieć oczekuje"
-  },
-  "updatedWithDate": {
-    "message": "Zaktualizowano $1"
   },
   "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."

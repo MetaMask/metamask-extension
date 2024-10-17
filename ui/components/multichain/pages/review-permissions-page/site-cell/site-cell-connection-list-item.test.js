@@ -36,4 +36,8 @@ describe('SiteCellConnectionListItem', () => {
   it('returns wallet icon correctly', () => {
     expect(getByText('Title')).toBeDefined();
   });
+
+  it('returns edit button correctly', () => {
+    expect(getByTestId('edit')).toBeDefined();
+  });
 });

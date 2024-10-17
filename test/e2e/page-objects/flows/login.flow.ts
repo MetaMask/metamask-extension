@@ -40,5 +40,7 @@ export const loginWithBalanceValidation = async (
   // Verify the expected balance on the homepage
   if (ganacheServer) {
     await new HomePage(driver).check_ganacheBalanceIsDisplayed(ganacheServer);
+  } else {
+    await new HomePage(driver).check_expectedBalanceIsDisplayed();
   }
 };

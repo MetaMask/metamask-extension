@@ -504,12 +504,6 @@
   "prev": {
     "message": "Iepr."
   },
-  "primaryCurrencySetting": {
-    "message": "Primārā valūta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Atlasīt vietējo, lai piešķirtu attēlotajām vērtībām prioritātes ķēdes vietējā vērtībā (piemēram, ETH). Atlasiet Fiat, lai piešķirtu augstāku prioritāti vērtībām jūsu atlasītajā fiat valūtā."
-  },
   "privacyMsg": {
     "message": "Privātuma politika"
   },
@@ -760,9 +754,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizētais tīkls jau gaida"
-  },
-  "updatedWithDate": {
-    "message": "Atjaunināts $1"
   },
   "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."

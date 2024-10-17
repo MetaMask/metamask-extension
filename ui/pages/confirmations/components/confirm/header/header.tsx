@@ -1,3 +1,7 @@
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React from 'react';
 import {
   AvatarNetwork,
@@ -14,14 +18,28 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
+import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
+import { Confirmation } from '../../../types/confirm';
 import HeaderInfo from './header-info';
+import { WalletInitiatedHeader } from './wallet-initiated-header';
 
 const Header = () => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
+
+  const { currentConfirmation } = useConfirmContext<Confirmation>();
+
+  if (currentConfirmation?.type === TransactionType.tokenMethodTransfer) {
+    const isWalletInitiated =
+      (currentConfirmation as TransactionMeta).origin === 'metamask';
+
+    if (isWalletInitiated) {
+      return <WalletInitiatedHeader />;
+    }
+  }
 
   return (
     <Box

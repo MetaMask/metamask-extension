@@ -35,7 +35,7 @@ describe('Test Snap Installed', function () {
 
         const confirmButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(confirmButton);
-        await driver.delay(500);
+        await driver.delay(1000);
         await driver.clickElement('#connectdialogs');
 
         // switch to metamask extension and click connect

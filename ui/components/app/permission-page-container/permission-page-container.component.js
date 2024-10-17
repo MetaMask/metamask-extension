@@ -147,7 +147,7 @@ export default class PermissionPageContainer extends Component {
     );
 
     const permittedChainsPermission =
-      _request.permissions[PermissionNames.permittedChains];
+      _request.permissions?.[PermissionNames.permittedChains];
     const approvedChainIds = permittedChainsPermission?.caveats.find(
       (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
     )?.value;
@@ -155,8 +155,8 @@ export default class PermissionPageContainer extends Component {
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      ...(_request.permissions.eth_accounts && { approvedAccounts }),
-      ...(_request.permissions[PermissionNames.permittedChains] && {
+      ...(_request.permissions?.eth_accounts && { approvedAccounts }),
+      ...(_request.permissions?.[PermissionNames.permittedChains] && {
         approvedChainIds,
       }),
     };
