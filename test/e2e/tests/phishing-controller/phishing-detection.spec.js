@@ -253,7 +253,7 @@ describe('Phishing Detection', function () {
     );
   });
 
-  it('should open a new extension expanded view when clicking back to safety button', async function () {
+  it('should open MetaMask Portfolio when clicking back to safety button', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
