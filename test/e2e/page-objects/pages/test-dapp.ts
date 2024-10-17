@@ -159,6 +159,7 @@ class TestDapp {
       ? `${url}/?contract=${contractAddress}`
       : url;
     await this.driver.openNewPage(dappUrl);
+    await this.check_pageIsLoaded();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
