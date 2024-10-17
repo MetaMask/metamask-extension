@@ -2,7 +2,7 @@
 import { MockttpServer } from 'mockttp';
 import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import { confirmAndAssertConfirm } from '../helpers';
 import {
   openDAppWithContract,
   TestSuiteArguments,
@@ -128,7 +128,7 @@ export async function confirmMintTransaction(driver: Driver) {
     text: 'Transaction request',
   });
 
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await confirmAndAssertConfirm(driver);
 }
 
 async function createApproveTransaction(driver: Driver) {
@@ -190,7 +190,7 @@ async function assertApproveDetails(driver: Driver) {
 }
 
 async function confirmApproveTransaction(driver: Driver) {
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await confirmAndAssertConfirm(driver);
 
   await driver.delay(veryLargeDelayMs);
   await driver.waitUntilXWindowHandles(2);
