@@ -48,7 +48,6 @@ describe('Test Snap TxInsights', function () {
           text: 'Connect',
           tag: 'button',
         });
-
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
