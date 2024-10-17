@@ -25,13 +25,13 @@
     vertical-align: unset;
   }
 
-  .multichain-asset-picker-list-item {
+  .multichain-asset-picker-list-items {
     position: relative;
     cursor: pointer;
     overflow-y: auto;
     max-height: 50vh;
 
-    &:not(.multichain-asset-picker-list-item--selected) {
+    &:not(.multichain-asset-picker-list-items--selected) {
       &:hover,
       &:focus-within {
         background: var(--color-background-default-hover);

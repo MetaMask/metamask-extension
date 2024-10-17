@@ -9,7 +9,6 @@ import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
-  Text,
 } from '../../component-library';
 import {
   BackgroundColor,
