@@ -343,7 +343,7 @@
     "@metamask/permission-log-controller": "^2.0.1",
     "@metamask/phishing-controller": "^12.0.1",
     "@metamask/post-message-stream": "^8.0.0",
-    "@metamask/ppom-validator": "0.34.0",
+    "@metamask/ppom-validator": "patch:@metamask/ppom-validator@npm%3A0.32.0#~/.yarn/patches/@metamask-ppom-validator-npm-0.32.0-f677deea54.patch",
     "@metamask/preinstalled-example-snap": "^0.1.0",
     "@metamask/profile-sync-controller": "^0.9.7",
     "@metamask/providers": "^14.0.2",
