@@ -29,8 +29,8 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
+  PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -74,7 +74,7 @@ import {
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
 } from '../../../store/actions';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 
 const CoinButtons = ({
   chainId,
@@ -306,10 +306,10 @@ const CoinButtons = ({
       dispatch(setSwapsFromToken(defaultSwapsToken));
       if (usingHardwareWallet) {
         if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
         }
       } else {
-        history.push(BUILD_QUOTE_ROUTE);
+        history.push(PREPARE_SWAP_ROUTE);
       }
     }
     ///: END:ONLY_INCLUDE_IF
