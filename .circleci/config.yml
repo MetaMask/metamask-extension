@@ -91,12 +91,12 @@ aliases:
   - &check-mmi-optional
     name: Check if MMI Optional tests should run
     command: |
-      RUN_MMI_OPTIONAL=$(cat ./RUN_MMI_OPTIONAL)
-      if [[ "${RUN_MMI_OPTIONAL}" == "true" ]]; then
+      source mmi_trigger.env
+      if [ "${run_mmi_tests}" == "true" ]; then
         echo "Running MMI Optional tests"
       else
         echo "Skipping MMI Optional tests"
-        circleci step halt
+        exit 0
       fi
 
 workflows:
