@@ -160,7 +160,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" You initiated this action on 7/06/2024. This process can take up to 30 days. View the Privacy policy "`,
+      `" You initiated this action on 8/06/2024. This process can take up to 30 days. View the Privacy policy "`,
     );
   });
 
