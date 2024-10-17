@@ -5,7 +5,7 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware, {
 } from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 
 describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
-  const getMockRequest = (method: string, params?: Json) => ({
+  const getMockRequest = (method: string, params: Json) => ({
     jsonrpc: jsonrpc2,
     id: 1,
     method,
@@ -19,71 +19,85 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'eth_accounts',
+      params: [],
       calledNext: false,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'eth_sendRawTransaction',
+      params: [],
       calledNext: false,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'eth_sendTransaction',
+      params: [],
       calledNext: false,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'eth_signTypedData',
+      params: [],
       calledNext: false,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'eth_signTypedData_v1',
+      params: [],
       calledNext: false,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'eth_signTypedData_v3',
+      params: [],
       calledNext: false,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'eth_signTypedData_v4',
+      params: [],
       calledNext: false,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_accounts',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_sendRawTransaction',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_sendTransaction',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_signTypedData',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_signTypedData_v1',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_signTypedData_v3',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_signTypedData_v4',
+      params: [],
       calledNext: true,
     },
 
@@ -91,21 +105,25 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'eth_blockNumber',
+      params: [],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'eth_chainId',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_blockNumber',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_chainId',
+      params: [],
       calledNext: true,
     },
 
@@ -113,91 +131,109 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_getSnaps',
+      params: [],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_invokeSnap',
+      params: [],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_requestSnaps',
+      params: [],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'snap_getClientStatus',
+      params: [],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_addEthereumChain',
+      params: [],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_getPermissions',
+      params: [],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_requestPermissions',
+      params: [],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_revokePermissions',
+      params: [],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_switchEthereumChain',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_getSnaps',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_invokeSnap',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestSnaps',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'snap_getClientStatus',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_addEthereumChain',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_getPermissions',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestPermissions',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_revokePermissions',
+      params: [],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_switchEthereumChain',
+      params: [],
       calledNext: true,
     },
 
@@ -249,7 +285,7 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     }: {
       accountType: EthAccountType | BtcAccountType;
       method: string;
-      params?: Json;
+      params: Json;
       calledNext: number;
     }) => {
       const filterFn = createEvmMethodsToNonEvmAccountReqFilterMiddleware({
