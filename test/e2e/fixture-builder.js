@@ -447,9 +447,7 @@ class FixtureBuilder {
     account = '',
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
-    let subjects = {};
-    if (restrictReturnedAccounts) {
-      subjects = {
+    const subjects = {
         [DAPP_URL]: {
           origin: DAPP_URL,
           permissions: {
@@ -463,7 +461,7 @@ class FixtureBuilder {
                       'eip155:1337': {
                         methods: [],
                         notifications: [],
-                        accounts: [
+                        accounts: restrictReturnedAccounts ? [] : [
                           `eip155:1337:${selectedAccount.toLowerCase()}`,
                           'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                           `eip155:1337:${ERC_4337_ACCOUNT.toLowerCase()}`,
@@ -482,7 +480,6 @@ class FixtureBuilder {
           },
         },
       };
-    }
     return this.withPermissionController({
       subjects,
     });
@@ -491,9 +488,7 @@ class FixtureBuilder {
   withPermissionControllerSnapAccountConnectedToTestDapp(
     restrictReturnedAccounts = true,
   ) {
-    let subjects = {};
-    if (restrictReturnedAccounts) {
-      subjects = {
+    const subjects = {
         [DAPP_URL]: {
           origin: DAPP_URL,
           permissions: {
@@ -507,7 +502,7 @@ class FixtureBuilder {
                       'eip155:1337': {
                         methods: [],
                         notifications: [],
-                        accounts: [
+                        accounts: restrictReturnedAccounts ? [] : [
                           'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                         ],
                       },
@@ -524,16 +519,13 @@ class FixtureBuilder {
           },
         },
       };
-    }
     return this.withPermissionController({ subjects });
   }
 
   withPermissionControllerConnectedToTwoTestDapps(
     restrictReturnedAccounts = true,
   ) {
-    let subjects = {};
-    if (restrictReturnedAccounts) {
-      subjects = {
+    const subjects = {
         [DAPP_URL]: {
           origin: DAPP_URL,
           permissions: {
@@ -547,7 +539,7 @@ class FixtureBuilder {
                       'eip155:1337': {
                         methods: [],
                         notifications: [],
-                        accounts: [
+                        accounts: restrictReturnedAccounts ? [] : [
                           'eip155:1337:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                           'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                         ],
@@ -577,7 +569,7 @@ class FixtureBuilder {
                       'eip155:1338': {
                         methods: [],
                         notifications: [],
-                        accounts: [
+                        accounts: restrictReturnedAccounts ? [] : [
                           'eip155:1338:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                           'eip155:1338:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                         ],
@@ -595,7 +587,6 @@ class FixtureBuilder {
           },
         },
       };
-    }
     return this.withPermissionController({ subjects });
   }
 
