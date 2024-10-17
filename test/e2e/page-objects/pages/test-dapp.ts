@@ -86,6 +86,8 @@ class TestDapp {
 
   private erc20WatchAssetButton: RawLocator;
 
+  private erc20TokenTransferButton: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
 
@@ -94,6 +96,7 @@ class TestDapp {
     this.erc721RevokeSetApprovalForAllButton = '#revokeButton';
     this.erc1155RevokeSetApprovalForAllButton = '#revokeERC1155Button';
     this.erc20WatchAssetButton = '#watchAssets';
+    this.erc20TokenTransferButton = '#transferTokens';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -154,6 +157,10 @@ class TestDapp {
 
   public async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
+  }
+
+  public async clickERC20TokenTransferButton() {
+    await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
   /**
