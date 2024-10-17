@@ -31,6 +31,8 @@ import {
   providerErrors,
 } from '@metamask/rpc-errors';
 
+import { isProduction } from '../../shared/modules/environment';
+
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
@@ -1561,7 +1563,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
