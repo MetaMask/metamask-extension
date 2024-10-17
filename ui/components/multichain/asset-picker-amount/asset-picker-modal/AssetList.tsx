@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import classnames from 'classnames';
 import {
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
@@ -75,10 +74,6 @@ export default function AssetList({
                 ? BackgroundColor.primaryMuted
                 : BackgroundColor.transparent
             }
-            className={classnames('multichain-asset-picker-list-item', {
-              'multichain-asset-picker-list-item--selected': isSelected,
-              'multichain-asset-picker-list-item--disabled': isDisabled,
-            })}
             data-testid="asset-list-item"
             onClick={() => {
               if (isDisabled) {
@@ -87,13 +82,6 @@ export default function AssetList({
               handleAssetChange(token);
             }}
           >
-            {isSelected ? (
-              <Box
-                className="multichain-asset-picker-list-item__selected-indicator"
-                borderRadius={BorderRadius.pill}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            ) : null}
             <Box
               key={token.address}
               padding={0}
@@ -102,6 +90,12 @@ export default function AssetList({
               alignItems={AlignItems.center}
             >
               <Box marginInlineStart={2}>
+                {isSelected ? (
+                  <Box
+                    borderRadius={BorderRadius.pill}
+                    backgroundColor={BackgroundColor.primaryDefault}
+                  />
+                ) : null}
                 {token.type === AssetType.native ? (
                   <TokenListItem
                     title={token.symbol}
