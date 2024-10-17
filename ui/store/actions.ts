@@ -43,6 +43,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Patch } from 'immer';
+import { HandlerType } from '@metamask/snaps-utils';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -5834,7 +5835,7 @@ function applyPatches(
 
 export async function sendMultichainTransaction(
   snapId: string,
-  accountId: string,
+  account: string,
   scope: string,
 ) {
   await handleSnapRequest({
@@ -5844,7 +5845,7 @@ export async function sendMultichainTransaction(
     request: {
       method: 'startSendTransactionFlow',
       params: {
-        accountId,
+        account,
         scope,
       },
     },
