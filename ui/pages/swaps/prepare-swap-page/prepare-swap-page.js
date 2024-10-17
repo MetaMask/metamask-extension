@@ -85,7 +85,6 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import {
   isSwapsDefaultTokenAddress,
-  isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
 import {
   MetaMetricsEventCategory,
@@ -229,8 +228,8 @@ export default function PrepareSwapPage({
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
-    sourceTokenInfo?.symbol,
+  const fetchParamsFromToken = isSwapsDefaultTokenAddress(
+    sourceTokenInfo?.address,
     chainId,
   )
     ? defaultSwapsToken
@@ -242,7 +241,7 @@ export default function PrepareSwapPage({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    !isSwapsDefaultTokenSymbol(fromToken?.symbol, chainId) && fromToken?.balance
+    !isSwapsDefaultTokenAddress(fromToken?.address, chainId) && fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -311,7 +310,7 @@ export default function PrepareSwapPage({
     { showFiat: true },
     true,
   );
-  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)
+  const swapFromFiatValue = isSwapsDefaultTokenAddress(fromTokenAddress, chainId)
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
@@ -788,8 +787,8 @@ export default function PrepareSwapPage({
     );
   }
 
-  const isNonDefaultToken = !isSwapsDefaultTokenSymbol(
-    fromTokenSymbol,
+  const isNonDefaultFromToken = !isSwapsDefaultTokenAddress(
+    fromTokenAddress,
     chainId,
   );
   const hasPositiveFromTokenBalance = rawFromTokenBalance > 0;
@@ -800,8 +799,8 @@ export default function PrepareSwapPage({
     isTokenEligibleForMaxBalance &&
     hasPositiveFromTokenBalance;
 
-  const isNonDefaultToToken = !isSwapsDefaultTokenSymbol(
-    selectedToToken.symbol,
+  const isNonDefaultToToken = !isSwapsDefaultTokenAddress(
+    selectedToToken.address,
     chainId,
   );
 
