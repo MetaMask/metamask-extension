@@ -46,12 +46,12 @@ export default class AdvancedTab extends PureComponent {
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
-    smartTransactionsOptInStatus: PropTypes.bool,
+    smartTransactionsEnabled: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    setSmartTransactionsOptInStatus: PropTypes.func.isRequired,
+    setSmartTransactionsEnabled: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
@@ -199,7 +199,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderToggleStxOptIn() {
     const { t } = this.context;
-    const { smartTransactionsOptInStatus, setSmartTransactionsOptInStatus } =
+    const { smartTransactionsEnabled, setSmartTransactionsEnabled } =
       this.props;
 
     const learMoreLink = (
@@ -237,10 +237,10 @@ export default class AdvancedTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={smartTransactionsOptInStatus}
+            value={smartTransactionsEnabled}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              setSmartTransactionsOptInStatus(newValue);
+              setSmartTransactionsEnabled(newValue);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
