@@ -61,10 +61,10 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
 
         // Open DApp with contract
         const testDapp = new TestDapp(driver);
-        const contractAddress = await contractRegistry.getContractAddress({
-          smartContract,
-        });
-        await testDapp.openTestDappPage(contractAddress);
+        const contractAddress = await (
+          contractRegistry as GanacheContractAddressRegistry
+        ).getContractAddress(smartContract);
+        await testDapp.openTestDappPage({ contractAddress });
         await testDapp.createDepositTransaction();
 
         // Confirm the transaction in activity list on MetaMask

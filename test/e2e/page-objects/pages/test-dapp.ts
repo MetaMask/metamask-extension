@@ -141,12 +141,12 @@ class TestDapp {
   }
 
   /**
-   * Go to the currently open test dapp or open a new test dapp page.
+   * Open the test dapp page.
    *
-   * @param options - An object containing the contract address and URL of the dapp.
+   * @param options - The options for opening the test dapp page.
    * @param options.contractAddress - The contract address to open the dapp with. Defaults to null.
    * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
-   * @returns A promise that resolves when the page is opened and loaded.
+   * @returns A promise that resolves when the new page is opened.
    */
   async openTestDappPage({
     contractAddress = null,
@@ -155,16 +155,10 @@ class TestDapp {
     contractAddress?: string | null;
     url?: string;
   } = {}): Promise<void> {
-    const handle = await this.driver.windowHandles.switchToWindowIfKnown(
-      WINDOW_TITLES.TestDApp,
-    );
-    if (!handle) {
-      const dappUrl = contractAddress
-        ? `${url}/?contract=${contractAddress}`
-        : url;
-      await this.driver.openNewPage(dappUrl);
-    }
-    await this.check_pageIsLoaded();
+    const dappUrl = contractAddress
+      ? `${url}/?contract=${contractAddress}`
+      : url;
+    await this.driver.openNewPage(dappUrl);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -241,7 +235,6 @@ class TestDapp {
   async disconnectAccount(publicAddress: string) {
     console.log('Disconnect account from test dapp');
     await this.driver.clickElement(this.revokePermissionButton);
-    await this.openTestDappPage();
     await this.driver.refresh();
     await this.check_pageIsLoaded();
     await this.driver.assertElementNotPresent({
