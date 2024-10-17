@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -17,6 +17,7 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { BtcAccountType } from '@metamask/keyring-api';
 import { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -28,6 +29,7 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  CONFIRMATION_V_NEXT_ROUTE,
   PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
@@ -39,6 +41,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
   getSelectedAccount,
+  getMemoizedUnapprovedTemplatedConfirmations,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -67,6 +70,11 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
+import {
+  sendMultichainTransaction,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 
 const CoinButtons = ({
   chainId,
@@ -99,13 +107,18 @@ const CoinButtons = ({
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const account = useSelector(getSelectedAccount);
+  const { address: selectedAddress } = account;
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
+
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -230,23 +243,51 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
-  const handleSendOnClick = useCallback(async () => {
-    trackEvent(
-      {
-        event: MetaMetricsEventName.NavSendButtonClicked,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          token_symbol: 'ETH',
-          location: 'Home',
-          text: 'Send',
-          chain_id: chainId,
-        },
+  useEffect(() => {
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => {
+        return (
+          approval.type === 'snap_dialog' &&
+          approval.origin === BITCOIN_WALLET_SNAP_ID
+        );
       },
-      { excludeMetaMetricsId: false },
     );
-    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    history.push(SEND_ROUTE);
-  }, [chainId]);
+
+    if (templatedSnapApproval) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+    }
+  }, [unapprovedTemplatedConfirmations, history]);
+
+  const handleSendOnClick = useCallback(async () => {
+    switch (account.type) {
+      case BtcAccountType.P2wpkh: {
+        dispatch(setDefaultHomeActiveTabName('activity'));
+        await sendMultichainTransaction(
+          BITCOIN_WALLET_SNAP_ID,
+          account.id,
+          chainId as CaipChainId,
+        );
+        break;
+      }
+      default: {
+        trackEvent(
+          {
+            event: MetaMetricsEventName.NavSendButtonClicked,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              token_symbol: 'ETH',
+              location: 'Home',
+              text: 'Send',
+              chain_id: chainId,
+            },
+          },
+          { excludeMetaMetricsId: false },
+        );
+        await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+        history.push(SEND_ROUTE);
+      }
+    }
+  }, [chainId, account]);
 
   const handleSwapOnClick = useCallback(async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

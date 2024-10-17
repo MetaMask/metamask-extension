@@ -16,7 +16,7 @@ describe('BTC Account - Overview', function (this: Suite) {
         await driver.waitForSelector({
           text: 'Send',
           tag: 'button',
-          css: '[disabled]',
+          css: '[data-testid="coin-overview-send"]',
         });
 
         await driver.waitForSelector({
