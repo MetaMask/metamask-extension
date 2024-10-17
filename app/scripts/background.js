@@ -499,8 +499,8 @@ async function initialize() {
 
     if (!isManifestV3) {
       await loadPhishingWarningPage();
-      const { name } = await browser.runtime.getBrowserInfo();
-      if (name === PLATFORM_FIREFOX) {
+      const platform = getPlatform();
+      if (platform === PLATFORM_FIREFOX) {
         overrideContentSecurityPolicyHeader();
       }
     }
