@@ -13,6 +13,7 @@ describe('Change assets', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
+        // driverOptions: { openDevToolsForTabs: true },
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -63,6 +64,7 @@ describe('Change assets', function () {
 
         // Click continue
         await driver.assertElementNotPresent('.mm-modal-content');
+        await driver.findClickableElement({ text: 'Continue', css: 'button' });
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
@@ -117,6 +119,7 @@ describe('Change assets', function () {
         // Populate an amount, continue
         await driver.clickElement('[data-testid="currency-input"]');
         await driver.press('[data-testid="currency-input"]', '0');
+        await driver.findClickableElement({ text: 'Continue', css: 'button' });
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Validate the send amount
@@ -146,6 +149,7 @@ describe('Change assets', function () {
 
         // Click continue
         await driver.assertElementNotPresent('.mm-modal-content');
+        await driver.findClickableElement({ text: 'Continue', css: 'button' });
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
@@ -170,6 +174,7 @@ describe('Change assets', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
+        // driverOptions: { openDevToolsForTabs: true },
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -193,13 +198,17 @@ describe('Change assets', function () {
           text: 'TDN',
         });
         await driver.waitForSelector({ css: 'p', text: '#1' });
+        await driver.findClickableElement({ text: 'Continue', css: 'button' });
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
         await driver.waitForSelector(
           '.confirm-page-container-summary__title img',
         );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+        await driver.waitForSelector({
+          css: 'h3',
+          text: 'Test Dapp NFTs #1',
+        });
 
         // Click edit
         await driver.clickElement(
@@ -225,6 +234,7 @@ describe('Change assets', function () {
         await driver.clickElement('[data-testid="currency-input"]');
         await driver.press('[data-testid="currency-input"]', '2');
         await driver.assertElementNotPresent('.mm-modal-content');
+        await driver.findClickableElement({ text: 'Continue', css: 'button' });
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Validate the send amount
@@ -247,9 +257,11 @@ describe('Change assets', function () {
   });
 
   it('changes to native currency when switching accounts during a NFT send', async function () {
+    // it('changes to native currency when switching accounts during a NFT send', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
+        // driverOptions: { openDevToolsForTabs: true },
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNftControllerERC721()
@@ -347,6 +359,7 @@ describe('Change assets', function () {
         await hexDataLocator.fill('');
 
         // Go to the last confirmation screen
+        await driver.findClickableElement({ text: 'Continue', css: 'button' });
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Validate the send amount
