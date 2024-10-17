@@ -22,7 +22,8 @@ export default {
     setDismissSeedBackUpReminder: { action: 'setDismissSeedBackUpReminder' },
     setUseNonceField: { action: 'setUseNonceField' },
     setHexDataFeatureFlag: { action: 'setHexDataFeatureFlag' },
-    displayWarning: { action: 'displayWarning' },
+    displayErrorInSettings: { action: 'displayErrorInSettings' },
+    hideErrorInSettings: { action: 'hideErrorInSettings' },
     history: { action: 'history' },
     showResetAccountConfirmationModal: {
       action: 'showResetAccountConfirmationModal',
