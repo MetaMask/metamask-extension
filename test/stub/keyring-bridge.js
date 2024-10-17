@@ -169,7 +169,12 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
       hardfork: 'istanbul',
     });
 
-    return Transaction.fromTxData(tx, {
+    // return Transaction.fromTxData(tx, {
+    //   common,
+    // }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+
+    const txBuffer = Buffer.from(tx, 'hex');
+    return Transaction.fromSerializedTx(txBuffer, {
       common,
     }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
   }
