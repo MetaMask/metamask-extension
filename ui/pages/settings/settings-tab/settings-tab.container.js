@@ -3,10 +3,10 @@ import {
   setCurrentCurrency,
   setUseBlockie,
   updateCurrentLocale,
-  setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
   setTheme,
+  setShowNativeTokenAsMainBalancePreference,
 } from '../../../store/actions';
 import {
   getTokenList,
@@ -17,7 +17,7 @@ import {
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import SettingsTab from './settings-tab.component';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   const {
     appState: { warning },
     metamask,
@@ -25,10 +25,9 @@ const mapStateToProps = (state, ownProps) => {
   const { currentCurrency, useBlockie, currentLocale } = metamask;
   const { ticker: nativeCurrency } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-  const { useNativeCurrencyAsPrimaryCurrency, hideZeroBalanceTokens } =
+  const { hideZeroBalanceTokens, showNativeTokenAsMainBalance } =
     getPreferences(state);
 
-  const { lastFetchedConversionDate } = ownProps;
   const tokenList = getTokenList(state);
 
   return {
@@ -37,9 +36,8 @@ const mapStateToProps = (state, ownProps) => {
     currentCurrency,
     nativeCurrency,
     useBlockie,
-    useNativeCurrencyAsPrimaryCurrency,
+    showNativeTokenAsMainBalance,
     hideZeroBalanceTokens,
-    lastFetchedConversionDate,
     selectedAddress,
     tokenList,
     theme: getTheme(state),
@@ -51,8 +49,8 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentCurrency: (currency) => dispatch(setCurrentCurrency(currency)),
     setUseBlockie: (value) => dispatch(setUseBlockie(value)),
     updateCurrentLocale: (key) => dispatch(updateCurrentLocale(key)),
-    setUseNativeCurrencyAsPrimaryCurrencyPreference: (value) => {
-      return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value));
+    setShowNativeTokenAsMainBalancePreference: (value) => {
+      return dispatch(setShowNativeTokenAsMainBalancePreference(value));
     },
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),

@@ -20,7 +20,7 @@ import {
 const getNetworkDetails = (network) => {
   return {
     ...network,
-    nickname: network.nickname ?? NETWORK_TO_NAME_MAP[network.chainId],
+    name: network.name ?? NETWORK_TO_NAME_MAP[network.chainId],
     iconUrl:
       network.iconUrl ?? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
   };
@@ -44,7 +44,7 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
       >
         <AvatarNetwork
           src={fromNetworkDetails.iconUrl}
-          name={fromNetworkDetails.nickname}
+          name={fromNetworkDetails.name}
           size={AvatarNetworkSize.Xl}
           marginBottom={2}
         />
@@ -53,7 +53,7 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
           justifyContent={JustifyContent.center}
           data-testid="network-switch-from-network"
         >
-          {fromNetworkDetails.nickname}
+          {fromNetworkDetails.name}
         </Text>
       </Box>
       <Box
@@ -71,7 +71,7 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
       >
         <AvatarNetwork
           src={toNetworkDetails.iconUrl}
-          name={toNetworkDetails.nickname}
+          name={toNetworkDetails.name}
           size={AvatarNetworkSize.Xl}
           marginBottom={2}
         />
@@ -80,7 +80,7 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
           justifyContent={JustifyContent.center}
           data-testid="network-switch-to-network"
         >
-          {toNetworkDetails.nickname}
+          {toNetworkDetails.name}
         </Text>
       </Box>
     </Box>
@@ -90,12 +90,10 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
 ConfirmationNetworkSwitch.propTypes = {
   toNetwork: PropTypes.shape({
     chainId: PropTypes.string.isRequired,
-    nickname: PropTypes.string.isRequired,
-    type: PropTypes.string,
+    name: PropTypes.string.isRequired,
   }),
   fromNetwork: PropTypes.shape({
     chainId: PropTypes.string.isRequired,
-    nickname: PropTypes.string.isRequired,
-    type: PropTypes.string,
+    name: PropTypes.string.isRequired,
   }),
 };

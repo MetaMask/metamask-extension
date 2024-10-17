@@ -1,0 +1,9 @@
+.add-block-explorer-modal {
+  overflow-y: auto;
+
+  &__footer {
+    position: sticky;
+    bottom: 0;
+    box-shadow: 0 0 8px 0 var(--color-shadow-default);
+  }
+}

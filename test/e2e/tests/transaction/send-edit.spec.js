@@ -1,11 +1,13 @@
 const { strict: assert } = require('assert');
+const {
+  createInternalTransaction,
+} = require('../../page-objects/flows/transaction');
 
 const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
   generateGanacheOptions,
-  createInternalTransaction,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -13,7 +15,7 @@ describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
@@ -88,7 +90,7 @@ describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },

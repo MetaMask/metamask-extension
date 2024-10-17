@@ -3,11 +3,13 @@ import { Provider } from 'react-redux';
 import { renderHook, act } from '@testing-library/react-hooks';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { Store } from 'redux';
+import { waitFor } from '@testing-library/react';
 import * as actions from '../../store/actions';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
+  useAccountSyncingEffect,
+  useDeleteAccountSyncingDataFromUserStorage,
 } from './useProfileSyncing';
 
 const middlewares = [thunk];
@@ -20,43 +22,65 @@ jest.mock('../../store/actions', () => ({
   disableProfileSyncing: jest.fn(),
   showLoadingIndication: jest.fn(),
   hideLoadingIndication: jest.fn(),
+  syncInternalAccountsWithUserStorage: jest.fn(),
+  deleteAccountSyncingDataFromUserStorage: jest.fn(),
 }));
 
-describe('useProfileSyncing', () => {
-  let store: Store;
+type ArrangeMocksMetamaskStateOverrides = {
+  isSignedIn?: boolean;
+  isProfileSyncingEnabled?: boolean;
+  isUnlocked?: boolean;
+  useExternalServices?: boolean;
+  completedOnboarding?: boolean;
+};
 
-  beforeEach(() => {
-    store = mockStore({
-      metamask: {
-        isProfileSyncingEnabled: false,
-        isSignedIn: false,
-        participateInMetaMetrics: false,
-        internalAccounts: {
-          accounts: {
-            '0x123': {
-              address: '0x123',
-              id: 'account1',
-              metadata: {},
-              options: {},
-              methods: [],
-              type: 'eip155:eoa',
-            },
+const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
+  isSignedIn: false,
+  isProfileSyncingEnabled: false,
+  isUnlocked: true,
+  useExternalServices: true,
+  completedOnboarding: true,
+};
+
+const arrangeMocks = (
+  metamaskStateOverrides?: ArrangeMocksMetamaskStateOverrides,
+) => {
+  const store = mockStore({
+    metamask: {
+      ...initialMetamaskState,
+      ...metamaskStateOverrides,
+      participateInMetaMetrics: false,
+      internalAccounts: {
+        accounts: {
+          '0x123': {
+            address: '0x123',
+            id: 'account1',
+            metadata: {},
+            options: {},
+            methods: [],
+            type: 'eip155:eoa',
           },
         },
       },
-    });
-
-    store.dispatch = jest.fn().mockImplementation((action) => {
-      if (typeof action === 'function') {
-        return action(store.dispatch, store.getState);
-      }
-      return Promise.resolve();
-    });
-
-    jest.clearAllMocks();
+    },
   });
 
+  store.dispatch = jest.fn().mockImplementation((action) => {
+    if (typeof action === 'function') {
+      return action(store.dispatch, store.getState);
+    }
+    return Promise.resolve();
+  });
+
+  jest.clearAllMocks();
+
+  return { store };
+};
+
+describe('useProfileSyncing', () => {
   it('should enable profile syncing', async () => {
+    const { store } = arrangeMocks();
+
     const { result } = renderHook(() => useEnableProfileSyncing(), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
     });
@@ -69,6 +93,8 @@ describe('useProfileSyncing', () => {
   });
 
   it('should disable profile syncing', async () => {
+    const { store } = arrangeMocks();
+
     const { result } = renderHook(() => useDisableProfileSyncing(), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
     });
@@ -78,5 +104,53 @@ describe('useProfileSyncing', () => {
     });
 
     expect(actions.disableProfileSyncing).toHaveBeenCalled();
+  });
+
+  it('should dispatch account syncing when conditions are met', async () => {
+    const { store } = arrangeMocks({
+      isSignedIn: true,
+      isProfileSyncingEnabled: true,
+    });
+
+    renderHook(() => useAccountSyncingEffect(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    await waitFor(() => {
+      expect(actions.syncInternalAccountsWithUserStorage).toHaveBeenCalled();
+    });
+  });
+
+  it('should not dispatch account syncing when conditions are not met', async () => {
+    const { store } = arrangeMocks();
+
+    renderHook(() => useAccountSyncingEffect(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    await waitFor(() => {
+      expect(
+        actions.syncInternalAccountsWithUserStorage,
+      ).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should dispatch account sync data deletion', async () => {
+    const { store } = arrangeMocks();
+
+    const { result } = renderHook(
+      () => useDeleteAccountSyncingDataFromUserStorage(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
+    );
+
+    act(() => {
+      result.current.dispatchDeleteAccountSyncingDataFromUserStorage();
+    });
+
+    expect(actions.deleteAccountSyncingDataFromUserStorage).toHaveBeenCalled();
   });
 });

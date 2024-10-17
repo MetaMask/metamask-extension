@@ -1,1 +1,29 @@
 @use "design-system";
+
+@import 'prepare/index';
+
+.bridge {
+  max-height: 100vh;
+  width: 360px;
+  position: relative;
+
+  &__container {
+    width: 100%;
+
+    .multichain-page-footer {
+      position: absolute;
+      width: 100%;
+      height: 80px;
+      bottom: 0;
+      padding: 16px;
+      display: flex;
+
+      button {
+        flex: 1;
+        height: 100%;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+  }
+}

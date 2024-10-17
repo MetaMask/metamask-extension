@@ -13,13 +13,12 @@ describe('AppStateController', () => {
       initState,
       onInactiveTimeout: jest.fn(),
       showUnlockRequest: jest.fn(),
-      preferencesStore: {
-        subscribe: jest.fn(),
-        getState: jest.fn(() => ({
+      preferencesController: {
+        state: {
           preferences: {
             autoLockTimeLimit: 0,
           },
-        })),
+        },
       },
       messenger: {
         call: jest.fn(() => ({
@@ -370,6 +369,25 @@ describe('AppStateController', () => {
       expect(updateStateSpy).toHaveBeenCalledTimes(1);
       expect(updateStateSpy).toHaveBeenCalledWith({
         custodianDeepLink: mockParams,
+      });
+
+      updateStateSpy.mockRestore();
+    });
+
+    it('set the setNoteToTraderMessage with a message', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = 'some message';
+
+      appStateController.setNoteToTraderMessage(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        noteToTraderMessage: mockParams,
       });
 
       updateStateSpy.mockRestore();

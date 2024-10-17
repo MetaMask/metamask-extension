@@ -129,10 +129,6 @@
   "fast": {
     "message": "வேகமான"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "கோப்பு இறக்குமதி வேலை செய்யவில்லையா? இங்கே கிளிக் செய்யவும்!",
     "description": "Helps user import their account from a JSON file"
@@ -190,9 +186,6 @@
   },
   "invalidAddressRecipient": {
     "message": "பெறுநர் முகவரி தவறானது"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "தவறான Block Explorer URI"
   },
   "invalidRPC": {
     "message": "தவறான RPC URI"
@@ -262,9 +255,6 @@
   },
   "next": {
     "message": "அடுத்தது"
-  },
-  "noAddressForName": {
-    "message": "இந்த பெயருக்கான முகவரி அமைக்கப்படவில்லை."
   },
   "noTransactions": {
     "message": "பரிவர்த்தனைகள் இல்லை"

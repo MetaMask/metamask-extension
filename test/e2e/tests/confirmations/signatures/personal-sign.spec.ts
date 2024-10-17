@@ -1,10 +1,15 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import {
+  mockSignatureApproved,
+  mockSignatureRejected,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
   assertAccountDetailsMetrics,
@@ -22,6 +27,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -54,23 +60,24 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           signatureType: 'personal_sign',
         });
       },
+      mockSignatureApproved,
     );
   });
 
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.waitForSelector({
@@ -85,6 +92,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           location: 'confirmation',
         });
       },
+      mockSignatureRejected,
     );
   });
 });
@@ -107,17 +115,18 @@ async function assertVerifiedPersonalMessage(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#personalSignVerify');
 
-  const verifySigUtil = await driver.findElement(
-    '#personalSignVerifySigUtilResult',
-  );
   await driver.waitForSelector({
     css: '#personalSignVerifyECRecoverResult',
     text: publicAddress,
   });
-  const verifyECRecover = await driver.findElement(
-    '#personalSignVerifyECRecoverResult',
-  );
 
-  assert.equal(await verifySigUtil.getText(), publicAddress);
-  assert.equal(await verifyECRecover.getText(), publicAddress);
+  await driver.waitForSelector({
+    css: '#personalSignVerifySigUtilResult',
+    text: publicAddress,
+  });
+
+  await driver.waitForSelector({
+    css: '#personalSignVerifyECRecoverResult',
+    text: publicAddress,
+  });
 }

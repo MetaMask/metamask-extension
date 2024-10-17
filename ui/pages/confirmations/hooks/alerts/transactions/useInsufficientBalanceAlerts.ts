@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  currentConfirmationSelector,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
@@ -15,10 +14,11 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
+import { useConfirmContext } from '../../../context/confirm';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
   const { id: transactionId } = currentConfirmation ?? {};
 
   const balance = useSelector((state) =>
@@ -55,7 +55,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'insufficientBalance',
-        message: t('alertMessageInsufficientBalance'),
+        message: t('alertMessageInsufficientBalance2'),
         reason: t('alertReasonInsufficientBalance'),
         severity: Severity.Danger,
       },

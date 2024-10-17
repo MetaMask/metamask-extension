@@ -53,7 +53,11 @@ export async function validateRequestWithPPOM({
 
     const ppomResponse = isSecurityAlertsAPIEnabled()
       ? await validateWithAPI(ppomController, chainId, normalizedRequest)
-      : await validateWithController(ppomController, normalizedRequest);
+      : await validateWithController(
+          ppomController,
+          normalizedRequest,
+          chainId,
+        );
 
     return {
       ...ppomResponse,
@@ -207,9 +211,11 @@ async function findConfirmationBySecurityAlertId(
 async function validateWithController(
   ppomController: PPOMController,
   request: SecurityAlertsAPIRequest | JsonRpcRequest,
+  chainId: string,
 ): Promise<SecurityAlertResponse> {
-  const response = (await ppomController.usePPOM((ppom: PPOM) =>
-    ppom.validateJsonRpc(request),
+  const response = (await ppomController.usePPOM(
+    (ppom: PPOM) => ppom.validateJsonRpc(request),
+    chainId,
   )) as SecurityAlertResponse;
 
   return {
@@ -232,6 +238,6 @@ async function validateWithAPI(
     };
   } catch (error: unknown) {
     handlePPOMError(error, `Error validating request with security alerts API`);
-    return await validateWithController(ppomController, request);
+    return await validateWithController(ppomController, request, chainId);
   }
 }

@@ -115,13 +115,6 @@ describe('Send NFT', function () {
           tag: 'button',
         });
 
-        // Ensure that this type of NFT is not editable for now
-        // https://github.com/MetaMask/metamask-extension/issues/24320
-        const editButtonPresent = await driver.isElementPresent(
-          '[data-testid="confirm-page-back-edit-button"]',
-        );
-        assert.equal(editButtonPresent, false);
-
         // Confirm the send
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 

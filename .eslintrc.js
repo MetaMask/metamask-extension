@@ -21,6 +21,36 @@ module.exports = {
   plugins: ['@metamask/design-tokens'],
   rules: {
     '@metamask/design-tokens/color-no-hex': 'warn',
+    'import/no-restricted-paths': [
+      'error',
+      {
+        basePath: './',
+        zones: [
+          {
+            target: './app',
+            from: './ui',
+            message:
+              'Should not import from UI in background, use shared directory instead',
+          },
+          {
+            target: './ui',
+            from: './app',
+            message:
+              'Should not import from background in UI, use shared directory instead',
+          },
+          {
+            target: './shared',
+            from: './app',
+            message: 'Should not import from background in shared',
+          },
+          {
+            target: './shared',
+            from: './ui',
+            message: 'Should not import from UI in shared',
+          },
+        ],
+      },
+    ],
   },
   overrides: [
     /**
@@ -286,7 +316,8 @@ module.exports = {
         'app/scripts/controllers/swaps/**/*.test.ts',
         'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
-        'app/scripts/controllers/preferences.test.js',
+        'app/scripts/controllers/preferences-controller.test.ts',
+        'app/scripts/controllers/account-tracker-controller.test.ts',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/metamask-controller.test.js',
         'app/scripts/migrations/*.test.js',

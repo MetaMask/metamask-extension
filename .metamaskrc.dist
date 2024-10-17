@@ -7,6 +7,8 @@ INFURA_PROJECT_ID=00000000000
 ;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
 ;BRIDGE_USE_DEV_APIS=
+;ANALYTICS_DATA_DELETION_SOURCE_ID=
+;ANALYTICS_DATA_DELETION_ENDPOINT=
 ;SWAPS_USE_DEV_APIS=
 ;PORTFOLIO_URL=
 ;TRANSACTION_SECURITY_PROVIDER=
@@ -43,3 +45,7 @@ BLOCKAID_PUBLIC_KEY=
 ; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
 ; This should NEVER be enabled in production since it slows down react
 ; ENABLE_WHY_DID_YOU_RENDER=false
+
+; API key used in Etherscan requests to prevent rate limiting.
+; Only applies to Mainnet and Sepolia.
+; ETHERSCAN_API_KEY=

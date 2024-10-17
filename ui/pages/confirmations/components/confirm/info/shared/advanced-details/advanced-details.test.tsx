@@ -1,37 +1,73 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+
 import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { AdvancedDetails } from './advanced-details';
 
 describe('<AdvancedDetails />', () => {
   const middleware = [thunk];
 
-  it('does not render component for advanced transaction details', () => {
-    const state = { ...mockState, confirm: { currentConfirmation: null } };
+  it('does not render component when the state property is false', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          showConfirmationAdvancedDetails: false,
+        },
+      },
+    };
+
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(<AdvancedDetails />, mockStore);
+    const { container } = renderWithConfirmContextProvider(
+      <AdvancedDetails />,
+      mockStore,
+    );
 
     expect(container).toMatchSnapshot();
   });
 
-  it('renders component for advanced transaction details', () => {
+  it('renders component when the state property is true', () => {
     const state = {
       ...mockState,
-      confirm: {
-        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-      },
       metamask: {
         ...mockState.metamask,
-        useNonceField: true,
-        nextNonce: 1,
-        customNonceValue: '12',
+        preferences: {
+          ...mockState.metamask.preferences,
+          showConfirmationAdvancedDetails: true,
+        },
       },
     };
+
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(<AdvancedDetails />, mockStore);
+    const { container } = renderWithConfirmContextProvider(
+      <AdvancedDetails />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders component when the prop override is passed', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          showConfirmationAdvancedDetails: false,
+        },
+      },
+    };
+
+    const mockStore = configureMockStore(middleware)(state);
+    const { container } = renderWithConfirmContextProvider(
+      <AdvancedDetails overrideVisibility />,
+      mockStore,
+    );
 
     expect(container).toMatchSnapshot();
   });

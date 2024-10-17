@@ -1,15 +1,17 @@
 import { act } from 'react-dom/test-utils';
 import {
-  TransactionMeta,
   TransactionParams,
+  TransactionStatus,
+  TransactionType,
 } from '@metamask/transaction-controller';
+
 import {
   TRANSACTION_DATA_UNISWAP,
   TRANSACTION_DECODE_SOURCIFY,
 } from '../../../../../../../test/data/confirmations/transaction-decode';
 import { decodeTransactionData } from '../../../../../../store/actions';
-import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
-import mockState from '../../../../../../../test/data/mock-state.json';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { useDecodedTransactionData } from './useDecodedTransactionData';
 
 jest.mock('../../../../../../store/actions', () => ({
@@ -18,24 +20,13 @@ jest.mock('../../../../../../store/actions', () => ({
 }));
 
 const CONTRACT_ADDRESS_MOCK = '0x123';
-const CHAIN_ID_MOCK = '0x1';
+const CHAIN_ID_MOCK = '0x5';
 
-function buildState({
-  currentConfirmation,
-}: {
-  currentConfirmation?: Partial<TransactionMeta>;
-} = {}) {
-  return {
-    ...mockState,
-    confirm: {
-      currentConfirmation,
-    },
-  };
-}
-
-async function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
-  const state = buildState(stateOptions);
-  const response = renderHookWithProvider(useDecodedTransactionData, state);
+async function runHook(state: Record<string, unknown>) {
+  const response = renderHookWithConfirmContextProvider(
+    useDecodedTransactionData,
+    state,
+  );
 
   await act(() => {
     // Ignore
@@ -50,31 +41,37 @@ describe('useDecodedTransactionData', () => {
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([undefined, null, '', '0x', '0X'])(
     'returns undefined if transaction data is %s',
-    async () => {
-      const result = await runHook({
-        currentConfirmation: {
+    async (data: string) => {
+      const result = await runHook(
+        getMockConfirmStateForTransaction({
+          id: '123',
           chainId: CHAIN_ID_MOCK,
+          type: TransactionType.contractInteraction,
+          status: TransactionStatus.unapproved,
           txParams: {
-            data: '',
+            data,
             to: CONTRACT_ADDRESS_MOCK,
           } as TransactionParams,
-        },
-      });
+        }),
+      );
 
       expect(result).toStrictEqual({ pending: false, value: undefined });
     },
   );
 
   it('returns undefined if no transaction to', async () => {
-    const result = await runHook({
-      currentConfirmation: {
+    const result = await runHook(
+      getMockConfirmStateForTransaction({
+        id: '123',
         chainId: CHAIN_ID_MOCK,
+        type: TransactionType.contractInteraction,
+        status: TransactionStatus.unapproved,
         txParams: {
           data: TRANSACTION_DATA_UNISWAP,
           to: undefined,
         } as TransactionParams,
-      },
-    });
+      }),
+    );
 
     expect(result).toStrictEqual({ pending: false, value: undefined });
   });
@@ -82,15 +79,18 @@ describe('useDecodedTransactionData', () => {
   it('returns the decoded data', async () => {
     decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_SOURCIFY);
 
-    const result = await runHook({
-      currentConfirmation: {
+    const result = await runHook(
+      getMockConfirmStateForTransaction({
+        id: '123',
         chainId: CHAIN_ID_MOCK,
+        type: TransactionType.contractInteraction,
+        status: TransactionStatus.unapproved,
         txParams: {
           data: TRANSACTION_DATA_UNISWAP,
           to: CONTRACT_ADDRESS_MOCK,
         } as TransactionParams,
-      },
-    });
+      }),
+    );
 
     expect(result).toMatchInlineSnapshot(`
       {

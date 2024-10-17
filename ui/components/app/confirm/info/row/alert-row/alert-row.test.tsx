@@ -56,14 +56,6 @@ describe('AlertRow', () => {
           [OWNER_ID_MOCK]: { [KEY_ALERT_KEY_MOCK]: false },
         },
       },
-      confirm: {
-        currentConfirmation: {
-          id: OWNER_ID_MOCK,
-          status: 'unapproved',
-          time: new Date().getTime(),
-          type: 'personal_sign',
-        },
-      },
       ...state,
     };
 

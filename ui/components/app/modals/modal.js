@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
@@ -10,8 +12,6 @@ import * as actions from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 ///: END:ONLY_INCLUDE_IF
 
-// Modal Components
-import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
 import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
@@ -37,7 +37,6 @@ import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 // Metamask Notifications
 import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
-import ConfirmDeleteRpcUrlModal from './confirm-delete-rpc-url-modal/confirm-delete-rpc-url-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -57,34 +56,6 @@ const modalContainerMobileStyle = {
   ...modalContainerBaseStyle,
   width: '309px',
   top: '12.5%',
-};
-
-const accountModalStyle = {
-  mobileModalStyle: {
-    width: '95%',
-    // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-    borderRadius: '4px',
-    top: '10%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  laptopModalStyle: {
-    width: '335px',
-    // top: 'calc(33% + 45px)',
-    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-    borderRadius: '4px',
-    top: '10%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  contentStyle: {
-    borderRadius: '4px',
-  },
 };
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -116,11 +87,6 @@ const custodyConfirmModalStyle = {
 ///: END:ONLY_INCLUDE_IF
 
 const MODALS = {
-  ONBOARDING_ADD_NETWORK: {
-    contents: <AddNetworkModal />,
-    testId: 'add-network-modal',
-    ...accountModalStyle,
-  },
   NEW_ACCOUNT: {
     contents: <NewAccountModal />,
     mobileModalStyle: {
@@ -207,19 +173,6 @@ const MODALS = {
 
   CONFIRM_DELETE_NETWORK: {
     contents: <ConfirmDeleteNetwork />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CONFIRM_DELETE_RPC_URL: {
-    contents: <ConfirmDeleteRpcUrlModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

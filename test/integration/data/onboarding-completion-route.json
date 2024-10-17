@@ -182,7 +182,24 @@
       }
     }
   },
-  "networkConfigurations": {},
+  "networkConfigurationsByChainId": {
+    "0xaa36a7": {
+      "chainId": "0xaa36a7",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "sepolia",
+          "url": "https://sepolia.infura.io/v3/{infuraProjectId}",
+          "type": "infura",
+          "name": "Sepolia"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Sepolia",
+      "nativeCurrency": "SepoliaETH"
+    }
+  },
   "networksMetadata": { "sepolia": { "status": "unknown", "EIPS": {} } },
   "nextNonce": null,
   "nftsDetectionNoticeDismissed": false,
@@ -207,7 +224,6 @@
     "showFiatInTestnets": false,
     "showTestNetworks": false,
     "smartTransactionsOptInStatus": null,
-    "useNativeCurrencyAsPrimaryCurrency": true,
     "hideZeroBalanceTokens": false,
     "petnamesEnabled": true,
     "redesignedConfirmationsEnabled": true,

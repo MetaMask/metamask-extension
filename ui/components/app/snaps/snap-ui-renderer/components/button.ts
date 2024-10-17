@@ -11,6 +11,7 @@ export const button: UIComponentFactory<ButtonElement> = ({
   element: 'SnapUIButton',
   props: {
     type: element.props.type,
+    form: element.props.form,
     variant: element.props.variant,
     name: element.props.name,
     disabled: element.props.disabled,

@@ -3,6 +3,10 @@ export const CaveatTypes = Object.freeze({
   restrictNetworkSwitching: 'restrictNetworkSwitching' as const,
 });
 
+export const EndowmentTypes = Object.freeze({
+  permittedChains: 'endowment:permitted-chains',
+});
+
 export const RestrictedEthMethods = Object.freeze({
   eth_accounts: 'eth_accounts',
 });

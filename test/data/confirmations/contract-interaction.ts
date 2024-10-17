@@ -18,18 +18,22 @@ export const CONTRACT_INTERACTION_SENDER_ADDRESS =
 
 export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
 
+export const CHAIN_ID = '0xaa36a7';
+
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   txData = DEPOSIT_METHOD_DATA,
+  chainId = CHAIN_ID,
   simulationData,
 }: {
   address?: Hex;
   txData?: Hex;
+  chainId?: string;
   simulationData?: SimulationData;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
     actionId: String(400855682),
-    chainId: '0xaa36a7',
+    chainId,
     dappSuggestedGasFees: {
       gas: '0xab77',
     },
@@ -43,7 +47,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     history: [
       {
         actionId: String(400855682),
-        chainId: '0xaa36a7',
+        chainId,
         dappSuggestedGasFees: {
           gas: '0xab77',
         },

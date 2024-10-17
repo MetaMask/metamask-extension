@@ -1,42 +1,6 @@
 @use "design-system";
 
 .networks-tab {
-  &__rpc-header {
-    cursor: default;
-  }
-
-  &__rpc-dropdown {
-    cursor: pointer;
-    word-break: break-all;
-  }
-
-  &__rpc-item {
-    position: relative;
-    word-break: break-all;
-  }
-
-  &__rpc-item:hover {
-    cursor: pointer;
-    background-color: var(--color-background-default-hover);
-  }
-
-  &__rpc-item--selected,
-  &__rpc-item--selected:hover {
-    background-color: var(--color-primary-muted);
-  }
-
-  &__rpc-selected-pill {
-    width: 4px;
-    height: calc(100% - 8px);
-    position: absolute;
-    top: 4px;
-    left: 4px;
-  }
-
-  &__rpc-popover {
-    z-index: 1;
-  }
-
   &__imageclose {
     cursor: pointer;
     color: var(--color-icon-default);
@@ -118,19 +82,10 @@
   }
 
   &__network-form {
-    padding: 16px 16px;
-    width: 100%;
-
-    @include design-system.screen-sm-min {
-      padding: 16px;
-    }
-
-    .page-container__footer {
-      border-top: none;
-
-      footer {
-        padding: 10px 0;
-      }
+    &__footer {
+      position: sticky;
+      bottom: 0;
+      box-shadow: 0 0 8px 0 var(--color-shadow-default);
     }
   }
 
@@ -236,70 +191,6 @@
 
     @include design-system.screen-sm-max {
       color: var(--color-text-default);
-    }
-  }
-
-  &__network-form-footer {
-    display: flex;
-    flex-flow: row nowrap;
-    padding: 12px 0;
-
-    .btn--rounded {
-      white-space: nowrap;
-    }
-
-    .btn-secondary {
-      margin-left: auto;
-    }
-
-    .btn-primary {
-      margin-left: 16px;
-    }
-
-    .btn-danger {
-      margin-right: 16px;
-    }
-  }
-
-  &__new-network-form-footer {
-    position: sticky;
-    bottom: 0;
-  }
-
-  &__add-network-form {
-    grid-column: span 2; // spread both columns of grid layout
-
-    @include design-system.screen-sm-min {
-      max-width: 400px; // but only expand to 400px
-      padding-left: 16px;
-      padding-right: 16px;
-      padding-bottom: 16px;
-    }
-
-    &__alert {
-      margin-top: 4;
-      padding: 4;
-    }
-  }
-
-  &__restrict-height {
-    max-height: 578px;
-    overflow-y: auto;
-    width: 100%;
-  }
-
-  &__add-network-form-footer {
-    display: flex;
-    flex-flow: row;
-    padding: 12px 0;
-    width: 60%;
-
-    .btn-secondary {
-      margin-right: 0.5rem;
-    }
-
-    .btn-primary {
-      margin-left: 0.5rem;
     }
   }
 }

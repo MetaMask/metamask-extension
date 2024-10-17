@@ -29,7 +29,7 @@ const storeMock = configureStore({
     ...mockState.metamask,
     preferences: {
       ...mockState.metamask.preferences,
-      useNativeCurrencyAsPrimaryCurrency: false,
+      showNativeTokenAsMainBalance: false,
     },
     ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
     useTokenDetection: true,

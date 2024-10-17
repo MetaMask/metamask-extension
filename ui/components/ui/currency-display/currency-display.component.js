@@ -32,6 +32,7 @@ export default function CurrencyDisplay({
   prefixComponentWrapperProps = {},
   textProps = {},
   suffixProps = {},
+  isAggregatedFiatOverviewBalance = false,
   ...props
 }) {
   const [title, parts] = useCurrencyDisplay(value, {
@@ -43,6 +44,7 @@ export default function CurrencyDisplay({
     denomination,
     currency,
     suffix,
+    isAggregatedFiatOverviewBalance,
   });
 
   return (
@@ -112,6 +114,7 @@ const CurrencyDisplayPropTypes = {
   prefixComponentWrapperProps: PropTypes.object,
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
+  isAggregatedFiatOverviewBalance: PropTypes.bool,
 };
 
 CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;

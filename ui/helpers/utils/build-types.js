@@ -1,7 +1,11 @@
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import mmiJson from '../../../app/build-types/mmi/mmi-mascot.json';
 ///: END:ONLY_INCLUDE_IF
 

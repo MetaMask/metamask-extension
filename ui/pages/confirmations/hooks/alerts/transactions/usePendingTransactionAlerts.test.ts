@@ -1,66 +1,62 @@
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+
+import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import mockState from '../../../../../../test/data/mock-state.json';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { usePendingTransactionAlerts } from './usePendingTransactionAlerts';
 
-const ACCOUNT_ADDRESS = '0x123';
+const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TRANSACTION_ID_MOCK = '123-456';
 
-const TRANSACTION_META_MOCK: Partial<TransactionMeta> = {
+const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
+  chainId: '0x5',
+}) as TransactionMeta;
+
+const TRANSACTION_META_MOCK = {
   id: TRANSACTION_ID_MOCK,
   chainId: '0x5',
   status: TransactionStatus.submitted,
+  type: TransactionType.contractInteraction,
   txParams: {
     from: ACCOUNT_ADDRESS,
   },
-};
-
-const CONFIRMATION_MOCK = {
-  type: TransactionType.contractInteraction,
-};
-
-function buildState({
-  currentConfirmation,
-  transactions,
-}: {
-  currentConfirmation?: Partial<TransactionMeta>;
-  transactions?: Partial<TransactionMeta>[];
-} = {}) {
-  return {
-    ...mockState,
-    confirm: {
-      currentConfirmation,
-    },
-    metamask: {
-      ...mockState.metamask,
-      internalAccounts: {
-        selectedAccount: '123',
-        accounts: {
-          '123': {
-            address: ACCOUNT_ADDRESS,
-          },
-        },
-      },
-      transactions,
-    },
-  };
-}
+  time: new Date().getTime() - 10000,
+} as TransactionMeta;
 
 function runHook({
   currentConfirmation,
-  transactions,
+  transactions = [],
 }: {
-  currentConfirmation?: Partial<TransactionMeta>;
-  transactions?: Partial<TransactionMeta>[];
+  currentConfirmation?: TransactionMeta;
+  transactions?: TransactionMeta[];
 } = {}) {
-  const state = buildState({ currentConfirmation, transactions });
-  const response = renderHookWithProvider(usePendingTransactionAlerts, state);
+  let pendingApprovals = {};
+  if (currentConfirmation) {
+    pendingApprovals = {
+      [currentConfirmation.id as string]: {
+        id: currentConfirmation.id,
+        type: ApprovalType.Transaction,
+      },
+    };
+    transactions.push(currentConfirmation);
+  }
+  const state = getMockConfirmState({
+    metamask: {
+      pendingApprovals,
+      transactions,
+    },
+  });
+  const response = renderHookWithConfirmContextProvider(
+    usePendingTransactionAlerts,
+    state,
+  );
 
   return response.result.current;
 }
@@ -114,7 +110,10 @@ describe('usePendingTransactionAlerts', () => {
   it('returns no alerts if confirmation has incorrect type', () => {
     expect(
       runHook({
-        currentConfirmation: { type: TransactionType.signTypedData },
+        currentConfirmation: {
+          ...CONFIRMATION_MOCK,
+          type: TransactionType.signTypedData,
+        },
         transactions: [TRANSACTION_META_MOCK],
       }),
     ).toEqual([]);

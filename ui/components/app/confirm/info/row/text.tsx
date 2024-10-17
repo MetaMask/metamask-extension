@@ -29,6 +29,7 @@ export type ConfirmInfoRowTextProps = {
   editIconClassName?: string;
   tooltip?: string;
   'data-testid'?: string;
+  editIconDataTestId?: string;
 };
 
 export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
@@ -37,6 +38,7 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
   editIconClassName,
   tooltip,
   'data-testid': dataTestId,
+  editIconDataTestId,
 }) => {
   const t = useContext(I18nContext);
 
@@ -73,7 +75,7 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
           size={ButtonIconSize.Sm}
           // to reset the button padding
           style={{ marginLeft: '-4px' }}
-          data-testid="edit-nonce-icon"
+          data-testid={editIconDataTestId}
         />
       ) : null}
     </Box>

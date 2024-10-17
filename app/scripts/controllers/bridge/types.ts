@@ -3,6 +3,7 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
+import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './constants';
 
@@ -20,8 +21,16 @@ export type BridgeFeatureFlags = {
 
 export type BridgeControllerState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
+  srcTokens: Record<string, SwapsTokenObject>;
+  srcTopAssets: { address: string }[];
+  destTokens: Record<string, SwapsTokenObject>;
+  destTopAssets: { address: string }[];
 };
 
+export enum BridgeUserAction {
+  SELECT_SRC_NETWORK = 'selectSrcNetwork',
+  SELECT_DEST_NETWORK = 'selectDestNetwork',
+}
 export enum BridgeBackgroundAction {
   SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
 }
@@ -33,7 +42,9 @@ type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
 
 // Maps to BridgeController function names
 type BridgeControllerActions =
-  BridgeControllerAction<BridgeBackgroundAction.SET_FEATURE_FLAGS>;
+  | BridgeControllerAction<BridgeBackgroundAction.SET_FEATURE_FLAGS>
+  | BridgeControllerAction<BridgeUserAction.SELECT_SRC_NETWORK>
+  | BridgeControllerAction<BridgeUserAction.SELECT_DEST_NETWORK>;
 
 type BridgeControllerEvents = ControllerStateChangeEvent<
   typeof BRIDGE_CONTROLLER_NAME,

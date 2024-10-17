@@ -3,6 +3,8 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import type { NotificationComponent } from '../types/notifications/notifications';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
 
 import {

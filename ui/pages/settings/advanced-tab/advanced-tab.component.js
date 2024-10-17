@@ -46,12 +46,12 @@ export default class AdvancedTab extends PureComponent {
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
-    smartTransactionsOptInStatus: PropTypes.bool,
+    smartTransactionsEnabled: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    setSmartTransactionsOptInStatus: PropTypes.func.isRequired,
+    setSmartTransactionsEnabled: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
@@ -199,7 +199,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderToggleStxOptIn() {
     const { t } = this.context;
-    const { smartTransactionsOptInStatus, setSmartTransactionsOptInStatus } =
+    const { smartTransactionsEnabled, setSmartTransactionsEnabled } =
       this.props;
 
     const learMoreLink = (
@@ -237,10 +237,10 @@ export default class AdvancedTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={smartTransactionsOptInStatus}
+            value={smartTransactionsEnabled}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              setSmartTransactionsOptInStatus(newValue);
+              setSmartTransactionsEnabled(newValue);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
@@ -547,27 +547,27 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     return (
       <Box
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[10]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
       >
         <div className="settings-page__content-item">
-          <span>{t('backupUserData')}</span>
+          <span>{t('exportYourData')}</span>
           <span className="settings-page__content-description">
-            {t('backupUserDataDescription')}
+            {t('exportYourDataDescription')}
           </span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
-              data-testid="backup-button"
+              data-testid="export-data-button"
               type="secondary"
               large
-              onClick={() => this.backupUserData()}
+              onClick={this.backupUserData}
             >
-              {t('backup')}
+              {t('exportYourDataButton')}
             </Button>
           </div>
         </div>
@@ -577,7 +577,7 @@ export default class AdvancedTab extends PureComponent {
 
   render() {
     const { warning } = this.props;
-
+    // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
     return (
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}

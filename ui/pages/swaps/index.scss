@@ -3,27 +3,21 @@
 @import 'awaiting-swap/index';
 @import 'awaiting-signatures/index';
 @import 'smart-transaction-status/index';
-@import 'build-quote/index';
 @import 'prepare-swap-page/index';
 @import 'notification-page/index';
 @import 'countdown-timer/index';
-@import 'dropdown-input-pair/index';
-@import 'dropdown-search-list/index';
 @import 'exchange-rate-display/index';
 @import 'fee-card/index';
 @import 'loading-swaps-quotes/index';
-@import 'main-quote-summary/index';
 @import 'searchable-item-list/index';
 @import 'select-quote-popover/index';
-@import 'slippage-buttons/index';
 @import 'swaps-footer/index';
-@import 'view-quote/index';
 @import 'create-new-swap/index';
 @import 'view-on-block-explorer/index';
 @import 'transaction-settings/index';
 @import 'list-with-search/index';
-@import 'popover-custom-background/index';
 @import 'mascot-background-animation/index';
+@import 'selected-token/index';
 
 .swaps {
   display: flex;
@@ -78,13 +72,7 @@
     }
 
     @include design-system.screen-sm-min {
-      width: 348px;
-    }
-
-    &--redesign-enabled {
-      @include design-system.screen-sm-min {
-        width: 100%;
-      }
+      width: 100%;
     }
   }
 
@@ -117,25 +105,6 @@
       padding-bottom: 12px;
       height: 66px;
     }
-  }
-
-  &__header-cancel {
-    @include design-system.H7;
-
-    color: var(--color-primary-default);
-    cursor: pointer;
-    padding-right: 24px;
-    flex: 1;
-    text-align: right;
-  }
-
-  &__header-edit {
-    @include design-system.H7;
-
-    color: var(--color-primary-default);
-    cursor: pointer;
-    padding-left: 24px;
-    flex: 1;
   }
 
   .actionable-message__message &__notification-close-button {
