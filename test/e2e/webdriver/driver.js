@@ -600,13 +600,11 @@ class Driver {
   /**
    * Checks if an element is moving by comparing its position at two different times.
    *
-   * @param {object} params - Parameters for the function.
-   * @param {object} params.driver - The WebDriver instance.
-   * @param {string | object} params.locator - Element locator.
+   * @param {string | object} rawLocator - Element locator.
    * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
    */
-  async isElementMoving({ driver, locator }) {
-    const element = await driver.findElement(locator);
+  async isElementMoving(rawLocator) {
+    const element = await this.driver.findElement(rawLocator);
     const initialPosition = await element.getRect();
 
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
@@ -621,18 +619,16 @@ class Driver {
   /**
    * Waits until an element stops moving within a specified timeout period.
    *
-   * @param {object} params - Parameters for the function.
-   * @param {object} params.driver - The WebDriver instance.
-   * @param {string | object} params.locator - Element locator.
-   * @param {number} params.timeout - The maximum time to wait for the element to stop moving.
+   * @param {string | object} rawLocator - Element locator.
+   * @param {number} timeout - The maximum time to wait for the element to stop moving.
    * @returns {Promise<void>} Promise that resolves when the element stops moving.
    * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
    */
-  async waitForElementToStopMoving({ driver, locator, timeout = 5000 }) {
+  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
-      if (!(await this.isElementMoving({ driver, locator }))) {
+      if (!(await this.isElementMoving(rawLocator))) {
         return;
       }
       await new Promise((resolve) => setTimeout(resolve, 500)); // Check every 500ms

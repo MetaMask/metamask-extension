@@ -81,10 +81,9 @@ describe('MetaMask onboarding @no-mmi', function () {
           '[data-testid="currency-rate-check-toggle"] .toggle-button',
         );
         await driver.clickElement('[data-testid="category-back-button"]');
-        await driver.waitForElementToStopMoving({
-          driver,
-          locator: '[data-testid="privacy-settings-back-button"]',
-        });
+        await driver.waitForElementToStopMoving(
+          '[data-testid="privacy-settings-back-button"]',
+        );
 
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
@@ -100,11 +99,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         });
 
         await driver.waitForElementToStopMoving({
-          driver,
-          locator: {
-            text: 'Done',
-            tag: 'button',
-          },
+          text: 'Done',
+          tag: 'button',
         });
 
         await driver.clickElementAndWaitToDisappear({

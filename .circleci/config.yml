@@ -239,11 +239,6 @@ workflows:
             - prep-build-test-mmi
             - get-changed-files-with-git-diff
       - test-e2e-chrome-vault-decryption:
-          filters:
-            branches:
-              only:
-                - develop
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
       - test-storybook:
