@@ -11,7 +11,8 @@ import {
 } from '../contexts/metametrics';
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { AssetPollingProvider } from '../contexts/assetPolling';
-import ErrorPage from './error';
+import ErrorPage from './error-page/error-page.component';
+
 import Routes from './routes';
 
 class Index extends PureComponent {

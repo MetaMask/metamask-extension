@@ -15,7 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import ErrorPage from './error.component';
+import ErrorPage from './error-page.component';
 
 jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),

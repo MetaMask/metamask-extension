@@ -5,7 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import SettingsPage from '../../page-objects/pages/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import DevelopOptions from '../../page-objects/pages/deveoper-options';
+import DevelopOptions from '../../page-objects/pages/developer-options-page';
 import ErrorPage from '../../page-objects/pages/ErrorPage';
 
 const triggerCrash = async (driver: Driver): Promise<void> => {
@@ -53,7 +53,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         const errorPage = new ErrorPage(driver);
         await errorPage.check_pageIsLoaded();
 
-        await errorPage.contactAndValidateMetamaskSupport();
+        await errorPage.contactAndValidateMetaMaskSupport();
       },
     );
   });
