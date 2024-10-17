@@ -2,11 +2,13 @@
 // eslint-disable-next-line import/no-restricted-paths
 import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
-// import { TransactionType } from '@metamask/transaction-controller'; // TODO update package to v37+
+import {
+  TransactionType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -328,8 +330,7 @@ export const submitBridgeTransaction = (
           maxFeePerGas,
           maxPriorityFeePerGas,
           meta: {
-            // @ts-expect-error Need TransactionController v37+, TODO add this type
-            type: 'bridgeApproval', // TransactionType.bridgeApproval,
+            type: TransactionType.bridgeApproval,
           },
         });
       }
@@ -366,8 +367,7 @@ export const submitBridgeTransaction = (
         maxFeePerGas,
         maxPriorityFeePerGas,
         meta: {
-          // @ts-expect-error Need TransactionController v37+, TODO add this type
-          type: 'bridgeApproval', // TransactionType.bridgeApproval,
+          type: TransactionType.bridgeApproval,
           sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
         },
       });
@@ -399,8 +399,7 @@ export const submitBridgeTransaction = (
         meta: {
           // estimatedBaseFee: decEstimatedBaseFee,
           // swapMetaData,
-          // @ts-expect-error Need TransactionController v37+, TODO add this type
-          type: 'bridge', // TransactionType.bridge,
+          type: TransactionType.bridge,
           sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
           destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
           destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
