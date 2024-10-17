@@ -6656,7 +6656,10 @@ export default class MetamaskController extends EventEmitter {
       category: MetaMetricsEventCategory.Phishing,
       event: MetaMetricsEventName.ProceedAnywayPhishingPage,
       properties: {
-        origin,
+        url: origin,
+        referrer: {
+            url: origin,
+        },
       },
     });
 
