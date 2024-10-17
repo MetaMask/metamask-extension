@@ -109,7 +109,6 @@ import {
   isBurnAddress,
   isPossibleAddress,
   isValidHexAddress,
-  isPossibleAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
