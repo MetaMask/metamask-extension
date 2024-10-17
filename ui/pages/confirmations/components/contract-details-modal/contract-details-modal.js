@@ -224,7 +224,11 @@ export default function ContractDetailsModal({
           <Box data-testid="recipient">
             {petnamesEnabled ? (
               <Text variant={TextVariant.bodyMd} as="h5">
-                <Name value={toAddress} type={NameType.ETHEREUM_ADDRESS} />
+                <Name
+                  value={toAddress}
+                  type={NameType.ETHEREUM_ADDRESS}
+                  variation={chainId}
+                />
               </Text>
             ) : (
               <Text

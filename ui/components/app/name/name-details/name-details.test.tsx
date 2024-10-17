@@ -11,8 +11,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -37,11 +37,11 @@ const SOURCE_ID_MOCK = 'ens';
 const SOURCE_ID_2_MOCK = 'some_snap';
 const PROPOSED_NAME_MOCK = 'TestProposedName';
 const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
+const VARIATION_MOCK = CHAIN_ID_MOCK;
 
 const STATE_MOCK = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
     nameSources: {
       [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
     },
@@ -157,6 +157,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={''}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -170,6 +171,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -183,6 +185,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -196,6 +199,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_RECOGNIZED_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -209,6 +213,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -229,6 +234,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -251,6 +257,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -273,6 +280,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -295,6 +303,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -317,6 +326,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -336,6 +346,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -373,6 +384,7 @@ describe('NameDetails', () => {
             <NameDetails
               type={NameType.ETHEREUM_ADDRESS}
               value={ADDRESS_SAVED_NAME_MOCK}
+              variation={VARIATION_MOCK}
               onClose={() => undefined}
             />
           </MetaMetricsContext.Provider>,
@@ -399,6 +411,7 @@ describe('NameDetails', () => {
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_NO_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
@@ -426,6 +439,7 @@ describe('NameDetails', () => {
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
@@ -454,6 +468,7 @@ describe('NameDetails', () => {
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,

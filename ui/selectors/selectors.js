@@ -1402,20 +1402,6 @@ export const getTokenList = createSelector(
       : remoteTokenList,
 );
 
-/**
- * Returns a memoized selector that gets contract info.
- *
- * @param state - The Redux store state.
- * @param addresses - An array of contract addresses.
- * @returns {Array} A map of contract info, keyed by address.
- */
-export const getRemoteTokens = createSelector(
-  getRemoteTokenList,
-  (_state, addresses) => addresses,
-  (remoteTokenList, addresses) =>
-    addresses.map((address) => remoteTokenList[address?.toLowerCase()]),
-);
-
 export const getMemoizedMetadataContract = createSelector(
   (state, _address) => getTokenList(state),
   (_state, address) => address,

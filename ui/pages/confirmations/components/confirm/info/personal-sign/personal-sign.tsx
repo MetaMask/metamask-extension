@@ -34,6 +34,7 @@ const PersonalSignInfo: React.FC = () => {
 
   const { from } = currentConfirmation.msgParams;
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
+  const chainId = currentConfirmation.chainId as string;
 
   return (
     <>
@@ -62,7 +63,7 @@ const PersonalSignInfo: React.FC = () => {
             label={t('signingInWith')}
             ownerId={currentConfirmation.id}
           >
-            <ConfirmInfoRowAddress address={from} />
+            <ConfirmInfoRowAddress address={from} chainId={chainId} />
           </ConfirmInfoAlertRow>
         )}
       </ConfirmInfoSection>

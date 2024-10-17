@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Name from '../../../../components/app/name';
@@ -8,6 +8,7 @@ import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import mockState from '../../../../../test/data/mock-state.json';
 import { AssetPill } from './asset-pill';
 import { NATIVE_ASSET_IDENTIFIER, TokenAssetIdentifier } from './types';
 
@@ -84,7 +85,7 @@ describe('AssetPill', () => {
       address: '0x1234567890123456789012345678901234567890',
     };
 
-    render(<AssetPill asset={asset} />);
+    renderWithProvider(<AssetPill asset={asset} />, configureStore(mockState));
 
     expect(Name).toHaveBeenCalledWith(
       expect.objectContaining({

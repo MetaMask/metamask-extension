@@ -30,6 +30,7 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
+            variation={transactionMeta?.chainId}
           />
         </Box>
       </Box>
@@ -44,6 +45,7 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
             value={spender}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
+            variation={transactionMeta?.chainId}
           />
         </Box>
       </Box>

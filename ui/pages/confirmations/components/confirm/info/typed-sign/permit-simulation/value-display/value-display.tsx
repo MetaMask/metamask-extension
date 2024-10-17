@@ -29,7 +29,9 @@ import {
 import Name from '../../../../../../../../components/app/name/name';
 import { fetchErc20Decimals } from '../../../../../../utils/token';
 
-type PermitSimulationValueDisplayParams = {
+type PermitSimulationValueDisplayProps = {
+  chainId: Hex;
+
   /** The primaryType of the typed sign message */
   primaryType?: string;
 
@@ -45,8 +47,8 @@ type PermitSimulationValueDisplayParams = {
 };
 
 const PermitSimulationValueDisplay: React.FC<
-  PermitSimulationValueDisplayParams
-> = ({ primaryType, tokenContract, value }) => {
+  PermitSimulationValueDisplayProps
+> = ({ chainId, primaryType, tokenContract, value }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
   const { value: tokenDecimals } = useAsyncResult(
@@ -120,6 +122,7 @@ const PermitSimulationValueDisplay: React.FC<
           value={tokenContract}
           type={NameType.ETHEREUM_ADDRESS}
           preferContractSymbol
+          variation={chainId}
         />
       </Box>
       <Box>

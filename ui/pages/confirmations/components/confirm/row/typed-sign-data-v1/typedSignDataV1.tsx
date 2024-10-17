@@ -7,8 +7,10 @@ import { DataTree } from '../dataTree';
 
 export const ConfirmInfoRowTypedSignDataV1 = ({
   data,
+  chainId,
 }: {
   data?: TypedSignDataV1Type;
+  chainId: string;
 }) => {
   if (!data) {
     return null;
@@ -22,7 +24,7 @@ export const ConfirmInfoRowTypedSignDataV1 = ({
   return (
     <Box width={BlockSize.Full}>
       <Box style={{ marginLeft: -8 }}>
-        <DataTree data={parsedData} />
+        <DataTree data={parsedData} chainId={chainId} />
       </Box>
     </Box>
   );

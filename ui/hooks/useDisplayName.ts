@@ -1,16 +1,20 @@
-import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { getRemoteTokens } from '../selectors';
-import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
+import { Hex } from '@metamask/utils';
+import { getCurrentChainId, getRemoteTokenList } from '../selectors';
+import { getNftContractsByAddressByChain } from '../selectors/nft';
+import {
+  EXPERIENCES_TYPE,
+  FIRST_PARTY_CONTRACT_NAMES,
+} from '../../shared/constants/first-party-contracts';
 import { useNames } from './useName';
-import { useFirstPartyContractNames } from './useFirstPartyContractName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
 export type UseDisplayNameRequest = {
-  value: string;
   preferContractSymbol?: boolean;
   type: NameType;
+  value: string;
+  variation: string;
 };
 
 export type UseDisplayNameResponse = {
@@ -23,50 +27,24 @@ export type UseDisplayNameResponse = {
 export function useDisplayNames(
   requests: UseDisplayNameRequest[],
 ): UseDisplayNameResponse[] {
-  const nameRequests = useMemo(
-    () => requests.map(({ value, type }) => ({ value, type })),
-    [requests],
-  );
+  const nameEntries = useNames(requests);
+  const firstPartyContractNames = useFirstPartyContractNames(requests);
+  const erc20TokenNames = useERC20TokenNames(requests);
+  const watchedNFTNames = useWatchedNFTNames(requests);
+  const nfts = useNFTs(requests);
 
-  const nameEntries = useNames(nameRequests);
-  const firstPartyContractNames = useFirstPartyContractNames(nameRequests);
-  const nftCollections = useNftCollectionsMetadata(nameRequests);
-  const values = requests.map(({ value }) => value);
-
-  const contractInfo = useSelector((state) =>
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getRemoteTokens as any)(state, values),
-  );
-
-  const watchedNftNames = useSelector(getNftContractsByAddressOnCurrentChain);
-
-  return requests.map(({ value, preferContractSymbol }, index) => {
+  return requests.map((_request, index) => {
     const nameEntry = nameEntries[index];
     const firstPartyContractName = firstPartyContractNames[index];
-    const singleContractInfo = contractInfo[index];
-    const watchedNftName = watchedNftNames[value.toLowerCase()]?.name;
-    const nftCollectionProperties = nftCollections[value.toLowerCase()];
-
-    const isNotSpam = nftCollectionProperties?.isSpam === false;
-
-    const nftCollectionName = isNotSpam
-      ? nftCollectionProperties?.name
-      : undefined;
-    const nftCollectionImage = isNotSpam
-      ? nftCollectionProperties?.image
-      : undefined;
-
-    const contractDisplayName =
-      preferContractSymbol && singleContractInfo?.symbol
-        ? singleContractInfo.symbol
-        : singleContractInfo?.name;
+    const erc20TokenName = erc20TokenNames[index];
+    const watchedNftName = watchedNFTNames[index];
+    const nft = nfts[index];
 
     const name =
       nameEntry?.name ||
       firstPartyContractName ||
-      nftCollectionName ||
-      contractDisplayName ||
+      nft?.name ||
+      erc20TokenName ||
       watchedNftName ||
       null;
 
@@ -75,27 +53,113 @@ export function useDisplayNames(
     return {
       name,
       hasPetname,
-      contractDisplayName,
-      image: nftCollectionImage,
+      contractDisplayName: erc20TokenName,
+      image: nft?.image,
     };
   });
 }
 
-/**
- * Attempts to resolve the name for the given parameters.
- *
- * @param value - The address or contract address to resolve.
- * @param type - The type of value, e.g. NameType.ETHEREUM_ADDRESS.
- * @param preferContractSymbol - Applies to recognized contracts when no petname is saved:
- * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
- * @returns An object with two properties:
- * - `name` {string|null} - The display name, if it can be resolved, otherwise null.
- * - `hasPetname` {boolean} - True if there is a petname for the given address.
- */
 export function useDisplayName(
-  value: string,
-  type: NameType,
-  preferContractSymbol: boolean = false,
+  request: UseDisplayNameRequest,
 ): UseDisplayNameResponse {
-  return useDisplayNames([{ preferContractSymbol, type, value }])[0];
+  return useDisplayNames([request])[0];
+}
+
+function useERC20TokenNames(
+  nameRequests: UseDisplayNameRequest[],
+): (string | undefined)[] {
+  const remoteTokenList = useSelector(getRemoteTokenList);
+
+  // TODO: Remove once `TokenListController` provides token data on multiple chains simultaneously.
+  const globalChainId = useSelector(getCurrentChainId);
+
+  return nameRequests.map(
+    ({ preferContractSymbol, type, value, variation }) => {
+      if (type !== NameType.ETHEREUM_ADDRESS || variation !== globalChainId) {
+        return undefined;
+      }
+
+      const contractAddress = value.toLowerCase();
+      const { symbol, name } = remoteTokenList[contractAddress] ?? {};
+
+      return preferContractSymbol && symbol ? symbol : name;
+    },
+  );
+}
+
+function useWatchedNFTNames(
+  nameRequests: UseDisplayNameRequest[],
+): (string | undefined)[] {
+  const watchedNftNamesByAddressByChain = useSelector(
+    getNftContractsByAddressByChain,
+  );
+
+  return nameRequests.map(({ type, value, variation }) => {
+    if (type !== NameType.ETHEREUM_ADDRESS) {
+      return undefined;
+    }
+
+    const contractAddress = value.toLowerCase();
+    const watchedNftNamesByAddress = watchedNftNamesByAddressByChain[variation];
+    return watchedNftNamesByAddress?.[contractAddress]?.name;
+  });
+}
+
+function useNFTs(
+  nameRequests: UseDisplayNameRequest[],
+): ({ name?: string; image?: string } | undefined)[] {
+  const requests = nameRequests
+    .filter(({ type }) => type === NameType.ETHEREUM_ADDRESS)
+    .map(({ value, variation }) => ({
+      chainId: variation,
+      contractAddress: value,
+    }));
+
+  const nftCollectionsByAddressByChain = useNftCollectionsMetadata(requests);
+
+  return nameRequests.map(
+    ({ type, value: contractAddress, variation: chainId }) => {
+      if (type !== NameType.ETHEREUM_ADDRESS) {
+        return undefined;
+      }
+
+      const nftCollectionProperties =
+        nftCollectionsByAddressByChain[chainId]?.[
+          contractAddress.toLowerCase()
+        ];
+
+      const isSpam = nftCollectionProperties?.isSpam !== false;
+
+      if (!nftCollectionProperties || isSpam) {
+        return undefined;
+      }
+
+      const { name, image } = nftCollectionProperties;
+
+      return { name, image };
+    },
+  );
+}
+
+function useFirstPartyContractNames(nameRequests: UseDisplayNameRequest[]) {
+  return nameRequests.map(({ type, value, variation }) => {
+    if (type !== NameType.ETHEREUM_ADDRESS) {
+      return undefined;
+    }
+
+    const normalizedContractAddress = value.toLowerCase();
+
+    const contractNames = Object.keys(
+      FIRST_PARTY_CONTRACT_NAMES,
+    ) as EXPERIENCES_TYPE[];
+
+    return contractNames.find((contractName) => {
+      const currentContractAddress =
+        FIRST_PARTY_CONTRACT_NAMES[contractName]?.[variation as Hex];
+
+      return (
+        currentContractAddress?.toLowerCase() === normalizedContractAddress
+      );
+    });
+  });
 }

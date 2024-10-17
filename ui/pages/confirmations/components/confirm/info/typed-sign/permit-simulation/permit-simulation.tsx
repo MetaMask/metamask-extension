@@ -42,6 +42,7 @@ const PermitSimulation: React.FC<object> = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const msgData = currentConfirmation.msgParams?.data;
+  const chainId = currentConfirmation.chainId as Hex;
   const {
     domain: { verifyingContract },
     message,
@@ -64,6 +65,7 @@ const PermitSimulation: React.FC<object> = () => {
       primaryType={primaryType}
       tokenContract={token}
       value={amount}
+      chainId={chainId}
     />
   );
 
@@ -89,6 +91,7 @@ const PermitSimulation: React.FC<object> = () => {
           <PermitSimulationValueDisplay
             tokenContract={verifyingContract}
             value={message.value}
+            chainId={chainId}
           />
         )}
       </Box>

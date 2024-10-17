@@ -22,6 +22,7 @@ jest.mock('react-redux', () => ({
 const ADDRESS_NO_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
 const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';
 const SAVED_NAME_MOCK = 'TestName';
+const VARIATION_MOCK = 'testVariation';
 
 const STATE_MOCK = {
   metamask: {
@@ -44,7 +45,11 @@ describe('Name', () => {
     });
 
     const { container } = renderWithProvider(
-      <Name type={NameType.ETHEREUM_ADDRESS} value={''} />,
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={''}
+        variation={VARIATION_MOCK}
+      />,
       store,
     );
 
@@ -61,6 +66,7 @@ describe('Name', () => {
       <Name
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
       />,
       store,
     );
@@ -75,7 +81,11 @@ describe('Name', () => {
     });
 
     const { container } = renderWithProvider(
-      <Name type={NameType.ETHEREUM_ADDRESS} value={ADDRESS_SAVED_NAME_MOCK} />,
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
+      />,
       store,
     );
 
@@ -90,7 +100,11 @@ describe('Name', () => {
     });
 
     const { container } = renderWithProvider(
-      <Name type={NameType.ETHEREUM_ADDRESS} value={ADDRESS_SAVED_NAME_MOCK} />,
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
+      />,
       store,
     );
 
@@ -114,7 +128,11 @@ describe('Name', () => {
 
         renderWithProvider(
           <MetaMetricsContext.Provider value={trackEventMock}>
-            <Name type={NameType.ETHEREUM_ADDRESS} value={value} />
+            <Name
+              type={NameType.ETHEREUM_ADDRESS}
+              value={value}
+              variation={VARIATION_MOCK}
+            />
           </MetaMetricsContext.Provider>,
           store,
         );
