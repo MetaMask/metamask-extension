@@ -113,6 +113,32 @@ function onboardingFixture() {
         ignoredTokens: [],
         tokens: [],
       },
+      // FIXME: is this correct?
+      NotificationsController: {
+        notifications: {},
+        metamaskNotificationsList: [
+          {
+            type: 'features_announcement',
+            id: 'enhanced-signatures',
+            createdAt: '2024-09-27T13:25:59.000Z',
+            data: {
+              id: 'enhanced-signatures',
+              category: 'ANNOUNCEMENT',
+              title: 'Enhanced signatures',
+              longDescription:
+                '<p>We’re improving signature requests to increase readability, so you can have more control over your assets. Stay tuned for more updates.</p>',
+              shortDescription:
+                "An update that makes it easier to understand and review the actions you're about to approve.",
+              image: {
+                title: 'Enhanced signature confirmations',
+                description: 'Enhanced signature confirmations',
+                url: '//images.ctfassets.net/jdkgyfmyd9sw/3yXPGO8LxTT7RrrSkotNNz/d3635fcef422aeb607016150e4fd5b85/24-09-10_MwM_Blog-Post-Signature-Redesign_1920x1280.png',
+              },
+            },
+            isRead: false,
+          },
+        ],
+      },
       TransactionController: {},
       config: {},
       firstTimeInfo: {
@@ -1278,6 +1304,14 @@ class FixtureBuilder {
 
   withNoNames() {
     return this.withNameController({ names: {} });
+  }
+
+  // FIXME: Is this how to set the notifications before starting test?
+  withMetamaskNotifications(notifications) {
+    merge(this.fixture.data.NotificationsController, {
+      notifications,
+    });
+    return this;
   }
 
   withTrezorAccount() {
