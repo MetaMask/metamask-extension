@@ -5,7 +5,7 @@ set -eo pipefail
 LABEL_NAME="$1"
 REVIEWER_TEAM="$2"
 
-# Enable debugging (optional; remove or comment out in production)
+# Enable debugging (optional; uncomment for debugging)
 #set -x
 
 # Ensure required environment variables are set
@@ -34,17 +34,13 @@ if [ -z "$PR_DETAILS" ]; then
 fi
 
 # Debugging: Uncomment the following line to see the fetched PR details
-echo "PR Details: $PR_DETAILS"
+#echo "PR Details: $PR_DETAILS"
 
-# Check for label using jq with --arg
-LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "$LABEL_NAME" '
-  [.labels[].name] | index($label)
-')
+# Check for label using jq with --arg on a single line
+LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "$LABEL_NAME" '[.labels[].name] | index($label)')
 
-# Check for reviewer team using jq with --arg
-REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" '
-  [.requested_reviewers[].login] | index($team)
-')
+# Check for reviewer team using jq with --arg on a single line
+REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" '[.requested_reviewers[].login] | index($team)')
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Exists: $REVIEWER_EXISTS"
