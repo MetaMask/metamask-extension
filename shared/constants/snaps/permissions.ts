@@ -3,6 +3,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:transaction-insight': 'endowment:transaction-insight',
   'endowment:cronjob': 'endowment:cronjob',
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
+  'endowment:caip25': 'endowment:caip25',
   'endowment:rpc': 'endowment:rpc',
   'endowment:webassembly': 'endowment:webassembly',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
@@ -22,4 +23,7 @@ export const ExcludedSnapPermissions = Object.freeze({
 
 export const ExcludedSnapEndowments = Object.freeze({});
 
-export const DynamicSnapPermissions = Object.freeze(['eth_accounts']);
+export const DynamicSnapPermissions = Object.freeze([
+  'eth_accounts',
+  'endowment:caip25',
+]);

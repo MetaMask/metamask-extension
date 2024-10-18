@@ -9,7 +9,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 // TODO: Resolve this before merging. I'm sure the linter will make sure of it though
-describe.skip('Test Snap revoke permission', function () {
+describe('Test Snap revoke permission', function () {
   it('can revoke a permission', async function () {
     await withFixtures(
       {
@@ -119,7 +119,7 @@ describe.skip('Test Snap revoke permission', function () {
         });
 
         // try to click on options menu
-        await driver.clickElement('[data-testid="eth_accounts"]');
+        await driver.clickElement('[data-testid="endowment:caip25"]');
 
         // try to click on revoke permission
         await driver.clickElement({
