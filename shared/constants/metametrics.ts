@@ -562,6 +562,10 @@ export enum MetaMetricsEventName {
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
   NavPermissionsOpened = 'Permissions Opened',
+  UpdatePermissionedNetworks = 'Update Permissioned Networks',
+  UpdatePermissionedAccounts = 'Update Permissioned Accounts',
+  ViewPermissionedNetworks = 'View Permissioned Networks',
+  ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
   NavSettingsOpened = 'Settings Opened',
   NavAccountSwitched = 'Account Switched',
@@ -586,6 +590,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
+  OnboardingWalletSetupComplete = 'Wallet Setup Complete',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
@@ -737,7 +742,8 @@ export enum MetaMetricsEventName {
   sendFlowExited = 'Send Flow Exited',
   sendRecipientSelected = 'Send Recipient Selected',
   sendSwapQuoteError = 'Send Swap Quote Error',
-  sendSwapQuoteFetched = 'Send Swap Quote Fetched',
+  sendSwapQuoteRequested = 'Send Swap Quote Requested',
+  sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
 }
 
@@ -781,6 +787,8 @@ export enum MetaMetricsEventCategory {
   NotificationsActivationFlow = 'Notifications Activation Flow',
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Permissions = 'Permissions',
   Phishing = 'Phishing',
   ProfileSyncing = 'Profile Syncing',
   PushNotifications = 'Notifications',

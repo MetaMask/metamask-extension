@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Wenn Ihre Transaktion in den Block aufgenommen wird, wird die Differenz zwischen Ihrer maximalen Grundgebühr und der tatsächlichen Grundgebühr erstattet. Der Gesamtbetrag wird berechnet als maximale Grundgebühr (in GWEI) * Gas-Limit."
   },
-  "advancedConfiguration": {
-    "message": "Erweiterte Einstellungen"
-  },
   "advancedDetailsDataDesc": {
     "message": "Daten"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 21.000 oder mehr erhöhen."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "Sie haben nicht genug ETH auf Ihrem Konto, um die Transaktionsgebühren zu bezahlen."
-  },
   "alertMessageNetworkBusy": {
     "message": "Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Falsches Konto"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Eine Webseite mit einem nicht verknüpften Konto durchsuchen"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Diese Warnung wird im Popup angezeigt, wenn Sie eine verbundene Webseite durchsuchen, aber das aktuell ausgewählte Konto ist nicht verbunden."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Wenn eine Webseite versucht, die entfernte window.web3 API zu verwenden"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Diese Benachrichtigung wird in einem Popup-Fenster angezeigt, wenn Sie eine Website besuchen, die versucht, die entfernte window.web3-API zu verwenden, und die dadurch möglicherweise beschädigt wird."
   },
   "alerts": {
     "message": "Benachrichtigungen"
@@ -714,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Beta-Nutzungsbedingungen"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask Beta kann Ihre geheime Wiederherstellungsphrase nicht wiederherstellen."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask Beta wird Sie nie nach Ihrer geheimen Wiederherstellungsphrase fragen."
   },
   "billionAbbreviation": {
     "message": "B",
@@ -1087,9 +1063,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask ist mit dieser Seite verbunden, aber es sind noch keine Konten verbunden"
-  },
-  "connectedWith": {
-    "message": "Verbunden mit"
   },
   "connecting": {
     "message": "Verbinden"
@@ -1506,14 +1479,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snaps"
-  },
-  "disconnectAllText": {
-    "message": "Wenn Sie die Verbindung zwischen $1 und $2 unterbrechen, müssen Sie die Verbindung wiederherstellen, um sie erneut zu verwenden.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Alle $1 trennen",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "$1 trennen"
@@ -2098,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Sensible Informationen verbergen"
   },
-  "hideToken": {
-    "message": "Token verbergen"
-  },
   "hideTokenPrompt": {
     "message": "Token verbergen?"
   },
@@ -2425,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "JSON Datei",
@@ -2835,10 +2794,6 @@
     "message": "$1 bittet um Ihre Zustimmung zu:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Möchten Sie, dass diese Website Folgendes tut?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "Das native Token dieses Netzwerks ist $1. Dieses Token wird für die Gas-Gebühr verwendet. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3075,9 +3030,6 @@
   },
   "noAccountsFound": {
     "message": "Keine Konten für die angegebene Suchanfrage gefunden"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Wählen Sie ein Konto, das Sie auf dieser Website verwenden möchten, um fortzufahren."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask ist nicht mit dieser Website verbunden"
@@ -3481,10 +3433,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "MetaMask Institutional pinnen"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Phishing-Warnungen basieren auf der Kommunikation mit $1. jsDeliver hat Zugriff auf Ihre IP-Adresse. $2 ansehen.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1 T",
@@ -4126,9 +4074,6 @@
   "rejected": {
     "message": "Abgelehnt"
   },
-  "remember": {
-    "message": "Erinnern:"
-  },
   "remove": {
     "message": "Entfernen"
   },
@@ -4535,9 +4480,6 @@
   },
   "sepolia": {
     "message": "Sepolia-Testnetzwerk"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask nutzt diese vertrauenswürdigen Dienstleistungen von Drittanbietern, um die Benutzerfreundlichkeit und Sicherheit der Produkte zu verbessern."
   },
   "setApprovalForAll": {
     "message": "Erlaubnis für alle erteilen"
@@ -5250,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Wir sind bereit, Ihnen die neuesten Angebote zu zeigen, wenn Sie fortfahren möchten."
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Keine Tokens verfügbar, die mit $1 übereinstimmen.",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Mit Ihrer Hardware-Wallet bestätigen"
   },
@@ -5318,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Fehler beim Abrufen der Preisangaben"
   },
-  "swapFetchingTokens": {
-    "message": "Token abrufen..."
-  },
   "swapFromTo": {
     "message": "Swap von $1 auf $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5340,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "Hohe Slippage"
-  },
-  "swapHighSlippageWarning": {
-    "message": "Der Slippage-Betrag ist sehr hoch."
   },
   "swapIncludesMMFee": {
     "message": "Enthält eine MetaMask-Gebühr von $1%.",
@@ -5364,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "Niedrige Slippage"
-  },
-  "swapLowSlippageError": {
-    "message": "Transaktion kann fehlschlagen, maximale Slippage zu niedrig."
   },
   "swapMaxSlippage": {
     "message": "Max. Slippage"
@@ -5401,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Preisdifferenz von ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Der Preiseinfluss ist die Differenz zwischen dem aktuellen Marktpreis und dem bei der Ausführung der Transaktion erhaltenen Betrag. Die Preisauswirkung ist eine Funktion der Größe Ihres Geschäfts im Verhältnis zur Größe des Liquiditätspools."
   },
   "swapPriceUnavailableDescription": {
     "message": "Die Auswirkungen auf den Preis konnten aufgrund fehlender Marktpreisdaten nicht ermittelt werden. Bitte bestätigen Sie vor dem Tausch, dass Sie mit der Menge der Tokens, die Sie erhalten werden, einverstanden sind."
@@ -5451,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "Angebotsanfrage"
   },
-  "swapReviewSwap": {
-    "message": "Swap überprüfen"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Namen suchen oder Adresse einfügen"
-  },
   "swapSelect": {
     "message": "Auswählen"
   },
@@ -5488,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Niedriger Slippage"
-  },
-  "swapSlippageNegative": {
-    "message": "Slippage muss größer oder gleich Null sein"
   },
   "swapSlippageNegativeDescription": {
     "message": "Slippage muss größer oder gleich Null sein"
@@ -5560,20 +5477,6 @@
     "message": "$1 mit $2 tauschen",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Dieses Token wurde manuell hinzugefügt."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Bestätigen Sie immer die Token-Adresse auf $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Nur an 1 Quelle verifiziert."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Auf $1 Quellen überprüft.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 wurde nur auf 1 Quelle bestätigt. Ziehen Sie in Betracht, es vor dem Fortfahren auf $2 zu bestätigen.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5594,29 +5497,11 @@
   "swapUnknown": {
     "message": "Unbekannt"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Mehrere Token können denselben Namen und dasselbe Symbol verwenden. Überprüfen Sie $1, um sicherzugehen, dass dies der Token ist, den Sie suchen.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 zum Swap verfügbar",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0 % Slippage"
   },
-  "swapsAdvancedOptions": {
-    "message": "Erweiterte Optionen"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Der Slippage-Betrag ist zu hoch und wird zu einem schlechten Kurs führen. Bitte reduzieren Sie die Slippage-Toleranz auf einen Wert unter 15 %."
-  },
   "swapsMaxSlippage": {
     "message": "Slippage-Toleranz"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Nicht genug $1, um diese Transaktion abzuschließen.",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Nicht genügend $1",
@@ -5752,9 +5637,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Tokendezimal erforderlich. Finden Sie es auf: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Token-Dezimale:"
   },
   "tokenDetails": {
     "message": "Token-Details"
@@ -6116,14 +5998,6 @@
   "verifyContractDetails": {
     "message": "Drittanbieter-Details überprüfen"
   },
-  "verifyThisTokenOn": {
-    "message": "Diesen Token auf $1 verifizieren",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Überprüfen Sie diesen Token auf $1 und stellen Sie sicher, dass dies der Token ist, den Sie handeln möchten.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "version": {
     "message": "Version"
   },
@@ -6189,26 +6063,6 @@
   },
   "walletConnectionGuide": {
     "message": "unsere Hardware-Wallet-Verbindungsanleitung"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Sie haben Ihre Wallet erfolgreich geschützt. Halten Sie Ihre geheime Wiederherstellungsphrase sicher und geheim -- es liegt in Ihrer Verantwortung!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask kann Ihre geheime Wiederherstellungsphrase nicht wiederherstellen."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask-Team wird nie nach Ihrer geheimen Wiederherstellungsphrase fragen."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 mit jemandem oder riskieren Sie, dass Ihre Gelder gestohlen werden.",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Geben Sie niemals Ihre geheime Wiederherstellungsphrase an andere weiter",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Wallet-Erstellung erfolgreich"
   },
   "wantToAddThisNetwork": {
     "message": "Möchten Sie dieses Netzwerk hinzufügen?"

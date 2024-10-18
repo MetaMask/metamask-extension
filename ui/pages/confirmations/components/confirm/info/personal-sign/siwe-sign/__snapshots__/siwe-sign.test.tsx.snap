@@ -54,7 +54,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        metamask.github.io
+        https://metamask.github.io
       </p>
     </div>
   </div>
@@ -358,7 +358,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        metamask.github.io
+        https://metamask.github.io
       </p>
     </div>
   </div>

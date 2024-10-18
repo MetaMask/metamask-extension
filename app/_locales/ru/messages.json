@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "После включения вашей транзакции в блок возмещается любая разница между вашей максимальной базовой комиссией и фактической базовой комиссией. Общая сумма рассчитывается следующим образом: максимальная базовая комиссия (в Гвей) x лимит газа."
   },
-  "advancedConfiguration": {
-    "message": "Дополнительная конфигурация"
-  },
   "advancedDetailsDataDesc": {
     "message": "Данные"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "Чтобы продолжить эту транзакцию, вам необходимо увеличить лимит газа до 21 000 или выше."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "На вашем счету недостаточно ETH для оплаты комиссий за транзакцию."
-  },
   "alertMessageNetworkBusy": {
     "message": "Цены газа высоки, а оценки менее точны."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Неверный счет"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Просмотр веб-сайта с выбранным неподключенным счетом"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Это предупреждение отображается во всплывающем окне, когда вы просматриваете подключенный сайт web3, но текущий выбранный счет не подключен."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Когда веб-сайт пытается использовать удаленный API window.web3"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Это предупреждение отображается во всплывающем окне, когда вы просматриваете сайт, который пытается использовать удаленный API window.web3 и из-за этого может не работать."
   },
   "alerts": {
     "message": "Оповещения"
@@ -714,12 +696,6 @@
   },
   "betaTerms": {
     "message": "Условия использования бета-версии"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "Бета-версия MetaMask не сможет восстановить вашу секретную фразу для восстановления."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "Бета-версия MetaMask никогда не запрашивает у вас секретную фразу для восстановления."
   },
   "billionAbbreviation": {
     "message": "Б",
@@ -1087,9 +1063,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask подключен к этому сайту, но счета пока не подключены"
-  },
-  "connectedWith": {
-    "message": "Подключен(-а) к"
   },
   "connecting": {
     "message": "Подключение..."
@@ -1506,14 +1479,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snaps"
-  },
-  "disconnectAllText": {
-    "message": "Если вы отключите свои $1 от $2, вам придется повторно подключиться, чтобы использовать их снова.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Отключить все $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "Отключить $1"
@@ -2098,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "Скрыть конфиденциальную информацию"
   },
-  "hideToken": {
-    "message": "Скрыть токен"
-  },
   "hideTokenPrompt": {
     "message": "Скрыть токен?"
   },
@@ -2425,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "JSON-файл",
@@ -2835,10 +2794,6 @@
     "message": "$1 запрашивает ваше одобрение на:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "Вы хотите, чтобы этот сайт делал следующее?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "Нативный токен этой сети — $1. Этот токен используется для внесения платы за газ. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3075,9 +3030,6 @@
   },
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Для продолжения выберите счет, который вы хотите использовать на этом сайте."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
@@ -3481,10 +3433,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "Закрепить MetaMask Institutional"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Оповещения об обнаружении фишинга зависят от связи с $1. jsDeliver получит доступ к вашему IP-адресу. Посмотрите $ 2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1 Д",
@@ -4126,9 +4074,6 @@
   "rejected": {
     "message": "Отклонено"
   },
-  "remember": {
-    "message": "Помните:"
-  },
   "remove": {
     "message": "Удалить"
   },
@@ -4535,9 +4480,6 @@
   },
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask использует эти доверенные сторонние сервисы для повышения удобства использования и безопасности продукта."
   },
   "setApprovalForAll": {
     "message": "Установить одобрение для всех"
@@ -5250,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Мы готовы показать вам последние котировки, когда вы захотите продолжить"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Нет доступных токенов, соответствующих $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Подтвердите с помощью аппаратного кошелька"
   },
@@ -5318,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Ошибка при получении котировок"
   },
-  "swapFetchingTokens": {
-    "message": "Получение токенов..."
-  },
   "swapFromTo": {
     "message": "Своп $1 на $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5340,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "Высокое проскальзывание"
-  },
-  "swapHighSlippageWarning": {
-    "message": "Сумма проскальзывания очень велика."
   },
   "swapIncludesMMFee": {
     "message": "Включает комиссию MetaMask в размере $1%.",
@@ -5364,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "Низкое проскальзывание"
-  },
-  "swapLowSlippageError": {
-    "message": "Возможно, не удастся выполнить транзакцию. Ммаксимальное проскальзывание слишком низкое."
   },
   "swapMaxSlippage": {
     "message": "Максимальное проскальзывание"
@@ -5401,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Разница в цене составляет ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Колебание цены — это разница между текущей рыночной ценой и суммой, полученной во время исполнения транзакции. Колебание цены зависит от соотношения размера вашей сделки и размера пула ликвидности."
   },
   "swapPriceUnavailableDescription": {
     "message": "Не удалось определить колебание цены из-за отсутствия данных о рыночных ценах. Перед свопом убедитесь, что вас устраивает количество токенов, которое вы получите."
@@ -5451,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "Запрос котировки"
   },
-  "swapReviewSwap": {
-    "message": "Проверить своп"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Выполните поиск по имени или вставьте адрес"
-  },
   "swapSelect": {
     "message": "Выбрать"
   },
@@ -5488,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Низкое проскальзывание"
-  },
-  "swapSlippageNegative": {
-    "message": "Проскальзывание должно быть больше нуля или равно нулю"
   },
   "swapSlippageNegativeDescription": {
     "message": "Проскальзывание должно быть больше или равно нулю"
@@ -5560,20 +5477,6 @@
     "message": "Выполнить своп $1 на $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Этот токен был добавлен вручную."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Всегда проверяйте адрес токена на $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Токен проверен только в 1 источнике."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Токен проверен в $1 источниках.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 проверяется только на 1 источнике. Попробуйте проверить его на $2, прежде чем продолжить.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5594,29 +5497,11 @@
   "swapUnknown": {
     "message": "Неизвестно"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Для обозначения нескольких токенов могут использоваться одно и то же имя и символ. Убедитесь, что $1 — это именно тот токен, который вы ищете.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 доступны для свопа",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% проскальзывания"
   },
-  "swapsAdvancedOptions": {
-    "message": "Дополнительные параметры"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Величина проскальзывания очень велика. Сделка будет невыгодной. Снизьте допуск проскальзывания ниже 15%."
-  },
   "swapsMaxSlippage": {
     "message": "Допуск проскальзывания"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Недостаточно $1 для выполнения этой транзакции",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Недостаточно $1",
@@ -5752,9 +5637,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Требуется десятичный токен. Найдите его здесь: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Десятичный токен:"
   },
   "tokenDetails": {
     "message": "Сведения о токене"
@@ -6116,14 +5998,6 @@
   "verifyContractDetails": {
     "message": "Проверьте информацию о третьей стороне"
   },
-  "verifyThisTokenOn": {
-    "message": "Проверить этот токен на $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Проверьте этот токен на $1 и убедитесь, что это тот токен, которым вы хотите торговать.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "version": {
     "message": "Версия"
   },
@@ -6189,26 +6063,6 @@
   },
   "walletConnectionGuide": {
     "message": "наше руководство по подключению аппаратного кошелька"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Вы успешно защитили свой кошелек. Сохраните секретную фразу для восстановления в тайне — вы отвечаете за ее сохранность!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask не сможет восстановить вашу секретную фразу для восстановления."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask никогда не запрашивает у вас секретную фразу для восстановления."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1, чтобы предотвратить кражу ваших средств",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Никогда не сообщайте никому свою секретную фразу для восстановления",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Кошелек создан"
   },
   "wantToAddThisNetwork": {
     "message": "Хотите добавить эту сеть?"

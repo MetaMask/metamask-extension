@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
   },
-  "advancedConfiguration": {
-    "message": "Configuración avanzada"
-  },
   "advancedDetailsDataDesc": {
     "message": "Datos"
   },
@@ -393,9 +390,6 @@
   "alertMessageGasTooLow": {
     "message": "Para continuar con esta transacción, deberá aumentar el límite de gas a 21000 o más."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "No tiene suficiente ETH en su cuenta para pagar las tarifas de transacción."
-  },
   "alertMessageNetworkBusy": {
     "message": "Los precios del gas son altos y las estimaciones son menos precisas."
   },
@@ -449,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Cuenta incorrecta"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Explorando un sitio web con una cuenta no conectada seleccionada"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Esta alerta aparece en la ventana emergente cuando explora un sitio conectado de Web3, pero la cuenta actualmente seleccionada no está conectada."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Cuando un sitio web intenta utilizar la API de window.web3 que se eliminó"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Esta alerta aparece en la ventana emergente cuando explora un sitio que intenta utilizar la API de window.web3 que se eliminó y que puede que no funcione."
   },
   "alerts": {
     "message": "Alertas"
@@ -711,12 +693,6 @@
   },
   "betaTerms": {
     "message": "Términos de uso de beta"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask beta no puede recuperar su frase secreta de recuperación."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask beta nunca le pedirá su frase secreta de recuperación."
   },
   "billionAbbreviation": {
     "message": "mm",
@@ -1084,9 +1060,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask está conectado a este sitio, pero aún no hay cuentas conectadas"
-  },
-  "connectedWith": {
-    "message": "Conectado con"
   },
   "connecting": {
     "message": "Conectando"
@@ -1503,14 +1476,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snaps"
-  },
-  "disconnectAllText": {
-    "message": "Si desconecta su $1 de su $2, tendrá que volver a conectarlos para usarlos nuevamente.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Desconectar todos/as $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "Desconectar $1"
@@ -2095,9 +2060,6 @@
   "hideSentitiveInfo": {
     "message": "Ocultar información confidencial"
   },
-  "hideToken": {
-    "message": "Ocultar token"
-  },
   "hideTokenPrompt": {
     "message": "¿Ocultar token?"
   },
@@ -2422,9 +2384,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "Archivo JSON",
@@ -2832,10 +2791,6 @@
     "message": "$1 solicita su aprobación para:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "¿Desea que este sitio haga lo siguiente?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "El token nativo en esta red es de $1. Es el token utilizado para las tarifas de gas. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -3072,9 +3027,6 @@
   },
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Seleccione una cuenta que desee utilizar en este sitio para continuar."
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask no está conectado a este sitio"
@@ -3478,10 +3430,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "Fijar MetaMask Institutional"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Las alertas de detección de phishing se basan en la comunicación con $1. jsDeliver tendrá acceso a su dirección IP. Ver 2$.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1 d",
@@ -4123,9 +4071,6 @@
   "rejected": {
     "message": "Rechazado"
   },
-  "remember": {
-    "message": "Recuerde:"
-  },
   "remove": {
     "message": "Quitar"
   },
@@ -4532,9 +4477,6 @@
   },
   "sepolia": {
     "message": "Red de prueba Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask utiliza estos servicios de terceros de confianza para mejorar la usabilidad y la seguridad de los productos."
   },
   "setApprovalForAll": {
     "message": "Establecer aprobación para todos"
@@ -5247,10 +5189,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Estamos listos para mostrarle las últimas cotizaciones cuando desee continuar"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "No hay tokens disponibles que coincidan con $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirmar con su monedero físico"
   },
@@ -5315,9 +5253,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Error al capturar cotizaciones"
   },
-  "swapFetchingTokens": {
-    "message": "Capturando tokens…"
-  },
   "swapFromTo": {
     "message": "El intercambio de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5337,9 +5272,6 @@
   },
   "swapHighSlippage": {
     "message": "Deslizamiento alto"
-  },
-  "swapHighSlippageWarning": {
-    "message": "El monto del deslizamiento es muy alto."
   },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
@@ -5361,9 +5293,6 @@
   },
   "swapLowSlippage": {
     "message": "Deslizamiento bajo"
-  },
-  "swapLowSlippageError": {
-    "message": "Es posible que la transacción tenga errores, el deslizamiento máximo es demasiado bajo."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -5398,9 +5327,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Diferencia de precio de ~$1 %",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "El impacto sobre el precio es la diferencia entre el precio actual del mercado y el monto recibido durante la ejecución de la transacción. El impacto sobre el precio es una función del tamaño de su transacción respecto de la dimensión del fondo de liquidez."
   },
   "swapPriceUnavailableDescription": {
     "message": "No se pudo determinar el impacto sobre el precio debido a la falta de datos de los precios del mercado. Antes de realizar el intercambio, confirme que está de acuerdo con la cantidad de tokens que está a punto de recibir."
@@ -5448,12 +5374,6 @@
   "swapRequestForQuotation": {
     "message": "Solicitud de cotización"
   },
-  "swapReviewSwap": {
-    "message": "Revisar intercambio"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Buscar nombre o pegar dirección"
-  },
   "swapSelect": {
     "message": "Seleccionar"
   },
@@ -5485,9 +5405,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Deslizamiento bajo"
-  },
-  "swapSlippageNegative": {
-    "message": "El deslizamiento debe ser mayor o igual que cero"
   },
   "swapSlippageNegativeDescription": {
     "message": "El deslizamiento debe ser mayor o igual que cero"
@@ -5557,20 +5474,6 @@
     "message": "Intercambiar $1 por $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Este token se añadió de forma manual."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Siempre confirme la dirección del token en $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Solo se verificó en una fuente."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Verificar en $1 fuentes.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 solo se verifica en 1 fuente. Considere verificarlo en $2 antes de continuar.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5591,29 +5494,11 @@
   "swapUnknown": {
     "message": "Desconocido"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Varios tokens pueden usar el mismo nombre y símbolo. Revise $1 para comprobar que este es el token que busca.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 disponibles para intercambio",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0 % de deslizamiento"
   },
-  "swapsAdvancedOptions": {
-    "message": "Opciones avanzadas"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "El monto del deslizamiento es muy alto, por lo que recibirá una tasa de conversión desfavorable. Disminuya su tolerancia de deslizamiento a un valor menor al 15 %."
-  },
   "swapsMaxSlippage": {
     "message": "Tolerancia de deslizamiento"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "No hay $1 suficientes para completar esta transacción",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "No hay suficiente $1",
@@ -5749,9 +5634,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Se requiere decimal del token. Encuéntrelo en: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Decimales del token:"
   },
   "tokenDetails": {
     "message": "Detalles del token"
@@ -6113,14 +5995,6 @@
   "verifyContractDetails": {
     "message": "Verificar detalles de terceros"
   },
-  "verifyThisTokenOn": {
-    "message": "Comprobar este token en $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Verifique este token en $1 y asegúrese de que sea el token con el que quiere realizar la transacción.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "version": {
     "message": "Versión"
   },
@@ -6186,26 +6060,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión del monedero físico"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Ha protegido con éxito su monedero. Mantenga su frase secreta de recuperación a salvo y en secreto: ¡es su responsabilidad!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask no puede recuperar su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask nunca le pedirá su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 con nadie o se arriesga a que le roben los fondos",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Nunca comparta su frase secreta de recuperación",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Creación exitosa del monedero"
   },
   "wantToAddThisNetwork": {
     "message": "¿Desea añadir esta red?"

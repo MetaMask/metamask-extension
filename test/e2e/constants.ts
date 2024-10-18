@@ -46,3 +46,6 @@ export const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
 /* Default BTC address created using test SRP */
 export const DEFAULT_BTC_ACCOUNT = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
+
+/* Default (mocked) BTC balance used by the Bitcoin RPC provider */
+export const DEFAULT_BTC_BALANCE = 1; // BTC

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import {
   BackgroundColor,
@@ -14,6 +14,12 @@ import {
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
 import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
@@ -31,7 +37,6 @@ type SiteCellProps = {
   onSelectChainIds: (chainIds: Hex[]) => void;
   selectedAccountAddresses: string[];
   selectedChainIds: string[];
-  activeTabOrigin: string;
   isConnectFlow?: boolean;
 };
 
@@ -43,18 +48,19 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   onSelectChainIds,
   selectedAccountAddresses,
   selectedChainIds,
-  activeTabOrigin,
   isConnectFlow,
 }) => {
   const t = useI18nContext();
-
+  const trackEvent = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
   const selectedAccounts = accounts.filter(({ address }) =>
-    selectedAccountAddresses.includes(address),
+    selectedAccountAddresses.some((selectedAccountAddress) =>
+      isEqualCaseInsensitive(selectedAccountAddress, address),
+    ),
   );
   const selectedNetworks = allNetworks.filter(({ chainId }) =>
     selectedChainIds.includes(chainId),
@@ -90,7 +96,16 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           connectedMessage={accountMessageConnectedState}
           unconnectedMessage={accountMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
-          onClick={() => setShowEditAccountsModal(true)}
+          onClick={() => {
+            setShowEditAccountsModal(true);
+            trackEvent({
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.TokenImportButtonClicked,
+              properties: {
+                location: 'Connect view, Permissions toast, Permissions (dapp)',
+              },
+            });
+          }}
           paddingBottomValue={2}
           paddingTopValue={0}
           content={
@@ -114,7 +129,16 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           ])}
           unconnectedMessage={t('requestingFor')}
           isConnectFlow={isConnectFlow}
-          onClick={() => setShowEditNetworksModal(true)}
+          onClick={() => {
+            setShowEditNetworksModal(true);
+            trackEvent({
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.TokenImportButtonClicked,
+              properties: {
+                location: 'Connect view, Permissions toast, Permissions (dapp)',
+              },
+            });
+          }}
           paddingTopValue={2}
           paddingBottomValue={0}
           content={<SiteCellTooltip networks={selectedNetworks} />}
@@ -122,7 +146,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       </Box>
       {showEditAccountsModal && (
         <EditAccountsModal
-          activeTabOrigin={activeTabOrigin}
           accounts={accounts}
           defaultSelectedAccountAddresses={selectedAccountAddresses}
           onClose={() => setShowEditAccountsModal(false)}
@@ -132,7 +155,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
       {showEditNetworksModal && (
         <EditNetworksModal
-          activeTabOrigin={activeTabOrigin}
           nonTestNetworks={nonTestNetworks}
           testNetworks={testNetworks}
           defaultSelectedChainIds={selectedChainIds}

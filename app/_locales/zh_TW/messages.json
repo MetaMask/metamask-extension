@@ -77,18 +77,6 @@
   "alertDisableTooltip": {
     "message": "這可以在「設定 > 提醒」裡變更"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "選擇尚未連結的帳戶瀏覽一個網站時"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "當您瀏覽一個使用 web3 的網站，但目前選擇的帳戶沒有連結時，這個提醒會顯示在一個彈跳視窗。"
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "當一個網站試著使用已經移除的 window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "當您瀏覽一個嘗試使用已經移除的 window.web3 API 的網站，可能會因此故障時，這個提醒會顯示在一個彈跳視窗。"
-  },
   "alerts": {
     "message": "提醒"
   },
@@ -1223,9 +1211,6 @@
   "supportCenter": {
     "message": "造訪我們的協助中心"
   },
-  "swapSearchNameOrAddress": {
-    "message": "用名稱搜尋或貼上地址"
-  },
   "switchEthereumChainConfirmationDescription": {
     "message": "這將在 MetaMask 中將目前選擇的網路切換到剛才新增的網路："
   },
@@ -1384,10 +1369,6 @@
   },
   "userName": {
     "message": "使用者名稱"
-  },
-  "verifyThisTokenOn": {
-    "message": "在 $1 驗證這個代幣的資訊",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAllDetails": {
     "message": "查看所有詳情"
