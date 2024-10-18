@@ -156,6 +156,10 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
+import {
+  runEncryptionPerfTestWithCache,
+  runEncryptionPerfTestWithoutCache,
+} from '@metamask/profile-sync-controller/sdk';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1561,7 +1565,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: false,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1587,6 +1591,14 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
+
+    setTimeout(async () => {
+      console.log('Starting performance tests without cache...');
+      await runEncryptionPerfTestWithoutCache();
+
+      console.log('Starting performance tests with cache...');
+      await runEncryptionPerfTestWithCache();
+    }, 5000);
 
     const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
