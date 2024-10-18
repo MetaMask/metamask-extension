@@ -55,6 +55,11 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Eye,
     weight: PermissionWeight.eth_accounts,
   }),
+  [EndowmentPermissions['endowment:caip25']]: ({ t }) => ({
+    label: t('permission_ethereumAccounts'),
+    leftIcon: IconName.Eye,
+    weight: PermissionWeight.eth_accounts,
+  }),
   [PermissionNames.permittedChains]: ({ t }) => ({
     label: t('permission_walletSwitchEthereumChain'),
     leftIcon: IconName.Wifi,
@@ -356,16 +361,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     ]),
     leftIcon: IconName.Clock,
     weight: PermissionWeight.endowment_cronjob,
-  }),
-  [EndowmentPermissions['endowment:caip25']]: ({ t, subjectName }) => ({
-    label: t('permission_ethereumProvider'),
-    description: t('permission_ethereumProviderDescription', [
-      getSnapNameComponent(subjectName),
-    ]),
-    leftIcon: IconName.Ethereum,
-    weight: PermissionWeight.endowment_ethereumProvider,
-    id: 'ethereum-provider-access',
-    message: t('ethereumProviderAccess', [getSnapNameComponent(subjectName)]),
   }),
   [EndowmentPermissions['endowment:ethereum-provider']]: ({
     t,
