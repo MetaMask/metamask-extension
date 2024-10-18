@@ -67,6 +67,10 @@ export function useSimulationMetrics({
     setLoadingComplete();
   }
 
+  if(!simulationData) {
+    return;
+  }
+
   const displayNameRequests: UseDisplayNameRequest[] = balanceChanges
     // Filter out changes with no address (e.g. ETH)
     .filter(({ asset }) => Boolean(asset.address))
