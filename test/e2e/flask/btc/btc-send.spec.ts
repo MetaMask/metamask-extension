@@ -1,10 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { DEFAULT_BTC_ACCOUNT } from '../../constants';
-import {
-  getQuickNodeSeenRequests,
-  withBtcAccountSnap,
-} from './common-btc';
+import { getQuickNodeSeenRequests, withBtcAccountSnap } from './common-btc';
 
 enum SendFlowPlaceHolders {
   AMOUNT = 'Enter amount to send',
