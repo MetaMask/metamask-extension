@@ -43,6 +43,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Patch } from 'immer';
+import { HandlerType } from '@metamask/snaps-utils';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -182,7 +183,7 @@ export function tryUnlockMetamask(
         dispatch(hideLoadingIndication());
       })
       .catch((err) => {
-        dispatch(unlockFailed(err.message));
+        dispatch(unlockFailed(getErrorMessage(err)));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
@@ -4213,7 +4214,7 @@ export function setConnectedStatusPopoverHasBeenShown(): ThunkAction<
   return () => {
     callBackgroundMethod('setConnectedStatusPopoverHasBeenShown', [], (err) => {
       if (isErrorWithMessage(err)) {
-        throw new Error(err.message);
+        throw new Error(getErrorMessage(err));
       }
     });
   };
@@ -4223,7 +4224,7 @@ export function setRecoveryPhraseReminderHasBeenShown() {
   return () => {
     callBackgroundMethod('setRecoveryPhraseReminderHasBeenShown', [], (err) => {
       if (isErrorWithMessage(err)) {
-        throw new Error(err.message);
+        throw new Error(getErrorMessage(err));
       }
     });
   };
@@ -4238,7 +4239,7 @@ export function setRecoveryPhraseReminderLastShown(
       [lastShown],
       (err) => {
         if (isErrorWithMessage(err)) {
-          throw new Error(err.message);
+          throw new Error(getErrorMessage(err));
         }
       },
     );
@@ -4723,12 +4724,15 @@ export function fetchSmartTransactionFees(
       return smartTransactionFees;
     } catch (err) {
       logErrorWithMessage(err);
-      if (isErrorWithMessage(err) && err.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(err.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj,
-        });
+      if (isErrorWithMessage(err)) {
+        const errorMessage = getErrorMessage(err);
+        if (errorMessage.startsWith('Fetch error:')) {
+          const errorObj = parseSmartTransactionsError(errorMessage);
+          dispatch({
+            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+            payload: errorObj,
+          });
+        }
       }
       throw err;
     }
@@ -4800,12 +4804,15 @@ export function signAndSendSmartTransaction({
       return response.uuid;
     } catch (err) {
       logErrorWithMessage(err);
-      if (isErrorWithMessage(err) && err.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(err.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj,
-        });
+      if (isErrorWithMessage(err)) {
+        const errorMessage = getErrorMessage(err);
+        if (errorMessage.startsWith('Fetch error:')) {
+          const errorObj = parseSmartTransactionsError(errorMessage);
+          dispatch({
+            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+            payload: errorObj,
+          });
+        }
       }
       throw err;
     }
@@ -4826,12 +4833,15 @@ export function updateSmartTransaction(
       ]);
     } catch (err) {
       logErrorWithMessage(err);
-      if (isErrorWithMessage(err) && err.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(err.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj,
-        });
+      if (isErrorWithMessage(err)) {
+        const errorMessage = getErrorMessage(err);
+        if (errorMessage.startsWith('Fetch error:')) {
+          const errorObj = parseSmartTransactionsError(errorMessage);
+          dispatch({
+            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+            payload: errorObj,
+          });
+        }
       }
       throw err;
     }
@@ -4860,12 +4870,15 @@ export function cancelSmartTransaction(
       await submitRequestToBackground('cancelSmartTransaction', [uuid]);
     } catch (err) {
       logErrorWithMessage(err);
-      if (isErrorWithMessage(err) && err.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(err.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj,
-        });
+      if (isErrorWithMessage(err)) {
+        const errorMessage = getErrorMessage(err);
+        if (errorMessage.startsWith('Fetch error:')) {
+          const errorObj = parseSmartTransactionsError(errorMessage);
+          dispatch({
+            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+            payload: errorObj,
+          });
+        }
       }
       throw err;
     }
@@ -5828,4 +5841,23 @@ function applyPatches(
   }
 
   return newState;
+}
+
+export async function sendMultichainTransaction(
+  snapId: string,
+  account: string,
+  scope: string,
+) {
+  await handleSnapRequest({
+    snapId,
+    origin: 'metamask',
+    handler: HandlerType.OnRpcRequest,
+    request: {
+      method: 'startSendTransactionFlow',
+      params: {
+        account,
+        scope,
+      },
+    },
+  });
 }
