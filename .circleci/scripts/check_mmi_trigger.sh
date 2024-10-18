@@ -54,5 +54,5 @@ if [[ "$LABEL_EXISTS" == "true" || "$REVIEWER_REQUESTED" == "true" || "$TEAM_REQ
   fi
 else
   echo "run_mmi_tests=false" > mmi_trigger.env
-  echo "Conditions not met: Label 'team-mmi' not found and Reviewer 'mmi' not assigned/submitted."
+  echo "Skipping MMI tests: Neither the 'team-mmi' label was found nor a reviewer from the 'MetaMask/mmi' team was assigned."
 fi
