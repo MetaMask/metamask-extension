@@ -41,7 +41,6 @@ import {
   getOnboardedInThisUISession,
   getShowNetworkBanner,
   getOriginOfCurrentTab,
-  getUseRequestQueue,
   getEditedNetwork,
   getNetworkConfigurationsByChainId,
   getOrderedNetworksList,
@@ -114,7 +113,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const useRequestQueue = useSelector(getUseRequestQueue);
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
@@ -291,11 +289,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
           // network has changed due to user action
-          if (
-            useRequestQueue &&
-            selectedTabOrigin &&
-            domains[selectedTabOrigin]
-          ) {
+          if (selectedTabOrigin && domains[selectedTabOrigin]) {
             setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
           }
 

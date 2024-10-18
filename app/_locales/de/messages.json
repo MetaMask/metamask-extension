@@ -5605,18 +5605,6 @@
     "message": "An: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "Dadurch können Sie ein Netzwerk für jede Website auswählen, anstatt ein einziges Netzwerk für alle Websites auszuwählen. Diese Funktion verhindert, dass Sie manuell zwischen den Netzwerken wechseln müssen, was die Benutzerfreundlichkeit auf bestimmten Websites beeinträchtigen könnte."
-  },
-  "toggleRequestQueueField": {
-    "message": "Wählen Sie Netzwerke für jede Website"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Aus"
-  },
-  "toggleRequestQueueOn": {
-    "message": "An"
-  },
   "token": {
     "message": "Token"
   },

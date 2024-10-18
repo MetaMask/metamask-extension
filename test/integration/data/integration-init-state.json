@@ -2046,7 +2046,6 @@
   "useNftDetection": false,
   "useNonceField": false,
   "usePhishDetect": true,
-  "useRequestQueue": false,
   "useSafeChainsListValidation": true,
   "useTokenDetection": false,
   "useTransactionSimulations": true,

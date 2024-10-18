@@ -30,7 +30,6 @@ export const FIXTURES_PREFERENCES = {
   useTokenDetection: true,
   useCurrencyRateCheck: true,
   useMultiAccountBalanceChecker: true,
-  useRequestQueue: true,
   theme: 'light',
   useExternalNameSources: true,
   useTransactionSimulations: true,

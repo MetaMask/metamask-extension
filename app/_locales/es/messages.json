@@ -5602,18 +5602,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "Esto le permite seleccionar una red para cada sitio en lugar de una única red seleccionada para todos los sitios. Esta función evitará que cambie de red manualmente, lo que puede afectar su experiencia de usuario en ciertos sitios."
-  },
-  "toggleRequestQueueField": {
-    "message": "Seleccionar redes para cada sitio"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Desactivado"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Activado"
-  },
   "token": {
     "message": "Token"
   },

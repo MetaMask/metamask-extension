@@ -44,8 +44,6 @@ type ExperimentalTabProps = {
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
   ///: END:ONLY_INCLUDE_IF
-  useRequestQueue: boolean;
-  setUseRequestQueue: (value: boolean) => void;
   petnamesEnabled: boolean;
   setPetnamesEnabled: (value: boolean) => void;
   featureNotificationsEnabled: boolean;
@@ -232,21 +230,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   }
   ///: END:ONLY_INCLUDE_IF
 
-  renderToggleRequestQueue() {
-    const { t } = this.context;
-    const { useRequestQueue, setUseRequestQueue } = this.props;
-    return this.renderToggleSection({
-      title: t('toggleRequestQueueField'),
-      description: t('toggleRequestQueueDescription'),
-      toggleValue: useRequestQueue || false,
-      toggleCallback: (value) => setUseRequestQueue(!value),
-      toggleContainerDataTestId: 'experimental-setting-toggle-request-queue',
-      toggleDataTestId: 'experimental-setting-toggle-request-queue',
-      toggleOffLabel: t('toggleRequestQueueOff'),
-      toggleOnLabel: t('toggleRequestQueueOn'),
-    });
-  }
-
   renderNotificationsToggle() {
     const { t } = this.context;
     const { featureNotificationsEnabled, setFeatureNotificationsEnabled } =
@@ -378,7 +361,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         {this.renderToggleRedesignedSignatures()}
         {this.renderToggleRedesignedTransactions()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
-        {this.renderToggleRequestQueue()}
         {/* Section: Account Management Snaps */}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

@@ -198,7 +198,7 @@ describe('Request-queue UI changes', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -263,7 +263,7 @@ describe('Request-queue UI changes', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -390,7 +390,7 @@ describe('Request-queue UI changes', function () {
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -462,9 +462,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerUseRequestQueueEnabled()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         driverOptions: { constrainWindowSize: true },
@@ -508,7 +506,7 @@ describe('Request-queue UI changes', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -560,7 +558,7 @@ describe('Request-queue UI changes', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -631,7 +629,7 @@ describe('Request-queue UI changes', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -701,7 +699,7 @@ describe('Request-queue UI changes', function () {
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
