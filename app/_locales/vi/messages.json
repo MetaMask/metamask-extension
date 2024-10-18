@@ -5535,13 +5535,6 @@
   "switchToThisAccount": {
     "message": "Chuyển sang tài khoản này"
   },
-  "switchedNetworkToastDecline": {
-    "message": "Không hiển thị lại"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 hiện đang hoạt động trên $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
   "switchedTo": {
     "message": "Bạn hiện đang sử dụng"
   },

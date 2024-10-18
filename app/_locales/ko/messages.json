@@ -5535,13 +5535,6 @@
   "switchToThisAccount": {
     "message": "이 계정으로 전환"
   },
-  "switchedNetworkToastDecline": {
-    "message": "다시 표시 안 함"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 계정이 현재 $2 네트워크에서 활성화되어 있습니다",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
   "switchedTo": {
     "message": "다음을 사용 중입니다:"
   },

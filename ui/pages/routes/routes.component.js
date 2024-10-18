@@ -199,17 +199,10 @@ export default class Routes extends Component {
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
-    switchedNetworkDetails: PropTypes.object,
     useNftDetection: PropTypes.bool,
     currentNetwork: PropTypes.object,
     showNftEnablementToast: PropTypes.bool,
     setHideNftEnablementToast: PropTypes.func.isRequired,
-    clearSwitchedNetworkDetails: PropTypes.func.isRequired,
-    setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
-    networkToAutomaticallySwitchTo: PropTypes.object,
-    neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
-    automaticallySwitchNetwork: PropTypes.func.isRequired,
-    totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
@@ -256,38 +249,14 @@ export default class Routes extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      theme,
-      account,
-      networkToAutomaticallySwitchTo,
-      activeTabOrigin,
-      totalUnapprovedConfirmationCount,
-      isUnlocked,
-      useRequestQueue,
-      currentExtensionPopupId,
-    } = this.props;
+    const { theme, account, useRequestQueue, currentExtensionPopupId } =
+      this.props;
     if (theme !== prevProps.theme) {
       this.setTheme();
     }
 
     if (prevProps.account?.address !== account?.address) {
       this.setState({ hideConnectAccountToast: false });
-    }
-
-    // Automatically switch the network if the user
-    // no longer has unapproved transactions and they
-    // should be on a different network for the
-    // currently active tab's dapp
-    if (
-      networkToAutomaticallySwitchTo &&
-      totalUnapprovedConfirmationCount === 0 &&
-      (prevProps.totalUnapprovedConfirmationCount > 0 ||
-        (prevProps.isUnlocked === false && isUnlocked))
-    ) {
-      this.props.automaticallySwitchNetwork(
-        networkToAutomaticallySwitchTo,
-        activeTabOrigin,
-      );
     }
 
     // Terminate the popup when another popup is opened
@@ -645,11 +614,8 @@ export default class Routes extends Component {
       showConnectAccountToast,
       showPrivacyPolicyToast,
       newPrivacyPolicyToastShownDate,
-      clearSwitchedNetworkDetails,
       setSurveyLinkLastClickedOrClosed,
       setNewPrivacyPolicyToastClickedOrClosed,
-      setSwitchedNetworkNeverShowMessage,
-      switchedNetworkDetails,
       useNftDetection,
       showNftEnablementToast,
       setHideNftEnablementToast,
@@ -657,7 +623,6 @@ export default class Routes extends Component {
       currentNetwork,
     } = this.props;
 
-    const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
     const isEvmAccount = isEvmAccountType(account?.type);
@@ -749,26 +714,6 @@ export default class Routes extends Component {
               }}
             />
           )}
-        {showAutoNetworkSwitchToast ? (
-          <Toast
-            key="switched-network-toast"
-            startAdornment={
-              <AvatarNetwork
-                size={AvatarAccountSize.Md}
-                borderColor={BorderColor.transparent}
-                src={switchedNetworkDetails?.imageUrl || ''}
-                name={switchedNetworkDetails?.nickname}
-              />
-            }
-            text={this.context.t('switchedNetworkToastMessage', [
-              switchedNetworkDetails.nickname,
-              getURLHost(switchedNetworkDetails.origin),
-            ])}
-            actionText={this.context.t('switchedNetworkToastDecline')}
-            onActionClick={() => setSwitchedNetworkNeverShowMessage()}
-            onClose={() => clearSwitchedNetworkDetails()}
-          />
-        ) : null}
         {showNftEnablementToast && useNftDetection ? (
           <Toast
             key="enabled-nft-auto-detection"
@@ -838,13 +783,6 @@ export default class Routes extends Component {
     return toastWasShownLessThanADayAgo;
   }
 
-  getShowAutoNetworkSwitchTest() {
-    return (
-      this.props.switchedNetworkDetails &&
-      !this.props.neverShowSwitchedNetworkMessage
-    );
-  }
-
   render() {
     const {
       isLoading,
@@ -877,8 +815,6 @@ export default class Routes extends Component {
       hideIpfsModal,
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
-      switchedNetworkDetails,
-      clearSwitchedNetworkDetails,
       clearEditedNetwork,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
@@ -905,8 +841,7 @@ export default class Routes extends Component {
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
       completedOnboarding &&
-      allAccountsOnNetworkAreEmpty &&
-      switchedNetworkDetails === null;
+      allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
 
@@ -928,8 +863,6 @@ export default class Routes extends Component {
       );
     ///: END:ONLY_INCLUDE_IF
 
-    const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
-
     return (
       <div
         className={classnames('app', {
@@ -937,11 +870,6 @@ export default class Routes extends Component {
           [`browser-${browser}`]: browser,
         })}
         dir={textDirection}
-        onMouseUp={
-          showAutoNetworkSwitchToast
-            ? () => clearSwitchedNetworkDetails()
-            : undefined
-        }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
         {location.pathname === DEFAULT_ROUTE && shouldShowNetworkInfo ? (

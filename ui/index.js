@@ -22,12 +22,9 @@ import { trace, TraceName } from '../shared/lib/trace';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getOriginOfCurrentTab,
   getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
-  getNetworkToAutomaticallySwitchTo,
-  getSwitchedNetworkDetails,
   getUseRequestQueue,
   getCurrentChainId,
 } from './selectors';
@@ -219,27 +216,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 
 async function runInitialActions(store) {
   const state = store.getState();
-
-  // This block autoswitches chains based on the last chain used
-  // for a given dapp, when there are no pending confimrations
-  // This allows the user to be connected on one chain
-  // for one dapp, and automatically change for another
-  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
-
-  if (networkIdToSwitchTo) {
-    await store.dispatch(
-      actions.automaticallySwitchNetwork(
-        networkIdToSwitchTo,
-        getOriginOfCurrentTab(state),
-      ),
-    );
-  } else if (getSwitchedNetworkDetails(state)) {
-    // It's possible that old details could exist if the user
-    // opened the toast but then didn't close it
-    // Clear out any existing switchedNetworkDetails
-    // if the user didn't just change the dapp network
-    await store.dispatch(actions.clearSwitchedNetworkDetails());
-  }
 
   // Register this window as the current popup
   // and set in background state

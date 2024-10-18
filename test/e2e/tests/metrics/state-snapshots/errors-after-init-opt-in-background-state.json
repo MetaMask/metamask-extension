@@ -49,8 +49,6 @@
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
-    "switchedNetworkDetails": null,
-    "switchedNetworkNeverShowMessage": "boolean",
     "currentExtensionPopupId": "number"
   },
   "ApprovalController": {

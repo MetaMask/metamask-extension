@@ -5535,13 +5535,6 @@
   "switchToThisAccount": {
     "message": "切换到该账户"
   },
-  "switchedNetworkToastDecline": {
-    "message": "不再显示此内容"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 现已在 $2 上激活",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
   "switchedTo": {
     "message": "您现在使用的是"
   },

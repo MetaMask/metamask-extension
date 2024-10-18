@@ -18,10 +18,6 @@ import {
   getShowExtensionInFullSizeView,
   getSelectedAccount,
   getPermittedAccountsForCurrentTab,
-  getSwitchedNetworkDetails,
-  getNeverShowSwitchedNetworkMessage,
-  getNetworkToAutomaticallySwitchTo,
-  getNumberOfAllUnapprovedTransactionsAndMessages,
   getShowSurveyToast,
   getNewPrivacyPolicyToastShownDate,
   getShowPrivacyPolicyToast,
@@ -44,9 +40,6 @@ import {
   setSurveyLinkLastClickedOrClosed,
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
-  automaticallySwitchNetwork,
-  clearSwitchedNetworkDetails,
-  neverShowSwitchedNetworkMessage,
   setShowNftDetectionEnablementToast,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
@@ -86,10 +79,6 @@ function mapStateToProps(state) {
       connectedAccounts.length > 0 &&
       !connectedAccounts.find((address) => address === account.address),
   );
-
-  const networkToAutomaticallySwitchTo =
-    getNetworkToAutomaticallySwitchTo(state);
-  const switchedNetworkDetails = getSwitchedNetworkDetails(state);
 
   const useNftDetection = getUseNftDetection(state);
   const showNftEnablementToast = getNftDetectionEnablementToast(state);
@@ -131,14 +120,9 @@ function mapStateToProps(state) {
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     isPermittedNetworkToastOpen: state.appState.showPermittedNetworkToastOpen,
-    switchedNetworkDetails,
     useNftDetection,
     showNftEnablementToast,
-    networkToAutomaticallySwitchTo,
     currentNetwork,
-    totalUnapprovedConfirmationCount:
-      getNumberOfAllUnapprovedTransactionsAndMessages(state),
-    neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
     useRequestQueue: getUseRequestQueue(state),
     newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
@@ -168,11 +152,6 @@ function mapDispatchToProps(dispatch) {
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),
     addPermittedAccount: (activeTabOrigin, address) =>
       dispatch(addPermittedAccount(activeTabOrigin, address)),
-    clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
-    setSwitchedNetworkNeverShowMessage: () =>
-      dispatch(neverShowSwitchedNetworkMessage()),
-    automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
-      dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
     setSurveyLinkLastClickedOrClosed: (time) =>
       dispatch(setSurveyLinkLastClickedOrClosed(time)),
     setNewPrivacyPolicyToastClickedOrClosed: () =>

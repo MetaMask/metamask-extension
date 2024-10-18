@@ -5535,13 +5535,6 @@
   "switchToThisAccount": {
     "message": "このアカウントに切り替える"
   },
-  "switchedNetworkToastDecline": {
-    "message": "今後表示しない"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1が$2で有効になりました",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
   "switchedTo": {
     "message": "次に切り替えました:"
   },
