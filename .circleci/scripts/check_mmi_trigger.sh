@@ -45,14 +45,13 @@ echo "JQ version: $(jq --version)"
 #echo "$PR_DETAILS" | jq empty
 echo "JSON is valid."
 
+echo "PR_DETAILS: $PR_DETAILS" | head -n 10
+
 # Print specific fields to ensure they exist (optional, can be commented out later)
 echo "$PR_DETAILS" | jq '.labels, .requested_reviewers'
 
-# Check for label using jq with --arg and any, handling missing or empty labels
-LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "team-mmi" 'if .labels then any(.labels[]; .name == $label) else false end')
-
-# Check for reviewer team using jq with --arg and any, handling missing or empty requested_reviewers
-REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" 'if .requested_reviewers then any(.requested_reviewers[]; .login == $team) else false end')
+LABEL_EXISTS=$(echo "$PR_DETAILS" | jq '.labels')
+REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq '.requested_reviewers')
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Exists: $REVIEWER_EXISTS"
