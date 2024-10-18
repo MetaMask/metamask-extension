@@ -1,7 +1,11 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useState,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { useEffect } from 'react';
+  useEffect,
   ///: END:ONLY_INCLUDE_IF
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -48,7 +52,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
   getSelectedAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getMemoizedUnapprovedTemplatedConfirmations,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
