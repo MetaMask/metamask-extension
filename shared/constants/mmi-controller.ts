@@ -9,7 +9,7 @@ import { NetworkController } from '@metamask/network-controller';
 import { PreferencesController } from '../../app/scripts/controllers/preferences-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { AppStateController } from '../../app/scripts/controllers/app-state';
+import { AppStateController } from '../../app/scripts/controllers/app-state-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import AccountTrackerController from '../../app/scripts/controllers/account-tracker-controller';
