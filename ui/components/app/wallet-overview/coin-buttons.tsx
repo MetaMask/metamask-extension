@@ -279,12 +279,14 @@ const CoinButtons = ({
     switch (account.type) {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       case BtcAccountType.P2wpkh: {
-        dispatch(setDefaultHomeActiveTabName('activity'));
         await sendMultichainTransaction(
           BITCOIN_WALLET_SNAP_ID,
           account.id,
           chainId as CaipChainId,
         );
+
+        // We automatically switch to the activity tab once the transaction has been sent.
+        dispatch(setDefaultHomeActiveTabName('activity'));
         break;
       }
       ///: END:ONLY_INCLUDE_IF
