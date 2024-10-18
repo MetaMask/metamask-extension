@@ -157,7 +157,7 @@ describe('BtcOverview', () => {
     expect(spinner).toBeInTheDocument();
   });
 
-  it('buttons Send/Swap/Bridge are disabled', () => {
+  it('buttons Swap/Bridge are disabled', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
 
     for (const buttonTestId of [BTC_OVERVIEW_SWAP, BTC_OVERVIEW_BRIDGE]) {
