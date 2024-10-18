@@ -16,8 +16,10 @@ import {
   CaipChainId,
 } from '@metamask/utils';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { BtcAccountType } from '@metamask/keyring-api';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -70,11 +72,13 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
 } from '../../../store/actions';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
   chainId,
@@ -243,6 +247,7 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useEffect(() => {
     const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
       (approval) => {
@@ -257,9 +262,11 @@ const CoinButtons = ({
       history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     }
   }, [unapprovedTemplatedConfirmations, history]);
+  ///: END:ONLY_INCLUDE_IF
 
   const handleSendOnClick = useCallback(async () => {
     switch (account.type) {
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       case BtcAccountType.P2wpkh: {
         dispatch(setDefaultHomeActiveTabName('activity'));
         await sendMultichainTransaction(
@@ -269,6 +276,7 @@ const CoinButtons = ({
         );
         break;
       }
+      ///: END:ONLY_INCLUDE_IF
       default: {
         trackEvent(
           {
