@@ -58,13 +58,6 @@ export const SnapUIInput: FunctionComponent<
       id={name}
       value={value}
       onChange={handleChange}
-      textFieldProps={{
-        ...props.textFieldProps,
-        inputProps: {
-          ...props.textFieldProps?.inputProps,
-          lang: props.textFieldProps?.type === 'number' ? 'en-US' : undefined,
-        },
-      }}
       {...props}
     />
   );
