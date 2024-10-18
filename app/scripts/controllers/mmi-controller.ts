@@ -46,7 +46,6 @@ import {
 import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
-import { PreferencesController } from './preferences-controller';
 import AccountTrackerController from './account-tracker-controller';
 import { AppStateController } from './app-state';
 
@@ -71,8 +70,6 @@ export default class MMIController extends EventEmitter {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public keyringController: any;
-
-  public preferencesController: PreferencesController;
 
   public appStateController: AppStateController;
 
@@ -144,7 +141,6 @@ export default class MMIController extends EventEmitter {
     this.messenger = opts.messenger;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
-    this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
     this.transactionUpdateController = opts.transactionUpdateController;
     this.custodyController = opts.custodyController;
