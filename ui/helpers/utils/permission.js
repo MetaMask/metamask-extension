@@ -55,6 +55,11 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Eye,
     weight: PermissionWeight.eth_accounts,
   }),
+  [EndowmentPermissions['endowment:caip25']]: ({ t }) => ({
+    label: t('permission_ethereumAccounts'),
+    leftIcon: IconName.Eye,
+    weight: PermissionWeight.eth_accounts,
+  }),
   [PermissionNames.permittedChains]: ({ t }) => ({
     label: t('permission_walletSwitchEthereumChain'),
     leftIcon: IconName.Wifi,

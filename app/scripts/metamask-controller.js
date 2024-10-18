@@ -1336,6 +1336,7 @@ export default class MetamaskController extends EventEmitter {
     const requireAllowlist = process.env.REQUIRE_SNAPS_ALLOWLIST;
 
     this.snapController = new SnapController({
+      dynamicPermissions: ['endowment:caip25'],
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       excludedPermissions: {
         ...ExcludedSnapPermissions,

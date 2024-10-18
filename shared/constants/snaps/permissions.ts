@@ -20,6 +20,11 @@ export const ExcludedSnapPermissions = Object.freeze({
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps/issues/990.',
 });
 
-export const ExcludedSnapEndowments = Object.freeze({});
+export const ExcludedSnapEndowments = Object.freeze({
+  'endowment:caip25': 'endowment:caip25',
+});
 
-export const DynamicSnapPermissions = Object.freeze(['eth_accounts']);
+export const DynamicSnapPermissions = Object.freeze([
+  'eth_accounts',
+  'endowment:caip25',
+]);
