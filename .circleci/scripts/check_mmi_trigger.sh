@@ -29,16 +29,13 @@ SUBMITTED_REVIEWS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
   "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews")
 
 # Check for label using jq
-LABEL_EXISTS=$(echo "$PR_DETAILS" | jq -r --arg label "$LABEL_NAME" \
-  '.labels | map(.name) | contains([$label])')
+LABEL_EXISTS=$(jq -r --arg label "$LABEL_NAME" 'any(.labels[]; .name == $label)' <<< "$PR_DETAILS")
 
 # Check for reviewer team in requested reviewers
-REVIEWER_REQUESTED=$(echo "$PR_DETAILS" | jq -r --arg team "$REVIEWER_TEAM" \
-  '.requested_reviewers | map(.login) | contains([$team])')
+REVIEWER_REQUESTED=$(jq -r --arg team "$REVIEWER_TEAM" 'any(.requested_reviewers[]; .login == $team)' <<< "$PR_DETAILS")
 
 # Check for reviewer team in submitted reviews
-REVIEWER_SUBMITTED=$(echo "$SUBMITTED_REVIEWS" | jq -r --arg team "$REVIEWER_TEAM" \
-  'map(.user.login) | contains([$team])')
+REVIEWER_SUBMITTED=$(jq -r --arg team "$REVIEWER_TEAM" 'any(.[]; .user.login == $team)' <<< "$SUBMITTED_REVIEWS")
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Requested: $REVIEWER_REQUESTED"
@@ -55,6 +52,6 @@ fi
 
 # Debug: Print all reviewers
 echo "All Requested Reviewers:"
-echo "$PR_DETAILS" | jq -r '.requested_reviewers[].login'
+jq -r '.requested_reviewers[].login' <<< "$PR_DETAILS"
 echo "All Submitted Reviews:"
-echo "$SUBMITTED_REVIEWS" | jq -r '.[].user.login'
+jq -r '.[].user.login' <<< "$SUBMITTED_REVIEWS"
