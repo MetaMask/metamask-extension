@@ -3,7 +3,6 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:transaction-insight': 'endowment:transaction-insight',
   'endowment:cronjob': 'endowment:cronjob',
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
-  'endowment:caip25': 'endowment:caip25',
   'endowment:rpc': 'endowment:rpc',
   'endowment:webassembly': 'endowment:webassembly',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
@@ -21,7 +20,9 @@ export const ExcludedSnapPermissions = Object.freeze({
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps/issues/990.',
 });
 
-export const ExcludedSnapEndowments = Object.freeze({});
+export const ExcludedSnapEndowments = Object.freeze({
+  'endowment:caip25': 'endowment:caip25',
+});
 
 export const DynamicSnapPermissions = Object.freeze([
   'eth_accounts',
