@@ -339,4 +339,23 @@ describe('App State', () => {
 
     expect(state.showDataDeletionErrorModal).toStrictEqual(false);
   });
+
+  it('displays error in settings', () => {
+    const state = reduceApp(metamaskState, {
+      type: actions.SHOW_SETTINGS_PAGE_ERROR,
+      payload: 'settings page error',
+    });
+
+    expect(state.errorInSettings).toStrictEqual('settings page error');
+  });
+
+  it('hides error in settings', () => {
+    const displayErrorInSettings = { errorInSettings: 'settings page error' };
+    const oldState = { ...metamaskState, ...displayErrorInSettings };
+    const state = reduceApp(oldState, {
+      type: actions.HIDE_SETTINGS_PAGE_ERROR,
+    });
+
+    expect(state.errorInSettings).toBeNull();
+  });
 });
