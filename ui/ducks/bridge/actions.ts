@@ -11,26 +11,26 @@ import {
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
+import { QuoteRequest } from '../../pages/bridge/types';
 import { bridgeSlice } from './bridge';
 
 const {
-  setToChainId: setToChainId_,
+  setToChainId,
   setFromToken,
   setToToken,
   setFromTokenInputValue,
   resetInputFields,
-  switchToAndFromTokens,
 } = bridgeSlice.actions;
 
 export {
-  setFromToken,
-  setToToken,
-  setFromTokenInputValue,
-  switchToAndFromTokens,
+  setToChainId,
   resetInputFields,
+  setToToken,
+  setFromToken,
+  setFromTokenInputValue,
 };
 
-const callBridgeControllerMethod = <T>(
+const callBridgeControllerMethod = <T extends string | Partial<QuoteRequest>>(
   bridgeAction: BridgeUserAction | BridgeBackgroundAction,
   args?: T[],
 ) => {
@@ -62,11 +62,23 @@ export const setFromChain = (chainId: Hex) => {
 
 export const setToChain = (chainId: Hex) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(setToChainId_(chainId));
     dispatch(
       callBridgeControllerMethod<Hex>(BridgeUserAction.SELECT_DEST_NETWORK, [
         chainId,
       ]),
+    );
+  };
+};
+
+export const updateQuoteRequestParams = <T extends Partial<QuoteRequest>>(
+  params: T,
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await dispatch(
+      callBridgeControllerMethod<Partial<QuoteRequest>>(
+        BridgeUserAction.UPDATE_QUOTE_PARAMS,
+        [params],
+      ),
     );
   };
 };

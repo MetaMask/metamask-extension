@@ -264,6 +264,10 @@
       },
       "destTokens": {},
       "destTopAssets": {},
+      "quoteRequest": {
+        "slippage": 0.5,
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+      },
       "srcTokens": {},
       "srcTopAssets": {}
     },
