@@ -27,6 +27,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsBridgeChain,
   getCurrentKeyring,
+  getUseRequestQueue,
+  getOriginOfCurrentTab,
+  getAllDomains,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -34,7 +37,11 @@ import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { showModal } from '../../../store/actions';
+import {
+  setActiveNetwork,
+  setNetworkClientIdForDomain,
+  showModal,
+} from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -101,6 +108,25 @@ const TokenButtons = ({
     });
   };
   ///: END:ONLY_INCLUDE_IF
+
+  const useRequestQueue = useSelector(getUseRequestQueue);
+  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const domains = useSelector(getAllDomains);
+  const switchNetworkIfNecessary = () => {
+    // If we aren't presently on the chain of the asset, change to it
+    if (chainId !== token.chainId) {
+      // TODO: Look up networkClientId of destination token
+
+      // Start network switch
+      dispatch(setActiveNetwork(networkClientId));
+      // If presently on a dapp, communicate a change to
+      // the dapp via silent switchEthereumChain that the
+      // network has changed due to user action
+      if (useRequestQueue && selectedTabOrigin && domains[selectedTabOrigin]) {
+        setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
+      }
+    }
+  };
 
   useEffect(() => {
     if (token.isERC721) {
@@ -211,6 +237,9 @@ const TokenButtons = ({
             { excludeMetaMetricsId: false },
           );
           try {
+            // If we aren't presently on the chain of the asset, change to it
+            switchNetworkIfNecessary();
+
             await dispatch(
               startNewDraftTransaction({
                 type: AssetType.token,
@@ -265,6 +294,9 @@ const TokenButtons = ({
                 chain_id: chainId,
               },
             });
+            // If we aren't presently on the chain of the asset, change to it
+            switchNetworkIfNecessary();
+
             dispatch(
               setSwapsFromToken({
                 ...token,

@@ -39,6 +39,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
   getSelectedAccount,
+  getUseRequestQueue,
+  getOriginOfCurrentTab,
+  getAllDomains,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -67,6 +70,10 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
+import {
+  setActiveNetwork,
+  setNetworkClientIdForDomain,
+} from '../../../store/actions';
 
 const CoinButtons = ({
   chainId,
@@ -230,7 +237,29 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
+  const useRequestQueue = useSelector(getUseRequestQueue);
+  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const domains = useSelector(getAllDomains);
+  const switchNetworkIfNecessary = () => {
+    // If we aren't presently on the chain of the asset, change to it
+    if (chainId !== token.chainId) {
+      // TODO: Look up networkClientId of destination token
+
+      // Start network switch
+      dispatch(setActiveNetwork(networkClientId));
+      // If presently on a dapp, communicate a change to
+      // the dapp via silent switchEthereumChain that the
+      // network has changed due to user action
+      if (useRequestQueue && selectedTabOrigin && domains[selectedTabOrigin]) {
+        setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
+      }
+    }
+  };
+
   const handleSendOnClick = useCallback(async () => {
+    // If we aren't presently on the chain of the asset, change to it
+    switchNetworkIfNecessary();
+
     trackEvent(
       {
         event: MetaMetricsEventName.NavSendButtonClicked,
@@ -249,6 +278,9 @@ const CoinButtons = ({
   }, [chainId]);
 
   const handleSwapOnClick = useCallback(async () => {
+    // If we aren't presently on the chain of the asset, change to it
+    switchNetworkIfNecessary();
+
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
       url: `${mmiPortfolioUrl}/swap`,
