@@ -68,12 +68,16 @@ describe('Notifications', () => {
     const mockedState = getStateWithTwoUnreadNotifications();
 
     await act(async () => {
-      const { getByTestId } = await integrationTestRender({
+      await integrationTestRender({
         preloadedState: mockedState,
         backgroundConnection: backgroundConnectionMocked,
       });
+    });
 
-      const unreadCount = getByTestId('notifications-tag-counter__unread-dot');
+    await waitFor(() => {
+      const unreadCount = screen.getByTestId(
+        'notifications-tag-counter__unread-dot',
+      );
       expect(unreadCount).toBeInTheDocument();
       expect(unreadCount).toHaveTextContent('2');
     });
@@ -83,19 +87,21 @@ describe('Notifications', () => {
     const mockedState = getStateWithTwoUnreadNotifications();
 
     await act(async () => {
-      const { getByTestId, getAllByTestId } = await integrationTestRender({
+      await integrationTestRender({
         preloadedState: mockedState,
         backgroundConnection: backgroundConnectionMocked,
       });
+    });
 
-      fireEvent.click(getByTestId('account-options-menu-button'));
+    fireEvent.click(screen.getByTestId('account-options-menu-button'));
 
-      await waitFor(() => {
-        expect(getByTestId('notifications-menu-item')).toBeInTheDocument();
-        fireEvent.click(getByTestId('notifications-menu-item'));
-      });
+    await waitFor(() => {
+      expect(screen.getByTestId('notifications-menu-item')).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId('notifications-menu-item'));
+    });
 
-      const notificationsList = getByTestId('notifications-list');
+    await waitFor(() => {
+      const notificationsList = screen.getByTestId('notifications-list');
       expect(notificationsList).toBeInTheDocument();
       expect(notificationsList.childElementCount).toBe(3);
 
@@ -123,28 +129,30 @@ describe('Notifications', () => {
         ),
       ).toBeInTheDocument();
 
-      const unreadDot = getAllByTestId('unread-dot');
+      const unreadDot = screen.getAllByTestId('unread-dot');
       expect(unreadDot).toHaveLength(2);
     });
   });
 
   it('should not see mark all as read button if there are no unread notifications', async () => {
-    const mockedState = getStateWithTwoUnreadNotifications();
+    const mockedState = getMockedNotificationsState(); // all notifications are read
 
     await act(async () => {
-      const { getByTestId, container } = await integrationTestRender({
+      await integrationTestRender({
         preloadedState: mockedState,
         backgroundConnection: backgroundConnectionMocked,
       });
+    });
 
-      fireEvent.click(getByTestId('account-options-menu-button'));
+    fireEvent.click(screen.getByTestId('account-options-menu-button'));
 
-      await waitFor(() => {
-        expect(getByTestId('notifications-menu-item')).toBeInTheDocument();
-        fireEvent.click(getByTestId('notifications-menu-item'));
-      });
+    await waitFor(() => {
+      expect(screen.getByTestId('notifications-menu-item')).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId('notifications-menu-item'));
+    });
 
-      const notificationsList = getByTestId('notifications-list');
+    await waitFor(() => {
+      const notificationsList = screen.getByTestId('notifications-list');
       expect(notificationsList).toBeInTheDocument();
       expect(notificationsList.childElementCount).toBe(2);
 
@@ -159,42 +167,42 @@ describe('Notifications', () => {
   it('should send request for marking notifications as read to the background with the correct params', async () => {
     const mockedState = getStateWithTwoUnreadNotifications();
     await act(async () => {
-      const { getByTestId, getAllByTestId } = await integrationTestRender({
+      await integrationTestRender({
         preloadedState: mockedState,
         backgroundConnection: backgroundConnectionMocked,
       });
+    });
 
-      fireEvent.click(getByTestId('account-options-menu-button'));
+    fireEvent.click(screen.getByTestId('account-options-menu-button'));
 
-      await waitFor(() => {
-        expect(getByTestId('notifications-menu-item')).toBeInTheDocument();
-        fireEvent.click(getByTestId('notifications-menu-item'));
-      });
+    await waitFor(() => {
+      expect(screen.getByTestId('notifications-menu-item')).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId('notifications-menu-item'));
+    });
 
-      fireEvent.click(getByTestId('notifications-list-read-all-button'));
+    fireEvent.click(screen.getByTestId('notifications-list-read-all-button'));
 
-      await waitFor(() => {
-        const markAllAsReadEvent =
-          mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) => call[0] === 'markMetamaskNotificationsAsRead',
-          );
+    await waitFor(() => {
+      const markAllAsReadEvent =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'markMetamaskNotificationsAsRead',
+        );
 
-        expect(markAllAsReadEvent?.[0]).toBe('markMetamaskNotificationsAsRead');
-        expect(markAllAsReadEvent?.[1]).toStrictEqual([
-          [
-            {
-              id: featureNotification.id,
-              type: featureNotification.type,
-              isRead: false,
-            },
-            {
-              id: ethSentNotification.id,
-              type: ethSentNotification.type,
-              isRead: false,
-            },
-          ],
-        ]);
-      });
+      expect(markAllAsReadEvent?.[0]).toBe('markMetamaskNotificationsAsRead');
+      expect(markAllAsReadEvent?.[1]).toStrictEqual([
+        [
+          {
+            id: featureNotification.id,
+            type: featureNotification.type,
+            isRead: false,
+          },
+          {
+            id: ethSentNotification.id,
+            type: ethSentNotification.type,
+            isRead: false,
+          },
+        ],
+      ]);
     });
   });
 });
