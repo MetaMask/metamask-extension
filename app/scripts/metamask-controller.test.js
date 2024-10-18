@@ -808,6 +808,95 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe.only('#getPermittedAccountsSorted', () => {
+      it('gets the permitted accounts for the origin', async () => {
+        jest.spyOn(metamaskController, 'getPermittedAccounts').mockReturnValue([])
+
+        await metamaskController.getPermittedAccountsSorted('test.com')
+
+        expect(metamaskController.getPermittedAccounts).toHaveBeenCalledWith('test.com')
+      })
+
+      it('gets all evm accounts sorted by most recently used', async () => {
+        jest.spyOn(metamaskController, 'getPermittedAccounts').mockReturnValue([])
+        jest.spyOn(metamaskController, 'getAllEvmAccountsSorted').mockResolvedValue([])
+
+        await metamaskController.getPermittedAccountsSorted('test.com')
+
+        expect(metamaskController.getAllEvmAccountsSorted).toHaveBeenCalled()
+      })
+
+      it('returns the permitted accounts for the origin sorted by most recently used', async () => {
+        jest.spyOn(metamaskController, 'getPermittedAccounts').mockReturnValue(['0x1', '0x3', '0x5'])
+        jest.spyOn(metamaskController, 'getAllEvmAccountsSorted').mockResolvedValue([])
+
+        await metamaskController.getPermittedAccountsSorted('test.com')
+
+        expect(metamaskController.getAllEvmAccountsSorted).toHaveBeenCalled()
+      })
+    })
+
+    describe('#requestPermissionApprovalForOrigin', () => {
+      it('requests permissions for the origin from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue();
+
+        await metamaskController.requestPermissionApprovalForOrigin(
+          'test.com',
+          {
+            eth_accounts: {},
+          },
+        );
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'test.com',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'test.com',
+              },
+              permissions: {
+                eth_accounts: {},
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+
+        const [params] =
+          metamaskController.approvalController.addAndShowApprovalRequest.mock
+            .calls[0];
+        expect(params.id).toStrictEqual(params.requestData.metadata.id);
+      });
+
+      it('returns the result from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue('approvalResult');
+
+        const result =
+          await metamaskController.requestPermissionApprovalForOrigin(
+            'test.com',
+            {
+              eth_accounts: {},
+            },
+          );
+
+        expect(result).toStrictEqual('approvalResult');
+      });
+    });
+
     describe('#getApi', () => {
       it('getState', () => {
         const getApi = metamaskController.getApi();
