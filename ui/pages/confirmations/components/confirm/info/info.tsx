@@ -9,6 +9,7 @@ import SetApprovalForAllInfo from './set-approval-for-all-info/set-approval-for-
 import TokenTransferInfo from './token-transfer/token-transfer';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
+import NFTTokenTransferInfo from './nft-token-transfer/nft-token-transfer';
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
@@ -31,6 +32,8 @@ const Info = () => {
       [TransactionType.tokenMethodSetApprovalForAll]: () =>
         SetApprovalForAllInfo,
       [TransactionType.tokenMethodTransfer]: () => TokenTransferInfo,
+      [TransactionType.tokenMethodTransferFrom]: () => NFTTokenTransferInfo,
+      [TransactionType.tokenMethodSafeTransferFrom]: () => NFTTokenTransferInfo,
     }),
     [currentConfirmation],
   );
