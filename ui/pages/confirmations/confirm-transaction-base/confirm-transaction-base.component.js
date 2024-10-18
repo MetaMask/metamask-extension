@@ -559,13 +559,11 @@ export default class ConfirmTransactionBase extends Component {
           tokenSymbol={tokenSymbol}
           isUsingPaymaster={isUsingPaymaster}
         />
-        {simulationData && (
-          <SimulationDetails
-            simulationData={simulationData}
-            transactionId={txData.id}
-            enableMetrics
-          />
-        )}
+        <SimulationDetails
+          simulationData={simulationData}
+          transactionId={txData.id}
+          enableMetrics
+        />
         {!renderSimulationFailureWarning && (
           <TransactionDetail
             disableEditGasFeeButton
