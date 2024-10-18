@@ -87,15 +87,15 @@ aliases:
         cat ${HOME}/project/.circleci/scripts/enable-vnc.sh >> ~/.bashrc
       fi
 
-  # Check if MMI Optional tests should run
-  - &check-mmi-optional
-    name: Check if MMI Optional tests should run
+  # Check if MMI tests should run
+  - &check-mmi-trigger
+    name: Check if MMI tests should run
     command: |
       source mmi_trigger.env
       if [ "${run_mmi_tests}" == "true" ]; then
-        echo "Running MMI Optional tests"
+        echo "Running MMI tests"
       else
-        echo "Skipping MMI Optional tests"
+        echo "Skipping MMI tests"
         circleci step halt
       fi
 
@@ -231,7 +231,7 @@ workflows:
           requires:
             - prep-build-test-mmi
             - get-changed-files-with-git-diff
-      - test-e2e-mmi-playwright - OPTIONAL:
+      - test-e2e-mmi-playwright:
           requires:
             - prep-build-test-mmi-playwright
       - test-e2e-chrome-rpc-mmi:
@@ -806,7 +806,7 @@ jobs:
       - run: corepack enable
       - attach_workspace:
           at: .
-      - run: *check-mmi-optional
+      - run: *check-mmi-trigger
       - run:
           name: Build MMI extension for Playwright e2e
           command: |
@@ -821,7 +821,6 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - RUN_MMI_OPTIONAL
             - dist-test-mmi-playwright
             - builds-test-mmi-playwright
       - store_artifacts:
@@ -1273,7 +1272,7 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-mmi-playwright - OPTIONAL:
+  test-e2e-mmi-playwright:
     executor: playwright
     parallelism: 2
     steps:
@@ -1281,7 +1280,7 @@ jobs:
       - run: corepack enable
       - attach_workspace:
           at: .
-      - run: *check-mmi-optional
+      - run: *check-mmi-trigger
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi-playwright ./dist
