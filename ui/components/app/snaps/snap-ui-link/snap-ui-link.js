@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Display } from '../../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
   ButtonLinkSize,
@@ -52,6 +56,11 @@ export const SnapUILink = ({ href, children }) => {
         size={ButtonLinkSize.Inherit}
         display={Display.Inline}
         className="snap-ui-link"
+        textProps={{
+          display: Display.InlineFlex,
+          flexDirection: FlexDirection.Row,
+          alignItems: AlignItems.center,
+        }}
       >
         {children}
         <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
