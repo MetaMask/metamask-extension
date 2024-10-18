@@ -145,6 +145,8 @@ export const CHAIN_IDS = {
   WETHIO: '0x4e',
   CHZ: '0x15b38',
   NUMBERS: '0x290b',
+  LISK: '0x46f',
+  LISK_SEPOLIA: '0x106a',
   SEI: '0x531',
   APE_TESTNET: '0x8157',
   BERACHAIN: '0x138d5',
@@ -254,6 +256,7 @@ export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
+export const LISK_DISPLAY_NAME = 'Lisk';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
 
@@ -370,6 +373,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   OASYS_MAINNET: 'OAS',
   HUOBI_ECO_CHAIN_MAINNET: 'HT',
   ACALA_NETWORK: 'ACA',
+  LISK: 'ETH',
   IOTEX_MAINNET: 'IOTX',
 } as const;
 
@@ -447,6 +451,7 @@ export const FILECOIN_MAINNET_IMAGE_URL = './images/filecoin.svg';
 export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
+export const LISK_IMAGE_URL = './images/lisk.svg';
 export const SEI_IMAGE_URL = './images/sei.svg';
 export const NEAR_IMAGE_URL = './images/near.svg';
 export const APE_TESTNET_IMAGE_URL = './images/ape.svg';
@@ -557,6 +562,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
+  [CHAIN_IDS.LISK]: LISK_DISPLAY_NAME,
   [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_DISPLAY_NAME,
   [CHAIN_IDS.BERACHAIN]: BERACHAIN_DISPLAY_NAME,
   [CHAIN_IDS.METACHAIN_ONE]: METACHAIN_ONE_DISPLAY_NAME,
@@ -785,6 +791,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.APE_TESTNET]: APE_TESTNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.NUMBERS]: NUMBERS_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.LISK]: LISK_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SEI]: SEI_IMAGE_URL,
 } as const;
 
@@ -1029,6 +1036,16 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
     defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.LISK,
+    nickname: LISK_DISPLAY_NAME,
+    rpcUrl: `https://rpc.api.lisk.com`,
+    ticker: CURRENCY_SYMBOLS.ETH,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://blockscout.lisk.com',
+      imageUrl: LISK_IMAGE_URL,
+    },
   },
 ];
 
