@@ -126,7 +126,7 @@ async function assertInfoValues(driver: Driver) {
     css: '.name__value',
     text: '0x5B38D...eddC4',
   });
-  const value = driver.findElement({ text: '<0.000001' });
+  const value = driver.findElement({ text: '3,000' });
   const nonce = driver.findElement({ text: '0' });
   const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
 
