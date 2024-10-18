@@ -6,6 +6,12 @@ export const REFRESH_INTERVAL_MS = 30 * 1000;
 const DEFAULT_MAX_REFRESH_COUNT = 5;
 const DEFAULT_SLIPPAGE = 0.5;
 
+export enum RequestStatus {
+  LOADING,
+  FETCHED,
+  ERROR,
+}
+
 export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
   bridgeFeatureFlags: {
     [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
@@ -25,4 +31,7 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
     srcTokenAddress: zeroAddress(),
     slippage: DEFAULT_SLIPPAGE,
   },
+  quotes: [],
+  quotesLastFetched: undefined,
+  quotesLoadingStatus: undefined,
 };

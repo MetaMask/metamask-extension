@@ -1,7 +1,10 @@
-import { BaseController, StateMetadata } from '@metamask/base-controller';
+import { StateMetadata } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
+import { StaticIntervalPollingController } from '@metamask/polling-controller';
+import { NetworkClientId } from '@metamask/network-controller';
 import {
   fetchBridgeFeatureFlags,
+  fetchBridgeQuotes,
   fetchBridgeTokens,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -9,14 +12,24 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { QuoteRequest } from '../../../../ui/pages/bridge/types';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import {
+  isValidQuoteRequest,
+  QuoteRequest,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../ui/pages/bridge/types';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
+  REFRESH_INTERVAL_MS,
+  RequestStatus,
 } from './constants';
-import { BridgeControllerState, BridgeControllerMessenger } from './types';
+import {
+  BridgeControllerState,
+  BridgeControllerMessenger,
+  BridgeFeatureFlagsKey,
+} from './types';
 
 const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
   bridgeState: {
@@ -25,18 +38,24 @@ const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
   },
 };
 
-export default class BridgeController extends BaseController<
+export default class BridgeController extends StaticIntervalPollingController<
   typeof BRIDGE_CONTROLLER_NAME,
   { bridgeState: BridgeControllerState },
   BridgeControllerMessenger
 > {
+  // #pollingTokenForQuotes: string | undefined;
+
   constructor({ messenger }: { messenger: BridgeControllerMessenger }) {
     super({
       name: BRIDGE_CONTROLLER_NAME,
       metadata,
       messenger,
-      state: { bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE },
+      state: {
+        bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE,
+      },
     });
+
+    this.setIntervalLength(REFRESH_INTERVAL_MS);
 
     this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:setBridgeFeatureFlags`,
@@ -56,7 +75,18 @@ export default class BridgeController extends BaseController<
     );
   }
 
+  _executePoll = async (
+    _: NetworkClientId,
+    updatedQuoteRequest: QuoteRequest,
+  ) => {
+    await this.#fetchBridgeQuotes(updatedQuoteRequest);
+  };
+
   updateBridgeQuoteRequestParams = (paramsToUpdate: Partial<QuoteRequest>) => {
+    // if (this.#pollingTokenForQuotes) {
+    //   this.stopPollingByPollingToken(this.#pollingTokenForQuotes);
+    // }
+    this.stopAllPolling();
     const { bridgeState } = this.state;
     const updatedQuoteRequest = {
       ...DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
@@ -66,17 +96,46 @@ export default class BridgeController extends BaseController<
     this.update((_state) => {
       _state.bridgeState = {
         ...bridgeState,
-        quoteRequest: {
-          ...updatedQuoteRequest,
-        },
+        quoteRequest: updatedQuoteRequest,
+        // {
+        //   ...updatedQuoteRequest,
+        // },
+        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
+        quotesLoadingStatus:
+          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
       };
     });
+
+    if (isValidQuoteRequest(updatedQuoteRequest)) {
+      const walletAddress = this.#getSelectedAccount().address;
+      // this.#pollingTokenForQuotes =
+      this.startPollingByNetworkClientId(
+        decimalToHex(updatedQuoteRequest.srcChainId),
+        { ...updatedQuoteRequest, walletAddress },
+      );
+    }
+    // else {
+    //   this.update((_state) => {
+    //     _state.bridgeState = {
+    //       ..._state.bridgeState,
+    //       quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
+    //       quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
+    //       quotesLoadingStatus:
+    //         DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
+    //     };
+    //   });
+    // }
   };
 
   resetState = () => {
+    this.stopAllPolling();
     this.update((_state) => {
       _state.bridgeState = {
+        ..._state.bridgeState,
         ...DEFAULT_BRIDGE_CONTROLLER_STATE,
+        quotes: [],
+        bridgeFeatureFlags: _state.bridgeState.bridgeFeatureFlags,
       };
     });
   };
@@ -87,6 +146,9 @@ export default class BridgeController extends BaseController<
     this.update((_state) => {
       _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
     });
+    this.setIntervalLength(
+      bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].refreshRate,
+    );
   };
 
   selectSrcNetwork = async (chainId: Hex) => {
@@ -97,6 +159,36 @@ export default class BridgeController extends BaseController<
   selectDestNetwork = async (chainId: Hex) => {
     await this.#setTopAssets(chainId, 'destTopAssets');
     await this.#setTokens(chainId, 'destTokens');
+  };
+
+  #fetchBridgeQuotes = async (request: QuoteRequest) => {
+    const { bridgeState } = this.state;
+    this.update((_state) => {
+      _state.bridgeState = {
+        ...bridgeState,
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.LOADING,
+      };
+    });
+
+    try {
+      const quotes = await fetchBridgeQuotes(request);
+      this.update((_state) => {
+        _state.bridgeState = {
+          ...bridgeState,
+          quotes,
+          quotesLoadingStatus: RequestStatus.FETCHED,
+        };
+      });
+    } catch (error) {
+      console.log('Failed to fetch bridge quotes', error);
+      this.update((_state) => {
+        _state.bridgeState = {
+          ...bridgeState,
+          quotesLoadingStatus: RequestStatus.ERROR,
+        };
+      });
+    }
   };
 
   #setTopAssets = async (
@@ -117,4 +209,8 @@ export default class BridgeController extends BaseController<
       _state.bridgeState = { ...bridgeState, [stateKey]: tokens };
     });
   };
+
+  #getSelectedAccount() {
+    return this.messagingSystem.call('AccountsController:getSelectedAccount');
+  }
 }
