@@ -61,7 +61,7 @@ describe('Notifications', () => {
   });
 
   afterEach(() => {
-    cleanup();
+    window.history.pushState({}, '', '/') // return to homescreen
   });
 
   it('should show the correct number of unread notifications on the badge', async () => {
