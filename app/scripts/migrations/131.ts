@@ -107,6 +107,7 @@ function transformState(state: Record<string, unknown>): void {
     return;
   }
 
+  // Safe to use index 0, we already check for the length before.
   const firstAccount = Object.values(
     accountsControllerState.internalAccounts.accounts,
   )[0];
@@ -133,6 +134,8 @@ function transformState(state: Record<string, unknown>): void {
     return;
   }
 
+  // If the currently selected account ID is not on the `accounts` object, then
+  // we fallback to first account of the wallet.
   if (
     !hasProperty(
       accountsControllerState.internalAccounts.accounts,

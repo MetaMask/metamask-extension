@@ -105,10 +105,9 @@ describe('migration #130', () => {
     const newStorage = await migrate(cloneDeep(oldStorage));
 
     expect(newStorage.data.AccountsController).toStrictEqual({
-      ...mockAccountsControllerState,
+      ...oldStorage.data.AccountsController,
       internalAccounts: {
-        ...mockAccountsControllerState.internalAccounts,
-        accounts: {},
+        ...oldStorage.data.AccountsController.internalAccounts,
         selectedAccount: '',
       },
     });
@@ -174,7 +173,7 @@ describe('migration #130', () => {
     },
     {
       errorMessage: `Migration ${version}: Invalid AccountsController internalAccounts.accounts state of type 'string'`,
-      label: 'Missing accounts',
+      label: 'Invalid accounts',
       state: {
         AccountsController: {
           internalAccounts: { accounts: 'invalid', selectedAccount: '' },
@@ -183,7 +182,7 @@ describe('migration #130', () => {
     },
     {
       errorMessage: `Migration ${version}: Invalid AccountsController internalAccounts.accounts state, entry found of type 'string'`,
-      label: 'Account entry type',
+      label: 'Invalid accounts entry',
       state: {
         AccountsController: {
           internalAccounts: {
@@ -195,7 +194,7 @@ describe('migration #130', () => {
     },
     {
       errorMessage: `Migration ${version}: Invalid AccountsController internalAccounts.accounts state, entry found that is missing an id`,
-      label: 'Account entry missing ID',
+      label: 'Missing ID in accounts entry',
       state: {
         AccountsController: {
           internalAccounts: {
@@ -207,7 +206,7 @@ describe('migration #130', () => {
     },
     {
       errorMessage: `Migration ${version}: Invalid AccountsController internalAccounts.accounts state, entry found with an id of type 'object'`,
-      label: 'Account entry missing ID',
+      label: 'Invalid ID for accounts entry',
       state: {
         AccountsController: {
           internalAccounts: {
