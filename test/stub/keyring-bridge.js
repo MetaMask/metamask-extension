@@ -1,6 +1,6 @@
 import { Transaction } from '@ethereumjs/tx';
 import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
-import { bufferToHex } from 'ethereumjs-util';
+import { bufferToHex, rlp } from 'ethereumjs-util';
 import { addHexPrefix, Common } from './keyring-utils';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
@@ -173,8 +173,14 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
     //   common,
     // }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
 
+    //removing r, s, v values from the unsigned tx
     const txBuffer = Buffer.from(tx, 'hex');
-    return Transaction.fromSerializedTx(txBuffer, {
+    const VALID_TYPES = [1, 2];
+    const txType = VALID_TYPES.includes(rawTx[0]) ? rawTx[0] : null;
+    const rlpData = txType === null ? txBuffer : txBuffer.slice(1, tx.length);
+    const rlpTx = rlp.decode(rlpData);
+
+    return Transaction.fromValuesArray(rlpTx.slice(0,6), {
       common,
     }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
   }
