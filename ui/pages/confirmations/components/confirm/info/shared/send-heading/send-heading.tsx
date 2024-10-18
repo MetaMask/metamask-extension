@@ -58,7 +58,7 @@ const SendHeading = () => {
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
         marginTop={3}
-      >{`${decodedTransferValue || ''} ${tokenSymbol}`}</Text>
+      >{`${decodedTransferValue} ${tokenSymbol}`}</Text>
       {fiatDisplayValue && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
           {fiatDisplayValue}
