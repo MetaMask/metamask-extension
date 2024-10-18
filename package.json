@@ -369,6 +369,7 @@
     "@sentry/types": "^8.33.1",
     "@sentry/utils": "^8.33.1",
     "@swc/core": "1.4.11",
+    "@testing-library/dom": "^7.31.2",
     "@trezor/connect-web": "^9.4.0",
     "@zxing/browser": "^0.1.4",
     "@zxing/library": "0.20.0",
