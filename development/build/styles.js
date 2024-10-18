@@ -15,6 +15,9 @@ const { createTask } = require('./task');
 // scss compilation and autoprefixing tasks
 module.exports = createStyleTasks;
 
+// Exposed for UI Integration tests preview
+module.exports.buildScssPipeline = buildScssPipeline;
+
 function createStyleTasks({ livereload }) {
   const prod = createTask(
     TASKS.STYLES_PROD,
