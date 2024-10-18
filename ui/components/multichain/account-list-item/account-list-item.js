@@ -86,6 +86,7 @@ const AccountListItem = ({
   isActive = false,
   startAccessory,
   onActionClick,
+  shouldScrollToWhenSelected = true,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -128,7 +129,7 @@ const AccountListItem = ({
   // scroll the item into view
   const itemRef = useRef(null);
   useEffect(() => {
-    if (selected) {
+    if (selected && shouldScrollToWhenSelected) {
       itemRef.current?.scrollIntoView?.();
     }
   }, [itemRef, selected]);
@@ -502,6 +503,10 @@ AccountListItem.propTypes = {
    * Represents start accessory
    */
   startAccessory: PropTypes.node,
+  /**
+   * Determines if list item should be scrolled to when selected
+   */
+  shouldScrollToWhenSelected: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';
