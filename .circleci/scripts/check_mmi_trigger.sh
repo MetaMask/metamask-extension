@@ -47,7 +47,7 @@ else
 fi
 
 # Debug: Print all reviewers
-echo "All Requested Reviewers:"
+echo "All Requested Reviewers: "
 jq -r '.requested_reviewers[].login' <<< "$PR_DETAILS"
 echo "All Submitted Reviews:"
 jq -r '.[].user.login' <<< "$SUBMITTED_REVIEWS"
