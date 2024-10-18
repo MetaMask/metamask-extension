@@ -196,6 +196,7 @@ describe('ConnectHardwareForm', () => {
         expect(getByText('imToken')).toBeInTheDocument();
         expect(getByText('OneKey')).toBeInTheDocument();
         expect(getByText('Ngrave Zero')).toBeInTheDocument();
+	expect(getByText('ellipal')).toBeInTheDocument();
       });
     });
   });
