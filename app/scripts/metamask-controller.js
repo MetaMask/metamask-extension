@@ -13,9 +13,9 @@ import {
   RatesController,
   fetchMultiExchangeRate,
 } from '@metamask/assets-controllers';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
@@ -5492,11 +5492,7 @@ export default class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // handle any middleware cleanup
-        engine._middleware.forEach((mid) => {
-          if (mid.destroy && typeof mid.destroy === 'function') {
-            mid.destroy();
-          }
-        });
+        engine.destroy();
         connectionId && this.removeConnection(origin, connectionId);
         // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
         if (err && !err.message?.match('Premature close')) {
