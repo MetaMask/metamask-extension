@@ -342,17 +342,22 @@ function overrideContentSecurityPolicyHeader() {
     ({ responseHeaders }) => {
       for (const header of responseHeaders) {
         if (header.name.toLowerCase() === 'content-security-policy') {
-          const contentSecurityPolicy = CSP.parse(header.value);
+          const directives = CSP.parse(header.value);
           const nonce = `'nonce-${btoa(browser.runtime.getURL('/'))}'`;
-          const scriptSrc = Object.keys(contentSecurityPolicy).find(
-            (directive) => directive.toLowerCase() === 'script-src',
+          const scriptSrc = directives.find(
+            (directive) => directive.name.toLowerCase() === 'script-src',
           );
           if (scriptSrc) {
-            contentSecurityPolicy[scriptSrc].push(nonce);
+            scriptSrc.values.push(nonce);
           } else {
-            contentSecurityPolicy['script-src'] = [nonce];
+            const defaultSrc = directives.find(
+              (directive) => directive.name.toLowerCase() === 'default-src',
+            );
+            if (defaultSrc) {
+              defaultSrc.values.push(nonce);
+            }
           }
-          header.value = CSP.stringify(contentSecurityPolicy);
+          header.value = CSP.stringify(directives);
         }
       }
       return { responseHeaders };

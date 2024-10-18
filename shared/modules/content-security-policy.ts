@@ -9,22 +9,25 @@ const ASCII_WHITESPACE_AT_END = new RegExp(`[${ASCII_WHITESPACE_CHARS}]+$`);
 // See <https://infra.spec.whatwg.org/#ascii-string>.
 const ASCII = /^[\x00-\x7f]*$/;
 
-export type ContentSecurityPolicy = Record<string, string[]>;
+export interface ContentSecurityPolicyDirective {
+  name: string;
+  values: string[];
+}
 
 /**
  * An intrinsic object that provides functions to handle the Content Security Policy (CSP) format.
  */
 export const CSP = {
   /**
-   * Converts a Content Security Policy (CSP) string into an object according to [the spec][0].
+   * Converts a Content Security Policy (CSP) string into an array of directives according to [the spec][0].
    *
    * [0]: https://w3c.github.io/webappsec-csp/#parse-serialized-policy
    *
    * @param text The Content Security Policy (CSP) string to parse.
-   * @returns A Content Security Policy (CSP) object.
+   * @returns An array of Content Security Policy (CSP) directives.
    */
   parse: (text: string) => {
-    const contentSecurityPolicy: ContentSecurityPolicy = {};
+    const directives: ContentSecurityPolicyDirective[] = [];
 
     // For each token returned by strictly splitting serialized on the
     // U+003B SEMICOLON character (;):
@@ -43,20 +46,20 @@ export const CSP = {
       // Directive values are the result of splitting token on ASCII whitespace.
       const [name, ...values] = strippedToken.split(ASCII_WHITESPACE);
 
-      contentSecurityPolicy[name] = values;
+      directives.push({ name, values });
     }
 
-    return contentSecurityPolicy;
+    return directives;
   },
   /**
-   * Converts a Content Security Policy (CSP) object into a string.
+   * Converts an array of Content Security Policy (CSP) directives into a string.
    *
-   * @param contentSecurityPolicy The Content Security Policy (CSP) object to stringify.
+   * @param directives An array of Content Security Policy (CSP) directives to stringify.
    * @returns A Content Security Policy (CSP) string.
    */
-  stringify: (contentSecurityPolicy: ContentSecurityPolicy) => {
-    return Object.entries(contentSecurityPolicy)
-      .map(([name, values]) => {
+  stringify: (directives: ContentSecurityPolicyDirective[]) => {
+    return directives
+      .map(({ name, values }) => {
         const value = values.length ? ` ${values.join(' ')}` : '';
         return `${name}${value}`;
       })
