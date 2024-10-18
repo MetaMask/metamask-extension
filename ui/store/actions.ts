@@ -4690,6 +4690,10 @@ export async function setAlertEnabledness(
   ]);
 }
 
+export async function setShowRPCTimeoutToast(shown: boolean) {
+  await submitRequestToBackground('setShowRPCTimeoutToast', shown);
+}
+
 export async function setUnconnectedAccountAlertShown(origin: string) {
   await submitRequestToBackground('setUnconnectedAccountAlertShown', [origin]);
 }

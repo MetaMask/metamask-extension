@@ -79,6 +79,7 @@ export default class AppStateController extends EventEmitter {
       switchedNetworkNeverShowMessage: false,
       currentExtensionPopupId: 0,
       lastInteractedConfirmationInfo: undefined,
+      showRPCTimeoutToast: false,
     });
     this.timer = null;
 
