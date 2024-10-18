@@ -1,6 +1,5 @@
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { RawLocator } from '../common';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
@@ -8,11 +7,32 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 class TestDapp {
   private driver: Driver;
 
+  private readonly confirmDepositButton =
+    '[data-testid="confirm-footer-button"]';
+
+  private readonly confirmDialogButton = '[data-testid="confirm-btn"]';
+
   private readonly confirmDialogScrollButton =
     '[data-testid="signature-request-scroll-button"]';
 
   private readonly confirmSignatureButton =
     '[data-testid="page-container-footer-next"]';
+
+  private readonly connectAccountButton = '#connectButton';
+
+  private readonly connectMetaMaskMessage = {
+    text: 'Connect with MetaMask',
+    tag: 'h2',
+  };
+
+  private readonly connectedAccount = '#accounts';
+
+  private readonly depositPiggyBankContractButton = '#depositButton';
+
+  private readonly editConnectButton = {
+    text: 'Edit',
+    tag: 'button',
+  };
 
   private readonly erc1155RevokeSetApprovalForAllButton =
     '#revokeERC1155Button';
@@ -20,9 +40,21 @@ class TestDapp {
   private readonly erc1155SetApprovalForAllButton =
     '#setApprovalForAllERC1155Button';
 
+  private readonly erc20WatchAssetButton = '#watchAssets';
+
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
 
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
+
+  private readonly localhostCheckbox = {
+    text: 'Localhost 8545',
+    tag: 'p',
+  };
+
+  private readonly localhostNetworkMessage = {
+    css: '#chainId',
+    text: '0x539',
+  };
 
   private readonly mmlogo = '#mm-logo';
 
@@ -36,6 +68,8 @@ class TestDapp {
   };
 
   private readonly personalSignVerifyButton = '#personalSignVerify';
+
+  private readonly revokePermissionButton = '#revokeAccountsPermission';
 
   private readonly signPermitButton = '#signPermit';
 
@@ -84,16 +118,18 @@ class TestDapp {
 
   private readonly signTypedDataVerifyResult = '#signTypedDataVerifyResult';
 
-  private erc20WatchAssetButton: RawLocator;
+  private readonly transactionRequestMessage = {
+    text: 'Transaction request',
+    tag: 'h2',
+  };
+
+  private readonly updateNetworkButton = {
+    text: 'Update',
+    tag: 'button',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
-
-    this.erc721SetApprovalForAllButton = '#setApprovalForAllButton';
-    this.erc1155SetApprovalForAllButton = '#setApprovalForAllERC1155Button';
-    this.erc721RevokeSetApprovalForAllButton = '#revokeButton';
-    this.erc1155RevokeSetApprovalForAllButton = '#revokeERC1155Button';
-    this.erc20WatchAssetButton = '#watchAssets';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -154,6 +190,63 @@ class TestDapp {
 
   public async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
+  }
+
+  /**
+   * Connect account to test dapp.
+   *
+   * @param publicAddress - The public address to connect to test dapp.
+   */
+  async connectAccount(publicAddress: string) {
+    console.log('Connect account to test dapp');
+    await this.driver.clickElement(this.connectAccountButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.connectMetaMaskMessage);
+
+    // TODO: Extra steps needed to preserve the current network.
+    // Following steps can be removed once the issue is fixed (#27891)
+    const editNetworkButton = await this.driver.findClickableElements(
+      this.editConnectButton,
+    );
+    await editNetworkButton[1].click();
+    await this.driver.clickElement(this.localhostCheckbox);
+    await this.driver.clickElement(this.updateNetworkButton);
+
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmDialogButton,
+    );
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+    await this.driver.waitForSelector({
+      css: this.connectedAccount,
+      text: publicAddress.toLowerCase(),
+    });
+    await this.driver.waitForSelector(this.localhostNetworkMessage);
+  }
+
+  async createDepositTransaction() {
+    console.log('Create a deposit transaction on test dapp page');
+    await this.driver.clickElement(this.depositPiggyBankContractButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.transactionRequestMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmDepositButton,
+    );
+  }
+
+  /**
+   * Disconnect current connected account from test dapp.
+   *
+   * @param publicAddress - The public address of the account to disconnect from test dapp.
+   */
+  async disconnectAccount(publicAddress: string) {
+    console.log('Disconnect account from test dapp');
+    await this.driver.clickElement(this.revokePermissionButton);
+    await this.driver.refresh();
+    await this.check_pageIsLoaded();
+    await this.driver.assertElementNotPresent({
+      css: this.connectedAccount,
+      text: publicAddress.toLowerCase(),
+    });
   }
 
   /**
