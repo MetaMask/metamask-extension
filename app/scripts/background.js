@@ -56,6 +56,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
+import { CSP } from '../../shared/modules/content-security-policy';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -331,6 +332,41 @@ function maybeDetectPhishing(theController) {
   );
 }
 
+/**
+ * Overrides the Content-Security-Policy (CSP) header by adding a nonce to the `script-src` directive.
+ * This is a workaround for [Bug #1446231](https://bugzilla.mozilla.org/show_bug.cgi?id=1446231),
+ * which involves overriding the page CSP for inline script nodes injected by extension content scripts.
+ */
+function overrideContentSecurityPolicyHeader() {
+  browser.webRequest.onHeadersReceived.addListener(
+    ({ responseHeaders }) => {
+      for (const header of responseHeaders) {
+        if (header.name.toLowerCase() === 'content-security-policy') {
+          const directives = CSP.parse(header.value);
+          const nonce = `'nonce-${btoa(browser.runtime.getURL('/'))}'`;
+          const scriptSrc = directives.find(
+            (directive) => directive.name.toLowerCase() === 'script-src',
+          );
+          if (scriptSrc) {
+            scriptSrc.values.push(nonce);
+          } else {
+            const defaultSrc = directives.find(
+              (directive) => directive.name.toLowerCase() === 'default-src',
+            );
+            if (defaultSrc) {
+              defaultSrc.values.push(nonce);
+            }
+          }
+          header.value = CSP.stringify(directives);
+        }
+      }
+      return { responseHeaders };
+    },
+    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    ['blocking', 'responseHeaders'],
+  );
+}
+
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -477,6 +513,12 @@ async function initialize() {
 
     if (!isManifestV3) {
       await loadPhishingWarningPage();
+      // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
+      const platform = getPlatform();
+      if (platform === PLATFORM_FIREFOX) {
+        overrideContentSecurityPolicyHeader();
+      }
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
