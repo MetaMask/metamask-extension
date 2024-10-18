@@ -6,7 +6,7 @@ LABEL_NAME="$1"
 REVIEWER_TEAM="$2"
 
 # Enable debugging (optional; uncomment for debugging)
-set -x
+et -x
 
 # Ensure required environment variables are set
 if [ -z "$CIRCLE_PULL_REQUEST" ] || [ -z "$GITHUB_TOKEN" ]; then
@@ -42,26 +42,17 @@ echo "Last character of PR_DETAILS: '$last_char'"
 echo "JQ version: $(jq --version)"
 
 # Validate JSON format by piping PR_DETAILS into jq empty
-echo "$PR_DETAILS" | jq empty
+#echo "$PR_DETAILS" | jq empty
 echo "JSON is valid."
 
+# Print specific fields to ensure they exist (optional, can be commented out later)
+echo "$PR_DETAILS" | jq '.labels, .requested_reviewers'
+
 # Check for label using jq with --arg and any, handling missing or empty labels
-LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "$LABEL_NAME" '
-  if .labels then
-    any(.labels[]; .name == $label)
-  else
-    false
-  end
-')
+LABEL_EXISTS=$(jq --arg label "$LABEL_NAME" 'if .labels then any(.labels[]; .name == $label) else false end')
 
 # Check for reviewer team using jq with --arg and any, handling missing or empty requested_reviewers
-REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" '
-  if .requested_reviewers then
-    any(.requested_reviewers[]; .login == $team)
-  else
-    false
-  end
-')
+REVIEWER_EXISTS=$(jq --arg team "$REVIEWER_TEAM" 'if .requested_reviewers then any(.requested_reviewers[]; .login == $team) else false end')
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Exists: $REVIEWER_EXISTS"
