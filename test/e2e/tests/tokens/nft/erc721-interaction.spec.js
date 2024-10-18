@@ -247,7 +247,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         });
         // verify the mint transaction has finished
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-         await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '#nftsStatus',
           text: 'Mint completed',
         });
