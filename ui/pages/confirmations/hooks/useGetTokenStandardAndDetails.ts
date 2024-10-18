@@ -32,13 +32,11 @@ export const useGetTokenStandardAndDetails = (
 
   const { decimals, standard } = details || {};
 
-  if (standard !== TokenStandard.ERC20) {
-    return;
+  if (standard === TokenStandard.ERC20) {
+    let parsedDecimals =
+      parseTokenDetailDecimals(decimals) ?? ERC20_DEFAULT_DECIMALS;
+    details.decimalsNumber = parsedDecimals;
   }
-
-  let parsedDecimals =
-    parseTokenDetailDecimals(decimals) ?? ERC20_DEFAULT_DECIMALS;
-  details.decimalsNumber = parsedDecimals;
 
   return details;
 };
