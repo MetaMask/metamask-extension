@@ -18,6 +18,7 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import { getErrorMessage } from '../../../shared/modules/error';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,
@@ -419,15 +420,20 @@ export default function createRPCMethodTrackingMiddleware({
       const location = res.error?.data?.location;
 
       let event;
+
+      const errorMessage = getErrorMessage(res.error);
+
       if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
-        res.error?.message === 'Request rejected by user or snap.'
+        [errorMessage, res.error.message].includes(
+          'Request rejected by user or snap.',
+        )
       ) {
         // The signature was approved in MetaMask but rejected in the snap
         event = eventType.REJECTED;
-        eventProperties.status = res.error.message;
+        eventProperties.status = errorMessage;
       } else {
         event = eventType.APPROVED;
       }
