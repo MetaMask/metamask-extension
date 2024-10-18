@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
-  BlockSize,
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
