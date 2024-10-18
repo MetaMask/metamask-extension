@@ -5123,16 +5123,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-filters@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/eth-json-rpc-filters@npm:8.0.0"
+"@metamask/eth-json-rpc-filters@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/eth-json-rpc-filters@npm:9.0.0"
   dependencies:
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/json-rpc-engine": "npm:^9.0.0"
+    "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     async-mutex: "npm:^0.5.0"
     pify: "npm:^5.0.0"
-  checksum: 10/2a0a081abe3ed152e4c74116a486dae49a37cdda1ea1d4739825fc888be40518623a69593034b7da2489204af968060670b00d1e2299ff721b554c615b09127b
+  checksum: 10/12095db69902e267d568d67b4241677502558159691d47216f82701f8e2875a051636b8ff483351d17e01d090b7a1eb8d5dec4cc17a9e47c99aa6d2ec0a073b4
   languageName: node
   linkType: hard
 
@@ -25920,7 +25920,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^9.0.0"
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
-    "@metamask/eth-json-rpc-filters": "npm:^8.0.0"
+    "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "patch:@metamask/eth-json-rpc-middleware@npm%3A14.0.1#~/.yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch"
     "@metamask/eth-ledger-bridge-keyring": "npm:^3.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
