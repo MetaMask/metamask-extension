@@ -1241,7 +1241,7 @@ export function getFeatureFlags(state) {
 }
 
 export function getOriginOfCurrentTab(state) {
-  return state.activeTab.origin;
+  return state.activeTab?.origin || '';
 }
 
 export function getIpfsGateway(state) {
