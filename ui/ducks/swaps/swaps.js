@@ -69,8 +69,9 @@ import {
   getSelectedInternalAccount,
 } from '../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
+  getSmartTransactionsPreferenceEnabled,
 } from '../../../shared/modules/selectors';
 import {
   MetaMetricsEventCategory,
@@ -746,7 +747,6 @@ export const fetchQuotesAndSetQuoteState = (
     const hardwareWalletType = getHardwareWalletType(state);
     const networkAndAccountSupports1559 =
       checkNetworkAndAccountSupports1559(state);
-    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
@@ -764,7 +764,7 @@ export const fetchQuotesAndSetQuoteState = (
         hardware_wallet_type: hardwareWalletType,
         stx_enabled: smartTransactionsEnabled,
         current_stx_enabled: currentSmartTransactionsEnabled,
-        stx_user_opt_in: smartTransactionsOptInStatus,
+        stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
         anonymizedData: true,
       },
     });
@@ -784,7 +784,8 @@ export const fetchQuotesAndSetQuoteState = (
             balanceError,
             sourceDecimals: fromTokenDecimals,
             enableGasIncludedQuotes:
-              currentSmartTransactionsEnabled && smartTransactionsOptInStatus,
+              currentSmartTransactionsEnabled &&
+              getSmartTransactionsPreferenceEnabled(state),
           },
           {
             sourceTokenInfo,
@@ -819,7 +820,7 @@ export const fetchQuotesAndSetQuoteState = (
             hardware_wallet_type: hardwareWalletType,
             stx_enabled: smartTransactionsEnabled,
             current_stx_enabled: currentSmartTransactionsEnabled,
-            stx_user_opt_in: smartTransactionsOptInStatus,
+            stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
           },
         });
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
@@ -856,7 +857,7 @@ export const fetchQuotesAndSetQuoteState = (
             hardware_wallet_type: hardwareWalletType,
             stx_enabled: smartTransactionsEnabled,
             current_stx_enabled: currentSmartTransactionsEnabled,
-            stx_user_opt_in: smartTransactionsOptInStatus,
+            stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
             anonymizedData: true,
           },
         });
@@ -910,7 +911,6 @@ export const signAndSendSwapsSmartTransaction = ({
       usedQuote.destinationAmount,
       destinationTokenInfo.decimals || 18,
     ).toPrecision(8);
-    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
@@ -937,7 +937,7 @@ export const signAndSendSwapsSmartTransaction = ({
       hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
+      stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
       gas_included: usedQuote.isGasIncludedTrade,
       ...additionalTrackingParams,
     };
@@ -1180,7 +1180,6 @@ export const signAndSendTransactions = (
       numberOfDecimals: 6,
     });
 
-    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
@@ -1212,7 +1211,7 @@ export const signAndSendTransactions = (
       hardware_wallet_type: getHardwareWalletType(state),
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
+      stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
       ...additionalTrackingParams,
     };
 
