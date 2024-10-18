@@ -107,6 +107,15 @@ export const SENTRY_BACKGROUND_STATE = {
       destTopAssets: [],
       srcTokens: {},
       srcTopAssets: [],
+      quoteRequest: {
+        walletAddress: false,
+        srcTokenAddress: true,
+        slippage: true,
+        srcChainId: true,
+        destChainId: true,
+        destTokenAddress: true,
+        srcTokenAmount: true,
+      },
     },
   },
   CronjobController: {

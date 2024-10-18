@@ -59,6 +59,7 @@ describe('BridgeController', function () {
           symbol: 'ABC',
         },
       ]);
+    bridgeController.resetState();
   });
 
   it('constructor should setup correctly', function () {
@@ -102,6 +103,11 @@ describe('BridgeController', function () {
     expect(bridgeController.state.bridgeState.destTopAssets).toStrictEqual([
       { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', symbol: 'ABC' },
     ]);
+    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
+      slippage: 0.5,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      walletAddress: undefined,
+    });
   });
 
   it('selectSrcNetwork should set the bridge src tokens and top assets', async function () {
@@ -126,5 +132,76 @@ describe('BridgeController', function () {
         symbol: 'ABC',
       },
     ]);
+    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
+      slippage: 0.5,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      walletAddress: undefined,
+    });
+  });
+
+  it('updateBridgeQuoteRequestParams should update the quoteRequest state', function () {
+    bridgeController.updateBridgeQuoteRequestParams({ srcChainId: 1 });
+    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
+      srcChainId: 1,
+      slippage: 0.5,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      walletAddress: undefined,
+    });
+
+    bridgeController.updateBridgeQuoteRequestParams({ destChainId: 10 });
+    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
+      destChainId: 10,
+      slippage: 0.5,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      walletAddress: undefined,
+    });
+
+    bridgeController.updateBridgeQuoteRequestParams({ destChainId: undefined });
+    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
+      destChainId: undefined,
+      slippage: 0.5,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      walletAddress: undefined,
+    });
+
+    bridgeController.updateBridgeQuoteRequestParams({
+      srcTokenAddress: undefined,
+    });
+    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
+      slippage: 0.5,
+      srcTokenAddress: undefined,
+      walletAddress: undefined,
+    });
+
+    bridgeController.updateBridgeQuoteRequestParams({
+      srcTokenAmount: '100000',
+      destTokenAddress: '0x123',
+      slippage: 0.5,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      walletAddress: undefined,
+    });
+    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
+      srcTokenAmount: '100000',
+      destTokenAddress: '0x123',
+      slippage: 0.5,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      walletAddress: undefined,
+    });
+
+    bridgeController.updateBridgeQuoteRequestParams({
+      srcTokenAddress: '0x2ABC',
+    });
+    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
+      slippage: 0.5,
+      srcTokenAddress: '0x2ABC',
+      walletAddress: undefined,
+    });
+
+    bridgeController.resetState();
+    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
+      slippage: 0.5,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      walletAddress: undefined,
+    });
   });
 });
