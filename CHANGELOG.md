@@ -6,6 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.4.1]
+### Fixed
+- Fix crash on swaps review page ([#27708](https://github.com/MetaMask/metamask-extension/pull/27708))
+- Fix bug that could prevent the phishing detection feature from having the most up to date info on which web pages to block ([#27743](https://github.com/MetaMask/metamask-extension/pull/27743))
+
+## [12.4.0]
+### Added
+- Added a receive button to the home screen, allowing users to easily get their address or QR-code for receiving cryptocurrency ([#26148](https://github.com/MetaMask/metamask-extension/pull/26148))
+- Added smart transactions functionality for hardware wallet users ([#26251](https://github.com/MetaMask/metamask-extension/pull/26251))
+- Added new custom UI components for Snaps developers ([#26675](https://github.com/MetaMask/metamask-extension/pull/26675))
+- Add support for footers to Snap home pages ([#26463](https://github.com/MetaMask/metamask-extension/pull/26463))
+- [FLASK] Added Account Watcher as a preinstalled snap and added it to the menu list ([#26402](https://github.com/MetaMask/metamask-extension/pull/26402))
+- [FLASK] Added footers to Snap home pages ([#26463](https://github.com/MetaMask/metamask-extension/pull/26463))
+- Added icons for IoTeX network ([#26723](https://github.com/MetaMask/metamask-extension/pull/26723))
+- Added NEAR icon for chainId 397 and 398 ([#26459](https://github.com/MetaMask/metamask-extension/pull/26459))
+
+
+### Changed
+- Redesign contract deployment transaction screen ([#26382](https://github.com/MetaMask/metamask-extension/pull/26382))
+- Improve performance, reliability and coverage of the phishing detection feature ([#25839](https://github.com/MetaMask/metamask-extension/pull/25839))
+- Updated Moonbeam and Moonriver network and token logos ([#26677](https://github.com/MetaMask/metamask-extension/pull/26677))
+- Updated UI for add network notification window ([#25777](https://github.com/MetaMask/metamask-extension/pull/25777))
+- Update visual styling of token lists ([#26300](https://github.com/MetaMask/metamask-extension/pull/26300))
+- Update spacing on Snap home page ([#26462](https://github.com/MetaMask/metamask-extension/pull/26462))
+- [FLASK] Integrated Snaps into the redesigned confirmation pages ([#26435](https://github.com/MetaMask/metamask-extension/pull/26435))
+
+### Fixed
+- Fixed network change toast width in wide screen mode ([#26532](https://github.com/MetaMask/metamask-extension/pull/26532))
+- Fixed missing deadline in swaps smart transaction status screen ([#25779](https://github.com/MetaMask/metamask-extension/pull/25779))
+- Improved Snap Address component UI/UX; stop using petnames in custom Snaps UIs ([#26477](https://github.com/MetaMask/metamask-extension/pull/26477))
+- Fixed bug that could prevent the Import NFT modal from closing after importing some tokens ([#26269](https://github.com/MetaMask/metamask-extension/pull/26269))
+
+## [12.3.1]
+### Fixed
+- Fix duplicate network validation ([#27463](https://github.com/MetaMask/metamask-extension/pull/27463))
+- Fix notification metrics ([#27435](https://github.com/MetaMask/metamask-extension/pull/27435))
+- Fix transaction metrics ([#27457](https://github.com/MetaMask/metamask-extension/pull/27457))
+
 ## [12.3.0]
 ### Added
 - Added the ability to name accounts during the snap account creation flow ([#25191](https://github.com/MetaMask/metamask-extension/pull/25191))
@@ -5106,7 +5144,10 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.4.1...HEAD
+[12.4.1]: https://github.com/MetaMask/metamask-extension/compare/v12.4.0...v12.4.1
+[12.4.0]: https://github.com/MetaMask/metamask-extension/compare/v12.3.1...v12.4.0
+[12.3.1]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...v12.3.1
 [12.3.0]: https://github.com/MetaMask/metamask-extension/compare/v12.2.4...v12.3.0
 [12.2.4]: https://github.com/MetaMask/metamask-extension/compare/v12.2.3...v12.2.4
 [12.2.3]: https://github.com/MetaMask/metamask-extension/compare/v12.2.2...v12.2.3

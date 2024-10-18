@@ -26,6 +26,7 @@ const MOCK_FETCH_PARAMS: FetchTradesInfoParams = {
   fromAddress: '0x7F18BB4Dd92CF2404C54CBa1A9BE4A1153bdb078',
   exchangeList: 'zeroExV1',
   balanceError: false,
+  enableGasIncludedQuotes: false,
 };
 
 const TEST_AGG_ID_1 = 'TEST_AGG_1';
@@ -1164,6 +1165,7 @@ describe('SwapsController', function () {
           fromAddress: '',
           exchangeList: 'zeroExV1',
           balanceError: false,
+          enableGasIncludedQuotes: false,
           metaData: {} as FetchTradesInfoParamsMetadata,
         };
         const swapsFeatureIsLive = false;

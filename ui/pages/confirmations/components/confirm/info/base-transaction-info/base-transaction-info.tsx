@@ -1,9 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SimulationDetails } from '../../../simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -14,12 +12,6 @@ const BaseTransactionInfo = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
-
-  const simulationData = transactionMeta?.simulationData;
-
   if (!transactionMeta?.txParams) {
     return null;
   }
@@ -27,17 +19,15 @@ const BaseTransactionInfo = () => {
   return (
     <>
       <ConfirmInfoSection noPadding>
-        {simulationData && (
-          <SimulationDetails
-            simulationData={simulationData}
-            transactionId={transactionMeta.id}
-            isTransactionsRedesign
-          />
-        )}
+        <SimulationDetails
+          simulationData={transactionMeta?.simulationData}
+          transactionId={transactionMeta.id}
+          isTransactionsRedesign
+        />
       </ConfirmInfoSection>
       <TransactionDetails />
       <GasFeesSection />
-      {showAdvancedDetails && <AdvancedDetails />}
+      <AdvancedDetails />
     </>
   );
 };

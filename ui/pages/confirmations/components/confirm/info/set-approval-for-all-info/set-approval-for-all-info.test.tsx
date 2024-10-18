@@ -1,3 +1,4 @@
+import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -38,6 +39,10 @@ describe('<SetApprovalForAllInfo />', () => {
       <SetApprovalForAllInfo />,
       mockStore,
     );
+
+    await waitFor(() => {
+      expect(screen.getByText('Data')).toBeInTheDocument();
+    });
 
     expect(container).toMatchSnapshot();
   });

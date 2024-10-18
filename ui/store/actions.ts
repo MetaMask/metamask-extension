@@ -9,7 +9,8 @@ import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import type { Hex, Json } from '@metamask/utils';
 import {
   AssetsContractController,
@@ -28,6 +29,7 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  GasFeeEstimates,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -101,7 +103,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getSmartTransactionsOptInStatus } from '../../shared/modules/selectors';
+import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import {
   fetchLocale,
@@ -110,6 +112,7 @@ import {
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
+  getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
 } from '../../shared/modules/error';
@@ -119,6 +122,7 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
+import { SortCriteria } from '../components/app/assets/util/sort';
 import {
   CaveatTypes,
   EndowmentTypes,
@@ -226,7 +230,7 @@ export function createNewVaultAndRestore(
         dispatch(hideLoadingIndication());
       })
       .catch((err) => {
-        dispatch(displayWarning(err.message));
+        dispatch(displayWarning(err));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
@@ -246,7 +250,7 @@ export function createNewVaultAndGetSeedPhrase(
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
-        throw new Error(error.message);
+        throw new Error(getErrorMessage(error));
       } else {
         throw error;
       }
@@ -270,7 +274,7 @@ export function unlockAndGetSeedPhrase(
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
-        throw new Error(error.message);
+        throw new Error(getErrorMessage(error));
       } else {
         throw error;
       }
@@ -373,7 +377,7 @@ export function resetAccount(): ThunkAction<
         dispatch(hideLoadingIndication());
         if (err) {
           if (isErrorWithMessage(err)) {
-            dispatch(displayWarning(err.message));
+            dispatch(displayWarning(err));
           }
           reject(err);
           return;
@@ -573,11 +577,12 @@ export function connectHardware(
       );
     } catch (error) {
       logErrorWithMessage(error);
+      const message = getErrorMessage(error);
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid &&
         isErrorWithMessage(error) &&
-        error.message.match('Failed to open the device')
+        message.match('Failed to open the device')
       ) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
@@ -1376,10 +1381,7 @@ export function cancelTx(
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'rejectPendingApproval',
-        [
-          String(txMeta.id),
-          ethErrors.provider.userRejectedRequest().serialize(),
-        ],
+        [String(txMeta.id), providerErrors.userRejectedRequest().serialize()],
         (error) => {
           if (error) {
             reject(error);
@@ -1425,10 +1427,7 @@ export function cancelTxs(
           new Promise<void>((resolve, reject) => {
             callBackgroundMethod(
               'rejectPendingApproval',
-              [
-                String(id),
-                ethErrors.provider.userRejectedRequest().serialize(),
-              ],
+              [String(id), providerErrors.userRejectedRequest().serialize()],
               (err) => {
                 if (err) {
                   reject(err);
@@ -1664,7 +1663,7 @@ export function lockMetamask(): ThunkAction<
     return backgroundSetLocked()
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
-        dispatch(displayWarning(error.message));
+        dispatch(displayWarning(getErrorMessage(error)));
         return Promise.reject(error);
       })
       .then(() => {
@@ -2057,15 +2056,17 @@ export function addNftVerifyOwnership(
         tokenID,
       ]);
     } catch (error) {
-      if (
-        isErrorWithMessage(error) &&
-        (error.message.includes('This NFT is not owned by the user') ||
-          error.message.includes('Unable to verify ownership'))
-      ) {
-        throw error;
-      } else {
-        logErrorWithMessage(error);
-        dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        const message = getErrorMessage(error);
+        if (
+          message.includes('This NFT is not owned by the user') ||
+          message.includes('Unable to verify ownership')
+        ) {
+          throw error;
+        } else {
+          logErrorWithMessage(error);
+          dispatch(displayWarning(error));
+        }
       }
     } finally {
       await forceUpdateMetamaskState(dispatch);
@@ -2808,7 +2809,8 @@ export function displayWarning(payload: unknown): PayloadAction<string> {
   if (isErrorWithMessage(payload)) {
     return {
       type: actionConstants.DISPLAY_WARNING,
-      payload: payload.message,
+      payload:
+        (payload as DataWithOptionalCause)?.cause?.message || payload.message,
     };
   } else if (typeof payload === 'string') {
     return {
@@ -3000,6 +3002,7 @@ export function setFeatureFlag(
 export function setPreference(
   preference: string,
   value: boolean | string | object,
+  showLoading: boolan = true,
 ): ThunkAction<
   Promise<TemporaryPreferenceFlagDef>,
   MetaMaskReduxState,
@@ -3007,13 +3010,13 @@ export function setPreference(
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
+    showLoading && dispatch(showLoadingIndication());
     return new Promise<TemporaryPreferenceFlagDef>((resolve, reject) => {
       callBackgroundMethod<TemporaryPreferenceFlagDef>(
         'setPreference',
         [preference, value],
         (err, updatedPreferences) => {
-          dispatch(hideLoadingIndication());
+          showLoading && dispatch(hideLoadingIndication());
           if (err) {
             dispatch(displayWarning(err));
             reject(err);
@@ -3035,10 +3038,8 @@ export function setDefaultHomeActiveTabName(
   };
 }
 
-export function setUseNativeCurrencyAsPrimaryCurrencyPreference(
-  value: boolean,
-) {
-  return setPreference('useNativeCurrencyAsPrimaryCurrency', value);
+export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
+  return setPreference('showNativeTokenAsMainBalance', value);
 }
 
 export function setHideZeroBalanceTokens(value: boolean) {
@@ -3047,6 +3048,14 @@ export function setHideZeroBalanceTokens(value: boolean) {
 
 export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
   return setPreference('showFiatInTestnets', value);
+}
+
+/**
+ * Sets shouldShowAggregatedBalancePopover to false once the user toggles
+ * the setting to show native token as main balance.
+ */
+export function setAggregatedBalancePopoverShown() {
+  return setPreference('shouldShowAggregatedBalancePopover', false);
 }
 
 export function setShowTestNetworks(value: boolean) {
@@ -3077,13 +3086,16 @@ export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
   return setPreference('isRedesignedConfirmationsDeveloperEnabled', value);
 }
 
-export function setSmartTransactionsOptInStatus(
+export function setTokenSortConfig(value: SortCriteria) {
+  return setPreference('tokenSortConfig', value, false);
+}
+
+export function setSmartTransactionsPreferenceEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
-    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(
-      getState(),
-    );
+    const smartTransactionsOptInStatus =
+      getSmartTransactionsOptInStatusInternal(getState());
     trackMetaMetricsEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
@@ -3664,6 +3676,7 @@ export function fetchAndSetQuotes(
     fromAddress: string;
     balanceError: string;
     sourceDecimals: number;
+    enableGasIncludedQuotes: boolean;
   },
   fetchParamsMetaData: {
     sourceTokenInfo: Token;
@@ -4006,7 +4019,7 @@ export function resolvePendingApproval(
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
     const { pendingApprovals } = await forceUpdateMetamaskState(_dispatch);
     if (Object.values(pendingApprovals).length === 0) {
       _dispatch(closeCurrentNotificationWindow());
@@ -4047,7 +4060,7 @@ export function rejectAllMessages(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const userRejectionError = serializeError(
-      ethErrors.provider.userRejectedRequest(),
+      providerErrors.userRejectedRequest(),
     );
     await Promise.all(
       messageList.map(
@@ -4247,6 +4260,12 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 export function setNewPrivacyPolicyToastClickedOrClosed() {
   return async () => {
     await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
+export function setLastViewedUserSurvey(id: number) {
+  return async () => {
+    await submitRequestToBackground('setLastViewedUserSurvey', [id]);
   };
 }
 
@@ -4467,6 +4486,14 @@ export function captureSingleException(
 
 export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
+}
+
+export function estimateGasFee(request: {
+  transactionParams: TransactionParams;
+  chainId?: Hex;
+  networkClientId?: NetworkClientId;
+}): Promise<{ estimates: GasFeeEstimates }> {
+  return submitRequestToBackground('estimateGasFee', [request]);
 }
 
 export async function updateTokenType(
@@ -4757,18 +4784,15 @@ export function signAndSendSmartTransaction({
       unsignedTransaction,
       smartTransactionFees.fees,
     );
-    const signedCanceledTransactions = await createSignedTransactions(
-      unsignedTransaction,
-      smartTransactionFees.cancelFees,
-      true,
-    );
     try {
       const response = await submitRequestToBackground<{ uuid: string }>(
         'submitSignedTransactions',
         [
           {
             signedTransactions,
-            signedCanceledTransactions,
+            // The "signedCanceledTransactions" parameter is still expected by the STX controller but is no longer used.
+            // So we are passing an empty array. The parameter may be deprecated in a future update.
+            signedCanceledTransactions: [],
             txParams: unsignedTransaction,
           },
         ],
@@ -5443,6 +5467,34 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
     try {
       const response = await submitRequestToBackground(
         'syncInternalAccountsWithUserStorage',
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Delete all of current user's accounts data from user storage.
+ *
+ * This function sends a request to the background script to sync accounts data and update the state accordingly.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to synchronize accounts data with user storage between devices.
+ */
+export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'deleteAccountSyncingDataFromUserStorage',
+        ['accounts'],
       );
       return response;
     } catch (error) {

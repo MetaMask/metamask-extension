@@ -41,21 +41,26 @@ type PermitSimulationValueDisplayParams = {
   tokenContract: Hex | string;
 
   /** The token amount */
-  value: number | string;
+  value?: number | string;
+
+  /** The tokenId for NFT */
+  tokenId?: string;
 };
 
 const PermitSimulationValueDisplay: React.FC<
   PermitSimulationValueDisplayParams
-> = ({ primaryType, tokenContract, value }) => {
+> = ({ primaryType, tokenContract, value, tokenId }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
-  const { value: tokenDecimals } = useAsyncResult(
-    async () => await fetchErc20Decimals(tokenContract),
-    [tokenContract],
-  );
+  const { value: tokenDecimals } = useAsyncResult(async () => {
+    if (tokenId) {
+      return undefined;
+    }
+    return await fetchErc20Decimals(tokenContract);
+  }, [tokenContract]);
 
   const fiatValue = useMemo(() => {
-    if (exchangeRate && value) {
+    if (exchangeRate && value && !tokenId) {
       const tokenAmount = calcTokenAmount(value, tokenDecimals);
       return exchangeRate.times(tokenAmount).toNumber();
     }
@@ -63,7 +68,7 @@ const PermitSimulationValueDisplay: React.FC<
   }, [exchangeRate, tokenDecimals, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    if (!value) {
+    if (!value || tokenId) {
       return { tokenValue: null, tokenValueMaxPrecision: null };
     }
 
@@ -107,16 +112,22 @@ const PermitSimulationValueDisplay: React.FC<
               style={{ paddingTop: '1px', paddingBottom: '1px' }}
               textAlign={TextAlign.Center}
             >
-              {shortenString(tokenValue || '', {
-                truncatedCharLimit: 15,
-                truncatedStartChars: 15,
-                truncatedEndChars: 0,
-                skipCharacterInEnd: true,
-              })}
+              {tokenValue !== null &&
+                shortenString(tokenValue || '', {
+                  truncatedCharLimit: 15,
+                  truncatedStartChars: 15,
+                  truncatedEndChars: 0,
+                  skipCharacterInEnd: true,
+                })}
+              {tokenId && `#${tokenId}`}
             </Text>
           </Tooltip>
         </Box>
-        <Name value={tokenContract} type={NameType.ETHEREUM_ADDRESS} />
+        <Name
+          value={tokenContract}
+          type={NameType.ETHEREUM_ADDRESS}
+          preferContractSymbol
+        />
       </Box>
       <Box>
         {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} shorten />}

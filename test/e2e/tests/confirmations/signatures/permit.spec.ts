@@ -94,11 +94,10 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement('#signPermitResult');
-        assert.equal(
-          await rejectionResult.getText(),
-          'Error: User rejected the request.',
-        );
+        await driver.waitForSelector({
+          tag: 'span',
+          text: 'Error: User rejected the request.',
+        });
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -146,31 +145,32 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signPermitVerify');
 
-  const verifyResult = await driver.findElement('#signPermitResult');
-  const verifyResultR = await driver.findElement('#signPermitResultR');
-  const verifyResultS = await driver.findElement('#signPermitResultS');
-  const verifyResultV = await driver.findElement('#signPermitResultV');
-
   await driver.waitForSelector({
     css: '#signPermitVerifyResult',
     text: publicAddress,
   });
-  const verifyRecoverAddress = await driver.findElement(
-    '#signPermitVerifyResult',
-  );
 
-  assert.equal(
-    await verifyResult.getText(),
-    '0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee1c',
-  );
-  assert.equal(
-    await verifyResultR.getText(),
-    'r: 0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f',
-  );
-  assert.equal(
-    await verifyResultS.getText(),
-    's: 0x43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee',
-  );
-  assert.equal(await verifyResultV.getText(), 'v: 28');
-  assert.equal(await verifyRecoverAddress.getText(), publicAddress);
+  await driver.waitForSelector({
+    css: '#signPermitResult',
+    text: '0xf6555e4cc39bdec3397c357af876f87de00667c942f22dec555c28d290ed7d730103fe85c9d7c66d808a0a972f69ae00741a11df449475280772e7d9a232ea491b',
+  });
+
+  await driver.waitForSelector({
+    css: '#signPermitResultR',
+    text: 'r: 0xf6555e4cc39bdec3397c357af876f87de00667c942f22dec555c28d290ed7d73',
+  });
+
+  await driver.waitForSelector({
+    css: '#signPermitResultS',
+    text: 's: 0x0103fe85c9d7c66d808a0a972f69ae00741a11df449475280772e7d9a232ea49',
+  });
+
+  await driver.waitForSelector({
+    css: '#signPermitResultV',
+    text: 'v: 27',
+  });
+  await driver.waitForSelector({
+    css: '#signPermitVerifyResult',
+    text: publicAddress,
+  });
 }

@@ -22,6 +22,8 @@ setBackgroundConnection({
   getNetworkConfigurationByNetworkClientId: jest
     .fn()
     .mockResolvedValue({ chainId: '0x1' }),
+  setBridgeFeatureFlags: jest.fn(),
+  selectSrcNetwork: jest.fn(),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
 
@@ -62,8 +64,6 @@ describe('Bridge', () => {
 
   it('renders the component with initial props', async () => {
     const swapsMockStore = createBridgeMockStore({ extensionSupport: true });
-    swapsMockStore.metamask.swapsState.swapsFeatureFlags.swapRedesign.extensionActive =
-      true;
     const store = configureMockStore(middleware)(swapsMockStore);
 
     const { container, getByText } = renderWithProvider(

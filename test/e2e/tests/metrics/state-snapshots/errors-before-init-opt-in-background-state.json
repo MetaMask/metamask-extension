@@ -50,6 +50,23 @@
       },
       "snapsInstallPrivacyWarningShown": true
     },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          },
+          "destNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          }
+        }
+      }
+    },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -80,11 +97,11 @@
     },
     "NetworkController": {
       "selectedNetworkClientId": "string",
+      "networkConfigurations": "object",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
       },
-      "providerConfig": "object",
-      "networkConfigurations": "object"
+      "providerConfig": "object"
     },
     "OnboardingController": {
       "completedOnboarding": true,
@@ -112,11 +129,13 @@
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
-        "useNativeCurrencyAsPrimaryCurrency": true,
+        "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-        "showMultiRpcModal": "boolean"
+        "showConfirmationAdvancedDetails": false,
+        "tokenSortConfig": "object",
+        "showMultiRpcModal": "boolean",
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -127,14 +146,18 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": true
+      "useRequestQueue": true,
+      "isMultiAccountBalancesEnabled": "boolean",
+      "showIncomingTransactions": "object"
     },
     "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
         "fees": {},
+        "feesByChainId": "object",
         "liveness": true,
+        "livenessByChainId": "object",
         "smartTransactions": "object"
       }
     },
@@ -152,7 +175,11 @@
             "1": "string",
             "2": "string"
           }
-        }
+        },
+        "destTokens": {},
+        "destTopAssets": {},
+        "srcTokens": {},
+        "srcTopAssets": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },
