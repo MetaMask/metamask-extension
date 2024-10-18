@@ -42,23 +42,6 @@
   "addContact": {
     "message": "Magdagdag ng contact"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Bibigyang-daan nito na magamit ang network na ito sa MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "Hindi vine-verify ng MetaMask ang mga custom na network."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Matuto tungkol sa $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "mga scam at panganib sa seguridad ng network",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Payagan ang site na ito na magdagdag ng network?"
-  },
   "addFriendsAndAddresses": {
     "message": "Magdagdag ng mga kaibigan at address na pinagkakatiwalaan mo"
   },
@@ -1593,9 +1576,6 @@
   },
   "userName": {
     "message": "Username"
-  },
-  "viewAllDetails": {
-    "message": "Tingnan ang lahat ng detalye"
   },
   "viewContact": {
     "message": "Tingnan ang Contact"
