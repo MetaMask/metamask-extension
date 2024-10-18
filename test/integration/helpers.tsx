@@ -1,8 +1,5 @@
 import nock from 'nock';
 
-const INFURA_API_KEY = 'INFURA_KEY';
-const ADDRESS = 'ADDRESS';
-
 export const createMockImplementation = <T,>(requests: Record<string, T>) => {
   return (method: string): Promise<T | undefined> => {
     if (method in requests) {
