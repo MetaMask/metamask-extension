@@ -68,6 +68,8 @@ export async function addDappTransaction(
   const { id: actionId, method, origin } = dappRequest;
   const { securityAlertResponse, traceContext } = dappRequest;
 
+  console.log('addDappTransaction', {request})
+
   const transactionOptions: AddTransactionOptions = {
     actionId,
     method,
@@ -145,6 +147,7 @@ async function addTransactionWithController(
     transactionParams,
     networkClientId,
   } = request;
+  console.log('tx addTransaction', {request})
   const { result, transactionMeta } =
     await transactionController.addTransaction(transactionParams, {
       ...transactionOptions,
