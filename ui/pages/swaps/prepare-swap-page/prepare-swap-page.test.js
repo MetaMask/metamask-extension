@@ -167,7 +167,7 @@ describe('PrepareSwapPage', () => {
       },
     });
     const props = createProps();
-    const { getByText, getAllByText } = renderWithProvider(
+    const { getAllByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
       store,
     );
