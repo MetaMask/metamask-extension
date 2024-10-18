@@ -8,7 +8,7 @@ const defaultOptions = {
   port: 8545,
   vmErrorsOnRPCResponse: false,
   hardfork: 'muirGlacier',
-  verbose: true,
+  quiet: true,
 };
 
 export class Ganache {
@@ -34,7 +34,7 @@ export class Ganache {
     });
   }
 
-  async getAddressBalance(address: string) {
+  async getBalance(address: string) {
     const provider = await this.getProvider();
     if (!provider) {
       throw new Error('No provider found');
@@ -51,18 +51,18 @@ export class Ganache {
     return Number(balanceFormatted);
   }
 
-  async getBalance(accountIndex: number = 0): Promise<number> {
+  async getBalanceByAccountIndex(accountIndex: number = 0): Promise<number> {
     const accounts = await this.getAccounts();
 
     if (!accounts?.[accountIndex]) {
       throw new Error('Account not found');
     }
 
-    return this.getAddressBalance(accounts?.[accountIndex]);
+    return this.getBalance(accounts?.[accountIndex]);
   }
 
   async getFiatBalance(): Promise<number> {
-    const balance = await this.getBalance();
+    const balance = await this.getBalanceByAccountIndex();
     const currencyConversionRate = 1700.0;
     const fiatBalance = (balance * currencyConversionRate).toFixed(2);
 

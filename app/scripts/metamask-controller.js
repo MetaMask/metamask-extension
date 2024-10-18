@@ -4641,7 +4641,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async connectHardware(deviceName, page, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
-    console.log('============> keyring', keyring);
 
     if (deviceName === HardwareDeviceNames.ledger) {
       await this.setLedgerTransportPreference(keyring);
@@ -4662,7 +4661,6 @@ export default class MetamaskController extends EventEmitter {
     // Merge with existing accounts
     // and make sure addresses are not repeated
     const oldAccounts = await this.keyringController.getAccounts();
-    console.log('================> accounts', accounts);
 
     const accountsToTrack = [
       ...new Set(
