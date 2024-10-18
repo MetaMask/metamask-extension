@@ -48,6 +48,9 @@ module.exports = {
     config.resolve.alias['../../../../../../store/actions'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
+    config.resolve.alias['../../../store/actions'] = require.resolve(
+      '../ui/__mocks__/actions.js',
+    );
     // Import within controller-utils crashes storybook.
     config.resolve.alias['@ethereumjs/util'] = require.resolve(
       '../ui/__mocks__/ethereumjs-util.js',
