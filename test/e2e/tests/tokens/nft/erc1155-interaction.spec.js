@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { mockNetworkStateOld } = require('../../../../stub/networks');
 const {
   withFixtures,
   DAPP_URL,
@@ -19,6 +20,15 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withNetworkController(
+            mockNetworkStateOld({
+              chainId: '0x539',
+              nickname: 'Localhost 8545',
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+              blockExplorerUrl: 'https://etherscan.io/',
+            }),
+          )
           .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
@@ -59,6 +69,36 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
+        await driver.clickElement('[data-testid="activity-list-item-action"]');
+        await driver.clickElement({
+          text: 'View on block explorer',
+          tag: 'a',
+        });
+
+        // Switch to block explorer
+        await driver.switchToWindowWithTitle('E2E Test Page');
+        await driver.findElement('[data-testid="empty-page-body"]');
+        // Verify block explorer
+        await driver.waitForUrl({
+          url: 'https://etherscan.io/tx/0xfe4428397f7913875783c5c0dad182937b596148295bc33c7f08d74fdee8897f',
+        });
+
+        // switch to Dapp
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await driver.fill('#watchAssetInput', '1');
+        await driver.clickElement('#watchAssetButton');
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="page-container-footer-next"]',
+        );
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        await driver.clickElementSafe('[data-testid="popover-close"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
+        await driver.clickElement('[data-testid="nft-item"]');
       },
     );
   });
