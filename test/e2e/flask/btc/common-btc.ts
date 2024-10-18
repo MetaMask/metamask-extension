@@ -174,6 +174,19 @@ export async function mockRampsDynamicFeatureFlag(
     }));
 }
 
+export async function getQuickNodeSeenRequests(mockServer: Mockttp) {
+  const seenRequests = await Promise.all(
+    (
+      await mockServer.getMockedEndpoints()
+    ).map((mockedEndpoint) => mockedEndpoint.getSeenRequests()),
+  );
+  return await Promise.all(
+    seenRequests
+      .flat()
+      .filter((request) => request.url.match(QUICKNODE_URL_REGEX)),
+  );
+}
+
 export async function withBtcAccountSnap(
   {
     title,
@@ -191,16 +204,19 @@ export async function withBtcAccountSnap(
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [
+        // Multichain rates:
         await mockRatesCall(mockServer),
-        await mockBtcBalanceQuote(mockServer),
-        // See: PROD_RAMP_API_BASE_URL
-        await mockRampsDynamicFeatureFlag(mockServer, 'api'),
-        // See: UAT_RAMP_API_BASE_URL
-        await mockRampsDynamicFeatureFlag(mockServer, 'uat-api'),
+        // Bitcoin RPC provider:
         await mockMempoolInfo(mockServer),
         await mockBtcFeeCallQuote(mockServer),
         await mockGetUTXO(mockServer),
         await mockSendTransaction(mockServer),
+        await mockBtcBalanceQuote(mockServer),
+        // Ramps:
+        // See: PROD_RAMP_API_BASE_URL
+        await mockRampsDynamicFeatureFlag(mockServer, 'api'),
+        // See: UAT_RAMP_API_BASE_URL
+        await mockRampsDynamicFeatureFlag(mockServer, 'uat-api'),
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
