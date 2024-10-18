@@ -24,8 +24,8 @@ REPO_NAME=$(basename "$CIRCLE_REPOSITORY_URL" .git)
 echo "Fetching details for PR #$PR_NUMBER in repository $REPO_OWNER/$REPO_NAME."
 
 # Fetch PR details using GitHub API
-PR_DETAILS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-  "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER")
+PR_DETAILS="$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+  "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER")"
 
 # Validate that PR_DETAILS is not empty
 if [ -z "$PR_DETAILS" ]; then
@@ -33,18 +33,35 @@ if [ -z "$PR_DETAILS" ]; then
   exit 1
 fi
 
+# Debugging: Check PR_DETAILS integrity
+echo "Length of PR_DETAILS: ${#PR_DETAILS}"
+last_char=$(echo "$PR_DETAILS" | tail -c1)
+echo "Last character of PR_DETAILS: '$last_char'"
+
 # Check jq version
 echo "JQ version: $(jq --version)"
 
-# Validate JSON format
+# Validate JSON format by piping PR_DETAILS into jq empty
 echo "$PR_DETAILS" | jq empty
 echo "JSON is valid."
 
-# Check for label using jq with --arg and any
-LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "$LABEL_NAME" 'any(.labels[]; .name == $label)')
+# Check for label using jq with --arg and any, handling missing or empty labels
+LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "$LABEL_NAME" '
+  if .labels then
+    any(.labels[]; .name == $label)
+  else
+    false
+  end
+')
 
-# Check for reviewer team using jq with --arg and any
-REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" 'any(.requested_reviewers[]; .login == $team)')
+# Check for reviewer team using jq with --arg and any, handling missing or empty requested_reviewers
+REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" '
+  if .requested_reviewers then
+    any(.requested_reviewers[]; .login == $team)
+  else
+    false
+  end
+')
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Exists: $REVIEWER_EXISTS"
