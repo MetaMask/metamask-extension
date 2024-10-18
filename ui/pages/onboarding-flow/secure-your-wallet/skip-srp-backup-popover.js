@@ -11,6 +11,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  Checkbox,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -20,7 +21,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import Checkbox from '../../../components/ui/check-box';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,

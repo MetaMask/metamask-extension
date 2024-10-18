@@ -7,8 +7,10 @@ import { Carousel } from 'react-responsive-carousel';
 ///: END:ONLY_INCLUDE_IF
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
-import { Text } from '../../../components/component-library';
-import CheckBox from '../../../components/ui/check-box';
+import {
+  Text,
+  Checkbox as CheckBox,
+} from '../../../components/component-library';
 import Box from '../../../components/ui/box';
 import {
   TextVariant,
