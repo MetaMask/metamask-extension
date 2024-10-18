@@ -43,13 +43,30 @@ exports[`SearchableItemList renders the component with initial props 2`] = `
   tabindex="0"
 >
   <div
-    class=""
+    class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
   >
-    <img
-      alt="primaryLabel"
-      class="url-icon"
-      src="iconUrl"
-    />
+    <div
+      class=""
+    >
+      <img
+        alt="primaryLabel"
+        class="url-icon"
+        src="iconUrl"
+      />
+    </div>
+    <div
+      class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <img
+          alt="Ethereum Mainnet logo"
+          class="mm-avatar-network__network-image"
+          src="./images/eth_logo.svg"
+        />
+      </div>
+    </div>
   </div>
   <div
     class="searchable-item-list__labels"

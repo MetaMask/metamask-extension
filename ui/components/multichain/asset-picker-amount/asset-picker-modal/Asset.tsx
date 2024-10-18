@@ -7,6 +7,7 @@ import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
 import { AssetWithDisplayData, ERC20Asset } from './types';
 
 type AssetProps = AssetWithDisplayData<ERC20Asset> & {
@@ -21,6 +22,7 @@ export default function Asset({
   tooltipText,
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
+  const chainId = useSelector(getMultichainCurrentChainId);
 
   const tokenList = useSelector(getTokenList);
   const tokenData = address
@@ -56,6 +58,7 @@ export default function Asset({
       title={title}
       tooltipText={tooltipText}
       isPrimaryTokenSymbolHidden
+      chainId={chainId}
     />
   );
 }
