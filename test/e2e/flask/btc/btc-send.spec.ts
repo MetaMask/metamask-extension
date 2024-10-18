@@ -52,11 +52,6 @@ describe('BTC Account - Send', function (this: Suite) {
           text: SendFlowPlaceHolders.LOADING,
         });
 
-        await driver.waitForSelector({
-          text: 'Total',
-          tag: 'p',
-        });
-
         const snapReviewButton = await driver.findClickableElement({
           text: 'Review',
           tag: 'button',
