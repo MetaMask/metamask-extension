@@ -1797,6 +1797,9 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
+  "editInPortfolio": {
+    "message": "Edit in Portfolio"
+  },
   "editNetworkLink": {
     "message": "edit the original network"
   },
@@ -5325,6 +5328,12 @@
   },
   "spendingCapTooltipDesc": {
     "message": "This is the amount of tokens the spender will be able to access on your behalf."
+  },
+  "spendingCaps": {
+    "message": "Spending caps"
+  },
+  "spendingCapsUppercase": {
+    "message": "Spending Caps"
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
