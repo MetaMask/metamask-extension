@@ -96,7 +96,7 @@ aliases:
         echo "Running MMI Optional tests"
       else
         echo "Skipping MMI Optional tests"
-        exit 0
+        circleci step halt
       fi
 
 workflows:
