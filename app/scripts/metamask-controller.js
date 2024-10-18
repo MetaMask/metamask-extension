@@ -976,6 +976,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: multichainRatesControllerMessenger,
       includeUsdRate: true,
       fetchMultiExchangeRate,
+      interval: process.env.IN_TEST ? 1000 : undefined,
     });
 
     const tokenRatesMessenger = this.controllerMessenger.getRestricted({

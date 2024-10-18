@@ -1,17 +1,31 @@
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, unlockWallet } from '../../helpers';
-import { DEFAULT_BTC_ACCOUNT, DEFAULT_BTC_BALANCE } from '../../constants';
+import {
+  DEFAULT_BTC_ACCOUNT,
+  DEFAULT_BTC_BALANCE,
+  DEFAULT_BTC_FEES_RATE,
+  DEFAULT_BTC_TRANSACTION_ID,
+  DEFAULT_BTC_CONVERSION_RATE,
+  SATS_IN_1_BTC,
+} from '../../constants';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { Driver } from '../../webdriver/driver';
 import { createBtcAccount } from '../../accounts/common';
+
+export const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
+
+export function btcToSats(btc: number): number {
+  // Watchout, we're not using BigNumber(s) here (but that's ok for test purposes)
+  return btc * SATS_IN_1_BTC;
+}
 
 export async function mockBtcBalanceQuote(
   mockServer: Mockttp,
   address: string = DEFAULT_BTC_ACCOUNT,
 ) {
   return await mockServer
-    .forPost(/^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u)
+    .forPost(QUICKNODE_URL_REGEX)
     .withJsonBodyIncluding({
       method: 'bb_getaddress',
     })
@@ -21,7 +35,7 @@ export async function mockBtcBalanceQuote(
         json: {
           result: {
             address,
-            balance: (DEFAULT_BTC_BALANCE * 1e8).toString(), // Converts from BTC to sats
+            balance: btcToSats(DEFAULT_BTC_BALANCE).toString(), // Converts from BTC to sats
             totalReceived: '0',
             totalSent: '0',
             unconfirmedBalance: '0',
@@ -29,6 +43,105 @@ export async function mockBtcBalanceQuote(
             txs: 0,
           },
         },
+      };
+    });
+}
+
+export async function mockBtcFeeCallQuote(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(QUICKNODE_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'estimatesmartfee',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result: {
+            blocks: 1,
+            feerate: DEFAULT_BTC_FEES_RATE, // sats
+          },
+        },
+      };
+    });
+}
+
+export async function mockMempoolInfo(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(QUICKNODE_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getmempoolinfo',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result: {
+            loaded: true,
+            size: 165194,
+            bytes: 93042828,
+            usage: 550175264,
+            total_fee: 1.60127931,
+            maxmempool: 2048000000,
+            mempoolminfee: DEFAULT_BTC_FEES_RATE,
+            minrelaytxfee: DEFAULT_BTC_FEES_RATE,
+            incrementalrelayfee: 0.00001,
+            unbroadcastcount: 0,
+            fullrbf: true,
+          },
+        },
+      };
+    });
+}
+
+export async function mockGetUTXO(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(QUICKNODE_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'bb_getutxos',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result: [
+            {
+              txid: 'e4111a707317da67d49a71af4cbcf6c0546f900ca32c3842d2254e315d1fca18',
+              vout: 0,
+              value: btcToSats(DEFAULT_BTC_BALANCE).toString(),
+              height: 101100110,
+              confirmations: 6,
+            },
+          ],
+        },
+      };
+    });
+}
+
+export async function mockSendTransaction(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(QUICKNODE_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'sendrawtransaction',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result: DEFAULT_BTC_TRANSACTION_ID,
+        },
+      };
+    });
+}
+
+export async function mockRatesCall(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+    .withQuery({ fsyms: 'btc', tsyms: 'usd,USD' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { BTC: { USD: DEFAULT_BTC_CONVERSION_RATE } },
       };
     });
 }
@@ -66,7 +179,7 @@ export async function withBtcAccountSnap(
     title,
     bitcoinSupportEnabled,
   }: { title?: string; bitcoinSupportEnabled?: boolean },
-  test: (driver: Driver) => Promise<void>,
+  test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
   await withFixtures(
     {
@@ -78,17 +191,22 @@ export async function withBtcAccountSnap(
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [
+        await mockRatesCall(mockServer),
         await mockBtcBalanceQuote(mockServer),
         // See: PROD_RAMP_API_BASE_URL
         await mockRampsDynamicFeatureFlag(mockServer, 'api'),
         // See: UAT_RAMP_API_BASE_URL
         await mockRampsDynamicFeatureFlag(mockServer, 'uat-api'),
+        await mockMempoolInfo(mockServer),
+        await mockBtcFeeCallQuote(mockServer),
+        await mockGetUTXO(mockServer),
+        await mockSendTransaction(mockServer),
       ],
     },
-    async ({ driver }: { driver: Driver }) => {
+    async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await unlockWallet(driver);
       await createBtcAccount(driver);
-      await test(driver);
+      await test(driver, mockServer);
     },
   );
 }
