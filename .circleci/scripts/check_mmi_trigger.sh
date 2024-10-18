@@ -6,7 +6,7 @@ LABEL_NAME="$1"
 REVIEWER_TEAM="$2"
 
 # Enable debugging (optional; uncomment for debugging)
-et -x
+set -x
 
 # Ensure required environment variables are set
 if [ -z "$CIRCLE_PULL_REQUEST" ] || [ -z "$GITHUB_TOKEN" ]; then
@@ -35,7 +35,7 @@ fi
 
 # Debugging: Check PR_DETAILS integrity
 echo "Length of PR_DETAILS: ${#PR_DETAILS}"
-last_char=$(echo "$PR_DETAILS" | tail -c1)
+last_char=$(echo "$PR_DETAILSs" | tail -c1)
 echo "Last character of PR_DETAILS: '$last_char'"
 
 # Check jq version
