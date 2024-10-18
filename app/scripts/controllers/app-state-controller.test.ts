@@ -1,9 +1,4 @@
-import {
-  AcceptRequest,
-  AddApprovalRequest,
-} from '@metamask/approval-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import { Browser } from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -18,10 +13,7 @@ import type {
   AppStateControllerEvents,
   AppStateControllerState,
 } from './app-state-controller';
-import {
-  PreferencesControllerState,
-  PreferencesControllerStateChangeEvent,
-} from './preferences-controller';
+import { PreferencesControllerState } from './preferences-controller';
 
 jest.mock('webextension-polyfill');
 
@@ -34,14 +26,8 @@ jest.mock('../../../shared/modules/mv3.utils', () => ({
 
 let appStateController: AppStateController;
 let controllerMessenger: ControllerMessenger<
-  | AppStateControllerActions
-  | AllowedActions
-  | AddApprovalRequest
-  | AcceptRequest,
-  | AppStateControllerEvents
-  | AllowedEvents
-  | PreferencesControllerStateChangeEvent
-  | KeyringControllerQRKeyringStateChangeEvent
+  AppStateControllerActions | AllowedActions,
+  AppStateControllerEvents | AllowedEvents
 >;
 
 const extensionMock = {
