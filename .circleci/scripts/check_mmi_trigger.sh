@@ -33,22 +33,24 @@ if [ -z "$PR_DETAILS" ]; then
   exit 1
 fi
 
-# Debugging: Uncomment the following line to see the fetched PR details
-echo "LABEL_NAME: $LABEL_NAME"
-echo "REVIEWER_TEAM: $REVIEWER_TEAM"
-echo "PR Details: $PR_DETAILS"
+# Check jq version
+echo "JQ version: $(jq --version)"
 
-# Check for label using jq with --arg on a single line
-LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "$LABEL_NAME" '[.labels[].name] | index($label)')
+# Validate JSON format
+echo "$PR_DETAILS" | jq empty
+echo "JSON is valid."
 
-# Check for reviewer team using jq with --arg on a single line
-REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" '[.requested_reviewers[].login] | index($team)')
+# Check for label using jq with --arg and any
+LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "$LABEL_NAME" 'any(.labels[]; .name == $label)')
+
+# Check for reviewer team using jq with --arg and any
+REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" 'any(.requested_reviewers[]; .login == $team)')
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Exists: $REVIEWER_EXISTS"
 
 # Determine if tests should run
-if [[ "$LABEL_EXISTS" != "null" ]] || [[ "$REVIEWER_EXISTS" != "null" ]]; then
+if [[ "$LABEL_EXISTS" == "true" ]] || [[ "$REVIEWER_EXISTS" == "true" ]]; then
   echo "run_mmi_tests=true" > mmi_trigger.env
   echo "Conditions met: Label '$LABEL_NAME' found or Reviewer '$REVIEWER_TEAM' assigned."
 else
