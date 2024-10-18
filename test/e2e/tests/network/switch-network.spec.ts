@@ -28,6 +28,9 @@ describe('Switch network - ', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetwork = new SelectNetwork(driver);
 
+        //Validate the default network is Localhost 8545
+        await headerNavbar.check_networkNameSwitchDropDown('Localhost 8545');
+
         // Validate the switch network functionality to default Ethereum Mainnet
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.clickNetworkName('Ethereum Mainnet');
@@ -37,7 +40,6 @@ describe('Switch network - ', function (this: Suite) {
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.clickToggleButton();
         await selectNetwork.clickNetworkName('Sepolia');
-        // Validate the transaction made in Ethereum network is not displayed in Sepolia network
         await homePage.check_expectedBalanceIsDisplayed('25 Sepolia');
         await headerNavbar.check_networkNameSwitchDropDown('Sepolia');
       },
