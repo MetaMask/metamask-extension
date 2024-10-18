@@ -18,7 +18,7 @@ import {
   setToToken,
   setFromChain,
   resetInputFields,
-  switchToAndFromTokens,
+  switchToAndFromInputs,
 } from './actions';
 
 const middleware = [thunk];
@@ -61,11 +61,23 @@ describe('Ducks - Bridge', () => {
     it('calls the "bridge/setFromToken" action', () => {
       const state = store.getState().bridge;
       const actionPayload = { symbol: 'SYMBOL', address: '0x13341432' };
-      store.dispatch(setFromToken(actionPayload));
+
+      const mockUpdateQuoteRequestParams = jest.fn();
+      setBackgroundConnection({
+        [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateQuoteRequestParams,
+      } as never);
+
+      store.dispatch(setFromToken(actionPayload as never) as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setFromToken');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.fromToken).toStrictEqual(actionPayload);
+
+      expect(mockUpdateQuoteRequestParams).toHaveBeenCalledTimes(1);
+      expect(mockUpdateQuoteRequestParams).toHaveBeenCalledWith(
+        { srcTokenAddress: '0x13341432' },
+        expect.anything(),
+      );
     });
   });
 
@@ -73,23 +85,47 @@ describe('Ducks - Bridge', () => {
     it('calls the "bridge/setToToken" action', () => {
       const state = store.getState().bridge;
       const actionPayload = { symbol: 'SYMBOL', address: '0x13341431' };
-      store.dispatch(setToToken(actionPayload));
+
+      const mockUpdateQuoteRequestParams = jest.fn();
+      setBackgroundConnection({
+        [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateQuoteRequestParams,
+      } as never);
+
+      store.dispatch(setToToken(actionPayload as never) as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setToToken');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.toToken).toStrictEqual(actionPayload);
+
+      expect(mockUpdateQuoteRequestParams).toHaveBeenCalledTimes(1);
+      expect(mockUpdateQuoteRequestParams).toHaveBeenCalledWith(
+        { destTokenAddress: '0x13341431' },
+        expect.anything(),
+      );
     });
   });
 
   describe('setFromTokenInputValue', () => {
     it('calls the "bridge/setFromTokenInputValue" action', () => {
       const state = store.getState().bridge;
-      const actionPayload = '10';
-      store.dispatch(setFromTokenInputValue(actionPayload));
+      const actionPayload = { amount: '10', decimals: 6 };
+
+      const mockUpdateQuoteRequestParams = jest.fn();
+      setBackgroundConnection({
+        [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateQuoteRequestParams,
+      } as never);
+
+      store.dispatch(setFromTokenInputValue(actionPayload as never) as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setFromTokenInputValue');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.fromTokenInputValue).toStrictEqual(actionPayload);
+      expect(newState.fromTokenInputValue).toStrictEqual(actionPayload.amount);
+
+      expect(mockUpdateQuoteRequestParams).toHaveBeenCalledTimes(1);
+      expect(mockUpdateQuoteRequestParams).toHaveBeenCalledWith(
+        { srcTokenAmount: '10000000' },
+        expect.anything(),
+      );
     });
   });
 
@@ -137,7 +173,7 @@ describe('Ducks - Bridge', () => {
     });
   });
 
-  describe('switchToAndFromTokens', () => {
+  describe('switchToAndFromInputs', () => {
     it('switches to and from input values', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bridgeStore = configureMockStore<any>(middleware)(
@@ -152,7 +188,7 @@ describe('Ducks - Bridge', () => {
         ),
       );
       const state = bridgeStore.getState().bridge;
-      bridgeStore.dispatch(switchToAndFromTokens(CHAIN_IDS.POLYGON));
+      bridgeStore.dispatch(switchToAndFromInputs(CHAIN_IDS.POLYGON));
       const actions = bridgeStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/switchToAndFromTokens');
       const newState = bridgeReducer(state, actions[0]);
