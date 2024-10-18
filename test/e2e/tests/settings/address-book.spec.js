@@ -70,6 +70,56 @@ describe('Address Book', function () {
       },
     );
   });
+
+  it('Adds a new contact to the address book', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await openMenuSafe(driver);
+
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+
+        await driver.clickElement('.address-book__link');
+
+        const inputUsername = await driver.findElement('#nickname');
+        await inputUsername.fill('Test User');
+
+        const inputAddress = await driver.findElement(
+          'input[placeholder="Enter public address (0x) or domain name"]',
+        );
+        await inputAddress.fill('0x56A355d3427bC2B1E22c78197AF091230919Cc2A');
+
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
+
+        const recipientUsername = await driver.findElement({
+          text: 'Test User',
+          css: '.address-list-item__label',
+        });
+
+        assert.equal(
+          await recipientUsername.getText(),
+          'Test User',
+          'Username is not added correctly',
+        );
+
+        const recipientAddress = await driver.findElement(
+          '[data-testid="address-list-item-address"]',
+        );
+        assert.equal(
+          await recipientAddress.getText(),
+          shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
+          'Recipient address is not added correctly',
+        );
+      },
+    );
+  });
+
   it('Edit entry in address book', async function () {
     await withFixtures(
       {
