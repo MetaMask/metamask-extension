@@ -3,6 +3,9 @@ import { Driver } from '../../webdriver/driver';
 class AccountListPage {
   private readonly driver: Driver;
 
+  private readonly accountListBalance =
+    '[data-testid="second-currency-display"]';
+
   private readonly accountListItem =
     '.multichain-account-menu-popover__list--menu-item';
 
@@ -154,6 +157,21 @@ class AccountListPage {
   async unpinAccount(): Promise<void> {
     console.log(`Unpin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
+  }
+
+  /**
+   * Checks that the account balance is displayed in the account list.
+   *
+   * @param expectedBalance - The expected balance to check.
+   */
+  async check_accountBalanceDisplayed(expectedBalance: string): Promise<void> {
+    console.log(
+      `Check that account balance ${expectedBalance} is displayed in account list`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountListBalance,
+      text: expectedBalance,
+    });
   }
 
   async check_accountDisplayedInAccountList(

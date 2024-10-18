@@ -7,6 +7,7 @@ import {
   setNoteToTraderMessage,
   setTypedMessageInProgress,
   setPersonalMessageInProgress,
+  logAndStoreApiRequest,
 } from './institution-background';
 
 jest.mock('../actions', () => ({
@@ -164,6 +165,77 @@ describe('Institution Actions', () => {
       expect(submitRequestToBackground).toHaveBeenCalledWith(
         'setNoteToTraderMessage',
         ['some message'],
+      );
+    });
+  });
+
+  describe('#logAndStoreApiRequest', () => {
+    it('should call submitRequestToBackground with correct parameters', async () => {
+      const mockLogData = {
+        id: '123',
+        method: 'GET',
+        request: {
+          url: 'https://api.example.com/data',
+          headers: { 'Content-Type': 'application/json' },
+        },
+        response: {
+          status: 200,
+          body: '{"success": true}',
+        },
+        timestamp: 1234567890,
+      };
+
+      await logAndStoreApiRequest(mockLogData);
+
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'logAndStoreApiRequest',
+        [mockLogData],
+      );
+    });
+
+    it('should return the result from submitRequestToBackground', async () => {
+      const mockLogData = {
+        id: '456',
+        method: 'POST',
+        request: {
+          url: 'https://api.example.com/submit',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{"data": "test"}',
+        },
+        response: {
+          status: 201,
+          body: '{"id": "789"}',
+        },
+        timestamp: 1234567890,
+      };
+
+      submitRequestToBackground.mockResolvedValue('success');
+
+      const result = await logAndStoreApiRequest(mockLogData);
+
+      expect(result).toBe('success');
+    });
+
+    it('should throw an error if submitRequestToBackground fails', async () => {
+      const mockLogData = {
+        id: '789',
+        method: 'GET',
+        request: {
+          url: 'https://api.example.com/error',
+          headers: { 'Content-Type': 'application/json' },
+        },
+        response: {
+          status: 500,
+          body: '{"error": "Internal Server Error"}',
+        },
+        timestamp: 1234567890,
+      };
+
+      const mockError = new Error('Background request failed');
+      submitRequestToBackground.mockRejectedValue(mockError);
+
+      await expect(logAndStoreApiRequest(mockLogData)).rejects.toThrow(
+        'Background request failed',
       );
     });
   });

@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<AdvancedDetails /> does not render component for advanced transaction details 1`] = `
+exports[`<AdvancedDetails /> does not render component when the state property is false 1`] = `<div />`;
+
+exports[`<AdvancedDetails /> renders component when the prop override is passed 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -23,7 +25,7 @@ exports[`<AdvancedDetails /> does not render component for advanced transaction 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-1"
+              aria-describedby="tippy-tooltip-2"
               class=""
               data-original-title="This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
               data-tooltipped=""
@@ -120,7 +122,7 @@ exports[`<AdvancedDetails /> does not render component for advanced transaction 
 </div>
 `;
 
-exports[`<AdvancedDetails /> renders component for advanced transaction details 1`] = `
+exports[`<AdvancedDetails /> renders component when the state property is true 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -143,7 +145,7 @@ exports[`<AdvancedDetails /> renders component for advanced transaction details 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-2"
+              aria-describedby="tippy-tooltip-1"
               class=""
               data-original-title="This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
               data-tooltipped=""
@@ -166,19 +168,8 @@ exports[`<AdvancedDetails /> renders component for advanced transaction details 
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          12
+          undefined
         </p>
-        <button
-          aria-label="Edit"
-          class="mm-box mm-button-icon mm-button-icon--size-sm edit-nonce-btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-          data-testid="edit-nonce-icon"
-          style="margin-left: -4px;"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/edit.svg');"
-          />
-        </button>
       </div>
     </div>
   </div>

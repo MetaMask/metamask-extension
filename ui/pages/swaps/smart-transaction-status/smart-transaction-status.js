@@ -20,13 +20,13 @@ import {
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import {
   DEFAULT_ROUTE,
-  BUILD_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Text } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
@@ -78,9 +78,6 @@ export default function SmartTransactionStatusPage() {
     getCurrentSmartTransactions,
     isEqual,
   );
-  const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
-  );
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
@@ -128,7 +125,7 @@ export default function SmartTransactionStatusPage() {
     hardware_wallet_type: hardwareWalletType,
     stx_enabled: smartTransactionsEnabled,
     current_stx_enabled: currentSmartTransactionsEnabled,
-    stx_user_opt_in: smartTransactionsOptInStatus,
+    stx_user_opt_in: useSelector(getSmartTransactionsOptInStatusForMetrics),
   };
 
   let destinationValue;
@@ -323,12 +320,12 @@ export default function SmartTransactionStatusPage() {
           {fetchParamsSourceTokenInfo.iconUrl ? (
             <UrlIcon
               url={fetchParamsSourceTokenInfo.iconUrl}
-              className="main-quote-summary__icon"
+              className="smart-transactions-status-summary__icon"
               name={
                 fetchParamsSourceTokenInfo.symbol ??
                 latestSmartTransaction?.destinationTokenSymbol
               }
-              fallbackClassName="main-quote-summary__icon-fallback"
+              fallbackClassName="smart-transactions-status-summary__icon-fallback"
             />
           ) : null}
           <Box display={DISPLAY.BLOCK} marginLeft={2} marginRight={2}>
@@ -337,12 +334,12 @@ export default function SmartTransactionStatusPage() {
           {fetchParamsDestinationTokenInfo.iconUrl ? (
             <UrlIcon
               url={fetchParamsDestinationTokenInfo.iconUrl}
-              className="main-quote-summary__icon"
+              className="smart-transactions-status-summary__icon"
               name={
                 fetchParamsDestinationTokenInfo.symbol ??
                 latestSmartTransaction?.destinationTokenSymbol
               }
-              fallbackClassName="main-quote-summary__icon-fallback"
+              fallbackClassName="smart-transactions-status-summary__icon-fallback"
             />
           ) : null}
           <Text
@@ -401,6 +398,7 @@ export default function SmartTransactionStatusPage() {
           </Box>
         )}
         <Text
+          data-testid="swap-smart-transaction-status-header"
           color={TextColor.textDefault}
           variant={TextVariant.headingSm}
           as="h4"
@@ -424,6 +422,7 @@ export default function SmartTransactionStatusPage() {
         )}
         {description && (
           <Text
+            data-testid="swap-smart-transaction-status-description"
             variant={TextVariant.bodySm}
             as="h6"
             marginTop={blockExplorerUrl && 1}
@@ -465,7 +464,7 @@ export default function SmartTransactionStatusPage() {
             await dispatch(prepareToLeaveSwaps());
             history.push(DEFAULT_ROUTE);
           } else {
-            history.push(BUILD_QUOTE_ROUTE);
+            history.push(PREPARE_SWAP_ROUTE);
           }
         }}
         onCancel={async () => {

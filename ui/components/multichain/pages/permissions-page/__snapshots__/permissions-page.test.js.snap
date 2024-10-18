@@ -55,32 +55,14 @@ exports[`All Connections render renders correctly 1`] = `
             style="align-self: center;"
           >
             <div
-              class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              data-testid="connection-list-item__avatar-favicon"
             >
-              <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-                data-testid="connection-list-item__avatar-favicon"
-              >
-                <img
-                  alt="avatar-favicon logo"
-                  class="mm-avatar-favicon__image"
-                  src="https://metamask.github.io/test-dapp/metamask-fox.svg"
-                />
-              </div>
-              <div
-                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
-              >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                  data-testid="connection-list-item__avatar-network-badge"
-                >
-                  <img
-                    alt="Ethereum Mainnet logo"
-                    class="mm-avatar-network__network-image"
-                    src="./images/eth_logo.svg"
-                  />
-                </div>
-              </div>
+              <img
+                alt="avatar-favicon logo"
+                class="mm-avatar-favicon__image"
+                src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+              />
             </div>
           </div>
           <div
@@ -98,73 +80,14 @@ exports[`All Connections render renders correctly 1`] = `
               <span
                 class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
               >
-                Connected with
+                1
+                 
+                accounts
+                 • 
+                0
+                 
+                networks
               </span>
-              <div
-                aria-describedby="tippy-tooltip-1"
-                class=""
-                data-original-title="This can be changed in "Settings > Alerts""
-                data-tooltipped=""
-                style="display: inline;"
-              >
-                <div
-                  class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
-                  data-testid="avatar-group"
-                >
-                  <div
-                    class="mm-box mm-box--display-flex"
-                  >
-                    <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: 0px;"
-                    >
-                      <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
-                      >
-                        <div
-                          class="mm-avatar-account__jazzicon"
-                        >
-                          <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
-                          >
-                            <svg
-                              height="16"
-                              width="16"
-                              x="0"
-                              y="0"
-                            >
-                              <rect
-                                fill="#18CDF2"
-                                height="16"
-                                transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
-                                width="16"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#035E56"
-                                height="16"
-                                transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
-                                width="16"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#F26602"
-                                height="16"
-                                transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
-                                width="16"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           <div

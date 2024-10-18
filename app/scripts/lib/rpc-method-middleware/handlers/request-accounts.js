@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
@@ -48,8 +48,8 @@ const locks = new Set();
 
 /**
  *
- * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} _req - The JSON-RPC request object.
- * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
+ * @param {import('@metamask/utils').JsonRpcRequest<unknown>} _req - The JSON-RPC request object.
+ * @param {import('@metamask/utils').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {RequestEthereumAccountsOptions} options - The RPC method hooks.
@@ -71,7 +71,7 @@ async function requestEthereumAccountsHandler(
   },
 ) {
   if (locks.has(origin)) {
-    res.error = ethErrors.rpc.resourceUnavailable(
+    res.error = rpcErrors.resourceUnavailable(
       `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
     );
     return end();
@@ -132,7 +132,7 @@ async function requestEthereumAccountsHandler(
   } else {
     // This should never happen, because it should be caught in the
     // above catch clause
-    res.error = ethErrors.rpc.internal(
+    res.error = rpcErrors.internal(
       'Accounts unexpectedly unavailable. Please report this bug.',
     );
   }
