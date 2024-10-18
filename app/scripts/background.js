@@ -333,7 +333,9 @@ function maybeDetectPhishing(theController) {
 }
 
 /**
- * Overrides the Content-Security-Policy Header, acting as a workaround for an MV2 Firefox Bug.
+ * Overrides the Content-Security-Policy (CSP) header by adding a nonce to the `script-src` directive.
+ * This is a workaround for [Bug #1446231](https://bugzilla.mozilla.org/show_bug.cgi?id=1446231),
+ * which involves overriding the page CSP for inline script nodes injected by extension content scripts.
  */
 function overrideContentSecurityPolicyHeader() {
   browser.webRequest.onHeadersReceived.addListener(
@@ -506,6 +508,8 @@ async function initialize() {
 
     if (!isManifestV3) {
       await loadPhishingWarningPage();
+      // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
       const platform = getPlatform();
       if (platform === PLATFORM_FIREFOX) {
         overrideContentSecurityPolicyHeader();
