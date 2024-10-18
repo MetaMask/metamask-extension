@@ -42,7 +42,7 @@ function makeMethodMiddlewareMaker(handlers) {
    *
    * @param  {Record<string, (...args: unknown[]) => unknown | Promise<unknown>>} hooks - Required "hooks" into our
    * controllers.
-   * @returns {import('json-rpc-engine').JsonRpcMiddleware<unknown, unknown>} The method middleware function.
+   * @returns {import('@metamask/json-rpc-engine').JsonRpcMiddleware<unknown, unknown>} The method middleware function.
    */
   const makeMethodMiddleware = (hooks) => {
     assertExpectedHook(hooks, expectedHookNames);
