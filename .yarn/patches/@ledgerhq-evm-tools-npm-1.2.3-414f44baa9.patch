@@ -1,0 +1,15 @@
+diff --git a/lib/message/EIP712/index.js b/lib/message/EIP712/index.js
+index 5443ac06d4ef29028e3acce98210949da2ef9263..57ec8615340a9285290ad5d2c2522ed19af2d0fc 100644
+--- a/lib/message/EIP712/index.js
++++ b/lib/message/EIP712/index.js
+@@ -28,8 +28,8 @@ const ethers_1 = require("ethers");
+ const axios_1 = __importDefault(require("axios"));
+ const sha224_1 = __importDefault(require("crypto-js/sha224"));
+ const live_env_1 = require("@ledgerhq/live-env");
+-const eip712_1 = __importDefault(require("@ledgerhq/cryptoassets-evm-signatures/data/eip712"));
+-const eip712_v2_1 = __importDefault(require("@ledgerhq/cryptoassets-evm-signatures/data/eip712_v2"));
++const eip712_1 = __importDefault(require("@ledgerhq/cryptoassets-evm-signatures/lib/data/eip712"));
++const eip712_v2_1 = __importDefault(require("@ledgerhq/cryptoassets-evm-signatures/lib/data/eip712_v2"));
+ // As defined in [spec](https://eips.ethereum.org/EIPS/eip-712), the properties below are all required.
+ function isEIP712Message(message) {
+     return (!!message &&
