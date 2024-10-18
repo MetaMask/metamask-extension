@@ -9,17 +9,38 @@ import {
   IconSize,
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
+import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 
 export const SnapUILink = ({ href, children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const isMetaMaskUrl = href.startsWith('metamask:');
+  const { navigate } = useSnapNavigation();
+
   const handleLinkClick = () => {
-    setIsOpen(true);
+    if (isMetaMaskUrl) {
+      navigate(href);
+    } else {
+      setIsOpen(true);
+    }
   };
 
   const handleModalClose = () => {
     setIsOpen(false);
   };
+
+  if (isMetaMaskUrl) {
+    return (
+      <ButtonLink
+        as="a"
+        size={ButtonLinkSize.Inherit}
+        className="snap-ui-link"
+        onClick={handleLinkClick}
+      >
+        {children}
+      </ButtonLink>
+    );
+  }
 
   return (
     <>

@@ -215,7 +215,7 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
-      "showMultiRpcModal": "boolean",
+      "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",
@@ -228,7 +228,9 @@
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
-    "useExternalServices": "boolean"
+    "useExternalServices": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
+    "showIncomingTransactions": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
@@ -241,7 +243,9 @@
   "SmartTransactionsController": {
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     }
   },
@@ -304,6 +308,7 @@
   },
   "TxController": {
     "methodData": "object",
+    "submitHistory": "object",
     "transactions": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object"

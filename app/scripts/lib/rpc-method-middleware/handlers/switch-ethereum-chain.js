@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   validateSwitchEthereumChainParams,
@@ -14,8 +14,7 @@ const switchEthereumChain = {
     getCaveat: true,
     requestPermittedChainsPermission: true,
     getCurrentChainIdForDomain: true,
-    requestUserApproval: true,
-    getChainPermissionsFeatureFlag: true,
+    grantPermittedChainsPermissionIncremental: true,
   },
 };
 
@@ -32,8 +31,7 @@ async function switchEthereumChainHandler(
     requestPermittedChainsPermission,
     getCaveat,
     getCurrentChainIdForDomain,
-    requestUserApproval,
-    getChainPermissionsFeatureFlag,
+    grantPermittedChainsPermissionIncremental,
   },
 ) {
   let chainId;
@@ -59,34 +57,17 @@ async function switchEthereumChainHandler(
 
   if (!networkClientIdToSwitchTo) {
     return end(
-      ethErrors.provider.custom({
+      providerErrors.custom({
         code: 4902,
         message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
       }),
     );
   }
 
-  const requestData = {
-    toNetworkConfiguration: networkConfigurationForRequestedChainId,
-    fromNetworkConfiguration: getNetworkConfigurationByChainId(
-      currentChainIdForOrigin,
-    ),
-  };
-
-  return switchChain(
-    res,
-    end,
-    origin,
-    chainId,
-    requestData,
-    networkClientIdToSwitchTo,
-    null,
-    {
-      getChainPermissionsFeatureFlag,
-      setActiveNetwork,
-      requestUserApproval,
-      getCaveat,
-      requestPermittedChainsPermission,
-    },
-  );
+  return switchChain(res, end, chainId, networkClientIdToSwitchTo, null, {
+    setActiveNetwork,
+    getCaveat,
+    requestPermittedChainsPermission,
+    grantPermittedChainsPermissionIncremental,
+  });
 }
