@@ -326,7 +326,7 @@ class SettingsPage extends PureComponent {
       },
     ];
 
-    if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS) {
+    if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
       tabs.splice(-1, 0, {
         content: t('developerOptions'),
         icon: <Icon name={IconName.CodeCircle} />,
@@ -395,7 +395,8 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
-        {process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS && (
+        {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
+          process.env.IN_TEST) && (
           <Route
             exact
             path={DEVELOPER_OPTIONS_ROUTE}
