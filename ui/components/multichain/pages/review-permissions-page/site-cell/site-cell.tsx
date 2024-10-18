@@ -19,6 +19,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
@@ -36,7 +37,6 @@ type SiteCellProps = {
   onSelectChainIds: (chainIds: Hex[]) => void;
   selectedAccountAddresses: string[];
   selectedChainIds: string[];
-  activeTabOrigin: string;
   isConnectFlow?: boolean;
 };
 
@@ -48,7 +48,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   onSelectChainIds,
   selectedAccountAddresses,
   selectedChainIds,
-  activeTabOrigin,
   isConnectFlow,
 }) => {
   const t = useI18nContext();
@@ -59,7 +58,9 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
   const selectedAccounts = accounts.filter(({ address }) =>
-    selectedAccountAddresses.includes(address),
+    selectedAccountAddresses.some((selectedAccountAddress) =>
+      isEqualCaseInsensitive(selectedAccountAddress, address),
+    ),
   );
   const selectedNetworks = allNetworks.filter(({ chainId }) =>
     selectedChainIds.includes(chainId),
@@ -145,7 +146,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       </Box>
       {showEditAccountsModal && (
         <EditAccountsModal
-          activeTabOrigin={activeTabOrigin}
           accounts={accounts}
           defaultSelectedAccountAddresses={selectedAccountAddresses}
           onClose={() => setShowEditAccountsModal(false)}
@@ -155,7 +155,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
       {showEditNetworksModal && (
         <EditNetworksModal
-          activeTabOrigin={activeTabOrigin}
           nonTestNetworks={nonTestNetworks}
           testNetworks={testNetworks}
           defaultSelectedChainIds={selectedChainIds}

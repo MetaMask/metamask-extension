@@ -2,6 +2,7 @@ import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import { getErrorMessage } from '../../../shared/modules/error';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
@@ -157,13 +158,14 @@ export async function estimateGasLimitForSend({
     );
     return addHexPrefix(estimateWithBuffer);
   } catch (error) {
+    const errorMessage = getErrorMessage(error);
     const simulationFailed =
-      error.message.includes('Transaction execution error.') ||
-      error.message.includes(
+      errorMessage.includes('Transaction execution error.') ||
+      errorMessage.includes(
         'gas required exceeds allowance or always failing transaction',
       ) ||
       (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId] &&
-        error.message.includes('gas required exceeds allowance'));
+        errorMessage.includes('gas required exceeds allowance'));
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(
         paramsForGasEstimate?.gas ?? gasLimit,

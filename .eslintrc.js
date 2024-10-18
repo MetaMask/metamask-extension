@@ -309,6 +309,7 @@ module.exports = {
         '**/__snapshots__/*.snap',
         'app/scripts/controllers/app-state-controller.test.ts',
         'app/scripts/controllers/mmi-controller.test.ts',
+        'app/scripts/controllers/alert-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
         'app/scripts/detect-multiple-instances.test.js',
         'app/scripts/controllers/bridge.test.ts',

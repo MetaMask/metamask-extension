@@ -14,6 +14,7 @@ import { produce } from 'immer';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   MetaMetricsEventCategory,
@@ -372,7 +373,8 @@ export default function ConfirmationPage({
       try {
         if (useSafeChainsListValidation) {
           const response = await fetchWithCache({
-            url: 'https://chainid.network/chains.json',
+            url: CHAIN_SPEC_URL,
+            allowStale: true,
             cacheOptions: { cacheRefreshTime: DAY },
             functionName: 'getSafeChainsList',
           });
