@@ -15,7 +15,7 @@ import {
  * @param tokenAddress
  * @returns
  */
-const useGetTokenStandardAndDetails = (
+export const useGetTokenStandardAndDetails = (
   tokenAddress: Hex | string | undefined,
 ) => {
   const { value: details } = useAsyncResult<TokenDetailsERC20>(
@@ -26,21 +26,19 @@ const useGetTokenStandardAndDetails = (
     [tokenAddress],
   );
 
-  const { decimals, standard } = details || {};
-
   if (!details) {
     return { decimalsNumber: undefined };
   }
 
-  if (standard === TokenStandard.ERC20) {
-    let parsedDecimals = parseTokenDetailDecimals(decimals);
-    if (parsedDecimals === undefined) {
-      parsedDecimals = ERC20_DEFAULT_DECIMALS;
-    }
-    details.decimalsNumber = parsedDecimals;
+  const { decimals, standard } = details || {};
+
+  if (standard !== TokenStandard.ERC20) {
+    return;
   }
+
+  let parsedDecimals =
+    parseTokenDetailDecimals(decimals) ?? ERC20_DEFAULT_DECIMALS;
+  details.decimalsNumber = parsedDecimals;
 
   return details;
 };
-
-export default useGetTokenStandardAndDetails;

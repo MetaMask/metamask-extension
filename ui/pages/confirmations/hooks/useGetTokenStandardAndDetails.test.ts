@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 
 import * as TokenActions from '../utils/token';
-import useGetTokenStandardAndDetails from './useGetTokenStandardAndDetails';
+import { useGetTokenStandardAndDetails } from './useGetTokenStandardAndDetails';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
