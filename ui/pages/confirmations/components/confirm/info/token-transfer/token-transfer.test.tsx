@@ -13,6 +13,14 @@ jest.mock(
   }),
 );
 
+jest.mock('../../../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../../../store/actions'),
+  getGasFeeTimeEstimate: jest.fn().mockResolvedValue({
+    lowerTimeBound: 0,
+    upperTimeBound: 60000,
+  }),
+}));
+
 describe('TokenTransferInfo', () => {
   it('renders correctly', () => {
     const state = getMockTokenTransferConfirmState({});

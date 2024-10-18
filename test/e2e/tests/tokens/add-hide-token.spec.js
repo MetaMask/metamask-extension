@@ -8,6 +8,7 @@ const {
   clickNestedButton,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 
 describe('Add hide token', function () {
@@ -126,16 +127,16 @@ describe('Add existing token using search', function () {
           tag: 'p',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement(
+        await driver.clickElementAndWaitToDisappear(
           '[data-testid="import-tokens-modal-import-button"]',
         );
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
-        const [, tkn] = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        await tkn.click();
+        await driver.clickElement({
+          tag: 'span',
+          text: 'Basic Attention Token',
+        });
 
         await driver.waitForSelector({
           css: '[data-testid="multichain-token-list-item-value"]',
@@ -147,6 +148,8 @@ describe('Add existing token using search', function () {
 });
 
 describe('Add token using wallet_watchAsset', function () {
+  const smartContract = SMART_CONTRACTS.HST;
+
   it('opens a notification that adds a token when wallet_watchAsset is executed, then approves', async function () {
     await withFixtures(
       {
@@ -155,9 +158,13 @@ describe('Add token using wallet_watchAsset', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
+        smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await unlockWallet(driver);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
@@ -168,7 +175,7 @@ describe('Add token using wallet_watchAsset', function () {
             params: {
               type: 'ERC20',
               options: {
-                address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
+                address: '${contractAddress}',
                 symbol: 'TST',
                 decimals: 4
               },
@@ -176,19 +183,16 @@ describe('Add token using wallet_watchAsset', function () {
           })
         `);
 
-        const windowHandles = await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           tag: 'button',
           text: 'Add token',
         });
 
-        await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         await driver.waitForSelector({
           css: '[data-testid="multichain-token-list-item-value"]',
@@ -206,9 +210,13 @@ describe('Add token using wallet_watchAsset', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
+        smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await unlockWallet(driver);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
@@ -219,7 +227,7 @@ describe('Add token using wallet_watchAsset', function () {
             params: {
               type: 'ERC20',
               options: {
-                address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
+                address: '${contractAddress}',
                 symbol: 'TST',
                 decimals: 4
               },
@@ -227,19 +235,16 @@ describe('Add token using wallet_watchAsset', function () {
           })
         `);
 
-        const windowHandles = await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           tag: 'button',
           text: 'Cancel',
         });
 
-        await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         const assetListItems = await driver.findElements(
           '.multichain-token-list-item',

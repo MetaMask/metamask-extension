@@ -22,6 +22,7 @@ import { MultichainState } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenImage } from '../../hooks/use-token-image';
 import { useTokenValues } from '../../hooks/use-token-values';
+import { ConfirmLoader } from '../confirm-loader/confirm-loader';
 
 const SendHeading = () => {
   const t = useI18nContext();
@@ -31,10 +32,8 @@ const SendHeading = () => {
     getWatchedToken(transactionMeta)(state),
   );
   const { tokenImage } = useTokenImage(transactionMeta, selectedToken);
-  const { tokenBalance, fiatDisplayValue } = useTokenValues(
-    transactionMeta,
-    selectedToken,
-  );
+  const { decodedTransferValue, fiatDisplayValue, pending } =
+    useTokenValues(transactionMeta);
 
   const TokenImage = (
     <AvatarToken
@@ -58,7 +57,9 @@ const SendHeading = () => {
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
         marginTop={3}
-      >{`${tokenBalance || ''} ${selectedToken?.symbol || t('unknown')}`}</Text>
+      >{`${decodedTransferValue || ''} ${
+        selectedToken?.symbol || t('unknown')
+      }`}</Text>
       {fiatDisplayValue && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
           {fiatDisplayValue}
@@ -67,13 +68,17 @@ const SendHeading = () => {
     </>
   );
 
+  if (pending) {
+    return <ConfirmLoader />;
+  }
+
   return (
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
-      paddingTop={4}
+      padding={4}
     >
       {TokenImage}
       {TokenValue}

@@ -178,7 +178,7 @@ export default class ConfirmTransactionBase extends Component {
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
-    smartTransactionsOptInStatus: PropTypes.bool,
+    smartTransactionsPreferenceEnabled: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
     selectedNetworkClientId: PropTypes.string,
     isSmartTransactionsEnabled: PropTypes.bool,
@@ -1019,7 +1019,7 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin, chainId: txChainId } = {},
       getNextNonce,
       tryReverseResolveAddress,
-      smartTransactionsOptInStatus,
+      smartTransactionsPreferenceEnabled,
       currentChainSupportsSmartTransactions,
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
@@ -1071,7 +1071,10 @@ export default class ConfirmTransactionBase extends Component {
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
 
-    if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
+    if (
+      smartTransactionsPreferenceEnabled &&
+      currentChainSupportsSmartTransactions
+    ) {
       // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
       // Long-term, we want to have a new proxy service specifically for feature flags.
       Promise.all([

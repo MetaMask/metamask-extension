@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -201,7 +201,7 @@ const Footer = () => {
         return;
       }
 
-      const error = ethErrors.provider.userRejectedRequest();
+      const error = providerErrors.userRejectedRequest();
       error.data = { location };
 
       dispatch(

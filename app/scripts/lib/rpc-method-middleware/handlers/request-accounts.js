@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
@@ -71,7 +71,7 @@ async function requestEthereumAccountsHandler(
   },
 ) {
   if (locks.has(origin)) {
-    res.error = ethErrors.rpc.resourceUnavailable(
+    res.error = rpcErrors.resourceUnavailable(
       `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
     );
     return end();
@@ -132,7 +132,7 @@ async function requestEthereumAccountsHandler(
   } else {
     // This should never happen, because it should be caught in the
     // above catch clause
-    res.error = ethErrors.rpc.internal(
+    res.error = rpcErrors.internal(
       'Accounts unexpectedly unavailable. Please report this bug.',
     );
   }

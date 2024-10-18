@@ -84,12 +84,15 @@ If you are using VS Code and are unable to make commits from the source control 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
 #### Development build with wallet state
+
 You can start a development build with a preloaded wallet state, by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file. Then you have the following options:
+
 1. Start the wallet with the default fixture flags, by running `yarn start:with-state`.
 2. Check the list of available fixture flags, by running `yarn start:with-state --help`.
 3. Start the wallet with custom fixture flags, by running `yarn start:with-state --FIXTURE_NAME=VALUE` for example `yarn start:with-state --withAccounts=100`. You can pass as many flags as you want. The rest of the fixtures will take the default values.
 
 #### Development build with Webpack
+
 You can also start a development build using the `yarn webpack` command, or `yarn webpack --watch`. This uses an alternative build system that is much faster, but not yet production ready. See the [Webpack README](./development/webpack/README.md) for more information.
 
 #### React and Redux DevTools
@@ -191,7 +194,7 @@ Different build types have different e2e tests sets. In order to run them look i
 ```console
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
-    "test:e2e:firefox": "ENABLE_MV3=false SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
+    "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
 ```
 
 #### Note: Running MMI e2e tests

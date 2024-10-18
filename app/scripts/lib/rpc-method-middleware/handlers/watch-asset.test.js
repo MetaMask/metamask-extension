@@ -1,5 +1,5 @@
 import { ERC20, ERC721 } from '@metamask/controller-utils';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import watchAssetHandler from './watch-asset';
 
 describe('watchAssetHandler', () => {
@@ -95,7 +95,7 @@ describe('watchAssetHandler', () => {
     });
 
     expect(mockEnd).toHaveBeenCalledWith(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `Expected parameter 'tokenId' to be type 'string'. Received type 'number'`,
       }),
     );
