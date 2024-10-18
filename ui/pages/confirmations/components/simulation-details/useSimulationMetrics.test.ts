@@ -67,6 +67,10 @@ const DISPLAY_NAME_SAVED_MOCK = {
   contractDisplayName: SYMBOL_MOCK,
 };
 
+const EMPTY_SIMULATION_DATA_MOCK = {
+  tokenBalanceChanges: [],
+} as SimulationData;
+
 describe('useSimulationMetrics', () => {
   const useTransactionEventFragmentMock = jest.mocked(
     useTransactionEventFragment,
@@ -141,6 +145,23 @@ describe('useSimulationMetrics', () => {
     });
   });
 
+  it('does not proceed processing balanceChanges if simulationData is undefined', async () => {
+    const props = {
+      balanceChanges: [BALANCE_CHANGE_MOCK],
+      loading: false,
+      simulationData: undefined,
+      transactionId: 'test-transaction-id',
+      enableMetrics: true,
+    };
+
+    renderHook((p: UseSimulationMetricsProps) => useSimulationMetrics(p), {
+      initialProps: props,
+    });
+
+    expect(updateTransactionEventFragmentMock).not.toHaveBeenCalled();
+    jest.restoreAllMocks();
+  });
+
   describe('updates transaction event fragment', () => {
     it('with loading time', async () => {
       const props = {
@@ -169,7 +190,6 @@ describe('useSimulationMetrics', () => {
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
-      ['in progress', undefined, 'simulation_in_progress'],
       [
         'reverted',
         { error: { code: SimulationErrorCode.Reverted } },
@@ -216,6 +236,7 @@ describe('useSimulationMetrics', () => {
         expectUpdateTransactionEventFragmentCalled(
           {
             balanceChanges: [balanceChange, balanceChange, balanceChange],
+            simulationData: EMPTY_SIMULATION_DATA_MOCK,
           },
           expect.objectContaining({
             properties: expect.objectContaining({
@@ -302,6 +323,7 @@ describe('useSimulationMetrics', () => {
                 amount: new BigNumber(isNegative ? -1 : 1),
               } as BalanceChange,
             ],
+            simulationData: EMPTY_SIMULATION_DATA_MOCK,
           },
           expect.objectContaining({
             properties: expect.objectContaining({
@@ -360,6 +382,7 @@ describe('useSimulationMetrics', () => {
         expectUpdateTransactionEventFragmentCalled(
           {
             balanceChanges: [balanceChange],
+            simulationData: EMPTY_SIMULATION_DATA_MOCK,
           },
           expect.objectContaining({
             properties: expect.objectContaining({
@@ -459,6 +482,7 @@ describe('useSimulationMetrics', () => {
         expectUpdateTransactionEventFragmentCalled(
           {
             balanceChanges: [balanceChange as BalanceChange],
+            simulationData: EMPTY_SIMULATION_DATA_MOCK,
           },
           expect.objectContaining({
             properties: expect.objectContaining({
@@ -490,6 +514,7 @@ describe('useSimulationMetrics', () => {
         expectUpdateTransactionEventFragmentCalled(
           {
             balanceChanges: [balanceChange1, balanceChange2],
+            simulationData: EMPTY_SIMULATION_DATA_MOCK,
           },
           expect.objectContaining({
             sensitiveProperties: expect.objectContaining({
@@ -506,7 +531,7 @@ describe('useSimulationMetrics', () => {
       useSimulationMetrics({
         enableMetrics: true,
         balanceChanges: [BALANCE_CHANGE_MOCK],
-        simulationData: undefined,
+        simulationData: EMPTY_SIMULATION_DATA_MOCK,
         loading: false,
         transactionId: TRANSACTION_ID_MOCK,
       });
@@ -533,7 +558,7 @@ describe('useSimulationMetrics', () => {
       useSimulationMetrics({
         enableMetrics: true,
         balanceChanges: [{ ...BALANCE_CHANGE_MOCK, fiatAmount: null }],
-        simulationData: undefined,
+        simulationData: EMPTY_SIMULATION_DATA_MOCK,
         loading: false,
         transactionId: TRANSACTION_ID_MOCK,
       });
