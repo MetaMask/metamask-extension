@@ -31,8 +31,6 @@ import {
   providerErrors,
 } from '@metamask/rpc-errors';
 
-import { isProduction } from '../../shared/modules/environment';
-
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
@@ -158,6 +156,7 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
+import { isProduction } from '../../shared/modules/environment';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1563,7 +1562,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: !isProduction() && isManifestV3,,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
