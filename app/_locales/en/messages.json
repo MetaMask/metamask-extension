@@ -5908,7 +5908,7 @@
     "message": "Potentially inauthentic token"
   },
   "swapTokenVerifiedSources": {
-    "message": "Verified on $1 sources. You can check on $2.",
+    "message": "Confirmed by $1 sources. Verify on $2.",
     "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
   },
   "swapTooManyDecimalsError": {
