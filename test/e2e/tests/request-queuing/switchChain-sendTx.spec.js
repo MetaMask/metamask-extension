@@ -16,7 +16,6 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,

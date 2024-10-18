@@ -5605,18 +5605,6 @@
     "message": "Alıcı: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "Bu, tüm siteler için tek bir seçili ağ yerine her bir site için bir ağ seçebilmenize olanak sağlar. Bu özellik, manuel olarak ağ değiştirmenizi önleyebilir ve bu da belirli sitelerde kullanıcı deneyiminizi bozabilir."
-  },
-  "toggleRequestQueueField": {
-    "message": "Her site için ağ seçin"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Kapalı"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Açık"
-  },
   "token": {
     "message": "Token"
   },

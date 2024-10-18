@@ -211,7 +211,6 @@ export default class Routes extends Component {
     automaticallySwitchNetwork: PropTypes.func.isRequired,
     totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
-    useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
@@ -263,7 +262,6 @@ export default class Routes extends Component {
       activeTabOrigin,
       totalUnapprovedConfirmationCount,
       isUnlocked,
-      useRequestQueue,
       currentExtensionPopupId,
     } = this.props;
     if (theme !== prevProps.theme) {
@@ -293,7 +291,6 @@ export default class Routes extends Component {
     // Terminate the popup when another popup is opened
     // if the user is using RPC queueing
     if (
-      useRequestQueue &&
       currentExtensionPopupId !== undefined &&
       global.metamask.id !== undefined &&
       currentExtensionPopupId !== global.metamask.id

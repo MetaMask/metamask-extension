@@ -5605,18 +5605,6 @@
     "message": "수신: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "이 기능을 이용하면 모든 사이트에 한 가지 네트워크를 선택하여 사용하는 대신, 사이트별로 네트워크를 다르게 선택할 수 있습니다. 이 기능을 사용하면 수동으로 네트워크를 전환하지 않아도 되므로 특정 사이트에서 사용자 경험이 저해되지 않습니다."
-  },
-  "toggleRequestQueueField": {
-    "message": "각 사이트별 네트워크 선택"
-  },
-  "toggleRequestQueueOff": {
-    "message": "끄기"
-  },
-  "toggleRequestQueueOn": {
-    "message": "켜기"
-  },
   "token": {
     "message": "토큰"
   },

@@ -5605,18 +5605,6 @@
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "ऐसा करके, आप सभी साइटों के लिए कोई सिंगल नेटवर्क चुनने के बजाय हरेक साइट के लिए एक नेटवर्क चुन सकते हैं। यह फीचर आपको मैन्युअल तरीके से नेटवर्क स्विच करने से रोकता है, इस वजह से कुछ साइटों पर आपका यूज़र अनुभव ख़राब हो सकता है।"
-  },
-  "toggleRequestQueueField": {
-    "message": "हरेक साइट के लिए नेटवर्क चुनें"
-  },
-  "toggleRequestQueueOff": {
-    "message": "बंद करें"
-  },
-  "toggleRequestQueueOn": {
-    "message": "चालू करें"
-  },
   "token": {
     "message": "टोकन"
   },
