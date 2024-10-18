@@ -1,4 +1,7 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { useEffect } from 'react';
+  ///: END:ONLY_INCLUDE_IF
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -30,8 +33,10 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { I18nContext } from '../../../contexts/i18n';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   CONFIRMATION_V_NEXT_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
@@ -119,10 +124,6 @@ const CoinButtons = ({
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
-
-  const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
-  );
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -248,6 +249,10 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
+
   useEffect(() => {
     const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
       (approval) => {
