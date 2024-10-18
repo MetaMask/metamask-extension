@@ -290,10 +290,23 @@ module.exports = {
      *
      * These are files that make use of globals and syntax introduced by the
      * Mocha library.
+     *
+     * TODO: these next two sections should eventually come together, but the @metamask/eslint-config-mocha
+     * causes hundreds of errors in the {jsx,ts,tsx}
      */
     {
-      files: ['test/e2e/**/*.spec.{js,jsx,ts,tsx}'],
+      files: ['test/e2e/**/*.spec.js'],
       extends: ['@metamask/eslint-config-mocha'],
+      rules: {
+        // In Mocha tests, it is common to use `this` to store values or do
+        // things like force the test to fail.
+        '@babel/no-invalid-this': 'off',
+        'mocha/no-setup-in-describe': 'off',
+        'rulesdir/get-text-anti-pattern': 'warn',
+      },
+    },
+    {
+      files: ['test/e2e/**/*.spec.{jsx,ts,tsx}'],
       rules: {
         // In Mocha tests, it is common to use `this` to store values or do
         // things like force the test to fail.
