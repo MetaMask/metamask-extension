@@ -76,7 +76,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         });
 
         // Switch to block explorer
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle('E2E Test Page');
         await driver.findElement('[data-testid="empty-page-body"]');
         // Verify block explorer
@@ -93,7 +92,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="page-container-footer-next"]',
         );
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
