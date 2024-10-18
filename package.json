@@ -506,6 +506,7 @@
     "@storybook/test-runner": "^0.14.1",
     "@storybook/theming": "^7.6.20",
     "@swc/helpers": "^0.5.7",
+    "@testing-library/dom": "^7.31.2",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^10.4.8",
     "@testing-library/react-hooks": "^8.0.1",
