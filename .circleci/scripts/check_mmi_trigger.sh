@@ -27,18 +27,25 @@ SUBMITTED_REVIEWS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
 # Check for label using jq
 LABEL_EXISTS=$(jq -r '.labels[]? | select(.name == "team-mmi") | length > 0' <<< "$PR_DETAILS")
 
-# Check for reviewer team in requested reviewers
-REVIEWER_REQUESTED=$(jq -r '.requested_teams[]? | select(.slug == "mmi") | length > 0' <<< "$PR_DETAILS")
+# Check for individual reviewer in requested reviewers
+REVIEWER_REQUESTED=$(jq -r '.requested_reviewers[]? | select(.login == "mmi") | length > 0' <<< "$PR_DETAILS")
+
+# Check for team reviewer in requested teams
+TEAM_REQUESTED=$(jq -r '.requested_teams[]? | select(.slug == "mmi") | length > 0' <<< "$PR_DETAILS")
 
 # Check for reviewer team in submitted reviews
 REVIEWER_SUBMITTED=$(jq -r '.[]? | select(.user.login == "mmi") | length > 0' <<< "$SUBMITTED_REVIEWS")
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Requested: $REVIEWER_REQUESTED"
+echo "Team Requested: $TEAM_REQUESTED"
 echo "Reviewer Submitted: $REVIEWER_SUBMITTED"
 
+echo "SUBMITTED_REVIEWS: $SUBMITTED_REVIEWS"
+echo "PR_DETAILS: $PR_DETAILS"
+
 # Check if any condition is met
-if [[ "$LABEL_EXISTS" == "true" || "$REVIEWER_REQUESTED" == "true" || "$REVIEWER_SUBMITTED" == "true" ]]; then
+if [[ "$LABEL_EXISTS" == "true" || "$REVIEWER_REQUESTED" == "true" || "$TEAM_REQUESTED" == "true" || "$REVIEWER_SUBMITTED" == "true" ]]; then
   echo "run_mmi_tests=true" > mmi_trigger.env
   echo "Conditions met: Label 'team-mmi' found or Reviewer 'mmi' assigned/submitted."
 else
@@ -46,8 +53,10 @@ else
   echo "Conditions not met: Label 'team-mmi' not found and Reviewer 'mmi' not assigned/submitted."
 fi
 
-# Debug: Print all reviewers
-echo "All Requested Reviewers: "
+# Debug: Print all requested reviewers and teams
+echo "All Requested Reviewers:"
 jq -r '.requested_reviewers[].login' <<< "$PR_DETAILS"
+echo "All Requested Teams:"
+jq -r '.requested_teams[].slug' <<< "$PR_DETAILS"
 echo "All Submitted Reviews:"
 jq -r '.[].user.login' <<< "$SUBMITTED_REVIEWS"
