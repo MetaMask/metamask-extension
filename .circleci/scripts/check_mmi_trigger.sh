@@ -49,10 +49,10 @@ echo "JSON is valid."
 echo "$PR_DETAILS" | jq '.labels, .requested_reviewers'
 
 # Check for label using jq with --arg and any, handling missing or empty labels
-LABEL_EXISTS=$(jq --arg label "$LABEL_NAME" 'if .labels then any(.labels[]; .name == $label) else false end')
+LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "team-mmi" 'if .labels then any(.labels[]; .name == $label) else false end')
 
 # Check for reviewer team using jq with --arg and any, handling missing or empty requested_reviewers
-REVIEWER_EXISTS=$(jq --arg team "$REVIEWER_TEAM" 'if .requested_reviewers then any(.requested_reviewers[]; .login == $team) else false end')
+REVIEWER_EXISTS=$(echo "$PR_DETAILS" | jq --arg team "$REVIEWER_TEAM" 'if .requested_reviewers then any(.requested_reviewers[]; .login == $team) else false end')
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Exists: $REVIEWER_EXISTS"
