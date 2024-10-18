@@ -20,8 +20,6 @@ const {
   onboardingCompleteWalletCreation,
   regularDelayMs,
   unlockWallet,
-  tinyDelayMs,
-  largeDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -287,7 +285,6 @@ describe('MetaMask onboarding @no-mmi', function () {
           await driver.clickElement({
             text: 'General',
           });
-          await driver.delay(largeDelayMs);
           await driver.clickElement({ text: 'Add a network' });
 
           await driver.waitForSelector(
@@ -311,9 +308,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           const rpcUrlInputDropDown = await driver.waitForSelector(
             '[data-testid="test-add-rpc-drop-down"]',
           );
-          await driver.delay(tinyDelayMs);
           await rpcUrlInputDropDown.click();
-          await driver.delay(tinyDelayMs);
           await driver.clickElement({
             text: 'Add RPC URL',
             tag: 'button',
@@ -371,7 +366,6 @@ describe('MetaMask onboarding @no-mmi', function () {
           await driver.clickElement(
             `[data-rbd-draggable-id="${toHex(chainId)}"]`,
           );
-          await driver.delay(largeDelayMs);
           // Check localhost 8546 is selected and its balance value is correct
           await driver.findElement({
             css: '[data-testid="network-display"]',
@@ -529,8 +523,6 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // pin extension walkthrough screen
         await driver.clickElement('[data-testid="pin-extension-next"]');
-
-        await driver.delay(regularDelayMs);
 
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
           const mockedEndpoint = await mockedEndpoints[i];

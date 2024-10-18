@@ -27,7 +27,7 @@ const BtcOverview = ({ className }: BtcOverviewProps) => {
       balanceIsCached={false}
       className={className}
       chainId={chainId}
-      isSigningEnabled={false}
+      isSigningEnabled={true}
       isSwapsChain={false}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       isBridgeChain={false}
