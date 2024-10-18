@@ -621,6 +621,7 @@ export const NetworksForm = ({
         width={BlockSize.Full}
       >
         <ButtonPrimary
+          data-testid='network-form-save'
           disabled={
             !name ||
             !chainId ||
