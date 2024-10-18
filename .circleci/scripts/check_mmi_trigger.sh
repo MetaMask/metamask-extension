@@ -28,7 +28,7 @@ SUBMITTED_REVIEWS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
 LABEL_EXISTS=$(jq -r '.labels[]? | select(.name == "team-mmi") | length > 0' <<< "$PR_DETAILS")
 
 # Check for reviewer team in requested reviewers
-REVIEWER_REQUESTED=$(jq -r '.requested_reviewers[]? | select(.login == "mmi") | length > 0' <<< "$PR_DETAILS")
+REVIEWER_REQUESTED=$(jq -r '.requested_teams[]? | select(.slug == "mmi") | length > 0' <<< "$PR_DETAILS")
 
 # Check for reviewer team in submitted reviews
 REVIEWER_SUBMITTED=$(jq -r '.[]? | select(.user.login == "mmi") | length > 0' <<< "$SUBMITTED_REVIEWS")
