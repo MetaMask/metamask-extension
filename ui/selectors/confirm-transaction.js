@@ -38,10 +38,13 @@ import {
 } from './selectors';
 import {
   getUnapprovedTransactions,
+  getUnapprovedTransactionsAll,
   selectTransactionMetadata,
   selectTransactionSender,
 } from './transactions';
 
+
+const unapprovedTxsSelectorAll = (state) => getUnapprovedTransactionsAll(state);
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
@@ -53,7 +56,7 @@ const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
 export const unconfirmedTransactionsListSelector = createSelector(
-  unapprovedTxsSelector,
+  unapprovedTxsSelectorAll,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
@@ -73,12 +76,12 @@ export const unconfirmedTransactionsListSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      chainId,
+      // chainId,
     ) || [],
 );
 
 export const unconfirmedTransactionsHashSelector = createSelector(
-  unapprovedTxsSelector,
+  unapprovedTxsSelectorAll,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
@@ -106,7 +109,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     );
 
     return {
-      ...filteredUnapprovedTxs,
+      ...unapprovedTxs,
       ...unapprovedPersonalMsgs,
       ...unapprovedDecryptMsgs,
       ...unapprovedEncryptionPublicKeyMsgs,
