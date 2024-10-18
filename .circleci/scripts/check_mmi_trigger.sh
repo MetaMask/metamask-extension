@@ -6,7 +6,7 @@ LABEL_NAME="$1"
 REVIEWER_TEAM="$2"
 
 # Enable debugging (optional; uncomment for debugging)
-#set -x
+set -x
 
 # Ensure required environment variables are set
 if [ -z "$CIRCLE_PULL_REQUEST" ] || [ -z "$GITHUB_TOKEN" ]; then
@@ -34,7 +34,9 @@ if [ -z "$PR_DETAILS" ]; then
 fi
 
 # Debugging: Uncomment the following line to see the fetched PR details
-#echo "PR Details: $PR_DETAILS"
+echo "LABEL_NAME: $LABEL_NAME"
+echo "REVIEWER_TEAM: $REVIEWER_TEAM"
+echo "PR Details: $PR_DETAILS"
 
 # Check for label using jq with --arg on a single line
 LABEL_EXISTS=$(echo "$PR_DETAILS" | jq --arg label "$LABEL_NAME" '[.labels[].name] | index($label)')
