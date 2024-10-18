@@ -29,7 +29,7 @@ SUBMITTED_REVIEWS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
   "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews")
 
 # Check for label using jq
-LABEL_EXISTS=$(jq -r --arg label "$LABEL_NAME" 'any(.labels[]?; .name == $label)' <<< "$PR_DETAILS")
+LABEL_EXISTS=$(jq -r --arg label "$LABEL_NAME" 'any(.labels[]?; .name == "$label")' <<< "$PR_DETAILS")
 
 # Check for reviewer team in requested reviewers
 REVIEWER_REQUESTED=$(jq -r --arg team "$REVIEWER_TEAM" 'any(.requested_reviewers[]; .login == $team)' <<< "$PR_DETAILS")
