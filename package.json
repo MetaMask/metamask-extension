@@ -135,6 +135,8 @@
     "gridplus-sdk": "~2.6.0",
     "eth-lattice-keyring/@ethereumjs/tx": "^4.2.0",
     "gridplus-sdk/@ethereumjs/tx": "^4.2.0",
+    "@ethersproject/signing-key/elliptic": "^6.5.7",
+    "gridplus-sdk/elliptic": "^6.5.7",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@types/react": "^16.9.53",
