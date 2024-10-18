@@ -1,6 +1,5 @@
 import {
   withFixtures,
-  logInWithBalanceValidation,
   defaultGanacheOptions,
   completeImportSRPOnboardingFlow,
 } from '../../helpers';

@@ -6,8 +6,8 @@ export const notificationMockResponse = {
 export const accountsSyncMockResponse = [
   {
     HashedKey:
-      '4413d1b89a764d791bbd3d1f548332a7096530b8706a6ee2b761c8d5cf9ed24c',
-    Data: '{"v":"1","t":"scrypt","d":"X3w2u0p3dwHuN6LaikjF+83ScwMTIv43S+J442t8Ff3EllvymDdqetlBGSPgKjiolRJiUF3jNEj4qoCOz3jGgzpJwCpAoZpFbz4WZCFrc1i6+ya1EWB1mm9znxbvPQ7HclCr5JXG1HPPaWPxLoqt5UH+hS1EqhRa7NAczaV+juoEnHjGfp6tYws9ElTlpZRKDeHQmabnggzC4o5eu/oFv2gLFGhu9AYrnV5+nLu0MJfDY2/snbEIEBuWP2Qrz7b2Wysx","o":{"N":131072,"r":8,"p":1,"dkLen":16},"saltLen":16}',
+      '6b5c0d3cfec2f9d732c1f87a972a8731ef8fa03244163f8334317f6684a15d91',
+    Data: '{"v":"1","t":"scrypt","d":"X3w2u0p3dwHuN6LaikjF+0EF5ACgIwDDqbhTRtWHkpJqNzwZ65hBbn8nNSWVNRUoezGi3N2RjM+X2FdEYlpz4ztTw9MwQfEPEE0l93VUa+/X4hGo+6HQEpu3obgWekCyYXRPk/QW+ToJufYd+0EaNLMx3sIsaroPSl/Qb61biGC7SYfdpoomLKNaZyq7JBbwih0wFTAk8YNdK4KWrzP2q/ul+hdbQe5h3Ym7fyMfvuWo8rVIirAw1BdsTPFSgu+0H2qH1A==","o":{"N":131072,"r":8,"p":1,"dkLen":16},"saltLen":16}',
   },
   {
     HashedKey:
