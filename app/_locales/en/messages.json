@@ -6179,6 +6179,9 @@
   "transactionFee": {
     "message": "Transaction fee"
   },
+  "transactionFlowNetwork": {
+    "message": "Network"
+  },
   "transactionHistoryBaseFee": {
     "message": "Base fee (GWEI)"
   },
@@ -6226,6 +6229,9 @@
   },
   "transferFrom": {
     "message": "Transfer from"
+  },
+  "transferRequest": {
+    "message": "Transfer request"
   },
   "trillionAbbreviation": {
     "message": "T",
