@@ -107,8 +107,9 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import {
-  getProviderConfig,
   getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+  getProviderConfig,
 } from './networks';
 import {
   getAllUnapprovedTransactions,
@@ -131,11 +132,6 @@ export function getNetworkIdentifier(state) {
   const { type, nickname, rpcUrl } = getProviderConfig(state);
 
   return nickname || rpcUrl || type;
-}
-
-export function getCurrentChainId(state) {
-  const { chainId } = getProviderConfig(state);
-  return chainId;
 }
 
 export function getMetaMetricsId(state) {

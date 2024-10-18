@@ -28,11 +28,10 @@ import {
   subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
-import { getProviderConfig } from './networks';
+import { getProviderConfig, getCurrentChainId } from './networks';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
-  getCurrentChainId,
   getMetaMaskAccounts,
   getTokenExchangeRates,
 } from './selectors';
