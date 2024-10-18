@@ -1,19 +1,13 @@
 import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import mockState from '../../../../../../../../test/data/mock-state.json';
+import { getMockContractInteractionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
+import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 
 function getStore() {
-  return configureStore({
-    ...mockState,
-    metamask: { ...mockState.metamask },
-    confirm: {
-      currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-    },
-  });
+  return configureStore(getMockContractInteractionConfirmState());
 }
 
 const Story = {
@@ -28,7 +22,7 @@ const Story = {
             padding: 30,
           }}
         >
-          {story()}
+          <ConfirmContextProvider>{story()}</ConfirmContextProvider>
         </div>
       </Provider>
     ),

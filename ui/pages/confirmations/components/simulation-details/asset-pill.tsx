@@ -70,9 +70,9 @@ export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => (
       <NativeAssetPill />
     ) : (
       <Name
+        preferContractSymbol
         type={NameType.ETHEREUM_ADDRESS}
         value={asset.address}
-        preferContractSymbol
       />
     )}
   </Box>

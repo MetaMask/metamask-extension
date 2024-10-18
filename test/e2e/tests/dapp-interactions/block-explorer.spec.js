@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { mockNetworkState } = require('../../../stub/networks');
+const { mockNetworkStateOld } = require('../../../stub/networks');
 
 const {
   defaultGanacheOptions,
@@ -15,7 +15,7 @@ describe('Block Explorer', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkController(
-            mockNetworkState({
+            mockNetworkStateOld({
               chainId: '0x539',
               nickname: 'Localhost 8545',
               rpcUrl: 'http://localhost:8545',
@@ -60,15 +60,15 @@ describe('Block Explorer', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkController(
-            mockNetworkState({
+          .withNetworkController({
+            ...mockNetworkStateOld({
               chainId: '0x539',
               nickname: 'Localhost 8545',
               rpcUrl: 'http://localhost:8545',
               ticker: 'ETH',
               blockExplorerUrl: 'https://etherscan.io/',
             }),
-          )
+          })
           .withTokensControllerERC20()
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -114,8 +114,8 @@ describe('Block Explorer', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withNetworkController(
-            mockNetworkState({
+          .withNetworkController({
+            ...mockNetworkStateOld({
               id: 'localhost-client-id',
               chainId: '0x539',
               nickname: 'Localhost 8545',
@@ -123,7 +123,7 @@ describe('Block Explorer', function () {
               ticker: 'ETH',
               blockExplorerUrl: 'https://etherscan.io',
             }),
-          )
+          })
           .withTransactionControllerCompletedTransaction()
           .build(),
         ganacheOptions: defaultGanacheOptions,

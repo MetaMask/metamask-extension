@@ -20,7 +20,7 @@ describe('AdvancedGasInputs', () => {
     minimumGasLimit: 21000,
   };
 
-  const store = configureStore({});
+  const store = configureStore({ metamask: {} });
 
   beforeEach(() => {
     clock = sinon.useFakeTimers();

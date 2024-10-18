@@ -1,0 +1,84 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NFT full image should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box main-container asset__container"
+  >
+    <div
+      class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    >
+      <div
+        class="mm-box multichain-page__inner-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      >
+        <div
+          class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
+        >
+          <div
+            class="mm-box"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+            />
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="min-width: 0px;"
+          >
+            <button
+              aria-label="Back"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+              data-testid="nft-details__close"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
+        </div>
+        <div
+          class="mm-box multichain-page-content fade-in visible mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full mm-box--height-full"
+        >
+          <div
+            class="mm-box mm-box--padding-top-4 mm-box--display-flex mm-box--justify-content-center"
+          >
+            <div
+              class="mm-box"
+            >
+              <button
+                class="mm-box nft-item__container"
+                data-testid="nft-item"
+              >
+                <div
+                  class="mm-box mm-badge-wrapper nft-item__badge-wrapper badge-wrapper mm-box--display-block"
+                >
+                  <img
+                    alt="Red Mohawk bam!"
+                    class="mm-box nft-item__item nft-item__item-image mm-box--display-block mm-box--justify-content-center"
+                    data-testid="nft-image"
+                    src="https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE"
+                  />
+                  <div
+                    class="mm-box mm-badge-wrapper__badge-container"
+                    style="top: -4px; right: -4px;"
+                  >
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                      data-testid="nft-network-badge"
+                    >
+                      G
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`NFT full image should match snapshot 2`] = `<div />`;

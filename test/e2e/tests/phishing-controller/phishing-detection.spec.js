@@ -1,12 +1,14 @@
 const { strict: assert } = require('assert');
 const { createServer } = require('node:http');
 const { createDeferredPromise } = require('@metamask/utils');
+const { until } = require('selenium-webdriver');
 
 const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -59,8 +61,7 @@ describe('Phishing Detection', function () {
         await driver.clickElement({
           text: 'continue to the site.',
         });
-        const header = await driver.findElement('h1');
-        assert.equal(await header.getText(), 'E2E Test Dapp');
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       },
     );
   });
@@ -105,8 +106,8 @@ describe('Phishing Detection', function () {
         await driver.clickElement({
           text: 'continue to the site.',
         });
-        const header = await driver.findElement('h1');
-        assert.equal(await header.getText(), 'E2E Test Dapp');
+
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       };
     }
 

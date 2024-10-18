@@ -1,10 +1,22 @@
 const { withFixtures, unlockWallet } = require('../../helpers');
+const { SWAP_TEST_ETH_USDC_TRADES_MOCK } = require('../../../data/mock-data');
 const {
   withFixturesOptions,
   buildQuote,
   reviewQuote,
   checkNotification,
 } = require('./shared');
+
+async function mockSwapsTransactionQuote(mockServer) {
+  return [
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: SWAP_TEST_ETH_USDC_TRADES_MOCK,
+      })),
+  ];
+}
 
 describe('Swaps - notifications @no-mmi', function () {
   async function mockTradesApiPriceSlippageError(mockServer) {
@@ -95,25 +107,37 @@ describe('Swaps - notifications @no-mmi', function () {
     );
   });
   it('tests a notification for not enough balance', async function () {
+    const lowBalanceGanacheOptions = {
+      accounts: [
+        {
+          secretKey:
+            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+          balance: 0,
+        },
+      ],
+    };
+
     await withFixtures(
       {
         ...withFixturesOptions,
+        ganacheOptions: lowBalanceGanacheOptions,
+        testSpecificMock: mockSwapsTransactionQuote,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
         await buildQuote(driver, {
-          amount: 50,
+          amount: 0.001,
           swapTo: 'USDC',
         });
         await checkNotification(driver, {
           title: 'Insufficient balance',
-          text: 'You need 43.4467 more TESTETH to complete this swap',
+          text: 'You need 0.001 more TESTETH to complete this swap',
         });
         await reviewQuote(driver, {
           swapFrom: 'TESTETH',
           swapTo: 'USDC',
-          amount: 50,
+          amount: 0.001,
           skipCounter: true,
         });
         await driver.waitForSelector({

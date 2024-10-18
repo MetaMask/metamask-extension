@@ -1,4 +1,5 @@
 const { withFixtures, unlockWallet } = require('../../helpers');
+const { SWAP_TEST_ETH_DAI_TRADES_MOCK } = require('../../../data/mock-data');
 const {
   withFixturesOptions,
   buildQuote,
@@ -7,6 +8,19 @@ const {
   checkActivityTransaction,
   changeExchangeRate,
 } = require('./shared');
+
+async function mockEthDaiTrade(mockServer) {
+  return [
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_ETH_DAI_TRADES_MOCK,
+        };
+      }),
+  ];
+}
 
 describe('Swap Eth for another Token @no-mmi', function () {
   it('Completes second Swaps while first swap is processing', async function () {
@@ -60,6 +74,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
+        testSpecificMock: mockEthDaiTrade,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

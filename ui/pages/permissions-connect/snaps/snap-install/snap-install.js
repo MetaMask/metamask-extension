@@ -34,6 +34,7 @@ import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
 import PermissionConnectHeader from '../../../../components/app/permission-connect-header';
+import { isSnapId } from '../../../../helpers/utils/snaps';
 
 export default function SnapInstall({
   request,
@@ -68,6 +69,9 @@ export default function SnapInstall({
 
   const hasError = !requestState.loading && requestState.error;
   const isLoading = requestState.loading;
+
+  // we already have access to the requesting snap's metadata
+  const isOriginSnap = isSnapId(request?.metadata?.dappOrigin);
 
   const warnings = getSnapInstallWarnings(
     requestState?.permissions ?? {},
@@ -111,11 +115,15 @@ export default function SnapInstall({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      {isLoading || hasError ? (
+      {(isLoading || hasError) && !isOriginSnap ? (
         <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
       ) : (
         <SnapAuthorshipHeader
-          snapId={targetSubjectMetadata.origin}
+          snapId={
+            isLoading && isOriginSnap
+              ? request?.metadata?.dappOrigin
+              : targetSubjectMetadata.origin
+          }
           onCancel={onCancel}
         />
       )}

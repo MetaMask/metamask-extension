@@ -22,48 +22,6 @@ $font-path: './fonts';
 );
 
 @font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 100;
-  src: local('Roboto Thin'), local('Roboto-Thin'), url('#{$font-path}/Roboto/Roboto-Thin.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Roboto Light'), local('Roboto-Light'), url('#{$font-path}/Roboto/Roboto-Light.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Roboto'), local('Roboto-Regular'), url('#{$font-path}/Roboto/Roboto-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 500;
-  src: local('Roboto Medium'), local('Roboto-Medium'), url('#{$font-path}/Roboto/Roboto-Medium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Roboto Bold'), local('Roboto-Bold'), url('#{$font-path}/Roboto/Roboto-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 900;
-  src: local('Roboto Black'), local('Roboto-Black'), url('#{$font-path}/Roboto/Roboto-Black.ttf') format('truetype');
-}
-
-@font-face {
   font-family: 'Euclid Circular B';
   font-style: normal;
   font-weight: 400;
@@ -89,4 +47,64 @@ $font-path: './fonts';
   font-style: normal;
   font-weight: 700;
   src: url('#{$font-path}/Euclid/EuclidCircularB-Bold-WebXL.ttf') format('truetype');
+}
+
+// Brand Evolution Font Families
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-Book.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-BookItalic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-MediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MM Sans';
+  src: url('#{$font-path}/MMSans/MM_Sans-Variable.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+// MM Sans Vairable Font - supports: 400, 500, 600, 700, 800, 900
+
+@font-face {
+  font-family: 'MM Sans';
+  src: url('#{$font-path}/MMSans/MM_Sans-Variable.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
 }

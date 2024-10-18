@@ -1,5 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -8,6 +9,9 @@ import {
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
   NETWORK_TYPES,
+  LINEA_MAINNET_DISPLAY_NAME,
+  BNB_DISPLAY_NAME,
+  LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { NetworkListMenu } from '.';
 
@@ -32,12 +36,98 @@ const render = ({
   isUnlocked = true,
   origin = MOCK_ORIGIN,
   selectedTabOriginInDomainsState = true,
+  isAddingNewNetwork = false,
+  editedNetwork = undefined,
 } = {}) => {
   const state = {
+    appState: {
+      isAddingNewNetwork,
+      editedNetwork,
+    },
     metamask: {
       ...mockState.metamask,
+      networkConfigurationsByChainId: {
+        '0x1': {
+          nativeCurrency: 'ETH',
+          chainId: '0x1',
+          name: MAINNET_DISPLAY_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: NETWORK_TYPES.MAINNET,
+            },
+          ],
+        },
+        '0xe708': {
+          nativeCurrency: 'ETH',
+          chainId: '0xe708',
+          name: LINEA_MAINNET_DISPLAY_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: 'linea-mainnet',
+            },
+          ],
+        },
+        '0x38': {
+          nativeCurrency: 'BNB',
+          chainId: '0x38',
+          name: BNB_DISPLAY_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: 'bnb-network',
+            },
+          ],
+        },
+        '0x5': {
+          nativeCurrency: 'ETH',
+          chainId: '0x5',
+          name: 'Chain 5',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: 'goerli',
+            },
+          ],
+        },
+        '0x539': {
+          nativeCurrency: 'ETH',
+          chainId: '0x539',
+          name: SEPOLIA_DISPLAY_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: 'sepolia',
+            },
+          ],
+        },
+        '0xe705': {
+          nativeCurrency: 'ETH',
+          chainId: '0xe705',
+          name: LINEA_SEPOLIA_DISPLAY_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: 'linea-sepolia',
+            },
+          ],
+        },
+      },
       isUnlocked,
-      selectedNetworkClientId,
+      selectedNetworkClientId: NETWORK_TYPES.MAINNET,
       preferences: {
         showTestNetworks,
       },
@@ -49,7 +139,7 @@ const render = ({
       },
     },
     activeTab: {
-      origin,
+      origin: selectedTabOriginInDomainsState ? origin : undefined,
     },
   };
 
@@ -59,18 +149,32 @@ const render = ({
 
 describe('NetworkListMenu', () => {
   beforeEach(() => {
-    process.env.ENABLE_NETWORK_UI_REDESIGN = 'false';
     jest.clearAllMocks();
   });
 
   it('renders properly', () => {
-    const { container } = render();
-    expect(container).toMatchSnapshot();
+    const { baseElement } = render();
+    expect(baseElement).toMatchSnapshot();
   });
+
+  it('should match snapshot when adding a network', async () => {
+    const { baseElement } = render({
+      isAddingNewNetwork: true,
+    });
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('should match snapshot when editing a network', async () => {
+    const { baseElement } = render({
+      editedNetwork: { chainId: '0x1' },
+    });
+    expect(baseElement).toMatchSnapshot();
+  });
+
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 
-    expect(getByText('Add network')).toBeInTheDocument();
+    expect(getByText('Add a custom network')).toBeInTheDocument();
     expect(getByText('Show test networks')).toBeInTheDocument();
     expect(getByPlaceholderText('Search')).toBeInTheDocument();
   });
@@ -106,7 +210,7 @@ describe('NetworkListMenu', () => {
 
   it('shows the correct selected network when networks share the same chain ID', () => {
     // Mainnet and Custom Mainnet RPC both use chain ID 0x1
-    render({
+    const { queryByText } = render({
       showTestNetworks: false,
       currentChainId: CHAIN_IDS.MAINNET,
       selectedNetworkClientId: 'testNetworkConfigurationId',
@@ -123,10 +227,7 @@ describe('NetworkListMenu', () => {
     );
     expect(selectedNodes).toHaveLength(1);
 
-    const selectedNodeText = selectedNodes[0].querySelector(
-      '.multichain-network-list-item__network-name',
-    ).textContent;
-    expect(selectedNodeText).toStrictEqual('Custom Mainnet RPC');
+    expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
   });
 
   it('narrows down search results', () => {
@@ -141,14 +242,14 @@ describe('NetworkListMenu', () => {
     expect(queryByText('Chain 5')).not.toBeInTheDocument();
   });
 
-  it('enables the "Add Network" button when MetaMask is locked', () => {
+  it('enables the "Add a custom network" button when MetaMask is locked', () => {
     const { queryByText } = render({ isUnlocked: false });
-    expect(queryByText('Add network')).toBeEnabled();
+    expect(queryByText('Add a custom network')).toBeEnabled();
   });
 
-  it('enables the "Add Network" button when MetaMask is true', () => {
+  it('enables the "AAdd a custom network" button when MetaMask is true', () => {
     const { queryByText } = render({ isUnlocked: true });
-    expect(queryByText('Add network')).toBeEnabled();
+    expect(queryByText('Add a custom network')).toBeEnabled();
   });
 
   it('does not allow deleting networks when locked', () => {
@@ -187,20 +288,6 @@ describe('NetworkListMenu', () => {
   });
 
   describe('NetworkListMenu with ENABLE_NETWORK_UI_REDESIGN', () => {
-    // Set the environment variable before tests run
-    beforeEach(() => {
-      window.metamaskFeatureFlags = {
-        networkMenuRedesign: true,
-      };
-    });
-
-    // Reset the environment variable after tests complete
-    afterEach(() => {
-      window.metamaskFeatureFlags = {
-        networkMenuRedesign: false,
-      };
-    });
-
     it('should display "Arbitrum" when ENABLE_NETWORK_UI_REDESIGN is true', async () => {
       const { queryByText, getByPlaceholderText } = render();
 

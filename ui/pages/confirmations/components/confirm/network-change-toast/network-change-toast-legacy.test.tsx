@@ -37,7 +37,6 @@ const render = () => {
       },
       preferences: { redesignedConfirmationsEnabled: true },
     },
-    confirm: { currentConfirmation: currentConfirmationMock },
   };
 
   const defaultStore = configureStore()(mockExpectedState);

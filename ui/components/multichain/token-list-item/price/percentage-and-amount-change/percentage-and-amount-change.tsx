@@ -24,6 +24,8 @@ import {
 import {
   formatValue,
   isValidAmount,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 
 const renderPercentageWithNumber = (
@@ -117,15 +119,32 @@ export const PercentageAndAmountChange = ({
 
   const formattedValue = formatValue(balanceChange === 0 ? 0 : value, true);
 
-  const formattedValuePrice = isValidAmount(balanceChange)
-    ? `${(balanceChange as number) >= 0 ? '+' : ''}${Intl.NumberFormat(locale, {
-        notation: 'compact',
-        compactDisplay: 'short',
+  let formattedValuePrice = '';
+  if (isValidAmount(balanceChange)) {
+    formattedValuePrice = (balanceChange as number) >= 0 ? '+' : '';
+
+    const options = {
+      notation: 'compact',
+      compactDisplay: 'short',
+      maximumFractionDigits: 2,
+    } as const;
+
+    try {
+      // For currencies compliant with ISO 4217 Standard
+      formattedValuePrice += `${Intl.NumberFormat(locale, {
+        ...options,
         style: 'currency',
         currency: fiatCurrency,
-        maximumFractionDigits: 2,
-      }).format(balanceChange as number)} `
-    : '';
+      }).format(balanceChange as number)} `;
+    } catch {
+      // Non-standard Currency Codes
+      formattedValuePrice += `${Intl.NumberFormat(locale, {
+        ...options,
+        minimumFractionDigits: 2,
+        style: 'decimal',
+      }).format(balanceChange as number)} `;
+    }
+  }
 
   return renderPercentageWithNumber(formattedValue, formattedValuePrice, color);
 };

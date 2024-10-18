@@ -33,9 +33,6 @@ const storeMock = configureStore({
       },
     },
   },
-  confirm: {
-    currentConfirmation: pendingApprovalMock,
-  },
 });
 
 const ConfirmInfoRowStory = {

@@ -205,9 +205,6 @@
   "delete": {
     "message": "Kustuta"
   },
-  "deleteNetwork": {
-    "message": "Võrk kustutada?"
-  },
   "details": {
     "message": "Üksikasjad"
   },
@@ -228,9 +225,6 @@
   },
   "editContact": {
     "message": "Muuda kontakti"
-  },
-  "ensRegistrationError": {
-    "message": "Tõrge ENS-i nime registreerimisel"
   },
   "enterPasswordContinue": {
     "message": "Jätkamiseks sisestage parool"
@@ -350,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "Saaja aadress on vale"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Kehtetu ETH-võrk, kasutage väiketähti"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Vale Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Vale RPC URL"
   },
@@ -448,9 +436,6 @@
   },
   "next": {
     "message": "Edasi"
-  },
-  "noAddressForName": {
-    "message": "Sellele nimele pole registreeritud ühtegi aadressi."
   },
   "noConversionRateAvailable": {
     "message": "Ühtegi vahetuskurssi pole saadaval"

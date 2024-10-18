@@ -143,9 +143,6 @@
   "invalidAddressRecipient": {
     "message": "प्राप्तकर्ता का पता अमान्य है"
   },
-  "invalidBlockExplorerURL": {
-    "message": "अमान्य Block Explorer कै URI"
-  },
   "invalidRPC": {
     "message": "अमान्य RPC कै URI"
   },
@@ -202,9 +199,6 @@
   },
   "next": {
     "message": "अगला"
-  },
-  "noAddressForName": {
-    "message": "इस नाम के लिए कोई पता सेट नहीं किया गया है।"
   },
   "noTransactions": {
     "message": "कोई लेन-देन नहीं"

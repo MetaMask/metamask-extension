@@ -5,13 +5,13 @@ import {
 } from '@metamask/profile-sync-controller';
 import {
   NotificationServicesController,
-  NotificationsServicesPushController,
+  NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 
 const AuthMocks = AuthenticationController.Mocks;
 const StorageMocks = UserStorageController.Mocks;
 const NotificationMocks = NotificationServicesController.Mocks;
-const PushMocks = NotificationsServicesPushController.Mocks;
+const PushMocks = NotificationServicesPushController.Mocks;
 
 type MockResponse = {
   url: string | RegExp;
@@ -20,19 +20,32 @@ type MockResponse = {
 };
 
 /**
- * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications)
+ * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications, Profile syncing)
  *
  * @param server - server obj used to mock our endpoints
  */
-export function mockNotificationServices(server: Mockttp) {
+export async function mockNotificationServices(server: Mockttp) {
   // Auth
   mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  mockAPICall(server, StorageMocks.getMockUserStorageGetResponse());
-  mockAPICall(server, StorageMocks.getMockUserStoragePutResponse());
+  mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
+  mockAPICall(server, await StorageMocks.getMockUserStoragePutResponse());
+
+  // TODO - add better mock responses for other Profile Sync features
+  // (Account Sync, Network Sync, ...)
+  server
+    .forGet(/https:\/\/user-storage\.api\.cx\.metamask\.io\/.*/gu)
+    ?.thenCallback(() => ({
+      statusCode: 404,
+    }));
+  server
+    .forPut(/https:\/\/user-storage\.api\.cx\.metamask\.io\/.*/gu)
+    ?.thenCallback(() => ({
+      statusCode: 204,
+    }));
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());

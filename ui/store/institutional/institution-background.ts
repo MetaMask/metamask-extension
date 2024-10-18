@@ -56,6 +56,21 @@ export function setCustodianDeepLink({
   };
 }
 
+export function setNoteToTraderMessage(message: string) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setNoteToTraderMessage', [message]);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error) {
+        dispatch(displayWarning(error.message));
+        throw new Error(error.message);
+      }
+    }
+  };
+}
+
 export function setTypedMessageInProgress(msgId: string) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());

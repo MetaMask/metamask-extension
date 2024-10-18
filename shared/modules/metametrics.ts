@@ -1,4 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { TransactionMetricsRequest } from '../../app/scripts/lib/transaction/metrics';
 
 type SmartTransactionMetricsProperties = {

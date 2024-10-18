@@ -11,6 +11,8 @@ import {
 } from '../../../../../../test/jest/mocks';
 import { CombinedBackgroundAndReduxState } from '../../../../../store/store';
 import { shortenAddress } from '../../../../../helpers/utils/util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multichain/address';
 import { SendPageAccountPicker } from '.';
 

@@ -1,7 +1,8 @@
 import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { TransactionData } from './transaction-data';
+import { TransactionMeta } from '@metamask/transaction-controller';
+
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import {
   CONTRACT_ADDRESS_FOUR_BYTE,
@@ -9,8 +10,10 @@ import {
   CONTRACT_ADDRESS_UNISWAP,
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
 import configureStore from '../../../../../../../store/store';
-import mockState from '../../../../../../../../test/data/mock-state.json';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import { Confirmation } from '../../../../../types/confirm';
+import { TransactionData } from './transaction-data';
+import { ConfirmContextProvider } from '../../../../../context/confirm';
 
 const DATA_RAW_MOCK =
   '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
@@ -29,18 +32,15 @@ function getStore(transactionData?: string, to?: string) {
     },
   };
 
-  return configureStore({
-    metamask: {
-      ...mockState.metamask,
-      preferences: {
-        ...mockState.metamask.preferences,
-        petnamesEnabled: true,
+  return configureStore(
+    getMockConfirmStateForTransaction(confirmation as Confirmation, {
+      metamask: {
+        preferences: {
+          petnamesEnabled: true,
+        },
       },
-    },
-    confirm: {
-      currentConfirmation: confirmation,
-    },
-  });
+    }),
+  );
 }
 
 function Template({
@@ -58,7 +58,9 @@ function Template({
           padding: 30,
         }}
       >
-        <TransactionData />
+        <ConfirmContextProvider>
+          <TransactionData />
+        </ConfirmContextProvider>
       </div>
     </Provider>
   );
@@ -70,18 +72,15 @@ export default {
   decorators: [(story: () => Meta<typeof TransactionData>) => story()],
 };
 
-export const UniswapStory = () =>
-  Template({ to: CONTRACT_ADDRESS_UNISWAP });
+export const UniswapStory = () => Template({ to: CONTRACT_ADDRESS_UNISWAP });
 
 UniswapStory.storyName = 'Uniswap';
 
-export const SourcifyStory = () =>
-  Template({ to: CONTRACT_ADDRESS_SOURCIFY });
+export const SourcifyStory = () => Template({ to: CONTRACT_ADDRESS_SOURCIFY });
 
 SourcifyStory.storyName = 'Sourcify';
 
-export const FourByteStory = () =>
-  Template({ to: CONTRACT_ADDRESS_FOUR_BYTE });
+export const FourByteStory = () => Template({ to: CONTRACT_ADDRESS_FOUR_BYTE });
 
 FourByteStory.storyName = 'Four Byte';
 

@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-api';
 import log from 'loglevel';
 import {
@@ -7,7 +7,16 @@ import {
   enableProfileSyncing as enableProfileSyncingAction,
   setIsProfileSyncingEnabled as setIsProfileSyncingEnabledAction,
   hideLoadingIndication,
+  syncInternalAccountsWithUserStorage,
 } from '../../store/actions';
+
+import { selectIsSignedIn } from '../../selectors/metamask-notifications/authentication';
+import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
+import { getUseExternalServices } from '../../selectors';
+import {
+  getIsUnlocked,
+  getCompletedOnboarding,
+} from '../../ducks/metamask/metamask';
 
 // Define KeyringType interface
 export type KeyringType = {
@@ -112,3 +121,68 @@ export function useSetIsProfileSyncingEnabled(): {
 
   return { setIsProfileSyncingEnabled, error };
 }
+
+/**
+ * Custom hook to dispatch account syncing.
+ *
+ * @returns An object containing the `dispatchAccountSyncing` function, boolean `shouldDispatchAccountSyncing`,
+ * and error state.
+ */
+export const useAccountSyncing = () => {
+  const dispatch = useDispatch();
+
+  const [error, setError] = useState<unknown>(null);
+
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const basicFunctionality = useSelector(getUseExternalServices);
+  const isUnlocked = useSelector(getIsUnlocked);
+  const isSignedIn = useSelector(selectIsSignedIn);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+
+  const shouldDispatchAccountSyncing = useMemo(
+    () =>
+      basicFunctionality &&
+      isProfileSyncingEnabled &&
+      isUnlocked &&
+      isSignedIn &&
+      completedOnboarding,
+    [
+      basicFunctionality,
+      isProfileSyncingEnabled,
+      isUnlocked,
+      isSignedIn,
+      completedOnboarding,
+    ],
+  );
+
+  const dispatchAccountSyncing = useCallback(() => {
+    setError(null);
+
+    try {
+      if (!shouldDispatchAccountSyncing) {
+        return;
+      }
+      dispatch(syncInternalAccountsWithUserStorage());
+    } catch (e) {
+      log.error(e);
+      setError(e instanceof Error ? e.message : 'An unexpected error occurred');
+    }
+  }, [dispatch, shouldDispatchAccountSyncing]);
+
+  return {
+    dispatchAccountSyncing,
+    shouldDispatchAccountSyncing,
+    error,
+  };
+};
+
+/**
+ * Custom hook to apply account syncing effect.
+ */
+export const useAccountSyncingEffect = () => {
+  const { dispatchAccountSyncing } = useAccountSyncing();
+
+  useEffect(() => {
+    dispatchAccountSyncing();
+  }, [dispatchAccountSyncing]);
+};

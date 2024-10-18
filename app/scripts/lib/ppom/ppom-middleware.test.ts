@@ -1,4 +1,6 @@
 import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
+
+import { detectSIWE, SIWEMessage } from '@metamask/controller-utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
@@ -17,6 +19,7 @@ import {
 import { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
+jest.mock('@metamask/controller-utils');
 
 const SECURITY_ALERT_ID_MOCK = '123';
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
@@ -35,7 +38,7 @@ const REQUEST_MOCK = {
 
 const createMiddleware = (
   options: {
-    chainId?: Hex;
+    chainId?: Hex | null;
     error?: Error;
     securityAlertsEnabled?: boolean;
     // TODO: Replace `any` with type
@@ -65,7 +68,10 @@ const createMiddleware = (
   }
 
   const networkController = {
-    state: mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
+    state: {
+      ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
+      ...(chainId === null ? { providerConfig: {} } : undefined),
+    },
   };
 
   const appStateController = {
@@ -100,6 +106,7 @@ describe('PPOMMiddleware', () => {
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
   const isChainSupportedMock = jest.mocked(isChainSupported);
+  const detectSIWEMock = jest.mocked(detectSIWE);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -179,7 +186,30 @@ describe('PPOMMiddleware', () => {
       securityAlertResponse: undefined,
     };
 
+    // @ts-expect-error Passing in invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
+
+    expect(req.securityAlertResponse).toBeUndefined();
+    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
+  });
+
+  it('does not do validation if unable to get the chainId from the network provider config', async () => {
+    isChainSupportedMock.mockResolvedValue(false);
+    const middlewareFunction = createMiddleware({
+      chainId: null,
+    });
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
 
     expect(req.securityAlertResponse).toBeUndefined();
     expect(validateRequestWithPPOM).not.toHaveBeenCalled();
@@ -265,7 +295,9 @@ describe('PPOMMiddleware', () => {
       tabId: 1048745900,
       securityAlertResponse: undefined,
     };
+    detectSIWEMock.mockReturnValue({ isSIWEMessage: true } as SIWEMessage);
 
+    // @ts-expect-error Passing invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();

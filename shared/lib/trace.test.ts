@@ -1,4 +1,5 @@
 import {
+  setMeasurement,
   Span,
   startSpan,
   startSpanManual,
@@ -10,6 +11,7 @@ jest.mock('@sentry/browser', () => ({
   withIsolationScope: jest.fn(),
   startSpan: jest.fn(),
   startSpanManual: jest.fn(),
+  setMeasurement: jest.fn(),
 }));
 
 const NAME_MOCK = TraceName.Transaction;
@@ -32,7 +34,8 @@ describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
   const startSpanManualMock = jest.mocked(startSpanManual);
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
-  const setTagsMock = jest.fn();
+  const setMeasurementMock = jest.mocked(setMeasurement);
+  const setTagMock = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -41,13 +44,20 @@ describe('Trace', () => {
       startSpan: startSpanMock,
       startSpanManual: startSpanManualMock,
       withIsolationScope: withIsolationScopeMock,
+      setMeasurement: setMeasurementMock,
     };
 
     startSpanMock.mockImplementation((_, fn) => fn({} as Span));
 
+    startSpanManualMock.mockImplementation((_, fn) =>
+      fn({} as Span, () => {
+        // Intentionally empty
+      }),
+    );
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     withIsolationScopeMock.mockImplementation((fn: any) =>
-      fn({ setTags: setTagsMock }),
+      fn({ setTag: setTagMock }),
     );
   });
 
@@ -91,8 +101,12 @@ describe('Trace', () => {
         expect.any(Function),
       );
 
-      expect(setTagsMock).toHaveBeenCalledTimes(1);
-      expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
+      expect(setTagMock).toHaveBeenCalledTimes(2);
+      expect(setTagMock).toHaveBeenCalledWith('tag1', 'value1');
+      expect(setTagMock).toHaveBeenCalledWith('tag2', true);
+
+      expect(setMeasurementMock).toHaveBeenCalledTimes(1);
+      expect(setMeasurementMock).toHaveBeenCalledWith('tag3', 123, 'none');
     });
 
     it('invokes Sentry if no callback provided', () => {
@@ -117,8 +131,12 @@ describe('Trace', () => {
         expect.any(Function),
       );
 
-      expect(setTagsMock).toHaveBeenCalledTimes(1);
-      expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
+      expect(setTagMock).toHaveBeenCalledTimes(2);
+      expect(setTagMock).toHaveBeenCalledWith('tag1', 'value1');
+      expect(setTagMock).toHaveBeenCalledWith('tag2', true);
+
+      expect(setMeasurementMock).toHaveBeenCalledTimes(1);
+      expect(setMeasurementMock).toHaveBeenCalledWith('tag3', 123, 'none');
     });
 
     it('invokes Sentry if no callback provided with custom start time', () => {
@@ -145,8 +163,12 @@ describe('Trace', () => {
         expect.any(Function),
       );
 
-      expect(setTagsMock).toHaveBeenCalledTimes(1);
-      expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
+      expect(setTagMock).toHaveBeenCalledTimes(2);
+      expect(setTagMock).toHaveBeenCalledWith('tag1', 'value1');
+      expect(setTagMock).toHaveBeenCalledWith('tag2', true);
+
+      expect(setMeasurementMock).toHaveBeenCalledTimes(1);
+      expect(setMeasurementMock).toHaveBeenCalledWith('tag3', 123, 'none');
     });
   });
 

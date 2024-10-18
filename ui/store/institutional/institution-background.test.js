@@ -8,6 +8,7 @@ import {
   mmiActionsFactory,
   showInteractiveReplacementTokenBanner,
   setCustodianDeepLink,
+  setNoteToTraderMessage,
   setTypedMessageInProgress,
   setPersonalMessageInProgress,
 } from './institution-background';
@@ -157,6 +158,19 @@ describe('Institution Actions', () => {
       );
       expect(forceUpdateMetamaskState).toHaveBeenCalledWith(dispatch);
       expect(hideLoadingIndication).toHaveBeenCalled();
+    });
+  });
+
+  describe('#setNoteToTraderMessage', () => {
+    it('should test setNoteToTraderMessage action', async () => {
+      const dispatch = jest.fn();
+
+      await setNoteToTraderMessage('some message')(dispatch);
+
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'setNoteToTraderMessage',
+        ['some message'],
+      );
     });
   });
 });

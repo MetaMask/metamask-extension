@@ -58,6 +58,7 @@ const NonceDetails = () => {
             enableCustomNonce ? () => openEditNonceModal() : undefined
           }
           editIconClassName="edit-nonce-btn"
+          editIconDataTestId="edit-nonce-icon"
         />
       </ConfirmInfoRow>
     </ConfirmInfoSection>

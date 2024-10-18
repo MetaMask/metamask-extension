@@ -6,19 +6,18 @@ import {
   NetworkControllerStateChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
+import { Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { MAINNET_CHAINS } from '../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
 
 /**
- * The network ID of a network.
+ * Information about an ordered network.
  */
-
 export type NetworksInfo = {
-  networkId: string;
-  networkRpcUrl: string;
+  networkId: Hex; // The network's chain id
 };
 
 // State shape for NetworkOrderController
@@ -109,51 +108,32 @@ export class NetworkOrderController extends BaseController<
    * Handles the state change of the network controller and updates the networks list.
    *
    * @param networkControllerState - The state of the network controller.
+   * @param networkControllerState.networkConfigurationsByChainId
    */
-  onNetworkControllerStateChange(networkControllerState: NetworkState) {
-    // Extract network configurations from the state
-    const networkConfigurations = Object.values(
-      networkControllerState.networkConfigurations,
-    );
-
-    // Since networkConfigurations doesn't have default or mainnet network configurations we need to combine mainnet chains with network configurations
-    const combinedNetworks = [...MAINNET_CHAINS, ...networkConfigurations];
-
-    // Extract unique chainIds from the combined networks
-    const uniqueChainIds = combinedNetworks.map((item) => ({
-      networkId: item.chainId,
-      networkRpcUrl: item.rpcUrl,
-    }));
-
-    // Arrays to store reordered and new unique chainIds
-    let reorderedNetworks: NetworksInfo[] = [];
-    const newUniqueNetworks: NetworksInfo[] = [];
-
-    // Iterate through uniqueChainIds to reorder existing elements
-    uniqueChainIds.forEach((newItem) => {
-      const existingIndex = this.state.orderedNetworkList.findIndex(
-        (item) =>
-          item.networkId === newItem.networkId &&
-          item.networkRpcUrl === newItem.networkRpcUrl,
-      );
-      // eslint-disable-next-line no-negated-condition
-      if (existingIndex !== -1) {
-        // Reorder existing element
-        reorderedNetworks[existingIndex] = newItem;
-      } else {
-        // Add new unique element
-        newUniqueNetworks.push(newItem);
-      }
-    });
-
-    // Filter out null values and concatenate reordered and new unique networks
-    reorderedNetworks = reorderedNetworks
-      .filter((item) => Boolean(item))
-      .concat(newUniqueNetworks);
-
-    // Update the state with the new networks list
+  onNetworkControllerStateChange({
+    networkConfigurationsByChainId,
+  }: NetworkState) {
     this.update((state) => {
-      state.orderedNetworkList = reorderedNetworks;
+      // Filter out testnets, which are in the state but not orderable
+      const chainIds = Object.keys(networkConfigurationsByChainId).filter(
+        (chainId) =>
+          !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
+      ) as Hex[];
+
+      const newNetworks = chainIds
+        .filter(
+          (chainId) =>
+            !state.orderedNetworkList.some(
+              ({ networkId }) => networkId === chainId,
+            ),
+        )
+        .map((chainId) => ({ networkId: chainId }));
+
+      state.orderedNetworkList = state.orderedNetworkList
+        // Filter out deleted networks
+        .filter(({ networkId }) => chainIds.includes(networkId))
+        // Append new networks to the end
+        .concat(newNetworks);
     });
   }
 
@@ -163,10 +143,11 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(networkList: []) {
+  updateNetworksList(chainIds: Hex[]) {
     this.update((state) => {
-      state.orderedNetworkList = networkList;
-      return state;
+      state.orderedNetworkList = chainIds.map((chainId) => ({
+        networkId: chainId,
+      }));
     });
   }
 }

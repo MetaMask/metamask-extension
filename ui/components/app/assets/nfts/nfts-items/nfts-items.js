@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -16,13 +16,14 @@ import {
   FLEX_WRAP,
 } from '../../../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedInternalAccount,
   getCurrentNetwork,
-  getOpenSeaEnabled,
 } from '../../../../../selectors';
 import {
   ASSET_ROUTE,
@@ -46,6 +47,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { CollectionImageComponent } from './collection-image.component';
 
 const width = (isModal) => {
   const env = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
@@ -78,7 +81,8 @@ export default function NftsItems({
   const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
-  const openSeaEnabled = useSelector(getOpenSeaEnabled);
+
+  const [updatedNfts, setUpdatedNfts] = useState([]);
 
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
@@ -116,39 +120,40 @@ export default function NftsItems({
     dispatch,
   ]);
 
-  const history = useHistory();
-
-  const renderCollectionImage = (collectionImage, collectionName) => {
-    if (collectionImage?.startsWith('ipfs') && !ipfsGateway) {
-      return (
-        <div className="nfts-items__collection-image-alt">
-          {collectionName?.[0]?.toUpperCase() ?? null}
-        </div>
-      );
-    }
-    if (!openSeaEnabled && !collectionImage?.startsWith('ipfs')) {
-      return (
-        <div className="nfts-items__collection-image-alt">
-          {collectionName?.[0]?.toUpperCase() ?? null}
-        </div>
-      );
-    }
-
-    if (collectionImage) {
-      return (
-        <img
-          alt={collectionName}
-          src={getAssetImageURL(collectionImage, ipfsGateway)}
-          className="nfts-items__collection-image"
-        />
-      );
-    }
-    return (
-      <div className="nfts-items__collection-image-alt">
-        {collectionName?.[0]?.toUpperCase() ?? null}
-      </div>
-    );
+  const getAssetImageUrlAndUpdate = async (image, nft) => {
+    const nftImage = await getAssetImageURL(image, ipfsGateway);
+    const updatedNFt = {
+      ...nft,
+      ipfsImageUpdated: nftImage,
+    };
+    return updatedNFt;
   };
+
+  useEffect(() => {
+    const promisesArr = [];
+    const modifyItems = async () => {
+      for (const key of collectionsKeys) {
+        const { nfts } = collections[key];
+        for (const singleNft of nfts) {
+          const { image, imageOriginal } = singleNft;
+
+          const isImageHosted =
+            image?.startsWith('https:') || image?.startsWith('http:');
+          if (!isImageHosted) {
+            promisesArr.push(
+              getAssetImageUrlAndUpdate(imageOriginal ?? image, singleNft),
+            );
+          }
+        }
+      }
+      const settled = await Promise.all(promisesArr);
+      setUpdatedNfts(settled);
+    };
+
+    modifyItems();
+  }, []);
+
+  const history = useHistory();
 
   const updateNftDropDownStateKey = (key, isExpanded) => {
     const newCurrentAccountState = {
@@ -198,6 +203,19 @@ export default function NftsItems({
     if (!nfts.length) {
       return null;
     }
+    const getSource = (isImageHosted, nft) => {
+      if (!isImageHosted) {
+        const found = updatedNfts.find(
+          (elm) =>
+            elm.tokenId === nft.tokenId &&
+            isEqualCaseInsensitive(elm.address, nft.address),
+        );
+        if (found) {
+          return found.ipfsImageUpdated;
+        }
+      }
+      return nft.image;
+    };
 
     const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
     return (
@@ -220,7 +238,10 @@ export default function NftsItems({
               alignItems={AlignItems.center}
               className="nfts-items__collection-header"
             >
-              {renderCollectionImage(collectionImage, collectionName)}
+              <CollectionImageComponent
+                collectionImage={collectionImage}
+                collectionName={collectionName}
+              />
               <Typography
                 color={Color.textDefault}
                 variant={TypographyVariant.H5}
@@ -243,15 +264,12 @@ export default function NftsItems({
             {nfts.map((nft, i) => {
               const { image, address, tokenId, name, imageOriginal, tokenURI } =
                 nft;
-              const nftImage = getAssetImageURL(
-                imageOriginal ?? image,
-                ipfsGateway,
-              );
               const nftImageAlt = getNftImageAlt(nft);
-              const isImageHosted = image?.startsWith('https:');
-              const nftImageURL = imageOriginal?.startsWith('ipfs')
-                ? nftImage
-                : image;
+              const isImageHosted =
+                image?.startsWith('https:') || image?.startsWith('http:');
+
+              const source = getSource(isImageHosted, nft);
+
               const isIpfsURL = (
                 imageOriginal ??
                 image ??
@@ -271,9 +289,8 @@ export default function NftsItems({
                   className="nfts-items__item-wrapper"
                 >
                   <NftItem
-                    nftImageURL={nftImageURL}
                     alt={nftImageAlt}
-                    src={isImageHosted ? image : nftImage}
+                    src={source}
                     name={name}
                     tokenId={tokenId}
                     networkName={currentChain.nickname}

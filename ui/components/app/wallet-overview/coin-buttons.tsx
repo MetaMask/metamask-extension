@@ -65,11 +65,12 @@ import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
-import { ReceiveModal } from '../../multichain/receive-modal';
 ///: END:ONLY_INCLUDE_IF
+import { ReceiveModal } from '../../multichain/receive-modal';
 
 const CoinButtons = ({
   chainId,
+  trackingLocation,
   isSwapsChain,
   isSigningEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -80,6 +81,7 @@ const CoinButtons = ({
   classPrefix = 'coin',
 }: {
   chainId: `0x${string}` | CaipChainId | number;
+  trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -396,6 +398,15 @@ const CoinButtons = ({
             }
             label={t('receive')}
             onClick={() => {
+              trackEvent({
+                event: MetaMetricsEventName.NavReceiveButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  text: 'Receive',
+                  location: trackingLocation,
+                  chain_id: chainId,
+                },
+              });
               setShowReceiveModal(true);
             }}
           />

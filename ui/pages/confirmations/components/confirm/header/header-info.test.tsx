@@ -1,38 +1,27 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/jest';
+import {
+  getMockContractInteractionConfirmState,
+  getMockTypedSignConfirmState,
+} from '../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import configureStore from '../../../../../store/store';
 import HeaderInfo from './header-info';
 
-const mockStore = {
-  metamask: {
-    ...mockState.metamask,
-  },
-  confirm: {
-    currentConfirmation: {
-      id: 'testApprovalId',
-      msgParams: {
-        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        signatureMethod: 'eth_signTypedData_v4',
-      },
-      type: 'eth_signTypedData',
-    },
-  },
-};
+const mockStore = getMockTypedSignConfirmState();
 
 const cases = [
   {
     description: 'for a signature',
-    store: {
-      ...mockStore,
-    },
+    store: mockStore,
     expectedEvent: {
       category: MetaMetricsEventCategory.Confirmations,
       event: MetaMetricsEventName.AccountDetailsOpened,
@@ -45,22 +34,14 @@ const cases = [
   },
   {
     description: 'for a transaction',
-    store: {
-      ...mockStore,
-      confirm: {
-        currentConfirmation: {
-          id: 'testApprovalId',
-          type: 'a_transaction_type',
-        },
-      },
-    },
+    store: getMockContractInteractionConfirmState(),
     expectedEvent: {
       category: MetaMetricsEventCategory.Confirmations,
       event: MetaMetricsEventName.AccountDetailsOpened,
       properties: {
         action: 'Confirm Screen',
         location: MetaMetricsEventLocation.Transaction,
-        transaction_type: 'a_transaction_type',
+        transaction_type: TransactionType.contractInteraction,
       },
     },
   },
@@ -68,7 +49,7 @@ const cases = [
 
 const render = () => {
   const store = configureStore(mockStore);
-  return renderWithProvider(<HeaderInfo />, store);
+  return renderWithConfirmContextProvider(<HeaderInfo />, store);
 };
 
 describe('Header', () => {
@@ -95,7 +76,7 @@ describe('Header', () => {
     cases.forEach(({ description, store, expectedEvent }) => {
       it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric ${description}`, () => {
         const mockTrackEvent = jest.fn();
-        const { getByLabelText } = renderWithProvider(
+        const { getByLabelText } = renderWithConfirmContextProvider(
           <MetaMetricsContext.Provider value={mockTrackEvent}>
             <HeaderInfo />
           </MetaMetricsContext.Provider>,

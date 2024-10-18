@@ -26,8 +26,12 @@ jest.mock('../../../ducks/app/app.ts', () => {
 describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+        { chainId: CHAIN_IDS.SEPOLIA },
+        { chainId: CHAIN_IDS.LINEA_SEPOLIA },
+      ),
       preferences: {
         petnamesEnabled: true,
       },

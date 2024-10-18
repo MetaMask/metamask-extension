@@ -4,6 +4,8 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -198,7 +200,7 @@ describe('App Header', () => {
       const mockProviderConfig = {
         chainId: '0x1',
         rpcUrl: 'https://localhost:8545',
-        nickname: null,
+        nickname: undefined,
       };
 
       const { getByText } = render({

@@ -1,0 +1,33 @@
+diff --git a/PATCH.txt b/PATCH.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..78b9156dc2b0bf7c33dadf325cb3ec0bfae71ccb
+--- /dev/null
++++ b/PATCH.txt
+@@ -0,0 +1,3 @@
++We remove `lookupNetwork` from `initializeProvider` in the network controller to prevent network requests before user onboarding is completed.
++The network lookup is done after onboarding is completed, and when the extension reloads if onboarding has been completed.
++This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
+diff --git a/dist/chunk-BV3ZGWII.mjs b/dist/chunk-BV3ZGWII.mjs
+index 0d1bf3b6348ad4ec7a799083fcadf36f9fc74851..48a09c6e474da9c18115bec88130a88888337044 100644
+--- a/dist/chunk-BV3ZGWII.mjs
++++ b/dist/chunk-BV3ZGWII.mjs
+@@ -468,7 +468,6 @@ var NetworkController = class extends BaseController {
+    */
+   async initializeProvider() {
+     __privateMethod(this, _applyNetworkSelection, applyNetworkSelection_fn).call(this, this.state.selectedNetworkClientId);
+-    await this.lookupNetwork();
+   }
+   /**
+    * Refreshes the network meta with EIP-1559 support and the network status
+diff --git a/dist/chunk-YOHMQPGM.js b/dist/chunk-YOHMQPGM.js
+index ff15cd78ef90b35f86aae9dc64d17d1d2efe352d..14a8bba39c204585164dfb252d0a183844a58d63 100644
+--- a/dist/chunk-YOHMQPGM.js
++++ b/dist/chunk-YOHMQPGM.js
+@@ -468,7 +468,6 @@ var NetworkController = class extends _basecontroller.BaseController {
+    */
+   async initializeProvider() {
+     _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _applyNetworkSelection, applyNetworkSelection_fn).call(this, this.state.selectedNetworkClientId);
+-    await this.lookupNetwork();
+   }
+   /**
+    * Refreshes the network meta with EIP-1559 support and the network status

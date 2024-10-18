@@ -74,6 +74,10 @@
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": null,
+      "metaMetricsDataDeletionTimestamp": 0
+    },
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networksMetadata": {
@@ -111,7 +115,8 @@
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
         "showConfirmationAdvancedDetails": false,
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+        "showMultiRpcModal": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
