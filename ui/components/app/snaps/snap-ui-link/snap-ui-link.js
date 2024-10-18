@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
@@ -54,8 +55,12 @@ export const SnapUILink = ({ href, children }) => {
         onClick={handleLinkClick}
         externalLink
         size={ButtonLinkSize.Inherit}
-        display={Display.Inline}
+        display={Display.InlineBlock}
         className="snap-ui-link"
+        style={{
+          // Prevents the link from taking up the full width of the parent.
+          width: 'fit-content',
+        }}
         textProps={{
           display: Display.InlineFlex,
           flexDirection: FlexDirection.Row,
