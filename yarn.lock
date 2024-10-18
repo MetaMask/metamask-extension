@@ -4172,20 +4172,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keystonehq/metamask-airgapped-keyring@npm:^0.13.1":
-  version: 0.13.1
-  resolution: "@keystonehq/metamask-airgapped-keyring@npm:0.13.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.0.2"
-    "@keystonehq/base-eth-keyring": "npm:^0.14.1"
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@metamask/obs-store": "npm:^7.0.0"
-    rlp: "npm:^2.2.6"
-    uuid: "npm:^8.3.2"
-  checksum: 10/a12870b4527ae91cbad1995700f0710188c6fd9d2c6c2d9b398c25d96c4267fa4812e075a117c05c5edd9f6ada2c525562b5a6df3a0881c938900ff0c88791ee
-  languageName: node
-  linkType: hard
-
 "@keystonehq/metamask-airgapped-keyring@npm:^0.14.1":
   version: 0.14.1
   resolution: "@keystonehq/metamask-airgapped-keyring@npm:0.14.1"
@@ -5838,16 +5824,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/obs-store@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/obs-store@npm:7.0.0"
-  dependencies:
-    "@metamask/safe-event-emitter": "npm:^2.0.0"
-    through2: "npm:^2.0.3"
-  checksum: 10/e1497140384de0ac689adbe7286df43e843c5d73fd8ba7080af2faab3de73e823b46b8214be1c839d9e9e5f86fb40df50a26e93bae936329daeaedae5e523323
-  languageName: node
-  linkType: hard
-
 "@metamask/obs-store@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/obs-store@npm:9.0.0"
@@ -6128,13 +6104,6 @@ __metadata:
     "@metamask/utils": "npm:^9.0.0"
     fast-safe-stringify: "npm:^2.0.6"
   checksum: 10/f25e2a5506d4d0d6193c88aef8f035ec189a1177f8aee8fa01c9a33d73b1536ca7b5eea2fb33a477768bbd2abaf16529e68f0b3cf714387e5d6c9178225354fd
-  languageName: node
-  linkType: hard
-
-"@metamask/safe-event-emitter@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/safe-event-emitter@npm:2.0.0"
-  checksum: 10/3e4f00c64aa1ddf9b9ae5c2337fb8cee359b6c481ded0ec21ef70610960c51cdcc4a9b569de334dcd7cb1fe445cafd298360907c1e211e244c5990b55246f350
   languageName: node
   linkType: hard
 
@@ -25916,7 +25885,7 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^5.13.0"
     "@jest/globals": "npm:^29.7.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
+    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@lavamoat/lavadome-core": "npm:0.0.10"
     "@lavamoat/lavadome-react": "npm:0.0.17"
