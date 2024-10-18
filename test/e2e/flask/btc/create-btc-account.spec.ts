@@ -10,8 +10,7 @@ import {
   removeSelectedAccount,
   tapAndHoldToRevealSRP,
 } from '../../helpers';
-import { createBtcAccount } from '../../accounts/common';
-import { withBtcAccountSnap } from './common-btc';
+import { createBtcAccount, withBtcAccountSnap } from './common-btc';
 
 describe('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
@@ -135,11 +134,10 @@ describe('Create BTC Account', function (this: Suite) {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        const lockButton = await driver.findClickableElement(
-          '[data-testid="global-menu-lock"]',
-        );
-        assert.equal(await lockButton.getText(), 'Lock MetaMask');
-        await lockButton.click();
+        await driver.clickElement({
+          css: '[data-testid="global-menu-lock"]',
+          text: 'Lock MetaMask',
+        });
 
         await driver.clickElement({
           text: 'Forgot password?',

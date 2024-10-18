@@ -4,7 +4,10 @@ import { act } from 'react-dom/test-utils';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { permitSignatureMsg } from '../../../../../../../../test/data/confirmations/typed_sign';
+import {
+  permitNFTSignatureMsg,
+  permitSignatureMsg,
+} from '../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
 import PermitSimulation from './permit-simulation';
 
@@ -35,6 +38,22 @@ describe('PermitSimulation', () => {
       );
 
       expect(await findByText('30')).toBeInTheDocument();
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('renders correctly for NFT permit', async () => {
+    const state = getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg);
+    const mockStore = configureMockStore([])(state);
+
+    await act(async () => {
+      const { container, findByText } = renderWithConfirmContextProvider(
+        <PermitSimulation />,
+        mockStore,
+      );
+
+      expect(await findByText('Withdraw')).toBeInTheDocument();
+      expect(await findByText('#3606393')).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });

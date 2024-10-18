@@ -52,6 +52,7 @@ import {
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
+  getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -68,8 +69,9 @@ import {
   getDataCollectionForMarketing,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import {
   getValueFromWeiHex,
@@ -190,9 +192,10 @@ export default function PrepareSwapPage({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
+  const usedQuote = useSelector(getUsedQuote, isEqual);
   const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const numberOfQuotes = Object.keys(quotes).length;
-  const areQuotesPresent = numberOfQuotes > 0;
+  const areQuotesPresent = numberOfQuotes > 0 && usedQuote;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
   const transactionSettingsOpened = useSelector(
@@ -210,14 +213,15 @@ export default function PrepareSwapPage({
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
   const isSmartTransaction =
-    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
+    useSelector(getSmartTransactionsPreferenceEnabled) &&
+    currentSmartTransactionsEnabled;
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;

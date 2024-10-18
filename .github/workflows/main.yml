@@ -32,21 +32,12 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
 
-  sonarcloud:
-    name: SonarCloud
-    uses: ./.github/workflows/sonarcloud.yml
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    needs:
-      - run-tests
-
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
     needs:
       - check-workflows
       - run-tests
-      - sonarcloud
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:

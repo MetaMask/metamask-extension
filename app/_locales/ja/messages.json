@@ -331,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "トランザクションがブロックに含まれた場合、最大基本料金と実際の基本料金の差が返金されます。合計金額は、最大基本料金 (Gwei単位) * ガスリミットで計算されます。"
   },
-  "advancedConfiguration": {
-    "message": "詳細設定"
-  },
   "advancedDetailsDataDesc": {
     "message": "データ"
   },
@@ -381,12 +378,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "ガスオプションを更新"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "複数アラート！"
-  },
   "alertDisableTooltip": {
     "message": "これは「設定」>「アラート」で変更できます"
   },
@@ -398,9 +389,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "このトランザクションを続行するには、ガスリミットを21000以上に上げる必要があります。"
-  },
-  "alertMessageInsufficientBalance": {
-    "message": "アカウントにトランザクション手数料を支払うのに十分なETHがありません。"
   },
   "alertMessageNetworkBusy": {
     "message": "ガス価格が高く、見積もりはあまり正確ではありません。"
@@ -455,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "正しくないアカウント"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "選択した未接続のアカウントを使用してWebサイトをブラウズしています"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "このアラートは、選択中のアカウントが未接続のままweb3サイトを閲覧しているときにポップアップ表示されます。"
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Webサイトが削除済みのwindow.web3 APIを使用しようとした場合"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "このアラートは、削除されたwindow.web3 APIを使用しようとし、その結果破損している可能性があるサイトをブラウズした際、ポップアップに表示されます。"
   },
   "alerts": {
     "message": "アラート"
@@ -720,12 +696,6 @@
   },
   "betaTerms": {
     "message": "ベータ版利用規約"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMaskベータ版はシークレットリカバリーフレーズを復元できません。"
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMaskベータ版がユーザーのシークレットリカバリーフレーズを求めることは絶対にありません。"
   },
   "billionAbbreviation": {
     "message": "B",
@@ -1093,9 +1063,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMaskはこのサイトに接続されていますが、まだアカウントは接続されていません"
-  },
-  "connectedWith": {
-    "message": "接続先"
   },
   "connecting": {
     "message": "接続中..."
@@ -1512,14 +1479,6 @@
   },
   "disconnectAllSnapsText": {
     "message": "Snap"
-  },
-  "disconnectAllText": {
-    "message": "$1と$2の接続を解除した場合、再び使用するには再度接続する必要があります。",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "すべての$1の接続を解除",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "$1を接続解除"
@@ -2104,9 +2063,6 @@
   "hideSentitiveInfo": {
     "message": "機密情報を非表示"
   },
-  "hideToken": {
-    "message": "トークンを非表示"
-  },
   "hideTokenPrompt": {
     "message": "トークンを非表示にしますか？"
   },
@@ -2431,9 +2387,6 @@
   },
   "jazzicons": {
     "message": "Jazzicon"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "JSONファイル",
@@ -2841,10 +2794,6 @@
     "message": "$1が次の承認を求めています:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "このサイトに次のことを希望しますか？",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "このネットワークのネイティブトークンは$1です。ガス代にもこのトークンが使用されます。",
     "description": "$1 represents the name of the native token on the current network"
@@ -3081,9 +3030,6 @@
   },
   "noAccountsFound": {
     "message": "指定された検索クエリでアカウントが見つかりませんでした"
-  },
-  "noConnectedAccountDescription": {
-    "message": "続行するには、このサイトで使用するアカウントを選択してください。"
   },
   "noConnectedAccountTitle": {
     "message": "MetaMaskはこのサイトに接続されていません"
@@ -3487,10 +3433,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "MetaMask Institutionalをピン留めする"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "フィッシング検出アラートには$1との通信が必要です。jsDeliverはユーザーのIPアドレスにアクセスします。$2をご覧ください。",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "oneDayAbbreviation": {
     "message": "1日",
@@ -4132,9 +4074,6 @@
   "rejected": {
     "message": "拒否されました"
   },
-  "remember": {
-    "message": "ご注意:"
-  },
   "remove": {
     "message": "削除"
   },
@@ -4541,9 +4480,6 @@
   },
   "sepolia": {
     "message": "Sepoliaテストネットワーク"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMaskはこれらの信頼できるサードパーティサービスを使用して、製品の使いやすさと安全性を向上させています。"
   },
   "setApprovalForAll": {
     "message": "すべてを承認に設定"
@@ -5256,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "続ける際には、最新のクォートを表示する準備ができています"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "$1と一致するトークンがありません",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "ハードウェアウォレットで確定"
   },
@@ -5324,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "見積もり取得エラー"
   },
-  "swapFetchingTokens": {
-    "message": "トークンを取得中..."
-  },
   "swapFromTo": {
     "message": "$1から$2へのスワップ",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5346,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "高スリッページ"
-  },
-  "swapHighSlippageWarning": {
-    "message": "スリッページが非常に大きいです。"
   },
   "swapIncludesMMFee": {
     "message": "$1%のMetaMask手数料が含まれています。",
@@ -5370,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "低スリッページ"
-  },
-  "swapLowSlippageError": {
-    "message": "トランザクションが失敗する可能性があります。最大スリッページが低すぎます。"
   },
   "swapMaxSlippage": {
     "message": "最大スリッページ"
@@ -5407,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "最大$1%の価格差",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "プライスインパクトとは、現在の市場価格と取引の約定時に受け取る金額の差のことです。プライスインパクトは、流動性プールに対する取引の大きさにより発生します。"
   },
   "swapPriceUnavailableDescription": {
     "message": "市場価格のデータが不足しているため、プライスインパクトを測定できませんでした。スワップする前に、これから受領するトークンの額に問題がないか確認してください。"
@@ -5457,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "見積もりのリクエスト"
   },
-  "swapReviewSwap": {
-    "message": "スワップの確認"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "名前を検索するかアドレスを貼り付けてください"
-  },
   "swapSelect": {
     "message": "選択"
   },
@@ -5494,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "低スリッページ"
-  },
-  "swapSlippageNegative": {
-    "message": "スリッページは0以上でなければなりません。"
   },
   "swapSlippageNegativeDescription": {
     "message": "スリッページは0以上でなければなりません"
@@ -5566,20 +5477,6 @@
     "message": "$1を$2にスワップ",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "このトークンは手動で追加されました。"
-  },
-  "swapTokenVerificationMessage": {
-    "message": "常に$1のトークンアドレスを確認してください。",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "1つのソースでのみ検証済みです。"
-  },
-  "swapTokenVerificationSources": {
-    "message": "$1個のソースで検証済みです。",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1は1つのソースでしか検証されていません。進める前に$2で検証することをご検討ください。",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5600,29 +5497,11 @@
   "swapUnknown": {
     "message": "不明"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "複数のトークンで同じ名前とシンボルを使用できます。$1をチェックして、これが探しているトークンであることを確認してください。",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2がスワップに使用可能です",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0%スリッページ"
   },
-  "swapsAdvancedOptions": {
-    "message": "詳細オプション"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "スリッページ額が非常に大きいので、レートが不利になります。最大スリッページを15%未満の値に減らしてください。"
-  },
   "swapsMaxSlippage": {
     "message": "最大スリッページ"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "トランザクションを完了させるには、$1が不足しています",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "$1が不足しています",
@@ -5758,9 +5637,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "トークンの小数点以下の桁数が必要です。確認はこちら: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "トークンの小数桁数:"
   },
   "tokenDetails": {
     "message": "トークンの詳細"
@@ -6122,14 +5998,6 @@
   "verifyContractDetails": {
     "message": "サードパーティの詳細を確認"
   },
-  "verifyThisTokenOn": {
-    "message": "このトークンを$1で検証",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "このトークンを$1で検証して、取引したいトークンであることを確認してください。",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "version": {
     "message": "バージョン"
   },
@@ -6195,26 +6063,6 @@
   },
   "walletConnectionGuide": {
     "message": "弊社のハードウェアウォレット接続ガイド"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "ウォレットが正常に保護されました。シークレットリカバリーフレーズを安全かつ機密に保管してください。これはユーザーの責任です！"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMaskはシークレットリカバリーフレーズを復元できません。"
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMaskがユーザーのシークレットリカバリーフレーズを確認することは絶対にありません。"
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "誰に対しても$1。資金が盗まれる恐れがあります",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "シークレットリカバリーフレーズは決して教えないでください",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "ウォレットが作成されました"
   },
   "wantToAddThisNetwork": {
     "message": "このネットワークを追加しますか？"

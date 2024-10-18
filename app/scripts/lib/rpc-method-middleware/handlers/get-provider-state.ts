@@ -7,7 +7,6 @@ import type {
   JsonRpcParams,
   Hex,
 } from '@metamask/utils';
-import { OriginString } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   HandlerWrapper,
@@ -28,7 +27,7 @@ export type ProviderStateHandlerResult = {
 };
 
 export type GetProviderState = (
-  origin: OriginString,
+  origin: string,
 ) => Promise<ProviderStateHandlerResult>;
 
 type GetProviderStateConstraint<Params extends JsonRpcParams = JsonRpcParams> =
