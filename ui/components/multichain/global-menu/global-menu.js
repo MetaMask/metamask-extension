@@ -196,6 +196,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           <MenuItem
             iconName={IconName.Notification}
             onClick={() => handleNotificationsClick()}
+            data-testid="notifications-menu-item"
           >
             <Box
               display={Display.Flex}
