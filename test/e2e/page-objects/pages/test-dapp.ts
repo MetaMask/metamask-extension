@@ -128,6 +128,8 @@ class TestDapp {
     tag: 'button',
   };
 
+  private erc20TokenTransferButton = '#transferTokens';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -190,6 +192,10 @@ class TestDapp {
 
   public async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
+  }
+
+  public async clickERC20TokenTransferButton() {
+    await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
   /**
