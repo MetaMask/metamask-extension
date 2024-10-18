@@ -3,7 +3,7 @@ set -eo pipefail
 
 # Ensure required environment variables are set
 if [ -z "$CIRCLE_PULL_REQUEST" ] || [ -z "$GITHUB_TOKEN" ]; then
-  echo "CIRCLE_PULL_REQUEST and GITHUB_TOKEN must be set."
+  echo "Error: CIRCLE_PULL_REQUEST and GITHUB_TOKEN must be set."
   exit 1
 fi
 
@@ -14,8 +14,6 @@ PR_NUMBER=$(echo "$CIRCLE_PULL_REQUEST" | awk -F'/' '{print $NF}')
 REPO_OWNER="$CIRCLE_PROJECT_USERNAME"
 REPO_NAME=$(basename "$CIRCLE_REPOSITORY_URL" .git)
 
-echo "Fetching details for PR #$PR_NUMBER in repository $REPO_OWNER/$REPO_NAME."
-
 # Fetch PR details using GitHub API
 PR_DETAILS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
   "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER")
@@ -24,39 +22,37 @@ PR_DETAILS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
 SUBMITTED_REVIEWS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
   "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews")
 
-# Check for label using jq
+# Check for label 'team-mmi'
 LABEL_EXISTS=$(jq -r '.labels[]? | select(.name == "team-mmi") | length > 0' <<< "$PR_DETAILS")
 
-# Check for individual reviewer in requested reviewers
+# Check for individual reviewer 'mmi'
 REVIEWER_REQUESTED=$(jq -r '.requested_reviewers[]? | select(.login == "mmi") | length > 0' <<< "$PR_DETAILS")
 
-# Check for team reviewer in requested teams
+# Check for team reviewer 'mmi'
 TEAM_REQUESTED=$(jq -r '.requested_teams[]? | select(.slug == "mmi") | length > 0' <<< "$PR_DETAILS")
 
-# Check for reviewer team in submitted reviews
+# Check if 'mmi' submitted a review
 REVIEWER_SUBMITTED=$(jq -r '.[]? | select(.user.login == "mmi") | length > 0' <<< "$SUBMITTED_REVIEWS")
 
-echo "Label Exists: $LABEL_EXISTS"
-echo "Reviewer Requested: $REVIEWER_REQUESTED"
-echo "Team Requested: $TEAM_REQUESTED"
-echo "Reviewer Submitted: $REVIEWER_SUBMITTED"
-
-echo "SUBMITTED_REVIEWS: $SUBMITTED_REVIEWS"
-echo "PR_DETAILS: $PR_DETAILS"
-
-# Check if any condition is met
+# Determine which condition was met and trigger tests if needed
 if [[ "$LABEL_EXISTS" == "true" || "$REVIEWER_REQUESTED" == "true" || "$TEAM_REQUESTED" == "true" || "$REVIEWER_SUBMITTED" == "true" ]]; then
   echo "run_mmi_tests=true" > mmi_trigger.env
-  echo "Conditions met: Label 'team-mmi' found or Reviewer 'mmi' assigned/submitted."
+
+  # Log exactly which condition was met
+  echo "Conditions met:"
+  if [[ "$LABEL_EXISTS" == "true" ]]; then
+    echo "- Label 'team-mmi' found."
+  fi
+  if [[ "$REVIEWER_REQUESTED" == "true" ]]; then
+    echo "- Reviewer 'mmi' requested."
+  fi
+  if [[ "$TEAM_REQUESTED" == "true" ]]; then
+    echo "- Team 'mmi' requested."
+  fi
+  if [[ "$REVIEWER_SUBMITTED" == "true" ]]; then
+    echo "- Reviewer 'mmi' submitted a review."
+  fi
 else
   echo "run_mmi_tests=false" > mmi_trigger.env
   echo "Conditions not met: Label 'team-mmi' not found and Reviewer 'mmi' not assigned/submitted."
 fi
-
-# Debug: Print all requested reviewers and teams
-echo "All Requested Reviewers:"
-jq -r '.requested_reviewers[].login' <<< "$PR_DETAILS"
-echo "All Requested Teams:"
-jq -r '.requested_teams[].slug' <<< "$PR_DETAILS"
-echo "All Submitted Reviews:"
-jq -r '.[].user.login' <<< "$SUBMITTED_REVIEWS"
