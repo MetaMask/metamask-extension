@@ -434,9 +434,14 @@
         "Document.prototype": true,
         "DocumentFragment.prototype": true,
         "Element.prototype": true,
+        "Event.prototype": true,
+        "EventTarget.prototype": true,
+        "NavigateEvent.prototype": true,
+        "NavigationDestination.prototype": true,
         "Node.prototype": true,
         "console.warn": true,
-        "document": true
+        "document": true,
+        "navigation": true
       },
       "packages": {
         "react": true
