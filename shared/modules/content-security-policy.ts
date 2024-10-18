@@ -1,9 +1,9 @@
 // ASCII whitespace is U+0009 TAB, U+000A LF, U+000C FF, U+000D CR, or U+0020 SPACE.
 // See <https://infra.spec.whatwg.org/#ascii-whitespace>.
 const ASCII_WHITESPACE_CHARS = '\t\n\f\r ';
-const ASCII_WHITESPACE = RegExp(`[${ASCII_WHITESPACE_CHARS}]+`);
-const ASCII_WHITESPACE_AT_START = RegExp(`^[${ASCII_WHITESPACE_CHARS}]+`);
-const ASCII_WHITESPACE_AT_END = RegExp(`[${ASCII_WHITESPACE_CHARS}]+$`);
+const ASCII_WHITESPACE = new RegExp(`[${ASCII_WHITESPACE_CHARS}]+`);
+const ASCII_WHITESPACE_AT_START = new RegExp(`^[${ASCII_WHITESPACE_CHARS}]+`);
+const ASCII_WHITESPACE_AT_END = new RegExp(`[${ASCII_WHITESPACE_CHARS}]+$`);
 
 // An ASCII code point is a code point in the range U+0000 NULL to U+007F DELETE, inclusive.
 // See <https://infra.spec.whatwg.org/#ascii-string>.
