@@ -28,7 +28,7 @@ describe('Switch network - ', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetwork = new SelectNetwork(driver);
 
-        //Validate the default network is Localhost 8545
+        // Validate the default network is Localhost 8545
         await headerNavbar.check_networkNameSwitchDropDown('Localhost 8545');
 
         // Validate the switch network functionality to default Ethereum Mainnet
