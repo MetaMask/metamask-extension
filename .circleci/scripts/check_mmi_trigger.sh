@@ -1,10 +1,6 @@
 #!/bin/bash
 set -eo pipefail
 
-# Arguments: label_name reviewer_team
-LABEL_NAME="$1"
-REVIEWER_TEAM="$2"
-
 # Ensure required environment variables are set
 if [ -z "$CIRCLE_PULL_REQUEST" ] || [ -z "$GITHUB_TOKEN" ]; then
   echo "CIRCLE_PULL_REQUEST and GITHUB_TOKEN must be set."
@@ -29,13 +25,13 @@ SUBMITTED_REVIEWS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
   "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews")
 
 # Check for label using jq
-LABEL_EXISTS=$(jq -r --arg label "$LABEL_NAME" '.labels[]? | select(.name == "$label") | length > 0' <<< "$PR_DETAILS")
+LABEL_EXISTS=$(jq -r '.labels[]? | select(.name == "team-mmi") | length > 0' <<< "$PR_DETAILS")
 
 # Check for reviewer team in requested reviewers
-REVIEWER_REQUESTED=$(jq -r --arg team "$REVIEWER_TEAM" 'any(.requested_reviewers[]; .login == $team)' <<< "$PR_DETAILS")
+REVIEWER_REQUESTED=$(jq -r '.requested_reviewers[]? | select(.login == "mmi") | length > 0' <<< "$PR_DETAILS")
 
 # Check for reviewer team in submitted reviews
-REVIEWER_SUBMITTED=$(jq -r --arg team "$REVIEWER_TEAM" 'any(.[]; .user.login == $team)' <<< "$SUBMITTED_REVIEWS")
+REVIEWER_SUBMITTED=$(jq -r '.[]? | select(.user.login == "mmi") | length > 0' <<< "$SUBMITTED_REVIEWS")
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Requested: $REVIEWER_REQUESTED"
@@ -44,10 +40,10 @@ echo "Reviewer Submitted: $REVIEWER_SUBMITTED"
 # Check if any condition is met
 if [[ "$LABEL_EXISTS" == "true" || "$REVIEWER_REQUESTED" == "true" || "$REVIEWER_SUBMITTED" == "true" ]]; then
   echo "run_mmi_tests=true" > mmi_trigger.env
-  echo "Conditions met: Label '$LABEL_NAME' found or Reviewer '$REVIEWER_TEAM' assigned/submitted."
+  echo "Conditions met: Label 'team-mmi' found or Reviewer 'mmi' assigned/submitted."
 else
   echo "run_mmi_tests=false" > mmi_trigger.env
-  echo "Conditions not met: Label '$LABEL_NAME' not found and Reviewer '$REVIEWER_TEAM' not assigned/submitted."
+  echo "Conditions not met: Label 'team-mmi' not found and Reviewer 'mmi' not assigned/submitted."
 fi
 
 # Debug: Print all reviewers
