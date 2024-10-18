@@ -41,7 +41,7 @@ async function changeLanguage(driver: Driver, languageIndex: number) {
 }
 
 describe('Settings - general tab @no-mmi', function (this: Suite) {
-  it('validate the change language functionality', async function () {
+  it('validate the change language functionality and language is persisted after the page refresh', async function () {
     let languageIndex = 10;
 
     await withFixtures(
@@ -55,6 +55,9 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await changeLanguage(driver, languageIndex);
 
+        await driver.assertElementNotPresent('.loading-overlay__spinner');
+        await driver.waitForSelector(selectors.labelSpanish);
+
         // Validate the label changes to Spanish
         const isLanguageLabelChanged = await driver.isElementPresent(
           selectors.labelSpanish,
@@ -62,6 +65,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
         await driver.refresh();
+        await driver.assertElementNotPresent('.loading-overlay__spinner');
 
         // Change back to English and verify that the word is correctly changed back to English
         languageIndex = 9;
@@ -143,7 +147,9 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await changeLanguage(driver, languageIndex);
-        await driver.navigate();
+        await driver.clickElementAndWaitToDisappear(
+          '.settings-page__header__title-container__close-button',
+        );
         await driver.clickElement(selectors.ethOverviewSend);
         await driver.pasteIntoField(
           selectors.ensInput,
@@ -176,7 +182,9 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await changeLanguage(driver, languageIndex);
-        await driver.navigate();
+        await driver.clickElementAndWaitToDisappear(
+          '.settings-page__header__title-container__close-button',
+        );
 
         // Validate the account tooltip
         const isAccountTooltipChanged = await driver.isElementPresent(
@@ -214,7 +222,9 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         // selects "Magyar" language
         await changeLanguage(driver, languageIndex);
-        await driver.navigate();
+        await driver.clickElementAndWaitToDisappear(
+          '.settings-page__header__title-container__close-button',
+        );
         await driver.clickElement(selectors.nftsTab);
 
         // Validate the hypertext
