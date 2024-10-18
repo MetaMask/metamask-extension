@@ -307,7 +307,7 @@ module.exports = {
     {
       files: [
         '**/__snapshots__/*.snap',
-        'app/scripts/controllers/app-state.test.js',
+        'app/scripts/controllers/app-state-controller.test.ts',
         'app/scripts/controllers/mmi-controller.test.ts',
         'app/scripts/controllers/alert-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
