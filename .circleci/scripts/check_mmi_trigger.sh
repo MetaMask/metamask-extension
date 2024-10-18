@@ -29,13 +29,16 @@ SUBMITTED_REVIEWS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
   "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews")
 
 # Check for label using jq
-LABEL_EXISTS=$(echo "$PR_DETAILS" | jq -r --arg label "$LABEL_NAME" '.labels | map(.name) | contains([$label])')
+LABEL_EXISTS=$(echo "$PR_DETAILS" | jq -r --arg label "$LABEL_NAME" \
+  '.labels | map(.name) | contains([$label])')
 
 # Check for reviewer team in requested reviewers
-REVIEWER_REQUESTED=$(echo "$PR_DETAILS" | jq -r --arg team "$REVIEWER_TEAM" '.requested_reviewers | map(.login) | contains([$team])')
+REVIEWER_REQUESTED=$(echo "$PR_DETAILS" | jq -r --arg team "$REVIEWER_TEAM" \
+  '.requested_reviewers | map(.login) | contains([$team])')
 
 # Check for reviewer team in submitted reviews
-REVIEWER_SUBMITTED=$(echo "$SUBMITTED_REVIEWS" | jq -r --arg team "$REVIEWER_TEAM" 'map(.user.login) | contains([$team])')
+REVIEWER_SUBMITTED=$(echo "$SUBMITTED_REVIEWS" | jq -r --arg team "$REVIEWER_TEAM" \
+  'map(.user.login) | contains([$team])')
 
 echo "Label Exists: $LABEL_EXISTS"
 echo "Reviewer Requested: $REVIEWER_REQUESTED"
