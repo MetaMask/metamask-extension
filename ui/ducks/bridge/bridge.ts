@@ -39,12 +39,6 @@ const bridgeSlice = createSlice({
     resetInputFields: () => ({
       ...initialState,
     }),
-    switchToAndFromTokens: (state, { payload }) => ({
-      toChainId: payload,
-      fromToken: state.toToken,
-      toToken: state.fromToken,
-      fromTokenInputValue: null,
-    }),
   },
 });
 
