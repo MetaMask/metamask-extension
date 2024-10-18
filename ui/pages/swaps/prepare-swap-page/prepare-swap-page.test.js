@@ -120,7 +120,7 @@ describe('PrepareSwapPage', () => {
       },
     });
     const props = createProps();
-    const { getByText } = renderWithProvider(
+    const { getByText, getAllByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
       store,
     );
@@ -128,7 +128,7 @@ describe('PrepareSwapPage', () => {
     expect(
       getByText('USDC is only verified on 1 source', { exact: false }),
     ).toBeInTheDocument();
-    expect(getByText('Etherscan')).toBeInTheDocument();
+    expect(getAllByText('Etherscan')[0]).toBeInTheDocument();
     expect(getByText('Continue swapping')).toBeInTheDocument();
   });
 
@@ -143,7 +143,7 @@ describe('PrepareSwapPage', () => {
       },
     });
     const props = createProps();
-    const { getByText } = renderWithProvider(
+    const { getByText, getAllByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
       store,
     );
@@ -151,7 +151,7 @@ describe('PrepareSwapPage', () => {
     expect(
       getByText('Verify this token on', { exact: false }),
     ).toBeInTheDocument();
-    expect(getByText('Etherscan')).toBeInTheDocument();
+    expect(getAllByText('Etherscan')[0]).toBeInTheDocument();
     expect(getByText('Continue swapping')).toBeInTheDocument();
   });
 
@@ -167,11 +167,11 @@ describe('PrepareSwapPage', () => {
       },
     });
     const props = createProps();
-    const { getByText } = renderWithProvider(
+    const { getByText, getAllByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
       store,
     );
-    const blockExplorer = getByText('Etherscan');
+    const blockExplorer = getAllByText('Etherscan')[0];
     expect(blockExplorer).toBeInTheDocument();
     fireEvent.click(blockExplorer);
     expect(global.platform.openTab).toHaveBeenCalledWith({
