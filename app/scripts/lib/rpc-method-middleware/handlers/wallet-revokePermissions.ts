@@ -19,7 +19,7 @@ import {
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-} from 'json-rpc-engine';
+} from '@metamask/json-rpc-engine';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 

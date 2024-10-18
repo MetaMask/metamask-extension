@@ -23,7 +23,7 @@ import {
 import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-} from 'json-rpc-engine';
+} from '@metamask/json-rpc-engine';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,

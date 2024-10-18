@@ -461,7 +461,6 @@ class FixtureBuilder {
                       accounts: [
                         `eip155:1337:${selectedAccount.toLowerCase()}`,
                         'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                        `eip155:1337:${ERC_4337_ACCOUNT.toLowerCase()}`,
                       ],
                     },
                   },
@@ -631,8 +630,8 @@ class FixtureBuilder {
   withPreferencesControllerAdditionalAccountIdentities() {
     return this.withPreferencesController({
       identities: {
-        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        [DEFAULT_FIXTURE_ACCOUNT]: {
+          address: DEFAULT_FIXTURE_ACCOUNT,
           lastSelected: 1665507600000,
           name: 'Account 1',
         },
@@ -640,6 +639,11 @@ class FixtureBuilder {
           address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
           lastSelected: 1665507800000,
           name: 'Account 2',
+        },
+        [ERC_4337_ACCOUNT]: {
+          address: ERC_4337_ACCOUNT,
+          lastSelected: 1665507600000,
+          name: 'Account 4',
         },
       },
     });
@@ -817,6 +821,13 @@ class FixtureBuilder {
                 type: 'HD Key Tree',
               },
             },
+          },
+          '74c55111-be4f-48aa-a49c-55995c8a1b26': {
+            id: '74c55111-be4f-48aa-a49c-55995c8a1b26',
+            address: ERC_4337_ACCOUNT,
+            options: {},
+            methods: [],
+            type: 'eip155:erc4337',
           },
         },
       },
