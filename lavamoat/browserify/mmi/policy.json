@@ -1267,7 +1267,7 @@
         "crypto-browserify": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>secp256k1": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
@@ -1537,8 +1537,8 @@
         "crypto-browserify>randombytes": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
         "ethers>@ethersproject/sha2>hash.js": true,
+        "ganache>secp256k1": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
@@ -4358,7 +4358,7 @@
         "browserify>buffer": true,
         "crypto-browserify>randombytes": true,
         "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true
+        "ganache>secp256k1": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>browserify-aes": {
@@ -4392,11 +4392,6 @@
       "packages": {
         "browserify>buffer": true,
         "readable-stream": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>secp256k1": {
-      "packages": {
-        "@metamask/ppom-validator>elliptic": true
       }
     },
     "ethereumjs-util>rlp": {
@@ -4715,6 +4710,11 @@
       "globals": {
         "console": true,
         "define": true
+      }
+    },
+    "ganache>secp256k1": {
+      "packages": {
+        "@metamask/ppom-validator>elliptic": true
       }
     },
     "gulp>vinyl-fs>object.assign": {
