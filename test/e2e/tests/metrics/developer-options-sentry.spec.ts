@@ -1,12 +1,13 @@
 import { Suite } from 'mocha';
-import { withFixtures } from '../../helpers';
+import { MockttpServer } from 'mockttp';
+import { withFixtures, sentryRegEx } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import SettingsPage from '../../page-objects/pages/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import DevelopOptions from '../../page-objects/pages/developer-options-page';
-import ErrorPage from '../../page-objects/pages/ErrorPage';
+import ErrorPage from '../../page-objects/pages/error-page';
 
 const triggerCrash = async (driver: Driver): Promise<void> => {
   const headerNavbar = new HeaderNavbar(driver);
@@ -20,13 +21,36 @@ const triggerCrash = async (driver: Driver): Promise<void> => {
   await developOptionsPage.clickGenerateCrashButton();
 };
 
+async function mockSentryError(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forPost(sentryRegEx)
+      .withBodyIncluding('feedback')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {},
+        };
+      }),
+  ];
+}
+
 describe('Developer Options - Sentry', function (this: Suite) {
   it('gives option to cause a page crash and provides sentry form to report', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
+          .build(),
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: ['ignore-all'],
+        testSpecificMock: mockSentryError,
+        ignoredConsoleErrors: [
+          'Error#1: Unable to find value of key "developerOptions" for locale "en"',
+          'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -35,6 +59,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         await errorPage.check_pageIsLoaded();
         await errorPage.validate_errorMessage();
         await errorPage.submitToSentryUserFeedbackForm();
+        await errorPage.waitForSentrySuccessModal();
       },
     );
   });
@@ -44,7 +69,10 @@ describe('Developer Options - Sentry', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: ['ignore-all'],
+        ignoredConsoleErrors: [
+          'Error#1: Unable to find value of key "developerOptions" for locale "en"',
+          'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
