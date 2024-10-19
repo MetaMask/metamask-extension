@@ -1005,11 +1005,6 @@ export function setupController(
     updateBadge,
   );
 
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
-    updateBadge,
-  );
-
   /**
    * Formats a count for display as a badge label.
    *
