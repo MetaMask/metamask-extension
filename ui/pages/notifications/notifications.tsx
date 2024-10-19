@@ -18,29 +18,25 @@ import { NotificationsPage } from '../../components/multichain';
 import { Content, Header } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
-import { getNotifications, getNotifySnaps } from '../../selectors';
+import { getNotifySnaps } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { deleteExpiredNotifications } from '../../store/actions';
+import { deleteExpiredSnapNotifications } from '../../store/actions';
 import {
   AlignItems,
   Display,
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { NotificationsList } from './notifications-list';
-import { processSnapNotifications } from './snap/utils/utils';
-import { SnapNotification } from './snap/types/types';
 import { NewFeatureTag } from './NewFeatureTag';
 
-type Notification = NotificationServicesController.Types.INotification;
+export type Notification = NotificationServicesController.Types.INotification;
 
 const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
   NotificationServicesController.Constants;
-
-export type NotificationType = Notification | SnapNotification;
 
 // NOTE - Tab filters could change once we support more notifications.
 export const enum TAB_KEYS {
@@ -56,28 +52,18 @@ export const enum TAB_KEYS {
 
 // Cleanup method to ensure we aren't keeping really old notifications.
 // See internals to tweak expiry date
-const useEffectDeleteExpiredNotifications = () => {
+const useEffectDeleteExpiredSnapNotifications = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     return () => {
-      dispatch(deleteExpiredNotifications());
+      dispatch(deleteExpiredSnapNotifications());
     };
   }, [dispatch]);
 };
 
-const useSnapNotifications = () => {
-  const snapNotifications = useSelector(getNotifications);
-
-  const processedSnapNotifications: SnapNotification[] = useMemo(() => {
-    return processSnapNotifications(snapNotifications);
-  }, [snapNotifications]);
-
-  return processedSnapNotifications;
-};
-
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
-const useFeatureAnnouncementAndWalletNotifications = () => {
+const useMetamaskNotifications = () => {
   const isFeatureAnnouncementsEnabled = useSelector(
     selectIsFeatureAnnouncementsEnabled,
   );
@@ -104,16 +90,25 @@ const useFeatureAnnouncementAndWalletNotifications = () => {
       : [];
   }, [isMetamaskNotificationsEnabled, notificationsData]);
 
+  const snapNotifications = useMemo(() => {
+    return (notificationsData ?? []).filter(
+      (n) => n.type === TRIGGER_TYPES.SNAP,
+    );
+  }, [notificationsData]);
+
   return {
     featureAnnouncementNotifications,
     walletNotifications,
+    snapNotifications,
   };
 };
 
 const useCombinedNotifications = () => {
-  const snapNotifications = useSnapNotifications();
-  const { featureAnnouncementNotifications, walletNotifications } =
-    useFeatureAnnouncementAndWalletNotifications();
+  const {
+    featureAnnouncementNotifications,
+    walletNotifications,
+    snapNotifications,
+  } = useMetamaskNotifications();
 
   const combinedNotifications = useMemo(() => {
     const notifications = [
@@ -137,7 +132,7 @@ const useCombinedNotifications = () => {
 
 const filterNotifications = (
   activeTab: TAB_KEYS,
-  notifications: NotificationType[],
+  notifications: Notification[],
 ) => {
   if (activeTab === TAB_KEYS.ALL) {
     return notifications;
@@ -152,7 +147,9 @@ const filterNotifications = (
   }
 
   if (activeTab === TAB_KEYS.WEB3) {
-    return notifications.filter((notification) => notification.type === 'SNAP');
+    return notifications.filter(
+      (notification) => notification.type === TRIGGER_TYPES.SNAP,
+    );
   }
 
   return notifications;
@@ -162,7 +159,7 @@ export default function Notifications() {
   const history = useHistory();
   const t = useI18nContext();
 
-  useEffectDeleteExpiredNotifications();
+  useEffectDeleteExpiredSnapNotifications();
   const { isLoading, error } = useMetamaskNotificationsContext();
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);

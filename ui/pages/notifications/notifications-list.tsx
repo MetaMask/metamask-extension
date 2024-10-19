@@ -15,12 +15,12 @@ import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
 import { NotificationsListItem } from './notifications-list-item';
-import { NotificationType, TAB_KEYS } from './notifications';
+import { type Notification, TAB_KEYS } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
 
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
-  notifications: NotificationType[];
+  notifications: Notification[];
   isLoading: boolean;
   isError: boolean;
   notificationsCount: number;
@@ -62,9 +62,9 @@ function ErrorContent() {
   );
 }
 
-function NotificationItem(props: { notification: NotificationType }) {
+function NotificationItem(props: { notification: Notification }) {
   const { notification } = props;
-  if (notification.type === 'SNAP') {
+  if (notification.type === TRIGGER_TYPES.SNAP) {
     return <SnapComponent snapNotification={notification} />;
   }
 

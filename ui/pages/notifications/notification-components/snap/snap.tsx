@@ -1,32 +1,38 @@
 import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { NotificationServicesController } from '@metamask/notification-services-controller'; } from '@metamask/notification-services-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { NotificationListItemSnap } from '../../../../components/multichain';
-import type { SnapNotification } from '../../snap/types/types';
 import { getSnapsMetadata } from '../../../../selectors';
-import { markNotificationsAsRead } from '../../../../store/actions';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
+import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
 
 type SnapComponentProps = {
-  snapNotification: SnapNotification;
+  snapNotification: NotificationServicesController.Types.INotification;
 };
 
 export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
-  const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const { markNotificationAsRead } = useMarkNotificationAsRead();
 
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const snapsNameGetter = getSnapName(snapsMetadata);
 
   const handleSnapClick = () => {
-    dispatch(markNotificationsAsRead([snapNotification.id]));
+    markNotificationAsRead([
+      {
+        id: snapNotification.id,
+        type: snapNotification.type,
+        isRead: snapNotification.isRead,
+      },
+    ]);
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationClicked,
@@ -39,7 +45,13 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
   };
 
   const handleSnapButton = () => {
-    dispatch(markNotificationsAsRead([snapNotification.id]));
+    markNotificationAsRead([
+      {
+        id: snapNotification.id,
+        type: snapNotification.type,
+        isRead: snapNotification.isRead,
+      },
+    ]);
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationClicked,

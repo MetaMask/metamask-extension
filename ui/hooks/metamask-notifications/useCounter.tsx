@@ -6,15 +6,15 @@ import {
   getFeatureAnnouncementsUnreadCount,
   getOnChainMetamaskNotificationsReadCount,
   getOnChainMetamaskNotificationsUnreadCount,
+  getSnapNotificationsReadCount,
+  getSnapNotificationsUnreadCount,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import {
-  getReadNotificationsCount,
-  getUnreadNotificationsCount,
-} from '../../selectors';
 
 const useSnapNotificationdCount = () => {
-  const unreadSnapNotificationsCount = useSelector(getUnreadNotificationsCount);
-  const readSnapNotificationsCount = useSelector(getReadNotificationsCount);
+  const unreadSnapNotificationsCount = useSelector(
+    getSnapNotificationsUnreadCount,
+  );
+  const readSnapNotificationsCount = useSelector(getSnapNotificationsReadCount);
   return { unreadSnapNotificationsCount, readSnapNotificationsCount };
 };
 
