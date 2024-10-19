@@ -69,6 +69,10 @@
       },
       "destTokens": {},
       "destTopAssets": {},
+      "quoteRequest": "object",
+      "quotes": "object",
+      "quotesLastFetched": "undefined",
+      "quotesLoadingStatus": "undefined",
       "srcTokens": {},
       "srcTopAssets": {}
     }

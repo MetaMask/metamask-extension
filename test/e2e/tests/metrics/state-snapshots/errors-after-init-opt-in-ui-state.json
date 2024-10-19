@@ -264,6 +264,8 @@
       },
       "destTokens": {},
       "destTopAssets": {},
+      "quoteRequest": "object",
+      "quotes": "object",
       "srcTokens": {},
       "srcTopAssets": {}
     },
