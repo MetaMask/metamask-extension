@@ -48,7 +48,7 @@
     "test:unit:coverage": "jest --coverage",
     "test:unit:webpack": "tsx --test development/webpack/test/*.test.ts",
     "test:unit:webpack:coverage": "nyc --reporter=html --reporter=json --reporter=text --report-dir=./coverage/webpack tsx --test development/webpack/test/*.test.ts",
-    "test:integration": "node ./development/build/ui-integration-test.js && jest --config jest.integration.config.js",
+    "test:integration": "node ./development/build/ui-integration-tests/index.js && jest --config jest.integration.config.js",
     "test:integration:coverage": "yarn test:integration --coverage",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
