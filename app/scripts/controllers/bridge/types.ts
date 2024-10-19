@@ -3,12 +3,13 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { QuoteRequest } from '../../../../ui/pages/bridge/types';
+import { QuoteRequest, QuoteResponse } from '../../../../ui/pages/bridge/types';
 import BridgeController from './bridge-controller';
-import { BRIDGE_CONTROLLER_NAME } from './constants';
+import { BRIDGE_CONTROLLER_NAME, RequestStatus } from './constants';
 
 export enum BridgeFeatureFlagsKey {
   EXTENSION_CONFIG = 'extensionConfig',
@@ -34,6 +35,9 @@ export type BridgeControllerState = {
   destTokens: Record<string, SwapsTokenObject>;
   destTopAssets: { address: string }[];
   quoteRequest: Partial<QuoteRequest>;
+  quotes: QuoteResponse[];
+  quotesLastFetched?: number;
+  quotesLoadingStatus?: RequestStatus;
 };
 
 export enum BridgeUserAction {
@@ -67,8 +71,8 @@ type BridgeControllerEvents = ControllerStateChangeEvent<
  */
 export type BridgeControllerMessenger = RestrictedControllerMessenger<
   typeof BRIDGE_CONTROLLER_NAME,
-  BridgeControllerActions,
+  BridgeControllerActions | AccountsControllerGetSelectedAccountAction,
   BridgeControllerEvents,
-  never,
+  AccountsControllerGetSelectedAccountAction['type'],
   never
 >;
