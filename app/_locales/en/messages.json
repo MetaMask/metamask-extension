@@ -1934,41 +1934,17 @@
     "message": "Error message",
     "description": "Title for description, which is displayed for debugging purposes"
   },
-  "errorPageSentryCancelButtonLabel": {
-    "message": "Cancel",
-    "description": "In sentry feedback form, The label of cancel buttons used in the feedback form."
-  },
-  "errorPageSentryConfirmButtonLabel": {
-    "message": "Confirm",
-    "description": "In sentry feedback form, The label of confirm buttons used in the feedback form."
-  },
   "errorPageSentryFormTitle": {
     "message": "Describe what happened",
     "description": "In sentry feedback form, The title at the top of the feedback form."
-  },
-  "errorPageSentryIsRequiredLabel": {
-    "message": "(required)",
-    "description": "In sentry feedback form, The label shown next to an input field that is required."
-  },
-  "errorPageSentryMessageLabel": {
-    "message": "Description",
-    "description": "In sentry feedback form, The label for the feedback description input field."
   },
   "errorPageSentryMessagePlaceholder": {
     "message": "Sharing details like how we can reproduce the bug will help us fix the problem.",
     "description": "In sentry feedback form, The placeholder for the feedback description input field."
   },
-  "errorPageSentrySubmitButtonLabel": {
-    "message": "Submit",
-    "description": "In sentry feedback form, The label of the submit button used in the feedback form."
-  },
   "errorPageSentrySuccessMessageText": {
     "message": "Thanks! We will take a look soon.",
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
-  },
-  "errorPageSentryTriggerLabel": {
-    "message": "Describe what happened",
-    "description": "In sentry feedback form, The label of the injected button that opens up the feedback form when clicked."
   },
   "errorPageTitle": {
     "message": "MetaMask encountered an error",
