@@ -1,15 +1,12 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
-import {
-  AuthenticationController,
-  UserStorageController,
-} from '@metamask/profile-sync-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   NotificationServicesController,
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
+import { accountsSyncMockResponse, notificationMockResponse } from './mockData';
 
 const AuthMocks = AuthenticationController.Mocks;
-const StorageMocks = UserStorageController.Mocks;
 const NotificationMocks = NotificationServicesController.Mocks;
 const PushMocks = NotificationServicesPushController.Mocks;
 
@@ -30,22 +27,32 @@ export async function mockNotificationServices(server: Mockttp) {
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
-  // Storage
-  mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
-  mockAPICall(server, await StorageMocks.getMockUserStoragePutResponse());
-
   // TODO - add better mock responses for other Profile Sync features
   // (Account Sync, Network Sync, ...)
-  server
-    .forGet(/https:\/\/user-storage\.api\.cx\.metamask\.io\/.*/gu)
-    ?.thenCallback(() => ({
-      statusCode: 404,
-    }));
-  server
-    .forPut(/https:\/\/user-storage\.api\.cx\.metamask\.io\/.*/gu)
-    ?.thenCallback(() => ({
-      statusCode: 204,
-    }));
+
+  // Notifications Syncing
+  const notificationsRegex =
+    /https:\/\/user-storage\.api\.cx\.metamask\.io\/api\/v1\/userstorage\/notifications\/.*/gu;
+  server.forGet(notificationsRegex)?.thenCallback(() => ({
+    statusCode: 200,
+    json: notificationMockResponse,
+  }));
+
+  server.forPut(notificationsRegex)?.thenCallback(() => ({
+    statusCode: 204,
+  }));
+
+  // Accounts Syncing
+  const accountsRegex =
+    /https:\/\/user-storage\.api\.cx\.metamask\.io\/api\/v1\/userstorage\/accounts/;
+  server.forGet(accountsRegex)?.thenCallback(() => ({
+    statusCode: 200,
+    json: accountsSyncMockResponse,
+  }));
+
+  server.forPut(accountsRegex)?.thenCallback(() => ({
+    statusCode: 204,
+  }));
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
@@ -56,11 +63,12 @@ export async function mockNotificationServices(server: Mockttp) {
     server,
     NotificationMocks.getMockMarkNotificationsAsReadResponse(),
   );
-
   // Push Notifications
   mockAPICall(server, PushMocks.getMockRetrievePushNotificationLinksResponse());
   mockAPICall(server, PushMocks.getMockUpdatePushNotificationLinksResponse());
   mockAPICall(server, PushMocks.getMockCreateFCMRegistrationTokenResponse());
+  mockAPICall(server, PushMocks.getMockDeleteFCMRegistrationTokenResponse());
+
   mockAPICall(server, PushMocks.getMockDeleteFCMRegistrationTokenResponse());
 }
 
