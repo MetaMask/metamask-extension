@@ -21,7 +21,7 @@ import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
-import { REDESIGN_USER_TRANSACTION_TYPES } from '../../../utils';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
 
 type ContentProps = {
   /**
@@ -51,7 +51,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     offsetPxFromBottom: 0,
   });
 
-  const isTransactionRedesign = REDESIGN_USER_TRANSACTION_TYPES.includes(
+  const isTransactionRedesign = REDESIGN_DEV_TRANSACTION_TYPES.includes(
     currentConfirmation?.type as TransactionType,
   );
 
