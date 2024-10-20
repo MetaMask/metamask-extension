@@ -68,6 +68,14 @@ export class Common {
   chainId() {
     return BigInt(this.chain.chainId);
   }
+
+  isActivatedEIP() {
+    return true;
+  }
+
+  param() {
+    return BigInt(0);
+  }
 }
 
 /**

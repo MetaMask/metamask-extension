@@ -46,6 +46,10 @@ type SwapOptions = {
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   await driver.clickElement('[data-testid="token-overview-button-swap"]');
+  if(options.hardwareWallet == true){
+    await driver.delay(regularDelayMs);
+    await driver.switchToWindowWithTitle('MetaMask');
+  }
   await driver.fill(
     'input[data-testid="prepare-swap-page-from-token-amount"]',
     options.amount.toString(),
