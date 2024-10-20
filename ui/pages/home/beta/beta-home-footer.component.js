@@ -13,15 +13,12 @@ const BetaHomeFooter = () => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const SUPPORT_LINK =
-    'https://docs.google.com/forms/d/e/1FAIpQLSfpkpeVMvfFw_1CWzrs5M3TEqE9VPMSspLPJgk1u4ZyUkQRbg/viewform?usp=sharing';
-
   return (
     <>
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href={SUPPORT_LINK}
+        href={SUPPORT_REQUEST_LINK}
         onClick={() => {
           trackEvent(
             {
@@ -42,7 +39,11 @@ const BetaHomeFooter = () => {
         {t('needHelpSubmitTicket')}
       </a>{' '}
       |{' '}
-      <a href={SUPPORT_LINK} target="_blank" rel="noopener noreferrer">
+      <a
+        href="https://community.metamask.io/c/metamask-beta"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {t('needHelpFeedback')}
       </a>
     </>
