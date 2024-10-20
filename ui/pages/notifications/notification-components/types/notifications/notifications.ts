@@ -40,6 +40,7 @@ type FooterOnChainNotification<N = Notification> = {
 type FooterFeatureAnnouncement<N = Notification> = {
   type: 'footer_feature_announcement';
   ExtensionLink: NotificationFC<N>;
+  ExternalLink: NotificationFC<N>;
 };
 
 /**
