@@ -1075,7 +1075,12 @@ export function setupController(
       const snapNotificationCount = Object.values(
         controller.notificationServicesController.state
           .metamaskNotificationsList,
-      ).filter((notification) => notification.readDate === null).length;
+      ).filter(
+        (notification) =>
+          notification.type ===
+            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
+          notification.readDate === null,
+      ).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
         ? controller.notificationServicesController.state.metamaskNotificationsList.filter(

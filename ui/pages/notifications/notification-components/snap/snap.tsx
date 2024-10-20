@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { NotificationServicesController } from '@metamask/notification-services-controller'; } from '@metamask/notification-services-controller';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

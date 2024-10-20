@@ -5446,9 +5446,9 @@ export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
 }
 
 /**
- * Deletes a notification by its id.
+ * Deletes notifications by their id.
  *
- * This function sends a request to the background script to delete a notification by the passed in id and update the state accordingly.
+ * This function sends a request to the background script to delete notifications by the passed in ids and updates the state accordingly.
  * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
  *
  * @param ids - The ids of the notifications to delete.
