@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -11,6 +11,16 @@ const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}
  * A read-only network-based storage wrapper
  */
 export default class ReadOnlyNetworkStore {
+  private _initialized: boolean;
+
+  private _initializing: Promise<void>;
+
+  public _state: Record<string, unknown> | undefined;
+
+  public mostRecentRetrievedState: Record<string, unknown> | null;
+
+  public metadata?: object;
+
   constructor() {
     this._initialized = false;
     this._initializing = this._init();
@@ -25,55 +35,60 @@ export default class ReadOnlyNetworkStore {
 
   /**
    * Initializes by loading state from the network
+   *
+   * @private
    */
-  async _init() {
+  private async _init(): Promise<void> {
     try {
       const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
       if (response.ok) {
         this._state = await response.json();
       }
-    } catch (error) {
-      log.debug(`Error loading network state: '${error.message}'`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        log.debug(`Error loading network state: '${error.message}'`);
+      }
     } finally {
       this._initialized = true;
     }
   }
 
   /**
-   * Returns state
+   * Returns the current state
    *
-   * @returns {Promise<object>}
+   * @returns A promise that resolves to the current state.
    */
-  async get() {
+  async get(): Promise<Record<string, unknown> | undefined> {
     if (!this._initialized) {
       await this._initializing;
     }
-    // Delay setting this until after the first read, to match the
-    // behavior of the local store.
+
+    // Delay setting this until after the first read
     if (!this.mostRecentRetrievedState) {
-      this.mostRecentRetrievedState = this._state;
+      this.mostRecentRetrievedState = this._state ?? null;
     }
+
     return this._state;
   }
 
   /**
-   * Set metadata/version state
+   * Sets metadata/version data
    *
-   * @param {object} metadata - The metadata/version data to set
+   * @param metadata - The metadata to set
    */
-  setMetadata(metadata) {
+  setMetadata(metadata: object): void {
     this.metadata = metadata;
   }
 
   /**
-   * Set state
+   * Sets the state directly in memory
    *
-   * @param {object} state - The state to set
+   * @param state - The state to set
    */
-  async set(state) {
+  async set(state: Record<string, unknown>): Promise<void> {
     if (!this.isSupported) {
       throw new Error(
-        'Metamask- cannot persist state to local store as this browser does not support this action',
+        'MetaMask - cannot persist state to local store as this browser does not support this action',
       );
     }
     if (!state) {
@@ -87,10 +102,14 @@ export default class ReadOnlyNetworkStore {
     if (!this._initialized) {
       await this._initializing;
     }
-    this._state = { data: state, meta: this._metadata };
+
+    this._state = { data: state, meta: this.metadata };
   }
 
-  cleanUpMostRecentRetrievedState() {
+  /**
+   * Clears the most recent retrieved state
+   */
+  cleanUpMostRecentRetrievedState(): void {
     if (this.mostRecentRetrievedState) {
       this.mostRecentRetrievedState = null;
     }
