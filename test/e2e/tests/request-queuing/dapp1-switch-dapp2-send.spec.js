@@ -113,7 +113,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // so we leave this delay until the issue is fixed (#27360)
         await driver.delay(5000);
 
-
         // Switch back to the extension
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

@@ -3,7 +3,6 @@ const {
   defaultGanacheOptions,
   logInWithBalanceValidation,
   openDapp,
-  switchToNotificationWindow,
   WINDOW_TITLES,
   withFixtures,
 } = require('../../helpers');
@@ -76,16 +75,21 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           tag: 'button',
         });
 
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Confirm Switch Network
-        await driver.findClickableElement({
-          text: 'Confirm',
-          tag: 'button',
+        const switchEthereumChainRequestTwo = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x1' }],
         });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.waitUntilXWindowHandles(2);
+        await driver.executeScript(
+          `window.ethereum.request(${switchEthereumChainRequestTwo})`,
+        );
+        await driver.waitForSelector({
+          css: '[id="chainId"]',
+          text: '0x1',
+        });
       },
     );
   });
