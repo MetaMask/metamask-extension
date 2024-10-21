@@ -44,8 +44,22 @@ describe('useDisplayName', () => {
     ]);
   }
 
-  function mockERC20TokenName(value: string, name: string, symbol: string) {
-    state.metamask.tokenList[value] = { name, symbol };
+  function mockERC20TokenName(
+    value: string,
+    variation: string,
+    name: string,
+    symbol: string,
+  ) {
+    state.metamask.tokensChainsCache = {
+      [variation]: {
+        data: {
+          [value]: {
+            name,
+            symbol,
+          },
+        },
+      },
+    };
   }
 
   function mockWatchedNFTName(value: string, variation: string, name: string) {
@@ -145,7 +159,12 @@ describe('useDisplayName', () => {
 
   describe('ERC-20 Token', () => {
     it('returns ERC-20 token name', () => {
-      mockERC20TokenName(VALUE_MOCK, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK);
+      mockERC20TokenName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+      );
 
       const { result } = renderHookWithProvider(
         () =>
@@ -166,7 +185,12 @@ describe('useDisplayName', () => {
     });
 
     it('returns ERC-20 token symbol', () => {
-      mockERC20TokenName(VALUE_MOCK, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK);
+      mockERC20TokenName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+      );
 
       const { result } = renderHookWithProvider(
         () =>
@@ -188,7 +212,12 @@ describe('useDisplayName', () => {
     });
 
     it('returns no name if type not address', () => {
-      mockERC20TokenName(VALUE_MOCK, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK);
+      mockERC20TokenName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+      );
 
       const { result } = renderHookWithProvider(
         () =>
@@ -210,7 +239,12 @@ describe('useDisplayName', () => {
     });
 
     it('returns no name if variation does not match global chain ID', () => {
-      mockERC20TokenName(VALUE_MOCK, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK);
+      mockERC20TokenName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+      );
 
       const { result } = renderHookWithProvider(
         () =>
@@ -399,7 +433,12 @@ describe('useDisplayName', () => {
         FIRST_PARTY_CONTRACT_NAME_MOCK,
       );
       mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, IMAGE_MOCK, false);
-      mockERC20TokenName(VALUE_MOCK, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK);
+      mockERC20TokenName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+      );
       mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
 
       const { result } = renderHookWithProvider(
@@ -427,7 +466,12 @@ describe('useDisplayName', () => {
         FIRST_PARTY_CONTRACT_NAME_MOCK,
       );
       mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, IMAGE_MOCK, false);
-      mockERC20TokenName(VALUE_MOCK, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK);
+      mockERC20TokenName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+      );
       mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
 
       const { result } = renderHookWithProvider(
@@ -450,7 +494,12 @@ describe('useDisplayName', () => {
 
     it('uses NFT name as third priority', () => {
       mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, IMAGE_MOCK, false);
-      mockERC20TokenName(VALUE_MOCK, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK);
+      mockERC20TokenName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+      );
       mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
 
       const { result } = renderHookWithProvider(
@@ -472,7 +521,12 @@ describe('useDisplayName', () => {
     });
 
     it('uses ERC-20 token name as fourth priority', () => {
-      mockERC20TokenName(VALUE_MOCK, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK);
+      mockERC20TokenName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+      );
       mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
 
       const { result } = renderHookWithProvider(

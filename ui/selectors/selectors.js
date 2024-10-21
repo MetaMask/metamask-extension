@@ -1382,9 +1382,14 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-export const getRemoteTokenList = createDeepEqualSelector(
+export const selectERC20TokensByChain = createDeepEqualSelector(
+  (state) => state.metamask.tokensChainsCache,
+  (erc20TokensByChain) => erc20TokensByChain,
+);
+
+export const selectERC20Tokens = createDeepEqualSelector(
   (state) => state.metamask.tokenList,
-  (remoteTokenList) => remoteTokenList,
+  (erc20Tokens) => erc20Tokens,
 );
 
 /**
@@ -1394,7 +1399,7 @@ export const getRemoteTokenList = createDeepEqualSelector(
  * @type {() => object}
  */
 export const getTokenList = createSelector(
-  getRemoteTokenList,
+  selectERC20Tokens,
   getIsTokenDetectionInactiveOnMainnet,
   (remoteTokenList, isTokenDetectionInactiveOnMainnet) =>
     isTokenDetectionInactiveOnMainnet

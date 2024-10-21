@@ -27,8 +27,7 @@ export function useNames(requests: UseNameRequest[]): NameEntry[] {
   return requests.map(({ value, type, variation }) => {
     const normalizedValue = normalizeValue(value, type);
     const variationsToNameEntries = names[type]?.[normalizedValue] ?? {};
-    const variationKey = variation ?? '';
-    const variationEntry = variationsToNameEntries[variationKey];
+    const variationEntry = variationsToNameEntries[variation];
     const fallbackEntry = variationsToNameEntries[FALLBACK_VARIATION];
 
     const entry =

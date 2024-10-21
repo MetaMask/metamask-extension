@@ -1,7 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { getCurrentChainId, getRemoteTokenList } from '../selectors';
+import { selectERC20TokensByChain } from '../selectors';
 import { getNftContractsByAddressByChain } from '../selectors/nft';
 import {
   EXPERIENCES_TYPE,
@@ -68,19 +68,18 @@ export function useDisplayName(
 function useERC20TokenNames(
   nameRequests: UseDisplayNameRequest[],
 ): (string | undefined)[] {
-  const remoteTokenList = useSelector(getRemoteTokenList);
-
-  // TODO: Remove once `TokenListController` provides token data on multiple chains simultaneously.
-  const globalChainId = useSelector(getCurrentChainId);
+  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
   return nameRequests.map(
     ({ preferContractSymbol, type, value, variation }) => {
-      if (type !== NameType.ETHEREUM_ADDRESS || variation !== globalChainId) {
+      if (type !== NameType.ETHEREUM_ADDRESS) {
         return undefined;
       }
 
       const contractAddress = value.toLowerCase();
-      const { symbol, name } = remoteTokenList[contractAddress] ?? {};
+
+      const { symbol, name } =
+        erc20TokensByChain?.[variation]?.data?.[contractAddress] ?? {};
 
       return preferContractSymbol && symbol ? symbol : name;
     },
