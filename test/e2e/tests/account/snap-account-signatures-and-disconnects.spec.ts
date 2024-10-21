@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { connectToDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -20,9 +20,6 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp({
-            restrictReturnedAccounts: false,
-          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -49,9 +46,11 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
         await experimentalSettings.check_pageIsLoaded();
         await experimentalSettings.toggleRedesignedSignature();
 
-        // Open the Test Dapp and signTypedDataV3
+        // Open the Test Dapp and connect
         const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
+        await connectToDapp(driver)
+
+        // SignedTypedDataV3 with Test Dapp
         await signTypedDataV3WithSnapAccount(driver, newPublicKey, false, true);
 
         // Disconnect from Test Dapp and reconnect to Test Dapp
