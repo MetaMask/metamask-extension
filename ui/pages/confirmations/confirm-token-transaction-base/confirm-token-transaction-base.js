@@ -16,11 +16,11 @@ import { PRIMARY } from '../../../helpers/constants/common';
 import {
   contractExchangeRateSelector,
   getCurrentChainId,
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
 } from '../../../selectors';
 import {
+  getCurrentCurrency,
   getConversionRate,
   getNativeCurrency,
   getNftContracts,

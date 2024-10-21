@@ -53,7 +53,6 @@ import {
 import {
   conversionRateSelector,
   getSelectedAccount,
-  getCurrentCurrency,
   getTokenExchangeRates,
   getSwapsDefaultToken,
   getCurrentChainId,
@@ -66,7 +65,11 @@ import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
 } from '../../../../shared/modules/selectors';
-import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getTokens,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import {
   getLayer1GasFee,
   safeRefetchQuotes,

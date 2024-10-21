@@ -16,7 +16,11 @@ import { I18nContext } from '../../../contexts/i18n';
 import DropdownInputPair from '../dropdown-input-pair';
 import DropdownSearchList from '../dropdown-search-list';
 import SlippageButtons from '../slippage-buttons';
-import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
+import {
+  getTokens,
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
@@ -50,7 +54,6 @@ import {
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
-  getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getTokenList,

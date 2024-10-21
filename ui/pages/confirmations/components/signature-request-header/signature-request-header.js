@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getCurrentCurrency,
+} from '../../../../ducks/metamask/metamask';
 import { getProviderConfig } from '../../../../selectors/networks';
 import {
   accountsWithSendEtherInfoSelector,
   getCurrentChainId,
-  getCurrentCurrency,
 } from '../../../../selectors';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import {

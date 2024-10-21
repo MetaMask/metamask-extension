@@ -14,7 +14,11 @@ import {
 } from '../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
-import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
+import {
+  getTokens,
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import Box from '../../../components/ui/box';
 import {
   DISPLAY,
@@ -57,7 +61,6 @@ import {
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
-  getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getTokenList,

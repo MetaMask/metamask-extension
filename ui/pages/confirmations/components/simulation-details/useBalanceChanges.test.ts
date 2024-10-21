@@ -19,11 +19,11 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../../../../ducks/metamask/metamask', () => ({
   getConversionRate: jest.fn(),
+  getCurrentCurrency: jest.fn(),
 }));
 
 jest.mock('../../../../selectors', () => ({
   getCurrentChainId: jest.fn(),
-  getCurrentCurrency: jest.fn(),
 }));
 
 jest.mock('../../../../helpers/utils/util', () => ({

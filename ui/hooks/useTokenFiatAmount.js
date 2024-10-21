@@ -2,12 +2,14 @@ import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
   getTokenExchangeRates,
-  getCurrentCurrency,
   getShouldShowFiat,
   getConfirmationExchangeRates,
 } from '../selectors';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getConversionRate } from '../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 /**

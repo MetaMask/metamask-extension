@@ -7,7 +7,8 @@ import {
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
 } from '../../../../../selectors/multichain';
-import { getCurrentCurrency, getPreferences } from '../../../../../selectors';
+import { getPreferences } from '../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';

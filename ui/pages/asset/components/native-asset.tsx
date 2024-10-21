@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 import {
   getCurrentChainId,
-  getCurrentCurrency,
   getNativeCurrencyImage,
   getRpcPrefsForCurrentProvider,
   getSelectedAccountCachedBalance,
@@ -11,7 +10,10 @@ import {
   getShouldShowFiat,
 } from '../../../selectors';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
 import { getProviderConfig } from '../../../selectors/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
