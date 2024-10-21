@@ -13,7 +13,7 @@ import {
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-} from 'json-rpc-engine';
+} from '@metamask/json-rpc-engine';
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { PermissionNames } from '../../../controllers/permissions';
 import {

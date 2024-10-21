@@ -1,5 +1,6 @@
+import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
+import type { JsonRpcParams } from '@metamask/utils';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { JsonRpcMiddleware } from 'json-rpc-engine';
 
 /**
  * Creates a middleware that rejects explicitly unsupported RPC methods with the
@@ -9,7 +10,7 @@ import type { JsonRpcMiddleware } from 'json-rpc-engine';
  */
 export function createUnsupportedMethodMiddleware(
   methods: string[],
-): JsonRpcMiddleware<unknown, void> {
+): JsonRpcMiddleware<JsonRpcParams, null> {
   return async function unsupportedMethodMiddleware(req, _res, next, end) {
     if (methods.includes(req.method)) {
       return end(rpcErrors.methodNotSupported());

@@ -6230,6 +6230,9 @@
   "transferFrom": {
     "message": "Transfer from"
   },
+  "transferRequest": {
+    "message": "Transfer request"
+  },
   "trillionAbbreviation": {
     "message": "T",
     "description": "Shortened form of 'trillion'"

@@ -32,9 +32,7 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
   } = req;
 
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
-    return end(
-      new JsonRpcError(5302, 'Invalid sessionProperties requested'),
-    );
+    return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
   }
 
   const chainIdsForNetworksAdded = [];
