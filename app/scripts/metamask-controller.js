@@ -156,7 +156,6 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import { isProduction } from '../../shared/modules/environment';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1565,7 +1564,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: ,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
