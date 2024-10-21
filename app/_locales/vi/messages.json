@@ -1720,10 +1720,6 @@
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Chi tiết về lỗi",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Lỗi khi lấy danh sách chuỗi an toàn, vui lòng tiếp tục một cách thận trọng."
   },
@@ -1734,14 +1730,6 @@
   "errorName": {
     "message": "Mã: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Hãy thử lại bằng cách tải lại trang hoặc liên hệ với bộ phận hỗ trợ $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Hãy thử lại bằng cách đóng và mở lại cửa sổ bật lên hoặc liên hệ với bộ phận hỗ trợ $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask đã gặp lỗi",

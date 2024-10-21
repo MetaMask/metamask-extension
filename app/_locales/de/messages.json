@@ -1720,10 +1720,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Fehlerdetails",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Fehler beim Abrufen der Liste sicherer Ketten, bitte mit Vorsicht fortfahren."
   },
@@ -1734,14 +1730,6 @@
   "errorName": {
     "message": "Code: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Versuchen Sie es erneut, indem Sie die Seite neu laden oder kontaktieren Sie den Support $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Versuchen Sie es erneut, indem das Popup schließen und neu laden oder kontaktieren Sie den Support $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask hat einen Fehler festgestellt.",

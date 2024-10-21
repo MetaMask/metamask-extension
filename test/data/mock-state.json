@@ -46,7 +46,13 @@
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "localeMessages": {
-    "currentLocale": "en"
+    "currentLocale": "en",
+    "current": {
+      "user": "user"
+    },
+    "en": {
+      "user": "user"
+    }
   },
   "metamask": {
     "use4ByteResolution": true,

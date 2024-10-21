@@ -442,10 +442,6 @@
     "message": "代碼：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "錯誤詳細資訊",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "訊息：$1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -453,14 +449,6 @@
   "errorName": {
     "message": "代碼：$1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "重新整理頁面然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "重新開啟彈跳視窗然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask 遭遇錯誤",

@@ -1720,10 +1720,6 @@
     "message": "कोड: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "गड़बड़ी की जानकारी",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "सेफ चेन लिस्ट पाते समय गड़बड़ी हुई, कृपया सावधानी के साथ जारी रखें।"
   },
@@ -1734,14 +1730,6 @@
   "errorName": {
     "message": "कोड: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "पेज को दोबारा लोड करके फिर से कोशिश करें या सपोर्ट $1 से कॉन्टेक्ट करें।",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "पॉपअप को बंद करके और फिर से खोलने की कोशिश करें या $1 पर सपोर्ट से कॉन्टेक्ट करें।",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask में कोई गड़बड़ी हुई",
