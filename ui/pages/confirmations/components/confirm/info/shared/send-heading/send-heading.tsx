@@ -23,6 +23,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenImage } from '../../hooks/use-token-image';
 import { useTokenValues } from '../../hooks/use-token-values';
 import { ConfirmLoader } from '../confirm-loader/confirm-loader';
+import Tooltip from '../../../../../../../components/ui/tooltip';
 
 const SendHeading = () => {
   const t = useI18nContext();
@@ -32,8 +33,12 @@ const SendHeading = () => {
     getWatchedToken(transactionMeta)(state),
   );
   const { tokenImage } = useTokenImage(transactionMeta, selectedToken);
-  const { decodedTransferValue, fiatDisplayValue, pending } =
-    useTokenValues(transactionMeta);
+  const {
+    decodedTransferValue,
+    displayTransferValue,
+    fiatDisplayValue,
+    pending,
+  } = useTokenValues(transactionMeta);
 
   const TokenImage = (
     <AvatarToken
@@ -51,21 +56,31 @@ const SendHeading = () => {
     />
   );
 
-  const TokenValue = (
-    <>
+  const TokenValue =
+    displayTransferValue === decodedTransferValue.toString() ? (
       <Text
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
         marginTop={3}
-      >{`${decodedTransferValue || ''} ${
+      >{`${displayTransferValue} ${
         selectedToken?.symbol || t('unknown')
       }`}</Text>
-      {fiatDisplayValue && (
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-          {fiatDisplayValue}
-        </Text>
-      )}
-    </>
+    ) : (
+      <Tooltip title={decodedTransferValue.toString()} position="right">
+        <Text
+          variant={TextVariant.headingLg}
+          color={TextColor.inherit}
+          marginTop={3}
+        >{`${displayTransferValue} ${
+          selectedToken?.symbol || t('unknown')
+        }`}</Text>
+      </Tooltip>
+    );
+
+  const TokenFiatValue = fiatDisplayValue && (
+    <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+      {fiatDisplayValue}
+    </Text>
   );
 
   if (pending) {
@@ -82,6 +97,7 @@ const SendHeading = () => {
     >
       {TokenImage}
       {TokenValue}
+      {TokenFiatValue}
     </Box>
   );
 };
