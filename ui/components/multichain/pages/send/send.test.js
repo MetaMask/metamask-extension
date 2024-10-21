@@ -167,7 +167,6 @@ const baseStore = {
     }),
     tokens: [],
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: false,
       showFiatInTestnets: true,
     },
     currentCurrency: 'USD',

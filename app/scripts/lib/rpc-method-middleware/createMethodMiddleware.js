@@ -1,7 +1,7 @@
 import { permissionRpcMethods } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { selectHooks } from '@metamask/snaps-rpc-methods';
 import { hasProperty } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import { handlers as localHandlers, legacyHandlers } from './handlers';
 
 const allHandlers = [...localHandlers, ...permissionRpcMethods.handlers];
@@ -42,7 +42,7 @@ function makeMethodMiddlewareMaker(handlers) {
    *
    * @param  {Record<string, (...args: unknown[]) => unknown | Promise<unknown>>} hooks - Required "hooks" into our
    * controllers.
-   * @returns {import('json-rpc-engine').JsonRpcMiddleware<unknown, unknown>} The method middleware function.
+   * @returns {import('@metamask/json-rpc-engine').JsonRpcMiddleware<unknown, unknown>} The method middleware function.
    */
   const makeMethodMiddleware = (hooks) => {
     assertExpectedHook(hooks, expectedHookNames);
@@ -67,7 +67,7 @@ function makeMethodMiddlewareMaker(handlers) {
           return end(
             error instanceof Error
               ? error
-              : ethErrors.rpc.internal({ data: error }),
+              : rpcErrors.internal({ data: error }),
           );
         }
       }

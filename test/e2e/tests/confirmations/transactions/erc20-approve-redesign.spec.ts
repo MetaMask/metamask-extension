@@ -87,9 +87,10 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
   });
 });
 
-async function mocked4Bytes(mockServer: MockttpServer) {
+export async function mocked4BytesApprove(mockServer: MockttpServer) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .always()
     .withQuery({ hex_signature: '0x095ea7b3' })
     .thenCallback(() => ({
       statusCode: 200,
@@ -111,7 +112,7 @@ async function mocked4Bytes(mockServer: MockttpServer) {
 }
 
 async function mocks(server: MockttpServer) {
-  return [await mocked4Bytes(server)];
+  return [await mocked4BytesApprove(server)];
 }
 
 export async function importTST(driver: Driver) {

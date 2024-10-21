@@ -1,6 +1,6 @@
+import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-
 import {
   getMockApproveConfirmState,
   getMockContractInteractionConfirmState,
@@ -50,17 +50,27 @@ describe('Info', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('renders info section for approve request', () => {
+  it('renders info section for approve request', async () => {
     const state = getMockApproveConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+
+    await waitFor(() => {
+      expect(screen.getByText('Speed')).toBeInTheDocument();
+    });
+
     expect(container).toMatchSnapshot();
   });
 
-  it('renders info section for setApprovalForAll request', () => {
+  it('renders info section for setApprovalForAll request', async () => {
     const state = getMockSetApprovalForAllConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+
+    await waitFor(() => {
+      expect(screen.getByText('Speed')).toBeInTheDocument();
+    });
+
     expect(container).toMatchSnapshot();
   });
 });

@@ -11,8 +11,8 @@ import { detectSIWE } from '@metamask/controller-utils';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import PreferencesController from '../../controllers/preferences-controller';
-import { AppStateController } from '../../controllers/app-state';
+import { PreferencesController } from '../../controllers/preferences-controller';
+import { AppStateController } from '../../controllers/app-state-controller';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
 // eslint-disable-next-line import/no-restricted-paths
 import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
@@ -76,8 +76,7 @@ export function createPPOMMiddleware<
     next: () => void,
   ) => {
     try {
-      const securityAlertsEnabled =
-        preferencesController.store.getState()?.securityAlertsEnabled;
+      const { securityAlertsEnabled } = preferencesController.state;
 
       const { chainId } =
         getProviderConfig({

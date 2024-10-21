@@ -1,6 +1,10 @@
 import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  EthAccountType,
+  EthMethod,
+} from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -11,6 +15,7 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import { mockNetworkState } from '../../test/stub/networks';
+import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -33,6 +38,21 @@ const modifyStateWithHWKeyring = (keyring) => {
   ].metadata.keyring.type = keyring;
 
   return modifiedState;
+};
+
+const mockAccountsState = (accounts) => {
+  const accountsMap = accounts.reduce((map, account) => {
+    map[account.id] = account;
+    return map;
+  }, {});
+
+  return {
+    metamask: {
+      internalAccounts: {
+        accounts: accountsMap,
+      },
+    },
+  };
 };
 
 describe('Selectors', () => {
@@ -2016,6 +2036,162 @@ describe('#getConnectedSitesList', () => {
         },
         name: 'Site 3',
       },
+    });
+  });
+  describe('#getShowDeleteMetaMetricsDataModal', () => {
+    it('returns state of showDeleteMetaMetricsDataModal', () => {
+      expect(
+        selectors.getShowDeleteMetaMetricsDataModal({
+          appState: {
+            showDeleteMetaMetricsDataModal: true,
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+  describe('#getShowDataDeletionErrorModal', () => {
+    it('returns state of showDataDeletionErrorModal', () => {
+      expect(
+        selectors.getShowDataDeletionErrorModal({
+          appState: {
+            showDataDeletionErrorModal: true,
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+  describe('#getMetaMetricsDataDeletionId', () => {
+    it('returns metaMetricsDataDeletionId', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionId({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('123');
+    });
+  });
+  describe('#getMetaMetricsDataDeletionTimestamp', () => {
+    it('returns metaMetricsDataDeletionTimestamp', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionTimestamp({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('123345');
+    });
+  });
+  describe('#getMetaMetricsDataDeletionStatus', () => {
+    it('returns metaMetricsDataDeletionStatus', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionStatus({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('INITIALIZED');
+    });
+  });
+
+  describe('getEvmInternalAccounts', () => {
+    const account1 = createMockInternalAccount({
+      keyringType: KeyringType.hd,
+    });
+    const account2 = createMockInternalAccount({
+      type: EthAccountType.Erc4337,
+      keyringType: KeyringType.snap,
+    });
+    const account3 = createMockInternalAccount({
+      keyringType: KeyringType.imported,
+    });
+    const account4 = createMockInternalAccount({
+      keyringType: KeyringType.ledger,
+    });
+    const account5 = createMockInternalAccount({
+      keyringType: KeyringType.trezor,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+
+    const evmAccounts = [account1, account2, account3, account4, account5];
+
+    it('returns all EVM accounts when only EVM accounts are present', () => {
+      const state = mockAccountsState(evmAccounts);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+        evmAccounts,
+      );
+    });
+
+    it('only returns EVM accounts when there are non-EVM accounts', () => {
+      const state = mockAccountsState([
+        ...evmAccounts,
+        nonEvmAccount1,
+        nonEvmAccount2,
+      ]);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+        evmAccounts,
+      );
+    });
+
+    it('returns an empty array when there are no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual([]);
+    });
+  });
+
+  describe('getSelectedEvmInternalAccount', () => {
+    const account1 = createMockInternalAccount({
+      lastSelected: 1,
+    });
+    const account2 = createMockInternalAccount({
+      lastSelected: 2,
+    });
+    const account3 = createMockInternalAccount({
+      lastSelected: 3,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 4,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 5,
+    });
+
+    it('returns the last selected EVM account', () => {
+      const state = mockAccountsState([account1, account2, account3]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns the last selected EVM account when there are non-EVM accounts', () => {
+      const state = mockAccountsState([
+        account1,
+        account2,
+        account3,
+        nonEvmAccount1,
+        nonEvmAccount2,
+      ]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns `undefined` if there are no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
     });
   });
 });

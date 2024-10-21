@@ -265,6 +265,7 @@ export async function fetchTradesInfo(
     value,
     fromAddress,
     exchangeList,
+    enableGasIncludedQuotes,
   },
   { chainId },
 ) {
@@ -275,6 +276,7 @@ export async function fetchTradesInfo(
     slippage,
     timeout: SECOND * 10,
     walletAddress: fromAddress,
+    enableGasIncludedQuotes,
   };
 
   if (exchangeList) {

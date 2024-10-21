@@ -72,6 +72,9 @@ const createTransactionMeta = () => {
     },
     hash: txHash,
     error: null,
+    swapMetaData: {
+      gas_included: true,
+    },
   };
 };
 
@@ -107,6 +110,7 @@ describe('getSmartTransactionMetricsProperties', () => {
     );
 
     expect(result).toStrictEqual({
+      gas_included: true,
       is_smart_transaction: true,
       smart_transaction_duplicated: true,
       smart_transaction_proxied: true,
@@ -132,7 +136,7 @@ describe('getSmartTransactionMetricsProperties', () => {
     });
   });
 
-  it('returns "is_smart_transaction: true" only if it is a smart transaction, but does not have statusMetadata', () => {
+  it('returns "is_smart_transaction" and "gas_included" params only if it is a smart transaction, but does not have statusMetadata', () => {
     const transactionMetricsRequest = createTransactionMetricsRequest({
       getIsSmartTransaction: () => true,
       getSmartTransactionByMinedTxHash: () => {
@@ -152,6 +156,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     expect(result).toStrictEqual({
       is_smart_transaction: true,
+      gas_included: true,
     });
   });
 });

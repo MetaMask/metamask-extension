@@ -147,11 +147,14 @@ describe('AlertModal', () => {
 
   it('sets the alert as confirmed when checkbox is called', () => {
     const setAlertConfirmedMock = jest.fn();
+    const dangerAlertMock = alertsMock.find(
+      (alert) => alert.key === DATA_ALERT_KEY_MOCK,
+    );
     const useAlertsSpy = jest.spyOn(useAlertsModule, 'default');
     const newMockStore = configureMockStore([])({
       ...STATE_MOCK,
       confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: [alertsMock[1]] },
+        alerts: { [OWNER_ID_MOCK]: [dangerAlertMock] },
         confirmed: {
           [OWNER_ID_MOCK]: {
             [DATA_ALERT_KEY_MOCK]: false,
@@ -162,10 +165,10 @@ describe('AlertModal', () => {
 
     (useAlertsSpy as jest.Mock).mockReturnValue({
       setAlertConfirmed: setAlertConfirmedMock,
-      alerts: [alertsMock[1]],
+      alerts: [dangerAlertMock],
       generalAlerts: [],
-      fieldAlerts: [alertsMock[1]],
-      getFieldAlerts: () => [],
+      fieldAlerts: [dangerAlertMock],
+      getFieldAlerts: () => [dangerAlertMock],
       isAlertConfirmed: () => false,
     });
     const { getByTestId } = renderWithProvider(
@@ -233,11 +236,11 @@ describe('AlertModal', () => {
       );
 
       expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
-      expect(queryByTestId('alert-modal-button')).toBeNull();
+      expect(queryByTestId('alert-modal-button')).toBeInTheDocument();
       expect(getByText(ACTION_LABEL_MOCK)).toBeInTheDocument();
     });
 
-    it('renders acknowledge button and checkbox for non-blocking alerts', () => {
+    it('renders checkbox for non-blocking alerts', () => {
       const { getByTestId } = renderWithProvider(
         <AlertModal
           ownerId={OWNER_ID_MOCK}

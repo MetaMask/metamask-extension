@@ -315,7 +315,9 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames enabled 1`] =
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
   >
-    <div>
+    <div
+      class="mm-box mm-box--display-flex"
+    >
       <div
         class="name name__missing"
       >

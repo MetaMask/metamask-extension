@@ -42,7 +42,6 @@ describe('Privacy Settings Onboarding View', () => {
         [CHAIN_IDS.LINEA_GOERLI]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
       },
-      usePhishDetect: true,
       use4ByteResolution: true,
       useTokenDetection: false,
       useCurrencyRateCheck: true,
@@ -59,7 +58,6 @@ describe('Privacy Settings Onboarding View', () => {
 
   const store = configureMockStore([thunk])(mockStore);
   const setFeatureFlagStub = jest.fn();
-  const setUsePhishDetectStub = jest.fn();
   const setUse4ByteResolutionStub = jest.fn();
   const setUseTokenDetectionStub = jest.fn();
   const setUseCurrencyRateCheckStub = jest.fn();
@@ -79,7 +77,6 @@ describe('Privacy Settings Onboarding View', () => {
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
-    setUsePhishDetect: setUsePhishDetectStub,
     setUse4ByteResolution: setUse4ByteResolutionStub,
     setUseTokenDetection: setUseTokenDetectionStub,
     setUseCurrencyRateCheck: setUseCurrencyRateCheckStub,
@@ -97,14 +94,13 @@ describe('Privacy Settings Onboarding View', () => {
     disableProfileSyncing: disableProfileSyncingStub,
   });
 
-  it('should update preferences', () => {
-    const { container, getByText } = renderWithProvider(
+  it('should update the default settings from each category', () => {
+    const { container, queryByTestId } = renderWithProvider(
       <PrivacySettings />,
       store,
     );
     // All settings are initialized toggled to be same as default
     expect(toggleExternalServicesStub).toHaveBeenCalledTimes(0);
-    expect(setUsePhishDetectStub).toHaveBeenCalledTimes(0);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(0);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(0);
     expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(0);
@@ -114,61 +110,73 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(0);
     expect(setPreferenceStub).toHaveBeenCalledTimes(0);
 
-    const toggles = container.querySelectorAll('input[type=checkbox]');
-    const submitButton = getByText('Done');
-    // TODO: refactor this toggle array, not very readable
-    // toggle to false
+    // Default Settings - General category
+    const itemCategoryGeneral = queryByTestId('category-item-General');
+    expect(itemCategoryGeneral).toBeInTheDocument();
+    fireEvent.click(itemCategoryGeneral);
+
+    let toggles = container.querySelectorAll('input[type=checkbox]');
+    const backButton = queryByTestId('privacy-settings-back-button');
 
     fireEvent.click(toggles[0]); // toggleExternalServicesStub
-    fireEvent.click(toggles[1]); // setIncomingTransactionsPreferencesStub
-    fireEvent.click(toggles[2]); // setIncomingTransactionsPreferencesStub (2)
-    fireEvent.click(toggles[3]); // setIncomingTransactionsPreferencesStub (3)
-    fireEvent.click(toggles[4]); // setIncomingTransactionsPreferencesStub (4)
-    fireEvent.click(toggles[5]); // setUsePhishDetectStub
-    fireEvent.click(toggles[6]);
-    fireEvent.click(toggles[7]); // setUse4ByteResolutionStub
-    fireEvent.click(toggles[8]); // setUseTokenDetectionStub
-    fireEvent.click(toggles[9]); // setUseMultiAccountBalanceCheckerStub
-    fireEvent.click(toggles[10]); // setUseTransactionSimulationsStub
-    fireEvent.click(toggles[11]); // setUseAddressBarEnsResolutionStub
-    fireEvent.click(toggles[12]); // setUseCurrencyRateCheckStub
-    fireEvent.click(toggles[13]); // setPreferenceStub
 
-    expect(mockOpenBasicFunctionalityModal).toHaveBeenCalledTimes(1);
+    // Default Settings - Assets category
+    const itemCategoryAssets = queryByTestId('category-item-Assets');
+    fireEvent.click(itemCategoryAssets);
 
-    fireEvent.click(submitButton);
+    toggles = container.querySelectorAll('input[type=checkbox]');
 
-    expect(toggleExternalServicesStub).toHaveBeenCalledTimes(1);
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(4);
-    expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);
-    expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
+    fireEvent.click(toggles[0]); // setUseTokenDetectionStub
+    fireEvent.click(toggles[1]); // setUseTransactionSimulationsStub
+
+    fireEvent.click(toggles[2]); // setIncomingTransactionsPreferencesStub
+    fireEvent.click(toggles[3]); // setIncomingTransactionsPreferencesStub (2)
+    fireEvent.click(toggles[4]); // setIncomingTransactionsPreferencesStub (3)
+    fireEvent.click(toggles[5]); // setIncomingTransactionsPreferencesStub (4)
+
+    fireEvent.click(toggles[6]); // setUseCurrencyRateCheckStub
+    fireEvent.click(toggles[7]); // setUseAddressBarEnsResolutionStub
+    fireEvent.click(toggles[8]); // setUseMultiAccountBalanceCheckerStub
+
+    // Default Settings - Security category
+    const itemCategorySecurity = queryByTestId('category-item-Security');
+    fireEvent.click(itemCategorySecurity);
+
+    toggles = container.querySelectorAll('input[type=checkbox]');
+
+    fireEvent.click(toggles[0]); // setUse4ByteResolutionStub
+    fireEvent.click(toggles[1]); // setPreferenceStub
+
+    fireEvent.click(backButton);
+
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
-    expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(1);
-    expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(1);
-    expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(1);
+    expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(1);
-    expect(setPreferenceStub).toHaveBeenCalledTimes(1);
+    expect(setUseTransactionSimulationsStub.mock.calls[0][0]).toStrictEqual(
+      false,
+    );
 
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(4);
     expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledWith(
       CHAIN_IDS.MAINNET,
       false,
       expect.anything(),
     );
-    // toggleExternalServices is true still because modal is "open" but not confirmed yet
-    expect(toggleExternalServicesStub.mock.calls[0][0]).toStrictEqual(true);
-    expect(setUsePhishDetectStub.mock.calls[0][0]).toStrictEqual(false);
-    expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
-    expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(true);
-    expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
-      false,
-    );
+
+    expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(1);
     expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(false);
+    expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUseAddressBarEnsResolutionStub.mock.calls[0][0]).toStrictEqual(
       false,
     );
-    expect(setUseTransactionSimulationsStub.mock.calls[0][0]).toStrictEqual(
+    expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(1);
+    expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
       false,
     );
+
+    expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
+    expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
+    expect(setPreferenceStub).toHaveBeenCalledTimes(1);
     expect(setPreferenceStub.mock.calls[0][0]).toStrictEqual(
       'petnamesEnabled',
       false,
@@ -182,6 +190,9 @@ describe('Privacy Settings Onboarding View', () => {
         store,
       );
 
+      const itemCategoryAssets = queryByTestId('category-item-Assets');
+      fireEvent.click(itemCategoryAssets);
+
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
         target: {
@@ -194,8 +205,8 @@ describe('Privacy Settings Onboarding View', () => {
       const validIpfsUrl = queryByText('IPFS gateway URL is valid');
       expect(validIpfsUrl).toBeInTheDocument();
 
-      const submitButton = queryByText('Done');
-      fireEvent.click(submitButton);
+      const backButton = queryByTestId('privacy-settings-back-button');
+      fireEvent.click(backButton);
 
       expect(setIpfsGatewayStub).toHaveBeenCalled();
     });
@@ -205,6 +216,9 @@ describe('Privacy Settings Onboarding View', () => {
         <PrivacySettings />,
         store,
       );
+
+      const itemCategoryAssets = queryByTestId('category-item-Assets');
+      fireEvent.click(itemCategoryAssets);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -225,6 +239,9 @@ describe('Privacy Settings Onboarding View', () => {
         <PrivacySettings />,
         store,
       );
+
+      const itemCategoryAssets = queryByTestId('category-item-Assets');
+      fireEvent.click(itemCategoryAssets);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {

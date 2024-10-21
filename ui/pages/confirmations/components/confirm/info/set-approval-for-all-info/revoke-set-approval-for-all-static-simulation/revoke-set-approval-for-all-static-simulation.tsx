@@ -29,6 +29,7 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
           <Name
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
+            preferContractSymbol
           />
         </Box>
       </Box>
@@ -39,7 +40,11 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
     <ConfirmInfoRow label={t('permissionFrom')}>
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         <Box display={Display.Flex} alignItems={AlignItems.center}>
-          <Name value={spender} type={NameType.ETHEREUM_ADDRESS} />
+          <Name
+            value={spender}
+            type={NameType.ETHEREUM_ADDRESS}
+            preferContractSymbol
+          />
         </Box>
       </Box>
     </ConfirmInfoRow>

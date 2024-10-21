@@ -80,6 +80,7 @@ ignores:
   - '@babel/plugin-transform-logical-assignment-operators'
   # trezor
   - 'ts-mixer'
+  - '@testing-library/dom'
 
 # files depcheck should not parse
 ignorePatterns:

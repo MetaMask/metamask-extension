@@ -43,6 +43,7 @@ import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUICard } from '../snaps/snap-ui-card';
 import { SnapUIAddress } from '../snaps/snap-ui-address';
+import { SnapUIAvatar } from '../snaps/snap-ui-avatar';
 import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapUIFooterButton } from '../snaps/snap-ui-footer-button';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -106,6 +107,7 @@ export const safeComponentList = {
   SnapUICard,
   SnapUISelector,
   SnapUIAddress,
+  SnapUIAvatar,
   SnapUIFooterButton,
   FormTextField,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

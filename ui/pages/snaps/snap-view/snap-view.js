@@ -105,12 +105,14 @@ function SnapView() {
             showInfo={false}
             startAccessory={renderBackButton()}
             endAccessory={
-              <SnapHomeMenu
-                snapId={snapId}
-                onSettingsClick={handleSettingsClick}
-                onRemoveClick={handleSnapRemove}
-                isSettingsAvailable={!snap.preinstalled}
-              />
+              !snap.hidden && (
+                <SnapHomeMenu
+                  snapId={snapId}
+                  onSettingsClick={handleSettingsClick}
+                  onRemoveClick={handleSnapRemove}
+                  isSettingsAvailable={!snap.preinstalled}
+                />
+              )
             }
           />
         )}

@@ -11,7 +11,7 @@ import { ConfirmInfoRowText } from './text';
 
 type ConfirmInfoRowTextTokenUnitsProps = {
   value: number | string | BigNumber;
-  decimals: number;
+  decimals?: number;
 };
 
 export const ConfirmInfoRowTextTokenUnits: React.FC<

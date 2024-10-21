@@ -6,14 +6,16 @@ import {
   TransactionParams,
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import { SignatureController } from '@metamask/signature-controller';
-import type { PersonalMessage } from '@metamask/message-manager';
+import {
+  SignatureController,
+  SignatureRequest,
+} from '@metamask/signature-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
-import { AppStateController } from '../../controllers/app-state';
+import { AppStateController } from '../../controllers/app-state-controller';
 import {
   generateSecurityAlertId,
   isChainSupported,
@@ -246,7 +248,7 @@ describe('PPOM Utils', () => {
             ...SECURITY_ALERT_RESPONSE_MOCK,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
-        } as unknown as PersonalMessage,
+        } as unknown as SignatureRequest,
       });
 
       await updateSecurityAlertResponse({

@@ -72,9 +72,7 @@ describe('Interactive Replacement Token Notification', () => {
       },
       isUnlocked: false,
       interactiveReplacementToken: { oldRefreshToken: 'abc' },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       keyrings: [
         {
           type: KeyringType.imported,

@@ -244,10 +244,6 @@
   "fast": {
     "message": "ವೇಗ"
   },
-  "fiat": {
-    "message": "ಫಿಯೆಟ್",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ಫೈಲ್ ಆಮದು ಮಾಡುವಿಕೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲವೇ? ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ!",
     "description": "Helps user import their account from a JSON file"
@@ -508,12 +504,6 @@
   "prev": {
     "message": "ಹಿಂದಿನ"
   },
-  "primaryCurrencySetting": {
-    "message": "ಪ್ರಾಥಮಿಕ ಕರೆನ್ಸಿ"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "ಸರಪಳಿಯ ಸ್ಥಳೀಯ ಕರೆನ್ಸಿಯಲ್ಲಿ ಮೌಲ್ಯಗಳನ್ನು ಪ್ರದರ್ಶಿಸಲು ಆದ್ಯತೆ ನೀಡಲು ಸ್ಥಳೀಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ (ಉದಾ. ETH). ನಿಮ್ಮ ಆಯ್ಕೆಮಾಡಿದ ಫಿಯೆಟ್ ಕರೆನ್ಸಿಯಲ್ಲಿ ಮೌಲ್ಯಗಳನ್ನು ಪ್ರದರ್ಶಿಸಲು ಆದ್ಯತೆ ನೀಡಲು ಫಿಯೆಟ್ ಆಯ್ಕೆಮಾಡಿ."
-  },
   "privacyMsg": {
     "message": "ಗೌಪ್ಯತೆ ನೀತಿ"
   },
@@ -764,9 +754,6 @@
   },
   "unlockMessage": {
     "message": "ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್ ನಿರೀಕ್ಷಿಸುತ್ತಿದೆ"
-  },
-  "updatedWithDate": {
-    "message": "$1 ನವೀಕರಿಸಲಾಗಿದೆ"
   },
   "urlErrorMsg": {
     "message": "URI ಗಳಿಗೆ ಸೂಕ್ತವಾದ HTTP/HTTPS ಪೂರ್ವಪ್ರತ್ಯಯದ ಅಗತ್ಯವಿದೆ."

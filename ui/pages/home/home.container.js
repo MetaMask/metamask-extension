@@ -51,7 +51,6 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -223,8 +222,10 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
-    isSmartTransactionsOptInModalAvailable:
-      getIsSmartTransactionsOptInModalAvailable(state),
+
+    // Set to false to prevent the opt-in modal from showing.
+    // TODO(dbrans): Remove opt-in modal once default opt-in is stable.
+    isSmartTransactionsOptInModalAvailable: false,
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };
