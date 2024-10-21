@@ -1,4 +1,5 @@
 [
+  "*.btc*.quiknode.pro",
   "accounts.api.cx.metamask.io",
   "acl.execution.metamask.io",
   "api.blockchair.com",

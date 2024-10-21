@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useState,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -16,6 +23,9 @@ import {
   CaipChainId,
 } from '@metamask/utils';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { BtcAccountType } from '@metamask/keyring-api';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
@@ -27,6 +37,9 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { I18nContext } from '../../../contexts/i18n';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  CONFIRMATION_V_NEXT_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -39,6 +52,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
   getSelectedAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getMemoizedUnapprovedTemplatedConfirmations,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -67,6 +83,13 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import {
+  sendMultichainTransaction,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
   chainId,
@@ -99,7 +122,8 @@ const CoinButtons = ({
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const account = useSelector(getSelectedAccount);
+  const { address: selectedAddress } = account;
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
@@ -230,23 +254,61 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
-  const handleSendOnClick = useCallback(async () => {
-    trackEvent(
-      {
-        event: MetaMetricsEventName.NavSendButtonClicked,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          token_symbol: 'ETH',
-          location: 'Home',
-          text: 'Send',
-          chain_id: chainId,
-        },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
+
+  useEffect(() => {
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => {
+        return (
+          approval.type === 'snap_dialog' &&
+          approval.origin === BITCOIN_WALLET_SNAP_ID
+        );
       },
-      { excludeMetaMetricsId: false },
     );
-    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    history.push(SEND_ROUTE);
-  }, [chainId]);
+
+    if (templatedSnapApproval) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+    }
+  }, [unapprovedTemplatedConfirmations, history]);
+  ///: END:ONLY_INCLUDE_IF
+
+  const handleSendOnClick = useCallback(async () => {
+    switch (account.type) {
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      case BtcAccountType.P2wpkh: {
+        await sendMultichainTransaction(
+          BITCOIN_WALLET_SNAP_ID,
+          account.id,
+          chainId as CaipChainId,
+        );
+
+        // We automatically switch to the activity tab once the transaction has been sent.
+        dispatch(setDefaultHomeActiveTabName('activity'));
+        break;
+      }
+      ///: END:ONLY_INCLUDE_IF
+      default: {
+        trackEvent(
+          {
+            event: MetaMetricsEventName.NavSendButtonClicked,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              token_symbol: 'ETH',
+              location: 'Home',
+              text: 'Send',
+              chain_id: chainId,
+            },
+          },
+          { excludeMetaMetricsId: false },
+        );
+        await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+        history.push(SEND_ROUTE);
+      }
+    }
+  }, [chainId, account]);
 
   const handleSwapOnClick = useCallback(async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
