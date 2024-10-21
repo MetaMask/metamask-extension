@@ -1,4 +1,3 @@
-import BridgeStatusController from '../../../app/scripts/controllers/bridge-status/bridge-status-controller';
 import {
   BridgeStatusAction,
   StatusRequest,
@@ -17,14 +16,13 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
   };
 };
 
-export const getBridgeTxStatus = (statusRequest: StatusRequest) => {
+export const startPollingForBridgeTxStatus = (statusRequest: StatusRequest) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return dispatch(
-      callBridgeStatusControllerMethod<
-        Parameters<
-          BridgeStatusController[BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS]
-        >
-      >(BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS, [statusRequest]),
+      callBridgeStatusControllerMethod<[StatusRequest]>(
+        BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS,
+        [statusRequest],
+      ),
     );
   };
 };
