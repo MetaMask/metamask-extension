@@ -6665,7 +6665,7 @@ export default class MetamaskController extends EventEmitter {
 
   async backToSafetyPhishingWarning() {
     const portfolioBaseURL = process.env.PORTFOLIO_URL;
-    const portfolioURL = `${portfolioBaseURL}/?metamaskEntry=phishing_page_portfolio_button&marketingEnabled=true`;
+    const portfolioURL = `${portfolioBaseURL}/?metamaskEntry=phishing_page_portfolio_button`;
 
     this.metaMetricsController.trackEvent({
       category: MetaMetricsEventCategory.Navigation,
