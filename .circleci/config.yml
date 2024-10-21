@@ -477,7 +477,7 @@ jobs:
       - gh/install
       - run:
           name: Install dependencies
-          command: .circleci/scripts/install-dependencies.sh
+          command: yarn --immutable
       - save_cache:
           key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
           paths:
