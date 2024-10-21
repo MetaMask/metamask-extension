@@ -1612,6 +1612,7 @@ export const getSnapsMetadata = createDeepEqualSelector(
       snapsMetadata[snapId] = {
         name: manifest.proposedName,
         description: manifest.description,
+        hidden: snap.hidden,
       };
       return snapsMetadata;
     }, {});
