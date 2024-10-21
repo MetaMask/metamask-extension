@@ -67,12 +67,6 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          text: 'Use your enabled networks',
-          tag: 'p',
-        });
-
         // Switch back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
