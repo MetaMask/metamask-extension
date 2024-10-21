@@ -2,8 +2,8 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { Hex } from '@metamask/utils';
 import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
+import { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
 import { ChainId, Quote } from '../../../../ui/pages/bridge/types';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
 import BridgeStatusController from './bridge-status-controller';
@@ -145,6 +145,7 @@ type BridgeStatusControllerEvents = ControllerStateChangeEvent<
   BridgeStatusControllerState
 >;
 
+type AllowedActions = NetworkControllerFindNetworkClientIdByChainIdAction;
 type AllowedEvents = TransactionControllerTransactionConfirmedEvent;
 
 /**
@@ -152,8 +153,8 @@ type AllowedEvents = TransactionControllerTransactionConfirmedEvent;
  */
 export type BridgeStatusControllerMessenger = RestrictedControllerMessenger<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
-  BridgeStatusControllerActions,
+  BridgeStatusControllerActions | AllowedActions,
   BridgeStatusControllerEvents | AllowedEvents,
-  never,
+  AllowedActions['type'],
   AllowedEvents['type']
 >;
