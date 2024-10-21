@@ -25,6 +25,7 @@ export const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.tokenMethodTransfer,
   TransactionType.tokenMethodTransferFrom,
   TransactionType.tokenMethodSafeTransferFrom,
+  TransactionType.simpleSend,
 ];
 
 export const REDESIGN_DEV_TRANSACTION_TYPES = [
