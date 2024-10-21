@@ -12,9 +12,10 @@ const switchEthereumChain = {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
     getCaveat: true,
-    requestPermittedChainsPermission: true,
     getCurrentChainIdForDomain: true,
-    grantPermittedChainsPermissionIncremental: true,
+    requestPermissionApprovalForOrigin: true,
+    updateCaveat: true,
+    grantPermissions: true,
   },
 };
 
@@ -28,15 +29,16 @@ async function switchEthereumChainHandler(
   {
     getNetworkConfigurationByChainId,
     setActiveNetwork,
-    requestPermittedChainsPermission,
     getCaveat,
     getCurrentChainIdForDomain,
-    grantPermittedChainsPermissionIncremental,
+    requestPermissionApprovalForOrigin,
+    updateCaveat,
+    grantPermissions,
   },
 ) {
   let chainId;
   try {
-    chainId = validateSwitchEthereumChainParams(req, end);
+    chainId = validateSwitchEthereumChainParams(req);
   } catch (error) {
     return end(error);
   }
@@ -64,10 +66,19 @@ async function switchEthereumChainHandler(
     );
   }
 
-  return switchChain(res, end, chainId, networkClientIdToSwitchTo, null, {
-    setActiveNetwork,
-    getCaveat,
-    requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental,
-  });
+  return switchChain(
+    res,
+    end,
+    origin,
+    chainId,
+    networkClientIdToSwitchTo,
+    null,
+    {
+      setActiveNetwork,
+      getCaveat,
+      updateCaveat,
+      requestPermissionApprovalForOrigin,
+      grantPermissions,
+    },
+  );
 }

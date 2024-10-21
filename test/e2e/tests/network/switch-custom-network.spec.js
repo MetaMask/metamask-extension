@@ -13,6 +13,9 @@ describe('Switch ethereum chain', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: generateGanacheOptions({

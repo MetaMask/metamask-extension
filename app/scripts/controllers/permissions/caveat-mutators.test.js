@@ -14,20 +14,20 @@ describe('caveat mutators', () => {
     describe('removeAccount', () => {
       it('returns the no-op operation if the target account is not permitted', () => {
         expect(removeAccount(address2, [address1])).toStrictEqual({
-          operation: CaveatMutatorOperation.noop,
+          operation: CaveatMutatorOperation.Noop,
         });
       });
 
       it('returns the update operation and a new value if the target account is permitted', () => {
         expect(removeAccount(address2, [address1, address2])).toStrictEqual({
-          operation: CaveatMutatorOperation.updateValue,
+          operation: CaveatMutatorOperation.UpdateValue,
           value: [address1],
         });
       });
 
       it('returns the revoke permission operation the target account is the only permitted account', () => {
         expect(removeAccount(address1, [address1])).toStrictEqual({
-          operation: CaveatMutatorOperation.revokePermission,
+          operation: CaveatMutatorOperation.RevokePermission,
         });
       });
 
@@ -36,20 +36,20 @@ describe('caveat mutators', () => {
         const checksummedAddress3 =
           '0x95222290dd7278AA3DDd389cc1E1d165Cc4BaeE5';
         expect(removeAccount(checksummedAddress3, [address3])).toStrictEqual({
-          operation: CaveatMutatorOperation.revokePermission,
+          operation: CaveatMutatorOperation.RevokePermission,
         });
       });
 
       describe('Multichain behaviour', () => {
         it('returns the no-op operation if the target account is not permitted', () => {
           expect(removeAccount(address2, [nonEvmAddress])).toStrictEqual({
-            operation: CaveatMutatorOperation.noop,
+            operation: CaveatMutatorOperation.Noop,
           });
         });
 
         it('can revoke permission for non-EVM addresses', () => {
           expect(removeAccount(nonEvmAddress, [nonEvmAddress])).toStrictEqual({
-            operation: CaveatMutatorOperation.revokePermission,
+            operation: CaveatMutatorOperation.RevokePermission,
           });
         });
 
@@ -57,7 +57,7 @@ describe('caveat mutators', () => {
           expect(
             removeAccount(nonEvmAddress, [address1, nonEvmAddress]),
           ).toStrictEqual({
-            operation: CaveatMutatorOperation.updateValue,
+            operation: CaveatMutatorOperation.UpdateValue,
             value: [address1],
           });
         });
