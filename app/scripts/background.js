@@ -342,22 +342,10 @@ function overrideContentSecurityPolicyHeader() {
     ({ responseHeaders }) => {
       for (const header of responseHeaders) {
         if (header.name.toLowerCase() === 'content-security-policy') {
-          const directives = CSP.parse(header.value);
-          const nonce = `'nonce-${btoa(browser.runtime.getURL('/'))}'`;
-          const scriptSrc = directives.find(
-            (directive) => directive.name.toLowerCase() === 'script-src',
+          header.value = CSP.addNonce(
+            header.value,
+            btoa(browser.runtime.getURL('/')),
           );
-          if (scriptSrc) {
-            scriptSrc.values.push(nonce);
-          } else {
-            const defaultSrc = directives.find(
-              (directive) => directive.name.toLowerCase() === 'default-src',
-            );
-            if (defaultSrc) {
-              defaultSrc.values.push(nonce);
-            }
-          }
-          header.value = CSP.stringify(directives);
         }
       }
       return { responseHeaders };
