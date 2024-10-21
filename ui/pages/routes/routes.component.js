@@ -71,7 +71,6 @@ import {
   SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
-  BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
@@ -493,13 +492,6 @@ export default class Routes extends Component {
     );
   }
 
-  onSwapsBuildQuotePage() {
-    const { location } = this.props;
-    return Boolean(
-      matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
-    );
-  }
-
   onHomeScreen() {
     const { location } = this.props;
     return location.pathname === DEFAULT_ROUTE;
@@ -507,6 +499,17 @@ export default class Routes extends Component {
 
   hideAppHeader() {
     const { location } = this.props;
+
+    const isCrossChainSwapsPage = Boolean(
+      matchPath(location.pathname, {
+        path: `${CROSS_CHAIN_SWAP_ROUTE}`,
+        exact: false,
+      }),
+    );
+
+    if (isCrossChainSwapsPage) {
+      return true;
+    }
 
     const isNotificationsPage = Boolean(
       matchPath(location.pathname, {

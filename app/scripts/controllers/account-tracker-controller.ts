@@ -45,7 +45,7 @@ import type {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
 } from './onboarding';
-import { PreferencesControllerState } from './preferences-controller';
+import { PreferencesControllerGetStateAction } from './preferences-controller';
 
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';
@@ -143,7 +143,8 @@ export type AllowedActions =
   | OnboardingControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction;
+  | NetworkControllerGetNetworkClientByIdAction
+  | PreferencesControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -170,7 +171,6 @@ export type AccountTrackerControllerOptions = {
   provider: Provider;
   blockTracker: BlockTracker;
   getNetworkIdentifier: (config?: NetworkClientConfiguration) => string;
-  preferencesControllerState: Partial<PreferencesControllerState>;
 };
 
 /**
@@ -198,8 +198,6 @@ export default class AccountTrackerController extends BaseController<
 
   #getNetworkIdentifier: AccountTrackerControllerOptions['getNetworkIdentifier'];
 
-  #preferencesControllerState: AccountTrackerControllerOptions['preferencesControllerState'];
-
   #selectedAccount: InternalAccount;
 
   /**
@@ -226,7 +224,6 @@ export default class AccountTrackerController extends BaseController<
     this.#blockTracker = options.blockTracker;
 
     this.#getNetworkIdentifier = options.getNetworkIdentifier;
-    this.#preferencesControllerState = options.preferencesControllerState;
 
     // subscribe to account removal
     this.messagingSystem.subscribe(
@@ -256,8 +253,9 @@ export default class AccountTrackerController extends BaseController<
     this.messagingSystem.subscribe(
       'AccountsController:selectedEvmAccountChange',
       (newAccount) => {
-        const { useMultiAccountBalanceChecker } =
-          this.#preferencesControllerState;
+        const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+          'PreferencesController:getState',
+        );
 
         if (
           this.#selectedAccount.id !== newAccount.id &&
@@ -433,10 +431,8 @@ export default class AccountTrackerController extends BaseController<
       return;
     }
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
-    const updateForBlock = this.#updateForBlockByNetworkClientId.bind(
-      this,
-      networkClientId,
-    );
+    const updateForBlock = (blockNumber: string) =>
+      this.#updateForBlockByNetworkClientId(networkClientId, blockNumber);
     blockTracker.addListener('latest', updateForBlock);
 
     this.#listeners[networkClientId] = updateForBlock;
@@ -672,7 +668,9 @@ export default class AccountTrackerController extends BaseController<
 
     const { chainId, provider, identifier } =
       this.#getCorrectNetworkClient(networkClientId);
-    const { useMultiAccountBalanceChecker } = this.#preferencesControllerState;
+    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+      'PreferencesController:getState',
+    );
 
     let addresses = [];
     if (useMultiAccountBalanceChecker) {
@@ -723,7 +721,9 @@ export default class AccountTrackerController extends BaseController<
     provider: Provider,
     chainId: Hex,
   ): Promise<void> {
-    const { useMultiAccountBalanceChecker } = this.#preferencesControllerState;
+    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+      'PreferencesController:getState',
+    );
 
     let balance = '0x0';
 

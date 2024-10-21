@@ -268,7 +268,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       SmartTransactionsController: {
         smartTransactionsState: {
           fees: {},
+          feesByChainId: {},
           liveness: true,
+          livenessByChainId: {},
           smartTransactions: {
             [CHAIN_IDS.MAINNET]: [],
           },
