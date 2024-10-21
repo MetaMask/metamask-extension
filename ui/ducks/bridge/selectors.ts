@@ -3,6 +3,7 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
+import { createSelector } from 'reselect';
 import {
   getNetworkConfigurationsByChainId,
   getIsBridgeEnabled,
@@ -17,6 +18,10 @@ import {
 } from '../../../app/scripts/controllers/bridge/types';
 import { createDeepEqualSelector } from '../../selectors/util';
 import { getProviderConfig } from '../metamask/metamask';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { BridgeState } from './bridge';
 
 type BridgeAppState = {
@@ -118,9 +123,39 @@ export const getToToken = (state: BridgeAppState) => {
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
-export const getToAmount = (_state: BridgeAppState) => {
-  return '0';
+
+export const getBridgeQuotes = (state: BridgeAppState) => {
+  return {
+    quotes: state.metamask.bridgeState.quotes,
+    quotesLastFetchedMs: state.metamask.bridgeState.quotesLastFetched,
+    isLoading:
+      state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
+  };
 };
+
+export const getRecommendedQuote = createSelector(
+  getBridgeQuotes,
+  ({ quotes }) => {
+    // TODO implement sorting
+    return quotes[0];
+  },
+);
+
+export const getQuoteRequest = (state: BridgeAppState) => {
+  const { quoteRequest } = state.metamask.bridgeState;
+  return quoteRequest;
+};
+
+export const getToAmount = createSelector(getRecommendedQuote, (quote) =>
+  quote
+    ? calcTokenAmount(
+        quote.quote.destTokenAmount,
+        quote.quote.destAsset.decimals,
+      )
+        .toFixed(3)
+        .toString()
+    : undefined,
+);
 
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,
