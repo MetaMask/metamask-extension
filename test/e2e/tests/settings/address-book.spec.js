@@ -88,16 +88,16 @@ describe('Address Book', function () {
         await driver.clickElement('.address-book__link');
 
         const inputUsername = await driver.findElement('#nickname');
-        await inputUsername.fill('Test User');
+        await driver.fill('#nickname', 'Test User');
 
         const inputAddress = await driver.findElement(
           'input[placeholder="Enter public address (0x) or domain name"]',
         );
-        await inputAddress.fill('0x56A355d3427bC2B1E22c78197AF091230919Cc2A');
+        await driver.fill('[data-testid="ens-input"]', '0x56A355d3427bC2B1E22c78197AF091230919Cc2A');
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
-        const recipientUsername = await driver.findElement({
+        const recipientUsername = await driver.waitForSelector({
           text: 'Test User',
           css: '.address-list-item__label',
         });
@@ -108,9 +108,11 @@ describe('Address Book', function () {
           'Username is not added correctly',
         );
 
-        const recipientAddress = await driver.findElement(
-          '[data-testid="address-list-item-address"]',
-        );
+        const recipientAddress =  await driver.waitForSelector({
+          css: '[data-testid="address-list-item-address"]',
+          text: '0x56A35...9Cc2A',
+      });
+
         assert.equal(
           await recipientAddress.getText(),
           shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
