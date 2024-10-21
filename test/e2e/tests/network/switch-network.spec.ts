@@ -38,12 +38,12 @@ describe('Switch network - ', function (this: Suite) {
         await selectNetwork.clickNetworkName('Ethereum Mainnet');
         await homePage.check_expectedBalanceIsDisplayed('25');
         await headerNavbar.check_currentSelectedNetwork('Ethereum Mainnet');
-        // Validate the switch network functionality to test network Sepolia
+        // Validate the switch network functionality to test network
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.clickToggleButton();
-        await selectNetwork.clickNetworkName('Sepolia');
-        await homePage.check_expectedBalanceIsDisplayed('25 Sepolia');
-        await headerNavbar.check_currentSelectedNetwork('Sepolia');
+        await selectNetwork.clickNetworkName('Localhost 8545');
+        await homePage.check_expectedBalanceIsDisplayed('25');
+        await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
 
         // Add Aribtrum network and perform the switch network functionality
         await headerNavbar.clickSwitchNetworkDropDown();

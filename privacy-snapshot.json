@@ -62,6 +62,5 @@
   "unresponsive-rpc.test",
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
-  "www.4byte.directory",
-  "sepolia.infura.io"
+  "www.4byte.directory"
 ]
