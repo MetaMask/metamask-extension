@@ -38,8 +38,8 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
       },
     ]);
 
-    timerId = setTimeout(() => {
-      dispatch(deleteExpiredSnapNotifications());
+    timerId = setTimeout(async () => {
+      await dispatch(deleteExpiredSnapNotifications());
     }, 10000);
   };
 

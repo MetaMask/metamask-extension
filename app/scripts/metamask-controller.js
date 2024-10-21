@@ -3031,7 +3031,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapUninstalled`,
-      (truncatedSnap) => {
+      async (truncatedSnap) => {
         const notificationIds = this.getNotificationsByType(
           TRIGGER_TYPES.SNAP,
         ).reduce((idList, notification) => {
@@ -3041,7 +3041,7 @@ export default class MetamaskController extends EventEmitter {
           return idList;
         }, []);
 
-        this.deleteNotificationsById(notificationIds);
+        await this.deleteNotificationsById(notificationIds);
 
         const snapId = truncatedSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;

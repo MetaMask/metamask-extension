@@ -1229,15 +1229,6 @@ export async function handleSnapRequest<
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
-export function dismissNotifications(
-  ids: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('dismissNotifications', [ids]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 export function deleteExpiredSnapNotifications(): ThunkAction<
   void,
   MetaMaskReduxState,
