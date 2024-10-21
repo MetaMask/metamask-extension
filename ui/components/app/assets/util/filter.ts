@@ -3,17 +3,19 @@ import { get } from 'lodash';
 export type FilterCriteria = {
   key: string;
   opts?: Record<string, FilterType>; // Use opts for range, inclusion, etc.
-  filterCallback?: keyof FilterCallbacksT; // Specify the type of filter: 'range', 'inclusive', etc.
+  filterCallback?: FilterCallbackKeys; // Specify the type of filter: 'range', 'inclusive', etc.
 };
 
 export type FilterType = string | number | boolean | Date;
+type FilterCallbackKeys = keyof FilterCallbacksT;
+
 export type FilterCallbacksT = {
-  inclusive: (value: any, opts: Record<string, boolean>) => boolean;
+  inclusive: (value: string, opts: Record<string, boolean>) => boolean;
   range: (value: number, opts: Record<string, number>) => boolean;
 };
 
 const filterCallbacks: FilterCallbacksT = {
-  inclusive: (value: any, opts: Record<string, boolean>) => opts[value],
+  inclusive: (value: string, opts: Record<string, boolean>) => opts[value],
   range: (value: number, opts: Record<string, number>) =>
     value >= opts.min && value <= opts.max,
 };
@@ -35,10 +37,13 @@ export function filterAssets<T>(array: T[], criteria: FilterCriteria[]): T[] {
       if (filterCallback && opts) {
         switch (filterCallback) {
           case 'inclusive':
-            return filterCallbacks.inclusive(
-              nestedValue,
-              opts as Record<string, boolean>,
-            );
+            if (typeof nestedValue === 'string') {
+              return filterCallbacks.inclusive(
+                nestedValue,
+                opts as Record<string, boolean>,
+              );
+            }
+            return false;
           case 'range':
             // Type guard to ensure nestedValue is a number
             if (typeof nestedValue === 'number') {
