@@ -12,18 +12,21 @@ import {
 import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
+  API_REQUEST_LOG_EVENT,
 } from '@metamask-institutional/sdk';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
+import { CustodyController } from '@metamask-institutional/custody-controller';
+import { IApiCallLogEntry } from '@metamask-institutional/types';
+import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CustodyController } from '@metamask-institutional/custody-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
-import { SignatureController } from '@metamask/signature-controller';
-import {
-  OriginalRequest,
-  PersonalMessageParams,
-} from '@metamask/message-manager';
 import { NetworkState } from '@metamask/network-controller';
+import {
+  MessageParamsPersonal,
+  MessageParamsTyped,
+  SignatureController,
+} from '@metamask/signature-controller';
+import { OriginalRequest } from '@metamask/message-manager';
 import { InternalAccount } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
@@ -45,7 +48,7 @@ import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import AccountTrackerController from './account-tracker-controller';
-import { AppStateController } from './app-state';
+import { AppStateController } from './app-state-controller';
 
 type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;
@@ -299,6 +302,10 @@ export class MMIController {
           },
         );
 
+        keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+          this.logAndStoreApiRequest(logData);
+        });
+
         // store the supported chains for this custodian type
         const accounts = await keyring.getAccounts();
         addresses = addresses.concat(...accounts);
@@ -416,6 +423,10 @@ export class MMIController {
         this.appStateController.showInteractiveReplacementTokenBanner(payload);
       },
     );
+
+    keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+      this.logAndStoreApiRequest(logData);
+    });
 
     if (!keyring) {
       throw new Error('Unable to get keyring');
@@ -796,14 +807,14 @@ export class MMIController {
       req.method === 'eth_signTypedData_v4'
     ) {
       return await this.signatureController.newUnsignedTypedMessage(
-        updatedMsgParams as PersonalMessageParams,
+        updatedMsgParams as MessageParamsTyped,
         req as OriginalRequest,
         version,
         { parseJsonData: false },
       );
     } else if (req.method === 'personal_sign') {
       return await this.signatureController.newUnsignedPersonalMessage(
-        updatedMsgParams as PersonalMessageParams,
+        updatedMsgParams as MessageParamsPersonal,
         req as OriginalRequest,
       );
     }
@@ -889,5 +900,15 @@ export class MMIController {
     await this.appStateController.getUnlockPromise(true);
     this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
     return true;
+  }
+
+  async logAndStoreApiRequest(logData: IApiCallLogEntry) {
+    try {
+      const logs = await this.custodyController.sanitizeAndLogApiCall(logData);
+      return logs;
+    } catch (error) {
+      log.error('Error fetching extension request logs:', error);
+      throw error;
+    }
   }
 }
