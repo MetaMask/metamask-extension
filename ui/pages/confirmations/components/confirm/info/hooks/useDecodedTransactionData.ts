@@ -11,7 +11,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 
 export function useDecodedTransactionData(
-  transactionType?: string,
+  transactionTypeFilter?: string,
 ): AsyncResult<DecodedTransactionDataResponse | undefined> {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
@@ -25,7 +25,8 @@ export function useDecodedTransactionData(
     if (
       !hasTransactionData(transactionData) ||
       !transactionTo ||
-      (transactionType && currentTransactionType !== transactionType)
+      (transactionTypeFilter &&
+        currentTransactionType !== transactionTypeFilter)
     ) {
       return undefined;
     }

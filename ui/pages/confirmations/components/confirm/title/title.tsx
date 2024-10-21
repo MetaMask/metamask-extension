@@ -174,7 +174,9 @@ const ConfirmTitle: React.FC = memo(() => {
 
   let isRevokeSetApprovalForAll = false;
   let revokePending = false;
-  const decodedResponse = useDecodedTransactionData(TransactionType.tokenMethodSetApprovalForAll);
+  const decodedResponse = useDecodedTransactionData(
+    TransactionType.tokenMethodSetApprovalForAll,
+  );
   if (
     currentConfirmation?.type === TransactionType.tokenMethodSetApprovalForAll
   ) {
