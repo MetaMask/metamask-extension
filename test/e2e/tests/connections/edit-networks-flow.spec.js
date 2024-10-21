@@ -43,9 +43,6 @@ describe('Edit Networks Flow', function () {
         await driver.clickElement(
           '.mm-modal-content__dialog button[aria-label="Close"]',
         );
-
-        // Switch to first network, whose send transaction was just confirmed
-        await switchToNetworkByName(driver, 'Localhost 8545');
         await locateAccountBalanceDOM(driver);
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
