@@ -9,11 +9,6 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-async function switchToNetworkByName(driver, networkName) {
-  await driver.clickElement('.mm-picker-network');
-  await driver.clickElement(`[data-testid="${networkName}"]`);
-}
-
 describe('Edit Networks Flow', function () {
   it('should be able to edit networks', async function () {
     await withFixtures(
