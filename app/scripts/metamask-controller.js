@@ -4225,11 +4225,9 @@ export default class MetamaskController extends EventEmitter {
     // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
     // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
     if (details === undefined) {
-      details = await this.assetsContractController.getTokenStandardAndDetails(
-        address,
-        userAddress,
-        tokenId,
-      );
+      details = await this.assetsContractController
+        .getTokenStandardAndDetails(address, userAddress, tokenId)
+        .catch(() => ({}));
     }
 
     const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
