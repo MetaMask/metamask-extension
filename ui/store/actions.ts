@@ -43,6 +43,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Patch } from 'immer';
+import { HandlerType } from '@metamask/snaps-utils';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -504,6 +505,33 @@ export function checkHardwareStatus(
 
     await forceUpdateMetamaskState(dispatch);
     return unlocked;
+  };
+}
+
+export function getDeviceNameForMetric(
+  deviceName: HardwareDeviceNames,
+  hdPath: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  log.debug(`background.getDeviceNameForMetric`, deviceName, hdPath);
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    let result: string;
+    try {
+      result = await submitRequestToBackground<string>(
+        'getDeviceNameForMetric',
+        [deviceName, hdPath],
+      );
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+
+    await forceUpdateMetamaskState(dispatch);
+    return result;
   };
 }
 
@@ -5840,4 +5868,23 @@ function applyPatches(
   }
 
   return newState;
+}
+
+export async function sendMultichainTransaction(
+  snapId: string,
+  account: string,
+  scope: string,
+) {
+  await handleSnapRequest({
+    snapId,
+    origin: 'metamask',
+    handler: HandlerType.OnRpcRequest,
+    request: {
+      method: 'startSendTransactionFlow',
+      params: {
+        account,
+        scope,
+      },
+    },
+  });
 }

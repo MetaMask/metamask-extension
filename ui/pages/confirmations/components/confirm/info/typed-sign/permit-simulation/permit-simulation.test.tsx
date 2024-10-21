@@ -8,15 +8,25 @@ import {
   permitNFTSignatureMsg,
   permitSignatureMsg,
 } from '../../../../../../../../test/data/confirmations/typed_sign';
+import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
 import PermitSimulation from './permit-simulation';
 
 jest.mock('../../../../../../../store/actions', () => {
   return {
-    getTokenStandardAndDetails: jest.fn().mockResolvedValue({ decimals: 2 }),
+    getTokenStandardAndDetails: jest
+      .fn()
+      .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
   };
 });
 
 describe('PermitSimulation', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+
+    /** Reset memoized function using getTokenStandardAndDetails for each test */
+    memoizedGetTokenStandardAndDetails?.cache?.clear?.();
+  });
+
   it('renders component correctly', async () => {
     const state = getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
     const mockStore = configureMockStore([])(state);
