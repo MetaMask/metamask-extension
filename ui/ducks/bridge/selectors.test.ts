@@ -193,7 +193,6 @@ describe('Bridge selectors', () => {
         mockNetworkState(...FEATURED_RPCS),
       );
       const result = getToChains(state as never);
-      console.log('result: ', result);
 
       expect(result).toHaveLength(3);
       expect(result[0]).toStrictEqual(
