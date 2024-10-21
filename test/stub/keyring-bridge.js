@@ -138,7 +138,8 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
     super({
       publicKeyPayload: {
         publicKey: KNOWN_PUBLIC_KEY,
-        chainCode: '0x1',
+        chainCode: CHAIN_CODE,
+        address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
       },
     });
   }
