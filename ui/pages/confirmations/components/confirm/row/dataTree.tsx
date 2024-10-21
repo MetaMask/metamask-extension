@@ -97,10 +97,12 @@ export const DataTree = ({
   data,
   primaryType,
   tokenDecimals: tokenDecimalsProp,
+  chainId,
 }: {
   data: Record<string, TreeData> | TreeData[];
   primaryType?: PrimaryType;
   tokenDecimals?: number;
+  chainId: string;
 }) => {
   const tokenContract = getTokenContractInDataTree(data);
   const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
@@ -125,6 +127,7 @@ export const DataTree = ({
               value={value}
               type={type}
               tokenDecimals={tokenDecimals}
+              chainId={chainId}
             />
           }
         </ConfirmInfoRow>
@@ -150,12 +153,14 @@ const DataField = memo(
     type,
     value,
     tokenDecimals,
+    chainId,
   }: {
     label: string;
     primaryType?: PrimaryType;
     type: string;
     value: ValueType;
     tokenDecimals?: number;
+    chainId: string;
   }) => {
     const t = useI18nContext();
 
@@ -165,6 +170,7 @@ const DataField = memo(
           data={value}
           primaryType={primaryType}
           tokenDecimals={tokenDecimals}
+          chainId={chainId}
         />
       );
     }
@@ -191,7 +197,7 @@ const DataField = memo(
         mixedCaseUseChecksum: true,
       })
     ) {
-      return <ConfirmInfoRowAddress address={value} />;
+      return <ConfirmInfoRowAddress address={value} chainId={chainId} />;
     }
 
     return <ConfirmInfoRowText text={sanitizeString(value)} />;

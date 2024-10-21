@@ -63,7 +63,10 @@ export const TokenDetailsSection = () => {
 
   const tokenRow = (
     <ConfirmInfoRow label={t('interactingWith')}>
-      <ConfirmInfoRowAddress address={transactionMeta.txParams.to as string} />
+      <ConfirmInfoRowAddress
+        address={transactionMeta.txParams.to as string}
+        chainId={chainId}
+      />
     </ConfirmInfoRow>
   );
 

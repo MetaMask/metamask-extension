@@ -88,6 +88,7 @@ export const ApproveStaticSimulation = () => {
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
+            variation={transactionMeta?.chainId}
           />
         </Box>
       </Box>
