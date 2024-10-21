@@ -1,8 +1,8 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-} from 'json-rpc-engine';
+} from '@metamask/json-rpc-engine';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 import {
@@ -86,7 +86,7 @@ function sendMetadataHandler<
       origin,
     });
   } else {
-    return end(ethErrors.rpc.invalidParams({ data: params }));
+    return end(rpcErrors.invalidParams({ data: params }));
   }
 
   res.result = true;
