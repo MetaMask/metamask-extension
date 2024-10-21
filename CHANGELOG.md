@@ -8,26 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.5.0]
 ### Added
-- Upgraded the network controller and revamped the UI for adding and editing networks ([#26433](https://github.com/MetaMask/metamask-extension/pull/26433))
-- Added new UI components for editing networks directly via the network picker ([#27085](https://github.com/MetaMask/metamask-extension/pull/27085))
-- Enabled token auto-detection when basic functionality is on and removed an unused property ([#26406](https://github.com/MetaMask/metamask-extension/pull/26406))
-- Integrated NFT API to display names and images for ERC721 NFTs in simulations ([#25692](https://github.com/MetaMask/metamask-extension/pull/25692))
+- New UI and functionality for adding and managing networks ([#26433](https://github.com/MetaMask/metamask-extension/pull/26433)), ([#27085](https://github.com/MetaMask/metamask-extension/pull/27085))
+    - Instead of having different networks in the network list for the same chain but different RPC urls, there are now multiple selectable RPC urls per chain
+    - For the UI, networks are now added, edited, and deleted directly in the network list. Networks are no longer edited via the settings page.
+    - Users with multiple RPC endpoints per chain are shown a modal upon upgrade, allowing them to select a different endpoint as the default.
+    - The UI for wallet_addEthereumChain is changed, to message that users may be adding an additional endpoint to an existing network, rather than adding a new network. 
+- Added display of names and images for ERC721 NFTs to the simulations in transaction confirmations ([#25692](https://github.com/MetaMask/metamask-extension/pull/25692))
 - Added a modal to edit the spending cap for ERC20 approve and increase allowance ([#26845](https://github.com/MetaMask/metamask-extension/pull/26845))
-- Enhanced the PPOMController to support multiple blockchains ([#26966](https://github.com/MetaMask/metamask-extension/pull/26966))
-- Added a redesigned ERC20 Approve confirmation with a new Spending Cap section ([#26606](https://github.com/MetaMask/metamask-extension/pull/26606))
-- Added new brand evolution font files to the extension ([#26672](https://github.com/MetaMask/metamask-extension/pull/26672))
-- Updated the main page buttons to use light theme colors in dark mode ([#26884](https://github.com/MetaMask/metamask-extension/pull/26884))
-- Added account syncing to synchronize accounts and names across devices ([#27060](https://github.com/MetaMask/metamask-extension/pull/27060))
 - Added a new modal to help users with zero balance buy, receive, or transfer tokens ([#26426](https://github.com/MetaMask/metamask-extension/pull/26426))
-- Updated the custom UI for Snaps, including Snaps Home and Snap Custom Dialog ([#26639](https://github.com/MetaMask/metamask-extension/pull/26639))
-- Replaced embedded ENS resolution logic with Snaps, including a preinstalled ENS resolver Snap ([#26242](https://github.com/MetaMask/metamask-extension/pull/26242))
+- Add support for ENS resolution on some Layer 2 networks ([#26242](https://github.com/MetaMask/metamask-extension/pull/26242))
 - Added "Basic Functionality" to the Settings search results ([#25185](https://github.com/MetaMask/metamask-extension/pull/25185))
-- Added UI for switching networks via dapp for custom chain IDs ([#26905](https://github.com/MetaMask/metamask-extension/pull/26905))
-- [FLASK] Added a preinstalled example Snap to the Flask build for testing ([#27271](https://github.com/MetaMask/metamask-extension/pull/27271))
 - [MMI] Added MMI flow support to the new transaction confirmations view ([#26817](https://github.com/MetaMask/metamask-extension/pull/26817))
 - [MMI] Added "note to trader" functionality to the new transaction confirmation view for MMI ([#27214](https://github.com/MetaMask/metamask-extension/pull/27214))
 
 ### Changed
+- Redesigned ERC20 Approve confirmation with a new Spending Cap section ([#26606](https://github.com/MetaMask/metamask-extension/pull/26606))
+- Update UI for switching networks via dapp for custom chain IDs ([#26905](https://github.com/MetaMask/metamask-extension/pull/26905))
+- Updated the custom UI for Snaps, including Snaps Home and Snap Custom Dialog ([#26639](https://github.com/MetaMask/metamask-extension/pull/26639))
 - Removed the scroll-to-bottom requirement for certain confirmations ([#26887](https://github.com/MetaMask/metamask-extension/pull/26887))
 - Updated the copy from "estimated fee" to "network fee ([#26859](https://github.com/MetaMask/metamask-extension/pull/26859))
 - Updated the scam token warning message to be less aggressive and include a suggested ticker symbol ([#26994](https://github.com/MetaMask/metamask-extension/pull/26994))
@@ -47,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Used default buttons when Snap branding is hidden and fixed footer layout issue ([#27303](https://github.com/MetaMask/metamask-extension/pull/27303))
 - Updated the UI to correctly display the origin when Snaps request other Snaps ([#26715](https://github.com/MetaMask/metamask-extension/pull/26715))
 - Moved the portfolio button next to the token price amount ([#26867](https://github.com/MetaMask/metamask-extension/pull/26867))
+- Updated the main page buttons to use light theme colors in dark mode ([#26884](https://github.com/MetaMask/metamask-extension/pull/26884))
 - [FLASK] Updated the confirmation flow to use the new SnapAuthorshipPill component for displaying snap origin ([#26881](https://github.com/MetaMask/metamask-extension/pull/26881))
 - [MMI] Updated MMI support links to the new page ([#26839](https://github.com/MetaMask/metamask-extension/pull/26839))
 - [MMI] Removed the portfolio button and fixed the receive modal for MMI ([#27286](https://github.com/MetaMask/metamask-extension/pull/27286))
@@ -203,7 +201,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enabled hardware wallets for smart transactions in MetaMask swaps ([#25742](https://github.com/MetaMask/metamask-extension/pull/25742))
 - Added a "Close extension" button on the Smart Transaction Status Page for pending dapp transactions ([#25965](https://github.com/MetaMask/metamask-extension/pull/25965))
 - Added a toast message to notify users if they quickly send transactions on different networks ([#26114](https://github.com/MetaMask/metamask-extension/pull/26114))
-- Enabled token auto-detection by default ([#26406](https://github.com/MetaMask/metamask-extension/pull/26406))
+- Enabled token auto-detection by default ([#](https://github.com/MetaMask/metamask-extension/pull/26406))
 
 ### Changed
 - Improve information and presentation of permit signatures, including: PermitSingle, PermitBatch, PermitTransferFrom, PermitBatchTransferFrom and TradeOrder ([#26107](https://github.com/MetaMask/metamask-extension/pull/26107))
