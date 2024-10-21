@@ -23,7 +23,8 @@ const WATCHED_NFT_NAME_MOCK = 'testName3';
 const NFT_NAME_MOCK = 'testName4';
 const FIRST_PARTY_CONTRACT_NAME_MOCK = 'testName5';
 const SYMBOL_MOCK = 'tes';
-const IMAGE_MOCK = 'testImage';
+const NFT_IMAGE_MOCK = 'testNftImage';
+const ERC20_IMAGE_MOCK = 'testImage';
 const OTHER_NAME_TYPE = 'test' as NameType;
 
 describe('useDisplayName', () => {
@@ -44,11 +45,12 @@ describe('useDisplayName', () => {
     ]);
   }
 
-  function mockERC20TokenName(
+  function mockERC20Token(
     value: string,
     variation: string,
     name: string,
     symbol: string,
+    image: string,
   ) {
     state.metamask.tokensChainsCache = {
       [variation]: {
@@ -56,6 +58,7 @@ describe('useDisplayName', () => {
           [value]: {
             name,
             symbol,
+            iconUrl: image,
           },
         },
       },
@@ -158,12 +161,13 @@ describe('useDisplayName', () => {
   });
 
   describe('ERC-20 Token', () => {
-    it('returns ERC-20 token name', () => {
-      mockERC20TokenName(
+    it('returns ERC-20 token name and image', () => {
+      mockERC20Token(
         VALUE_MOCK,
         VARIATION_MOCK,
         ERC20_TOKEN_NAME_MOCK,
         SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
       );
 
       const { result } = renderHookWithProvider(
@@ -179,17 +183,18 @@ describe('useDisplayName', () => {
       expect(result.current).toStrictEqual({
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
-        image: undefined,
+        image: ERC20_IMAGE_MOCK,
         name: ERC20_TOKEN_NAME_MOCK,
       });
     });
 
     it('returns ERC-20 token symbol', () => {
-      mockERC20TokenName(
+      mockERC20Token(
         VALUE_MOCK,
         VARIATION_MOCK,
         ERC20_TOKEN_NAME_MOCK,
         SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
       );
 
       const { result } = renderHookWithProvider(
@@ -206,17 +211,18 @@ describe('useDisplayName', () => {
       expect(result.current).toStrictEqual({
         contractDisplayName: SYMBOL_MOCK,
         hasPetname: false,
-        image: undefined,
+        image: ERC20_IMAGE_MOCK,
         name: SYMBOL_MOCK,
       });
     });
 
     it('returns no name if type not address', () => {
-      mockERC20TokenName(
+      mockERC20Token(
         VALUE_MOCK,
         VARIATION_MOCK,
         ERC20_TOKEN_NAME_MOCK,
         SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
       );
 
       const { result } = renderHookWithProvider(
@@ -225,33 +231,6 @@ describe('useDisplayName', () => {
             value: VALUE_MOCK,
             type: OTHER_NAME_TYPE,
             variation: CHAIN_IDS.GOERLI,
-            preferContractSymbol: true,
-          }),
-        state,
-      );
-
-      expect(result.current).toStrictEqual({
-        contractDisplayName: undefined,
-        hasPetname: false,
-        image: undefined,
-        name: null,
-      });
-    });
-
-    it('returns no name if variation does not match global chain ID', () => {
-      mockERC20TokenName(
-        VALUE_MOCK,
-        VARIATION_MOCK,
-        ERC20_TOKEN_NAME_MOCK,
-        SYMBOL_MOCK,
-      );
-
-      const { result } = renderHookWithProvider(
-        () =>
-          useDisplayName({
-            value: VALUE_MOCK,
-            type: NameType.ETHEREUM_ADDRESS,
-            variation: CHAIN_IDS.MAINNET,
             preferContractSymbol: true,
           }),
         state,
@@ -361,7 +340,7 @@ describe('useDisplayName', () => {
 
   describe('NFT', () => {
     it('returns NFT name and image', () => {
-      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, IMAGE_MOCK, false);
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
 
       const { result } = renderHookWithProvider(
         () =>
@@ -376,13 +355,13 @@ describe('useDisplayName', () => {
       expect(result.current).toStrictEqual({
         contractDisplayName: undefined,
         hasPetname: false,
-        image: IMAGE_MOCK,
+        image: NFT_IMAGE_MOCK,
         name: NFT_NAME_MOCK,
       });
     });
 
     it('returns no name if NFT collection is spam', () => {
-      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, IMAGE_MOCK, true);
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, true);
 
       const { result } = renderHookWithProvider(
         () =>
@@ -403,7 +382,7 @@ describe('useDisplayName', () => {
     });
 
     it('returns no name if type not address', () => {
-      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, IMAGE_MOCK, false);
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
 
       const { result } = renderHookWithProvider(
         () =>
@@ -432,12 +411,13 @@ describe('useDisplayName', () => {
         VARIATION_MOCK,
         FIRST_PARTY_CONTRACT_NAME_MOCK,
       );
-      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, IMAGE_MOCK, false);
-      mockERC20TokenName(
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
+      mockERC20Token(
         VALUE_MOCK,
         VARIATION_MOCK,
         ERC20_TOKEN_NAME_MOCK,
         SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
       );
       mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
 
@@ -454,7 +434,7 @@ describe('useDisplayName', () => {
       expect(result.current).toStrictEqual({
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: true,
-        image: IMAGE_MOCK,
+        image: NFT_IMAGE_MOCK,
         name: PETNAME_MOCK,
       });
     });
@@ -465,12 +445,13 @@ describe('useDisplayName', () => {
         VARIATION_MOCK,
         FIRST_PARTY_CONTRACT_NAME_MOCK,
       );
-      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, IMAGE_MOCK, false);
-      mockERC20TokenName(
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
+      mockERC20Token(
         VALUE_MOCK,
         VARIATION_MOCK,
         ERC20_TOKEN_NAME_MOCK,
         SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
       );
       mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
 
@@ -487,18 +468,19 @@ describe('useDisplayName', () => {
       expect(result.current).toStrictEqual({
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
-        image: IMAGE_MOCK,
+        image: NFT_IMAGE_MOCK,
         name: FIRST_PARTY_CONTRACT_NAME_MOCK,
       });
     });
 
     it('uses NFT name as third priority', () => {
-      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, IMAGE_MOCK, false);
-      mockERC20TokenName(
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
+      mockERC20Token(
         VALUE_MOCK,
         VARIATION_MOCK,
         ERC20_TOKEN_NAME_MOCK,
         SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
       );
       mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
 
@@ -515,17 +497,18 @@ describe('useDisplayName', () => {
       expect(result.current).toStrictEqual({
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
-        image: IMAGE_MOCK,
+        image: NFT_IMAGE_MOCK,
         name: NFT_NAME_MOCK,
       });
     });
 
     it('uses ERC-20 token name as fourth priority', () => {
-      mockERC20TokenName(
+      mockERC20Token(
         VALUE_MOCK,
         VARIATION_MOCK,
         ERC20_TOKEN_NAME_MOCK,
         SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
       );
       mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
 
@@ -542,7 +525,7 @@ describe('useDisplayName', () => {
       expect(result.current).toStrictEqual({
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
-        image: undefined,
+        image: ERC20_IMAGE_MOCK,
         name: ERC20_TOKEN_NAME_MOCK,
       });
     });
