@@ -132,7 +132,7 @@ const AccountListItem = ({
     if (selected && shouldScrollToWhenSelected) {
       itemRef.current?.scrollIntoView?.();
     }
-  }, [itemRef, selected]);
+  }, [itemRef, selected, shouldScrollToWhenSelected]);
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useMultichainSelector(
