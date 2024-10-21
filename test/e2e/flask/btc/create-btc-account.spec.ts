@@ -10,7 +10,8 @@ import {
   removeSelectedAccount,
   tapAndHoldToRevealSRP,
 } from '../../helpers';
-import { createBtcAccount, withBtcAccountSnap } from './common-btc';
+import { createBtcAccount } from '../../accounts/common';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
