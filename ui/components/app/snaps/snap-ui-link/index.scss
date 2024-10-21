@@ -3,4 +3,9 @@
     // Fixes an issue where the link end icon would wrap
     display: inline-flex;
   }
+
+  .snap-ui-renderer__address + .mm-icon {
+    // This fixes an issue where the icon would be misaligned with the Address component
+    top: 0;
+  }
 }

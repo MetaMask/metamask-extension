@@ -4,7 +4,9 @@ import { Display } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
   ButtonLinkSize,
+  Icon,
   IconName,
+  IconSize,
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
@@ -57,9 +59,9 @@ export const SnapUILink = ({ href, children }) => {
         textProps={{
           display: Display.Inline,
         }}
-        endIconName={IconName.Export}
       >
         {children}
+        <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
       </ButtonLink>
     </>
   );
