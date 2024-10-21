@@ -19,8 +19,7 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
