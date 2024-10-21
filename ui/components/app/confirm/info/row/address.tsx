@@ -44,7 +44,11 @@ export const ConfirmInfoRowAddress = memo(
           // component can support variations. See this comment for context: //
           // https://github.com/MetaMask/metamask-extension/pull/23487#discussion_r1525055546
           isPetNamesEnabled && !isSnapUsingThis ? (
-            <Name value={hexAddress} type={NameType.ETHEREUM_ADDRESS} />
+            <Name
+              value={hexAddress}
+              type={NameType.ETHEREUM_ADDRESS}
+              preferContractSymbol
+            />
           ) : (
             <>
               <Box

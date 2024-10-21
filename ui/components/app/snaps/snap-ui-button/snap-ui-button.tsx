@@ -23,7 +23,7 @@ export const SnapUIButton: FunctionComponent<
 > = ({
   name,
   children,
-  type,
+  type = ButtonType.Button,
   variant = 'primary',
   disabled = false,
   className = '',

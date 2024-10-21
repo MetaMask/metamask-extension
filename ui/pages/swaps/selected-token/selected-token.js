@@ -29,52 +29,54 @@ export default function SelectedToken({
   };
 
   return (
-    <div
-      className={classnames(
-        'dropdown-search-list',
-        'dropdown-search-list__selector-closed-container',
-        'dropdown-input-pair__selector--closed',
-      )}
-      data-testid="dropdown-search-list"
-      tabIndex="0"
-      onClick={onClick}
-      onKeyUp={onKeyUp}
-    >
-      <div className="dropdown-search-list__selector-closed">
-        {hasIcon && (
-          <UrlIcon
-            url={selectedToken.iconUrl}
-            className="dropdown-search-list__selector-closed-icon"
-            name={selectedToken?.symbol}
-          />
+    <div className="selected-token">
+      <div
+        className={classnames(
+          'selected-token-list',
+          'selected-token-list__selector-closed-container',
+          'selected-token-input-pair__selector--closed',
         )}
-        <div
-          className={classnames('dropdown-search-list__labels', {
-            'dropdown-search-list__labels--with-icon': hasIcon,
-          })}
-        >
-          <div className="dropdown-search-list__item-labels">
-            <span
-              data-testid={testId}
-              className={classnames(
-                'dropdown-search-list__closed-primary-label',
-                {
-                  'dropdown-search-list__select-default':
-                    !selectedToken?.symbol,
-                },
-              )}
-            >
-              {selectedToken?.symbol || t('swapSelectAToken')}
-            </span>
+        data-testid="selected-token-list"
+        tabIndex="0"
+        onClick={onClick}
+        onKeyUp={onKeyUp}
+      >
+        <div className="selected-token-list__selector-closed">
+          {hasIcon && (
+            <UrlIcon
+              url={selectedToken.iconUrl}
+              className="selected-token-list__selector-closed-icon"
+              name={selectedToken?.symbol}
+            />
+          )}
+          <div
+            className={classnames('selected-token-list__labels', {
+              'selected-token-list__labels--with-icon': hasIcon,
+            })}
+          >
+            <div className="selected-token-list__item-labels">
+              <span
+                data-testid={testId}
+                className={classnames(
+                  'selected-token-list__closed-primary-label',
+                  {
+                    'selected-token-list__select-default':
+                      !selectedToken?.symbol,
+                  },
+                )}
+              >
+                {selectedToken?.symbol || t('swapSelectAToken')}
+              </span>
+            </div>
           </div>
         </div>
+        <Icon
+          name={IconName.ArrowDown}
+          size={IconSize.Xs}
+          marginRight={3}
+          color={IconColor.iconAlternative}
+        />
       </div>
-      <Icon
-        name={IconName.ArrowDown}
-        size={IconSize.Xs}
-        marginRight={3}
-        color={IconColor.iconAlternative}
-      />
     </div>
   );
 }

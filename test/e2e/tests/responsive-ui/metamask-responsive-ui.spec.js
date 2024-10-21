@@ -2,10 +2,10 @@ const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE_TWO,
   defaultGanacheOptions,
-  withFixtures,
   locateAccountBalanceDOM,
+  logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
-  unlockWallet,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -123,10 +123,8 @@ describe('MetaMask Responsive UI', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await driver.delay(1000);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction
@@ -140,9 +138,13 @@ describe('MetaMask Responsive UI', function () {
 
         const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
-
-        // confirming transcation
         await driver.clickElement({ text: 'Continue', tag: 'button' });
+
+        // wait for transaction value to be rendered and confirm
+        await driver.waitForSelector({
+          css: '.currency-display-component__text',
+          text: '1.000042',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // finds the transaction in the transactions list

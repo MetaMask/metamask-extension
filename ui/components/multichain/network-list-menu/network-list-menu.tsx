@@ -24,6 +24,10 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
   setEditedNetwork,
+  grantPermittedChain,
+  showPermittedNetworkToast,
+  updateCustomNonce,
+  setNextNonce,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -44,6 +48,8 @@ import {
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getAllDomains,
+  getPermittedChainsForSelectedTab,
+  getPermittedAccountsForSelectedTab,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -120,11 +126,17 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
+  const permittedChainIds = useSelector((state) =>
+    getPermittedChainsForSelectedTab(state, selectedTabOrigin),
+  );
+
+  const permittedAccountAddresses = useSelector((state) =>
+    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
+  );
 
   const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
     currentChainId,
   );
-
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
       Object.entries(networkConfigurations).reduce(
@@ -267,7 +279,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             network.rpcEndpoints[network.defaultRpcEndpointIndex];
           dispatch(setActiveNetwork(networkClientId));
           dispatch(toggleNetworkMenu());
+          dispatch(updateCustomNonce(''));
+          dispatch(setNextNonce(''));
 
+          if (permittedAccountAddresses.length > 0) {
+            grantPermittedChain(selectedTabOrigin, network.chainId);
+            if (!permittedChainIds.includes(network.chainId)) {
+              dispatch(showPermittedNetworkToast());
+            }
+          }
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
           // network has changed due to user action

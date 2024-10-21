@@ -12,6 +12,7 @@
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
+    "showPermittedNetworkToastOpen": false,
     "gasIsLoading": false,
     "isLoading": false,
     "importTokensModalOpen": false,
@@ -130,8 +131,7 @@
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
-      "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "showTestNetworks": true
     },
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},

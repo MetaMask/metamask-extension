@@ -9,10 +9,9 @@ import PreinstalledExampleSnap from '@metamask/preinstalled-example-snap/dist/pr
 
 // The casts here are less than ideal but we expect the SnapController to validate the inputs.
 const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
-  MessageSigningSnap as PreinstalledSnap,
+  MessageSigningSnap as unknown as PreinstalledSnap,
   EnsResolverSnap as PreinstalledSnap,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  AccountWatcherSnap as PreinstalledSnap,
   AccountWatcherSnap as PreinstalledSnap,
   BitcoinWalletSnap as unknown as PreinstalledSnap,
   PreinstalledExampleSnap as unknown as PreinstalledSnap,

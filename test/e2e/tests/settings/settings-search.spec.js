@@ -9,7 +9,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Settings Search', function () {
   const settingsSearch = {
-    general: 'Primary currency',
+    general: 'Show native token as main balance',
     advanced: 'State logs',
     contacts: 'Contacts',
     security: 'Reveal Secret',
@@ -118,32 +118,6 @@ describe('Settings Search', function () {
           await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
           `${settingsSearch.security} item does not redirect to ${page} view`,
-        );
-      },
-    );
-  });
-  it('should find element inside the Alerts tab', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await openMenuSafe(driver);
-
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settingsSearch.alerts);
-
-        // Check if element redirects to the correct page
-        const page = 'Alerts';
-        await driver.clickElement({ text: page, tag: 'span' });
-        assert.equal(
-          await driver.isElementPresent({ text: page, tag: 'div' }),
-          true,
-          `${settingsSearch.alerts} item does not redirect to ${page} view`,
         );
       },
     );
