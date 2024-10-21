@@ -83,11 +83,6 @@ exports[`Security Tab should match snapshot 1`] = `
         </label>
       </div>
     </div>
-    <div
-      class="settings-tab__error"
-    >
-      warning
-    </div>
     <span
       class="settings-page__security-tab-sub-header__bold"
     >

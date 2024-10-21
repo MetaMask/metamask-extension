@@ -47,8 +47,6 @@ jest.mock('../../../ducks/app/app.ts', () => {
 });
 
 describe('Security Tab', () => {
-  mockState.appState.warning = 'warning'; // This tests an otherwise untested render branch
-
   const mockStore = configureMockStore([thunk])(mockState);
 
   function toggleCheckbox(testId, initialState, skipRender = false) {
