@@ -322,6 +322,8 @@ export const getPendingTokens = (state) => state.metamask.pendingTokens;
 
 export const getTokens = (state) => state.metamask.tokens;
 
+export const getAllTokens = (state) => state.metamask.allTokens;
+
 export function getNftsDropdownState(state) {
   return state.metamask.nftsDropdownState;
 }
@@ -455,6 +457,10 @@ export const getGasEstimateTypeByChainId = createSelector(
     return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
   },
 );
+
+export function getTokenBalances(state) {
+  return state.metamask.tokenBalances;
+}
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,

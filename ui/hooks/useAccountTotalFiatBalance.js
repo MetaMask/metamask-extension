@@ -23,6 +23,8 @@ import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
 import { useTokenTracker } from './useTokenTracker';
+import useTokenBalances from './useTokenBalances';
+import useAllTokenBalances from './useTokenBalances';
 
 export const useAccountTotalFiatBalance = (
   account,
@@ -55,12 +57,17 @@ export const useAccountTotalFiatBalance = (
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
 
-  const { loading, tokensWithBalances } = useTokenTracker({
-    tokens,
-    address: account?.address,
-    includeFailedTokens: true,
-    hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
-  });
+  // const { loading, tokensWithBalances } = useTokenTracker({
+  //   tokens,
+  //   address: account?.address,
+  //   includeFailedTokens: true,
+  //   hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
+  // });
+
+  const {tokensWithBalances: foo} = useAllTokenBalances();
+
+  const loading = false;
+  const tokensWithBalances = foo[account?.address] ?? [];
 
   const mergedRates = {
     ...contractExchangeRates,

@@ -31,6 +31,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
 
     const cleanup = () => {
       if (pollTokenRef.current) {
+        console.log('cleanup', pollTokenRef.current, usePollingOptions.options);
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
         cleanupRef.current?.(pollTokenRef.current);
       }
@@ -43,15 +44,18 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
         usePollingOptions.options,
       )
       .then((pollToken) => {
+        console.log('pollToken', pollToken, usePollingOptions.options);
         pollTokenRef.current = pollToken;
         cleanupRef.current = usePollingOptions.callback?.(pollToken) || null;
         if (!isMounted) {
+          console.log('cleaning up')
           cleanup();
         }
       });
 
     // Return a cleanup function to stop polling when the component unmounts
     return () => {
+      console.log('unmounting');
       isMounted = false;
       cleanup();
     };

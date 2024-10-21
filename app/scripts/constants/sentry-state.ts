@@ -339,6 +339,9 @@ export const SENTRY_BACKGROUND_STATE = {
       [AllProperties]: false,
     },
   },
+  TokenBalancesController: {
+    tokenBalances: false,
+  },
   TokenRatesController: {
     marketData: false,
   },

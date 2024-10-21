@@ -4546,6 +4546,30 @@ export async function currencyRateStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
+export async function tokenBalancesStartPollingByNetworkClientId(
+  networkClientId: string,
+  options: {
+    accountAddress: string;
+    tokenAddresses: string[];
+  },
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenBalancesStartPollingByNetworkClientId',
+    [networkClientId, options],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+export async function tokenBalancesStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenBalancesStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
 /**
  * Informs the GasFeeController that the UI requires gas fee polling
  *
