@@ -5,6 +5,7 @@ const {
   unlockWallet,
   defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
+  regularDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -21,6 +22,7 @@ async function createDappSendTransaction(driver) {
 
 async function createWalletSendTransaction(driver, recipientAddress) {
   await openActionMenuAndStartSendFlow(driver);
+  await driver.delay(regularDelayMs);
   await driver.fill(
     'input[placeholder="Enter public address (0x) or domain name"]',
     recipientAddress,

@@ -4,6 +4,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
+  largeDelayMs,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   withFixtures,
@@ -46,6 +47,7 @@ describe('AssetPickerSendFlow @no-mmi', function () {
         // Open the send flow
         openActionMenuAndStartSendFlow(driver);
 
+        await driver.delay(largeDelayMs);
         await driver.fill('[data-testid="ens-input"]', RECIPIENT_ADDRESS_MOCK);
         await driver.fill('.unit-input__input', '2');
 

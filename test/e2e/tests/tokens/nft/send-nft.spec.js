@@ -4,6 +4,7 @@ const {
   logInWithBalanceValidation,
   unlockWallet,
   withFixtures,
+  regularDelayMs,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -108,6 +109,7 @@ describe('Send NFT', function () {
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 
+        await driver.delay(regularDelayMs);
         await driver.fill('input[placeholder="0"]', '1');
 
         await driver.clickElement({
