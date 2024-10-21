@@ -221,6 +221,7 @@ export const getDefaultPreferencesControllerState =
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
+      tokenNetworkFilter: {},
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -471,8 +472,6 @@ export class PreferencesController extends BaseController<
           ...addedNonMainNetwork,
           ...testNetworks,
         },
-        tokenNetworkFilter: {},
-        shouldShowAggregatedBalancePopover: true, // by default user should see popover;
         ...state,
       },
     });
