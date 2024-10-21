@@ -515,8 +515,8 @@ async function initialize() {
       await loadPhishingWarningPage();
       // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
-      const platform = getPlatform();
-      if (platform === PLATFORM_FIREFOX) {
+      const platformName = getPlatform();
+      if (platformName === PLATFORM_FIREFOX) {
         overrideContentSecurityPolicyHeader();
       }
     }
