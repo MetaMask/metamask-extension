@@ -6,6 +6,8 @@ permissions:
 
 on:
   push:
+  branches:
+    - develop
   schedule:
     - cron: "0 */12 * * *"
 
