@@ -41,7 +41,7 @@ export default function useHandleBridgeTx() {
       },
     });
 
-    return txMeta.id;
+    return txMeta;
   };
 
   return { handleBridgeTx };

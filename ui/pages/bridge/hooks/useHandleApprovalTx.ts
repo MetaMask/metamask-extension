@@ -86,7 +86,7 @@ export default function useHandleApprovalTx() {
       },
     });
 
-    return txMeta.id;
+    return txMeta;
   };
   return {
     handleApprovalTx,
