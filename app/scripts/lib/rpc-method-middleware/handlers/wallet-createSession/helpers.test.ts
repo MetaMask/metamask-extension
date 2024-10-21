@@ -1,5 +1,5 @@
 import { RpcEndpointType } from '@metamask/network-controller';
-import { ExternalScopeObject } from '@metamask/multichain';
+import { ScopeObject } from '@metamask/multichain';
 import * as EthereumChainUtils from '../ethereum-chain-utils';
 import {
   validateAndAddEip3085,
@@ -7,9 +7,10 @@ import {
   processScopedProperties,
 } from './helpers';
 
-const validScopeObject: ExternalScopeObject = {
+const validScopeObject: ScopeObject = {
   methods: [],
   notifications: [],
+  accounts: [],
 };
 
 jest.mock('../ethereum-chain-utils', () => ({

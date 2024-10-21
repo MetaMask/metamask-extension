@@ -1,7 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
-import { JsonRpcResponse } from 'json-rpc-engine';
-import { JsonRpcFailure } from '@metamask/utils';
+import { Json, JsonRpcFailure, JsonRpcResponse } from '@metamask/utils';
 import { ScopeString } from '@metamask/multichain';
 import { Driver } from '../webdriver/driver';
 
@@ -118,7 +117,7 @@ export const createCaip27DriverTransport = (
               data,
             }: {
               type: string;
-              data: JsonRpcResponse<unknown>;
+              data: JsonRpcResponse<Json>;
             }) => {
               if (type !== 'caip-x') {
                 return;
