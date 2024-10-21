@@ -534,12 +534,12 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item"
       >
         <span>
-          Back up your data
+          Export your data
         </span>
         <span
           class="settings-page__content-description"
         >
-          You can back up data like your contacts and preferences.
+          You can export data like your contacts and preferences.
         </span>
       </div>
       <div
@@ -550,9 +550,9 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         >
           <button
             class="button btn--rounded btn-secondary btn--large"
-            data-testid="backup-button"
+            data-testid="export-data-button"
           >
-            Back up
+            Download
           </button>
         </div>
       </div>

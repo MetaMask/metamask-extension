@@ -637,7 +637,7 @@ async function setupMocking(
     });
 
   // Notification APIs
-  mockNotificationServices(server);
+  await mockNotificationServices(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {

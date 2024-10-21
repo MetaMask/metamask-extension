@@ -62,11 +62,11 @@ function getMockAddressBookController() {
 
 function getMockNetworkController() {
   const state = {
-    networkConfigurations: {},
+    networkConfigurationsByChainId: {},
   };
 
-  const loadBackup = ({ networkConfigurations }) => {
-    Object.assign(state, { networkConfigurations });
+  const loadBackup = ({ networkConfigurationsByChainId }) => {
+    Object.assign(state, { networkConfigurationsByChainId });
   };
 
   return { state, loadBackup };
@@ -169,6 +169,7 @@ const jsonData = JSON.stringify({
       showTestNetworks: true,
       smartTransactionsOptInStatus: false,
       useNativeCurrencyAsPrimaryCurrency: true,
+      showMultiRpcModal: false,
     },
     ipfsGateway: 'dweb.link',
     ledgerTransportType: 'webhid',
@@ -221,25 +222,21 @@ describe('Backup', function () {
       await backup.restoreUserData(jsonData);
       // check networks backup
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-1'
-        ].chainId,
-      ).toStrictEqual('0x539');
+        backup.networkController.state.networkConfigurationsByChainId['0x539']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-1');
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-2'
-        ].chainId,
-      ).toStrictEqual('0x38');
+        backup.networkController.state.networkConfigurationsByChainId['0x38']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-2');
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-3'
-        ].chainId,
-      ).toStrictEqual('0x61');
+        backup.networkController.state.networkConfigurationsByChainId['0x61']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-3');
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-4'
-        ].chainId,
-      ).toStrictEqual('0x89');
+        backup.networkController.state.networkConfigurationsByChainId['0x89']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-4');
       // make sure identities are not lost after restore
       expect(
         backup.preferencesController.store.identities[

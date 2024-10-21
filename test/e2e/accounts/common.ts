@@ -27,7 +27,9 @@ export const accountSnapFixtures = (title: string | undefined) => {
   return {
     dapp: true,
     fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp(false)
+      .withPermissionControllerConnectedToTestDapp({
+        restrictReturnedAccounts: false,
+      })
       .build(),
     ganacheOptions: multipleGanacheOptions,
     title,

@@ -28,7 +28,7 @@ enum RegressionStage {
   Production
 }
 
-const knownBots = ["metamaskbot", "dependabot", "github-actions", "sentry-io"];
+const knownBots = ["metamaskbot", "dependabot", "github-actions", "sentry-io", "devin-ai-integration"];
 
 main().catch((error: Error): void => {
   console.error(error);
@@ -82,7 +82,7 @@ async function main(): Promise<void> {
   }
 
   // If author is not part of the MetaMask organisation
-  if (!(await userBelongsToMetaMaskOrg(octokit, labelable?.author))) {
+  if (!knownBots.includes(labelable?.author) && !(await userBelongsToMetaMaskOrg(octokit, labelable?.author))) {
     // Add external contributor label to the issue
     await addLabelToLabelable(octokit, labelable, externalContributorLabel);
   }

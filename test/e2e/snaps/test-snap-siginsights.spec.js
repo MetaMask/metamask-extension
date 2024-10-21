@@ -353,7 +353,12 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
-        // click checkbox to authorize signing
+        // wait for host to render and click checkbox to authorize signing
+        await driver.waitForSelector({
+          text: '127.0.0.1:8080',
+          tag: 'span',
+        });
+
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
@@ -391,7 +396,12 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
-        // click checkbox to authorize signing
+        // wait for host to render and click checkbox to authorize signing
+        await driver.waitForSelector({
+          text: '127.0.0.1:8080',
+          tag: 'span',
+        });
+
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
@@ -433,7 +443,12 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
-        // click checkbox to authorize signing
+        // wait for host to render and click checkbox to authorize signing
+        await driver.waitForSelector({
+          text: '127.0.0.1:8080',
+          tag: 'span',
+        });
+
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
@@ -475,7 +490,12 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
-        // click checkbox to authorize signing
+        // wait for host to render and click checkbox to authorize signing
+        await driver.waitForSelector({
+          text: '127.0.0.1:8080',
+          tag: 'span',
+        });
+
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button

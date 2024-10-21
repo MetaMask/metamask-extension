@@ -1,28 +1,13 @@
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { signatureRequestSIWE } from '../../../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import { getMockPersonalSignConfirmStateForRequest } from '../../../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { signatureRequestSIWE } from '../../../../../../test/data/confirmations/personal_sign';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { SignatureRequestType } from '../../../types/confirm';
 import useAccountMismatchAlerts from './useAccountMismatchAlerts';
 
-const mockExpectedState = {
-  ...mockState,
-  metamask: {
-    ...mockState.metamask,
-    unapprovedPersonalMsgs: {
-      '1': { ...signatureRequestSIWE },
-    },
-    pendingApprovals: {
-      '1': {
-        ...signatureRequestSIWE,
-        requestData: {},
-        requestState: null,
-        expectsResult: false,
-      },
-    },
-    preferences: { redesignedConfirmationsEnabled: true },
-  },
-  confirm: { currentConfirmation: signatureRequestSIWE },
-};
+const mockExpectedState =
+  getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
 
 describe('useAccountMismatchAlerts', () => {
   beforeAll(() => {
@@ -35,7 +20,7 @@ describe('useAccountMismatchAlerts', () => {
 
   describe('returns an empty array', () => {
     it('when there is no current confirmation', () => {
-      const { result } = renderHookWithProvider(
+      const { result } = renderHookWithConfirmContextProvider(
         () => useAccountMismatchAlerts(),
         mockState,
       );
@@ -43,30 +28,15 @@ describe('useAccountMismatchAlerts', () => {
     });
 
     it('when the current confirmation is not a SIWE request', () => {
-      const { result } = renderHookWithProvider(
+      const { result } = renderHookWithConfirmContextProvider(
         () => useAccountMismatchAlerts(),
-        {
-          ...mockExpectedState,
-          confirm: {
-            currentConfirmation: {
-              ...signatureRequestSIWE,
-              msgParams: {
-                ...signatureRequestSIWE.msgParams,
-                siwe: {
-                  isSIWEMessage: false,
-                  parsedMessage:
-                    signatureRequestSIWE.msgParams?.siwe?.parsedMessage,
-                },
-              },
-            },
-          },
-        },
+        mockExpectedState,
       );
       expect(result.current).toEqual([]);
     });
 
     it('when the current confirmation is a SIWE request and the msgParams account matches the selected account', () => {
-      const { result } = renderHookWithProvider(
+      const { result } = renderHookWithConfirmContextProvider(
         () => useAccountMismatchAlerts(),
         mockExpectedState,
       );
@@ -88,26 +58,21 @@ describe('useAccountMismatchAlerts', () => {
       },
     ];
 
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useAccountMismatchAlerts(),
-      {
-        ...mockExpectedState,
-        confirm: {
-          currentConfirmation: {
-            ...signatureRequestSIWE,
-            msgParams: {
-              ...signatureRequestSIWE.msgParams,
-              siwe: {
-                isSIWEMessage: true,
-                parsedMessage: {
-                  ...signatureRequestSIWE.msgParams?.siwe?.parsedMessage,
-                  address: MOCK_NON_SELECTED_ADDRESS,
-                },
-              },
+      getMockPersonalSignConfirmStateForRequest({
+        ...signatureRequestSIWE,
+        msgParams: {
+          ...signatureRequestSIWE.msgParams,
+          siwe: {
+            isSIWEMessage: true,
+            parsedMessage: {
+              ...signatureRequestSIWE.msgParams?.siwe?.parsedMessage,
+              address: MOCK_NON_SELECTED_ADDRESS,
             },
           },
         },
-      },
+      } as SignatureRequestType),
     );
 
     expect(result.current).toStrictEqual(expectedResult);

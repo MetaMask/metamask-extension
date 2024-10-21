@@ -12,6 +12,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import Dropdown from '../../../components/ui/dropdown';
 import ToggleButton from '../../../components/ui/toggle-button';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
 import Jazzicon from '../../../components/ui/jazzicon';
 import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
@@ -119,7 +121,16 @@ export default class SettingsTab extends PureComponent {
               id="select-currency"
               options={currencyOptions}
               selectedOption={currentCurrency}
-              onChange={(newCurrency) => setCurrentCurrency(newCurrency)}
+              onChange={(newCurrency) => {
+                setCurrentCurrency(newCurrency);
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.CurrentCurrency,
+                  properties: {
+                    current_currency: newCurrency,
+                  },
+                });
+              }}
             />
           </div>
         </div>

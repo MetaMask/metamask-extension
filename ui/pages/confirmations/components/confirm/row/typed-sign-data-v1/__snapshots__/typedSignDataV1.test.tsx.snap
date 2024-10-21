@@ -18,13 +18,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-            style="align-items: center;"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              Message:
-            </p>
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Message:
+              </p>
+            </div>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -43,13 +46,16 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-            style="align-items: center;"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              A number:
-            </p>
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                A number:
+              </p>
+            </div>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"

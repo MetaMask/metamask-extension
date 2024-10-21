@@ -1,10 +1,15 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import {
+  mockSignatureApproved,
+  mockSignatureRejected,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
   assertAccountDetailsMetrics,
@@ -22,6 +27,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -54,12 +60,14 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           signatureType: 'personal_sign',
         });
       },
+      mockSignatureApproved,
     );
   });
 
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -85,6 +93,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           location: 'confirmation',
         });
       },
+      mockSignatureRejected,
     );
   });
 });

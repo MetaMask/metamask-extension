@@ -19,8 +19,8 @@ describe('createTracingMiddleware', () => {
 
     request = { ...REQUEST_MOCK };
 
-    global.sentry = {
-      getMetaMetricsEnabled: () => Promise.resolve(true),
+    globalThis.sentry = {
+      withIsolationScope: jest.fn().mockReturnValue({}),
     };
   });
 

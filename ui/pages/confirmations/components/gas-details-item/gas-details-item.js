@@ -18,8 +18,8 @@ import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import {
   getPreferences,
+  getShouldShowFiat,
   getTxData,
-  getUseCurrencyRateCheck,
   transactionFeeSelector,
 } from '../../../../selectors';
 import { getCurrentDraftTransaction } from '../../../../ducks/send';
@@ -44,12 +44,14 @@ const GasDetailsItem = ({
   userAcknowledgedGasMissing = false,
 }) => {
   const t = useI18nContext();
+  const shouldShowFiat = useSelector(getShouldShowFiat);
 
   const txData = useSelector(getTxData);
   const { layer1GasFee } = txData;
 
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const transactionData = useDraftTransactionWithTxParams();
+
   const {
     hexMinimumTransactionFee: draftHexMinimumTransactionFee,
     hexMaximumTransactionFee: draftHexMaximumTransactionFee,
@@ -67,8 +69,6 @@ const GasDetailsItem = ({
   } = useGasFeeContext();
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const getTransactionFeeTotal = useMemo(() => {
     if (layer1GasFee) {
       return sumHexes(hexMinimumTransactionFee, layer1GasFee);
@@ -137,7 +137,7 @@ const GasDetailsItem = ({
             <EditGasFeeIcon
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
-            {useCurrencyRateCheck && (
+            {shouldShowFiat && (
               <UserPreferencedCurrencyDisplay
                 paddingInlineStart={1}
                 suffixProps={{

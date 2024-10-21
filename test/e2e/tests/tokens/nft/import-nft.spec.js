@@ -82,7 +82,7 @@ describe('Import NFT', function () {
         // Enter a valid NFT that belongs to user and check success message appears
         await driver.fill('#address', contractAddress);
         await driver.fill('#token-id', '1');
-        await driver.clickElement(
+        await driver.clickElementAndWaitToDisappear(
           '[data-testid="import-nfts-modal-import-button"]',
         );
 

@@ -22,8 +22,8 @@ import {
   setSecurityAlertsEnabled,
 } from '../../../store/actions';
 import {
-  getAllNetworks,
   getIsSecurityAlertsEnabled,
+  getNetworkConfigurationsByChainId,
   getPetnamesEnabled,
 } from '../../../selectors';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
@@ -55,12 +55,12 @@ const mapStateToProps = (state) => {
     useExternalNameSources,
   } = metamask;
 
-  const allNetworks = getAllNetworks(state);
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   return {
     warning,
     incomingTransactionsPreferences,
-    allNetworks,
+    networkConfigurations,
     participateInMetaMetrics,
     dataCollectionForMarketing,
     usePhishDetect,

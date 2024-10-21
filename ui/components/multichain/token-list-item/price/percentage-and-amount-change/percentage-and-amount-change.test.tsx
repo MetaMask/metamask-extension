@@ -98,4 +98,14 @@ describe('PercentageChange Component', () => {
     expect(percentageElement).toBeInTheDocument();
     expect(numberElement).toBeInTheDocument();
   });
+
+  it('should not error with non standard currency code', () => {
+    mockGetSelectedAccountCachedBalance.mockReturnValue('0x0');
+    mockGetCurrentCurrency.mockReturnValue('DASH');
+    render(<PercentageAndAmountChange value={-1.234} />);
+    const percentageElement = screen.getByText('(+0.00%)');
+    const numberElement = screen.getByText('+0.00');
+    expect(percentageElement).toBeInTheDocument();
+    expect(numberElement).toBeInTheDocument();
+  });
 });

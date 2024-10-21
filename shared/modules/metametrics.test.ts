@@ -4,6 +4,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { TransactionMetricsRequest } from '../../app/scripts/lib/transaction/metrics';
 import { CHAIN_IDS } from '../constants/network';
 import { getSmartTransactionMetricsProperties } from './metametrics';
@@ -43,7 +45,6 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getMethodData: jest.fn(),
     getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
-    getRedesignedConfirmationsEnabled: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
 };

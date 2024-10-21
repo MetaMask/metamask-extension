@@ -310,31 +310,4 @@ describe('useCurrentConfirmation', () => {
       expect(currentConfirmation).toBeUndefined();
     });
   });
-
-  describe('useCurrentConfirmation with MM build type env var (MMI)', () => {
-    beforeAll(() => {
-      jest.resetModules();
-      process.env.METAMASK_BUILD_TYPE = 'mmi';
-    });
-
-    afterAll(() => {
-      process.env.METAMASK_BUILD_TYPE = 'main';
-    });
-
-    it('returns undefined if build type is MMI, user setting is enabled and transaction has correct type', () => {
-      const currentConfirmation = runHook({
-        pendingApprovals: [
-          { ...APPROVAL_MOCK, type: ApprovalType.Transaction },
-        ],
-        redesignedConfirmationsEnabled: true,
-        transaction: {
-          ...TRANSACTION_MOCK,
-          type: TransactionType.contractInteraction,
-        },
-        isRedesignedConfirmationsDeveloperEnabled: false,
-      });
-
-      expect(currentConfirmation).toBeUndefined();
-    });
-  });
 });

@@ -381,7 +381,7 @@ export function getRpcUrlByChainId(chainId: HexChainId): string {
 
   // If rpc is found, return its URL. Otherwise, return a default URL based on the chainId.
   if (rpc) {
-    return rpc.rpcUrl;
+    return rpc.rpcEndpoints[0].url;
   }
   // Fallback RPC URLs based on the chainId
   switch (chainId) {

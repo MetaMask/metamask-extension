@@ -41,7 +41,11 @@ describe('Onboarding Flow', () => {
         accounts: {},
         selectedAccount: '',
       },
-      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.GOERLI },
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+      ),
 
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,

@@ -1,0 +1,142 @@
+name: Run tests
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  test-unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: test:unit:coverage
+        run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+
+      - name: Rename coverage
+        run: mv coverage/unit/coverage-final.json coverage/unit/coverage-unit-${{matrix.shard}}.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-unit-${{matrix.shard}}
+          path: coverage/unit/coverage-unit-${{matrix.shard}}.json
+
+  test-webpack:
+    name: Webpack tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: test:unit:webpack:coverage
+        run: yarn test:unit:webpack:coverage
+
+      - name: Rename coverage
+        run: mv coverage/webpack/coverage-final.json coverage/webpack/coverage-webpack.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-webpack
+          path: coverage/webpack/coverage-webpack.json
+
+  test-integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: test:integration:coverage
+        run: yarn test:integration:coverage
+
+      - name: Rename coverage
+        run: mv coverage/integration/coverage-final.json coverage/integration/coverage-integration.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-integration
+          path: coverage/integration/coverage-integration.json
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    needs:
+      - test-unit
+      - test-webpack
+      - test-integration
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage
+          merge-multiple: true
+
+      - name: Merge coverage reports
+        run: yarn nyc merge coverage .nyc_output/coverage-final.json && yarn nyc report --reporter lcov
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lcov.info
+          path: coverage/lcov.info
+
+      - name: Get Sonar coverage
+        id: get-sonar-coverage
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          projectKey=$(grep 'sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
+          sonar_coverage=$(curl --silent --header "Authorization: Bearer $SONAR_TOKEN" "https://sonarcloud.io/api/measures/component?component=$projectKey&metricKeys=coverage" | jq -r '.component.measures[0].value // 0')
+          echo "The Sonar coverage of $projectKey is $sonar_coverage%."
+          echo 'SONAR_COVERAGE='"$sonar_coverage" >> "$GITHUB_OUTPUT"
+
+      - name: Validate test coverage
+        env:
+            SONAR_COVERAGE: ${{ steps.get-sonar-coverage.outputs.SONAR_COVERAGE }}
+        run: |
+          coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print $3}')
+          if [ -z "$coverage" ]; then
+            echo "::error::Could not retrieve test coverage."
+            exit 1
+          fi
+          if (( $(echo "$coverage < $SONAR_COVERAGE" | bc -l) )); then
+            echo "::error::Quality gate failed for test coverage. Current test coverage is $coverage%, please increase coverage to at least $SONAR_COVERAGE%."
+            exit 1
+          else
+            echo "Test coverage is $coverage%. Quality gate passed."
+          fi
+
+      - name: SonarCloud Scan
+        # This is SonarSource/sonarcloud-github-action@v2.0.0
+        uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

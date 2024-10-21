@@ -236,9 +236,6 @@
   "invalidAddressRecipient": {
     "message": "Moun ki resevwa adrès la pa valab"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI pa valab"
-  },
   "invalidRPC": {
     "message": "RPC URI pa valab"
   },
@@ -316,9 +313,6 @@
   },
   "next": {
     "message": "Aprè sa"
-  },
-  "noAddressForName": {
-    "message": "Pa gen adrès ki etabli pou non sa a."
   },
   "noConversionRateAvailable": {
     "message": "Pa gen okenn Konvèsyon Disponib"

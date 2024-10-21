@@ -1,23 +1,27 @@
+import { TransactionType } from '@metamask/transaction-controller';
+
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import mockState from '../../../../test/data/mock-state.json';
+import { getMockTypedSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import useConfirmationNetworkInfo from './useConfirmationNetworkInfo';
 
 describe('useConfirmationNetworkInfo', () => {
   it('returns display name and image when confirmation chainId is present', () => {
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      getMockTypedSignConfirmStateForRequest(
+        {
+          id: '123',
+          chainId: '0x1',
+          type: TransactionType.signTypedData,
         },
-        confirm: {
-          currentConfirmation: { id: '1', chainId: '0x1' },
+        {
+          metamask: {
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          },
         },
-      },
+      ),
     );
 
     expect(result.current.networkDisplayName).toBe('Ethereum Mainnet');
@@ -25,22 +29,24 @@ describe('useConfirmationNetworkInfo', () => {
   });
 
   it('returns display name and image for custom network', () => {
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState({
-            chainId: '0x7',
-            rpcUrl: 'https://testrpc.com',
-            nickname: 'Custom Mainnet RPC',
-          }),
+      getMockTypedSignConfirmStateForRequest(
+        {
+          id: '123',
+          chainId: '0x7',
+          type: TransactionType.signTypedData,
         },
-        confirm: {
-          currentConfirmation: { id: '1', msgParams: {} },
+        {
+          metamask: {
+            ...mockNetworkState({
+              chainId: '0x7',
+              rpcUrl: 'https://testrpc.com',
+              nickname: 'Custom Mainnet RPC',
+            }),
+          },
         },
-      },
+      ),
     );
 
     expect(result.current.networkDisplayName).toBe('Custom Mainnet RPC');
@@ -52,18 +58,20 @@ describe('useConfirmationNetworkInfo', () => {
       nickname: 'Flashbots Protect',
       rpcUrl: 'https://rpc.flashbots.net',
     };
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState(customNetwork),
+      getMockTypedSignConfirmStateForRequest(
+        {
+          id: '123',
+          chainId: '0x1',
+          type: TransactionType.signTypedData,
         },
-        confirm: {
-          currentConfirmation: { id: '1', chainId: '0x1' },
+        {
+          metamask: {
+            ...mockNetworkState(customNetwork),
+          },
         },
-      },
+      ),
     );
 
     expect(result.current.networkDisplayName).toBe('Flashbots Protect');

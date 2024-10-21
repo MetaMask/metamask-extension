@@ -24,6 +24,7 @@ import {
   getMemoizedMetaMaskInternalAccounts,
   getSelectedInternalAccount,
   pendingApprovalsSortedSelector,
+  getNetworkConfigurationsByChainId,
 } from '../../../../selectors';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../test/stub/networks';
@@ -157,6 +158,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
       return {};
     case pendingApprovalsSortedSelector:
       return Object.values(opts.metamask.pendingApprovals);
+    case getNetworkConfigurationsByChainId:
+      return opts.metamask.networkConfigurationsByChainId;
     default:
       return undefined;
   }

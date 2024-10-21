@@ -1,10 +1,10 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { SIWEMessage } from '@metamask/controller-utils';
-
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+
 import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
 
 export type TypedSignDataV1Type = {
@@ -31,6 +31,7 @@ export type SignatureRequestType = {
     origin: string;
     data: string | TypedSignDataV1Type;
     version?: string;
+    requestId?: number;
     signatureMethod?: string;
     siwe?: SIWEMessage;
   };
@@ -42,10 +43,6 @@ export type SignatureRequestType = {
 export type Confirmation = SignatureRequestType | TransactionMeta;
 
 export type ConfirmMetamaskState = {
-  confirm: {
-    currentConfirmation?: Confirmation;
-    isScrollToBottomNeeded?: boolean;
-  };
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];

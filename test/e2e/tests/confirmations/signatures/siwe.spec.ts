@@ -1,9 +1,12 @@
 import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureApproved,
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -24,6 +27,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -59,12 +63,14 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
           ],
         });
       },
+      mockSignatureApproved,
     );
   });
 
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -94,6 +100,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
           location: 'confirmation',
         });
       },
+      mockSignatureRejected,
     );
   });
 });

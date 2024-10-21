@@ -5,6 +5,7 @@ import log from 'loglevel';
 import { captureMessage } from '@sentry/browser';
 
 import { TransactionType } from '@metamask/transaction-controller';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   addToken,
   addTransactionAndWaitForPublish,
@@ -973,6 +974,7 @@ export const signAndSendSwapsSmartTransaction = ({
       );
       if (!fees) {
         log.error('"fetchSwapsSmartTransactionFees" failed');
+        dispatch(setSwapsSTXSubmitLoading(false));
         dispatch(setCurrentSmartTransactionsError(StxErrorTypes.unavailable));
         return;
       }
@@ -1025,6 +1027,7 @@ export const signAndSendSwapsSmartTransaction = ({
         );
       }
       history.push(SMART_TRANSACTION_STATUS_ROUTE);
+      dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
       dispatch(setSwapsSTXSubmitLoading(false));
@@ -1035,8 +1038,6 @@ export const signAndSendSwapsSmartTransaction = ({
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch(setCurrentSmartTransactionsError(errorObj?.error));
       }
-    } finally {
-      dispatch(setSwapsSTXSubmitLoading(false));
     }
   };
 };
@@ -1242,6 +1243,21 @@ export const signAndSendTransactions = (
             },
           },
         );
+        if (
+          [
+            CHAIN_IDS.LINEA_MAINNET,
+            CHAIN_IDS.LINEA_GOERLI,
+            CHAIN_IDS.LINEA_SEPOLIA,
+          ].includes(chainId)
+        ) {
+          log.debug(
+            'Delaying submitting trade tx to make Linea confirmation more likely',
+          );
+          const waitPromise = new Promise((resolve) =>
+            setTimeout(resolve, 5000),
+          );
+          await waitPromise;
+        }
       } catch (e) {
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
         history.push(SWAPS_ERROR_ROUTE);

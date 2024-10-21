@@ -1,0 +1,498 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapUIAddress renders Bitcoin address 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <div
+      style="display: flex;"
+    >
+      <div
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(35, 83, 225);"
+      >
+        <svg
+          height="32"
+          width="32"
+          x="0"
+          y="0"
+        >
+          <rect
+            fill="#03475E"
+            height="32"
+            transform="translate(2.9305136451897345 1.2261469525972557) rotate(127.9 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#F95801"
+            height="32"
+            transform="translate(7.1718321011849575 11.079805523008025) rotate(153.0 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#017B8E"
+            height="32"
+            transform="translate(8.451434427080768 22.468601749359266) rotate(146.6 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+        </svg>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      128Lkh3...Mp8p6
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Bitcoin address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <img
+      alt=""
+      height="32"
+      src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMjA0IDYxJSA0MSUpIiBkPSJNMCwwSDhWOEgweiIvPjxwYXRoIGZpbGw9ImhzbCgxODQgNjMlIDUwJSkiIGQ9Ik0xLDBoMXYxaC0xek02LDBoMXYxaC0xek0yLDBoMXYxaC0xek01LDBoMXYxaC0xek0wLDFoMXYxaC0xek03LDFoMXYxaC0xek0yLDFoMXYxaC0xek01LDFoMXYxaC0xek0xLDJoMXYxaC0xek02LDJoMXYxaC0xek0zLDJoMXYxaC0xek00LDJoMXYxaC0xek0wLDNoMXYxaC0xek03LDNoMXYxaC0xek0yLDNoMXYxaC0xek01LDNoMXYxaC0xek0wLDVoMXYxaC0xek03LDVoMXYxaC0xek0xLDVoMXYxaC0xek02LDVoMXYxaC0xek0xLDZoMXYxaC0xek02LDZoMXYxaC0xeiIvPjxwYXRoIGZpbGw9ImhzbCgxODEgNjIlIDUyJSkiIGQ9Ik0zLDFoMXYxaC0xek00LDFoMXYxaC0xek0yLDJoMXYxaC0xek01LDJoMXYxaC0xek0yLDRoMXYxaC0xek01LDRoMXYxaC0xek0wLDZoMXYxaC0xek03LDZoMXYxaC0xek0yLDZoMXYxaC0xek01LDZoMXYxaC0xek0wLDdoMXYxaC0xek03LDdoMXYxaC0xeiIvPjwvc3ZnPg=="
+      style="border-radius: 50%;"
+      width="32"
+    />
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      128Lkh3...Mp8p6
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Cosmos address 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <div
+      style="display: flex;"
+    >
+      <div
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 59, 94);"
+      >
+        <svg
+          height="32"
+          width="32"
+          x="0"
+          y="0"
+        >
+          <rect
+            fill="#2339E1"
+            height="32"
+            transform="translate(-10.577095368503558 1.2778853266411496) rotate(258.6 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#FB182B"
+            height="32"
+            transform="translate(5.677337270662435 9.943687420321362) rotate(189.4 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#EDF500"
+            height="32"
+            transform="translate(-25.62998642818306 -17.790405786491355) rotate(296.0 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+        </svg>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      cosmos1...6hdc0
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Cosmos address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <img
+      alt=""
+      height="32"
+      src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMjQ3IDQ2JSAzNSUpIiBkPSJNMCwwSDhWOEgweiIvPjxwYXRoIGZpbGw9ImhzbCg4NiA3MSUgNTQlKSIgZD0iTTAsMGgxdjFoLTF6TTcsMGgxdjFoLTF6TTAsMmgxdjFoLTF6TTcsMmgxdjFoLTF6TTAsM2gxdjFoLTF6TTcsM2gxdjFoLTF6TTEsM2gxdjFoLTF6TTYsM2gxdjFoLTF6TTMsM2gxdjFoLTF6TTQsM2gxdjFoLTF6TTAsNGgxdjFoLTF6TTcsNGgxdjFoLTF6TTEsNGgxdjFoLTF6TTYsNGgxdjFoLTF6TTIsNGgxdjFoLTF6TTUsNGgxdjFoLTF6TTAsNWgxdjFoLTF6TTcsNWgxdjFoLTF6TTIsNWgxdjFoLTF6TTUsNWgxdjFoLTF6TTIsNmgxdjFoLTF6TTUsNmgxdjFoLTF6TTMsNmgxdjFoLTF6TTQsNmgxdjFoLTF6TTAsN2gxdjFoLTF6TTcsN2gxdjFoLTF6Ii8+PHBhdGggZmlsbD0iaHNsKDE4OSA2NSUgMzYlKSIgZD0iTTIsMGgxdjFoLTF6TTUsMGgxdjFoLTF6TTMsMWgxdjFoLTF6TTQsMWgxdjFoLTF6TTMsMmgxdjFoLTF6TTQsMmgxdjFoLTF6Ii8+PC9zdmc+"
+      style="border-radius: 50%;"
+      width="32"
+    />
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      cosmos1...6hdc0
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Ethereum address 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <div
+      style="display: flex;"
+    >
+      <div
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 83);"
+      >
+        <svg
+          height="32"
+          width="32"
+          x="0"
+          y="0"
+        >
+          <rect
+            fill="#F29602"
+            height="32"
+            transform="translate(-2.81750896228304 4.951916544006229) rotate(230.4 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#236CE1"
+            height="32"
+            transform="translate(-13.498650292632812 -9.441918676693094) rotate(245.3 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#018E8E"
+            height="32"
+            transform="translate(18.42469405222943 23.248777206278085) rotate(173.9 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+        </svg>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      0xab16a...Bfcdb
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Ethereum address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <img
+      alt=""
+      height="32"
+      src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woNTIgNzAlIDU4JSkiIGQ9Ik0wLDBIOFY4SDB6Ii8+PHBhdGggZmlsbD0iaHNsKDI2MiA1MiUgNTYlKSIgZD0iTTEsMGgxdjFoLTF6TTYsMGgxdjFoLTF6TTIsMWgxdjFoLTF6TTUsMWgxdjFoLTF6TTIsMmgxdjFoLTF6TTUsMmgxdjFoLTF6TTMsMmgxdjFoLTF6TTQsMmgxdjFoLTF6TTAsM2gxdjFoLTF6TTcsM2gxdjFoLTF6TTEsM2gxdjFoLTF6TTYsM2gxdjFoLTF6TTIsM2gxdjFoLTF6TTUsM2gxdjFoLTF6TTMsM2gxdjFoLTF6TTQsM2gxdjFoLTF6TTMsNGgxdjFoLTF6TTQsNGgxdjFoLTF6TTAsNWgxdjFoLTF6TTcsNWgxdjFoLTF6TTEsNWgxdjFoLTF6TTYsNWgxdjFoLTF6TTIsNWgxdjFoLTF6TTUsNWgxdjFoLTF6TTAsNmgxdjFoLTF6TTcsNmgxdjFoLTF6TTEsNmgxdjFoLTF6TTYsNmgxdjFoLTF6TTEsN2gxdjFoLTF6TTYsN2gxdjFoLTF6Ii8+PHBhdGggZmlsbD0iaHNsKDggNjMlIDUzJSkiIGQ9IiIvPjwvc3ZnPg=="
+      style="border-radius: 50%;"
+      width="32"
+    />
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      0xab16a...Bfcdb
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Hedera address 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <div
+      style="display: flex;"
+    >
+      <div
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(251, 24, 81);"
+      >
+        <svg
+          height="32"
+          width="32"
+          x="0"
+          y="0"
+        >
+          <rect
+            fill="#C81441"
+            height="32"
+            transform="translate(7.8929303986963575 3.81505315001625) rotate(81.4 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#F95001"
+            height="32"
+            transform="translate(-15.115532254104156 5.65823114066517) rotate(249.8 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#034A5E"
+            height="32"
+            transform="translate(18.782116410097146 -20.966441380827995) rotate(321.3 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+        </svg>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      0.0.123...zbhlt
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Hedera address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <img
+      alt=""
+      height="32"
+      src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMTkgNzclIDU3JSkiIGQ9Ik0wLDBIOFY4SDB6Ii8+PHBhdGggZmlsbD0iaHNsKDEwMSA1OCUgMzMlKSIgZD0iTTAsMGgxdjFoLTF6TTcsMGgxdjFoLTF6TTIsMGgxdjFoLTF6TTUsMGgxdjFoLTF6TTIsMWgxdjFoLTF6TTUsMWgxdjFoLTF6TTAsMmgxdjFoLTF6TTcsMmgxdjFoLTF6TTIsMmgxdjFoLTF6TTUsMmgxdjFoLTF6TTMsMmgxdjFoLTF6TTQsMmgxdjFoLTF6TTAsM2gxdjFoLTF6TTcsM2gxdjFoLTF6TTAsNGgxdjFoLTF6TTcsNGgxdjFoLTF6TTMsNGgxdjFoLTF6TTQsNGgxdjFoLTF6TTAsN2gxdjFoLTF6TTcsN2gxdjFoLTF6TTEsN2gxdjFoLTF6TTYsN2gxdjFoLTF6Ii8+PHBhdGggZmlsbD0iaHNsKDM1NyA5NCUgNDUlKSIgZD0iTTEsMGgxdjFoLTF6TTYsMGgxdjFoLTF6TTMsMGgxdjFoLTF6TTQsMGgxdjFoLTF6TTEsMWgxdjFoLTF6TTYsMWgxdjFoLTF6TTEsM2gxdjFoLTF6TTYsM2gxdjFoLTF6TTIsNGgxdjFoLTF6TTUsNGgxdjFoLTF6TTAsNWgxdjFoLTF6TTcsNWgxdjFoLTF6TTEsNWgxdjFoLTF6TTYsNWgxdjFoLTF6TTIsNWgxdjFoLTF6TTUsNWgxdjFoLTF6TTMsNWgxdjFoLTF6TTQsNWgxdjFoLTF6TTIsN2gxdjFoLTF6TTUsN2gxdjFoLTF6Ii8+PC9zdmc+"
+      style="border-radius: 50%;"
+      width="32"
+    />
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      0.0.123...zbhlt
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Polkadot address 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <div
+      style="display: flex;"
+    >
+      <div
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 198, 242);"
+      >
+        <svg
+          height="32"
+          width="32"
+          x="0"
+          y="0"
+        >
+          <rect
+            fill="#238CE1"
+            height="32"
+            transform="translate(-0.9326359780580042 -0.7760979217397975) rotate(228.7 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#018E77"
+            height="32"
+            transform="translate(14.633859127624504 0.17102681763595054) rotate(175.0 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#F26E02"
+            height="32"
+            transform="translate(22.334011165851894 0.6446527074820322) rotate(17.6 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+        </svg>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      5hmuyxw...egmfy
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Polkadot address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <img
+      alt=""
+      height="32"
+      src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMTMgNjMlIDMzJSkiIGQ9Ik0wLDBIOFY4SDB6Ii8+PHBhdGggZmlsbD0iaHNsKDEzOCA3NSUgMjglKSIgZD0iTTAsMWgxdjFoLTF6TTcsMWgxdjFoLTF6TTIsMWgxdjFoLTF6TTUsMWgxdjFoLTF6TTAsMmgxdjFoLTF6TTcsMmgxdjFoLTF6TTIsMmgxdjFoLTF6TTUsMmgxdjFoLTF6TTMsMmgxdjFoLTF6TTQsMmgxdjFoLTF6TTAsM2gxdjFoLTF6TTcsM2gxdjFoLTF6TTEsM2gxdjFoLTF6TTYsM2gxdjFoLTF6TTEsNGgxdjFoLTF6TTYsNGgxdjFoLTF6TTMsNGgxdjFoLTF6TTQsNGgxdjFoLTF6TTAsNWgxdjFoLTF6TTcsNWgxdjFoLTF6TTEsNWgxdjFoLTF6TTYsNWgxdjFoLTF6TTIsNmgxdjFoLTF6TTUsNmgxdjFoLTF6TTAsN2gxdjFoLTF6TTcsN2gxdjFoLTF6TTEsN2gxdjFoLTF6TTYsN2gxdjFoLTF6TTMsN2gxdjFoLTF6TTQsN2gxdjFoLTF6Ii8+PHBhdGggZmlsbD0iaHNsKDczIDc3JSAzMyUpIiBkPSJNMCwwaDF2MWgtMXpNNywwaDF2MWgtMXpNMSwwaDF2MWgtMXpNNiwwaDF2MWgtMXpNMywwaDF2MWgtMXpNNCwwaDF2MWgtMXpNMSwyaDF2MWgtMXpNNiwyaDF2MWgtMXpNMiw1aDF2MWgtMXpNNSw1aDF2MWgtMXpNMyw1aDF2MWgtMXpNNCw1aDF2MWgtMXpNMCw2aDF2MWgtMXpNNyw2aDF2MWgtMXpNMyw2aDF2MWgtMXpNNCw2aDF2MWgtMXpNMiw3aDF2MWgtMXpNNSw3aDF2MWgtMXoiLz48L3N2Zz4="
+      style="border-radius: 50%;"
+      width="32"
+    />
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      5hmuyxw...egmfy
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Starknet address 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <div
+      style="display: flex;"
+    >
+      <div
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 110);"
+      >
+        <svg
+          height="32"
+          width="32"
+          x="0"
+          y="0"
+        >
+          <rect
+            fill="#2388E1"
+            height="32"
+            transform="translate(1.8289963783692056 -3.4661888536397423) rotate(409.8 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#F59700"
+            height="32"
+            transform="translate(-16.75527888625542 -8.229921036962272) rotate(352.3 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#18C2F2"
+            height="32"
+            transform="translate(-23.454898584180004 2.8519196153955564) rotate(217.2 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+        </svg>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      0x02dd1...0ab57
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Starknet address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <img
+      alt=""
+      height="32"
+      src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMjM0IDUzJSA2MSUpIiBkPSJNMCwwSDhWOEgweiIvPjxwYXRoIGZpbGw9ImhzbCgxODIgNzIlIDMxJSkiIGQ9Ik0xLDBoMXYxaC0xek02LDBoMXYxaC0xek0xLDFoMXYxaC0xek02LDFoMXYxaC0xek0yLDFoMXYxaC0xek01LDFoMXYxaC0xek0wLDJoMXYxaC0xek03LDJoMXYxaC0xek0xLDJoMXYxaC0xek02LDJoMXYxaC0xek0zLDJoMXYxaC0xek00LDJoMXYxaC0xek0wLDNoMXYxaC0xek03LDNoMXYxaC0xek0zLDNoMXYxaC0xek00LDNoMXYxaC0xek0xLDVoMXYxaC0xek02LDVoMXYxaC0xek0yLDVoMXYxaC0xek01LDVoMXYxaC0xek0zLDVoMXYxaC0xek00LDVoMXYxaC0xek0xLDZoMXYxaC0xek02LDZoMXYxaC0xek0yLDZoMXYxaC0xek01LDZoMXYxaC0xek0xLDdoMXYxaC0xek02LDdoMXYxaC0xek0zLDdoMXYxaC0xek00LDdoMXYxaC0xeiIvPjxwYXRoIGZpbGw9ImhzbCg2OCA4NiUgNjYlKSIgZD0iTTMsMWgxdjFoLTF6TTQsMWgxdjFoLTF6TTIsMmgxdjFoLTF6TTUsMmgxdjFoLTF6TTAsNGgxdjFoLTF6TTcsNGgxdjFoLTF6TTMsNGgxdjFoLTF6TTQsNGgxdjFoLTF6TTAsNWgxdjFoLTF6TTcsNWgxdjFoLTF6TTAsNmgxdjFoLTF6TTcsNmgxdjFoLTF6Ii8+PC9zdmc+"
+      style="border-radius: 50%;"
+      width="32"
+    />
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      0x02dd1...0ab57
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+  >
+    <div
+      style="display: flex;"
+    >
+      <div
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 83);"
+      >
+        <svg
+          height="32"
+          width="32"
+          x="0"
+          y="0"
+        >
+          <rect
+            fill="#F29602"
+            height="32"
+            transform="translate(-2.81750896228304 4.951916544006229) rotate(230.4 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#236CE1"
+            height="32"
+            transform="translate(-13.498650292632812 -9.441918676693094) rotate(245.3 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#018E8E"
+            height="32"
+            transform="translate(18.42469405222943 23.248777206278085) rotate(173.9 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+        </svg>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+    >
+      0xab16a...Bfcdb
+    </p>
+  </div>
+</div>
+`;

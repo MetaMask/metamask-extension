@@ -41,7 +41,7 @@ const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
  * @param {string[]} changedOrNewTests - List of changed or new test paths.
  * @returns {string} The updated full test list.
  */
-async function applyQualityGate(fullTestList, changedOrNewTests) {
+function applyQualityGate(fullTestList, changedOrNewTests) {
   let qualityGatedList = fullTestList;
 
   if (changedOrNewTests.length > 0) {
@@ -63,11 +63,11 @@ async function applyQualityGate(fullTestList, changedOrNewTests) {
 }
 
 // For running E2Es in parallel in CI
-async function runningOnCircleCI(testPaths) {
-  const changedOrNewTests = await filterE2eChangedFiles();
+function runningOnCircleCI(testPaths) {
+  const changedOrNewTests = filterE2eChangedFiles();
   console.log('Changed or new test list:', changedOrNewTests);
 
-  const fullTestList = await applyQualityGate(
+  const fullTestList = applyQualityGate(
     testPaths.join('\n'),
     changedOrNewTests,
   );
@@ -248,7 +248,7 @@ async function main() {
   let changedOrNewTests;
   if (process.env.CIRCLECI) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
-      await runningOnCircleCI(testPaths));
+      runningOnCircleCI(testPaths));
   } else {
     myTestList = testPaths;
   }

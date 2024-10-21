@@ -29,7 +29,7 @@ const Header = () => {
       className="confirm_header__wrapper"
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      data-testid={'confirm-header'}
+      data-testid="confirm-header"
     >
       <Box alignItems={AlignItems.flexStart} display={Display.Flex} padding={4}>
         <Box display={Display.Flex} marginTop={2}>
@@ -46,13 +46,13 @@ const Header = () => {
           <Text
             color={TextColor.textDefault}
             variant={TextVariant.bodyMdMedium}
-            data-testid={'header-account-name'}
+            data-testid="header-account-name"
           >
             {fromName}
           </Text>
           <Text
             color={TextColor.textAlternative}
-            data-testid={'header-network-display-name'}
+            data-testid="header-network-display-name"
           >
             {networkDisplayName}
           </Text>

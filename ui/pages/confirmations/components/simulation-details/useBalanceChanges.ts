@@ -9,11 +9,12 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
-import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getCurrentChainId, getCurrentCurrency } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
+import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
+
 import {
   BalanceChange,
   FIAT_UNAVAILABLE,
@@ -22,8 +23,6 @@ import {
 } from './types';
 
 const NATIVE_DECIMALS = 18;
-
-const ERC20_DEFAULT_DECIMALS = 18;
 
 // See https://github.com/MikeMcl/bignumber.js/issues/11#issuecomment-23053776
 function convertNumberToStringWithPrecisionWarning(value: number): string {
@@ -55,25 +54,6 @@ function getAssetAmount(
       // Shift the decimal point to the left by the number of decimals.
       .shift(-decimals)
   );
-}
-
-// Fetches the decimals for the given token address.
-async function fetchErc20Decimals(address: Hex): Promise<number> {
-  try {
-    const { decimals: decStr } = await getTokenStandardAndDetails(address);
-    if (!decStr) {
-      return ERC20_DEFAULT_DECIMALS;
-    }
-    for (const radix of [10, 16]) {
-      const parsedDec = parseInt(decStr, radix);
-      if (isFinite(parsedDec)) {
-        return parsedDec;
-      }
-    }
-    return ERC20_DEFAULT_DECIMALS;
-  } catch {
-    return ERC20_DEFAULT_DECIMALS;
-  }
 }
 
 // Fetches token details for all the token addresses in the SimulationTokenBalanceChanges

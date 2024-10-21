@@ -107,6 +107,8 @@ import {
   calcTokenAmount,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import {
   calcTokenValue,
@@ -248,8 +250,9 @@ export default function ViewQuote() {
     const {
       maxFeePerGas: suggestedMaxFeePerGas,
       maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas,
-      gasFeeEstimates: { estimatedBaseFee = '0' },
+      gasFeeEstimates,
     } = gasFeeInputs;
+    const estimatedBaseFee = gasFeeEstimates?.estimatedBaseFee ?? '0';
     maxFeePerGas = customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
     maxPriorityFeePerGas =
       customMaxPriorityFeePerGas ||
@@ -1028,7 +1031,6 @@ export default function ViewQuote() {
                   setSelectQuotePopoverShown(true);
                 }
               }
-              chainId={chainId}
               maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
                 maxPriorityFeePerGas,
               )}

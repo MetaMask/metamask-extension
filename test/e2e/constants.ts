@@ -39,5 +39,10 @@ export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
 /* Default ganache ETH balance in decimal when first login */
 export const DEFAULT_GANACHE_ETH_BALANCE_DEC = '25';
 
+/* Dapp host addresses and URL*/
+export const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
+export const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
+export const DAPP_ONE_URL = 'http://127.0.0.1:8081';
+
 /* Default BTC address created using test SRP */
 export const DEFAULT_BTC_ACCOUNT = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';

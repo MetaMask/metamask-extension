@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, IconName, IconSize, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MenuItem } from '../../ui/menu';
-import SnapAvatar from '../snaps/snap-avatar';
 import {
   AlignItems,
   BlockSize,
@@ -18,6 +17,7 @@ import ConnectedAccountsListOptions from '../connected-accounts-list/connected-a
 import { getOriginOfCurrentTab } from '../../../selectors';
 import { disconnectOriginFromSnap } from '../../../store/actions';
 import { getSnapRoute } from '../../../helpers/utils/util';
+import { SnapIcon } from '../snaps/snap-icon';
 
 export default function ConnectedSnaps({ connectedSubjects }) {
   const [showOptions, setShowOptions] = useState();
@@ -74,11 +74,7 @@ export default function ConnectedSnaps({ connectedSubjects }) {
             display={Display.Flex}
             alignItems={AlignItems.center}
           >
-            <SnapAvatar
-              snapId={subject.origin}
-              badgeSize={IconSize.Xs}
-              avatarSize={IconSize.Md}
-            />
+            <SnapIcon snapId={subject.origin} avatarSize={IconSize.Md} />
             <Text
               variant={TextVariant.bodyLgMedium}
               className="connected-accounts-list__account-name"

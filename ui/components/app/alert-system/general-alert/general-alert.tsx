@@ -77,7 +77,7 @@ function AlertDetails({
     <Box marginTop={1}>
       <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
         {details instanceof Array ? (
-          <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
+          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
             {details.map((detail, index) => (
               <Box as="li" key={`disclosure-detail-${index}`}>
                 <Text

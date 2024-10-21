@@ -16,7 +16,7 @@ const mockState = {
         id: 267460284130106,
         msgParams: {
           data: '{"domain":{"chainId":"5","name":"Ether Mail","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","version":"1"},"message":{"contents":"Hello, Bob!","from":{"name":"Cow","wallets":["0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826","0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF"]},"to":[{"name":"Bob","wallets":["0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB","0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57","0xB0B0b0b0b0b0B000000000000000000000000000"]}]},"primaryType":"Mail","types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Group":[{"name":"name","type":"string"},{"name":"members","type":"Person[]"}],"Mail":[{"name":"from","type":"Person"},{"name":"to","type":"Person[]"},{"name":"contents","type":"string"}],"Person":[{"name":"name","type":"string"},{"name":"wallets","type":"address[]"}]}}',
-          from: '0x8eeee1781fd885ff5ddef7789486676961873d12',
+          from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
           version: 'V4',
           origin: 'https://metamask.github.io',
           signatureMethod: 'eth_signTypedData_v4',
@@ -41,7 +41,7 @@ const mockState = {
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-          address: '0x8eeee1781fd885ff5ddef7789486676961873d12',
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
           id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           metadata: {
             name: 'Account 1',
@@ -57,8 +57,8 @@ const mockState = {
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
     accounts: {
-      '0x8eeee1781fd885ff5ddef7789486676961873d12': {
-        address: '0x8eeee1781fd885ff5ddef7789486676961873d12',
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         balance: '0x7e64033f2fdb0436',
       },
     },

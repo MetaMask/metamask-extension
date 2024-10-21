@@ -77,11 +77,6 @@ jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
 
-jest.mock('../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => false,
-}));
-
 const render = async (route, state) => {
   const store = configureMockStore(middlewares)({
     ...mockSendState,
