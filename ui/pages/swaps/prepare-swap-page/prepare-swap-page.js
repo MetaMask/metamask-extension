@@ -52,7 +52,6 @@ import {
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
-  getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -191,10 +190,8 @@ export default function PrepareSwapPage({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
-  const usedQuote = useSelector(getUsedQuote, isEqual);
   const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const numberOfQuotes = Object.keys(quotes).length;
-  const areQuotesPresent = numberOfQuotes > 0 && usedQuote;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
   const transactionSettingsOpened = useSelector(
