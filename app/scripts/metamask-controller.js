@@ -3403,7 +3403,7 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
-      getHardwareDeviceName: this.getHardwareDeviceName.bind(this),
+      getDeviceNameForMetric: this.getDeviceNameForMetric.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
@@ -4689,13 +4689,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * get preferred hardware wallet device name.
+   * Get hardware device name for metric logging.
    *
    * @param deviceName - HardwareDeviceNames
    * @param hdPath - string
    * @returns {Promise<string>}
    */
-  async getHardwareDeviceName(deviceName, hdPath) {
+  async getDeviceNameForMetric(deviceName, hdPath) {
     if (deviceName === HardwareDeviceNames.trezor) {
       const keyring = await this.getKeyringForDevice(deviceName, hdPath);
       const { minorVersion } = keyring.bridge;

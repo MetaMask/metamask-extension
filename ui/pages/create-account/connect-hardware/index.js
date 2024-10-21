@@ -292,7 +292,7 @@ class ConnectHardwareForm extends Component {
         : '';
 
     // Get preferred device name for metrics.
-    const metricDeviceName = await this.props.getHardwareDeviceName(
+    const metricDeviceName = await this.props.getDeviceNameForMetric(
       device,
       path,
     );
@@ -446,7 +446,7 @@ class ConnectHardwareForm extends Component {
 ConnectHardwareForm.propTypes = {
   connectHardware: PropTypes.func,
   checkHardwareStatus: PropTypes.func,
-  getHardwareDeviceName: PropTypes.func,
+  getDeviceNameForMetric: PropTypes.func,
   forgetDevice: PropTypes.func,
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
@@ -480,8 +480,8 @@ const mapDispatchToProps = (dispatch) => {
     connectHardware: (deviceName, page, hdPath, t) => {
       return dispatch(actions.connectHardware(deviceName, page, hdPath, t));
     },
-    getHardwareDeviceName: (deviceName, hdPath) => {
-      return dispatch(actions.getHardwareDeviceName(deviceName, hdPath));
+    getDeviceNameForMetric: (deviceName, hdPath) => {
+      return dispatch(actions.getDeviceNameForMetric(deviceName, hdPath));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));

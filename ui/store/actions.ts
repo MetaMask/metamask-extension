@@ -508,7 +508,7 @@ export function checkHardwareStatus(
   };
 }
 
-export function getHardwareDeviceName(
+export function getDeviceNameForMetric(
   deviceName: HardwareDeviceNames,
   hdPath: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -519,7 +519,7 @@ export function getHardwareDeviceName(
     let result: string;
     try {
       result = await submitRequestToBackground<string>(
-        'getHardwareDeviceName',
+        'getDeviceNameForMetric',
         [deviceName, hdPath],
       );
     } catch (error) {

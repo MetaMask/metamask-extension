@@ -902,7 +902,7 @@ describe('MetaMaskController', () => {
         it('should return the correct device name for Ledger', async () => {
           const deviceName = 'ledger';
 
-          const result = await metamaskController.getHardwareDeviceName(
+          const result = await metamaskController.getDeviceNameForMetric(
             deviceName,
             hdPath,
           );
@@ -912,7 +912,7 @@ describe('MetaMaskController', () => {
         it('should return the correct device name for Lattice', async () => {
           const deviceName = 'lattice';
 
-          const result = await metamaskController.getHardwareDeviceName(
+          const result = await metamaskController.getDeviceNameForMetric(
             deviceName,
             hdPath,
           );
@@ -929,7 +929,7 @@ describe('MetaMaskController', () => {
                 model: 'T',
               },
             });
-          const result = await metamaskController.getHardwareDeviceName(
+          const result = await metamaskController.getDeviceNameForMetric(
             deviceName,
             hdPath,
           );
@@ -938,7 +938,7 @@ describe('MetaMaskController', () => {
 
         it('should return undefined for unknown device name', async () => {
           const deviceName = 'unknown';
-          const result = await metamaskController.getHardwareDeviceName(
+          const result = await metamaskController.getDeviceNameForMetric(
             deviceName,
             hdPath,
           );
@@ -955,7 +955,7 @@ describe('MetaMaskController', () => {
                 minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION,
               },
             });
-          const result = await metamaskController.getHardwareDeviceName(
+          const result = await metamaskController.getDeviceNameForMetric(
             deviceName,
             hdPath,
           );

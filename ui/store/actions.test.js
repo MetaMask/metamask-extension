@@ -483,7 +483,7 @@ describe('Actions', () => {
     });
   });
 
-  describe('#getHardwareDeviceName', () => {
+  describe('#getDeviceNameForMetric', () => {
     const deviceName = 'ledger';
     const hdPath = "m/44'/60'/0'/0/0";
 
@@ -491,23 +491,23 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls getHardwareDeviceName in background', async () => {
+    it('calls getDeviceNameForMetric in background', async () => {
       const store = mockStore();
 
-      const getHardwareDeviceName = background.getHardwareDeviceName.callsFake(
+      const mockGetDeviceName = background.getDeviceNameForMetric.callsFake(
         (_, __, cb) => cb(),
       );
 
       setBackgroundConnection(background);
 
-      await store.dispatch(actions.getHardwareDeviceName(deviceName, hdPath));
-      expect(getHardwareDeviceName.callCount).toStrictEqual(1);
+      await store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath));
+      expect(mockGetDeviceName.callCount).toStrictEqual(1);
     });
 
     it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
-      background.getHardwareDeviceName.callsFake((_, __, cb) =>
+      background.getDeviceNameForMetric.callsFake((_, __, cb) =>
         cb(new Error('error')),
       );
 
@@ -520,7 +520,7 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.getHardwareDeviceName(deviceName, hdPath)),
+        store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath)),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
