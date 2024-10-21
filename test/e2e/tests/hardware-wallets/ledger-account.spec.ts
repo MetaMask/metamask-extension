@@ -114,7 +114,7 @@ describe('Ledger Hardware', function () {
     );
   });
 
-  it('unlocks the multiple accounts', async function () {
+  it('unlocks multiple accounts', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
