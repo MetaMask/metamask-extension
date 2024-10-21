@@ -1,6 +1,6 @@
-import { tEn } from '../../../lib/i18n-helpers';
-import { Driver } from '../../webdriver/driver';
-import { RawLocator } from '../common';
+import { tEn } from '../../../../../lib/i18n-helpers';
+import { Driver } from '../../../../webdriver/driver';
+import { RawLocator } from '../../../common';
 import TransactionConfirmation from './transaction-confirmation';
 
 class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {

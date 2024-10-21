@@ -20,8 +20,8 @@ import {
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import {
@@ -78,9 +78,6 @@ export default function SmartTransactionStatusPage() {
     getCurrentSmartTransactions,
     isEqual,
   );
-  const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
-  );
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
@@ -128,7 +125,7 @@ export default function SmartTransactionStatusPage() {
     hardware_wallet_type: hardwareWalletType,
     stx_enabled: smartTransactionsEnabled,
     current_stx_enabled: currentSmartTransactionsEnabled,
-    stx_user_opt_in: smartTransactionsOptInStatus,
+    stx_user_opt_in: useSelector(getSmartTransactionsOptInStatusForMetrics),
   };
 
   let destinationValue;

@@ -1,5 +1,6 @@
-import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../helpers';
+import { Driver } from '../../webdriver/driver';
+import { RawLocator } from '../common';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
@@ -83,8 +84,16 @@ class TestDapp {
 
   private readonly signTypedDataVerifyResult = '#signTypedDataVerifyResult';
 
+  private erc20WatchAssetButton: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
+
+    this.erc721SetApprovalForAllButton = '#setApprovalForAllButton';
+    this.erc1155SetApprovalForAllButton = '#setApprovalForAllERC1155Button';
+    this.erc721RevokeSetApprovalForAllButton = '#revokeButton';
+    this.erc1155RevokeSetApprovalForAllButton = '#revokeERC1155Button';
+    this.erc20WatchAssetButton = '#watchAssets';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -141,6 +150,10 @@ class TestDapp {
 
   async clickERC1155RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc1155RevokeSetApprovalForAllButton);
+  }
+
+  public async clickERC20WatchAssetButton() {
+    await this.driver.clickElement(this.erc20WatchAssetButton);
   }
 
   /**
