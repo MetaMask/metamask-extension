@@ -552,7 +552,7 @@ export default function ConfirmationPage({
       )}
       <Box
         className="confirmation-page__content"
-        padding={4}
+        padding={isSnapCustomUIDialog ? 0 : 4}
         style={{
           marginTop: `${contentMargin}px`,
           overflowY: 'auto',
