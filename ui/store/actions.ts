@@ -512,7 +512,7 @@ export function getDeviceNameForMetric(
   deviceName: HardwareDeviceNames,
   hdPath: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug(`background.getHardwareDeviceName`, deviceName, hdPath);
+  log.debug(`background.getDeviceNameForMetric`, deviceName, hdPath);
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
