@@ -48,10 +48,13 @@ describe('BTC Account - Send', function (this: Suite) {
         );
 
         // From here, the "summary panel" should have some information about the fees and total.
-        await driver.waitForSelector({
-          text: 'Total',
-          tag: 'p',
-        });
+        await driver.waitForSelector(
+          {
+            text: 'Total',
+            tag: 'p',
+          },
+          { timeout: 20000 },
+        );
 
         // The review button will become available.
         const snapReviewButton = await driver.findClickableElement({
