@@ -160,6 +160,7 @@ import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
 } from '@metamask/multichain';
+import { isProduction } from '../../shared/modules/environment';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -388,6 +389,9 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
+
+// OneKey devices can connect to Metamask using Trezor USB transport. They use a specific device minor version (99) to differentiate between genuine Trezor and OneKey devices.
+export const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -1530,7 +1534,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -3363,6 +3367,7 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
+      getDeviceNameForMetric: this.getDeviceNameForMetric.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
@@ -4649,6 +4654,26 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Get hardware device name for metric logging.
+   *
+   * @param deviceName - HardwareDeviceNames
+   * @param hdPath - string
+   * @returns {Promise<string>}
+   */
+  async getDeviceNameForMetric(deviceName, hdPath) {
+    if (deviceName === HardwareDeviceNames.trezor) {
+      const keyring = await this.getKeyringForDevice(deviceName, hdPath);
+      const { minorVersion } = keyring.bridge;
+      // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
+      if (minorVersion && minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION) {
+        return HardwareDeviceNames.oneKeyViaTrezor;
+      }
+    }
+
+    return deviceName;
+  }
+
+  /**
    * Clear
    *
    * @param deviceName
@@ -4720,9 +4745,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * get hardware account label
    *
+   * @param name
+   * @param index
+   * @param hdPathDescription
    * @returns string label
    */
-
   getAccountLabel(name, index, hdPathDescription) {
     return `${name[0].toUpperCase()}${name.slice(1)} ${
       parseInt(index, 10) + 1
