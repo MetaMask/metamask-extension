@@ -13,9 +13,9 @@ import {
   RatesController,
   fetchMultiExchangeRate,
 } from '@metamask/assets-controllers';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
@@ -155,6 +155,7 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
+import { isProduction } from '../../shared/modules/environment';
 import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -296,7 +297,7 @@ import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { PreferencesController } from './controllers/preferences-controller';
-import AppStateController from './controllers/app-state';
+import { AppStateController } from './controllers/app-state-controller';
 import { AlertController } from './controllers/alert-controller';
 import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
@@ -384,6 +385,9 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
+
+// OneKey devices can connect to Metamask using Trezor USB transport. They use a specific device minor version (99) to differentiate between genuine Trezor and OneKey devices.
+export const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -845,12 +849,12 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
-      preferencesController: this.preferencesController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AppStateController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
+          `PreferencesController:getState`,
         ],
         allowedEvents: [
           `KeyringController:qrKeyringStateChange`,
@@ -1571,7 +1575,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -3389,6 +3393,7 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
+      getDeviceNameForMetric: this.getDeviceNameForMetric.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
@@ -4678,6 +4683,26 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Get hardware device name for metric logging.
+   *
+   * @param deviceName - HardwareDeviceNames
+   * @param hdPath - string
+   * @returns {Promise<string>}
+   */
+  async getDeviceNameForMetric(deviceName, hdPath) {
+    if (deviceName === HardwareDeviceNames.trezor) {
+      const keyring = await this.getKeyringForDevice(deviceName, hdPath);
+      const { minorVersion } = keyring.bridge;
+      // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
+      if (minorVersion && minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION) {
+        return HardwareDeviceNames.oneKeyViaTrezor;
+      }
+    }
+
+    return deviceName;
+  }
+
+  /**
    * Clear
    *
    * @param deviceName
@@ -4749,9 +4774,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * get hardware account label
    *
+   * @param name
+   * @param index
+   * @param hdPathDescription
    * @returns string label
    */
-
   getAccountLabel(name, index, hdPathDescription) {
     return `${name[0].toUpperCase()}${name.slice(1)} ${
       parseInt(index, 10) + 1
@@ -5486,11 +5513,7 @@ export default class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // handle any middleware cleanup
-        engine._middleware.forEach((mid) => {
-          if (mid.destroy && typeof mid.destroy === 'function') {
-            mid.destroy();
-          }
-        });
+        engine.destroy();
         connectionId && this.removeConnection(origin, connectionId);
         // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
         if (err && !err.message?.match('Premature close')) {
