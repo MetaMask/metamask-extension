@@ -1437,7 +1437,7 @@ export default class MetamaskController extends EventEmitter {
                 origin,
                 ...(args.content ? { detailedView } : {}),
               },
-              type: 'snap',
+              type: TRIGGER_TYPES.SNAP,
               readDate: null,
             };
 
