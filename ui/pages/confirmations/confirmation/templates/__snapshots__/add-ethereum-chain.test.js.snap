@@ -124,5 +124,3 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
   </div>
 </div>
 `;
-
-exports[`add-ethereum-chain confirmation should match snapshot 2`] = `<div />`;
