@@ -85,13 +85,17 @@ const STATE_MOCK = {
       },
     },
     useTokenDetection: true,
-    tokenList: {
-      '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
-        address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
-        symbol: 'IUSD',
-        name: 'iZUMi Bond USD',
-        iconUrl:
-          'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+    tokensChainsCache: {
+      [VARIATION_MOCK]: {
+        data: {
+          '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
+            address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
+            symbol: 'IUSD',
+            name: 'iZUMi Bond USD',
+            iconUrl:
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+          },
+        },
       },
     },
   },

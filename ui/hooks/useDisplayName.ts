@@ -29,14 +29,14 @@ export function useDisplayNames(
 ): UseDisplayNameResponse[] {
   const nameEntries = useNames(requests);
   const firstPartyContractNames = useFirstPartyContractNames(requests);
-  const erc20TokenNames = useERC20TokenNames(requests);
+  const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);
   const nfts = useNFTs(requests);
 
   return requests.map((_request, index) => {
     const nameEntry = nameEntries[index];
     const firstPartyContractName = firstPartyContractNames[index];
-    const erc20TokenName = erc20TokenNames[index];
+    const erc20Token = erc20Tokens[index];
     const watchedNftName = watchedNFTNames[index];
     const nft = nfts[index];
 
@@ -44,17 +44,19 @@ export function useDisplayNames(
       nameEntry?.name ||
       firstPartyContractName ||
       nft?.name ||
-      erc20TokenName ||
+      erc20Token?.name ||
       watchedNftName ||
       null;
+
+    const image = nft?.image || erc20Token?.image;
 
     const hasPetname = Boolean(nameEntry?.name);
 
     return {
       name,
       hasPetname,
-      contractDisplayName: erc20TokenName,
-      image: nft?.image,
+      contractDisplayName: erc20Token?.name,
+      image,
     };
   });
 }
@@ -65,9 +67,9 @@ export function useDisplayName(
   return useDisplayNames([request])[0];
 }
 
-function useERC20TokenNames(
+function useERC20Tokens(
   nameRequests: UseDisplayNameRequest[],
-): (string | undefined)[] {
+): ({ name?: string; image?: string } | undefined)[] {
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
   return nameRequests.map(
@@ -78,10 +80,15 @@ function useERC20TokenNames(
 
       const contractAddress = value.toLowerCase();
 
-      const { symbol, name } =
-        erc20TokensByChain?.[variation]?.data?.[contractAddress] ?? {};
+      const {
+        iconUrl: image,
+        name: tokenName,
+        symbol,
+      } = erc20TokensByChain?.[variation]?.data?.[contractAddress] ?? {};
 
-      return preferContractSymbol && symbol ? symbol : name;
+      const name = preferContractSymbol && symbol ? symbol : tokenName;
+
+      return { name, image };
     },
   );
 }
