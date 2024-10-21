@@ -4,9 +4,6 @@ const {
   withFixtures,
   importSRPOnboardingFlow,
   WALLET_PASSWORD,
-  tinyDelayMs,
-  regularDelayMs,
-  largeDelayMs,
   defaultGanacheOptions,
 } = require('../../helpers');
 const { METAMASK_STALELIST_URL } = require('../phishing-controller/helpers');
@@ -65,8 +62,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         });
         await driver.clickElement('[data-testid="category-item-General"]');
 
-        await driver.delay(regularDelayMs);
-
         await driver.clickElement(
           '[data-testid="basic-functionality-toggle"] .toggle-button',
         );
@@ -74,27 +69,44 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
         await driver.clickElement('[data-testid="category-back-button"]');
-        await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="category-item-Assets"]');
-        await driver.delay(regularDelayMs);
         await driver.clickElement(
           '[data-testid="currency-rate-check-toggle"] .toggle-button',
         );
         await driver.clickElement('[data-testid="category-back-button"]');
-        await driver.delay(regularDelayMs);
+
+        // Wait until the onboarding carousel has stopped moving
+        // otherwise the click has no effect.
+        await driver.waitForElementToStopMoving(
+          '[data-testid="privacy-settings-back-button"]',
+        );
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
-        await driver.delay(regularDelayMs);
 
-        await driver.clickElement({ text: 'Done', tag: 'button' });
-        await driver.clickElement('[data-testid="pin-extension-next"]');
-        await driver.clickElement({ text: 'Done', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Done',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+        });
+
+        // Wait until the onboarding carousel has stopped moving
+        // otherwise the click has no effect.
+        await driver.waitForElementToStopMoving({
+          text: 'Done',
+          tag: 'button',
+        });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Done',
+          tag: 'button',
+        });
 
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
-        await driver.delay(tinyDelayMs);
 
         // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
         await driver.assertElementNotPresent('.loading-overlay');
@@ -134,13 +146,20 @@ describe('MetaMask onboarding @no-mmi', function () {
           tag: 'button',
         });
         await driver.clickElement('[data-testid="category-item-General"]');
-        await driver.delay(largeDelayMs);
+        // Wait until the onboarding carousel has stopped moving
+        // otherwise the click has no effect.
+        await driver.waitForElementToStopMoving(
+          '[data-testid="category-back-button"]',
+        );
         await driver.clickElement('[data-testid="category-back-button"]');
-        await driver.delay(largeDelayMs);
+        // Wait until the onboarding carousel has stopped moving
+        // otherwise the click has no effect.
+        await driver.waitForElementToStopMoving(
+          '[data-testid="privacy-settings-back-button"]',
+        );
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
-        await driver.delay(largeDelayMs);
         await driver.clickElement({ text: 'Done', tag: 'button' });
         await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement({ text: 'Done', tag: 'button' });
