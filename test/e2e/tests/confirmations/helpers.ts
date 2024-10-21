@@ -46,8 +46,8 @@ export function withRedesignConfirmationFixtures(
         transactionEnvelopeType === TransactionEnvelopeType.legacy
           ? defaultGanacheOptions
           : defaultGanacheOptionsForType2Transactions,
-      smartContract,
-      testSpecificMock: mocks,
+      ...(smartContract && { smartContract }),
+      ...(mocks && { testSpecificMock: mocks }),
       title,
     },
     testFunction,
