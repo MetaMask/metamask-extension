@@ -276,14 +276,14 @@ describe('BridgeController', function () {
       slippage: 0.5,
       walletAddress: '0x123',
     };
-    bridgeController.updateBridgeQuoteRequestParams(quoteParams);
+    await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
     expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith(
-      '1',
-      quoteRequest,
-    );
+    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith('0x1', {
+      ...quoteRequest,
+      insufficientBal: true,
+    });
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
@@ -299,14 +299,17 @@ describe('BridgeController', function () {
     jest.advanceTimersByTime(1000);
     await flushPromises();
     expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(1);
-    expect(fetchBridgeQuotesSpy).toHaveBeenCalledWith(quoteRequest);
+    expect(fetchBridgeQuotesSpy).toHaveBeenCalledWith({
+      ...quoteRequest,
+      insufficientBal: true,
+    });
 
     const firstFetchTime =
       bridgeController.state.bridgeState.quotesLastFetched ?? 0;
     expect(firstFetchTime).toBeGreaterThan(0);
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
-        quoteRequest: { ...quoteRequest, walletAddress: undefined },
+        quoteRequest: { ...quoteRequest, insufficientBal: true },
         quotes: [],
         quotesLoadingStatus: 0,
       }),
@@ -317,7 +320,7 @@ describe('BridgeController', function () {
     await flushPromises();
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
-        quoteRequest: { ...quoteRequest, walletAddress: undefined },
+        quoteRequest: { ...quoteRequest, insufficientBal: true },
         quotes: [1, 2, 3],
         quotesLoadingStatus: 1,
       }),
@@ -332,7 +335,7 @@ describe('BridgeController', function () {
     expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(2);
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
-        quoteRequest: { ...quoteRequest, walletAddress: undefined },
+        quoteRequest: { ...quoteRequest, insufficientBal: true },
         quotes: [5, 6, 7],
         quotesLoadingStatus: 1,
       }),
@@ -347,7 +350,7 @@ describe('BridgeController', function () {
     expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(3);
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
-        quoteRequest: { ...quoteRequest, walletAddress: undefined },
+        quoteRequest: { ...quoteRequest, insufficientBal: true },
         quotes: [5, 6, 7],
         quotesLoadingStatus: 2,
       }),

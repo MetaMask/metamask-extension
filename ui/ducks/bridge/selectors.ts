@@ -142,7 +142,6 @@ export const getBridgeQuotes = (state: BridgeAppState) => {
 export const getRecommendedQuote = createSelector(
   getBridgeQuotes,
   ({ quotes }) => {
-    // TODO implement sorting
     return quotes[0];
   },
 );

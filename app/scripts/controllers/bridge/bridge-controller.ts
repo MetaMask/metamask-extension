@@ -1,5 +1,5 @@
 import { StateMetadata } from '@metamask/base-controller';
-import { Hex } from '@metamask/utils';
+import { add0x, Hex } from '@metamask/utils';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import {
@@ -19,6 +19,7 @@ import { QuoteRequest } from '../../../../ui/pages/bridge/types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidQuoteRequest } from '../../../../ui/pages/bridge/utils/quote';
+import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
@@ -80,7 +81,9 @@ export default class BridgeController extends StaticIntervalPollingController<
     await this.#fetchBridgeQuotes(updatedQuoteRequest);
   };
 
-  updateBridgeQuoteRequestParams = (paramsToUpdate: Partial<QuoteRequest>) => {
+  updateBridgeQuoteRequestParams = async (
+    paramsToUpdate: Partial<QuoteRequest>,
+  ) => {
     this.stopAllPolling();
     const { bridgeState } = this.state;
     const updatedQuoteRequest = {
@@ -101,11 +104,37 @@ export default class BridgeController extends StaticIntervalPollingController<
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       const walletAddress = this.#getSelectedAccount().address;
-      this.startPollingByNetworkClientId(
+      const srcChainIdInHex = add0x(
         decimalToHex(updatedQuoteRequest.srcChainId),
-        { ...updatedQuoteRequest, walletAddress },
       );
+
+      const insufficientBal = !(await this.#hasSufficientBalance(
+        updatedQuoteRequest,
+      ));
+
+      this.startPollingByNetworkClientId(srcChainIdInHex, {
+        ...updatedQuoteRequest,
+        walletAddress,
+        insufficientBal,
+      });
     }
+  };
+
+  #hasSufficientBalance = async (quoteRequest: QuoteRequest) => {
+    const walletAddress = this.#getSelectedAccount().address;
+    const srcChainIdInHex = add0x(decimalToHex(quoteRequest.srcChainId));
+    const provider = this.#getSelectedNetworkClient()?.provider;
+
+    return (
+      provider &&
+      (await hasSufficientBalance(
+        provider,
+        walletAddress,
+        quoteRequest.srcTokenAddress,
+        quoteRequest.srcTokenAmount,
+        srcChainIdInHex,
+      ))
+    );
   };
 
   resetState = () => {
@@ -148,6 +177,7 @@ export default class BridgeController extends StaticIntervalPollingController<
         ...bridgeState,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.LOADING,
+        quoteRequest: request,
       };
     });
 
@@ -192,5 +222,11 @@ export default class BridgeController extends StaticIntervalPollingController<
 
   #getSelectedAccount() {
     return this.messagingSystem.call('AccountsController:getSelectedAccount');
+  }
+
+  #getSelectedNetworkClient() {
+    return this.messagingSystem.call(
+      'NetworkController:getSelectedNetworkClient',
+    );
   }
 }
