@@ -12,10 +12,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getCurrentChainId,
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
   isHardwareWallet,

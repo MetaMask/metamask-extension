@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { zeroAddress, toChecksumAddress } from 'ethereumjs-util';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,

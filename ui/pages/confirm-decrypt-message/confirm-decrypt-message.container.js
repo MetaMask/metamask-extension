@@ -11,12 +11,14 @@ import {
 } from '../../store/actions';
 import {
   getCurrentCurrency,
+  getNativeCurrency,
+} from '../../ducks/metamask/metamask';
+import {
   getTargetAccountWithSendEtherInfo,
   unconfirmedTransactionsListSelector,
 } from '../../selectors';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
 // ConfirmDecryptMessage component is not used in codebase, removing usage of useNativeCurrencyAsPrimaryCurrency

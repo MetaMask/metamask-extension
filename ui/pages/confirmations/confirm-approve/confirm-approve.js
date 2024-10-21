@@ -15,10 +15,10 @@ import { TransactionModalContextProvider } from '../../../contexts/transaction-m
 import {
   getNativeCurrency,
   isAddressLedger,
+  getCurrentCurrency,
 } from '../../../ducks/metamask/metamask';
 import ConfirmContractInteraction from '../confirm-contract-interaction';
 import {
-  getCurrentCurrency,
   getSubjectMetadata,
   getUseNonceField,
   getCustomNonceValue,

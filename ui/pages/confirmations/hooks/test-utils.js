@@ -6,9 +6,9 @@ import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
   getConversionRate,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getShouldShowFiat,
   txDataSelector,
   getCurrentKeyring,

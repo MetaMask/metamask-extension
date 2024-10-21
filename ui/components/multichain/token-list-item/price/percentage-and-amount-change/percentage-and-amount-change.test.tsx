@@ -4,12 +4,12 @@ import '@testing-library/jest-dom';
 import { zeroAddress } from 'ethereumjs-util';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import {
-  getCurrentCurrency,
   getSelectedAccountCachedBalance,
   getTokensMarketData,
 } from '../../../../../selectors';
 import {
   getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
 import { PercentageAndAmountChange } from './percentage-and-amount-change';
@@ -23,12 +23,12 @@ jest.mock('../../../../../ducks/locale/locale', () => ({
 }));
 
 jest.mock('../../../../../selectors', () => ({
-  getCurrentCurrency: jest.fn(),
   getSelectedAccountCachedBalance: jest.fn(),
   getTokensMarketData: jest.fn(),
 }));
 
 jest.mock('../../../../../ducks/metamask/metamask', () => ({
+  getCurrentCurrency: jest.fn(),
   getConversionRate: jest.fn(),
   getNativeCurrency: jest.fn(),
 }));

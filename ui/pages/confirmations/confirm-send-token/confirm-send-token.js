@@ -5,13 +5,11 @@ import { useHistory } from 'react-router-dom';
 import ConfirmTokenTransactionBase from '../confirm-token-transaction-base/confirm-token-transaction-base';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { editExistingTransaction } from '../../../ducks/send';
-import {
-  contractExchangeRateSelector,
-  getCurrentCurrency,
-} from '../../../selectors';
+import { contractExchangeRateSelector } from '../../../selectors';
 import {
   getConversionRate,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../../../ducks/metamask/metamask';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../../store/actions';
