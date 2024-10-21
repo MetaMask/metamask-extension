@@ -18,6 +18,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
+        await driver.delay(1000);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
