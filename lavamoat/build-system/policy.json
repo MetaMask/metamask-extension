@@ -3058,6 +3058,14 @@
         "process": true
       }
     },
+    "eslint-plugin-rulesdir": {
+      "builtin": {
+        "fs.readdirSync": true,
+        "path.basename": true,
+        "path.extname": true,
+        "path.resolve": true
+      }
+    },
     "eslint>@eslint-community/eslint-utils": {
       "packages": {
         "eslint>eslint-visitor-keys": true
