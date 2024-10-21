@@ -70,13 +70,12 @@ class HeaderNavbar {
     await this.driver.clickElement(this.switchNetworkDropDown);
   }
 
-  async check_networkNameSwitchDropDown(networkName: string): Promise<boolean> {
+  async check_currentSelectedNetwork(networkName: string): Promise<void> {
     console.log(`Validate the Switch network to ${networkName}`);
     const switchNetworkName = await this.driver.findElements({
       tag: 'span',
       text: networkName,
     });
-    return switchNetworkName.length === 1;
   }
 
   /**

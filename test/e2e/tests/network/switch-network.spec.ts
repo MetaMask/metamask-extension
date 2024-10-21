@@ -31,19 +31,19 @@ describe('Switch network - ', function (this: Suite) {
         const notification = new Notification(driver);
 
         // Validate the default network is Localhost 8545
-        await headerNavbar.check_networkNameSwitchDropDown('Localhost 8545');
+        await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
 
         // Validate the switch network functionality to Ethereum Mainnet
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.clickNetworkName('Ethereum Mainnet');
         await homePage.check_expectedBalanceIsDisplayed('25');
-        await headerNavbar.check_networkNameSwitchDropDown('Ethereum Mainnet');
+        await headerNavbar.check_currentSelectedNetwork('Ethereum Mainnet');
         // Validate the switch network functionality to test network Sepolia
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.clickToggleButton();
         await selectNetwork.clickNetworkName('Sepolia');
         await homePage.check_expectedBalanceIsDisplayed('25 Sepolia');
-        await headerNavbar.check_networkNameSwitchDropDown('Sepolia');
+        await headerNavbar.check_currentSelectedNetwork('Sepolia');
 
         // Add Aribtrum network and perform the switch network functionality
         await headerNavbar.clickSwitchNetworkDropDown();
@@ -53,13 +53,13 @@ describe('Switch network - ', function (this: Suite) {
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.clickNetworkName('Arbitrum One');
         await homePage.check_expectedBalanceIsDisplayed('25');
-        await headerNavbar.check_networkNameSwitchDropDown('Arbitrum One');
+        await headerNavbar.check_currentSelectedNetwork('Arbitrum One');
 
         // Validate the switch network functionality back to Ethereum Mainnet
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.clickNetworkName('Ethereum Mainnet');
         await homePage.check_expectedBalanceIsDisplayed('25');
-        await headerNavbar.check_networkNameSwitchDropDown('Ethereum Mainnet');
+        await headerNavbar.check_currentSelectedNetwork('Ethereum Mainnet');
       },
     );
   });
