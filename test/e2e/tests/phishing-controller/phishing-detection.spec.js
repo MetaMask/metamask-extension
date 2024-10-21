@@ -291,8 +291,7 @@ describe('Phishing Detection', function () {
         });
 
         const currentUrl = await driver.getCurrentUrl();
-        const portfolioBaseURL = process.env.PORTFOLIO_URL;
-        const expectedPortfolioUrl = `${portfolioBaseURL}/?metamaskEntry=phishing_page_portfolio_button&marketingEnabled=true`;
+        const expectedPortfolioUrl = `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button&marketingEnabled=true`;
 
         assert.equal(currentUrl, expectedPortfolioUrl);
       },
