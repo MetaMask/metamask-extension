@@ -85,6 +85,9 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
+        // Click down arrow
+        await driver.clickElementSafe('[aria-label="Scroll down"]');
+
         // click sign button
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-button"]',
@@ -115,21 +118,10 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // click down arrow
-        // await driver.waitForSelector('[aria-label="Scroll down"]');
         await driver.clickElementSafe('[aria-label="Scroll down"]');
 
         // required: delay for scroll to render
         await driver.delay(500);
-
-        // click down arrow
-        await driver.waitForSelector({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-        await driver.clickElement({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
 
         // look for returned signature insights data
         await driver.waitForSelector({
@@ -178,16 +170,6 @@ describe('Test Snap Signature Insights', function () {
         // required: delay for scroll to render
         await driver.delay(500);
 
-        // click signature insights
-        await driver.waitForSelector({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-        await driver.clickElement({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-
         // look for returned signature insights data
         await driver.waitForSelector({
           text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
@@ -234,16 +216,6 @@ describe('Test Snap Signature Insights', function () {
 
         // required: delay for scroll to render
         await driver.delay(500);
-
-        // click signature insights
-        await driver.waitForSelector({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-        await driver.clickElement({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
 
         // look for returned signature insights data
         await driver.waitForSelector({
