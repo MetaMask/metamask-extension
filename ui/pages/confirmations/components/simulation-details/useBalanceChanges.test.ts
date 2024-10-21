@@ -9,6 +9,7 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
+import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
 import { useBalanceChanges } from './useBalanceChanges';
 import { FIAT_UNAVAILABLE } from './types';
 
@@ -87,6 +88,11 @@ describe('useBalanceChanges', () => {
       [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_TO_FIAT_RATE_1_MOCK,
       [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_TO_FIAT_RATE_2_MOCK,
     });
+  });
+
+  afterEach(() => {
+    /** Reset memoized function for each test */
+    memoizedGetTokenStandardAndDetails?.cache?.clear?.();
   });
 
   describe('pending states', () => {

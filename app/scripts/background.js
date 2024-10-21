@@ -18,7 +18,7 @@ import { isObject } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 
@@ -53,6 +53,8 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -77,7 +79,7 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { generateSkipOnboardingState } from './skip-onboarding';
+import { generateWalletState } from './fixtures/generate-wallet-state';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
@@ -228,12 +230,12 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      const onboardState = theController.onboardingController.store.getState();
-      if (!onboardState.completedOnboarding) {
+      const { completedOnboarding } = theController.onboardingController.state;
+      if (!completedOnboarding) {
         return {};
       }
 
-      const prefState = theController.preferencesController.store.getState();
+      const prefState = theController.preferencesController.state;
       if (!prefState.usePhishDetect) {
         return {};
       }
@@ -264,12 +266,16 @@ function maybeDetectPhishing(theController) {
       }
 
       theController.phishingController.maybeUpdateState();
-      const phishingTestResponse = theController.phishingController.test(
-        details.url,
-      );
 
       const blockedRequestResponse =
         theController.phishingController.isBlockedRequest(details.url);
+
+      let phishingTestResponse;
+      if (details.type === 'main_frame' || details.type === 'sub_frame') {
+        phishingTestResponse = theController.phishingController.test(
+          details.url,
+        );
+      }
 
       // if the request is not blocked, and the phishing test is not blocked, return and don't show the phishing screen
       if (!phishingTestResponse?.result && !blockedRequestResponse.result) {
@@ -559,15 +565,15 @@ export async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({
     migrations,
-    defaultVersion: process.env.SKIP_ONBOARDING
+    defaultVersion: process.env.WITH_STATE
       ? FIXTURE_STATE_METADATA_VERSION
       : null,
   });
   migrator.on('error', console.warn);
 
-  if (process.env.SKIP_ONBOARDING) {
-    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
-    firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  if (process.env.WITH_STATE) {
+    const stateOverrides = await generateWalletState();
+    firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
   // read from disk
@@ -756,8 +762,7 @@ export function setupController(
       controller.preferencesController,
     ),
     getUseAddressBarEnsResolution: () =>
-      controller.preferencesController.store.getState()
-        .useAddressBarEnsResolution,
+      controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
   });
 
@@ -1005,8 +1010,6 @@ export function setupController(
     updateBadge,
   );
 
-  controller.txController.initApprovals();
-
   /**
    * Formats a count for display as a badge label.
    *
@@ -1156,7 +1159,7 @@ export function setupController(
           default:
             controller.approvalController.reject(
               id,
-              ethErrors.provider.userRejectedRequest(),
+              providerErrors.userRejectedRequest(),
             );
             break;
         }

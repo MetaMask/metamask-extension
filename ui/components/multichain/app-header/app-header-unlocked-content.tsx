@@ -43,7 +43,11 @@ import {
   getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
 } from '../../../selectors';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -51,7 +55,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { CONNECTIONS } from '../../../helpers/constants/routes';
+import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { MultichainNetwork } from '../../../selectors/multichain';
 
 type AppHeaderUnlockedContentProps = {
@@ -115,7 +119,7 @@ export const AppHeaderUnlockedContent = ({
   };
 
   const handleConnectionsRoute = () => {
-    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+    history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
 
   return (

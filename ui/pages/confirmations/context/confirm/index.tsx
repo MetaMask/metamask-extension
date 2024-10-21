@@ -2,6 +2,7 @@ import React, {
   ReactElement,
   createContext,
   useContext,
+  useMemo,
   useState,
 } from 'react';
 
@@ -27,16 +28,21 @@ export const ConfirmContextProvider: React.FC<{
   const { currentConfirmation } = useCurrentConfirmation();
   syncConfirmPath(currentConfirmation);
 
+  const value = useMemo(
+    () => ({
+      currentConfirmation,
+      isScrollToBottomCompleted,
+      setIsScrollToBottomCompleted,
+    }),
+    [
+      currentConfirmation,
+      isScrollToBottomCompleted,
+      setIsScrollToBottomCompleted,
+    ],
+  );
+
   return (
-    <ConfirmContext.Provider
-      value={{
-        currentConfirmation,
-        isScrollToBottomCompleted,
-        setIsScrollToBottomCompleted,
-      }}
-    >
-      {children}
-    </ConfirmContext.Provider>
+    <ConfirmContext.Provider value={value}>{children}</ConfirmContext.Provider>
   );
 };
 

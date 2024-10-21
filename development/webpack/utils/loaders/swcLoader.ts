@@ -29,6 +29,16 @@ const schema = {
           type: 'boolean',
           default: false,
         },
+        experimental: {
+          type: 'object',
+          properties: {
+            keepImportAttributes: {
+              type: 'boolean',
+              default: false,
+            },
+          },
+          additionalProperties: false,
+        },
         transform: {
           type: 'object',
           properties: {

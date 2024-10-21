@@ -202,9 +202,6 @@
   "delete": {
     "message": "Slett"
   },
-  "deleteNetwork": {
-    "message": "Slette nettverk? "
-  },
   "details": {
     "message": "Detaljer"
   },
@@ -225,9 +222,6 @@
   },
   "editContact": {
     "message": "Rediger kontakt"
-  },
-  "ensRegistrationError": {
-    "message": "Feil i ENS-navneregistrering"
   },
   "enterPasswordContinue": {
     "message": "Skriv inn passord for å fortsette"
@@ -341,12 +335,6 @@
   "invalidAddressRecipient": {
     "message": "Mottaksadresse er ugyldig "
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ikke ETH-nettverk, bruk små bokstaver"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Ugyldig Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Ugyldig RPC URL"
   },
@@ -443,9 +431,6 @@
   "next": {
     "message": "Neste"
   },
-  "noAddressForName": {
-    "message": "Ingen adresse har blitt angitt for dette navnet. "
-  },
   "noConversionRateAvailable": {
     "message": "Ingen konverteringsrate tilgjengelig "
   },
@@ -507,12 +492,6 @@
   "prev": {
     "message": "Tidligere"
   },
-  "primaryCurrencySetting": {
-    "message": "Hovedvaluta "
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Velg nasjonal for å prioritere å vise verdier i nasjonal valuta i kjeden (f.eks. ETH). Velg Fiat for å prioritere visning av verdier i den valgte fiat-valutaen."
-  },
   "privacyMsg": {
     "message": "Personvernerklæring"
   },
@@ -528,9 +507,6 @@
   },
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Søk, offentlig adresse (0x) eller ENS"
   },
   "reject": {
     "message": "Avslå"
@@ -757,9 +733,6 @@
   },
   "unlockMessage": {
     "message": "Det desentraliserte internett venter deg"
-  },
-  "updatedWithDate": {
-    "message": "Oppdatert $1"
   },
   "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."

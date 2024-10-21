@@ -28,21 +28,24 @@ describe('ConfirmHexData', () => {
     expect(await findByText('Transfer')).toBeInTheDocument();
   });
 
-  it('should return null if transaction has no data', () => {
-    const { container } = renderWithProvider(
-      <ConfirmHexData
-        txData={{
-          txParams: {
-            data: '0x608060405234801',
-          },
-          origin: 'https://metamask.github.io',
-          type: 'transfer',
-        }}
-      />,
-      store,
-    );
-    expect(container.firstChild).toStrictEqual(null);
-  });
+  it.each([undefined, null, '', '0x', '0X'])(
+    'should return null if transaction data is %s',
+    (data) => {
+      const { container } = renderWithProvider(
+        <ConfirmHexData
+          txData={{
+            txParams: {
+              data,
+            },
+            origin: 'https://metamask.github.io',
+            type: 'transfer',
+          }}
+        />,
+        store,
+      );
+      expect(container.firstChild).toStrictEqual(null);
+    },
+  );
 
   it('should return null if transaction has no to address', () => {
     const { container } = renderWithProvider(

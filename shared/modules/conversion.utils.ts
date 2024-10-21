@@ -4,7 +4,7 @@ import { addHexPrefix, BN } from 'ethereumjs-util';
 import { EtherDenomination } from '../constants/common';
 import { Numeric, NumericValue } from './Numeric';
 
-export function decGWEIToHexWEI(decGWEI: number) {
+export function decGWEIToHexWEI(decGWEI: NumericValue) {
   return new Numeric(decGWEI, 10, EtherDenomination.GWEI)
     .toBase(16)
     .toDenomination(EtherDenomination.WEI)

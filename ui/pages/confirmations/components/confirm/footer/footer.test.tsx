@@ -27,6 +27,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../types/confirm';
 import * as confirmContext from '../../../context/confirm';
 
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -134,7 +135,7 @@ describe('ConfirmFooter', () => {
     });
   });
 
-  it('invoke action rejectPendingApproval when cancel button is clicked', () => {
+  it('invoke required actions when cancel button is clicked', () => {
     const { getAllByRole } = render();
     const cancelButton = getAllByRole('button')[0];
     const rejectSpy = jest
@@ -142,11 +143,23 @@ describe('ConfirmFooter', () => {
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
+    const updateCustomNonceSpy = jest
+      .spyOn(Actions, 'updateCustomNonce')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => ({} as any));
+    const setNextNonceSpy = jest
+      .spyOn(Actions, 'setNextNonce')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => ({} as any));
     fireEvent.click(cancelButton);
     expect(rejectSpy).toHaveBeenCalled();
+    expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
+    expect(setNextNonceSpy).toHaveBeenCalledWith('');
   });
 
-  it('invoke action resolvePendingApproval when submit button is clicked', () => {
+  it('invoke required actions when submit button is clicked', () => {
     const { getAllByRole } = render();
     const submitButton = getAllByRole('button')[1];
     const resolveSpy = jest
@@ -154,8 +167,20 @@ describe('ConfirmFooter', () => {
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
+    const updateCustomNonceSpy = jest
+      .spyOn(Actions, 'updateCustomNonce')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => ({} as any));
+    const setNextNonceSpy = jest
+      .spyOn(Actions, 'setNextNonce')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => ({} as any));
     fireEvent.click(submitButton);
     expect(resolveSpy).toHaveBeenCalled();
+    expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
+    expect(setNextNonceSpy).toHaveBeenCalledWith('');
   });
 
   it('displays a danger "Confirm" button there are danger alerts', async () => {
@@ -247,7 +272,8 @@ describe('ConfirmFooter', () => {
     const OWNER_ID_MOCK = '123';
     const KEY_ALERT_KEY_MOCK = 'Key';
     const ALERT_MESSAGE_MOCK = 'Alert 1';
-    const alertsMock = [
+
+    const alertsMock: Alert[] = [
       {
         key: KEY_ALERT_KEY_MOCK,
         field: KEY_ALERT_KEY_MOCK,
@@ -257,30 +283,82 @@ describe('ConfirmFooter', () => {
         alertDetails: ['Detail 1', 'Detail 2'],
       },
     ];
-    const stateWithAlertsMock = getMockPersonalSignConfirmStateForRequest(
-      {
-        ...unapprovedPersonalSignMsg,
-        id: OWNER_ID_MOCK,
-        msgParams: {
-          from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-        },
-      } as SignatureRequestType,
-      {
-        confirmAlerts: {
-          alerts: { [OWNER_ID_MOCK]: alertsMock },
-          confirmed: {
-            [OWNER_ID_MOCK]: { [KEY_ALERT_KEY_MOCK]: false },
+
+    const createStateWithAlerts = (
+      alerts: Alert[],
+      confirmed: Record<string, boolean>,
+    ) => {
+      return getMockPersonalSignConfirmStateForRequest(
+        {
+          ...unapprovedPersonalSignMsg,
+          id: OWNER_ID_MOCK,
+          msgParams: {
+            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
           },
+        } as SignatureRequestType,
+        {
+          confirmAlerts: {
+            alerts: { [OWNER_ID_MOCK]: alerts },
+            confirmed: { [OWNER_ID_MOCK]: confirmed },
+          },
+          metamask: {},
         },
-        metamask: {},
-      },
-    );
-    it('renders the review alerts button when there are unconfirmed alerts', () => {
+      );
+    };
+
+    const stateWithAlertsMock = createStateWithAlerts(alertsMock, {
+      [KEY_ALERT_KEY_MOCK]: false,
+    });
+
+    it('renders the "review alerts" button when there are unconfirmed alerts', () => {
+      const stateWithMultipleDangerAlerts = createStateWithAlerts(
+        [
+          alertsMock[0],
+          {
+            ...alertsMock[0],
+            key: 'From',
+          },
+        ],
+        { [KEY_ALERT_KEY_MOCK]: false },
+      );
+      const { getByText } = render(stateWithMultipleDangerAlerts);
+      expect(getByText('Review alerts')).toBeInTheDocument();
+    });
+
+    it('renders the "review alerts" button disabled when there are blocking alerts', () => {
+      const stateWithMultipleDangerAlerts = createStateWithAlerts(
+        [
+          alertsMock[0],
+          {
+            ...alertsMock[0],
+            key: 'From',
+            isBlocking: true,
+          },
+        ],
+        { [KEY_ALERT_KEY_MOCK]: false },
+      );
+      const { getByText } = render(stateWithMultipleDangerAlerts);
+      expect(getByText('Review alerts')).toBeInTheDocument();
+      expect(getByText('Review alerts')).toBeDisabled();
+    });
+
+    it('renders the "review alert" button when there are unconfirmed alerts', () => {
       const { getByText } = render(stateWithAlertsMock);
+      expect(getByText('Review alert')).toBeInTheDocument();
+    });
+
+    it('renders the "confirm" button when there are confirmed danger alerts', () => {
+      const stateWithConfirmedDangerAlertMock = createStateWithAlerts(
+        alertsMock,
+        {
+          [KEY_ALERT_KEY_MOCK]: true,
+        },
+      );
+      const { getByText } = render(stateWithConfirmedDangerAlertMock);
       expect(getByText('Confirm')).toBeInTheDocument();
     });
 
-    it('renders the confirm button when there are no unconfirmed alerts', () => {
+    it('renders the "confirm" button when there are no alerts', () => {
       const { getByText } = render();
       expect(getByText('Confirm')).toBeInTheDocument();
     });
@@ -288,7 +366,7 @@ describe('ConfirmFooter', () => {
     it('sets the alert modal visible when the review alerts button is clicked', () => {
       const { getByTestId } = render(stateWithAlertsMock);
       fireEvent.click(getByTestId('confirm-footer-button'));
-      expect(getByTestId('confirm-alert-modal-submit-button')).toBeDefined();
+      expect(getByTestId('alert-modal-button')).toBeDefined();
     });
   });
 });

@@ -13,21 +13,26 @@ import {
 import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
+  API_REQUEST_LOG_EVENT,
 } from '@metamask-institutional/sdk';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
+import { CustodyController } from '@metamask-institutional/custody-controller';
+import { IApiCallLogEntry } from '@metamask-institutional/types';
+import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CustodyController } from '@metamask-institutional/custody-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
-import { SignatureController } from '@metamask/signature-controller';
 import {
-  OriginalRequest,
-  PersonalMessageParams,
-} from '@metamask/message-manager';
+  MessageParamsPersonal,
+  MessageParamsTyped,
+  SignatureController,
+} from '@metamask/signature-controller';
+import { OriginalRequest } from '@metamask/message-manager';
 import { NetworkController } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
+import { toHex } from '@metamask/controller-utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import {
   MMIControllerOptions,
@@ -37,12 +42,14 @@ import {
   Signature,
   ConnectionRequest,
 } from '../../../shared/constants/mmi-controller';
-import AccountTracker from '../lib/account-tracker';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
-import PreferencesController from './preferences-controller';
-import { AppStateController } from './app-state';
+import AccountTrackerController from './account-tracker-controller';
+import { AppStateController } from './app-state-controller';
+import { PreferencesController } from './preferences-controller';
 
 type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;
@@ -82,7 +89,7 @@ export default class MMIController extends EventEmitter {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getPendingNonce: (address: string) => Promise<any>;
 
-  private accountTracker: AccountTracker;
+  private accountTrackerController: AccountTrackerController;
 
   private metaMetricsController: MetaMetricsController;
 
@@ -144,7 +151,7 @@ export default class MMIController extends EventEmitter {
     this.custodyController = opts.custodyController;
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
-    this.accountTracker = opts.accountTracker;
+    this.accountTrackerController = opts.accountTrackerController;
     this.metaMetricsController = opts.metaMetricsController;
     this.networkController = opts.networkController;
     this.permissionController = opts.permissionController;
@@ -300,6 +307,10 @@ export default class MMIController extends EventEmitter {
           },
         );
 
+        keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+          this.logAndStoreApiRequest(logData);
+        });
+
         // store the supported chains for this custodian type
         const accounts = await keyring.getAccounts();
         addresses = addresses.concat(...accounts);
@@ -415,6 +426,10 @@ export default class MMIController extends EventEmitter {
       },
     );
 
+    keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+      this.logAndStoreApiRequest(logData);
+    });
+
     if (!keyring) {
       throw new Error('Unable to get keyring');
     }
@@ -454,7 +469,7 @@ export default class MMIController extends EventEmitter {
     const allAccounts = await this.keyringController.getAccounts();
 
     const accountsToTrack = [
-      ...new Set(
+      ...new Set<string>(
         oldAccounts.concat(allAccounts.map((a: string) => a.toLowerCase())),
       ),
     ];
@@ -500,7 +515,7 @@ export default class MMIController extends EventEmitter {
       }
     });
 
-    this.accountTracker.syncWithAddresses(accountsToTrack);
+    this.accountTrackerController.syncWithAddresses(accountsToTrack);
 
     for (const address of newAccounts) {
       try {
@@ -759,15 +774,9 @@ export default class MMIController extends EventEmitter {
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
 
-    const { networkConfigurations: networkConfigurationsById } =
-      this.networkController.state;
-    const networkConfigurations = Object.values(networkConfigurationsById);
-
-    const networks = [
-      ...networkConfigurations,
-      { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.SEPOLIA },
-    ];
+    const networks = Object.values(
+      this.networkController.state.networkConfigurationsByChainId,
+    );
 
     return handleMmiPortfolio({
       keyringAccounts,
@@ -797,14 +806,14 @@ export default class MMIController extends EventEmitter {
       req.method === 'eth_signTypedData_v4'
     ) {
       return await this.signatureController.newUnsignedTypedMessage(
-        updatedMsgParams as PersonalMessageParams,
+        updatedMsgParams as MessageParamsTyped,
         req as OriginalRequest,
         version,
         { parseJsonData: false },
       );
     } else if (req.method === 'personal_sign') {
       return await this.signatureController.newUnsignedPersonalMessage(
-        updatedMsgParams as PersonalMessageParams,
+        updatedMsgParams as MessageParamsPersonal,
         req as OriginalRequest,
       );
     }
@@ -853,26 +862,24 @@ export default class MMIController extends EventEmitter {
         internalAccount.id,
       );
     }
-    const selectedChainId = parseInt(
-      getCurrentChainId({ metamask: this.networkController.state }),
-      16,
-    );
-    if (selectedChainId !== chainId && chainId === 1) {
-      await this.networkController.setActiveNetwork('mainnet');
-    } else if (selectedChainId !== chainId) {
-      const { networkConfigurations } = this.networkController.state;
 
-      const foundNetworkConfiguration = Object.values(
-        networkConfigurations,
-      ).find(
-        (networkConfiguration) =>
-          parseInt(networkConfiguration.chainId, 16) === chainId,
-      );
+    const selectedChainId = getCurrentChainId({
+      metamask: this.networkController.state,
+    });
 
-      if (foundNetworkConfiguration !== undefined) {
-        await this.networkController.setActiveNetwork(
-          foundNetworkConfiguration.id,
-        );
+    if (selectedChainId !== toHex(chainId)) {
+      const networkConfiguration =
+        this.networkController.state.networkConfigurationsByChainId[
+          toHex(chainId)
+        ];
+
+      const { networkClientId } =
+        networkConfiguration?.rpcEndpoints?.[
+          networkConfiguration.defaultRpcEndpointIndex
+        ] ?? {};
+
+      if (networkClientId) {
+        await this.networkController.setActiveNetwork(networkClientId);
       }
     }
 
@@ -887,5 +894,15 @@ export default class MMIController extends EventEmitter {
     await this.appStateController.getUnlockPromise(true);
     this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
     return true;
+  }
+
+  async logAndStoreApiRequest(logData: IApiCallLogEntry) {
+    try {
+      const logs = await this.custodyController.sanitizeAndLogApiCall(logData);
+      return logs;
+    } catch (error) {
+      log.error('Error fetching extension request logs:', error);
+      throw error;
+    }
   }
 }

@@ -2,13 +2,14 @@ import React from 'react';
 import { Box, Text } from '../../../../component-library';
 import {
   Display,
-  FontWeight,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import {
   formatValue,
   isValidAmount,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 
 export const PercentageChange = ({
@@ -35,8 +36,7 @@ export const PercentageChange = ({
   return (
     <Box display={Display.Flex}>
       <Text
-        fontWeight={FontWeight.Normal}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodySmMedium}
         color={color}
         data-testid={`token-increase-decrease-percentage-${address}`}
         ellipsis

@@ -62,6 +62,7 @@ const SpendingCapGroup = ({
       <ConfirmInfoRow
         label={t('spendingCap')}
         tooltip={t('spendingCapTooltipDesc')}
+        data-testid="confirmation__approve-spending-cap-group"
       >
         {spendingCap === SPENDING_CAP_UNLIMITED_MSG ? (
           <Tooltip title={formattedSpendingCap}>{SpendingCapElement}</Tooltip>
@@ -105,7 +106,7 @@ export const SpendingCap = ({
   }
 
   return (
-    <ConfirmInfoSection>
+    <ConfirmInfoSection data-testid="confirmation__approve-spending-cap-section">
       <ConfirmInfoRow label={t('accountBalance')}>
         <ConfirmInfoRowText text={`${accountBalance} ${tokenSymbol || ''}`} />
       </ConfirmInfoRow>

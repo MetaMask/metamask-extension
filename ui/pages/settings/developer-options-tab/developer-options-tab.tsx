@@ -32,11 +32,14 @@ import {
   setServiceWorkerKeepAlivePreference,
   setRedesignedConfirmationsDeveloperEnabled,
 } from '../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';
 import ToggleRow from './developer-options-toggle-row-component';
 import { SentryTest } from './sentry-test';
+import { ProfileSyncDevSettings } from './profile-sync';
 
 /**
  * Settings Page for Developer Options (internal-only)
@@ -64,11 +67,6 @@ const DeveloperOptionsTab = () => {
     isRedesignedConfirmationsFeatureEnabled,
     setIsRedesignedConfirmationsFeatureEnabled,
   ] = useState(redesignConfirmationsFeatureToggle);
-  const [enableNetworkRedesign, setEnableNetworkRedesign] = useState(
-    // eslint-disable-next-line
-    /* @ts-expect-error: Avoids error from window property not existing */
-    window.metamaskFeatureFlags.networkMenuRedesign,
-  );
 
   const settingsRefs = Array(
     getNumberOfSettingRoutesInTab(t, t('developerOptions')),
@@ -228,24 +226,6 @@ const DeveloperOptionsTab = () => {
     );
   };
 
-  const renderNetworkMenuRedesign = () => {
-    return (
-      <ToggleRow
-        title="Network Menu Redesign"
-        description="Toggles the new design of the Networks menu"
-        isEnabled={enableNetworkRedesign}
-        onToggle={(value) => {
-          setEnableNetworkRedesign(!value);
-          // eslint-disable-next-line
-          /* @ts-expect-error: Avoids error from window property not existing */
-          window.metamaskFeatureFlags.networkMenuRedesign = !value;
-        }}
-        dataTestId="developer-options-network-redesign"
-        settingsRef={settingsRefs[4] as React.RefObject<HTMLDivElement>}
-      />
-    );
-  };
-
   const renderEnableConfirmationsRedesignToggle = () => {
     return (
       <ToggleRow
@@ -279,9 +259,10 @@ const DeveloperOptionsTab = () => {
         {renderAnnouncementReset()}
         {renderOnboardingReset()}
         {renderServiceWorkerKeepAliveToggle()}
-        {renderNetworkMenuRedesign()}
         {renderEnableConfirmationsRedesignToggle()}
       </div>
+
+      <ProfileSyncDevSettings />
       <SentryTest />
     </div>
   );

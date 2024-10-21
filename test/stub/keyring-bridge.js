@@ -1,4 +1,5 @@
 import { Transaction } from '@ethereumjs/tx';
+import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { bufferToHex } from 'ethereumjs-util';
 import { addHexPrefix, Common } from './keyring-utils';
 
@@ -103,6 +104,30 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
         r: signedTransaction.r,
         s: signedTransaction.s,
         serializedTx: addHexPrefix(bufferToHex(signedTransaction.serialize())),
+      },
+    };
+  }
+
+  async ethereumSignTypedData(message) {
+    const typedData = {
+      types: message.data.types,
+      domain: message.data.domain,
+      primaryType: message.data.primaryType,
+      message: message.data.message,
+    };
+
+    const signature = signTypedData({
+      privateKey: KNOWN_PRIVATE_KEYS[0],
+      data: typedData,
+      version: SignTypedDataVersion.V4,
+    });
+
+    return {
+      id: 1,
+      success: true,
+      payload: {
+        address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+        signature,
       },
     };
   }

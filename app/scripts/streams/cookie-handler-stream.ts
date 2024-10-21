@@ -18,7 +18,7 @@ import {
   LEGACY_PROVIDER,
   PHISHING_STREAM,
 } from '../constants/stream';
-import { logStreamDisconnectWarning } from './shared';
+import { logStreamDisconnectWarning } from './stream-utils';
 
 export const isDetectedCookieMarketingSite: boolean =
   COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(

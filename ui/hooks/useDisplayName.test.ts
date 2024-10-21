@@ -1,10 +1,12 @@
 import { NameEntry, NameType } from '@metamask/name-controller';
 import { NftContract } from '@metamask/assets-controllers';
+import { renderHook } from '@testing-library/react-hooks';
 import { getRemoteTokens } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useFirstPartyContractNames } from './useFirstPartyContractName';
+import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
 jest.mock('react-redux', () => ({
   // TODO: Replace `any` with type
@@ -18,6 +20,10 @@ jest.mock('./useName', () => ({
 
 jest.mock('./useFirstPartyContractName', () => ({
   useFirstPartyContractNames: jest.fn(),
+}));
+
+jest.mock('./useNftCollectionsMetadata', () => ({
+  useNftCollectionsMetadata: jest.fn(),
 }));
 
 jest.mock('../selectors', () => ({
@@ -62,6 +68,7 @@ describe('useDisplayName', () => {
   const getNftContractsByAddressOnCurrentChainMock = jest.mocked(
     getNftContractsByAddressOnCurrentChain,
   );
+  const useNftCollectionsMetadataMock = jest.mocked(useNftCollectionsMetadata);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -78,10 +85,12 @@ describe('useDisplayName', () => {
     getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
       NO_WATCHED_NFT_NAME_FOUND_RETURN_VALUE,
     );
+    useNftCollectionsMetadataMock.mockReturnValue({});
   });
 
   it('handles no name found', () => {
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+    expect(result.current).toEqual({
       name: null,
       hasPetname: false,
     });
@@ -101,7 +110,9 @@ describe('useDisplayName', () => {
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+
+    expect(result.current).toEqual({
       name: NAME_MOCK,
       hasPetname: true,
       contractDisplayName: CONTRACT_NAME_MOCK,
@@ -119,7 +130,9 @@ describe('useDisplayName', () => {
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+
+    expect(result.current).toEqual({
       name: FIRST_PARTY_CONTRACT_NAME_MOCK,
       hasPetname: false,
     });
@@ -135,7 +148,9 @@ describe('useDisplayName', () => {
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+
+    expect(result.current).toEqual({
       name: CONTRACT_NAME_MOCK,
       hasPetname: false,
       contractDisplayName: CONTRACT_NAME_MOCK,
@@ -147,9 +162,57 @@ describe('useDisplayName', () => {
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    const { result } = renderHook(() => useDisplayName(VALUE_MOCK, TYPE_MOCK));
+
+    expect(result.current).toEqual({
       name: WATCHED_NFT_NAME_MOCK,
       hasPetname: false,
     });
+  });
+
+  it('returns nft collection name from metadata if no other name is found', () => {
+    const IMAGE_MOCK = 'url';
+
+    useNftCollectionsMetadataMock.mockReturnValue({
+      [VALUE_MOCK.toLowerCase()]: {
+        name: CONTRACT_NAME_MOCK,
+        image: IMAGE_MOCK,
+        isSpam: false,
+      },
+    });
+
+    const { result } = renderHook(() =>
+      useDisplayName(VALUE_MOCK, TYPE_MOCK, false),
+    );
+
+    expect(result.current).toEqual({
+      name: CONTRACT_NAME_MOCK,
+      hasPetname: false,
+      contractDisplayName: undefined,
+      image: IMAGE_MOCK,
+    });
+  });
+
+  it('does not return nft collection name if collection is marked as spam', () => {
+    const IMAGE_MOCK = 'url';
+
+    useNftCollectionsMetadataMock.mockReturnValue({
+      [VALUE_MOCK.toLowerCase()]: {
+        name: CONTRACT_NAME_MOCK,
+        image: IMAGE_MOCK,
+        isSpam: true,
+      },
+    });
+
+    const { result } = renderHook(() =>
+      useDisplayName(VALUE_MOCK, TYPE_MOCK, false),
+    );
+
+    expect(result.current).toEqual(
+      expect.objectContaining({
+        name: null,
+        image: undefined,
+      }),
+    );
   });
 });

@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
+import { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
-import { getTokenStandardAndDetails } from '../../../../../../../../store/actions';
-import { shortenString } from '../../../../../../../../helpers/utils/util';
 
+import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
+import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
@@ -11,7 +12,8 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { useAsyncResult } from '../../../../../../../../hooks/useAsyncResult';
+import { useGetTokenStandardAndDetails } from '../../../../../../hooks/useGetTokenStandardAndDetails';
+import useTrackERC20WithoutDecimalInformation from '../../../../../../hooks/useTrackERC20WithoutDecimalInformation';
 
 import {
   Box,
@@ -27,28 +29,41 @@ import {
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
+import { TokenDetailsERC20 } from '../../../../../../utils/token';
 
-const getTokenDecimals = async (tokenContract: string) => {
-  const tokenDetails = await getTokenStandardAndDetails(tokenContract);
-  const tokenDecimals = tokenDetails?.decimals;
+type PermitSimulationValueDisplayParams = {
+  /** The primaryType of the typed sign message */
+  primaryType?: string;
 
-  return parseInt(tokenDecimals ?? '0', 10);
+  /**
+   * The ethereum token contract address. It is expected to be in hex format.
+   * We currently accept strings since we have a patch that accepts a custom string
+   * {@see .yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch}
+   */
+  tokenContract: Hex | string;
+
+  /** The token amount */
+  value?: number | string;
+
+  /** The tokenId for NFT */
+  tokenId?: string;
 };
 
-const PermitSimulationValueDisplay: React.FC<{
-  primaryType?: string;
-  tokenContract: string;
-  value: number | string;
-}> = ({ primaryType, tokenContract, value }) => {
+const PermitSimulationValueDisplay: React.FC<
+  PermitSimulationValueDisplayParams
+> = ({ primaryType, tokenContract, value, tokenId }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
-  const { value: tokenDecimals } = useAsyncResult(
-    async () => await getTokenDecimals(tokenContract),
-    [tokenContract],
+  const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
+  useTrackERC20WithoutDecimalInformation(
+    tokenContract,
+    tokenDetails as TokenDetailsERC20,
+    MetaMetricsEventLocation.SignatureConfirmation,
   );
+  const { decimalsNumber: tokenDecimals } = tokenDetails;
 
   const fiatValue = useMemo(() => {
-    if (exchangeRate && value) {
+    if (exchangeRate && value && !tokenId) {
       const tokenAmount = calcTokenAmount(value, tokenDecimals);
       return exchangeRate.times(tokenAmount).toNumber();
     }
@@ -56,7 +71,7 @@ const PermitSimulationValueDisplay: React.FC<{
   }, [exchangeRate, tokenDecimals, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    if (!value) {
+    if (!value || tokenId) {
       return { tokenValue: null, tokenValueMaxPrecision: null };
     }
 
@@ -100,16 +115,22 @@ const PermitSimulationValueDisplay: React.FC<{
               style={{ paddingTop: '1px', paddingBottom: '1px' }}
               textAlign={TextAlign.Center}
             >
-              {shortenString(tokenValue || '', {
-                truncatedCharLimit: 15,
-                truncatedStartChars: 15,
-                truncatedEndChars: 0,
-                skipCharacterInEnd: true,
-              })}
+              {tokenValue !== null &&
+                shortenString(tokenValue || '', {
+                  truncatedCharLimit: 15,
+                  truncatedStartChars: 15,
+                  truncatedEndChars: 0,
+                  skipCharacterInEnd: true,
+                })}
+              {tokenId && `#${tokenId}`}
             </Text>
           </Tooltip>
         </Box>
-        <Name value={tokenContract} type={NameType.ETHEREUM_ADDRESS} />
+        <Name
+          value={tokenContract}
+          type={NameType.ETHEREUM_ADDRESS}
+          preferContractSymbol
+        />
       </Box>
       <Box>
         {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} shorten />}

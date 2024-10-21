@@ -183,9 +183,6 @@
   "addANetwork": {
     "message": "Agregar una red"
   },
-  "addANetworkManually": {
-    "message": "Agregar una red manualmente"
-  },
   "addANickname": {
     "message": "Añadir un apodo"
   },
@@ -252,9 +249,6 @@
   "addFriendsAndAddresses": {
     "message": "Agregue amigos y direcciones de confianza"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "Agregue desde una lista de redes populares o agregue una red manualmente. Interactúe solo con las entidades en las que confía."
-  },
   "addHardwareWallet": {
     "message": "Agregar monedero físico"
   },
@@ -267,15 +261,8 @@
   "addMemo": {
     "message": "Añadir memo"
   },
-  "addMoreNetworks": {
-    "message": "agregar más redes manualmente"
-  },
   "addNetwork": {
     "message": "Agregar red"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "Esta conexión de red depende de terceros. Y puede ser menos confiable o permite que terceros rastreen la actividad. $1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "Añadir una cuenta nueva de Ethereum"
@@ -344,9 +331,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
   },
-  "advancedConfiguration": {
-    "message": "Configuración avanzada"
-  },
   "advancedDetailsDataDesc": {
     "message": "Datos"
   },
@@ -394,12 +378,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Actualizar opciones de gas"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "Si aprueba esta solicitud, un tercero conocido por estafas podría quedarse con todos sus activos."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "¡Alertas múltiples!"
-  },
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
   },
@@ -411,9 +389,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Para continuar con esta transacción, deberá aumentar el límite de gas a 21000 o más."
-  },
-  "alertMessageInsufficientBalance": {
-    "message": "No tiene suficiente ETH en su cuenta para pagar las tarifas de transacción."
   },
   "alertMessageNetworkBusy": {
     "message": "Los precios del gas son altos y las estimaciones son menos precisas."
@@ -468,18 +443,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Cuenta incorrecta"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Explorando un sitio web con una cuenta no conectada seleccionada"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "Esta alerta aparece en la ventana emergente cuando explora un sitio conectado de Web3, pero la cuenta actualmente seleccionada no está conectada."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "Cuando un sitio web intenta utilizar la API de window.web3 que se eliminó"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "Esta alerta aparece en la ventana emergente cuando explora un sitio que intenta utilizar la API de window.web3 que se eliminó y que puede que no funcione."
   },
   "alerts": {
     "message": "Alertas"
@@ -731,12 +694,6 @@
   "betaTerms": {
     "message": "Términos de uso de beta"
   },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask beta no puede recuperar su frase secreta de recuperación."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask beta nunca le pedirá su frase secreta de recuperación."
-  },
   "billionAbbreviation": {
     "message": "mm",
     "description": "Shortened form of 'billion'"
@@ -982,12 +939,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Soy consciente de la alerta y aun así deseo continuar"
   },
-  "confirmAlertModalDetails": {
-    "message": "Si inicia sesión, un tercero conocido por estafas podría quedarse con todos sus activos. Revise las alertas antes de continuar."
-  },
-  "confirmAlertModalTitle": {
-    "message": "Sus activos podrían estar en riesgo"
-  },
   "confirmConnectCustodianRedirect": {
     "message": "Lo redirigiremos a $1 al hacer clic en continuar."
   },
@@ -996,9 +947,6 @@
   },
   "confirmConnectionTitle": {
     "message": "Confirmar conexión a $1"
-  },
-  "confirmDeletion": {
-    "message": "Confirmar la eliminación"
   },
   "confirmFieldPaymaster": {
     "message": "Tarifa pagada por"
@@ -1012,17 +960,11 @@
   "confirmRecoveryPhrase": {
     "message": "Confirmar frase secreta de recuperación"
   },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "¿Está seguro de que desea eliminar la URL RPC? Su información no se guardará para esta red."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Este sitio solicita permiso para gastar sus tokens."
   },
   "confirmTitleDescSIWESignature": {
     "message": "Un sitio quiere que inicie sesión para demostrar que es el propietario de esta cuenta."
-  },
-  "confirmTitleDescSignature": {
-    "message": "Solo confirme este mensaje si aprueba el contenido y confía en el sitio solicitante."
   },
   "confirmTitlePermitTokens": {
     "message": "Solicitud de límite de gasto"
@@ -1118,9 +1060,6 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask está conectado a este sitio, pero aún no hay cuentas conectadas"
-  },
-  "connectedWith": {
-    "message": "Conectado con"
   },
   "connecting": {
     "message": "Conectando"
@@ -1365,9 +1304,6 @@
   "custom": {
     "message": "Avanzado"
   },
-  "customContentSearch": {
-    "message": "Buscar una red agregada anteriormente"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 para personalizar el precio de gas. Esto puede ser confuso si no está familiarizado. Interactúe bajo su propio riesgo.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1487,18 +1423,12 @@
   "deleteContact": {
     "message": "Eliminar contacto"
   },
-  "deleteNetwork": {
-    "message": "¿Eliminar red?"
-  },
   "deleteNetworkIntro": {
     "message": "Si elimina esta red, deberá volver a agregarla para ver sus activos en esta red"
   },
   "deleteNetworkTitle": {
     "message": "¿Eliminar la red de $1?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "Eliminar URL RPC"
   },
   "deposit": {
     "message": "Depositar"
@@ -1547,14 +1477,6 @@
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
-  "disconnectAllText": {
-    "message": "Si desconecta su $1 de su $2, tendrá que volver a conectarlos para usarlos nuevamente.",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
-  },
-  "disconnectAllTitle": {
-    "message": "Desconectar todos/as $1",
-    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
-  },
   "disconnectPrompt": {
     "message": "Desconectar $1"
   },
@@ -1593,9 +1515,6 @@
   },
   "domain": {
     "message": "Dominio"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "La red no admite la búsqueda de dominios"
   },
   "done": {
     "message": "Hecho"
@@ -1770,12 +1689,6 @@
   "ensDomainsSettingTitle": {
     "message": "Mostrar dominios ENS en la barra de direcciones"
   },
-  "ensIllegalCharacter": {
-    "message": "Caracter ilegal para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Error en el registro del nombre de ENS"
-  },
   "ensUnknownError": {
     "message": "Error al buscar ENS."
   },
@@ -1873,9 +1786,6 @@
   "existingRequestsBannerAlertDesc": {
     "message": "Para ver y confirmar su solicitud más reciente, primero deberá aprobar o rechazar las solicitudes existentes."
   },
-  "existingRpcUrl": {
-    "message": "Esta URL está asociada a otro ID de cadena."
-  },
   "expandView": {
     "message": "Expandir vista"
   },
@@ -1907,9 +1817,6 @@
   "failedToFetchChainId": {
     "message": "No se pudo capturar el id. de cadena. ¿La dirección URL de RPC es correcta?"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "Los datos de verificación del símbolo de teletipo no están disponibles actualmente, asegúrese de que el símbolo que ingresó sea correcto. Tendrá un impacto en las tasas de conversión que vea para esta red"
-  },
   "failureMessage": {
     "message": "Se produjo un error y no pudimos completar la acción"
   },
@@ -1922,16 +1829,9 @@
   "feeDetails": {
     "message": "Detalles de la tarifa"
   },
-  "fiat": {
-    "message": "Fiduciaria",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? Haga clic aquí.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "Encuentre el correcto en:"
   },
   "flaskWelcomeUninstall": {
     "message": "le recomendamos que desinstale esta extensión",
@@ -2159,9 +2059,6 @@
   },
   "hideSentitiveInfo": {
     "message": "Ocultar información confidencial"
-  },
-  "hideToken": {
-    "message": "Ocultar token"
   },
   "hideTokenPrompt": {
     "message": "¿Ocultar token?"
@@ -2419,14 +2316,8 @@
   "invalidAddressRecipient": {
     "message": "La dirección del destinatario no es válida"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "No es una red ETH; configurar en minúsculas"
-  },
   "invalidAssetType": {
     "message": "Este activo es un NFT y debe volver a añadirse en la página de Importar NFTs que se encuentra en la pestaña de NFTs"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Dirección URL del explorador de bloques no válida"
   },
   "invalidChainIdTooBig": {
     "message": "Identificador de cadena no válido. El identificador de cadena es demasiado grande."
@@ -2493,9 +2384,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsDeliver": {
-    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "Archivo JSON",
@@ -2903,10 +2791,6 @@
     "message": "$1 solicita su aprobación para:",
     "description": "$1 represents dapp name"
   },
-  "nativePermissionRequestDescription": {
-    "message": "¿Desea que este sitio haga lo siguiente?",
-    "description": "Description below header used on Permission Connect screen for native permissions."
-  },
   "nativeToken": {
     "message": "El token nativo en esta red es de $1. Es el token utilizado para las tarifas de gas. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -2916,10 +2800,11 @@
   },
   "nativeTokenScamWarningDescription": {
     "message": "Esta red no coincide con su ID de cadena o nombre asociado. Muchos tokens populares usan el nombre $1, lo que los convierte en blanco de estafas. Los estafadores pueden engañarlo para que les envíe dinero más valioso a cambio. Verifique todo antes de continuar.",
-    "description": "$1 represents the currency name"
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Esto es una estafa potencial"
+    "message": "Esto es una estafa potencial",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "¿Necesita ayuda? Comuníquese con $1",
@@ -2946,9 +2831,6 @@
   },
   "network": {
     "message": "Red:"
-  },
-  "networkAddedSuccessfully": {
-    "message": "¡Red añadida exitosamente!"
   },
   "networkDetails": {
     "message": "Detalles de la red"
@@ -3009,9 +2891,6 @@
   },
   "networkProvider": {
     "message": "Proveedor de red"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "El id. de la cadena se usa para firmar transacciones. Debe coincidir con el id. de la cadena que devuelve la red. Puede escribir un número decimal o un número hexadecimal con el prefijo “0x”, pero el número se mostrará en decimal."
   },
   "networkStatus": {
     "message": "Estado de la red"
@@ -3149,17 +3028,8 @@
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
   },
-  "noAddressForName": {
-    "message": "No se estableció ninguna dirección para este nombre."
-  },
-  "noConnectedAccountDescription": {
-    "message": "Seleccione una cuenta que desee utilizar en este sitio para continuar."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask no está conectado a este sitio"
-  },
-  "noConversionDateAvailable": {
-    "message": "No hay fecha de conversión de moneda disponible"
   },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
@@ -3464,9 +3334,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "La URL de la puerta de enlace de IPFS es válida"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "Agregar red personalizada"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Usamos Infura como nuestro proveedor de llamada a procedimiento remoto (RPC) para ofrecer el acceso más confiable y privado posible a los datos de Ethereum. Puede elegir su propio RPC, pero recuerde que cualquier RPC recibirá su dirección IP y su monedero de Ethereum para realizar transacciones. Lea nuestra $1 para obtener más información sobre cómo Infura maneja los datos."
   },
@@ -3494,9 +3361,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Política de privacidad"
-  },
-  "onboardingMetametricsModalTitle": {
-    "message": "Agregar red personalizada"
   },
   "onboardingMetametricsNeverCollect": {
     "message": "Se almacenan los clics y las visualizaciones de $1 en la aplicación, pero no otros detalles (como su dirección pública).",
@@ -3567,10 +3431,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "Fijar MetaMask Institutional"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Las alertas de detección de phishing se basan en la comunicación con $1. jsDeliver tendrá acceso a su dirección IP. Ver 2$.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1 d",
     "description": "Shortened form of '1 day'"
@@ -3589,9 +3449,6 @@
   },
   "onekey": {
     "message": "OneKey"
-  },
-  "onlyAddTrustedNetworks": {
-    "message": "Un proveedor de red malintencionado puede mentir sobre el estado de la cadena de bloques y registrar su actividad de red. Agregue solo redes personalizadas de confianza."
   },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza. $1",
@@ -3616,9 +3473,6 @@
   },
   "optional": {
     "message": "Opcional"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Opcional)"
   },
   "options": {
     "message": "Opciones"
@@ -3971,9 +3825,6 @@
     "message": "+ $1 más",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "popularCustomNetworks": {
-    "message": "Redes populares personalizadas"
-  },
   "popularNetworkAddToolTip": {
     "message": "Algunas de estas redes dependen de terceros. Las conexiones pueden ser menos confiables o permitir que terceros realicen un seguimiento de la actividad. $1",
     "description": "$1 is Learn more link"
@@ -3995,12 +3846,6 @@
   },
   "priceUnavailable": {
     "message": "precio no disponible"
-  },
-  "primaryCurrencySetting": {
-    "message": "Moneda principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Seleccione Nativa para dar prioridad a mostrar los valores en la moneda nativa de la cadena (p. ej., ETH). Seleccione Fiduciaria para dar prioridad a mostrar los valores en la moneda fiduciaria seleccionada."
   },
   "primaryType": {
     "message": "Tipo principal"
@@ -4163,12 +4008,6 @@
   "receive": {
     "message": "Recibir"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Ingrese la dirección pública (0x) o el nombre de ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Ingrese la dirección pública (0x) o el nombre de dominio"
-  },
   "recommendedGasLabel": {
     "message": "Recomendado"
   },
@@ -4231,9 +4070,6 @@
   },
   "rejected": {
     "message": "Rechazado"
-  },
-  "remember": {
-    "message": "Recuerde:"
   },
   "remove": {
     "message": "Quitar"
@@ -4642,9 +4478,6 @@
   "sepolia": {
     "message": "Red de prueba Sepolia"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask utiliza estos servicios de terceros de confianza para mejorar la usabilidad y la seguridad de los productos."
-  },
   "setApprovalForAll": {
     "message": "Establecer aprobación para todos"
   },
@@ -4833,13 +4666,6 @@
   },
   "smartTransactionSuccess": {
     "message": "Su transacción está completa"
-  },
-  "smartTransactionTakingTooLong": {
-    "message": "Disculpe la espera"
-  },
-  "smartTransactionTakingTooLongDescription": {
-    "message": "Si su transacción no finaliza en $1, se cancelará y no se le cobrará el gas.",
-    "description": "$1 is remaining time in seconds"
   },
   "smartTransactions": {
     "message": "Transacciones inteligentes"
@@ -5257,10 +5083,6 @@
   "stxCancelledSubDescription": {
     "message": "Intente su swap nuevamente. Estaremos aquí para protegerlo contra riesgos similares la próxima vez."
   },
-  "stxEstimatedCompletion": {
-    "message": "Finalización estimada en < $1",
-    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
-  },
   "stxFailure": {
     "message": "Error al intercambiar"
   },
@@ -5316,9 +5138,6 @@
   "suggestedTokenName": {
     "message": "Nombre sugerido:"
   },
-  "suggestedTokenSymbol": {
-    "message": "Símbolo de cotización sugerido:"
-  },
   "support": {
     "message": "Soporte técnico"
   },
@@ -5369,10 +5188,6 @@
   },
   "swapAreYouStillThereDescription": {
     "message": "Estamos listos para mostrarle las últimas cotizaciones cuando desee continuar"
-  },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "No hay tokens disponibles que coincidan con $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirmar con su monedero físico"
@@ -5438,9 +5253,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Error al capturar cotizaciones"
   },
-  "swapFetchingTokens": {
-    "message": "Capturando tokens…"
-  },
   "swapFromTo": {
     "message": "El intercambio de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5460,9 +5272,6 @@
   },
   "swapHighSlippage": {
     "message": "Deslizamiento alto"
-  },
-  "swapHighSlippageWarning": {
-    "message": "El monto del deslizamiento es muy alto."
   },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
@@ -5484,9 +5293,6 @@
   },
   "swapLowSlippage": {
     "message": "Deslizamiento bajo"
-  },
-  "swapLowSlippageError": {
-    "message": "Es posible que la transacción tenga errores, el deslizamiento máximo es demasiado bajo."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -5521,9 +5327,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Diferencia de precio de ~$1 %",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "El impacto sobre el precio es la diferencia entre el precio actual del mercado y el monto recibido durante la ejecución de la transacción. El impacto sobre el precio es una función del tamaño de su transacción respecto de la dimensión del fondo de liquidez."
   },
   "swapPriceUnavailableDescription": {
     "message": "No se pudo determinar el impacto sobre el precio debido a la falta de datos de los precios del mercado. Antes de realizar el intercambio, confirme que está de acuerdo con la cantidad de tokens que está a punto de recibir."
@@ -5571,12 +5374,6 @@
   "swapRequestForQuotation": {
     "message": "Solicitud de cotización"
   },
-  "swapReviewSwap": {
-    "message": "Revisar intercambio"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Buscar nombre o pegar dirección"
-  },
   "swapSelect": {
     "message": "Seleccionar"
   },
@@ -5608,9 +5405,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Deslizamiento bajo"
-  },
-  "swapSlippageNegative": {
-    "message": "El deslizamiento debe ser mayor o igual que cero"
   },
   "swapSlippageNegativeDescription": {
     "message": "El deslizamiento debe ser mayor o igual que cero"
@@ -5680,20 +5474,6 @@
     "message": "Intercambiar $1 por $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Este token se añadió de forma manual."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Siempre confirme la dirección del token en $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Solo se verificó en una fuente."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Verificar en $1 fuentes.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 solo se verifica en 1 fuente. Considere verificarlo en $2 antes de continuar.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5714,29 +5494,11 @@
   "swapUnknown": {
     "message": "Desconocido"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Varios tokens pueden usar el mismo nombre y símbolo. Revise $1 para comprobar que este es el token que busca.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 disponibles para intercambio",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0 % de deslizamiento"
   },
-  "swapsAdvancedOptions": {
-    "message": "Opciones avanzadas"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "El monto del deslizamiento es muy alto, por lo que recibirá una tasa de conversión desfavorable. Disminuya su tolerancia de deslizamiento a un valor menor al 15 %."
-  },
   "swapsMaxSlippage": {
     "message": "Tolerancia de deslizamiento"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "No hay $1 suficientes para completar esta transacción",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "No hay suficiente $1",
@@ -5807,9 +5569,6 @@
   "termsOfUseTitle": {
     "message": "Nuestros Términos de uso han sido actualizados"
   },
-  "testNetworks": {
-    "message": "Redes de prueba"
-  },
   "theme": {
     "message": "Tema"
   },
@@ -5875,9 +5634,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Se requiere decimal del token. Encuéntrelo en: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Decimales del token:"
   },
   "tokenDetails": {
     "message": "Detalles del token"
@@ -6121,9 +5877,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "Según nuestros registros, esta URL no coincide con un proveedor conocido para este ID de cadena."
-  },
   "unapproved": {
     "message": "No aprobado"
   },
@@ -6181,9 +5934,6 @@
   "updateRequest": {
     "message": "Solicitud de actualización"
   },
-  "updatedWithDate": {
-    "message": "$1 actualizado"
-  },
   "uploadDropFile": {
     "message": "Ingrese su archivo aquí"
   },
@@ -6192,9 +5942,6 @@
   },
   "urlErrorMsg": {
     "message": "Las direcciones URL requieren el prefijo HTTP/HTTPS adecuado."
-  },
-  "urlExistsErrorMsg": {
-    "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
   "use4ByteResolution": {
     "message": "Decodificar contratos inteligentes"
@@ -6247,14 +5994,6 @@
   },
   "verifyContractDetails": {
     "message": "Verificar detalles de terceros"
-  },
-  "verifyThisTokenOn": {
-    "message": "Comprobar este token en $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Verifique este token en $1 y asegúrese de que sea el token con el que quiere realizar la transacción.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "Versión"
@@ -6322,26 +6061,6 @@
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión del monedero físico"
   },
-  "walletCreationSuccessDetail": {
-    "message": "Ha protegido con éxito su monedero. Mantenga su frase secreta de recuperación a salvo y en secreto: ¡es su responsabilidad!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask no puede recuperar su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask nunca le pedirá su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 con nadie o se arriesga a que le roben los fondos",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Nunca comparta su frase secreta de recuperación",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Creación exitosa del monedero"
-  },
   "wantToAddThisNetwork": {
     "message": "¿Desea añadir esta red?"
   },
@@ -6405,9 +6124,6 @@
   "whatsThis": {
     "message": "¿Qué es esto?"
   },
-  "wrongChainId": {
-    "message": "Este ID de cadena no coincide con el nombre de la red."
-  },
   "wrongNetworkName": {
     "message": "Según nuestros registros, es posible que el nombre de la red no coincida correctamente con este ID de cadena."
   },
@@ -6420,10 +6136,6 @@
   },
   "you": {
     "message": "Usted"
-  },
-  "youHaveAddedAll": {
-    "message": "Ha agregado todas las redes populares. Puede descubrir más redes $1 o puede $2",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."

@@ -18,6 +18,8 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { isWebUrl } from '../../../../../app/scripts/lib/util';
 
 const AddBlockExplorerModal = ({
@@ -60,6 +62,7 @@ const AddBlockExplorerModal = ({
             variant: TextVariant.bodyMdMedium,
           }}
           onChange={(e) => setUrl(e.target.value)}
+          autoFocus
         />
         {error && (
           <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>

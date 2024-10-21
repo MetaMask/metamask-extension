@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider, MOCKS, fireEvent } from '../../../../test/jest';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
   checkNetworkAndAccountSupports1559,
@@ -79,7 +78,6 @@ const createProps = (customProps = {}) => {
     numberOfQuotes: 6,
     onQuotesClick: jest.fn(),
     tokenConversionRate: 0.015,
-    chainId: CHAIN_IDS.MAINNET,
     networkAndAccountSupports1559: false,
     ...customProps,
   };

@@ -31,6 +31,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
           >
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+              style="overflow: hidden;"
             >
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
@@ -40,6 +41,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default"
+                title="Test Snap"
               >
                 Test Snap
               </p>
@@ -328,7 +330,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                           <div
                             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                             data-testid="first-currency-display"
-                            title="966.988 ETH"
+                            title="966.988 GoerliETH"
                           >
                             <span
                               class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -338,7 +340,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                             <span
                               class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                             >
-                              ETH
+                              GoerliETH
                             </span>
                           </div>
                         </div>
@@ -363,7 +365,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                         <div
                           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
                         >
-                          E
+                          G
                         </div>
                         <div
                           class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
@@ -371,7 +373,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                           <div
                             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                             data-testid="second-currency-display"
-                            title="966.988 ETH"
+                            title="966.988 GoerliETH"
                           >
                             <span
                               class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -381,7 +383,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                             <span
                               class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                             >
-                              ETH
+                              GoerliETH
                             </span>
                           </div>
                         </div>

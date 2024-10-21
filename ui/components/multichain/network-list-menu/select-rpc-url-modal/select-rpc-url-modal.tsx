@@ -1,4 +1,5 @@
 import React from 'react';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
 import {
@@ -20,15 +21,14 @@ import {
   setActiveNetwork,
   setEditedNetwork,
   toggleNetworkMenu,
+  updateNetwork,
 } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
 
 export const SelectRpcUrlModal = ({
   networkConfiguration,
 }: {
-  // TODO: `NetworkConfiguration` with network controller v21 upgrade
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  networkConfiguration: any;
+  networkConfiguration: NetworkConfiguration;
 }) => {
   const dispatch = useDispatch();
 
@@ -61,44 +61,39 @@ export const SelectRpcUrlModal = ({
         </Box>
       </Box>
 
-      {networkConfiguration.rpcEndpoints.map(
-        // TODO: types will be inferred with network controller v21 upgrade
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (rpcEndpoint: any, index: number) => (
-          <Box
-            alignItems={AlignItems.center}
-            paddingLeft={4}
-            paddingRight={4}
-            display={Display.Flex}
-            key={rpcEndpoint.url}
-            onClick={() => {
-              // TODO: When this API becomes available with network controller v21 upgrade
-              // dispatch(
-              //   updateNetwork({
-              //     ...networkConfiguration,
-              //     defaultRpcEndpointIndex: index,
-              //   }),
-              // );
-              dispatch(setActiveNetwork(rpcEndpoint.networkClientId));
-              dispatch(setEditedNetwork());
-              dispatch(toggleNetworkMenu());
-            }}
-            className={classnames('select-rpc-url__item', {
-              'select-rpc-url__item--selected':
-                index === networkConfiguration.defaultRpcEndpointIndex,
-            })}
-          >
-            {index === networkConfiguration.defaultRpcEndpointIndex && (
-              <Box
-                className="select-rpc-url__item-selected-pill"
-                borderRadius={BorderRadius.pill}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            )}
-            <RpcListItem rpcEndpoint={rpcEndpoint} />
-          </Box>
-        ),
-      )}
+      {networkConfiguration.rpcEndpoints.map((rpcEndpoint, index) => (
+        <Box
+          alignItems={AlignItems.center}
+          paddingLeft={4}
+          paddingRight={4}
+          display={Display.Flex}
+          key={rpcEndpoint.url}
+          onClick={() => {
+            dispatch(
+              updateNetwork({
+                ...networkConfiguration,
+                defaultRpcEndpointIndex: index,
+              }),
+            );
+            dispatch(setActiveNetwork(rpcEndpoint.networkClientId));
+            dispatch(setEditedNetwork());
+            dispatch(toggleNetworkMenu());
+          }}
+          className={classnames('select-rpc-url__item', {
+            'select-rpc-url__item--selected':
+              index === networkConfiguration.defaultRpcEndpointIndex,
+          })}
+        >
+          {index === networkConfiguration.defaultRpcEndpointIndex && (
+            <Box
+              className="select-rpc-url__item-selected-pill"
+              borderRadius={BorderRadius.pill}
+              backgroundColor={BackgroundColor.primaryDefault}
+            />
+          )}
+          <RpcListItem rpcEndpoint={rpcEndpoint} />
+        </Box>
+      ))}
     </Box>
   );
 };

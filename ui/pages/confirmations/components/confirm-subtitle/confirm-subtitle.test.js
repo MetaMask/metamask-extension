@@ -5,6 +5,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import ConfirmSubTitle from './confirm-subtitle';
 
 const mockSelectedInternalAccount =
@@ -50,9 +51,7 @@ describe('ConfirmSubTitle', () => {
     mockState.metamask.preferences.showFiatInTestnets = false;
     mockState.metamask.allNftContracts = {
       [mockSelectedInternalAccount.address]: {
-        [mockState.metamask.networkConfigurations[
-          mockState.metamask.selectedNetworkClientId
-        ].chainId]: [{ address: '0x9' }],
+        [getProviderConfig(mockState).chainId]: [{ address: '0x9' }],
       },
     };
     store = configureStore(mockState);
