@@ -891,7 +891,7 @@ const sendScreenToConfirmScreen = async (
   quantity,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
-  await driver.delay(regularDelayMs);
+  await driver.delay(largeDelayMs);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
@@ -911,6 +911,7 @@ const sendTransaction = async (
   isAsyncFlow = false,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
+  await driver.delay(largeDelayMs);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 

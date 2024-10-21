@@ -88,6 +88,7 @@ describe('Add account', function () {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
+        await driver.delay(regularDelayMs);
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         // needed to mitigate a race condition with the state update
         // there is no condition we can wait for in the UI
