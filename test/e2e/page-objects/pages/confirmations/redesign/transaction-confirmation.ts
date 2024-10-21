@@ -6,6 +6,8 @@ import Confirmation from './confirmation';
 class TransactionConfirmation extends Confirmation {
   private walletInitiatedHeadingTitle: RawLocator;
 
+  private dappInitiatedHeadingTitle: RawLocator;
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -15,10 +17,18 @@ class TransactionConfirmation extends Confirmation {
       css: 'h3',
       text: tEn('review') as string,
     };
+    this.dappInitiatedHeadingTitle = {
+      css: 'h3',
+      text: tEn('transferRequest') as string,
+    };
   }
 
   async check_walletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
+  }
+
+  async check_dappInitiatedHeadingTitle() {
+    await this.driver.waitForSelector(this.dappInitiatedHeadingTitle);
   }
 }
 

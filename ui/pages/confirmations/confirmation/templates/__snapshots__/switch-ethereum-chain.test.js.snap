@@ -115,8 +115,6 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
 </div>
 `;
 
-exports[`switch-ethereum-chain confirmation should match snapshot 2`] = `<div />`;
-
 exports[`switch-ethereum-chain confirmation should show alert if there are pending txs 1`] = `
 <div>
   <div

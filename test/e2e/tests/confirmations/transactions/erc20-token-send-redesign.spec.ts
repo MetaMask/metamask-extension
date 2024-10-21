@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
-import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
+import {
+  unlockWallet,
+  veryLargeDelayMs,
+  WINDOW_TITLES,
+} from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
@@ -16,28 +20,68 @@ import { TestSuiteArguments } from './shared';
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC20 Token Send @no-mmi', function () {
-  it('Sends a type 0 transaction (Legacy)', async function () {
-    await withRedesignConfirmationFixtures(
-      this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await createTransactionAndAssertDetails(driver, contractRegistry);
-      },
-      mocks,
-      SMART_CONTRACTS.HST,
-    );
+  describe('Wallet initiated', async function () {
+    it('Sends a type 0 transaction (Legacy)', async function () {
+      await withRedesignConfirmationFixtures(
+        this.test?.fullTitle(),
+        TransactionEnvelopeType.legacy,
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await createWalletInitiatedTransactionAndAssertDetails(
+            driver,
+            contractRegistry,
+          );
+        },
+        mocks,
+        SMART_CONTRACTS.HST,
+      );
+    });
+
+    it('Sends a type 2 transaction (EIP1559)', async function () {
+      await withRedesignConfirmationFixtures(
+        this.test?.fullTitle(),
+        TransactionEnvelopeType.feeMarket,
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await createWalletInitiatedTransactionAndAssertDetails(
+            driver,
+            contractRegistry,
+          );
+        },
+        mocks,
+        SMART_CONTRACTS.HST,
+      );
+    });
   });
 
-  it('Sends a type 2 transaction (EIP1559)', async function () {
-    await withRedesignConfirmationFixtures(
-      this.test?.fullTitle(),
-      TransactionEnvelopeType.feeMarket,
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await createTransactionAndAssertDetails(driver, contractRegistry);
-      },
-      mocks,
-      SMART_CONTRACTS.HST,
-    );
+  describe('dApp initiated', async function () {
+    it('Sends a type 0 transaction (Legacy)', async function () {
+      await withRedesignConfirmationFixtures(
+        this.test?.fullTitle(),
+        TransactionEnvelopeType.legacy,
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await createDAppInitiatedTransactionAndAssertDetails(
+            driver,
+            contractRegistry,
+          );
+        },
+        mocks,
+        SMART_CONTRACTS.HST,
+      );
+    });
+
+    it('Sends a type 2 transaction (EIP1559)', async function () {
+      await withRedesignConfirmationFixtures(
+        this.test?.fullTitle(),
+        TransactionEnvelopeType.feeMarket,
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await createDAppInitiatedTransactionAndAssertDetails(
+            driver,
+            contractRegistry,
+          );
+        },
+        mocks,
+        SMART_CONTRACTS.HST,
+      );
+    });
   });
 });
 
@@ -69,7 +113,7 @@ export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
     }));
 }
 
-async function createTransactionAndAssertDetails(
+async function createWalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: GanacheContractAddressRegistry,
 ) {
@@ -107,6 +151,42 @@ async function createTransactionAndAssertDetails(
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
   await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.check_networkParagraph();
+  await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
+  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+
+  await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
+}
+
+async function createDAppInitiatedTransactionAndAssertDetails(
+  driver: Driver,
+  contractRegistry?: GanacheContractAddressRegistry,
+) {
+  await unlockWallet(driver);
+
+  const contractAddress = await (
+    contractRegistry as GanacheContractAddressRegistry
+  ).getContractAddress(SMART_CONTRACTS.HST);
+
+  const testDapp = new TestDapp(driver);
+
+  await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
+
+  await testDapp.clickERC20WatchAssetButton();
+
+  await driver.delay(veryLargeDelayMs);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const watchAssetConfirmation = new WatchAssetConfirmation(driver);
+  await watchAssetConfirmation.clickFooterConfirmButton();
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  await testDapp.clickERC20TokenTransferButton();
+
+  await driver.delay(veryLargeDelayMs);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const tokenTransferTransactionConfirmation =
+    new TokenTransferTransactionConfirmation(driver);
+  await tokenTransferTransactionConfirmation.check_dappInitiatedHeadingTitle();
   await tokenTransferTransactionConfirmation.check_networkParagraph();
   await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
   await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
