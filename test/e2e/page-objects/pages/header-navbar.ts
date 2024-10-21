@@ -17,6 +17,8 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
+  private readonly switchNetworkDropDown = '[data-testid="network-display"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -61,6 +63,18 @@ class HeaderNavbar {
       await this.driver.waitForSelector(this.mmiPortfolioButton);
     }
     await this.driver.clickElement(this.settingsButton);
+  }
+
+  async clickSwitchNetworkDropDown(): Promise<void> {
+    console.log(`Click switch network menu`);
+    await this.driver.clickElement(this.switchNetworkDropDown);
+  }
+
+  async check_currentSelectedNetwork(networkName: string): Promise<void> {
+    console.log(`Validate the Switch network to ${networkName}`);
+    await this.driver.waitForSelector(
+      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
   }
 
   /**
