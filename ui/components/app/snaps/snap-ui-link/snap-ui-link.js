@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
+import { Display } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
   ButtonLinkSize,
-  Icon,
   IconName,
-  IconSize,
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
@@ -38,7 +32,7 @@ export const SnapUILink = ({ href, children }) => {
       <ButtonLink
         as="a"
         size={ButtonLinkSize.Inherit}
-        className="snap-ui-link"
+        className="snap-ui-renderer__link"
         onClick={handleLinkClick}
       >
         {children}
@@ -54,20 +48,18 @@ export const SnapUILink = ({ href, children }) => {
         onClick={handleLinkClick}
         externalLink
         size={ButtonLinkSize.Inherit}
-        display={Display.InlineBlock}
-        className="snap-ui-link"
+        display={Display.Inline}
+        className="snap-ui-renderer__link"
         style={{
           // Prevents the link from taking up the full width of the parent.
           width: 'fit-content',
         }}
         textProps={{
-          display: Display.InlineFlex,
-          flexDirection: FlexDirection.Row,
-          alignItems: AlignItems.center,
+          display: Display.Inline,
         }}
+        endIconName={IconName.Export}
       >
         {children}
-        <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
       </ButtonLink>
     </>
   );
