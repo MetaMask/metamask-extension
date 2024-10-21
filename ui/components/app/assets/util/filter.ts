@@ -2,26 +2,61 @@ import { get } from 'lodash';
 
 export type FilterCriteria = {
   key: string;
-  values: Record<string, string>;
+  opts?: Record<string, FilterType>; // Use opts for range, inclusion, etc.
+  filterCallback?: keyof FilterCallbacksT; // Specify the type of filter: 'range', 'inclusive', etc.
 };
 
-function getNestedValue<T>(obj: T, keyPath: string): any {
+export type FilterType = string | number | boolean | Date;
+export type FilterCallbacksT = {
+  inclusive: (value: any, opts: Record<string, boolean>) => boolean;
+  range: (value: number, opts: Record<string, number>) => boolean;
+};
+
+const filterCallbacks: FilterCallbacksT = {
+  inclusive: (value: any, opts: Record<string, boolean>) => opts[value],
+  range: (value: number, opts: Record<string, number>) =>
+    value >= opts.min && value <= opts.max,
+};
+
+function getNestedValue<T>(obj: T, keyPath: string): FilterType {
   return get(obj, keyPath);
 }
 
 export function filterAssets<T>(array: T[], criteria: FilterCriteria[]): T[] {
-  // If no criteria, return all tokens
   if (criteria.length === 0) {
     return array;
   }
 
   return array.filter((item) => {
     return criteria.every((criterion) => {
-      // key is the value of the objects to be sorted by (for instance chainId of each token)
-      // criterion is the Record<chainId, boolean> to evaluate each token, and whether it should be included in the list. If true, include
-      const { key, values } = criterion;
+      const { key, opts, filterCallback } = criterion;
       const nestedValue = getNestedValue(item, key);
-      return values[nestedValue];
+
+      if (filterCallback && opts) {
+        switch (filterCallback) {
+          case 'inclusive':
+            return filterCallbacks.inclusive(
+              nestedValue,
+              opts as Record<string, boolean>,
+            );
+          case 'range':
+            // Type guard to ensure nestedValue is a number
+            if (typeof nestedValue === 'number') {
+              return filterCallbacks.range(
+                nestedValue,
+                opts as {
+                  min: number;
+                  max: number;
+                },
+              );
+            }
+            return false; // If not a number, range filtering cannot be applied
+          default:
+            return true;
+        }
+      }
+
+      return true; // Default case, return true to include item if no conditions are met
     });
   });
 }
