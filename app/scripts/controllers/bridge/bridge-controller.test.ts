@@ -280,10 +280,10 @@ describe('BridgeController', function () {
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
     expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith(
-      '1',
-      quoteRequest,
-    );
+    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith('0x1', {
+      ...quoteRequest,
+      insufficientBal: true,
+    });
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
@@ -299,7 +299,10 @@ describe('BridgeController', function () {
     jest.advanceTimersByTime(1000);
     await flushPromises();
     expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(1);
-    expect(fetchBridgeQuotesSpy).toHaveBeenCalledWith(quoteRequest);
+    expect(fetchBridgeQuotesSpy).toHaveBeenCalledWith({
+      ...quoteRequest,
+      insufficientBal: true,
+    });
 
     const firstFetchTime =
       bridgeController.state.bridgeState.quotesLastFetched ?? 0;
