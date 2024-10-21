@@ -56,9 +56,46 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
   const fiatDisplayValue =
     fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
+  const displayTransferValue = roundDisplayValue(decodedTransferValue);
+
   return {
-    decodedTransferValue,
+    decodedTransferValue: toNonScientificString(decodedTransferValue),
+    displayTransferValue,
     fiatDisplayValue,
     pending,
   };
 };
+
+export function roundDisplayValue(decodedTransferValue: number): string {
+  switch (true) {
+    case decodedTransferValue === 0:
+      return '0';
+    case decodedTransferValue < 0.000001:
+      return '<0.000001';
+    case decodedTransferValue < 0.001:
+      return parseFloat(decodedTransferValue.toFixed(6)).toString();
+    case decodedTransferValue < 0.01:
+      return parseFloat(decodedTransferValue.toFixed(5)).toString();
+    case decodedTransferValue < 0.1:
+      return parseFloat(decodedTransferValue.toFixed(4)).toString();
+    case decodedTransferValue < 10:
+      return parseFloat(decodedTransferValue.toFixed(3)).toString();
+    case decodedTransferValue < 100:
+      return parseFloat(decodedTransferValue.toFixed(2)).toString();
+    case decodedTransferValue < 1000:
+      return parseFloat(decodedTransferValue.toFixed(1)).toString();
+    case decodedTransferValue < 10000:
+      return parseFloat(decodedTransferValue.toFixed(0)).toString();
+    default:
+      return parseFloat(decodedTransferValue.toFixed(0)).toString();
+  }
+}
+
+export function toNonScientificString(num: number): string {
+  if (num >= 10e-18) {
+    return num.toFixed(18).replace(/\.?0+$/u, '');
+  }
+
+  // keep in scientific notation
+  return num.toString();
+}

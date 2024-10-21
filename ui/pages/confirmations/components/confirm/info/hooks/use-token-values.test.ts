@@ -5,7 +5,11 @@ import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { useTokenValues } from './use-token-values';
+import {
+  roundDisplayValue,
+  toNonScientificString,
+  useTokenValues,
+} from './use-token-values';
 import { useDecodedTransactionData } from './useDecodedTransactionData';
 
 jest.mock('../../../../hooks/useAssetDetails', () => ({
@@ -73,7 +77,8 @@ describe('useTokenValues', () => {
     await waitForNextUpdate();
 
     expect(result.current).toEqual({
-      decodedTransferValue: 7,
+      decodedTransferValue: '7',
+      displayTransferValue: '7',
       fiatDisplayValue: '$6.37',
       pending: false,
     });
@@ -118,9 +123,60 @@ describe('useTokenValues', () => {
     await waitForNextUpdate();
 
     expect(result.current).toEqual({
-      decodedTransferValue: 7,
+      decodedTransferValue: '7',
+      displayTransferValue: '7',
       fiatDisplayValue: null,
       pending: false,
     });
   });
+});
+
+describe('roundDisplayValue', () => {
+  const TEST_CASES = [
+    { value: 0, rounded: '0' },
+    { value: 0.0000009, rounded: '<0.000001' },
+    { value: 0.0000456, rounded: '0.000046' },
+    { value: 0.0004567, rounded: '0.000457' },
+    { value: 0.003456, rounded: '0.00346' },
+    { value: 0.023456, rounded: '0.0235' },
+    { value: 0.125456, rounded: '0.125' },
+    { value: 1.0034, rounded: '1.003' },
+    { value: 1.034, rounded: '1.034' },
+    { value: 1.3034, rounded: '1.303' },
+    { value: 7, rounded: '7' },
+    { value: 7.1, rounded: '7.1' },
+    { value: 12.0345, rounded: '12.03' },
+    { value: 121.456, rounded: '121.5' },
+    { value: 1034.123, rounded: '1034' },
+    { value: 47361034.006, rounded: '47361034' },
+    { value: 12130982923409.555, rounded: '12130982923410' },
+  ];
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each(TEST_CASES)(
+    'Round $value to "$rounded"',
+    ({ value, rounded }: { value: number; rounded: string }) => {
+      const actual = roundDisplayValue(value);
+
+      expect(actual).toEqual(rounded);
+    },
+  );
+});
+
+describe('toNonScientificString', () => {
+  const TEST_CASES = [
+    { scientific: 1.23e-5, expanded: '0.0000123' },
+    { scientific: 1e-10, expanded: '0.0000000001' },
+    { scientific: 1.23e-21, expanded: '1.23e-21' },
+  ];
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each(TEST_CASES)(
+    'Expand $scientific to "$expanded"',
+    ({ scientific, expanded }: { scientific: number; expanded: string }) => {
+      const actual = toNonScientificString(scientific);
+
+      expect(actual).toEqual(expanded);
+    },
+  );
 });
