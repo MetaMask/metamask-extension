@@ -46,8 +46,10 @@ const PermitSimulation: React.FC<object> = () => {
   const {
     domain: { verifyingContract },
     message,
+    message: { tokenId },
     primaryType,
   } = parseTypedDataMessage(msgData as string);
+  const isNFT = tokenId !== undefined;
 
   const tokenDetails = extractTokenDetailsByPrimaryType(message, primaryType);
 
@@ -70,7 +72,9 @@ const PermitSimulation: React.FC<object> = () => {
   );
 
   const SpendingCapRow = (
-    <ConfirmInfoRow label={t('spendingCap')}>
+    <ConfirmInfoRow
+      label={t(isNFT ? 'simulationApproveHeading' : 'spendingCap')}
+    >
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         {Array.isArray(tokenDetails) ? (
           <Box
@@ -91,6 +95,7 @@ const PermitSimulation: React.FC<object> = () => {
           <PermitSimulationValueDisplay
             tokenContract={verifyingContract}
             value={message.value}
+            tokenId={message.tokenId}
             chainId={chainId}
           />
         )}
@@ -102,7 +107,9 @@ const PermitSimulation: React.FC<object> = () => {
     <StaticSimulation
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
-      description={t('permitSimulationDetailInfo')}
+      description={t(
+        isNFT ? 'simulationDetailsApproveDesc' : 'permitSimulationDetailInfo',
+      )}
       simulationElements={SpendingCapRow}
     />
   );

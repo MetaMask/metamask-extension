@@ -500,6 +500,17 @@ export default class Routes extends Component {
   hideAppHeader() {
     const { location } = this.props;
 
+    const isCrossChainSwapsPage = Boolean(
+      matchPath(location.pathname, {
+        path: `${CROSS_CHAIN_SWAP_ROUTE}`,
+        exact: false,
+      }),
+    );
+
+    if (isCrossChainSwapsPage) {
+      return true;
+    }
+
     const isNotificationsPage = Boolean(
       matchPath(location.pathname, {
         path: `${NOTIFICATIONS_ROUTE}`,
