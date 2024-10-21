@@ -37,6 +37,7 @@ const Header = () => {
     TransactionType.tokenMethodTransfer,
     TransactionType.tokenMethodTransferFrom,
     TransactionType.tokenMethodSafeTransferFrom,
+    TransactionType.simpleSend,
   ];
 
   if (
