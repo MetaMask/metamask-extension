@@ -24,7 +24,7 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { BridgeState } from './bridge';
 
-type BridgeAppState = {
+export type BridgeAppState = {
   metamask: NetworkState & { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
   };
@@ -94,6 +94,18 @@ export const getToChain = createDeepEqualSelector(
   (toChains, toChainId): NetworkConfiguration | undefined =>
     toChains.find(({ chainId }) => chainId === toChainId),
 );
+
+export const getApprovalGasMultipliers = (state: BridgeAppState) => {
+  return (
+    state.metamask.bridgeState.bridgeFeatureFlags.approvalGasMultiplier ?? {}
+  );
+};
+
+export const getBridgeGasMultipliers = (state: BridgeAppState) => {
+  return (
+    state.metamask.bridgeState.bridgeFeatureFlags.bridgeGasMultiplier ?? {}
+  );
+};
 
 export const getFromTokens = (state: BridgeAppState) => {
   return state.metamask.bridgeState.srcTokens ?? {};
