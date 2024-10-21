@@ -153,7 +153,8 @@ export const getOnChainMetamaskNotificationsUnreadCount = createSelector(
       ? notifications.filter(
           (notification) =>
             !notification.isRead &&
-            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+            notification.type !== TRIGGER_TYPES.SNAP,
         ).length
       : 0;
   },
@@ -172,7 +173,8 @@ export const getOnChainMetamaskNotificationsReadCount = createSelector(
       ? notifications.filter(
           (notification) =>
             notification.isRead &&
-            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+            notification.type !== TRIGGER_TYPES.SNAP,
         ).length
       : 0;
   },

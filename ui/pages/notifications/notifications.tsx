@@ -85,7 +85,9 @@ const useMetamaskNotifications = () => {
   const walletNotifications = useMemo(() => {
     return isMetamaskNotificationsEnabled
       ? (notificationsData ?? []).filter(
-          (n) => n.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+          (n) =>
+            n.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+            n.type !== TRIGGER_TYPES.SNAP,
         )
       : [];
   }, [isMetamaskNotificationsEnabled, notificationsData]);

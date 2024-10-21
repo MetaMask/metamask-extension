@@ -2781,15 +2781,14 @@ export default class MetamaskController extends EventEmitter {
               origin,
               args.message,
             ),
-          showInAppNotification: (origin, args) => {
-            return this.controllerMessenger.call(
+          showInAppNotification: (origin, args) =>
+            this.controllerMessenger.call(
               'RateLimitController:call',
               origin,
               'showInAppNotification',
               origin,
               args,
-            );
-          },
+            ),
           updateSnapState: this.controllerMessenger.call.bind(
             this.controllerMessenger,
             'SnapController:updateSnapState',

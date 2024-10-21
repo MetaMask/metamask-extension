@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -8,8 +7,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
-import { getUnreadNotifications } from '../../selectors';
-import { markNotificationsAsRead } from '../../store/actions';
 import { Box, Button, ButtonVariant } from '../../components/component-library';
 import { BlockSize } from '../../helpers/constants/design-system';
 
@@ -24,11 +21,9 @@ export type NotificationsListReadAllButtonProps = {
 export const NotificationsListReadAllButton = ({
   notifications,
 }: NotificationsListReadAllButtonProps) => {
-  const dispatch = useDispatch();
   const t = useI18nContext();
   const { markNotificationAsRead } = useMarkNotificationAsRead();
   const trackEvent = useContext(MetaMetricsContext);
-  const unreadNotifications = useSelector(getUnreadNotifications);
 
   const handleOnClick = () => {
     let notificationsRead: MarkAsReadNotificationsParam = [];
@@ -37,8 +32,7 @@ export const NotificationsListReadAllButton = ({
       notificationsRead = notifications
         .filter(
           (notification): notification is Notification =>
-            (notification as Notification).id !== undefined &&
-            notification.type !== TRIGGER_TYPES.SNAP,
+            (notification as Notification).id !== undefined,
         )
         .map((notification: Notification) => ({
           id: notification.id,
@@ -54,10 +48,6 @@ export const NotificationsListReadAllButton = ({
 
     // Mark all metamask notifications as read
     markNotificationAsRead(notificationsRead);
-
-    // Mark all snap notifications as read
-    const unreadNotificationIds = unreadNotifications.map(({ id }) => id);
-    dispatch(markNotificationsAsRead(unreadNotificationIds));
   };
 
   return (

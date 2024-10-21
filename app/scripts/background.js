@@ -1098,7 +1098,9 @@ export function setupController(
               !notification.isRead &&
               notification.type !==
                 NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT,
+                  .FEATURES_ANNOUNCEMENT &&
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
           ).length
         : 0;
 
