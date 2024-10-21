@@ -4792,6 +4792,24 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Set account name that checks for identical label
+   *
+   * @param account
+   * @param index
+   * @param hwDeviceName
+   * @param hdPathDescription
+   */
+  setAccountName(account, index, hwDeviceName, hdPathDescription) {
+    const label = this.getAccountLabel(hwDeviceName, index, hdPathDescription);
+    try {
+      this.accountsController.setAccountName(account.id, label);
+    } catch {
+      const newIndex = index + 1;
+      this.setAccountName(account, newIndex, hwDeviceName, hdPathDescription);
+    }
+  }
+
+  /**
    * Imports an account from a Trezor or Ledger device.
    *
    * @param index
@@ -4807,26 +4825,16 @@ export default class MetamaskController extends EventEmitter {
     hdPathDescription,
   ) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
-
     keyring.setAccountToUnlock(index);
     const unlockedAccount =
       await this.keyringController.addNewAccountForKeyring(keyring);
-    const label = this.getAccountLabel(
-      deviceName === HardwareDeviceNames.qr ? keyring.getName() : deviceName,
-      index,
-      hdPathDescription,
-    );
-    // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
-    this.preferencesController.setAccountLabel(unlockedAccount, label);
-    // Select the account
-    this.preferencesController.setSelectedAddress(unlockedAccount);
-
-    // It is expected that the account also exist in the accounts-controller
-    // in other case, an error shall be thrown
+    const hwDeviceName =
+      deviceName === HardwareDeviceNames.qr ? keyring.getName() : deviceName;
     const account =
       this.accountsController.getAccountByAddress(unlockedAccount);
-    this.accountsController.setAccountName(account.id, label);
+    this.setAccountName(account, index, hwDeviceName, hdPathDescription);
 
+    this.preferencesController.setSelectedAddress(unlockedAccount);
     const accounts = this.accountsController.listAccounts();
 
     const { identities } = this.preferencesController.state;
