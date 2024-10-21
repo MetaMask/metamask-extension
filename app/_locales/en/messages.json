@@ -508,6 +508,10 @@
   "allCustodianAccountsConnectedTitle": {
     "message": "No accounts available to connect"
   },
+  "allNetworks": {
+    "message": "All Networks",
+    "description": "Speicifies to token network filter to filter by all Networks"
+  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -1361,6 +1365,10 @@
   },
   "currentLanguage": {
     "message": "Current language"
+  },
+  "currentNetwork": {
+    "message": "Current Network",
+    "description": "Specifies to network filter to filter tokens by current network"
   },
   "currentRpcUrlDeprecated": {
     "message": "The current rpc url for this network has been deprecated."

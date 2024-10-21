@@ -43,7 +43,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     getShouldHideZeroBalanceTokens,
   );
 
-  const { totalFiatBalance: selectedAccountBalance, loading } =
+  const { totalFiatBalance: selectedAccountBalance } =
     useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
 
   // TODO: fetch balances across networks
@@ -71,7 +71,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
             >
-              All Networks
+              {t('allNetworks')}
             </Text>
             <Text
               variant={TextVariant.bodyMdMedium}
@@ -82,13 +82,18 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           </Box>
           <Box display={Display.Flex}>
             {Object.values(allNetworks).map((network, index) => {
-              if (index >= 5) return null; // only show a max of 5 icons overlapping
-              const chainId =
+              if (index >= 5) {
+                return null; // only show a max of 5 icons overlapping
+              }
+              const networkChainId =
                 network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
               return (
                 <AvatarNetwork
                   name="All"
-                  src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId] ?? undefined}
+                  src={
+                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[networkChainId] ??
+                    undefined
+                  }
                   // overlap the icons
                   style={{
                     marginLeft: index === 0 ? 0 : '-20px',
@@ -113,7 +118,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
             >
-              Current Network
+              {t('currentNetwork')}
             </Text>
             <UserPreferencedCurrencyDisplay
               value={selectedAccountBalance}
