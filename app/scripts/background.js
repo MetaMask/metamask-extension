@@ -1005,11 +1005,6 @@ export function setupController(
     updateBadge,
   );
 
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
-    updateBadge,
-  );
-
   /**
    * Formats a count for display as a badge label.
    *
@@ -1078,8 +1073,14 @@ export function setupController(
         controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
-        controller.notificationController.state.notifications,
-      ).filter((notification) => notification.readDate === null).length;
+        controller.notificationServicesController.state
+          .metamaskNotificationsList,
+      ).filter(
+        (notification) =>
+          notification.type ===
+            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
+          notification.readDate === null,
+      ).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
         ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
