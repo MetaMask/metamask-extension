@@ -9,6 +9,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { TokenWithBalance } from '../asset-list/asset-list';
+import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
 import { sortAssets } from '../util/sort';
 import {
   getPreferences,
@@ -30,6 +31,7 @@ export default function TokenList({
   nativeToken,
 }: TokenListProps) {
   const t = useI18nContext();
+  const chainId = useSelector(getMultichainCurrentChainId);
   const { tokenSortConfig } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
@@ -85,7 +87,7 @@ export default function TokenList({
         return (
           <TokenCell
             key={`${tokenData.symbol}-${tokenData.address}`}
-            {...tokenData}
+            {...{ ...tokenData, chainId }}
             onClick={onTokenClick}
           />
         );

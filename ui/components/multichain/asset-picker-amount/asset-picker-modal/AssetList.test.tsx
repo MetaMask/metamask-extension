@@ -173,7 +173,7 @@ describe('AssetList', () => {
     );
 
     expect(screen.getAllByTestId('asset-list-item')[0]).toHaveClass(
-      'multichain-asset-picker-list-item--disabled',
+      'multichain-asset-picker-list-items--disabled',
     );
   });
 });
