@@ -79,16 +79,6 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
-        // click down arrow
-        await driver.waitForSelector({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-        await driver.clickElement({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-
         // look for returned signature insights data
         await driver.waitForSelector({
           text: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
