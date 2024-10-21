@@ -43,7 +43,7 @@ const blacklistedHosts = [
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
-const { mockNotificationServices } = require('./tests/notifications/mocks');
+const { mockNotificationServices } = require('./tests/profile-sync/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
