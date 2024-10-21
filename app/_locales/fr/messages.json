@@ -3031,9 +3031,6 @@
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
   },
-  "noConnectedAccountDescription": {
-    "message": "Sélectionnez un compte que vous souhaitez utiliser sur ce site pour continuer."
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask n’est pas connecté à ce site"
   },
@@ -5195,10 +5192,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Si vous le souhaitez, nous sommes prêts à vous présenter les dernières cotations"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Aucun jeton disponible correspondant à $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirmez avec votre portefeuille matériel"
   },
@@ -5263,9 +5256,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Erreur lors de la récupération des cotations"
   },
-  "swapFetchingTokens": {
-    "message": "Récupération des jetons…"
-  },
   "swapFromTo": {
     "message": "Le swap de $1 vers $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5285,9 +5275,6 @@
   },
   "swapHighSlippage": {
     "message": "Important effet de glissement"
-  },
-  "swapHighSlippageWarning": {
-    "message": "Le montant du glissement est très élevé."
   },
   "swapIncludesMMFee": {
     "message": "Comprend des frais MetaMask à hauteur de $1 %.",
@@ -5309,9 +5296,6 @@
   },
   "swapLowSlippage": {
     "message": "Faible effet de glissement"
-  },
-  "swapLowSlippageError": {
-    "message": "La transaction peut échouer, car le glissement maximal est trop faible."
   },
   "swapMaxSlippage": {
     "message": "Glissement maximal"
@@ -5346,9 +5330,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Différence de prix de ~$1",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "L’incidence sur les prix correspond à la différence entre le prix actuel du marché et le montant reçu lors de l’exécution de la transaction. Cette répercussion dépend du volume de votre transaction par rapport au volume de la réserve de liquidités."
   },
   "swapPriceUnavailableDescription": {
     "message": "L’incidence sur les prix n’a pas pu être déterminée faute de données suffisantes sur les prix du marché. Veuillez confirmer que vous êtes satisfait·e du nombre de jetons que vous êtes sur le point de recevoir avant de procéder au swap."
@@ -5396,12 +5377,6 @@
   "swapRequestForQuotation": {
     "message": "Demande de cotation"
   },
-  "swapReviewSwap": {
-    "message": "Vérifier le swap"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Rechercher le nom ou coller l’adresse"
-  },
   "swapSelect": {
     "message": "Sélectionner"
   },
@@ -5433,9 +5408,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Faible effet de glissement"
-  },
-  "swapSlippageNegative": {
-    "message": "Le glissement doit être supérieur ou égal à zéro"
   },
   "swapSlippageNegativeDescription": {
     "message": "Le slippage doit être supérieur ou égal à zéro"
@@ -5505,20 +5477,6 @@
     "message": "Swap de $1 vers $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Ce jeton a été ajouté manuellement."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Confirmez toujours l’adresse du jeton sur $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Vérification effectuée uniquement sur 1 source."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Vérification effectuée sur $1 sources.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 n’a été vérifié que par 1 source. Envisagez de le vérifier auprès de $2 sources avant de continuer.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5539,29 +5497,11 @@
   "swapUnknown": {
     "message": "Inconnu"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Attention, plusieurs jetons peuvent utiliser le même nom et le même symbole. Vérifiez $1 pour vous assurer qu’il s’agit bien du jeton que vous recherchez.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 disponibles pour un swap",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0 % de glissement"
   },
-  "swapsAdvancedOptions": {
-    "message": "Options avancées"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Le montant du glissement est trop élevé et donnera lieu à un mauvais taux. Veuillez réduire votre tolérance de glissement à une valeur inférieure à 15 %."
-  },
   "swapsMaxSlippage": {
     "message": "Tolérance au slippage"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Pas assez de $1 pour effectuer cette transaction",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Pas assez de $1",
@@ -6057,14 +5997,6 @@
   },
   "verifyContractDetails": {
     "message": "Vérifier les informations relatives aux tiers"
-  },
-  "verifyThisTokenOn": {
-    "message": "Vérifier ce jeton sur $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Vérifiez ce jeton sur $1 et qu’il s’agit bien de celui que vous souhaitez échanger.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "Version"

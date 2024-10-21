@@ -3,6 +3,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
+
+import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -12,12 +14,11 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
-import {
-  isPermitSignatureRequest,
-  isSIWESignatureRequest,
-} from '../../../utils';
+import { isSIWESignatureRequest } from '../../../utils';
+import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
@@ -51,6 +52,8 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
 
 type IntlFunction = (str: string) => string;
 
+// todo: getTitle and getDescription can be merged to remove code duplication.
+
 const getTitle = (
   t: IntlFunction,
   confirmation?: Confirmation,
@@ -58,6 +61,8 @@ const getTitle = (
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
   pending?: boolean,
+  primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
+  tokenStandard?: string,
 ) => {
   if (pending) {
     return '';
@@ -74,9 +79,13 @@ const getTitle = (
       }
       return t('confirmTitleSignature');
     case TransactionType.signTypedData:
-      return isPermitSignatureRequest(confirmation as SignatureRequestType)
-        ? t('confirmTitlePermitTokens')
-        : t('confirmTitleSignature');
+      if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
+        if (tokenStandard === TokenStandard.ERC721) {
+          return t('setApprovalForAllRedesignedTitle');
+        }
+        return t('confirmTitlePermitTokens');
+      }
+      return t('confirmTitleSignature');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleApproveTransaction');
@@ -104,6 +113,8 @@ const getDescription = (
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
   pending?: boolean,
+  primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
+  tokenStandard?: string,
 ) => {
   if (pending) {
     return '';
@@ -120,9 +131,13 @@ const getDescription = (
       }
       return t('confirmTitleDescSign');
     case TransactionType.signTypedData:
-      return isPermitSignatureRequest(confirmation as SignatureRequestType)
-        ? t('confirmTitleDescPermitSignature')
-        : t('confirmTitleDescSign');
+      if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
+        if (tokenStandard === TokenStandard.ERC721) {
+          return t('confirmTitleDescApproveTransaction');
+        }
+        return t('confirmTitleDescPermitSignature');
+      }
+      return t('confirmTitleDescSign');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleDescApproveTransaction');
@@ -150,6 +165,10 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
+  const { primaryType, tokenStandard } = useTypedSignSignatureInfo(
+    currentConfirmation as SignatureRequestType,
+  );
+
   const { customSpendingCap, pending: spendingCapPending } =
     useCurrentSpendingCap(currentConfirmation);
 
@@ -175,6 +194,8 @@ const ConfirmTitle: React.FC = memo(() => {
         customSpendingCap,
         isRevokeSetApprovalForAll,
         spendingCapPending || revokePending,
+        primaryType,
+        tokenStandard,
       ),
     [
       currentConfirmation,
@@ -183,6 +204,8 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       revokePending,
+      primaryType,
+      tokenStandard,
     ],
   );
 
@@ -195,6 +218,8 @@ const ConfirmTitle: React.FC = memo(() => {
         customSpendingCap,
         isRevokeSetApprovalForAll,
         spendingCapPending || revokePending,
+        primaryType,
+        tokenStandard,
       ),
     [
       currentConfirmation,
@@ -203,6 +228,8 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       revokePending,
+      primaryType,
+      tokenStandard,
     ],
   );
 
