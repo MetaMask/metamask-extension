@@ -57,7 +57,7 @@ const SendHeading = () => {
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
         marginTop={3}
-      >{`${decodedTransferValue || ''} ${
+      >{`${decodedTransferValue} ${
         selectedToken?.symbol || t('unknown')
       }`}</Text>
       {fiatDisplayValue && (

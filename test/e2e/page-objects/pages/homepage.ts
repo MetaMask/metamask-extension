@@ -11,6 +11,10 @@ class HomePage {
   private readonly activityTab =
     '[data-testid="account-overview__activity-tab"]';
 
+  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
+
+  private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
+
   private readonly balance = '[data-testid="eth-overview__primary-currency"]';
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
@@ -58,6 +62,15 @@ class HomePage {
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);
+  }
+
+  async goToNFTList(): Promise<void> {
+    console.log(`Open NFT tab on homepage`);
+    await this.driver.clickElement(this.nftTab);
+  }
+
+  async clickNFTIconOnActivityList() {
+    await this.driver.clickElement(this.nftIconOnActivityList);
   }
 
   /**
