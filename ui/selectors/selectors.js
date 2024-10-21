@@ -12,6 +12,7 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { parseCaipAccountId } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
@@ -92,6 +93,7 @@ import {
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import {
+  decimalToHex,
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
@@ -603,6 +605,20 @@ export function getAddressBook(state) {
     return [];
   }
   return Object.values(state.metamask.addressBook[chainId]);
+}
+
+export function getAddressBookByNetwork(state, chainId) {
+  if (!state.metamask.addressBook[chainId]) {
+    return [];
+  }
+  return Object.values(state.metamask.addressBook[chainId]);
+}
+
+export function getAddressBookEntryByNetwork(state, address, chainId) {
+  const addressBook = getAddressBookByNetwork(state, chainId);
+  return addressBook.find((contact) =>
+    isEqualCaseInsensitive(contact.address, address),
+  );
 }
 
 export function getEnsResolutionByAddress(state, address) {
@@ -1571,6 +1587,48 @@ export const getMemoizedUnapprovedPersonalMessages = createDeepEqualSelector(
 export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
   (state) => state.metamask.unapprovedTypedMessages,
   (unapprovedTypedMessages) => unapprovedTypedMessages,
+);
+
+/**
+ * Get the display name for an address.
+ * This selector will look into the internal accounts and address book to find a display name for the address.
+ *
+ * @param _state - The Redux state object.
+ * @param {string} address - The address to get the display name for in a CAIP-10 format.
+ * @returns {string} The display name for the address.
+ */
+export const getAddressDisplayName = createDeepEqualSelector(
+  [rawStateSelector, (_state, address) => address],
+  (state, address) => {
+    const {
+      address: caipAddress,
+      chain: { namespace, reference },
+    } = parseCaipAccountId(address);
+
+    const isEip155 = namespace === 'eip155';
+
+    const parsedAddress = isEip155
+      ? toChecksumHexAddress(caipAddress)
+      : caipAddress;
+
+    const accounts = getInternalAccounts(state);
+    const accountName = getAccountName(accounts, parsedAddress);
+
+    // Address book will only work for EVM accounts.
+    const addressBookEntry =
+      isEip155 &&
+      getAddressBookEntryByNetwork(
+        state,
+        parsedAddress,
+        `0x${decimalToHex(reference)}`,
+      );
+
+    return (
+      (accountName === '' ? undefined : accountName) ??
+      addressBookEntry?.name ??
+      undefined
+    );
+  },
 );
 
 export function getSnaps(state) {
