@@ -72,10 +72,9 @@ class HeaderNavbar {
 
   async check_currentSelectedNetwork(networkName: string): Promise<void> {
     console.log(`Validate the Switch network to ${networkName}`);
-    await this.driver.findElements({
-      tag: 'span',
-      text: networkName,
-    });
+    await this.driver.waitForSelector(
+      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
   }
 
   /**
