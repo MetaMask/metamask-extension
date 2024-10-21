@@ -45,7 +45,9 @@ import {
 } from './lib/accounts/BalancesController';
 import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
-import MetaMaskController from './metamask-controller';
+import MetaMaskController, {
+  ONE_KEY_VIA_TREZOR_MINOR_VERSION,
+} from './metamask-controller';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -892,6 +894,73 @@ describe('MetaMaskController', () => {
             });
           },
         );
+      });
+
+      describe('getHardwareDeviceName', () => {
+        const hdPath = "m/44'/60'/0'/0/0";
+
+        it('should return the correct device name for Ledger', async () => {
+          const deviceName = 'ledger';
+
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('ledger');
+        });
+
+        it('should return the correct device name for Lattice', async () => {
+          const deviceName = 'lattice';
+
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('lattice');
+        });
+
+        it('should return the correct device name for Trezor', async () => {
+          const deviceName = 'trezor';
+          jest
+            .spyOn(metamaskController, 'getKeyringForDevice')
+            .mockResolvedValue({
+              bridge: {
+                minorVersion: 1,
+                model: 'T',
+              },
+            });
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('trezor');
+        });
+
+        it('should return undefined for unknown device name', async () => {
+          const deviceName = 'unknown';
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe(deviceName);
+        });
+
+        it('should handle special case for OneKeyDevice via Trezor', async () => {
+          const deviceName = 'trezor';
+          jest
+            .spyOn(metamaskController, 'getKeyringForDevice')
+            .mockResolvedValue({
+              bridge: {
+                model: 'T',
+                minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION,
+              },
+            });
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('OneKey via Trezor');
+        });
       });
 
       describe('forgetDevice', () => {
