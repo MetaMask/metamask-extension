@@ -5878,7 +5878,11 @@ export default class MetamaskController extends EventEmitter {
         },
         // network configuration-related
         setActiveNetwork: async (networkClientId) => {
-          await this.networkController.setActiveNetwork(networkClientId);
+          // Skip setting the globally selected network if there are
+          // pending approvals otherwise they will get wiped
+          if (this.approvalController.getTotalApprovalCount() === 0) {
+            await this.networkController.setActiveNetwork(networkClientId);
+          }
           // if the origin has the eth_accounts permission
           // we set per dapp network selection state
           if (
