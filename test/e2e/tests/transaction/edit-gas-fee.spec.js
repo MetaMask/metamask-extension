@@ -158,6 +158,8 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
+  // todo: reenable this test https://github.com/MetaMask/test-dapp/issues/366
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
     await withFixtures(
       {
