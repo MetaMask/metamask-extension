@@ -4,6 +4,7 @@ import {
 } from '@metamask/base-controller';
 import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
 import { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { ChainId, Quote } from '../../../../ui/pages/bridge/types';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
 import BridgeStatusController from './bridge-status-controller';
@@ -123,8 +124,7 @@ export type BridgeHistoryItem = {
 // o/w you get a type error
 type TxHash = string;
 export type BridgeStatusControllerState = {
-  txStatuses: Record<TxHash, StatusResponse>;
-  // txHistory: Record<string, BridgeHistoryItem>;
+  txHistory: Record<TxHash, BridgeHistoryItem>;
 };
 
 export enum BridgeStatusAction {
@@ -147,7 +147,9 @@ type BridgeStatusControllerEvents = ControllerStateChangeEvent<
   BridgeStatusControllerState
 >;
 
-type AllowedActions = NetworkControllerFindNetworkClientIdByChainIdAction;
+type AllowedActions =
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | AccountsControllerGetSelectedAccountAction;
 type AllowedEvents = TransactionControllerTransactionConfirmedEvent;
 
 /**
