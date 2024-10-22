@@ -1798,6 +1798,7 @@
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
         "@metamask/notification-services-controller>firebase": true,
         "@metamask/profile-sync-controller": true,
+        "@metamask/utils": true,
         "bignumber.js": true,
         "loglevel": true,
         "uuid": true
