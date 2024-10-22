@@ -1716,9 +1716,7 @@ jobs:
       - checkout
       - run:
           name: Check for MMI Team Label or Reviewer
-          command: |
-            chmod +x .circleci/scripts/check_mmi_trigger.sh
-            ./.circleci/scripts/check_mmi_trigger.sh "team-mmi" "mmi"
+          command: ./.circleci/scripts/check_mmi_trigger.sh
       - store_artifacts:
           path: mmi_trigger.env
           destination: mmi_trigger.env

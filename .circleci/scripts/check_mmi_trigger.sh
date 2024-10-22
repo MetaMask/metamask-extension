@@ -3,8 +3,10 @@ set -eo pipefail
 
 # Ensure required environment variables are set
 if [ -z "$CIRCLE_PULL_REQUEST" ] || [ -z "$GITHUB_TOKEN" ]; then
-  echo "Error: CIRCLE_PULL_REQUEST and GITHUB_TOKEN must be set."
-  exit 1
+  echo "This appears to be a fork or required environment variables are not set."
+  echo "Skipping MMI tests."
+  echo "run_mmi_tests=false" > mmi_trigger.env
+  exit 0
 fi
 
 # Extract PR number from the pull request URL
