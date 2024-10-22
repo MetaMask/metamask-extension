@@ -1,5 +1,6 @@
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { KnownCaipNamespace } from '@metamask/utils';
 import {
   stripSnapPrefix,
   getLocalizedSnapManifest,
@@ -122,11 +123,7 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
-import {
-  getMultichainBalances,
-  getMultichainNetwork,
-  getChains,
-} from './multichain';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -461,6 +458,21 @@ export function getSelectedAccountCachedBalancesByChainId(state) {
   return balancesByChainId;
 }
 
+export function caipChainIdToHex(chainId) {
+  const [namespace, reference] = chainId.split(':');
+  if (namespace === 'eip155') {
+    const chainIdDecimal = parseInt(reference, 10);
+    return `0x${chainIdDecimal.toString(16)}`;
+  }
+  return chainId;
+}
+
+export function hexToCaipChainId(hex) {
+  const hexValue = hex.startsWith('0x') ? hex.slice(2) : hex;
+  const chainIdDecimal = parseInt(hexValue, 16);
+  return `eip155:${chainIdDecimal}`;
+}
+
 /**
  *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
  */
@@ -578,7 +590,164 @@ export const getTokenExchangeRates = (state) => {
 
 export const getTokensMarketData = (state) => {
   const chainId = getCurrentChainId(state);
-  return state.metamask.marketData?.[chainId];
+  const marketData = {
+    '0x1': {
+      // Ethereum Native token ******
+      '0x0000000000000000000000000000000000000000': {
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        currency: 'ETH',
+        id: 'ethereum',
+        price: 1.0000726178421582,
+        marketCap: 120374263.85039304,
+        allTimeHigh: 1.872695124126123,
+        allTimeLow: 0.00016621452365167183,
+        totalVolume: 5308887.015842034,
+        high1d: 1.0147677692591692,
+        low1d: 0.9936194962298293,
+        circulatingSupply: 120387362.762955,
+        dilutedMarketCap: 120374263.85039304,
+        marketCapPercentChange1d: -0.64964,
+        priceChange1d: -16.22303390018078,
+        pricePercentChange1h: -0.2999715552409102,
+        pricePercentChange1d: -0.618879494740698,
+        pricePercentChange7d: 9.728879673482494,
+        pricePercentChange14d: 12.175196996309179,
+        pricePercentChange30d: 10.175859028915708,
+        pricePercentChange200d: -28.044745794161667,
+        pricePercentChange1y: 64.93607348906181,
+      },
+      // Example Ethereum token ******
+      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
+        tokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        currency: 'USDC',
+        id: 'usd-coin',
+        price: 0.00038370084519404344,
+        marketCap: 13331889.134607311,
+        allTimeHigh: 0.00044914647747917576,
+        allTimeLow: 0.00033691628933347535,
+        totalVolume: 1574846.8115542484,
+        high1d: 0.0003850375358218917,
+        low1d: 0.00038302674159194645,
+        circulatingSupply: 34751452795.3628,
+        dilutedMarketCap: 13331829.76013019,
+        marketCapPercentChange1d: -0.06737,
+        priceChange1d: -0.000655467524627418,
+        pricePercentChange1h: -0.05174268708087084,
+        pricePercentChange1d: -0.06553537070828762,
+        pricePercentChange7d: 0.02156004626949369,
+        pricePercentChange14d: -0.03760749615660747,
+        pricePercentChange30d: 0.01603305301773797,
+        pricePercentChange200d: 0.05198102213414082,
+        pricePercentChange1y: -0.012088418136522984,
+      },
+    },
+    '0x38': {
+      // Binance Smart Chain Native token ******
+      '0x0000000000000000000000000000000000000000': {
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        currency: 'BNB',
+        id: 'binancecoin',
+        price: 1.0000352841,
+        marketCap: 570374263.85039304,
+        allTimeHigh: 2.482695124126123,
+        allTimeLow: 0.00012621452365167183,
+        totalVolume: 2308887.015842034,
+        high1d: 1.0477677692591692,
+        low1d: 0.9934194962298293,
+        circulatingSupply: 160387362.762955,
+        dilutedMarketCap: 570374263.85039304,
+        marketCapPercentChange1d: -1.20964,
+        priceChange1d: -16.22303390018078,
+        pricePercentChange1h: -0.2399715552409102,
+        pricePercentChange1d: -0.618879494740698,
+        pricePercentChange7d: 10.257880173482494,
+        pricePercentChange14d: 13.175196996309179,
+        pricePercentChange30d: 11.205859028915708,
+        pricePercentChange200d: -29.044745794161667,
+        pricePercentChange1y: 60.73607348906181,
+      },
+      // Example BSC token ******
+      '0x55d398326f99059fF775485246999027B3197955': {
+        tokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+        currency: 'USDT',
+        id: 'tether',
+        price: 0.00038370084519404344,
+        marketCap: 41331889.134607311,
+        allTimeHigh: 0.00044914647747917576,
+        allTimeLow: 0.00033691628933347535,
+        totalVolume: 2574846.8115542484,
+        high1d: 0.0003850375358218917,
+        low1d: 0.00038302674159194645,
+        circulatingSupply: 64751452795.3628,
+        dilutedMarketCap: 41331829.76013019,
+        marketCapPercentChange1d: -0.06737,
+        priceChange1d: -0.000655467524627418,
+        pricePercentChange1h: -0.05174268708087084,
+        pricePercentChange1d: -0.06553537070828762,
+        pricePercentChange7d: 0.01556004626949369,
+        pricePercentChange14d: -0.03760749615660747,
+        pricePercentChange30d: 0.02003305301773797,
+        pricePercentChange200d: 0.03198102213414082,
+        pricePercentChange1y: -0.012088418136522984,
+      },
+    },
+    '0x89': {
+      // Polygon Native token ******
+      '0x0000000000000000000000000000000000000000': {
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        currency: 'MATIC',
+        id: 'matic-network',
+        price: 1.00000572623,
+        marketCap: 370374263.85039304,
+        allTimeHigh: 3.042695124126123,
+        allTimeLow: 0.00016721452365167183,
+        totalVolume: 1208887.015842034,
+        high1d: 1.0127677692591692,
+        low1d: 0.9936194962298293,
+        circulatingSupply: 100387362.762955,
+        dilutedMarketCap: 370374263.85039304,
+        marketCapPercentChange1d: -0.50964,
+        priceChange1d: -11.22303390018078,
+        pricePercentChange1h: -0.2999715552409102,
+        pricePercentChange1d: -0.518879494740698,
+        pricePercentChange7d: 12.728879673482494,
+        pricePercentChange14d: 15.175196996309179,
+        pricePercentChange30d: 9.175859028915708,
+        pricePercentChange200d: -24.044745794161667,
+        pricePercentChange1y: 59.93607348906181,
+      },
+      // Example Polygon token ******
+      '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619': {
+        tokenAddress: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+        currency: 'WETH',
+        id: 'wrapped-ethereum',
+        price: 0.00038370084519404344,
+        marketCap: 12331889.134607311,
+        allTimeHigh: 0.00044914647747917576,
+        allTimeLow: 0.00033691628933347535,
+        totalVolume: 1574846.8115542484,
+        high1d: 0.0003850375358218917,
+        low1d: 0.00038302674159194645,
+        circulatingSupply: 14751452795.3628,
+        dilutedMarketCap: 12331829.76013019,
+        marketCapPercentChange1d: -0.06737,
+        priceChange1d: -0.000655467524627418,
+        pricePercentChange1h: -0.05174268708087084,
+        pricePercentChange1d: -0.06553537070828762,
+        pricePercentChange7d: 0.01156004626949369,
+        pricePercentChange14d: -0.03760749615660747,
+        pricePercentChange30d: 0.01903305301773797,
+        pricePercentChange200d: 0.04198102213414082,
+        pricePercentChange1y: -0.014088418136522984,
+      },
+    },
+  };
+  // return state.metamask.marketData?.[chainId];
+  console.log({
+    marketData: state.metamask.marketData,
+    marketData2: marketData,
+  });
+  return marketData[chainId];
 };
 
 export function getAddressBook(state) {
@@ -751,6 +920,94 @@ export function getSwitchedNetworkDetails(state) {
   }
 
   return null;
+}
+
+export function getChains(state) {
+  // const nonEvmProviders = getMultichainNetworkProviders(state);
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
+
+  const evmNetworks = Object.values(networkConfigurations).map(
+    (networkConfig) => {
+      const isHex = networkConfig.chainId.startsWith('0x');
+      const chainIdHex = isHex
+        ? networkConfig.chainId.toLowerCase()
+        : `0x${parseInt(networkConfig.chainId, 10).toString(16)}`;
+      const chainIdDecimal = parseInt(chainIdHex, 16);
+      const chainIdCaip = `${KnownCaipNamespace.Eip155}:${chainIdDecimal}`;
+
+      // Handle defaultBlockExplorerUrlIndex possibly being undefined
+      let blockExplorerUrl;
+      if (
+        Array.isArray(networkConfig.blockExplorerUrls) &&
+        networkConfig.blockExplorerUrls.length > 0
+      ) {
+        const explorerIndex = networkConfig.defaultBlockExplorerUrlIndex ?? 0;
+        blockExplorerUrl = networkConfig.blockExplorerUrls[explorerIndex];
+      }
+
+      // Build rpcPrefs
+      const rpcPrefs = {};
+      if (blockExplorerUrl) {
+        rpcPrefs.blockExplorerUrl = blockExplorerUrl;
+      }
+
+      // Determine network type based on chain ID or name
+      let networkType = 'rpc'; // default to 'rpc' if no match found
+
+      // Map chain IDs to NetworkType values
+      switch (chainIdHex) {
+        case '0x1':
+          networkType = 'mainnet';
+          break;
+        case '0xaa36a7':
+          networkType = 'sepolia';
+          break;
+        case '0xe705':
+          networkType = 'linea-sepolia';
+          break;
+        case '0xe708':
+          networkType = 'linea-mainnet';
+          break;
+        // Add more cases as needed
+        default:
+          // If networkConfig.type matches NetworkType, use it
+          if (
+            networkConfig.type &&
+            Object.values(NetworkType).includes(networkConfig.type)
+          ) {
+            networkType = networkConfig.type;
+          } else {
+            networkType = 'rpc'; // Fallback to 'rpc' if no match
+          }
+      }
+
+      // Build network object
+      const network = {
+        chainId: chainIdHex,
+        ticker: networkConfig.nativeCurrency,
+        rpcPrefs,
+        type: networkType,
+      };
+
+      return {
+        nickname: networkConfig.name,
+        isEvmNetwork: true,
+        chainId: chainIdCaip,
+        network,
+      };
+    },
+  );
+
+  // const nonEvmNetworks: MultichainNetwork[] = nonEvmProviders.map(
+  //   (provider) => ({
+  //     nickname: provider.nickname,
+  //     isEvmNetwork: false,
+  //     chainId: provider.chainId,
+  //     network: provider,
+  //   }),
+  // );
+
+  return [...evmNetworks]; //, ...nonEvmNetworks];
 }
 
 export function getAppIsLoading(state) {

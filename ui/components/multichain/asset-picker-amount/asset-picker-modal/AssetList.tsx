@@ -1,8 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { getSelectedAccountCachedBalancesByChainId } from '../../../../selectors';
-import { getChains } from '../../../../selectors/multichain';
+import {
+  getChains,
+  getSelectedAccountCachedBalancesByChainId,
+} from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
@@ -41,8 +43,13 @@ export default function AssetList({
   isTokenDisabled,
 }: AssetListProps) {
   const selectedToken = asset?.address;
-  const chains = useSelector(getChains);
+
   const nativeCurrency = useSelector(getNativeCurrency);
+  const chains = useSelector(getChains);
+  const balancesByChainId = useSelector(
+    getSelectedAccountCachedBalancesByChainId,
+  );
+
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
@@ -98,23 +105,52 @@ export default function AssetList({
             >
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native && chains ? (
-                  chains.map((chain) => (
-                    <TokenListItemWithBalance
-                      key={chain.network.chainId}
-                      chain={chain}
-                      token={token}
-                      primaryCurrency={primaryCurrency}
-                      secondaryCurrency={secondaryCurrency}
-                      primaryNumberOfDecimals={primaryNumberOfDecimals}
-                      secondaryNumberOfDecimals={secondaryNumberOfDecimals}
-                      nativeCurrency={nativeCurrency}
-                      isDisabled={isDisabled}
-                    />
-                  ))
+                  chains.map((chain) => {
+                    const { chainId } = chain.network;
+                    const balanceValue = balancesByChainId?.[chainId];
+
+                    const [, primaryCurrencyProperties] = useCurrencyDisplay(
+                      balanceValue,
+                      {
+                        numberOfDecimals: primaryNumberOfDecimals,
+                        currency: primaryCurrency,
+                      },
+                    );
+                    const [secondaryCurrencyDisplay] = useCurrencyDisplay(
+                      balanceValue,
+                      {
+                        numberOfDecimals: secondaryNumberOfDecimals,
+                        currency: secondaryCurrency,
+                        hideLabel: true,
+                      },
+                    );
+
+                    return (
+                      <TokenListItem
+                        key={chain.network.chainId}
+                        title={nativeCurrency}
+                        chain={chain}
+                        primary={primaryCurrencyProperties.value}
+                        tokenSymbol={primaryCurrency}
+                        secondary={secondaryCurrencyDisplay}
+                        tokenImage={token.image}
+                        isOriginalTokenSymbol
+                        tooltipText={
+                          isDisabled ? 'swapTokenNotAvailable' : undefined
+                        }
+                      />
+                    );
+                  })
                 ) : (
                   <AssetComponent
-                    key={token.address}
-                    {...token}
+                    key={token.address ?? token.symbol}
+                    symbol={token.symbol}
+                    address={token.address ?? ''}
+                    string={''}
+                    decimals={token.decimals}
+                    type={AssetType.token}
+                    image={token.image}
+                    balance={token.balance}
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }
@@ -126,58 +162,5 @@ export default function AssetList({
         );
       })}
     </Box>
-  );
-}
-
-type TokenListItemWithBalanceProps = {
-  chain: any; // Replace 'any' with the actual type of 'chain' if available
-  token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>;
-  primaryCurrency: string;
-  secondaryCurrency: string;
-  primaryNumberOfDecimals: number;
-  secondaryNumberOfDecimals: number;
-  nativeCurrency: string;
-  isDisabled: boolean;
-};
-
-function TokenListItemWithBalance({
-  chain,
-  token,
-  primaryCurrency,
-  secondaryCurrency,
-  primaryNumberOfDecimals,
-  secondaryNumberOfDecimals,
-  nativeCurrency,
-  isDisabled,
-}: TokenListItemWithBalanceProps) {
-  const { chainId } = chain.network;
-  const balancesByChainId = useSelector(
-    getSelectedAccountCachedBalancesByChainId,
-  );
-  const balanceValue = balancesByChainId?.[chainId];
-
-  console.log({ balancesByChainId });
-
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  });
-  const [secondaryCurrencyDisplay] = useCurrencyDisplay(balanceValue, {
-    numberOfDecimals: secondaryNumberOfDecimals,
-    currency: secondaryCurrency,
-    hideLabel: true,
-  });
-
-  return (
-    <TokenListItem
-      title={nativeCurrency}
-      chain={chain}
-      primary={primaryCurrencyProperties.value}
-      tokenSymbol={primaryCurrency}
-      secondary={secondaryCurrencyDisplay}
-      tokenImage={token.image}
-      isOriginalTokenSymbol
-      tooltipText={isDisabled ? 'swapTokenNotAvailable' : undefined}
-    />
   );
 }

@@ -37,12 +37,10 @@ const NativeToken = ({ onClickAsset, chain }: NativeTokenProps) => {
   const balanceIsLoading = !balance;
 
   const balb = useNativeTokenBalance(chain.network.chainId);
-  console.log({ balance, balb });
 
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
 
   const isEvm = useSelector(getMultichainIsEvm);
-
   console.log({ balanceAll, chain, balance });
 
   if (!balb) {

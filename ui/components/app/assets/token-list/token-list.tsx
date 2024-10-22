@@ -15,23 +15,21 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
-} from '../../../../selectors';
-import {
-  MultichainNetwork,
   caipChainIdToHex,
   getChains,
-} from '../../../../selectors/multichain';
+} from '../../../../selectors';
+import { MultichainNetwork } from '../../../../selectors/multichain';
 import { useAccountTotalFiatBalanceByChainId } from '../../../../hooks/useAccountTotalFiatBalance';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;
-  nativeToken: React.ReactNode;
+  nativeTokens: React.ReactNode;
 };
 
 export default function TokenList({
   onTokenClick,
-  nativeToken,
+  nativeTokens,
 }: TokenListProps) {
   const t = useI18nContext();
   const { tokenSortConfig } = useSelector(getPreferences);
@@ -62,7 +60,7 @@ export default function TokenList({
 
   return (
     <div>
-      <>{nativeToken}</>
+      <>{nativeTokens}</>
       {chains.map((chain) => (
         <TokenListForChain
           key={chain.network.chainId}
@@ -112,6 +110,7 @@ function TokenListForChain({
   };
 
   const sortedTokens = useMemo(() => {
+    /* [nativeTokenWithBalance, ...tokensWithBalances] */
     return sortAssets(tokensWithBalances, tokenSortConfig);
   }, [
     tokensWithBalances,
@@ -133,6 +132,14 @@ function TokenListForChain({
   ) : (
     <div>
       {sortedTokens.map((tokenData) => {
+        /*
+        if (tokenData?.isNative) {
+          // we need cloneElement so that we can pass the unique key
+          return React.cloneElement(nativeToken as React.ReactElement, {
+            key: `${tokenData.symbol}-${tokenData.address}`,
+          });
+        }
+        */
         return (
           <TokenCell
             key={`${chainId}-${tokenData.symbol}-${tokenData.address}`}
