@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { IconName } from '@metamask/snaps-sdk/jsx';
+import { useSelector } from 'react-redux';
 import {
   Box,
   ButtonIcon,
@@ -17,13 +17,15 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
+import { formatEtaInMinutes } from '../utils/quote';
 
 export const BridgeQuotesModal = ({
   onClose,
   ...modalProps
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
-  const { sortedQuotes } = useSelector(getBridgeQuotes);
   const t = useI18nContext();
+
+  const { sortedQuotes } = useSelector(getBridgeQuotes);
 
   const [, setSortOrder] = useState(t('bridgeOverallCost'));
   return (
@@ -53,12 +55,24 @@ export const BridgeQuotesModal = ({
         </Box>
         <Box className="quotes-modal__quotes">
           {sortedQuotes.map((quote, index) => {
-            const { totalNetworkFee, estimatedProcessingTimeInSeconds } = quote;
+            const {
+              totalNetworkFee,
+              sentAmount,
+              adjustedReturn,
+              estimatedProcessingTimeInSeconds,
+            } = quote;
             return (
               <Box key={index} className="quotes-modal__quotes__row">
-                <Text>{totalNetworkFee?.fiat?.toString()}</Text>
+                <Text>{totalNetworkFee.fiat?.toString()}</Text>
                 <Text>
-                  {t('bridgeTimingMinutes', [estimatedProcessingTimeInSeconds])}
+                  {adjustedReturn.fiat && sentAmount.fiat
+                    ? adjustedReturn.fiat.minus(sentAmount.fiat).toFixed(2)
+                    : ''}
+                </Text>
+                <Text>
+                  {t('bridgeTimingMinutes', [
+                    formatEtaInMinutes(estimatedProcessingTimeInSeconds),
+                  ])}
                 </Text>
               </Box>
             );

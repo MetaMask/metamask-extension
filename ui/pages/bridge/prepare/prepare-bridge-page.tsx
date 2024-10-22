@@ -15,6 +15,7 @@ import {
   updateQuoteRequestParams,
 } from '../../../ducks/bridge/actions';
 import {
+  getBridgeQuotes,
   getFromAmount,
   getFromChain,
   getFromChains,
@@ -22,7 +23,6 @@ import {
   getFromTokens,
   getFromTopAssets,
   getQuoteRequest,
-  getToAmount,
   getToChain,
   getToChains,
   getToToken,
@@ -67,9 +67,9 @@ const PrepareBridgePage = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const toAmount = useSelector(getToAmount);
 
   const quoteRequest = useSelector(getQuoteRequest);
+  const { activeQuote } = useSelector(getBridgeQuotes);
 
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
@@ -228,8 +228,10 @@ const PrepareBridgePage = () => {
             testId: 'to-amount',
             readOnly: true,
             disabled: true,
-            value: toAmount ?? '0',
-            className: toAmount ? 'amount-input defined' : 'amount-input',
+            value: activeQuote?.toTokenAmount?.raw.toFixed(2) ?? '0',
+            className: activeQuote?.toTokenAmount.raw
+              ? 'amount-input defined'
+              : 'amount-input',
           }}
         />
       </Box>
