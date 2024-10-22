@@ -127,9 +127,10 @@ export const getFromToken = (state: BridgeAppState) => {
     : getSwapsDefaultToken(state);
 };
 
-export const getToToken = (state: BridgeAppState) => {
-  return state.bridge.toToken;
-};
+export const getToToken = createDeepEqualSelector(
+  (state: BridgeAppState) => state.bridge.toToken,
+  (toToken) => toToken,
+);
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
