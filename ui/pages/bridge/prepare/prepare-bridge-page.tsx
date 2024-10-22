@@ -22,6 +22,7 @@ import {
   getFromTokens,
   getFromTopAssets,
   getQuoteRequest,
+  getToAmount,
   getToChain,
   getToChains,
   getToToken,
@@ -42,7 +43,6 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../types';
-import useBridgeQuotes from '../../../hooks/bridge/useBridgeQuotes';
 import { getCurrentCurrency } from '../../../selectors';
 import { BridgeInputGroup } from './bridge-input-group';
 

@@ -2,14 +2,21 @@ import {
   NetworkConfiguration,
   NetworkState,
 } from '@metamask/network-controller';
-import { uniqBy } from 'lodash';
+import { orderBy, uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
+import { add0x } from '@metamask/utils';
+import { GasFeeEstimates } from '@metamask/gas-fee-controller';
+import { BigNumber } from 'bignumber.js';
 import {
   getNetworkConfigurationsByChainId,
   getIsBridgeEnabled,
   getSwapsDefaultToken,
 } from '../../selectors';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  ALLOWED_BRIDGE_CHAIN_IDS,
+  BRIDGE_QUOTE_MAX_ETA_SECONDS,
+  BRIDGE_QUOTE_MAXRETURN_VALUE_DIFFERENCE_PERCENTAGE,
+} from '../../../shared/constants/bridge';
 import {
   BridgeControllerState,
   BridgeFeatureFlagsKey,
@@ -17,11 +24,28 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
 import { createDeepEqualSelector } from '../../selectors/util';
-import { getProviderConfig } from '../metamask/metamask';
+import {
+  getConversionRate,
+  getGasFeeEstimates,
+  getProviderConfig,
+} from '../metamask/metamask';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
+import {
+  QuoteMetadata,
+  QuoteResponse,
+  SortOrder,
+} from '../../pages/bridge/types';
+import {
+  calcAdjustedReturn,
+  calcSentAmount,
+  calcSwapRate,
+  calcToAmount,
+  calcTotalNetworkFee,
+} from '../../pages/bridge/utils/quote';
+import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { BridgeState } from './bridge';
 
 export type BridgeAppState = {
@@ -145,20 +169,145 @@ const getToTokenExchangeRates = createDeepEqualSelector(
   }),
 );
 
-export const getBridgeQuotes = (state: BridgeAppState) => {
-  return {
-    quotes: state.metamask.bridgeState.quotes,
-    quotesLastFetchedMs: state.metamask.bridgeState.quotesLastFetched,
-    isLoading:
-      state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
-  };
-};
+// TODO reuse in bridge cta
+const getBridgeFeesPerGas = createSelector(
+  getGasFeeEstimates,
+  (gasFeeEstimates) => ({
+    maxFeePerGas: decGWEIToHexWEI(
+      (gasFeeEstimates as GasFeeEstimates)?.high?.suggestedMaxFeePerGas,
+    ),
+    maxPriorityFeePerGas: decGWEIToHexWEI(
+      (gasFeeEstimates as GasFeeEstimates)?.high?.suggestedMaxPriorityFeePerGas,
+    ),
+  }),
+);
 
-export const getRecommendedQuote = createSelector(
-  getBridgeQuotes,
-  ({ quotes }) => {
-    return quotes[0];
+const getBridgeSortOrder = (state: BridgeAppState) => state.bridge.sortOrder;
+
+const getQuotesWithMetadata = createDeepEqualSelector(
+  (state) => state.metamask.bridgeState.quotes,
+  getToTokenExchangeRates,
+  getToTokenExchangeRates,
+  getConversionRate,
+  getBridgeFeesPerGas,
+  (
+    quotes,
+    { toTokenExchangeRate, toNativeExchangeRate },
+    fromTokenExchangeRates,
+    fromNativeExchangeRate,
+    { maxFeePerGas, maxPriorityFeePerGas },
+  ): (QuoteResponse & QuoteMetadata)[] => {
+    return quotes.map((quote: QuoteResponse) => {
+      const toTokenAmount = calcToAmount(
+        quote.quote,
+        toTokenExchangeRate,
+        toNativeExchangeRate,
+      );
+      const totalNetworkFee = calcTotalNetworkFee(
+        quote,
+        add0x(maxFeePerGas),
+        add0x(maxPriorityFeePerGas),
+        fromNativeExchangeRate,
+      );
+      const sentAmount = calcSentAmount(
+        quote.quote,
+        fromTokenExchangeRates,
+        fromNativeExchangeRate,
+      );
+      return {
+        ...quote,
+        toTokenAmount,
+        sentAmount,
+        totalNetworkFee,
+        adjustedReturn: calcAdjustedReturn(
+          toTokenAmount.fiat,
+          totalNetworkFee.fiat,
+        ),
+        swapRate: calcSwapRate(sentAmount.raw, toTokenAmount.raw),
+      };
+    });
   },
+);
+
+const getSortedQuotesWithMetadata = createDeepEqualSelector(
+  getQuotesWithMetadata,
+  getBridgeSortOrder,
+  (quotesWithMetadata, sortOrder) => {
+    switch (sortOrder) {
+      case SortOrder.ETA_ASC:
+        return orderBy(
+          quotesWithMetadata,
+          (quote) => quote.estimatedProcessingTimeInSeconds,
+          'asc',
+        );
+      case SortOrder.ADJUSTED_RETURN_DESC:
+      default:
+        return orderBy(
+          quotesWithMetadata,
+          ({ adjustedReturn }) => adjustedReturn.fiat,
+          'desc',
+        );
+    }
+  },
+);
+
+const getRecommendedQuote = createDeepEqualSelector(
+  getSortedQuotesWithMetadata,
+  getBridgeSortOrder,
+  (sortedQuotesWithMetadata, sortOrder) => {
+    if (!sortedQuotesWithMetadata.length) {
+      return undefined;
+    }
+
+    const bestReturnValue = BigNumber.max(
+      sortedQuotesWithMetadata.map(
+        ({ adjustedReturn }) => adjustedReturn.fiat ?? 0,
+      ),
+    );
+    const isFastestQuoteValueReasonable = (
+      adjustedReturnInFiat: BigNumber | null,
+    ) =>
+      adjustedReturnInFiat
+        ? adjustedReturnInFiat
+            .div(bestReturnValue)
+            .gte(BRIDGE_QUOTE_MAXRETURN_VALUE_DIFFERENCE_PERCENTAGE)
+        : true;
+
+    const isBestPricedQuoteETAReasonable = (
+      estimatedProcessingTimeInSeconds: number,
+    ) => estimatedProcessingTimeInSeconds < BRIDGE_QUOTE_MAX_ETA_SECONDS;
+
+    return (
+      sortedQuotesWithMetadata.find((quote) => {
+        return sortOrder === SortOrder.ETA_ASC
+          ? isFastestQuoteValueReasonable(quote.adjustedReturn.fiat)
+          : isBestPricedQuoteETAReasonable(
+              quote.estimatedProcessingTimeInSeconds,
+            );
+      }) ?? sortedQuotesWithMetadata[0]
+    );
+  },
+);
+
+// TODO deep equal?
+export const getBridgeQuotes = createSelector(
+  getSortedQuotesWithMetadata,
+  getRecommendedQuote,
+  (state) => state.metamask.bridgeState.quotesLastFetched,
+  (state) =>
+    state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
+  (
+    sortedQuotesWithMetadata,
+    recommendedQuote,
+    quotesLastFetchedMs,
+    isLoading,
+  ) => ({
+    sortedQuotes: sortedQuotesWithMetadata,
+    recommendedQuote,
+    activeQuote: recommendedQuote,
+    quotesLastFetchedMs,
+    isLoading,
+  }),
 );
 
 export const getQuoteRequest = (state: BridgeAppState) => {
@@ -185,13 +334,4 @@ export const getIsBridgeTx = createDeepEqualSelector(
     isBridgeEnabled && toChain && fromChain?.chainId
       ? fromChain.chainId !== toChain.chainId
       : false,
-);
-
-export const getToTokenExchangeRates = createDeepEqualSelector(
-  (state: BridgeAppState) => state.bridge.toTokenExchangeRate,
-  (state: BridgeAppState) => state.bridge.toNativeExchangeRate,
-  (toTokenExchangeRate, toNativeExchangeRate) => ({
-    toTokenExchangeRate,
-    toNativeExchangeRate,
-  }),
 );
