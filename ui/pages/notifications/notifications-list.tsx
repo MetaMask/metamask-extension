@@ -28,7 +28,6 @@ export type NotificationsListProps = {
   isLoading: boolean;
   isError: boolean;
   notificationsCount: number;
-  setNotificationTimeout: (id: string) => void;
 };
 
 function LoadingContent() {
@@ -90,7 +89,7 @@ function NotificationsListStates({
   isLoading,
   isError,
   setNotificationTimeout,
-}: NotificationsListProps) {
+}: NotificationsListProps & { setNotificationTimeout: (id: string) => void }) {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );

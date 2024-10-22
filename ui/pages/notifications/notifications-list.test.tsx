@@ -51,6 +51,7 @@ describe('NotificationsList', () => {
               isLoading={false}
               isError={false}
               notificationsCount={0}
+              setNotificationTimeout={jest.fn()}
             />
           </MetamaskNotificationsProvider>
         </Router>
