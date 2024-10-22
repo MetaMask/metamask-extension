@@ -14,6 +14,9 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitBridgeTransaction } from '../../../ducks/bridge/actions';
+import useBridgeQuotes from '../../../hooks/bridge/useBridgeQuotes';
+import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
+import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 
 export const BridgeCTAButton = () => {
   const dispatch = useDispatch();
@@ -29,7 +32,14 @@ export const BridgeCTAButton = () => {
   const toAmount = useSelector(getToAmount);
 
   const { isLoading } = useSelector(getBridgeQuotes);
-  const quoteResponse = useSelector(getRecommendedQuote);
+
+  const gasFeeEstimates = useSelector(getGasFeeEstimates);
+  const maxFeePerGas = decGWEIToHexWEI(
+    gasFeeEstimates?.high?.suggestedMaxFeePerGas,
+  );
+  const maxPriorityFeePerGas = decGWEIToHexWEI(
+    gasFeeEstimates?.high?.suggestedMaxPriorityFeePerGas,
+  );
 
   const isTxSubmittable =
     fromToken && toToken && fromChain && toChain && fromAmount && toAmount;
@@ -58,7 +68,14 @@ export const BridgeCTAButton = () => {
       data-testid="bridge-cta-button"
       onClick={() => {
         if (isTxSubmittable) {
-          dispatch(submitBridgeTransaction(quoteResponse, history));
+          dispatch(
+            submitBridgeTransaction(
+              recommendedQuote,
+              history,
+              maxFeePerGas,
+              maxPriorityFeePerGas,
+            ),
+          );
         }
       }}
       disabled={!isTxSubmittable}
