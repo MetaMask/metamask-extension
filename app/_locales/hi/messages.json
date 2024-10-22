@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "कस्टम नेटवर्क जोड़ें"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "इससे इस नेटवर्क को MetaMask के अंदर इस्तेमाल करने की अनुमति मिलेगी।"
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask कस्टम नेटवर्क को वेरीफ़ाई नहीं करता है।"
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "$1 के बारे में जानें।",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "स्कैम और नेटवर्क से जुड़े सुरक्षा जोखिम",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "इस साइट को नेटवर्क जोड़ने की अनुमति दें?"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "इस RPC प्रोवाइडर को केवल तभी जोड़ें जब आप निश्चित हैं कि आप इस पर विश्वास कर सकते हैं। $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4858,9 +4841,6 @@
     "message": "अधिक सहायता के लिए $1 के निर्माताओं से कॉन्टेक्ट करें।",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "कुछ नेटवर्क सुरक्षा और/या गोपनीयता संबंधी जोखिम पैदा कर सकते हैं। नेटवर्क जोड़ने और इस्तेमाल करने से पहले जोखिमों को समझें।"
-  },
   "somethingDoesntLookRight": {
     "message": "कुछ तो गड़बड़ है? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -6006,9 +5986,6 @@
   },
   "viewActivity": {
     "message": "एक्टिविटी देखें"
-  },
-  "viewAllDetails": {
-    "message": "सभी विवरण देखें"
   },
   "viewAllQuotes": {
     "message": "सभी उद्धरण को देखें"
