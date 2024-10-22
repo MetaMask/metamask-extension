@@ -105,7 +105,7 @@ export const processScopedProperties = (
     if (!scope) {
       continue;
     }
-    validScopedProperties[scopeString] = {};
+    validScopedProperties[scopeString as CaipChainId] = {};
 
     if (scopedProperty.eip3085) {
       try {
@@ -113,7 +113,8 @@ export const processScopedProperties = (
           scopeString,
           scopedProperty.eip3085,
         );
-        validScopedProperties[scopeString].eip3085 = scopedProperty.eip3085;
+        validScopedProperties[scopeString as CaipChainId].eip3085 =
+          scopedProperty.eip3085;
       } catch (err) {
         // noop
       }
