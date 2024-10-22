@@ -401,6 +401,37 @@ describe('EthOverview', () => {
     });
   });
 
+  it('sends an event when clicking the Buy button: %s', () => {
+    const mockTrackEvent = jest.fn();
+
+    const mockedStore = configureMockStore([thunk])(mockStore);
+    const { queryByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <EthOverview />
+      </MetaMetricsContext.Provider>,
+      mockedStore,
+    );
+
+    const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
+    expect(buyButton).toBeInTheDocument();
+    expect(buyButton).not.toBeDisabled();
+    fireEvent.click(buyButton);
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      {
+        event: MetaMetricsEventName.NavBuyButtonClicked,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          account_type: mockEvmAccount1.type,
+          chain_id: CHAIN_IDS.MAINNET,
+          location: 'Home',
+          text: 'Buy',
+          token_symbol: expect.any(Object), // FIXME: Is this wrong?
+        },
+      },
+    );
+  });
+
   describe('Disabled buttons when an account cannot sign transactions', () => {
     const buttonTestCases = [
       { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },

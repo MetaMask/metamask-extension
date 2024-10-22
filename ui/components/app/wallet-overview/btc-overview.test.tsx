@@ -247,6 +247,41 @@ describe('BtcOverview', () => {
     });
   });
 
+  it('sends an event when clicking the Buy button', () => {
+    const storeWithBtcBuyable = getStore({
+      ramps: {
+        buyableChains: mockBuyableChainsWithBtc,
+      },
+    });
+
+    const mockTrackEvent = jest.fn();
+    const { queryByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <BtcOverview />
+      </MetaMetricsContext.Provider>,
+      storeWithBtcBuyable,
+    );
+
+    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+    expect(buyButton).toBeInTheDocument();
+    expect(buyButton).not.toBeDisabled();
+    fireEvent.click(buyButton as HTMLElement);
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      {
+        event: MetaMetricsEventName.NavBuyButtonClicked,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          account_type: mockNonEvmAccount.type,
+          chain_id: MultichainNetworks.BITCOIN,
+          location: 'Home',
+          snap_id: mockNonEvmAccount.metadata.snap.id,
+          text: 'Buy',
+        },
+      },
+    );
+  });
+
   it('always show the Receive button', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
     const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
