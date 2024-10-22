@@ -28,6 +28,7 @@ export type NotificationsListProps = {
   isLoading: boolean;
   isError: boolean;
   notificationsCount: number;
+  setNotificationTimeout: (id: string) => void;
 };
 
 function LoadingContent() {
@@ -88,12 +89,11 @@ function NotificationsListStates({
   notifications,
   isLoading,
   isError,
+  setNotificationTimeout,
 }: NotificationsListProps) {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-
-  const { setNotificationTimeout } = useSnapNotificationTimeouts(notifications);
 
   // Case when a user has not enabled wallet notifications yet
   if (activeTab === TAB_KEYS.WALLET && !isMetamaskNotificationsEnabled) {
@@ -128,6 +128,10 @@ function NotificationsListStates({
 }
 
 export function NotificationsList(props: NotificationsListProps) {
+  const { setNotificationTimeout } = useSnapNotificationTimeouts(
+    props.notifications,
+  );
+
   return (
     <Box
       data-testid="notifications-list"
@@ -136,11 +140,17 @@ export function NotificationsList(props: NotificationsListProps) {
       className="notifications__list"
     >
       {/* Actual list (handling all states) */}
-      <NotificationsListStates {...props} />
+      <NotificationsListStates
+        {...props}
+        setNotificationTimeout={setNotificationTimeout}
+      />
 
       {/* Read All Button */}
       {props.notifications.length > 0 && props.notificationsCount > 0 ? (
-        <NotificationsListReadAllButton notifications={props.notifications} />
+        <NotificationsListReadAllButton
+          notifications={props.notifications}
+          setNotificationTimeout={setNotificationTimeout}
+        />
       ) : null}
     </Box>
   );

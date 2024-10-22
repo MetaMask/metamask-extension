@@ -9,6 +9,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { Box, Button, ButtonVariant } from '../../components/component-library';
 import { BlockSize } from '../../helpers/constants/design-system';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 type Notification = NotificationServicesController.Types.INotification;
 type MarkAsReadNotificationsParam =
@@ -16,10 +17,12 @@ type MarkAsReadNotificationsParam =
 
 export type NotificationsListReadAllButtonProps = {
   notifications: Notification[];
+  setNotificationTimeout: (id: string) => void;
 };
 
 export const NotificationsListReadAllButton = ({
   notifications,
+  setNotificationTimeout,
 }: NotificationsListReadAllButtonProps) => {
   const t = useI18nContext();
   const { markNotificationAsRead } = useMarkNotificationAsRead();
@@ -39,6 +42,12 @@ export const NotificationsListReadAllButton = ({
           type: notification.type,
           isRead: notification.isRead,
         }));
+
+      notificationsRead
+        .filter((notification) => notification.type === TRIGGER_TYPES.SNAP)
+        .forEach((snapNotification) =>
+          setNotificationTimeout(snapNotification.id),
+        );
     }
 
     trackEvent({
