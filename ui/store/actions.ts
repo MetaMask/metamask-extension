@@ -3098,6 +3098,10 @@ export function setRedesignedConfirmationsEnabled(value: boolean) {
   return setPreference('redesignedConfirmationsEnabled', value);
 }
 
+export function setPrivacyMode(value: boolean) {
+  return setPreference('setPrivacyMode', value, false);
+}
+
 export function setRedesignedTransactionsEnabled(value: boolean) {
   return setPreference('redesignedTransactionsEnabled', value);
 }
@@ -3348,21 +3352,6 @@ export function setUseNonceField(
       dispatch(displayWarning(error));
     }
     dispatch(hideLoadingIndication());
-  };
-}
-
-export function setPrivacyMode(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setPrivacyMode`);
-    callBackgroundMethod('setPrivacyMode', [val], (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
   };
 }
 
