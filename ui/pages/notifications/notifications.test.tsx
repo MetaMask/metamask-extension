@@ -37,7 +37,6 @@ const initialState = {
     isMetamaskNotificationsEnabled: true,
     isFeatureAnnouncementsEnabled: true,
     metamaskNotifications: [],
-    notifications: [],
     internalAccounts: {
       accounts: [
         {
