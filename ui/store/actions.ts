@@ -2789,15 +2789,6 @@ export function showNftStillFetchingIndication(): Action {
   };
 }
 
-export function setShowNftDetectionEnablementToast(
-  value: boolean,
-): PayloadAction<string | ReactFragment | undefined> {
-  return {
-    type: actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
-    payload: value,
-  };
-}
-
 export function setHardwareWalletDefaultHdPath({
   device,
   path,
@@ -4266,35 +4257,9 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   };
 }
 
-export function setSurveyLinkLastClickedOrClosed(time: number) {
-  return async () => {
-    await submitRequestToBackground('setSurveyLinkLastClickedOrClosed', [time]);
-  };
-}
-
-export function setNewPrivacyPolicyToastClickedOrClosed() {
-  return async () => {
-    await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
-  };
-}
-
 export function setLastViewedUserSurvey(id: number) {
   return async () => {
     await submitRequestToBackground('setLastViewedUserSurvey', [id]);
-  };
-}
-
-export function setOnboardingDate() {
-  return async () => {
-    await submitRequestToBackground('setOnboardingDate');
-  };
-}
-
-export function setNewPrivacyPolicyToastShownDate(time: number) {
-  return async () => {
-    await submitRequestToBackground('setNewPrivacyPolicyToastShownDate', [
-      time,
-    ]);
   };
 }
 
@@ -4935,12 +4900,6 @@ export function hideAccountBanner() {
 
 export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
-}
-
-export function neverShowSwitchedNetworkMessage() {
-  return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
-    true,
-  ]);
 }
 
 /**
