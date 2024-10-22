@@ -43,18 +43,15 @@ describe('BTC Account - Send', function (this: Suite) {
         // Set the amount to send.
         const mockAmountToSend = '0.5';
         await driver.pasteIntoField(
-          `input[placeholder="${SendFlowPlaceHolders.RECIPIENT}"]`,
+          `input[placeholder="${SendFlowPlaceHolders.AMOUNT}"]`,
           mockAmountToSend,
         );
 
         // From here, the "summary panel" should have some information about the fees and total.
-        await driver.waitForSelector(
-          {
-            text: 'Total',
-            tag: 'p',
-          },
-          { timeout: 20000 },
-        );
+        await driver.waitForSelector({
+          text: 'Total',
+          tag: 'p',
+        });
 
         // The review button will become available.
         const snapReviewButton = await driver.findClickableElement({
