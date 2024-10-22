@@ -205,8 +205,6 @@ const TEST_INTERNAL_ACCOUNT = {
   type: EthAccountType.Eoa,
 };
 
-const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
-
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
 
