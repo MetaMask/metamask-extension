@@ -18,7 +18,7 @@ const matchDefault = matchDirective('default-src');
  * @param nonce - The nonce to add to the Content Security Policy (CSP) string.
  * @returns The updated Content Security Policy (CSP) string.
  */
-export const addNonceToCSP = (text: string, nonce: string) => {
+export const addNonceToCsp = (text: string, nonce: string) => {
   const formattedNonce = ` 'nonce-${nonce}'`;
   const directives = text.split(';');
   const scriptIndex = directives.findIndex((directive) =>
