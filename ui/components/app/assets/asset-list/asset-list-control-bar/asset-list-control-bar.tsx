@@ -72,24 +72,26 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
         }
       >
-        <ButtonBase
-          data-testid="sort-by-popover-toggle"
-          className="asset-list-control-bar__button"
-          onClick={toggleNetworkFilterPopover}
-          size={ButtonBaseSize.Sm}
-          endIconName={IconName.ArrowDown}
-          backgroundColor={
-            isNetworkFilterPopoverOpen
-              ? BackgroundColor.backgroundPressed
-              : BackgroundColor.backgroundDefault
-          }
-          borderColor={BorderColor.borderMuted}
-          borderStyle={BorderStyle.solid}
-          color={TextColor.textDefault}
-          marginRight={isFullScreen ? 2 : null}
-        >
-          {t('networkFilter')}
-        </ButtonBase>
+        {process.env.FILTER_TOKENS_TOGGLE && (
+          <ButtonBase
+            data-testid="sort-by-popover-toggle"
+            className="asset-list-control-bar__button"
+            onClick={toggleNetworkFilterPopover}
+            size={ButtonBaseSize.Sm}
+            endIconName={IconName.ArrowDown}
+            backgroundColor={
+              isNetworkFilterPopoverOpen
+                ? BackgroundColor.backgroundPressed
+                : BackgroundColor.backgroundDefault
+            }
+            borderColor={BorderColor.borderMuted}
+            borderStyle={BorderStyle.solid}
+            color={TextColor.textDefault}
+            marginRight={isFullScreen ? 2 : null}
+          >
+            {t('networkFilter')}
+          </ButtonBase>
+        )}
 
         <ButtonBase
           data-testid="sort-by-popover-toggle"
