@@ -45,9 +45,10 @@ export const NotificationDetailButton = ({
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
-        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
-          chain_id: notification?.chain_id,
-        }),
+        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+          notification.type !== TRIGGER_TYPES.SNAP && {
+            chain_id: notification?.chain_id,
+          }),
         clicked_item: 'block_explorer',
       },
     });

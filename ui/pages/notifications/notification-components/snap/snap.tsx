@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -13,8 +14,13 @@ import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
 import { deleteExpiredSnapNotifications } from '../../../../store/actions';
 
+type SnapNotification = Extract<
+  NotificationServicesController.Types.INotification,
+  { type: TRIGGER_TYPES.SNAP }
+>;
+
 type SnapComponentProps = {
-  snapNotification: NotificationServicesController.Types.INotification;
+  snapNotification: SnapNotification;
 };
 
 export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
