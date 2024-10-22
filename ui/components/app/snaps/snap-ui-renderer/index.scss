@@ -34,6 +34,10 @@
     border-radius: 8px;
     border-color: var(--color-border-muted);
 
+    & .mm-icon {
+      top: 0;
+    }
+
     .mm-text--overflow-wrap-anywhere {
       overflow-wrap: normal;
     }
@@ -48,10 +52,6 @@
 
   &__panel {
     gap: 8px;
-
-    .mm-icon--size-inherit {
-      top: 0;
-    }
   }
 
   &__text {
