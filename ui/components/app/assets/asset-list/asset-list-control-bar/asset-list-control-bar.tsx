@@ -88,7 +88,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           color={TextColor.textDefault}
           marginRight={isFullScreen ? 2 : null}
         >
-          Network
+          {t('networkFilter')}
         </ButtonBase>
 
         <ButtonBase

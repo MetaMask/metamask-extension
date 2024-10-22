@@ -3115,6 +3115,9 @@
   "networkFee": {
     "message": "Network fee"
   },
+  "networkFilter": {
+    "message": "Network"
+  },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
