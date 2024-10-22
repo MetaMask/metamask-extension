@@ -177,7 +177,7 @@ describe('Editing Confirm Transaction', function () {
         // open dapp and connect
         await openDapp(driver);
         await driver.clickElement({
-          text: 'Send',
+          text: 'Send EIP 1559 Transaction',
           tag: 'button',
         });
 
