@@ -16,7 +16,7 @@ export const SensitiveText = React.forwardRef<
 
   return (
     <Text ref={ref} {...restProps}>
-      {isHidden ? fallback : children}
+      {isHidden && children ? fallback : children}
     </Text>
   );
 });
