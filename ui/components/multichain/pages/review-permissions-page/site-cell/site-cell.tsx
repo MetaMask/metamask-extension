@@ -100,7 +100,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             setShowEditAccountsModal(true);
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.TokenImportButtonClicked,
+              event: MetaMetricsEventName.ViewPermissionedAccounts,
               properties: {
                 location: 'Connect view, Permissions toast, Permissions (dapp)',
               },
@@ -133,7 +133,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             setShowEditNetworksModal(true);
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.TokenImportButtonClicked,
+              event: MetaMetricsEventName.ViewPermissionedNetworks,
               properties: {
                 location: 'Connect view, Permissions toast, Permissions (dapp)',
               },
