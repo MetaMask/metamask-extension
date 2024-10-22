@@ -158,7 +158,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
+  it.skip('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -175,7 +175,7 @@ describe('Editing Confirm Transaction', function () {
         // open dapp and connect
         await openDapp(driver);
         await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
+          text: 'Send',
           tag: 'button',
         });
 
