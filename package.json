@@ -132,7 +132,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
-    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.3.0-preview-b7ea5d52",
+    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.3.0-preview-257618a8",
     "chokidar": "^3.6.0",
     "gridplus-sdk": "~2.6.0",
     "gridplus-sdk/secp256k1": "^5.0.1",
@@ -345,7 +345,7 @@
     "@metamask/message-manager": "^10.1.0",
     "@metamask/message-signing-snap": "^0.4.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-b7ea5d52",
+    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-257618a8",
     "@metamask/name-controller": "^8.0.0",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/notification-controller": "^6.0.0",
