@@ -56,7 +56,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
-import { addNonceToCSP } from '../../shared/modules/content-security-policy';
+import { addNonceToCSP } from '../../shared/modules/add-nonce-to-csp';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
