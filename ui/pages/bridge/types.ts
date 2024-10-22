@@ -1,3 +1,14 @@
+import BigNumber from 'bignumber.js';
+
+// Extension-specific types
+export type QuoteMetadata = {
+  totalNetworkFee: { raw: BigNumber; fiat: BigNumber | null }; // gasFees + relayerFees
+  toTokenAmount: { raw: BigNumber; fiat: BigNumber | null };
+  adjustedReturn: { fiat: BigNumber | null }; // destTokenAmount - totalNetworkFee
+  sentAmount: { raw: BigNumber; fiat: BigNumber | null }; // srcTokenAmount + metabridgeFee
+  swapRate: BigNumber; // destTokenAmount / sentAmount
+};
+
 // Types copied from Metabridge API
 export enum BridgeFlag {
   EXTENSION_CONFIG = 'extension-config',
