@@ -6,12 +6,12 @@ import {
 } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
-import { accountsSyncMockResponse } from './mockData';
 import {
   NOTIFICATIONS_TEAM_PASSWORD,
   NOTIFICATIONS_TEAM_SEED_PHRASE,
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
+import { accountsSyncMockResponse } from './mockData';
 
 describe('Account syncing', function () {
   describe('from inside MetaMask', function () {
