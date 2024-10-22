@@ -1841,36 +1841,6 @@
         "unstable_autotrackMemoize": true
       }
     },
-    "@metamask/notification-controller": {
-      "packages": {
-        "@metamask/notification-controller>@metamask/base-controller": true,
-        "@metamask/notification-controller>@metamask/utils": true,
-        "@metamask/notification-controller>nanoid": true
-      }
-    },
-    "@metamask/notification-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/notification-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
-      }
-    },
     "@metamask/notification-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1890,6 +1860,7 @@
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
         "@metamask/notification-services-controller>firebase": true,
         "@metamask/profile-sync-controller": true,
+        "@metamask/utils": true,
         "bignumber.js": true,
         "loglevel": true,
         "uuid": true
