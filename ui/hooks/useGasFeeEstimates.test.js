@@ -115,9 +115,9 @@ describe('useGasFeeEstimates', () => {
       renderHook(() => useGasFeeEstimates());
     });
     expect(usePolling).toHaveBeenCalledWith({
-      startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+      startPolling: expect.any(Function),
       stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-      networkClientId: 'selectedNetworkClientId',
+      input: { networkClientId: 'selectedNetworkClientId' },
     });
   });
 
@@ -127,9 +127,9 @@ describe('useGasFeeEstimates', () => {
       renderHook(() => useGasFeeEstimates('networkClientId1'));
     });
     expect(usePolling).toHaveBeenCalledWith({
-      startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+      startPolling: expect.any(Function),
       stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-      networkClientId: 'networkClientId1',
+      input: { networkClientId: 'networkClientId1' },
     });
   });
 
