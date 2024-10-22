@@ -158,14 +158,22 @@ describe('wallet_createSession', () => {
       params: {
         ...baseRequest.params,
         optionalScopes: {
-          foo: 'bar',
+          foo: {
+            methods: [],
+            notifications: [],
+          },
         },
       },
     });
 
     expect(MockMultichain.validateAndNormalizeScopes).toHaveBeenCalledWith(
       baseRequest.params.requiredScopes,
-      { foo: 'bar' },
+      {
+        foo: {
+          methods: [],
+          notifications: [],
+        },
+      },
     );
   });
 

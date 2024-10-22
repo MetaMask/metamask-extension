@@ -180,14 +180,12 @@ async function walletCreateSessionHandler(
     const supportedEthAccounts = getEthAccounts({
       requiredScopes: supportedRequiredScopes,
       optionalScopes: supportedOptionalScopes,
-      isMultichainOrigin: true,
     })
       .map((address) => address.toLowerCase())
       .filter((address) => existingEvmAddresses.includes(address));
     const supportedEthChainIds = getPermittedEthChainIds({
       requiredScopes: supportedRequiredScopes,
       optionalScopes: supportedOptionalScopes,
-      isMultichainOrigin: true,
     });
 
     const legacyApproval = await hooks.requestPermissionApprovalForOrigin({
@@ -231,22 +229,24 @@ async function walletCreateSessionHandler(
     );
 
     await Promise.all(
-      Object.keys(validScopedProperties || {}).map(async (scopeString) => {
-        const scope = sessionScopes[scopeString as ScopeString];
-        if (!scope) {
-          return;
-        }
+      Object.entries(validScopedProperties).map(
+        async ([scopeString, scopedProperty]) => {
+          const scope = sessionScopes[scopeString as ScopeString];
+          if (!scope) {
+            return;
+          }
 
-        const chainId = await validateAndAddEip3085({
-          eip3085Params: validScopedProperties[scopeString].eip3085,
-          addNetwork: hooks.addNetwork,
-          findNetworkClientIdByChainId: hooks.findNetworkClientIdByChainId,
-        });
+          const chainId = await validateAndAddEip3085({
+            eip3085Params: scopedProperty.eip3085,
+            addNetwork: hooks.addNetwork,
+            findNetworkClientIdByChainId: hooks.findNetworkClientIdByChainId,
+          });
 
-        if (chainId) {
-          chainIdsForNetworksAdded.push(chainId);
-        }
-      }),
+          if (chainId) {
+            chainIdsForNetworksAdded.push(chainId);
+          }
+        },
+      ),
     );
 
     hooks.grantPermissions({
