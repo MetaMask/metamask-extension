@@ -706,7 +706,7 @@
       "@storybook/api>core-js": false,
       "@storybook/core>@storybook/core-client>@storybook/ui>core-js-pure": false,
       "@storybook/test-runner>@storybook/core-common>esbuild": false,
-      "eth-lattice-keyring>gridplus-sdk": false,
+      "eth-lattice-keyring>gridplus-sdk": true,
       "ethereumjs-util>ethereum-cryptography>keccak": false,
       "ganache>@trufflesuite/bigint-buffer": false,
       "ganache>@trufflesuite/uws-js-unofficial>bufferutil": false,
