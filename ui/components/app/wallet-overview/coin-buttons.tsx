@@ -39,7 +39,6 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   CONFIRMATION_V_NEXT_ROUTE,
-  DEFAULT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
