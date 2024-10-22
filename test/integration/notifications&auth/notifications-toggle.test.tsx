@@ -166,12 +166,6 @@ describe('Notifications Toggle', () => {
       });
 
       await waitFor(() => {
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => console.log(JSON.stringify(call)),
-        );
-      });
-
-      await waitFor(() => {
         const enableFeatureNotifications =
           mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
             (call) => call[0] === 'setFeatureAnnouncementsEnabled',
