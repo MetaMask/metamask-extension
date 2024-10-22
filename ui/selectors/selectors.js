@@ -1822,6 +1822,10 @@ export function getSortedAnnouncementsToShow(state) {
  * @returns {{networkId: string}[]}
  */
 export function getOrderedNetworksList(state) {
+  console.log(
+    'state.metamask.orderedNetworkList ----',
+    state.metamask.orderedNetworkList,
+  );
   return state.metamask.orderedNetworkList;
 }
 
