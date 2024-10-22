@@ -891,7 +891,8 @@ const sendScreenToConfirmScreen = async (
   quantity,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
-  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.waitForSelector('[data-testid="ens-input"]');
+  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
   // check if element exists and click it
@@ -910,7 +911,8 @@ const sendTransaction = async (
   isAsyncFlow = false,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
-  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.waitForSelector('[data-testid="ens-input"]');
+  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
   await driver.clickElement({
