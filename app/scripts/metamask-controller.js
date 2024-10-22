@@ -3039,7 +3039,7 @@ export default class MetamaskController extends EventEmitter {
         const notificationIds = this.getNotificationsByType(
           TRIGGER_TYPES.SNAP,
         ).reduce((idList, notification) => {
-          if (notification.origin === truncatedSnap.id) {
+          if (notification.data.origin === truncatedSnap.id) {
             idList.push(notification.id);
           }
           return idList;
