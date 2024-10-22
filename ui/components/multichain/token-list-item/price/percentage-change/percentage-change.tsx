@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Text } from '../../../../component-library';
 import {
   Display,
-  FontWeight,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -37,8 +36,7 @@ export const PercentageChange = ({
   return (
     <Box display={Display.Flex}>
       <Text
-        fontWeight={FontWeight.Normal}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodySmMedium}
         color={color}
         data-testid={`token-increase-decrease-percentage-${address}`}
         ellipsis

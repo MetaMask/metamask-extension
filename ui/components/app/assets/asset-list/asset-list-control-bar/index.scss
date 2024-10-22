@@ -1,0 +1,8 @@
+.asset-list-control-bar {
+  padding-top: 8px;
+  padding-bottom: 8px;
+
+  &__button:hover {
+    background-color: var(--color-background-hover);
+  }
+}

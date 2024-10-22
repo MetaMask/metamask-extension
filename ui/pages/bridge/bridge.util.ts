@@ -1,4 +1,4 @@
-import { add0x } from '@metamask/utils';
+import { Hex, add0x } from '@metamask/utils';
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
@@ -12,7 +12,19 @@ import {
 import { MINUTE } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { validateData } from '../../../shared/lib/swaps-utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import {
+  decimalToHex,
+  hexToDecimal,
+} from '../../../shared/modules/conversion.utils';
+import {
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  SwapsTokenObject,
+} from '../../../shared/constants/swaps';
+import { TOKEN_VALIDATORS } from '../swaps/swaps.util';
+import {
+  isSwapsDefaultTokenAddress,
+  isSwapsDefaultTokenSymbol,
+} from '../../../shared/modules/swaps.utils';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
@@ -31,17 +43,17 @@ export type FeatureFlagResponse = {
 };
 // End of copied types
 
-type Validator<T> = {
-  property: keyof T;
+type Validator<ExpectedResponse, DataToValidate> = {
+  property: keyof ExpectedResponse | string;
   type: string;
-  validator: (value: unknown) => boolean;
+  validator: (value: DataToValidate) => boolean;
 };
 
-const validateResponse = <T>(
-  validators: Validator<T>[],
+const validateResponse = <ExpectedResponse, DataToValidate>(
+  validators: Validator<ExpectedResponse, DataToValidate>[],
   data: unknown,
   urlUsed: string,
-): data is T => {
+): data is ExpectedResponse => {
   return validateData(validators, data, urlUsed);
 };
 
@@ -55,7 +67,7 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
   });
 
   if (
-    validateResponse<FeatureFlagResponse>(
+    validateResponse<FeatureFlagResponse, unknown>(
       [
         {
           property: BridgeFlag.EXTENSION_SUPPORT,
@@ -103,4 +115,47 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     // TODO set default to ALLOWED_BRIDGE_CHAIN_IDS once bridging is live
     [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
   };
+}
+
+// Returns a list of enabled (unblocked) tokens
+export async function fetchBridgeTokens(
+  chainId: Hex,
+): Promise<Record<string, SwapsTokenObject>> {
+  // TODO make token api v2 call
+  const url = `${BRIDGE_API_BASE_URL}/getTokens?chainId=${hexToDecimal(
+    chainId,
+  )}`;
+  const tokens = await fetchWithCache({
+    url,
+    fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
+    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_TEN_MINUTES },
+    functionName: 'fetchBridgeTokens',
+  });
+
+  const nativeToken =
+    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+      chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+    ];
+
+  const transformedTokens: Record<string, SwapsTokenObject> = {};
+  if (nativeToken) {
+    transformedTokens[nativeToken.address] = nativeToken;
+  }
+
+  tokens.forEach((token: SwapsTokenObject) => {
+    if (
+      validateResponse<SwapsTokenObject, string>(
+        TOKEN_VALIDATORS,
+        token,
+        url,
+      ) &&
+      !(
+        isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
+        isSwapsDefaultTokenAddress(token.address, chainId)
+      )
+    ) {
+      transformedTokens[token.address] = token;
+    }
+  });
+  return transformedTokens;
 }

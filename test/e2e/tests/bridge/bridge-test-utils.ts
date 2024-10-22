@@ -84,10 +84,6 @@ export class BridgePage {
 
   verifySwapPage = async (expectedHandleCount: number) => {
     await this.driver.delay(4000);
-    await this.driver.waitForSelector({
-      css: '.bridge__title',
-      text: 'Bridge',
-    });
     assert.equal(
       (await this.driver.getAllWindowHandles()).length,
       IS_FIREFOX || !isManifestV3
@@ -120,7 +116,17 @@ const mockServer =
             };
           }),
     );
-    return Promise.all(featureFlagMocks);
+    const portfolioMock = async () =>
+      await mockServer_
+        .forGet('https://portfolio.metamask.io/bridge')
+        .always()
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {},
+          };
+        });
+    return Promise.all([...featureFlagMocks, portfolioMock]);
   };
 
 export const getBridgeFixtures = (

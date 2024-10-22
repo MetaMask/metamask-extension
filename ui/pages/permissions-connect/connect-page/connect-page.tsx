@@ -24,17 +24,29 @@ import {
 } from '../../../components/multichain/pages/page';
 import { SiteCell } from '../../../components/multichain/pages/review-permissions-page';
 import {
+  BackgroundColor,
   BlockSize,
   Display,
+  FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
+import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 
 export type ConnectPageRequest = {
   id: string;
   origin: string;
+  permissions?: Record<
+    string,
+    { caveats?: { type: string; value: string[] }[] }
+  >;
 };
 
 type ConnectPageProps = {
@@ -50,9 +62,22 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
-  activeTabOrigin,
 }) => {
   const t = useI18nContext();
+
+  const ethAccountsPermission =
+    request?.permissions?.[RestrictedMethods.eth_accounts];
+  const requestedAccounts =
+    ethAccountsPermission?.caveats?.find(
+      (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+    )?.value || [];
+
+  const permittedChainsPermission =
+    request?.permissions?.[EndowmentTypes.permittedChains];
+  const requestedChainIds =
+    permittedChainsPermission?.caveats?.find(
+      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+    )?.value || [];
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -67,7 +92,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ),
     [networkConfigurations],
   );
-  const defaultSelectedChainIds = nonTestNetworks.map(({ chainId }) => chainId);
+  const defaultSelectedChainIds =
+    requestedChainIds.length > 0
+      ? requestedChainIds
+      : nonTestNetworks.map(({ chainId }) => chainId);
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
   );
@@ -81,7 +109,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [accounts, internalAccounts]);
 
   const currentAccount = useSelector(getSelectedInternalAccount);
-  const defaultAccountsAddresses = [currentAccount?.address];
+  const defaultAccountsAddresses =
+    requestedAccounts.length > 0
+      ? requestedAccounts
+      : [currentAccount?.address];
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultAccountsAddresses,
   );
@@ -97,14 +128,15 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   return (
     <Page
-      data-testid="connections-page"
-      className="main-container connections-page"
+      data-testid="connect-page"
+      className="main-container connect-page"
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <Header>
+      <Header paddingBottom={0}>
         <Text variant={TextVariant.headingLg}>{t('connectWithMetaMask')}</Text>
         <Text>{t('connectionDescription')}: </Text>
       </Header>
-      <Content padding={0}>
+      <Content paddingLeft={4} paddingRight={4}>
         <SiteCell
           nonTestNetworks={nonTestNetworks}
           testNetworks={testNetworks}
@@ -113,33 +145,40 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           onSelectChainIds={setSelectedChainIds}
           selectedAccountAddresses={selectedAccountAddresses}
           selectedChainIds={selectedChainIds}
-          activeTabOrigin={activeTabOrigin}
           isConnectFlow
         />
       </Content>
       <Footer>
-        <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
-          <Button
-            block
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            data-testid="cancel-btn"
-            onClick={() => rejectPermissionsRequest(permissionsRequestId)}
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            block
-            data-testid="confirm-btn"
-            size={ButtonSize.Lg}
-            onClick={onConfirm}
-            disabled={
-              selectedAccountAddresses.length === 0 ||
-              selectedChainIds.length === 0
-            }
-          >
-            {t('confirm')}
-          </Button>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+          width={BlockSize.Full}
+        >
+          <PermissionsConnectFooter />
+          <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
+            <Button
+              block
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              data-testid="cancel-btn"
+              onClick={() => rejectPermissionsRequest(permissionsRequestId)}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              block
+              data-testid="confirm-btn"
+              size={ButtonSize.Lg}
+              onClick={onConfirm}
+              disabled={
+                selectedAccountAddresses.length === 0 ||
+                selectedChainIds.length === 0
+              }
+            >
+              {t('connect')}
+            </Button>
+          </Box>
         </Box>
       </Footer>
     </Page>

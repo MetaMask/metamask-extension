@@ -125,19 +125,25 @@ describe('useAccountTotalFiatBalance', () => {
           image: undefined,
           isERC721: undefined,
           decimals: 6,
-          string: '0.04857',
+          string: 0.04857,
           balanceError: null,
+          tokenFiatAmount: '0.05',
         },
         {
           address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
           symbol: 'YFI',
           balance: '1409247882142934',
           decimals: 18,
-          string: '0.001409247882142934',
+          string: 0.00141,
           balanceError: null,
+          tokenFiatAmount: '7.52',
         },
       ],
       loading: false,
+      mergedRates: {
+        '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': 3.304588,
+        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 0.0006189,
+      },
       orderedTokenList: [
         {
           fiatBalance: '1.85',

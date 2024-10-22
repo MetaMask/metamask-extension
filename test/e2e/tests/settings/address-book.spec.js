@@ -5,6 +5,7 @@ const {
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
+  openMenuSafe,
   unlockWallet,
 } = require('../../helpers');
 const { shortenAddress } = require('../../../../ui/helpers/utils/util');
@@ -92,10 +93,8 @@ describe('Address Book', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await openMenuSafe(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
         await driver.clickElement({
@@ -159,9 +158,8 @@ describe('Address Book', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
 
