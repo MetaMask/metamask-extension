@@ -168,8 +168,7 @@ const getToTokenExchangeRates = createDeepEqualSelector(
   }),
 );
 
-// TODO reuse in bridge cta
-const getBridgeFeesPerGas = createSelector(
+export const getBridgeFeesPerGas = createSelector(
   getGasFeeEstimates,
   (gasFeeEstimates) => ({
     maxFeePerGas: decGWEIToHexWEI(

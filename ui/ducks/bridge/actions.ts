@@ -23,7 +23,6 @@ import {
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
   ChainId,
-  FeeType,
   QuoteMetadata,
   QuoteRequest,
   QuoteResponse,
@@ -31,17 +30,16 @@ import {
 } from '../../pages/bridge/types';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
-  checkNetworkAndAccountSupports1559,
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../selectors';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getGasFeeEstimates } from '../metamask/metamask';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import { bridgeSlice } from './bridge';
@@ -167,6 +165,8 @@ export const fetchToExchangeRates = async (
 export const submitBridgeTransaction = (
   quoteResponse: QuoteResponse & QuoteMetadata,
   history: ReturnType<typeof useHistory>,
+  maxFeePerGas: undefined | string,
+  maxPriorityFeePerGas: undefined | string,
 ) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
@@ -174,29 +174,6 @@ export const submitBridgeTransaction = (
   ) => {
     const state = getState();
     // Track event TODO
-
-    const calcFeePerGas = () => {
-      let maxFeePerGas: undefined | string;
-      let maxPriorityFeePerGas: undefined | string;
-
-      const networkAndAccountSupports1559 =
-        checkNetworkAndAccountSupports1559(state);
-
-      if (networkAndAccountSupports1559) {
-        const gasFeeEstimates = getGasFeeEstimates(state);
-        maxFeePerGas = decGWEIToHexWEI(
-          gasFeeEstimates?.high?.suggestedMaxFeePerGas,
-        );
-        maxPriorityFeePerGas = decGWEIToHexWEI(
-          gasFeeEstimates?.high?.suggestedMaxPriorityFeePerGas,
-        );
-      }
-
-      return {
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-      };
-    };
 
     // We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
     const getMaxGasLimit = (gasLimit: number) => {
@@ -209,8 +186,6 @@ export const submitBridgeTransaction = (
     const handleTx = async ({
       txType,
       txParams,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
       meta,
     }: {
       txType: 'bridgeApproval' | 'bridge';
@@ -222,8 +197,6 @@ export const submitBridgeTransaction = (
         data: string;
         gasLimit: number | null;
       };
-      maxFeePerGas: string | undefined;
-      maxPriorityFeePerGas: string | undefined;
       meta: Partial<TransactionMeta>; // all fields in meta are merged with TransactionMeta downstream
     }) => {
       const hexChainId = new Numeric(
@@ -261,13 +234,9 @@ export const submitBridgeTransaction = (
     const handleEthUsdtAllowanceReset = async ({
       approval,
       hexChainId,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
     }: {
       approval: TxData;
       hexChainId: Hex;
-      maxFeePerGas: string | undefined;
-      maxPriorityFeePerGas: string | undefined;
     }) => {
       const allowance = new BigNumber(
         await getBridgeERC20Allowance(ETH_USDT_ADDRESS, hexChainId),
@@ -275,9 +244,7 @@ export const submitBridgeTransaction = (
 
       // quote.srcTokenAmount is actually after the fees
       // so we need to add fees back in for total allowance to give
-      const sentAmount = new BigNumber(quoteResponse.quote.srcTokenAmount)
-        .plus(quoteResponse.quote.feeData[FeeType.METABRIDGE].amount)
-        .toString();
+      const sentAmount = quoteResponse.sentAmount.raw;
 
       const shouldResetApproval = allowance.lt(sentAmount) && allowance.gt(0);
 
@@ -291,8 +258,6 @@ export const submitBridgeTransaction = (
         await handleTx({
           txType: 'bridgeApproval',
           txParams,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
           meta: {
             // @ts-expect-error Need TransactionController v37+, TODO add this type
             type: 'bridgeApproval', // TransactionType.bridgeApproval,
@@ -301,15 +266,7 @@ export const submitBridgeTransaction = (
       }
     };
 
-    const handleApprovalTx = async ({
-      approval,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-    }: {
-      approval: TxData;
-      maxFeePerGas: string | undefined;
-      maxPriorityFeePerGas: string | undefined;
-    }) => {
+    const handleApprovalTx = async ({ approval }: { approval: TxData }) => {
       const hexChainId = new Numeric(
         approval.chainId,
         10,
@@ -321,16 +278,12 @@ export const submitBridgeTransaction = (
         await handleEthUsdtAllowanceReset({
           approval,
           hexChainId,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
         });
       }
 
       const txMeta = await handleTx({
         txType: 'bridgeApproval',
         txParams: approval,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
         meta: {
           // @ts-expect-error Need TransactionController v37+, TODO add this type
           type: 'bridgeApproval', // TransactionType.bridgeApproval,
@@ -343,16 +296,10 @@ export const submitBridgeTransaction = (
 
     const handleBridgeTx = async ({
       approvalTxId,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
     }: {
       approvalTxId: string | undefined;
-      maxFeePerGas: string | undefined;
-      maxPriorityFeePerGas: string | undefined;
     }) => {
-      const sentAmount = new BigNumber(quoteResponse.quote.srcTokenAmount).plus(
-        quoteResponse.quote.feeData[FeeType.METABRIDGE].amount,
-      );
+      const sentAmount = quoteResponse.sentAmount.raw;
       const sentAmountDec = new Numeric(sentAmount, 10)
         .shiftedBy(quoteResponse.quote.srcAsset.decimals)
         .toString();
@@ -360,8 +307,6 @@ export const submitBridgeTransaction = (
       const txMeta = await handleTx({
         txType: 'bridge',
         txParams: quoteResponse.trade,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
         meta: {
           // estimatedBaseFee: decEstimatedBaseFee,
           // swapMetaData,
@@ -448,22 +393,16 @@ export const submitBridgeTransaction = (
     };
 
     const execute = async () => {
-      const { maxFeePerGas, maxPriorityFeePerGas } = calcFeePerGas();
-
       // Execute transaction(s)
       let approvalTxId: string | undefined;
       if (quoteResponse?.approval) {
         approvalTxId = await handleApprovalTx({
           approval: quoteResponse.approval,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
         });
       }
 
       await handleBridgeTx({
         approvalTxId,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
       });
 
       // Add tokens if not the native gas token
