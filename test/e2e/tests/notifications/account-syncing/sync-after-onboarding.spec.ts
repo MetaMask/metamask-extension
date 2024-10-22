@@ -12,8 +12,12 @@ import {
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
 import { accountsSyncMockResponse } from './mockData';
+import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing', function () {
+describe('Account syncing @no-mmi', function () {
+  if (!IS_ACCOUNT_SYNCING_ENABLED) {
+    return;
+  }
   describe('from inside MetaMask', function () {
     it('retrieves all previously synced accounts', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
