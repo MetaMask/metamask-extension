@@ -4559,8 +4559,8 @@ export async function currencyRateStartPollingByNetworkClientId(
   networkClientId: string,
 ): Promise<string> {
   const pollingToken = await submitRequestToBackground(
-    'currencyRateStartPollingByNetworkClientId',
-    [networkClientId],
+    'currencyRateStartPolling',
+    [{ networkClientId }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
