@@ -2615,7 +2615,12 @@ export function updateSendAsset(
 
       let missingProperty = STANDARD_TO_REQUIRED_PROPERTIES[
         providedDetails.standard
-      ]?.find((property) => providedDetails[property] === undefined);
+      ]?.find((property) => {
+        if (providedDetails.collection && property === 'symbol') {
+          return providedDetails.collection[property] === undefined;
+        }
+        return providedDetails[property] === undefined;
+      });
 
       let details;
 
