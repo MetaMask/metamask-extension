@@ -67,7 +67,6 @@ const PrepareBridgePage = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const toAmount = useSelector(getToAmount);
 
   const quoteRequest = useSelector(getQuoteRequest);
 
@@ -83,6 +82,8 @@ const PrepareBridgePage = () => {
     TokenBucketPriority.top,
     toChain?.chainId,
   );
+
+  const { recommendedQuote } = useBridgeQuotes();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -228,8 +229,10 @@ const PrepareBridgePage = () => {
             testId: 'to-amount',
             readOnly: true,
             disabled: true,
-            value: toAmount ?? '0',
-            className: toAmount ? 'amount-input defined' : 'amount-input',
+            value: recommendedQuote?.toTokenAmount?.raw.toFixed(2) ?? '0',
+            className: recommendedQuote?.toTokenAmount.raw
+              ? 'amount-input defined'
+              : 'amount-input',
           }}
         />
       </Box>

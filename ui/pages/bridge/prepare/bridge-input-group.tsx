@@ -32,6 +32,7 @@ import {
   getBridgeQuotes,
   getRecommendedQuote,
 } from '../../../ducks/bridge/selectors';
+import useBridgeQuotes from '../../../hooks/bridge/useBridgeQuotes';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -83,7 +84,7 @@ export const BridgeInputGroup = ({
   const t = useI18nContext();
 
   const { isLoading } = useSelector(getBridgeQuotes);
-  const recommendedQuote = useSelector(getRecommendedQuote);
+  const { recommendedQuote } = useBridgeQuotes();
 
   const tokenFiatValue = useTokenFiatAmount(
     token?.address || undefined,

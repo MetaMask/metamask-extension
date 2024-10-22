@@ -7,8 +7,6 @@ import {
   getFromAmount,
   getFromChain,
   getFromToken,
-  getRecommendedQuote,
-  getToAmount,
   getToChain,
   getToToken,
 } from '../../../ducks/bridge/selectors';
@@ -29,7 +27,7 @@ export const BridgeCTAButton = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const toAmount = useSelector(getToAmount);
+  const { recommendedQuote } = useBridgeQuotes();
 
   const { isLoading } = useSelector(getBridgeQuotes);
 
@@ -42,7 +40,12 @@ export const BridgeCTAButton = () => {
   );
 
   const isTxSubmittable =
-    fromToken && toToken && fromChain && toChain && fromAmount && toAmount;
+    fromToken &&
+    toToken &&
+    fromChain &&
+    toChain &&
+    fromAmount &&
+    recommendedQuote?.toTokenAmount?.raw;
 
   const label = useMemo(() => {
     if (isLoading && !isTxSubmittable) {
