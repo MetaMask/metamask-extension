@@ -29,6 +29,10 @@ import {
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -807,6 +811,366 @@ describe('MetaMaskController', () => {
         );
 
         expect(balance).toStrictEqual(gotten);
+      });
+    });
+
+    describe('#getPermittedAccounts', () => {
+      it('gets the CAIP-25 caveat value for the origin', async () => {
+        jest
+          .spyOn(metamaskController.permissionController, 'getCaveat')
+          .mockReturnValue();
+
+        metamaskController.getPermittedAccounts('test.com');
+
+        expect(
+          metamaskController.permissionController.getCaveat,
+        ).toHaveBeenCalledWith(
+          'test.com',
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+        );
+      });
+
+      it('returns empty array if there is no CAIP-25 permission for the origin', async () => {
+        jest
+          .spyOn(metamaskController.permissionController, 'getCaveat')
+          .mockImplementation(() => {
+            throw new Error('no caveat');
+          });
+
+        expect(
+          metamaskController.getPermittedAccounts('test.com'),
+        ).toStrictEqual([]);
+      });
+
+      it('returns the eth accounts from the CAIP-25 permission', async () => {
+        jest
+          .spyOn(metamaskController.permissionController, 'getCaveat')
+          .mockReturnValue({
+            value: {
+              requiredScopes: {},
+              optionalScopes: {
+                'eip155:1': {
+                  methods: [],
+                  notifications: [],
+                  accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
+                },
+              },
+            },
+          });
+
+        expect(
+          metamaskController.getPermittedAccounts('test.com'),
+        ).toStrictEqual(['0xdead', '0xbeef']);
+      });
+    });
+
+    describe('#getPermittedAccountsSorted', () => {
+      it('gets the permitted accounts for the origin', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValue([]);
+
+        await metamaskController.getPermittedAccountsSorted('test.com');
+
+        expect(metamaskController.getPermittedAccounts).toHaveBeenCalledWith(
+          'test.com',
+        );
+      });
+
+      it('gets all evm accounts sorted by most recently used', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValue([]);
+        jest
+          .spyOn(metamaskController, 'getAllEvmAccountsSorted')
+          .mockResolvedValue([]);
+
+        await metamaskController.getPermittedAccountsSorted('test.com');
+
+        expect(metamaskController.getAllEvmAccountsSorted).toHaveBeenCalled();
+      });
+
+      it('returns the permitted accounts for the origin sorted by most recently used', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValue(['0x1', '0x3', '0x5']);
+        jest
+          .spyOn(metamaskController, 'getAllEvmAccountsSorted')
+          .mockResolvedValue([]);
+
+        await metamaskController.getPermittedAccountsSorted('test.com');
+
+        expect(metamaskController.getAllEvmAccountsSorted).toHaveBeenCalled();
+      });
+    });
+
+    describe('#requestPermissionApprovalForOrigin', () => {
+      it('requests permissions for the origin from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue();
+
+        await metamaskController.requestPermissionApprovalForOrigin(
+          'test.com',
+          {
+            eth_accounts: {},
+          },
+        );
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'test.com',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'test.com',
+              },
+              permissions: {
+                eth_accounts: {},
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+
+        const [params] =
+          metamaskController.approvalController.addAndShowApprovalRequest.mock
+            .calls[0];
+        expect(params.id).toStrictEqual(params.requestData.metadata.id);
+      });
+
+      it('returns the result from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue('approvalResult');
+
+        const result =
+          await metamaskController.requestPermissionApprovalForOrigin(
+            'test.com',
+            {
+              eth_accounts: {},
+            },
+          );
+
+        expect(result).toStrictEqual('approvalResult');
+      });
+    });
+
+    describe('#getAllEvmAccountsSorted', () => {
+      it('returns the keyring accounts in lastSelected order', async () => {
+        jest
+          .spyOn(metamaskController.accountsController, 'listAccounts')
+          .mockReturnValueOnce([
+            {
+              address: '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+              id: '21066553-d8c8-4cdc-af33-efc921cd3ca9',
+              metadata: {
+                name: 'Test Account',
+                lastSelected: 1,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+            {
+              address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+              id: '0bd7348e-bdfe-4f67-875c-de831a583857',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+            {
+              address: '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+              id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+                lastSelected: 3,
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+            {
+              address: '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
+              id: '0bd7348e-bdfe-4f67-875c-de831a583857',
+              metadata: {
+                name: 'Test Account',
+                lastSelected: 3,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+          ]);
+        jest
+          .spyOn(metamaskController.keyringController, 'getAccounts')
+          .mockResolvedValueOnce([
+            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+            '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
+          ]);
+        jest
+          .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
+          .mockImplementation(() => {
+            // noop
+          });
+
+        expect(
+          await metamaskController.getAllEvmAccountsSorted(),
+        ).toStrictEqual([
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+          '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+        ]);
+      });
+
+      it('throws if a keyring account is missing an address (case 1)', async () => {
+        const internalAccounts = [
+          {
+            address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            id: '0bd7348e-bdfe-4f67-875c-de831a583857',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 2,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+          {
+            address: '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+            id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 3,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+        ];
+        jest
+          .spyOn(metamaskController.accountsController, 'listAccounts')
+          .mockReturnValueOnce(internalAccounts);
+        jest
+          .spyOn(metamaskController.keyringController, 'getAccounts')
+          .mockResolvedValueOnce([
+            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+          ]);
+        jest
+          .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
+          .mockImplementation(() => {
+            // noop
+          });
+
+        await expect(() =>
+          metamaskController.getAllEvmAccountsSorted(),
+        ).rejects.toThrow(
+          'Missing identity for address: "0x7A2Bd22810088523516737b4Dc238A4bC37c23F2".',
+        );
+        expect(
+          metamaskController.captureKeyringTypesWithMissingIdentities,
+        ).toHaveBeenCalledWith(internalAccounts, [
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+        ]);
+      });
+
+      it('throws if a keyring account is missing an address (case 2)', async () => {
+        const internalAccounts = [
+          {
+            address: '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 1,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+          {
+            address: '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+            id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 3,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+        ];
+        jest
+          .spyOn(metamaskController.accountsController, 'listAccounts')
+          .mockReturnValueOnce(internalAccounts);
+        jest
+          .spyOn(metamaskController.keyringController, 'getAccounts')
+          .mockResolvedValueOnce([
+            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+          ]);
+        jest
+          .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
+          .mockImplementation(() => {
+            // noop
+          });
+
+        await expect(() =>
+          metamaskController.getAllEvmAccountsSorted(),
+        ).rejects.toThrow(
+          'Missing identity for address: "0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3".',
+        );
+        expect(
+          metamaskController.captureKeyringTypesWithMissingIdentities,
+        ).toHaveBeenCalledWith(internalAccounts, [
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+        ]);
       });
     });
 
