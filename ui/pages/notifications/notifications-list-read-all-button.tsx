@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -9,7 +10,6 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { Box, Button, ButtonVariant } from '../../components/component-library';
 import { BlockSize } from '../../helpers/constants/design-system';
-import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 type Notification = NotificationServicesController.Types.INotification;
 type MarkAsReadNotificationsParam =

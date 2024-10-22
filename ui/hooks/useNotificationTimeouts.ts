@@ -4,6 +4,15 @@ import { INotification } from '@metamask/notification-services-controller/notifi
 import { deleteNotificationsById } from '../store/actions';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 
+/**
+ * This hook is used to enforce lifecycles for snap notifications.
+ * Upon dismount, the hook will clear timeouts for notifications
+ * that don't exist anymore.
+ *
+ * @param notifications - The current list of notifications
+ * @returns A function that creates a timeout to delete a notification
+ * and stores the timeout id.
+ */
 export const useSnapNotificationTimeouts = (notifications: INotification[]) => {
   const timerMap = new Map<string, NodeJS.Timeout>();
   const dispatch = useDispatch();
