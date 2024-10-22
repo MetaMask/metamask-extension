@@ -2652,10 +2652,9 @@ export function updateSendAsset(
             providedDetails.address,
             sendingAddress,
             providedDetails.tokenId,
-          ).catch((error) => {
+          ).catch(() => {
             // prevent infinite stuck loading state
             dispatch(hideLoadingIndication());
-            throw error;
           })),
         };
       }
