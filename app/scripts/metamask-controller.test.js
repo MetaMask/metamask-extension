@@ -1035,6 +1035,11 @@ describe('MetaMaskController', () => {
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
             '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
           ]);
+        jest
+          .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
+          .mockImplementation(() => {
+            // noop
+          });
 
         expect(
           await metamaskController.getAllEvmAccountsSorted(),
@@ -1087,11 +1092,11 @@ describe('MetaMaskController', () => {
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
           ]);
-
-        jest.spyOn(
-          metamaskController,
-          'captureKeyringTypesWithMissingIdentities',
-        );
+        jest
+          .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
+          .mockImplementation(() => {
+            // noop
+          });
 
         await expect(() =>
           metamaskController.getAllEvmAccountsSorted(),
@@ -1148,10 +1153,11 @@ describe('MetaMaskController', () => {
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
           ]);
-        jest.spyOn(
-          metamaskController,
-          'captureKeyringTypesWithMissingIdentities',
-        );
+        jest
+          .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
+          .mockImplementation(() => {
+            // noop
+          });
 
         await expect(() =>
           metamaskController.getAllEvmAccountsSorted(),
