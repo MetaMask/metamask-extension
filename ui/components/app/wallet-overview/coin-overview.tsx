@@ -54,6 +54,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
+  getPrivacyModeEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -61,7 +62,10 @@ import Spinner from '../../ui/spinner';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { setAggregatedBalancePopoverShown } from '../../../store/actions';
+import {
+  setAggregatedBalancePopoverShown,
+  setPrivacyMode,
+} from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -117,6 +121,7 @@ export const CoinOverview = ({
 
   ///: END:ONLY_INCLUDE_IF
 
+  const isPrivacyModeEnabled = useSelector(getPrivacyModeEnabled);
   const account = useSelector(getSelectedAccount);
   const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
     t,
@@ -161,6 +166,10 @@ export const CoinOverview = ({
   const handleClick = () => {
     setIsOpen(!isOpen);
     dispatch(setAggregatedBalancePopoverShown());
+  };
+
+  const handleSensitiveToggle = () => {
+    dispatch(setPrivacyMode(!isPrivacyModeEnabled));
   };
 
   const [referenceElement, setReferenceElement] =
@@ -253,26 +262,39 @@ export const CoinOverview = ({
               ref={setBoxRef}
             >
               {balanceToDisplay ? (
-                <UserPreferencedCurrencyDisplay
-                  style={{ display: 'contents' }}
-                  account={account}
-                  className={classnames(
-                    `${classPrefix}-overview__primary-balance`,
-                    {
-                      [`${classPrefix}-overview__cached-balance`]:
-                        balanceIsCached,
-                    },
-                  )}
-                  data-testid={`${classPrefix}-overview__primary-currency`}
-                  value={balanceToDisplay}
-                  type={PRIMARY}
-                  ethNumberOfDecimals={4}
-                  hideTitle
-                  shouldCheckShowNativeToken
-                  isAggregatedFiatOverviewBalance={
-                    !showNativeTokenAsMainBalance && !isTestnet
-                  }
-                />
+                <>
+                  <UserPreferencedCurrencyDisplay
+                    style={{ display: 'contents' }}
+                    account={account}
+                    className={classnames(
+                      `${classPrefix}-overview__primary-balance`,
+                      {
+                        [`${classPrefix}-overview__cached-balance`]:
+                          balanceIsCached,
+                      },
+                    )}
+                    data-testid={`${classPrefix}-overview__primary-currency`}
+                    value={balanceToDisplay}
+                    type={PRIMARY}
+                    ethNumberOfDecimals={4}
+                    hideTitle
+                    shouldCheckShowNativeToken
+                    isAggregatedFiatOverviewBalance={
+                      !showNativeTokenAsMainBalance && !isTestnet
+                    }
+                  />
+                  <ButtonIcon
+                    marginLeft={2}
+                    size={ButtonIconSize.Lg}
+                    onClick={handleSensitiveToggle}
+                    iconName={
+                      isPrivacyModeEnabled ? IconName.EyeSlash : IconName.Eye
+                    }
+                    justifyContent={JustifyContent.center}
+                    ariaLabel="Sensitive toggle"
+                    data-testid="sensitive-toggle"
+                  />
+                </>
               ) : (
                 <Spinner className="loading-overlay__spinner" />
               )}

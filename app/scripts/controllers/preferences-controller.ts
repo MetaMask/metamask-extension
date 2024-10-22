@@ -130,6 +130,7 @@ export type PreferencesControllerState = Omit<
   useBlockie: boolean;
   useNonceField: boolean;
   usePhishDetect: boolean;
+  privacyMode: boolean;
   dismissSeedBackUpReminder: boolean;
   useMultiAccountBalanceChecker: boolean;
   useSafeChainsListValidation: boolean;
@@ -169,6 +170,7 @@ export const getDefaultPreferencesControllerState =
     useBlockie: false,
     useNonceField: false,
     usePhishDetect: true,
+    privacyMode: false,
     dismissSeedBackUpReminder: false,
     useMultiAccountBalanceChecker: true,
     useSafeChainsListValidation: true,
@@ -289,6 +291,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   usePhishDetect: {
+    persist: true,
+    anonymous: true,
+  },
+  privacyMode: {
     persist: true,
     anonymous: true,
   },
@@ -525,6 +531,17 @@ export class PreferencesController extends BaseController<
   setUsePhishDetect(val: boolean): void {
     this.update((state) => {
       state.usePhishDetect = val;
+    });
+  }
+
+  /**
+   * Setter for the `privacyMode` property
+   *
+   * @param val - Whether or not the user prefers to enable privacy mode
+   */
+  setPrivacyMode(val: boolean): void {
+    this.update((state) => {
+      state.privacyMode = val;
     });
   }
 

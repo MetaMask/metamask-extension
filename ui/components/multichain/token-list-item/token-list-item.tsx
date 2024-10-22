@@ -34,6 +34,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  SensitiveText,
   Text,
 } from '../../component-library';
 import {
@@ -42,6 +43,7 @@ import {
   getTokensMarketData,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
+  getPrivacyModeEnabled,
 } from '../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -105,6 +107,7 @@ export const TokenListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getMultichainCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const isPrivacyModeEnabled = useSelector(getPrivacyModeEnabled);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
@@ -375,17 +378,18 @@ export const TokenListItem = ({
                   ariaLabel={''}
                 />
 
-                <Text
+                <SensitiveText
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
+                  isHidden={isPrivacyModeEnabled}
                 >
                   {primary}{' '}
                   {isNativeCurrency || isPrimaryTokenSymbolHidden
                     ? ''
                     : tokenSymbol}
-                </Text>
+                </SensitiveText>
               </Box>
             ) : (
               <Box
@@ -394,27 +398,29 @@ export const TokenListItem = ({
                 width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
                 alignItems={AlignItems.flexEnd}
               >
-                <Text
+                <SensitiveText
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
                   textAlign={TextAlign.End}
                   data-testid="multichain-token-list-item-secondary-value"
                   ellipsis={isStakeable}
+                  isHidden={isPrivacyModeEnabled}
                 >
                   {secondary}
-                </Text>
-                <Text
+                </SensitiveText>
+                <SensitiveText
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodySmMedium}
                   textAlign={TextAlign.End}
+                  isHidden={isPrivacyModeEnabled}
                 >
                   {primary}{' '}
                   {isNativeCurrency || isPrimaryTokenSymbolHidden
                     ? ''
                     : tokenSymbol}
-                </Text>
+                </SensitiveText>
               </Box>
             )}
           </Box>

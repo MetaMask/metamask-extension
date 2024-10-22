@@ -7,6 +7,7 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
+  getPrivacyModeEnabled,
 } from '../../../selectors';
 
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
@@ -19,7 +20,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 
 // core already has this exported type but its not yet available in this version
@@ -34,6 +35,7 @@ export const AggregatedPercentageOverview = () => {
     useSelector(getTokensMarketData);
   const locale = useSelector(getIntlLocale);
   const fiatCurrency = useSelector(getCurrentCurrency);
+  const isPrivacyModeEnabled = useSelector(getPrivacyModeEnabled);
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -121,23 +123,25 @@ export const AggregatedPercentageOverview = () => {
   }
   return (
     <Box display={Display.Flex}>
-      <Text
+      <SensitiveText
         variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="aggregated-value-change"
         style={{ whiteSpace: 'pre' }}
+        isHidden={isPrivacyModeEnabled}
         ellipsis
       >
         {formattedAmountChange}
-      </Text>
-      <Text
+      </SensitiveText>
+      <SensitiveText
         variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="aggregated-percentage-change"
+        isHidden={isPrivacyModeEnabled}
         ellipsis
       >
         {formattedPercentChange}
-      </Text>
+      </SensitiveText>
     </Box>
   );
 };
