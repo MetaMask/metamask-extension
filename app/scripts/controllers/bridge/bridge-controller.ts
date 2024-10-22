@@ -279,4 +279,16 @@ export default class BridgeController extends StaticIntervalPollingController<
     );
     return BigNumber.from(allowance).toString();
   };
+
+  // #getDestNetworkBalanceForToken = async (
+  //   networkClientId: string,
+  //   tokenAddress: string,
+  // ) => {
+  //   const { provider } = this.messagingSystem.call(
+  //     'NetworkController:getNetworkClientById',
+  //     [networkClientId],
+  //   );
+
+  //   return '0';
+  // };
 }
