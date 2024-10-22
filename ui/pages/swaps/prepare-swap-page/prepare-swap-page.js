@@ -1038,7 +1038,9 @@ export default function PrepareSwapPage({
             alignItems={AlignItems.stretch}
           >
             <div className="prepare-swap-page__balance-message">
-              {selectedToToken && !isEmpty(selectedToToken) && isNonDefaultToToken &&
+              {selectedToToken &&
+                !isEmpty(selectedToToken) &&
+                isNonDefaultToToken &&
                 t('swapTokenVerifiedSources', [
                   occurrences,
                   <BlockExplorerLink key="block-explorer-link" />,
