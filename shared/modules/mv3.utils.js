@@ -1,20 +1,7 @@
 /* eslint-disable import/unambiguous -- Not an external module and not of concern */
 
-const runtimeManifest = (function () {
-  try {
-    return (
-      global.chrome?.runtime?.getManifest() ||
-      global.browser?.runtime?.getManifest() ||
-      // this is a fallback for environments that do not have global.chrome/.runtime or global.browser.runtime
-      // E.g. storybook
-      // eslint-disable-next-line node/global-require
-      require('webextension-polyfill').runtime.getManifest()
-    );
-  } catch {
-    // webextension-polyfill may throw an error for unsupported environments
-    return null;
-  }
-})();
+const runtimeManifest =
+  global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();
 
 /**
  * A boolean indicating whether the manifest of the current extension is set to manifest version 3.
