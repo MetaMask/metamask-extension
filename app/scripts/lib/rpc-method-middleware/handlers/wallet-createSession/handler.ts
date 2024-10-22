@@ -12,16 +12,25 @@ import {
   ScopesObject,
   Caip25Authorization,
   ScopeString,
+  ScopedProperties,
 } from '@metamask/multichain';
 import {
   Caveat,
   CaveatSpecificationConstraint,
+  invalidParams,
   PermissionController,
   PermissionSpecificationConstraint,
   RequestedPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
-import { Hex, Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
+import {
+  CaipChainId,
+  Hex,
+  isPlainObject,
+  Json,
+  JsonRpcRequest,
+  JsonRpcSuccess,
+} from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
 import {
   JsonRpcEngineEndCallback,
@@ -65,9 +74,7 @@ type AbstractPermissionController = PermissionController<
  * @param hooks.grantPermissions
  */
 async function walletCreateSessionHandler(
-  req: JsonRpcRequest<
-    Caip25Authorization & { sessionProperties?: Record<string, Json> }
-  > & { origin: string },
+  req: JsonRpcRequest<Caip25Authorization> & { origin: string },
   res: JsonRpcSuccess<{
     sessionScopes: ScopesObject;
     sessionProperties?: Record<string, Json>;
@@ -75,7 +82,7 @@ async function walletCreateSessionHandler(
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   hooks: {
-    listAccounts: () => Promise<{ address: string }[]>;
+    listAccounts: () => { address: string }[];
     removeNetwork: NetworkController['removeNetwork'];
     addNetwork: NetworkController['addNetwork'];
     findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
@@ -96,18 +103,16 @@ async function walletCreateSessionHandler(
     ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
   },
 ) {
-  const {
-    origin,
-  } = req;
-  if (!req.params) {
-    return
+  const { origin } = req;
+  if (!isPlainObject(req.params)) {
+    return end(invalidParams({ data: { request: req } }));
   }
   const {
     requiredScopes,
     optionalScopes,
     sessionProperties,
     scopedProperties,
-  } = req.params
+  } = req.params;
 
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
@@ -117,12 +122,12 @@ async function walletCreateSessionHandler(
 
   try {
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
-      validateAndNormalizeScopes(requiredScopes, optionalScopes);
+      validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
     const validScopedProperties = processScopedProperties(
       normalizedRequiredScopes,
       normalizedOptionalScopes,
-      scopedProperties,
+      scopedProperties as ScopedProperties,
     );
 
     const existsNetworkClientForChainId = (chainId: Hex) => {
@@ -135,7 +140,7 @@ async function walletCreateSessionHandler(
     };
 
     const existsEip3085ForChainId = (chainId: Hex) => {
-      const scopeString = `eip155:${parseInt(chainId, 16)}`;
+      const scopeString: CaipChainId = `eip155:${parseInt(chainId, 16)}`;
       return Boolean(validScopedProperties?.[scopeString]?.eip3085);
     };
 
