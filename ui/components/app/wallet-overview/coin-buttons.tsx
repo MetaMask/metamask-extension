@@ -125,10 +125,12 @@ const CoinButtons = ({
   const account = useSelector(getSelectedAccount);
   const { address: selectedAddress } = account;
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const currentActivityTabName = useSelector(
     // @ts-expect-error TODO: fix state type
     (state) => state.metamask.defaultHomeActiveTabName,
   );
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
