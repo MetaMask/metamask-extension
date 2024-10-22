@@ -34,15 +34,20 @@ export default function useSubmitBridgeTransaction() {
 
     // Get bridge tx status
     if (bridgeTxMeta.hash) {
+      const statusRequest = {
+        bridgeId: quoteResponse.quote.bridgeId,
+        srcTxHash: bridgeTxMeta.hash,
+        bridge: quoteResponse.quote.bridges[0],
+        srcChainId: quoteResponse.quote.srcChainId,
+        destChainId: quoteResponse.quote.destChainId,
+        quote: quoteResponse.quote,
+        refuel: Boolean(quoteResponse.quote.refuel),
+      };
       dispatch(
         startPollingForBridgeTxStatus({
-          bridgeId: quoteResponse.quote.bridgeId,
-          srcTxHash: bridgeTxMeta.hash,
-          bridge: quoteResponse.quote.bridges[0],
-          srcChainId: quoteResponse.quote.srcChainId,
-          destChainId: quoteResponse.quote.destChainId,
-          quote: quoteResponse.quote,
-          refuel: Boolean(quoteResponse.quote.refuel),
+          statusRequest,
+          quoteResponse,
+          slippagePercentage: 0, // TODO pull this from redux/bridgecontroller once it's implemented. currently hardcoded in quoteRequest.slippage right now
         }),
       );
     }
