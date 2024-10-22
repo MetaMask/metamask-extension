@@ -417,19 +417,17 @@ describe('EthOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton);
 
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      {
-        event: MetaMetricsEventName.NavBuyButtonClicked,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          account_type: mockEvmAccount1.type,
-          chain_id: CHAIN_IDS.MAINNET,
-          location: 'Home',
-          text: 'Buy',
-          token_symbol: expect.any(Object), // FIXME: Is this wrong?
-        },
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        account_type: mockEvmAccount1.type,
+        chain_id: CHAIN_IDS.MAINNET,
+        location: 'Home',
+        text: 'Buy',
+        token_symbol: expect.any(Object), // FIXME: Is this wrong?
       },
-    );
+    });
   });
 
   describe('Disabled buttons when an account cannot sign transactions', () => {

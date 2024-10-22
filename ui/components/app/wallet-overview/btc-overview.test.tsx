@@ -267,19 +267,17 @@ describe('BtcOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton as HTMLElement);
 
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      {
-        event: MetaMetricsEventName.NavBuyButtonClicked,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          account_type: mockNonEvmAccount.type,
-          chain_id: MultichainNetworks.BITCOIN,
-          location: 'Home',
-          snap_id: mockNonEvmAccount.metadata.snap.id,
-          text: 'Buy',
-        },
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        account_type: mockNonEvmAccount.type,
+        chain_id: MultichainNetworks.BITCOIN,
+        location: 'Home',
+        snap_id: mockNonEvmAccount.metadata.snap.id,
+        text: 'Buy',
       },
-    );
+    });
   });
 
   it('always show the Receive button', () => {
