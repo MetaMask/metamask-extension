@@ -10,6 +10,8 @@ export type BridgeState = {
   fromToken: SwapsTokenObject | SwapsEthToken | null;
   toToken: SwapsTokenObject | SwapsEthToken | null;
   fromTokenInputValue: string | null;
+  toTokenExchangeRate: number | null;
+  toNativeExchangeRate: number | null;
 };
 
 const initialState: BridgeState = {
@@ -17,6 +19,8 @@ const initialState: BridgeState = {
   fromToken: null,
   toToken: null,
   fromTokenInputValue: null,
+  toNativeExchangeRate: null,
+  toTokenExchangeRate: null,
 };
 
 const bridgeSlice = createSlice({
@@ -39,6 +43,10 @@ const bridgeSlice = createSlice({
     resetInputFields: () => ({
       ...initialState,
     }),
+    setToExchangeRates: (state, action) => {
+      state.toNativeExchangeRate = action.payload.toNativeExchangeRate;
+      state.toTokenExchangeRate = action.payload.toTokenExchangeRate;
+    },
   },
 });
 

@@ -177,3 +177,12 @@ export const getIsBridgeTx = createDeepEqualSelector(
       ? fromChain.chainId !== toChain.chainId
       : false,
 );
+
+export const getToTokenExchangeRates = createDeepEqualSelector(
+  (state: BridgeAppState) => state.bridge.toTokenExchangeRate,
+  (state: BridgeAppState) => state.bridge.toNativeExchangeRate,
+  (toTokenExchangeRate, toNativeExchangeRate) => ({
+    toTokenExchangeRate,
+    toNativeExchangeRate,
+  }),
+);

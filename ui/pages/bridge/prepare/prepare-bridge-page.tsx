@@ -2,12 +2,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
+import { Hex } from '@metamask/utils';
 import {
+  fetchToExchangeRates,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
   setToChain,
   setToChainId,
+  setToExchangeRates,
   setToToken,
   updateQuoteRequestParams,
 } from '../../../ducks/bridge/actions';
@@ -19,7 +22,6 @@ import {
   getFromTokens,
   getFromTopAssets,
   getQuoteRequest,
-  getToAmount,
   getToChain,
   getToChains,
   getToToken,
@@ -40,12 +42,16 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../types';
+import useBridgeQuotes from '../../../hooks/bridge/useBridgeQuotes';
+import { getCurrentCurrency } from '../../../selectors';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
 
   const t = useI18nContext();
+
+  const currentCurrency = useSelector(getCurrentCurrency);
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getFromTokens);
@@ -108,6 +114,15 @@ const PrepareBridgePage = () => {
   useEffect(() => {
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, Object.values(quoteParams));
+
+  // TODO is this cached? What are the rate limits?
+  const debouncedFetchToExchangeRate = debounce(
+    async (toChainId: Hex, toTokenAddress: string) =>
+      dispatch(
+        await fetchToExchangeRates(toChainId, toTokenAddress, currentCurrency),
+      ),
+    5,
+  );
 
   return (
     <div className="prepare-bridge-page">
@@ -184,13 +199,24 @@ const PrepareBridgePage = () => {
           className="bridge-box"
           header={t('bridgeTo')}
           token={toToken}
-          onAssetChange={(token) => dispatch(setToToken(token))}
+          onAssetChange={(token) => {
+            dispatch(setToToken(token));
+            toChain?.chainId &&
+              token?.address &&
+              debouncedFetchToExchangeRate(toChain.chainId, token.address);
+          }}
           networkProps={{
             network: toChain,
             networks: toChains,
             onNetworkChange: (networkConfig) => {
               dispatch(setToChainId(networkConfig.chainId));
               dispatch(setToChain(networkConfig.chainId));
+              dispatch(
+                setToExchangeRates({
+                  toNativeExchangeRate: null,
+                  toTokenExchangeRate: null,
+                }),
+              );
             },
           }}
           customTokenListGenerator={
