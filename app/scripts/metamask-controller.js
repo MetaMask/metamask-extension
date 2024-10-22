@@ -5879,7 +5879,7 @@ export default class MetamaskController extends EventEmitter {
         // network configuration-related
         setActiveNetwork: async (networkClientId) => {
           // Skip setting the globally selected network if there are
-          // pending approvals otherwise they will get wiped
+          // pending approvals otherwise they will get inadvertently cleared
           if (this.approvalController.getTotalApprovalCount() === 0) {
             await this.networkController.setActiveNetwork(networkClientId);
           }
