@@ -20,7 +20,6 @@ import {
   BorderStyle,
   Display,
   JustifyContent,
-  OverflowWrap,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
@@ -67,8 +66,6 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
     setIsTokenSortPopoverOpen(false);
     setIsNetworkFilterPopoverOpen(false);
   };
-
-  console.log(tokenNetworkFilter, currentNetwork);
 
   return (
     <Box
