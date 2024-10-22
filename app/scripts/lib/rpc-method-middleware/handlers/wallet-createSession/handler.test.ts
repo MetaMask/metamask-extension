@@ -12,7 +12,6 @@ import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import * as Util from '../../../util';
 import { PermissionNames } from '../../../../controllers/permissions';
-import { processScopedProperties, validateAndAddEip3085 } from './helpers';
 import * as Helpers from './helpers';
 import { walletCreateSession } from './handler';
 
@@ -207,7 +206,7 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(processScopedProperties).toHaveBeenCalledWith(
+    expect(MockHelpers.processScopedProperties).toHaveBeenCalledWith(
       {
         'eip155:1': {
           methods: ['eth_chainId'],
@@ -228,7 +227,7 @@ describe('wallet_createSession', () => {
 
   it('throws an error when processing scopedProperties fails', async () => {
     const { handler, end } = createMockedHandler();
-    processScopedProperties.mockImplementation(() => {
+    MockHelpers.processScopedProperties.mockImplementation(() => {
       throw new Error('failed to process scoped properties');
     });
     await handler(baseRequest);
@@ -403,6 +402,13 @@ describe('wallet_createSession', () => {
         supportableScopes: {},
         unsupportableScopes: {},
       });
+    MockHelpers.processScopedProperties.mockReturnValue({
+      'eip155:1': {
+        eip3085: {
+          foo: 'bar',
+        },
+      },
+    });
     await handler({
       ...baseRequest,
       params: {
@@ -417,7 +423,7 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(validateAndAddEip3085).toHaveBeenCalledWith({
+    expect(MockHelpers.validateAndAddEip3085).toHaveBeenCalledWith({
       eip3085Params: { foo: 'bar' },
       addNetwork,
       findNetworkClientIdByChainId,
@@ -457,7 +463,7 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(validateAndAddEip3085).not.toHaveBeenCalled();
+    expect(MockHelpers.validateAndAddEip3085).not.toHaveBeenCalled();
   });
 
   it('grants the CAIP-25 permission for the supported scopes and accounts that were approved', async () => {
