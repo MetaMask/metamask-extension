@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
@@ -12,7 +12,6 @@ import { NotificationListItemSnap } from '../../../../components/multichain';
 import { getSnapsMetadata } from '../../../../selectors';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
-import { deleteExpiredSnapNotifications } from '../../../../store/actions';
 
 type SnapNotification = Extract<
   NotificationServicesController.Types.INotification,
@@ -21,19 +20,20 @@ type SnapNotification = Extract<
 
 type SnapComponentProps = {
   snapNotification: SnapNotification;
+  setNotificationTimeout: (id: string) => void;
 };
 
-export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
+export const SnapComponent = ({
+  snapNotification,
+  setNotificationTimeout,
+}: SnapComponentProps) => {
   const history = useHistory();
-  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const snapsNameGetter = getSnapName(snapsMetadata);
-
-  let timerId: NodeJS.Timeout | undefined;
 
   const handleUnreadNotification = () => {
     markNotificationAsRead([
@@ -44,9 +44,7 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
       },
     ]);
 
-    timerId = setTimeout(async () => {
-      await dispatch(deleteExpiredSnapNotifications());
-    }, 10000);
+    setNotificationTimeout(snapNotification.id);
   };
 
   const handleSnapClick = () => {
@@ -80,14 +78,6 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
     });
     history.push(getSnapRoute(snapNotification.data.origin));
   };
-
-  useEffect(() => {
-    return () => {
-      if (timerId) {
-        clearTimeout(timerId);
-      }
-    };
-  }, []);
 
   return (
     <NotificationListItemSnap

@@ -12,6 +12,7 @@ import {
 import Preloader from '../../components/ui/icon/preloader/preloader-icon.component';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
@@ -65,10 +66,18 @@ function ErrorContent() {
   );
 }
 
-function NotificationItem(props: { notification: Notification }) {
-  const { notification } = props;
+function NotificationItem(props: {
+  notification: Notification;
+  setNotificationTimeout: (id: string) => void;
+}) {
+  const { notification, setNotificationTimeout } = props;
   if (notification.type === TRIGGER_TYPES.SNAP) {
-    return <SnapComponent snapNotification={notification} />;
+    return (
+      <SnapComponent
+        snapNotification={notification}
+        setNotificationTimeout={setNotificationTimeout}
+      />
+    );
   }
 
   return <NotificationsListItem notification={notification} />;
@@ -83,6 +92,8 @@ function NotificationsListStates({
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
+
+  const { setNotificationTimeout } = useSnapNotificationTimeouts(notifications);
 
   // Case when a user has not enabled wallet notifications yet
   if (activeTab === TAB_KEYS.WALLET && !isMetamaskNotificationsEnabled) {
@@ -106,7 +117,11 @@ function NotificationsListStates({
   return (
     <>
       {notifications.map((notification) => (
-        <NotificationItem key={notification.id} notification={notification} />
+        <NotificationItem
+          key={notification.id}
+          notification={notification}
+          setNotificationTimeout={setNotificationTimeout}
+        />
       ))}
     </>
   );
