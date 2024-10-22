@@ -6,14 +6,18 @@ import {
   waitFor,
   within,
   screen,
-  cleanup,
 } from '@testing-library/react';
 import { createMockImplementation } from '../helpers';
 import {
   ethSentNotification,
   featureNotification,
   getMockedNotificationsState,
-} from './notification-state';
+} from './data/notification-state';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
@@ -54,14 +58,14 @@ const getStateWithTwoUnreadNotifications = () => {
   };
 };
 
-describe('Notifications', () => {
+describe('Notifications List', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
   });
 
   afterEach(() => {
-    window.history.pushState({}, '', '/') // return to homescreen
+    window.history.pushState({}, '', '/'); // return to homescreen
   });
 
   it('should show the correct number of unread notifications on the badge', async () => {
@@ -132,10 +136,43 @@ describe('Notifications', () => {
       const unreadDot = screen.getAllByTestId('unread-dot');
       expect(unreadDot).toHaveLength(2);
     });
+
+    await waitFor(() => {
+      const notificationsInteractionsEvent =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) =>
+            call[0] === 'trackMetaMetricsEvent' &&
+            call[1]?.[0].category ===
+              MetaMetricsEventCategory.NotificationInteraction,
+        );
+
+      expect(notificationsInteractionsEvent?.[0]).toBe('trackMetaMetricsEvent');
+      const [metricsEvent] = notificationsInteractionsEvent?.[1] as unknown as [
+        {
+          event: string;
+          category: string;
+          properties: Record<string, unknown>;
+        },
+      ];
+
+      expect(metricsEvent?.event).toBe(
+        MetaMetricsEventName.NotificationsMenuOpened,
+      );
+
+      expect(metricsEvent?.category).toBe(
+        MetaMetricsEventCategory.NotificationInteraction,
+      );
+
+      expect(metricsEvent.properties).toMatchObject({
+        category: 'Notification Interaction',
+        event: 'Notifications Menu Opened',
+        properties: { unread_count: 2, read_count: 0 },
+      });
+    });
   });
 
   it('should not see mark all as read button if there are no unread notifications', async () => {
-    const mockedState = getMockedNotificationsState(); // all notifications are read
+    const mockedState = getMockedNotificationsState(); // all notifications are read by default
 
     await act(async () => {
       await integrationTestRender({
@@ -164,7 +201,7 @@ describe('Notifications', () => {
     });
   });
 
-  it('should send request for marking notifications as read to the background with the correct params', async () => {
+  it.only('should send request for marking notifications as read to the background with the correct params', async () => {
     const mockedState = getStateWithTwoUnreadNotifications();
     await act(async () => {
       await integrationTestRender({

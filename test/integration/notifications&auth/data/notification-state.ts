@@ -1,5 +1,5 @@
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import mockMetaMaskState from '../data/integration-init-state.json';
+import mockMetaMaskState from '../../data/integration-init-state.json';
 
 const notificationsAccountAddress =
   mockMetaMaskState.internalAccounts.accounts[
