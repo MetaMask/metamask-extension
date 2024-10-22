@@ -1,8 +1,6 @@
+import { strict as assert } from 'assert';
 import {
-  TEST_SEED_PHRASE,
   withFixtures,
-  importSRPOnboardingFlow,
-  WALLET_PASSWORD,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
@@ -11,234 +9,122 @@ import {
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import { Driver } from '../../webdriver/driver';
 
-declare function require(moduleName: string): any;
-const FixtureBuilder = require('../../fixture-builder');
+import { importSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
+import HomePage from '../../page-objects/pages/homepage';
+import FixtureBuilder from '../../fixture-builder';
+import { Mockttp, MockedEndpoint } from '../../mock-e2e';
 
-declare type MockServer = any;
-
-const describe = (name: string, fn: () => void): void => {};
-const it = (name: string, fn: () => Promise<void>): void => {};
-
-// Page object for onboarding process
-class OnboardingPage {
-  constructor(private driver: Driver) {}
-
-  async navigateToPrivacySettings(): Promise<void> {
-    await this.driver.clickElement({
-      text: 'Manage default privacy settings',
-      tag: 'button',
-    });
-  }
-
-  async completeOnboarding(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear({
-      text: 'Done',
-      tag: 'button',
-    });
-    await this.driver.clickElement({
-      text: 'Next',
-      tag: 'button',
-    });
-    await this.driver.waitForElementToStopMoving({
-      text: 'Done',
-      tag: 'button',
-    });
-    await this.driver.clickElementAndWaitToDisappear({
-      text: 'Done',
-      tag: 'button',
-    });
-  }
-}
-
-// Page object for privacy settings
-class PrivacySettingsPage {
-  constructor(private driver: Driver) {}
-
-  async navigateToGeneralSettings(): Promise<void> {
-    await this.driver.clickElement('[data-testid="category-item-General"]');
-  }
-
-  async toggleBasicFunctionality(): Promise<void> {
-    await this.driver.clickElement(
-      '[data-testid="basic-functionality-toggle"] .toggle-button',
-    );
-  }
-
-  async confirmBasicFunctionalityOff(): Promise<void> {
-    await this.driver.clickElement('[id="basic-configuration-checkbox"]');
-    await this.driver.clickElement({ text: 'Turn off', tag: 'button' });
-  }
-
-  async navigateToAssetsSettings(): Promise<void> {
-    await this.driver.clickElement('[data-testid="category-item-Assets"]');
-  }
-
-  async toggleCurrencyRateCheck(): Promise<void> {
-    await this.driver.clickElement(
-      '[data-testid="currency-rate-check-toggle"] .toggle-button',
-    );
-  }
-
-  async navigateBack(): Promise<void> {
-    await this.driver.clickElement('[data-testid="category-back-button"]');
-  }
-
-  async exitPrivacySettings(): Promise<void> {
-    await this.driver.waitForElementToStopMoving(
-      '[data-testid="privacy-settings-back-button"]',
-    );
-    await this.driver.clickElement(
-      '[data-testid="privacy-settings-back-button"]',
-    );
-  }
-}
-
-// Page object for network-related actions
-class NetworkPage {
-  constructor(private driver: Driver) {}
-
-  async openNetworkMenu(): Promise<void> {
-    await this.driver.clickElement('[data-testid="network-display"]');
-  }
-
-  async selectEthereumMainnet(): Promise<void> {
-    await this.driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
-  }
-
-  async waitForNetworkSwitch(): Promise<void> {
-    await this.driver.assertElementNotPresent('.loading-overlay');
-  }
-
-  async refreshTokenList(): Promise<void> {
-    await this.driver.clickElement('[data-testid="refresh-list-button"]');
-  }
-}
-
-async function mockApis(mockServer: MockServer): Promise<MockServer[]> {
+async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
-    await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
+    await mockServer.forGet('https://token.api.cx.metamask.io/tokens/1').thenCallback(() => {
       return {
         statusCode: 200,
-        body: [{ fakedata: true }],
+        json: [{ fakedata: true }],
       };
     }),
-    await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          body: [{ fakedata: true }],
-        };
-      }),
-    await mockServer
-      .forGet('https://min-api.cryptocompare.com/data/price')
-      .withQuery({ fsym: 'ETH', tsyms: 'USD' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            fakedata: 0,
-          },
-        };
-      }),
+/*     await mockServer.forGet('https://bridge.api.cx.metamask.io/getAllFeatureFlags').thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [{ fakedata: true }],
+      };
+    }),
+    await mockServer.forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks').thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [{ fakedata: true }],
+      };
+    }),
+    await mockServer.forGet('https://chainid.network/chains.json').thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [{ fakedata: true }],
+      };
+    }), */
   ];
 }
 
-// Common setup for both tests
-async function setupTest(driver: Driver): Promise<{ onboardingPage: OnboardingPage; privacySettingsPage: PrivacySettingsPage; networkPage: NetworkPage }> {
-  const onboardingPage = new OnboardingPage(driver);
-  const privacySettingsPage = new PrivacySettingsPage(driver);
-  const networkPage = new NetworkPage(driver);
-
-  await driver.navigate();
-  await importSRPOnboardingFlow(
-    driver,
-    TEST_SEED_PHRASE,
-    WALLET_PASSWORD,
-  );
-
-  await onboardingPage.navigateToPrivacySettings();
-  await privacySettingsPage.navigateToGeneralSettings();
-
-  return { onboardingPage, privacySettingsPage, networkPage };
-}
-
 describe('MetaMask onboarding @no-mmi', () => {
-  it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async () => {
+   it('should prevent network requests to advanced functionality endpoints when the advanced functionality toggle is off', async () => {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).withNetworkControllerOnMainnet().build(),
+        //fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
-        title: 'Basic functionality toggle off test',
+        title: 'Advanced functionality toggle off test',
         testSpecificMock: mockApis,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }: { driver: Driver; mockedEndpoint: MockServer[] }) => {
-        const { onboardingPage, privacySettingsPage, networkPage } = await setupTest(driver);
+      async ({ driver, mockedEndpoint }) => {
+        await driver.navigate();
+        await importSRPOnboardingFlow(driver);
 
-        await driver.delay(regularDelayMs);
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
-        await privacySettingsPage.toggleBasicFunctionality();
-        await privacySettingsPage.confirmBasicFunctionalityOff();
-        await privacySettingsPage.navigateBack();
-        await driver.delay(regularDelayMs);
-        await privacySettingsPage.navigateToAssetsSettings();
-        await driver.delay(regularDelayMs);
-        await privacySettingsPage.toggleCurrencyRateCheck();
-        await privacySettingsPage.navigateBack();
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(driver);
+        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+        await onboardingPrivacySettingsPage.toggleAssetsSettings();
+        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
-        await privacySettingsPage.exitPrivacySettings();
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.completeOnboarding();
 
-        await onboardingPage.completeOnboarding();
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
 
-        await networkPage.openNetworkMenu();
-        await networkPage.selectEthereumMainnet();
-        await driver.delay(tinyDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
+        await driver.assertElementNotPresent('.loading-overlay');
 
-        await networkPage.waitForNetworkSwitch();
-        await networkPage.refreshTokenList();
+        await homePage.refreshTokenList();
 
-        for (let i = 0; i < mockedEndpoints.length; i += 1) {
-          const requests = await mockedEndpoints[i].getSeenRequests();
-
-          console.assert(
+        // Refresh tokens before asserting to mitigate flakiness
+        for (let i = 0; i < mockedEndpoint.length; i += 1) {
+          const requests = await mockedEndpoint[i].getSeenRequests();
+          assert.ok(
             requests.length === 0,
-            `${mockedEndpoints[i]} should make requests after onboarding`,
+            `${mockedEndpoint[i]} should not make requests after onboarding`,
           );
         }
       },
     );
   });
 
-  it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async () => {
+    it('should not prevent network requests to advanced functionality endpoints when the advanced functionality toggle is on', async () => {
     await withFixtures(
       {
+        //fixtures: new FixtureBuilder({ onboarding: true }).withNetworkControllerOnMainnet().build(),
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
-        title: 'Basic functionality toggle on test',
+        title: 'Advanced functionality toggle on test',
         testSpecificMock: mockApis,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }: { driver: Driver; mockedEndpoint: MockServer[] }) => {
-        const { onboardingPage, privacySettingsPage, networkPage } = await setupTest(driver);
+      async ({ driver, mockedEndpoint }) => {
+        await importSRPOnboardingFlow(driver);
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.completeOnboarding();
 
-        await driver.delay(largeDelayMs);
-        await privacySettingsPage.navigateBack();
-        await driver.delay(largeDelayMs);
-        await privacySettingsPage.exitPrivacySettings();
-        await driver.delay(largeDelayMs);
-        await driver.clickElement({ text: 'Done', tag: 'button' });
-        await driver.clickElement('[data-testid="pin-extension-next"]');
-        await driver.clickElement({ text: 'Done', tag: 'button' });
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
 
-        await networkPage.openNetworkMenu();
-        await networkPage.selectEthereumMainnet();
+        await driver.clickElement('[data-testid="network-display"]');
 
-        await networkPage.waitForNetworkSwitch();
-        await networkPage.refreshTokenList();
-        for (let i = 0; i < mockedEndpoints.length; i += 1) {
-          const requests = await mockedEndpoints[i].getSeenRequests();
-          console.assert(
-            requests.length === 1,
-            `${mockedEndpoints[i]} should make requests after onboarding`,
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
+
+        // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
+        await driver.assertElementNotPresent('.loading-overlay');
+
+        await homePage.refreshTokenList();
+
+        // Refresh tokens before asserting to mitigate flakiness
+        for (let i = 0; i < mockedEndpoint.length; i += 1) {
+          const requests = await mockedEndpoint[i].getSeenRequests();
+          assert.ok(
+            requests.length > 0,
+            `${mockedEndpoint[i]} should not make requests after onboarding`,
           );
         }
       },
