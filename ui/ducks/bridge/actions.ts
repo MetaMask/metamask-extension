@@ -1,11 +1,12 @@
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { Hex } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
+import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { getAddress } from 'ethers/lib/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -41,6 +42,7 @@ import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
+import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import { bridgeSlice } from './bridge';
 import { BridgeAppState } from './selectors';
 
@@ -50,6 +52,7 @@ const {
   setToToken,
   setFromTokenInputValue,
   resetInputFields,
+  setToExchangeRates,
 } = bridgeSlice.actions;
 
 export {
@@ -58,6 +61,7 @@ export {
   setToToken,
   setFromToken,
   setFromTokenInputValue,
+  setToExchangeRates,
 };
 
 const callBridgeControllerMethod = <T extends string | Partial<QuoteRequest>>(
@@ -130,6 +134,33 @@ export const getBridgeERC20Allowance = async (
     BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
     [contractAddress, chainId],
   );
+};
+
+export const fetchToExchangeRates = async (
+  toChainId: Hex,
+  toTokenAddress: string,
+  currentCurrency: string,
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const { toTokenExchangeRate, toNativeExchangeRate } =
+      await fetchTokenExchangeRates(
+        currentCurrency,
+        [getAddress(toTokenAddress)],
+        toChainId,
+      ).then((exchangeRates) => {
+        return {
+          toTokenExchangeRate:
+            toTokenAddress === zeroAddress()
+              ? 1
+              : exchangeRates?.[toChecksumAddress(toTokenAddress)],
+          toNativeExchangeRate: exchangeRates?.[zeroAddress()] ?? 1,
+        };
+      });
+
+    await dispatch(
+      setToExchangeRates({ toTokenExchangeRate, toNativeExchangeRate }),
+    );
+  };
 };
 
 export const submitBridgeTransaction = (

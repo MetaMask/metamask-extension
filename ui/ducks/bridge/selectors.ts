@@ -136,6 +136,15 @@ export const getToToken = (state: BridgeAppState) => {
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
+const getToTokenExchangeRates = createDeepEqualSelector(
+  (state: BridgeAppState) => state.bridge.toTokenExchangeRate,
+  (state: BridgeAppState) => state.bridge.toNativeExchangeRate,
+  (toTokenExchangeRate, toNativeExchangeRate) => ({
+    toTokenExchangeRate,
+    toNativeExchangeRate,
+  }),
+);
+
 export const getBridgeQuotes = (state: BridgeAppState) => {
   return {
     quotes: state.metamask.bridgeState.quotes,
@@ -176,4 +185,13 @@ export const getIsBridgeTx = createDeepEqualSelector(
     isBridgeEnabled && toChain && fromChain?.chainId
       ? fromChain.chainId !== toChain.chainId
       : false,
+);
+
+export const getToTokenExchangeRates = createDeepEqualSelector(
+  (state: BridgeAppState) => state.bridge.toTokenExchangeRate,
+  (state: BridgeAppState) => state.bridge.toNativeExchangeRate,
+  (toTokenExchangeRate, toNativeExchangeRate) => ({
+    toTokenExchangeRate,
+    toNativeExchangeRate,
+  }),
 );
