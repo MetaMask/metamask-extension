@@ -1,10 +1,26 @@
+import BigNumber from 'bignumber.js';
+
+// Extension-specific types
+export type QuoteMetadata = {
+  totalNetworkFee: { raw: BigNumber; fiat: BigNumber | null }; // gasFees + relayerFees
+  toTokenAmount: { raw: BigNumber; fiat: BigNumber | null };
+  adjustedReturn: { fiat: BigNumber | null }; // destTokenAmount - totalNetworkFee
+  sentAmount: { raw: BigNumber; fiat: BigNumber | null }; // srcTokenAmount + metabridgeFee
+  swapRate: BigNumber; // destTokenAmount / sentAmount
+};
+
 // Types copied from Metabridge API
 export enum BridgeFlag {
   EXTENSION_CONFIG = 'extension-config',
   EXTENSION_SUPPORT = 'extension-support',
   NETWORK_SRC_ALLOWLIST = 'src-network-allowlist',
   NETWORK_DEST_ALLOWLIST = 'dest-network-allowlist',
+  APPROVAL_GAS_MULTIPLIER = 'approval-gas-multiplier',
+  BRIDGE_GAS_MULTIPLIER = 'bridge-gas-multiplier',
 }
+
+type DecimalChainId = string;
+export type GasMultiplierByChainId = Record<DecimalChainId, number>;
 
 export type FeatureFlagResponse = {
   [BridgeFlag.EXTENSION_CONFIG]: {
@@ -14,6 +30,8 @@ export type FeatureFlagResponse = {
   [BridgeFlag.EXTENSION_SUPPORT]: boolean;
   [BridgeFlag.NETWORK_SRC_ALLOWLIST]: number[];
   [BridgeFlag.NETWORK_DEST_ALLOWLIST]: number[];
+  [BridgeFlag.APPROVAL_GAS_MULTIPLIER]: GasMultiplierByChainId;
+  [BridgeFlag.BRIDGE_GAS_MULTIPLIER]: GasMultiplierByChainId;
 };
 
 export type BridgeAsset = {
@@ -121,7 +139,7 @@ export type QuoteResponse = {
   estimatedProcessingTimeInSeconds: number;
 };
 
-enum ChainId {
+export enum ChainId {
   ETH = 1,
   OPTIMISM = 10,
   BSC = 56,
@@ -133,7 +151,7 @@ enum ChainId {
   LINEA = 59144,
 }
 
-enum FeeType {
+export enum FeeType {
   METABRIDGE = 'metabridge',
   REFUEL = 'refuel',
 }

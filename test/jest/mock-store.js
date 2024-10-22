@@ -725,6 +725,8 @@ export const createBridgeMockStore = (
           extensionSupport: false,
           srcNetworkAllowlist: [],
           destNetworkAllowlist: [],
+          approvalGasMultiplier: {},
+          bridgeGasMultiplier: {},
           ...featureFlagOverrides,
         },
         quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,

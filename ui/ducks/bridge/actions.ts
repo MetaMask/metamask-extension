@@ -1,18 +1,49 @@
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { Hex } from '@metamask/utils';
+import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
+import { useHistory } from 'react-router-dom';
+import { BigNumber } from 'bignumber.js';
+import { NetworkConfiguration } from '@metamask/network-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { getAddress } from 'ethers/lib/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
-
-import { forceUpdateMetamaskState } from '../../store/actions';
+import {
+  addToken,
+  addTransactionAndWaitForPublish,
+  forceUpdateMetamaskState,
+  addNetwork,
+  setDefaultHomeActiveTabName,
+} from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { MetaMaskReduxDispatch } from '../../store/store';
-import { QuoteRequest } from '../../pages/bridge/types';
+import {
+  ChainId,
+  QuoteMetadata,
+  QuoteRequest,
+  QuoteResponse,
+  TxData,
+} from '../../pages/bridge/types';
+import { Numeric } from '../../../shared/modules/Numeric';
+import {
+  getNetworkConfigurationsByChainId,
+  getSelectedNetworkClientId,
+} from '../../selectors';
+import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
+import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
+import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import { bridgeSlice } from './bridge';
+import { BridgeAppState } from './selectors';
 
 const {
   setToChainId,
@@ -20,6 +51,7 @@ const {
   setToToken,
   setFromTokenInputValue,
   resetInputFields,
+  setToExchangeRates,
 } = bridgeSlice.actions;
 
 export {
@@ -28,6 +60,7 @@ export {
   setToToken,
   setFromToken,
   setFromTokenInputValue,
+  setToExchangeRates,
 };
 
 const callBridgeControllerMethod = <T extends string | Partial<QuoteRequest>>(
@@ -89,5 +122,302 @@ export const updateQuoteRequestParams = <T extends Partial<QuoteRequest>>(
         [params],
       ),
     );
+  };
+};
+
+export const getBridgeERC20Allowance = async (
+  contractAddress: string,
+  chainId: Hex,
+): ReturnType<BridgeController['getBridgeERC20Allowance']> => {
+  return await submitRequestToBackground(
+    BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
+    [contractAddress, chainId],
+  );
+};
+
+export const fetchToExchangeRates = async (
+  toChainId: Hex,
+  toTokenAddress: string,
+  currentCurrency: string,
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const { toTokenExchangeRate, toNativeExchangeRate } =
+      await fetchTokenExchangeRates(
+        currentCurrency,
+        [getAddress(toTokenAddress)],
+        toChainId,
+      ).then((exchangeRates) => {
+        return {
+          toTokenExchangeRate:
+            toTokenAddress === zeroAddress()
+              ? 1
+              : exchangeRates?.[toChecksumAddress(toTokenAddress)],
+          toNativeExchangeRate: exchangeRates?.[zeroAddress()] ?? 1,
+        };
+      });
+
+    await dispatch(
+      setToExchangeRates({ toTokenExchangeRate, toNativeExchangeRate }),
+    );
+  };
+};
+
+export const submitBridgeTransaction = (
+  quoteResponse: QuoteResponse & QuoteMetadata,
+  history: ReturnType<typeof useHistory>,
+  maxFeePerGas: undefined | string,
+  maxPriorityFeePerGas: undefined | string,
+) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState & BridgeAppState,
+  ) => {
+    const state = getState();
+    // Track event TODO
+
+    // We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
+    const getMaxGasLimit = (gasLimit: number) => {
+      return new Numeric(
+        new BigNumber(gasLimit).toString(),
+        10,
+      ).toPrefixedHexString();
+    };
+
+    const handleTx = async ({
+      txType,
+      txParams,
+      meta,
+    }: {
+      txType: 'bridgeApproval' | 'bridge';
+      txParams: {
+        chainId: ChainId;
+        to: string;
+        from: string;
+        value: string;
+        data: string;
+        gasLimit: number | null;
+      };
+      meta: Partial<TransactionMeta>; // all fields in meta are merged with TransactionMeta downstream
+    }) => {
+      const hexChainId = new Numeric(
+        txParams.chainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
+
+      const maxGasLimit = getMaxGasLimit(txParams.gasLimit ?? 0);
+
+      const finalTxParams = {
+        ...txParams,
+        chainId: hexChainId,
+        gasLimit: maxGasLimit,
+        gas: maxGasLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      };
+
+      const txMeta = await addTransactionAndWaitForPublish(finalTxParams, {
+        requireApproval: false,
+        // @ts-expect-error Need TransactionController v37+, TODO add this type
+        type: txType,
+        swaps: {
+          hasApproveTx:
+            txType === 'bridge' ? Boolean(quoteResponse?.approval) : true,
+          meta,
+        },
+      });
+
+      await forceUpdateMetamaskState(dispatch);
+
+      return txMeta;
+    };
+
+    const handleEthUsdtAllowanceReset = async ({
+      approval,
+      hexChainId,
+    }: {
+      approval: TxData;
+      hexChainId: Hex;
+    }) => {
+      const allowance = new BigNumber(
+        await getBridgeERC20Allowance(ETH_USDT_ADDRESS, hexChainId),
+      );
+
+      // quote.srcTokenAmount is actually after the fees
+      // so we need to add fees back in for total allowance to give
+      const sentAmount = quoteResponse.sentAmount.raw;
+
+      const shouldResetApproval = allowance.lt(sentAmount) && allowance.gt(0);
+
+      if (shouldResetApproval) {
+        const resetData = getEthUsdtResetData();
+        const txParams = {
+          ...approval,
+          data: resetData,
+        };
+
+        await handleTx({
+          txType: 'bridgeApproval',
+          txParams,
+          meta: {
+            // @ts-expect-error Need TransactionController v37+, TODO add this type
+            type: 'bridgeApproval', // TransactionType.bridgeApproval,
+          },
+        });
+      }
+    };
+
+    const handleApprovalTx = async ({ approval }: { approval: TxData }) => {
+      const hexChainId = new Numeric(
+        approval.chainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
+
+      // On Ethereum, we need to reset the allowance to 0 for USDT first if we need to set a new allowance
+      // https://www.google.com/url?q=https://docs.unizen.io/trade-api/before-you-get-started/token-allowance-management-for-non-updatable-allowance-tokens&sa=D&source=docs&ust=1727386175513609&usg=AOvVaw3Opm6BSJeu7qO0Ve5iLTOh
+      if (isEthUsdt(hexChainId, quoteResponse.quote.srcAsset.address)) {
+        await handleEthUsdtAllowanceReset({
+          approval,
+          hexChainId,
+        });
+      }
+
+      const txMeta = await handleTx({
+        txType: 'bridgeApproval',
+        txParams: approval,
+        meta: {
+          // @ts-expect-error Need TransactionController v37+, TODO add this type
+          type: 'bridgeApproval', // TransactionType.bridgeApproval,
+          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
+        },
+      });
+
+      return txMeta.id;
+    };
+
+    const handleBridgeTx = async ({
+      approvalTxId,
+    }: {
+      approvalTxId: string | undefined;
+    }) => {
+      const sentAmount = quoteResponse.sentAmount.raw;
+      const sentAmountDec = new Numeric(sentAmount, 10)
+        .shiftedBy(quoteResponse.quote.srcAsset.decimals)
+        .toString();
+
+      const txMeta = await handleTx({
+        txType: 'bridge',
+        txParams: quoteResponse.trade,
+        meta: {
+          // estimatedBaseFee: decEstimatedBaseFee,
+          // swapMetaData,
+          // @ts-expect-error Need TransactionController v37+, TODO add this type
+          type: 'bridge', // TransactionType.bridge,
+          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
+          destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
+          destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
+          destinationTokenAddress: quoteResponse.quote.destAsset.address,
+          approvalTxId,
+          // this is the decimal (non atomic) amount (not USD value) of source token to swap
+          swapTokenValue: sentAmountDec,
+        },
+      });
+
+      return txMeta.id;
+    };
+
+    const addSourceToken = () => {
+      const sourceNetworkClientId: string = getSelectedNetworkClientId(state);
+      const {
+        address,
+        decimals,
+        symbol,
+        icon: image,
+      } = quoteResponse.quote.srcAsset;
+      dispatch(
+        addToken({
+          address,
+          decimals,
+          symbol,
+          image,
+          networkClientId: sourceNetworkClientId,
+        }),
+      );
+    };
+
+    const addDestToken = async () => {
+      // Look up the destination chain
+      const hexDestChainId = new Numeric(quoteResponse.quote.destChainId, 10)
+        .toPrefixedHexString()
+        .toLowerCase() as `0x${string}`;
+      const networkConfigurations = getNetworkConfigurationsByChainId(state);
+      const foundDestNetworkConfig: NetworkConfiguration | undefined =
+        networkConfigurations[hexDestChainId];
+      let addedDestNetworkConfig: NetworkConfiguration | undefined;
+
+      // If user has not added the network in MetaMask, add it for them silently
+      if (!foundDestNetworkConfig) {
+        const featuredRpc = FEATURED_RPCS.find(
+          (rpc) => rpc.chainId === hexDestChainId,
+        );
+        if (!featuredRpc) {
+          throw new Error('No featured RPC found');
+        }
+        addedDestNetworkConfig = await dispatch(addNetwork(featuredRpc));
+      }
+
+      const destNetworkConfig =
+        foundDestNetworkConfig || addedDestNetworkConfig;
+      if (!destNetworkConfig) {
+        throw new Error('No destination network configuration found');
+      }
+
+      // Add the token after network is guaranteed to exist
+      const rpcEndpointIndex = destNetworkConfig.defaultRpcEndpointIndex;
+      const destNetworkClientId =
+        destNetworkConfig.rpcEndpoints[rpcEndpointIndex].networkClientId;
+      const {
+        address,
+        decimals,
+        symbol,
+        icon: image,
+      } = quoteResponse.quote.destAsset;
+      await dispatch(
+        addToken({
+          address,
+          decimals,
+          symbol,
+          image,
+          networkClientId: destNetworkClientId,
+        }),
+      );
+    };
+
+    const execute = async () => {
+      // Execute transaction(s)
+      let approvalTxId: string | undefined;
+      if (quoteResponse?.approval) {
+        approvalTxId = await handleApprovalTx({
+          approval: quoteResponse.approval,
+        });
+      }
+
+      await handleBridgeTx({
+        approvalTxId,
+      });
+
+      // Add tokens if not the native gas token
+      if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {
+        addSourceToken();
+      }
+      if (quoteResponse.quote.destAsset.address !== zeroAddress()) {
+        await addDestToken();
+      }
+
+      // Route user to activity tab on Home page
+      await dispatch(setDefaultHomeActiveTabName('activity'));
+      history.push(DEFAULT_ROUTE);
+    };
+
+    await execute();
   };
 };

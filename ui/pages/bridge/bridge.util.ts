@@ -1,4 +1,11 @@
+import { Contract } from '@ethersproject/contracts';
 import { Hex, add0x } from '@metamask/utils';
+import { TransactionParams } from '@metamask/transaction-controller';
+import {
+  fetchWithErrorHandling,
+  handleFetch,
+} from '@metamask/controller-utils';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
@@ -8,6 +15,8 @@ import {
 import {
   BRIDGE_API_BASE_URL,
   BRIDGE_CLIENT_ID,
+  ETH_USDT_ADDRESS,
+  METABRIDGE_ETHEREUM_ADDRESS,
 } from '../../../shared/constants/bridge';
 import { MINUTE } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -28,6 +37,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { REFRESH_INTERVAL_MS } from '../../../app/scripts/controllers/bridge/constants';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BridgeAsset,
   BridgeFlag,
@@ -40,6 +50,9 @@ import {
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
+
+type DecChainId = string;
+type GasMultiplierByDecChainId = Record<DecChainId, number>;
 
 type Validator<ExpectedResponse, DataToValidate> = {
   property: keyof ExpectedResponse | string;
@@ -101,11 +114,45 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
               (i) => typeof i === 'number',
             ),
         },
+        {
+          property: BridgeFlag.APPROVAL_GAS_MULTIPLIER,
+          type: 'object',
+          validator: (v): v is GasMultiplierByDecChainId =>
+            Object.values(v as { [s: DecChainId]: unknown }).every(
+              (i) => typeof i === 'number',
+            ),
+        },
+        {
+          property: BridgeFlag.BRIDGE_GAS_MULTIPLIER,
+          type: 'object',
+          validator: (v): v is GasMultiplierByDecChainId =>
+            Object.values(v as { [s: DecChainId]: unknown }).every(
+              (i) => typeof i === 'number',
+            ),
+        },
       ],
       rawFeatureFlags,
       url,
     )
   ) {
+    const approvalGasMultiplier = Object.keys(
+      rawFeatureFlags[BridgeFlag.APPROVAL_GAS_MULTIPLIER],
+    ).reduce<GasMultiplierByDecChainId>((acc, decChainId) => {
+      const hexChainId = add0x(decimalToHex(decChainId));
+      acc[hexChainId] =
+        rawFeatureFlags[BridgeFlag.APPROVAL_GAS_MULTIPLIER][decChainId];
+      return acc;
+    }, {});
+
+    const bridgeGasMultiplier = Object.keys(
+      rawFeatureFlags[BridgeFlag.BRIDGE_GAS_MULTIPLIER],
+    ).reduce<GasMultiplierByDecChainId>((acc, decChainId) => {
+      const hexChainId = add0x(decimalToHex(decChainId));
+      acc[hexChainId] =
+        rawFeatureFlags[BridgeFlag.BRIDGE_GAS_MULTIPLIER][decChainId];
+      return acc;
+    }, {});
+
     return {
       [BridgeFeatureFlagsKey.EXTENSION_CONFIG]:
         rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG],
@@ -117,6 +164,8 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
       [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: rawFeatureFlags[
         BridgeFlag.NETWORK_DEST_ALLOWLIST
       ].map((chainIdDec) => add0x(decimalToHex(chainIdDec))),
+      [BridgeFeatureFlagsKey.APPROVAL_GAS_MULTIPLIER]: approvalGasMultiplier,
+      [BridgeFeatureFlagsKey.BRIDGE_GAS_MULTIPLIER]: bridgeGasMultiplier,
     };
   }
 
@@ -131,6 +180,8 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
     // TODO set default to ALLOWED_BRIDGE_CHAIN_IDS once bridging is live
     [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
+    [BridgeFeatureFlagsKey.APPROVAL_GAS_MULTIPLIER]: {},
+    [BridgeFeatureFlagsKey.BRIDGE_GAS_MULTIPLIER]: {},
   };
 }
 
@@ -283,3 +334,22 @@ export async function fetchBridgeQuotes(
   );
   return filteredQuotes;
 }
+/**
+ * A function to return the txParam data for setting allowance to 0 for USDT on Ethereum
+ *
+ * @returns The txParam data that will reset allowance to 0, combine it with the approval tx params received from Bridge API
+ */
+export const getEthUsdtResetData = () => {
+  const UsdtContractInterface = new Contract(ETH_USDT_ADDRESS, abiERC20)
+    .interface;
+  const data = UsdtContractInterface.encodeFunctionData('approve', [
+    METABRIDGE_ETHEREUM_ADDRESS,
+    '0',
+  ]);
+
+  return data;
+};
+
+export const isEthUsdt = (chainId: Hex, address: string) =>
+  chainId === CHAIN_IDS.MAINNET &&
+  address.toLowerCase() === ETH_USDT_ADDRESS.toLowerCase();

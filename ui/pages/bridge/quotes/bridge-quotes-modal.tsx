@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { IconName } from '@metamask/snaps-sdk/jsx';
 import {
   Box,
@@ -15,15 +14,15 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
-import { getQuoteDisplayData } from '../utils/quote';
+import { formatEtaInMinutes } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import useBridgeQuotes from '../../../hooks/bridge/useBridgeQuotes';
 
 export const BridgeQuotesModal = ({
   onClose,
   ...modalProps
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
-  const { quotes } = useSelector(getBridgeQuotes);
+  const { sortedQuotes } = useBridgeQuotes();
   const t = useI18nContext();
 
   const [, setSortOrder] = useState(t('bridgeOverallCost'));
@@ -53,12 +52,22 @@ export const BridgeQuotesModal = ({
           })}
         </Box>
         <Box className="quotes-modal__quotes">
-          {quotes.map((quote, index) => {
-            const { totalFees, etaInMinutes } = getQuoteDisplayData(quote);
+          {sortedQuotes.map((quote, index) => {
             return (
               <Box key={index} className="quotes-modal__quotes__row">
-                <Text>{totalFees?.fiat}</Text>
-                <Text>{t('bridgeTimingMinutes', [etaInMinutes])}</Text>
+                <Text>{quote.totalNetworkFee.fiat?.toString()}</Text>
+                <Text>
+                  {quote.adjustedReturn.fiat && quote.sentAmount.fiat
+                    ? quote.adjustedReturn.fiat
+                        .minus(quote.sentAmount.fiat)
+                        .toFixed(2)
+                    : ''}
+                </Text>
+                <Text>
+                  {t('bridgeTimingMinutes', [
+                    formatEtaInMinutes(quote.estimatedProcessingTimeInSeconds),
+                  ])}
+                </Text>
               </Box>
             );
           })}

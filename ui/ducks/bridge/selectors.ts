@@ -3,7 +3,6 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
-import { createSelector } from 'reselect';
 import {
   getNetworkConfigurationsByChainId,
   getIsBridgeEnabled,
@@ -18,13 +17,12 @@ import {
 } from '../../../app/scripts/controllers/bridge/types';
 import { createDeepEqualSelector } from '../../selectors/util';
 import { getProviderConfig } from '../metamask/metamask';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { BridgeState } from './bridge';
 
-type BridgeAppState = {
+export type BridgeAppState = {
   metamask: NetworkState & { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
   };
@@ -95,6 +93,18 @@ export const getToChain = createDeepEqualSelector(
     toChains.find(({ chainId }) => chainId === toChainId),
 );
 
+export const getApprovalGasMultipliers = (state: BridgeAppState) => {
+  return (
+    state.metamask.bridgeState.bridgeFeatureFlags.approvalGasMultiplier ?? {}
+  );
+};
+
+export const getBridgeGasMultipliers = (state: BridgeAppState) => {
+  return (
+    state.metamask.bridgeState.bridgeFeatureFlags.bridgeGasMultiplier ?? {}
+  );
+};
+
 export const getFromTokens = (state: BridgeAppState) => {
   return state.metamask.bridgeState.srcTokens ?? {};
 };
@@ -133,28 +143,10 @@ export const getBridgeQuotes = (state: BridgeAppState) => {
   };
 };
 
-export const getRecommendedQuote = createSelector(
-  getBridgeQuotes,
-  ({ quotes }) => {
-    return quotes[0];
-  },
-);
-
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask.bridgeState;
   return quoteRequest;
 };
-
-export const getToAmount = createSelector(getRecommendedQuote, (quote) =>
-  quote
-    ? calcTokenAmount(
-        quote.quote.destTokenAmount,
-        quote.quote.destAsset.decimals,
-      )
-        .toFixed(3)
-        .toString()
-    : undefined,
-);
 
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,
@@ -164,4 +156,13 @@ export const getIsBridgeTx = createDeepEqualSelector(
     isBridgeEnabled && toChain && fromChain?.chainId
       ? fromChain.chainId !== toChain.chainId
       : false,
+);
+
+export const getToTokenExchangeRates = createDeepEqualSelector(
+  (state: BridgeAppState) => state.bridge.toTokenExchangeRate,
+  (state: BridgeAppState) => state.bridge.toNativeExchangeRate,
+  (toTokenExchangeRate, toNativeExchangeRate) => ({
+    toTokenExchangeRate,
+    toNativeExchangeRate,
+  }),
 );
