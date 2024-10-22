@@ -37,7 +37,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.wait(async () => {
           const tokenAddressesElement = await driver.findElement(
-            '#tokenAddresses',
+            '#erc20TokenAddresses',
           );
           const tokenAddresses = await tokenAddressesElement.getText();
           return tokenAddresses !== '';
@@ -53,7 +53,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.wait(async () => {
           const tokenAddressesElement = await driver.findElement(
-            '#tokenAddresses',
+            '#erc20TokenAddresses',
           );
           const tokenAddresses = await tokenAddressesElement.getText();
           return tokenAddresses.split(',').length === 2;
@@ -69,7 +69,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.wait(async () => {
           const tokenAddressesElement = await driver.findElement(
-            '#tokenAddresses',
+            '#erc20TokenAddresses',
           );
           const tokenAddresses = await tokenAddressesElement.getText();
           return tokenAddresses.split(',').length === 3;
