@@ -15,5 +15,5 @@ export const selectBridgeTxStatuses = createSelector(
     selectBridgeStatusState,
     (_: BridgeStatusAppState, txHash: string) => txHash,
   ],
-  (bridgeStatusState) => bridgeStatusState.txStatuses,
+  (bridgeStatusState) => bridgeStatusState.txHistory,
 );

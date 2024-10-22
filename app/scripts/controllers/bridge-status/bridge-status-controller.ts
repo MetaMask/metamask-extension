@@ -1,6 +1,7 @@
 import { StateMetadata } from '@metamask/base-controller';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { QuoteResponse } from '../../../../ui/pages/bridge/types';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
@@ -11,6 +12,7 @@ import {
   BridgeStatusControllerMessenger,
   StatusRequest,
   StatusTypes,
+  BridgeHistoryItem,
 } from './types';
 import { fetchBridgeTxStatus } from './utils';
 
@@ -18,12 +20,22 @@ const metadata: StateMetadata<{
   bridgeStatusState: BridgeStatusControllerState;
 }> = {
   bridgeStatusState: {
-    persist: false,
+    persist: false, // TODO should we persist this? TxController does, but StxController does not
     anonymous: false,
   },
 };
 
 type TxHash = string;
+export type FetchBridgeTxStatusArgs = {
+  statusRequest: StatusRequest;
+  quoteResponse: QuoteResponse;
+  startTime?: BridgeHistoryItem['startTime'];
+  slippagePercentage: BridgeHistoryItem['slippagePercentage'];
+  completionTime?: BridgeHistoryItem['completionTime'];
+  pricingData?: BridgeHistoryItem['pricingData'];
+  initialDestAssetBalance?: BridgeHistoryItem['initialDestAssetBalance'];
+  targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
+};
 
 export default class BridgeStatusController extends StaticIntervalPollingController<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
@@ -58,9 +70,13 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     });
   };
 
-  startPollingForBridgeTxStatus = async (statusRequest: StatusRequest) => {
+  startPollingForBridgeTxStatus = async (
+    fetchBridgeTxStatusArgs: FetchBridgeTxStatusArgs,
+  ) => {
     // Need to subscribe since if we try to fetch status too fast, API will fail with 500 error
     // So fetch on tx confirmed
+    const { statusRequest } = fetchBridgeTxStatusArgs;
+
     this.messagingSystem.subscribe(
       'TransactionController:transactionConfirmed',
       async (txMeta) => {
@@ -74,7 +90,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
             hexSourceChainId,
           );
           this.#pollingTokensByTxHash[statusRequest.srcTxHash] =
-            this.startPollingByNetworkClientId(networkClientId, statusRequest);
+            this.startPollingByNetworkClientId(
+              networkClientId,
+              fetchBridgeTxStatusArgs,
+            );
         }
       },
     );
@@ -83,31 +102,59 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   // This will be called after you call this.startPollingByNetworkClientId()
   _executePoll = async (
     _networkClientId: string,
-    statusRequest: StatusRequest,
+    fetchBridgeTxStatusArgs: FetchBridgeTxStatusArgs,
   ) => {
-    await this.#fetchBridgeTxStatus(statusRequest);
+    await this.#fetchBridgeTxStatus(fetchBridgeTxStatusArgs);
   };
 
-  #fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
+  #getSelectedAccount() {
+    return this.messagingSystem.call('AccountsController:getSelectedAccount');
+  }
+
+  #fetchBridgeTxStatus = async ({
+    statusRequest,
+    quoteResponse,
+    startTime,
+    slippagePercentage,
+    completionTime,
+    pricingData,
+    initialDestAssetBalance,
+    targetContractAddress,
+  }: FetchBridgeTxStatusArgs) => {
     const { bridgeStatusState } = this.state;
-    const bridgeTxStatus = await fetchBridgeTxStatus(statusRequest);
+    const status = await fetchBridgeTxStatus(statusRequest);
 
     // No need to purge these on network change or account change, TransactionController does not purge either.
     // TODO In theory we can skip checking status if it's not the current account/network
     // we need to keep track of the account that this is associated with as well so that we don't show it in Activity list for other accounts
     // First stab at this will not stop polling when you are on a different account
+
+    const { address: account } = this.#getSelectedAccount();
+
     this.update((_state) => {
       _state.bridgeStatusState = {
         ...bridgeStatusState,
-        txStatuses: {
-          ...bridgeStatusState.txStatuses,
-          [statusRequest.srcTxHash]: bridgeTxStatus,
+        txHistory: {
+          ...bridgeStatusState.txHistory,
+          [statusRequest.srcTxHash]: {
+            quote: quoteResponse.quote,
+            status,
+            startTime,
+            estimatedProcessingTimeInSeconds:
+              quoteResponse.estimatedProcessingTimeInSeconds,
+            slippagePercentage,
+            completionTime,
+            pricingData,
+            initialDestAssetBalance,
+            targetContractAddress,
+            account,
+          },
         },
       };
     });
 
     const pollingToken = this.#pollingTokensByTxHash[statusRequest.srcTxHash];
-    if (bridgeTxStatus.status === StatusTypes.COMPLETE && pollingToken) {
+    if (status.status === StatusTypes.COMPLETE && pollingToken) {
       this.stopPollingByPollingToken(pollingToken);
     }
   };
