@@ -5,14 +5,19 @@ class OnboardingPasswordPage {
   private driver: Driver;
 
   private readonly createPasswordMessage = {
-    text: "Create password",
+    text: 'Create password',
     tag: 'h2',
   };
 
   private readonly newPasswordInput = '[data-testid="create-password-new"]';
-  private readonly confirmPasswordInput = '[data-testid="create-password-confirm"]';
+
+  private readonly confirmPasswordInput =
+    '[data-testid="create-password-confirm"]';
+
   private readonly passwordTerms = '[data-testid="create-password-terms"]';
-  private readonly importWalletButton = '[data-testid="create-password-import"]';
+
+  private readonly importWalletButton =
+    '[data-testid="create-password-import"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -26,7 +31,10 @@ class OnboardingPasswordPage {
         this.confirmPasswordInput,
       ]);
     } catch (e) {
-      console.log('Timeout while waiting for create password page to be loaded', e);
+      console.log(
+        'Timeout while waiting for create password page to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Onboarding password page is loaded');
@@ -34,6 +42,7 @@ class OnboardingPasswordPage {
 
   /**
    * Fill the password fields with the provided password
+   *
    * @param password - The password to fill. Defaults to WALLET_PASSWORD.
    */
   async fillPassword(password: string = WALLET_PASSWORD): Promise<void> {

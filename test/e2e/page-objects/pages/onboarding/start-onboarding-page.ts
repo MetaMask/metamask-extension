@@ -3,7 +3,8 @@ import { Driver } from '../../../webdriver/driver';
 class StartOnboardingPage {
   private driver: Driver;
 
-  private readonly importWalletButton = '[data-testid="onboarding-import-wallet"]';
+  private readonly importWalletButton =
+    '[data-testid="onboarding-import-wallet"]';
 
   private readonly startMessage = {
     tag: 'h2',
@@ -23,7 +24,10 @@ class StartOnboardingPage {
         this.termsCheckbox,
       ]);
     } catch (e) {
-      console.log('Timeout while waiting for start onboarding page to be loaded', e);
+      console.log(
+        'Timeout while waiting for start onboarding page to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Start onboarding page is loaded');

@@ -4,26 +4,38 @@ class OnboardingPrivacySettingsPage {
   private driver: Driver;
 
   private readonly generalSettings = '[data-testid="category-item-General"]';
+
   private readonly assetsSettings = '[data-testid="category-item-Assets"]';
+
   private readonly securitySettings = '[data-testid="category-item-Security"]';
 
-  private readonly privacySettingsBackButton = '[data-testid="privacy-settings-back-button"]';
+  private readonly privacySettingsBackButton =
+    '[data-testid="privacy-settings-back-button"]';
+
   private readonly categoryBackButton = '[data-testid="category-back-button"]';
 
   // General settings
-  private readonly generalSettingsMessage = {text: 'General', tag: 'h2'};
+  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
 
-  private readonly basicFunctionalityToggle = '[data-testid="basic-functionality-toggle"] .toggle-button';
+  private readonly basicFunctionalityToggle =
+    '[data-testid="basic-functionality-toggle"] .toggle-button';
 
-  private readonly basicFunctionalityCheckbox = '[id="basic-configuration-checkbox"]';
+  private readonly basicFunctionalityCheckbox =
+    '[id="basic-configuration-checkbox"]';
 
-  private readonly basicFunctionalityTurnOffButton = {text: 'Turn off', tag: 'button'};
+  private readonly basicFunctionalityTurnOffButton = {
+    text: 'Turn off',
+    tag: 'button',
+  };
 
-  private readonly basicFunctionalityTurnOffMessage = {text: 'Turn off basic functionality', tag: 'h4'};
-
+  private readonly basicFunctionalityTurnOffMessage = {
+    text: 'Turn off basic functionality',
+    tag: 'h4',
+  };
 
   // Assets settings
-  private readonly assetsSettingsMessage = {text: 'Assets', tag: 'h2'};
+  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
+
   private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
 
   constructor(driver: Driver) {
@@ -38,7 +50,10 @@ class OnboardingPrivacySettingsPage {
         this.securitySettings,
       ]);
     } catch (e) {
-      console.log('Timeout while waiting for onboarding privacy settings page to be loaded', e);
+      console.log(
+        'Timeout while waiting for onboarding privacy settings page to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Onboarding privacy settings page is loaded');
@@ -79,10 +94,10 @@ class OnboardingPrivacySettingsPage {
   async navigateBackToOnboardingCompletePage(): Promise<void> {
     // Wait until the onboarding carousel has stopped moving otherwise the click has no effect.
     await this.driver.waitForElementToStopMoving(
-      this.privacySettingsBackButton
+      this.privacySettingsBackButton,
     );
     await this.driver.clickElementAndWaitToDisappear(
-      this.privacySettingsBackButton
+      this.privacySettingsBackButton,
     );
   }
 }

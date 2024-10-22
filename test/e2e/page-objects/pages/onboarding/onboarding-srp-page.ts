@@ -5,7 +5,7 @@ class OnboardingSrpPage {
   private driver: Driver;
 
   private readonly srpMessage = {
-    text: "Access your wallet with your Secret Recovery Phrase",
+    text: 'Access your wallet with your Secret Recovery Phrase',
     tag: 'h2',
   };
 
@@ -24,7 +24,10 @@ class OnboardingSrpPage {
         this.srpWord0,
       ]);
     } catch (e) {
-      console.log('Timeout while waiting for onboarding srp page to be loaded', e);
+      console.log(
+        'Timeout while waiting for onboarding srp page to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Onboarding srp page is loaded');
@@ -32,13 +35,11 @@ class OnboardingSrpPage {
 
   /**
    * Fill the SRP words with the provided seed phrase
+   *
    * @param seedPhrase - The seed phrase to fill. Defaults to TEST_SEED_PHRASE.
    */
   async fillSrp(seedPhrase: string = TEST_SEED_PHRASE): Promise<void> {
-    await this.driver.pasteIntoField(
-      this.srpWord0,
-      seedPhrase,
-    );
+    await this.driver.pasteIntoField(this.srpWord0, seedPhrase);
   }
 
   async clickConfirmButton(): Promise<void> {

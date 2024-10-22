@@ -4,9 +4,7 @@ import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page
 import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 
-export const importSRPOnboardingFlow = async (
-  driver: Driver,
-) => {
+export const importSRPOnboardingFlow = async (driver: Driver) => {
   console.log('start import srp onboarding flow ');
   await driver.navigate();
   const startOnboardingPage = new StartOnboardingPage(driver);

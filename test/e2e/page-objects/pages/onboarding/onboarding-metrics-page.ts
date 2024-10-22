@@ -5,7 +5,7 @@ class OnboardingMetricsPage {
 
   private readonly metametricsMessage = {
     tag: 'h2',
-    text: "Help us improve MetaMask",
+    text: 'Help us improve MetaMask',
   };
 
   private readonly noThanksButton = '[data-testid="metametrics-no-thanks"]';
@@ -21,7 +21,10 @@ class OnboardingMetricsPage {
         this.noThanksButton,
       ]);
     } catch (e) {
-      console.log('Timeout while waiting for onboarding metametrics page to be loaded', e);
+      console.log(
+        'Timeout while waiting for onboarding metametrics page to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Onboarding metametrics page is loaded');
