@@ -23,12 +23,14 @@ const metadata: StateMetadata<{
   },
 };
 
+type TxHash = string;
+
 export default class BridgeStatusController extends StaticIntervalPollingController<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   { bridgeStatusState: BridgeStatusControllerState },
   BridgeStatusControllerMessenger
 > {
-  #pollingToken: string | undefined;
+  #pollingTokensByTxHash: Record<TxHash, string> = {};
 
   constructor({ messenger }: { messenger: BridgeStatusControllerMessenger }) {
     super({
@@ -71,19 +73,14 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
             'NetworkController:findNetworkClientIdByChainId',
             hexSourceChainId,
           );
-          // TODO does this need to be an object of polling tokens?
-          // user could have several bridge txs in flight at the same time
-          // could store pollingTokens in an array and look them up, or an object with pollingToken as key and value as true
-          this.#pollingToken = this.startPollingByNetworkClientId(
-            networkClientId,
-            statusRequest,
-          );
+          this.#pollingTokensByTxHash[statusRequest.srcTxHash] =
+            this.startPollingByNetworkClientId(networkClientId, statusRequest);
         }
       },
     );
   };
 
-  // This will be called after you do this.startPollingByNetworkClientId()
+  // This will be called after you call this.startPollingByNetworkClientId()
   _executePoll = async (
     _networkClientId: string,
     statusRequest: StatusRequest,
@@ -95,6 +92,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     const { bridgeStatusState } = this.state;
     const bridgeTxStatus = await fetchBridgeTxStatus(statusRequest);
 
+    // No need to purge these on network change or account change, TransactionController does not purge either.
+    // TODO In theory we can skip checking status if it's not the current account/network
+    // we need to keep track of the account that this is associated with as well so that we don't show it in Activity list for other accounts
+    // First stab at this will not stop polling when you are on a different account
     this.update((_state) => {
       _state.bridgeStatusState = {
         ...bridgeStatusState,
@@ -105,8 +106,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       };
     });
 
-    if (bridgeTxStatus.status === StatusTypes.COMPLETE && this.#pollingToken) {
-      this.stopPollingByPollingToken(this.#pollingToken);
+    const pollingToken = this.#pollingTokensByTxHash[statusRequest.srcTxHash];
+    if (bridgeTxStatus.status === StatusTypes.COMPLETE && pollingToken) {
+      this.stopPollingByPollingToken(pollingToken);
     }
   };
 }

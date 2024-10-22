@@ -116,12 +116,14 @@ export type BridgeHistoryItem = {
   };
   initialDestAssetBalance?: number;
   targetContractAddress?: string;
+  account: string;
 };
 
 // All fields need to be types not interfaces, same with their children fields
 // o/w you get a type error
+type TxHash = string;
 export type BridgeStatusControllerState = {
-  txStatuses: Record<string, StatusResponse>;
+  txStatuses: Record<TxHash, StatusResponse>;
   // txHistory: Record<string, BridgeHistoryItem>;
 };
 
