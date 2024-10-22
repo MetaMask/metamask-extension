@@ -1351,10 +1351,6 @@
   },
   "currentNetwork": {
     "message": "Current Network",
-    "description": "Specifies to network filter to filter tokens by current network"
-  },
-  "currentNetwork": {
-    "message": "Current Network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
