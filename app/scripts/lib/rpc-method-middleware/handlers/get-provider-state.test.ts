@@ -1,5 +1,5 @@
 import { PendingJsonRpcResponse } from '@metamask/utils';
-import { JsonRpcEngineEndCallback } from 'json-rpc-engine';
+import { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import getProviderState, {
   GetProviderState,
   ProviderStateHandlerResult,

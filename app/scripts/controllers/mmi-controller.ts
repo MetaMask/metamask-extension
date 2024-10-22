@@ -21,11 +21,12 @@ import { IApiCallLogEntry } from '@metamask-institutional/types';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { SignatureController } from '@metamask/signature-controller';
 import {
-  OriginalRequest,
-  PersonalMessageParams,
-} from '@metamask/message-manager';
+  MessageParamsPersonal,
+  MessageParamsTyped,
+  SignatureController,
+} from '@metamask/signature-controller';
+import { OriginalRequest } from '@metamask/message-manager';
 import { NetworkController } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
@@ -46,9 +47,9 @@ import {
 import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
-import { PreferencesController } from './preferences-controller';
 import AccountTrackerController from './account-tracker-controller';
-import { AppStateController } from './app-state';
+import { AppStateController } from './app-state-controller';
+import { PreferencesController } from './preferences-controller';
 
 type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;
@@ -805,14 +806,14 @@ export default class MMIController extends EventEmitter {
       req.method === 'eth_signTypedData_v4'
     ) {
       return await this.signatureController.newUnsignedTypedMessage(
-        updatedMsgParams as PersonalMessageParams,
+        updatedMsgParams as MessageParamsTyped,
         req as OriginalRequest,
         version,
         { parseJsonData: false },
       );
     } else if (req.method === 'personal_sign') {
       return await this.signatureController.newUnsignedPersonalMessage(
-        updatedMsgParams as PersonalMessageParams,
+        updatedMsgParams as MessageParamsPersonal,
         req as OriginalRequest,
       );
     }
