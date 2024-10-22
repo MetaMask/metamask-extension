@@ -1,4 +1,10 @@
 import React, { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  getCurrentChainId,
+  getCurrentNetwork,
+  getPreferences,
+} from '../../../../../selectors';
 import {
   Box,
   ButtonBase,
@@ -14,6 +20,7 @@ import {
   BorderStyle,
   Display,
   JustifyContent,
+  OverflowWrap,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
@@ -34,6 +41,9 @@ type AssetListControlBarProps = {
 const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const popoverRef = useRef<HTMLDivElement>(null);
+  const chainId = useSelector(getCurrentChainId);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const { tokenNetworkFilter } = useSelector(getPreferences);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
@@ -57,6 +67,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
     setIsTokenSortPopoverOpen(false);
     setIsNetworkFilterPopoverOpen(false);
   };
+
+  console.log(tokenNetworkFilter, currentNetwork);
 
   return (
     <Box
@@ -88,8 +100,11 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             borderStyle={BorderStyle.solid}
             color={TextColor.textDefault}
             marginRight={isFullScreen ? 2 : null}
+            ellipsis
           >
-            {t('networkFilter')}
+            {tokenNetworkFilter[chainId]
+              ? currentNetwork?.nickname ?? t('currentNetwork')
+              : t('allNetworks')}
           </ButtonBase>
         )}
 

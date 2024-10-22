@@ -1353,6 +1353,10 @@
     "message": "Current Network",
     "description": "Specifies to network filter to filter tokens by current network"
   },
+  "currentNetwork": {
+    "message": "Current Network",
+    "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
+  },
   "currentRpcUrlDeprecated": {
     "message": "The current rpc url for this network has been deprecated."
   },
@@ -3097,9 +3101,6 @@
   },
   "networkFee": {
     "message": "Network fee"
-  },
-  "networkFilter": {
-    "message": "Network"
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
