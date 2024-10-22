@@ -194,7 +194,6 @@
     "database": null,
     "lastUpdated": null,
     "databaseUnavailable": "boolean",
-    "notifications": "object",
     "interfaces": "object",
     "insights": "object",
     "names": "object",
