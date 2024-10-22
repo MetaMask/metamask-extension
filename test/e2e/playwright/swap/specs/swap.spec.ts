@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { test } from '@playwright/test';
+import { Page, test } from '@playwright/test';
 import log from 'loglevel';
 
 import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
@@ -24,11 +24,11 @@ const testSet = [
     network: Tenderly.Mainnet,
   },
   {
-    quantity: '.5',
-    source: 'ETH',
+    quantity: '50',
+    source: 'POL',
     type: 'native',
     destination: 'USDC',
-    network: Tenderly.Abritrum,
+    network: Tenderly.Polygon,
   },
   {
     quantity: '.5',
@@ -37,7 +37,13 @@ const testSet = [
     destination: 'OP',
     network: Tenderly.Optimism,
   },
-
+  {
+    quantity: '100',
+    source: 'OP',
+    type: 'unapproved',
+    destination: 'USDC',
+    network: Tenderly.Optimism,
+  },
   {
     quantity: '50',
     source: 'DAI',
@@ -69,16 +75,22 @@ const testSet = [
   },
 ];
 
+let a: Page;
 test.beforeAll(
   'Initialize extension, import wallet and add custom networks',
   async () => {
     const extension = new ChromeExtensionPage();
     const page = await extension.initExtension();
     page.setDefaultTimeout(15000);
+    a = page;
 
     const wallet = ethers.Wallet.createRandom();
     await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
-    await addFundsToAccount(Tenderly.Abritrum.url, wallet.address);
+    await addFundsToAccount(
+      Tenderly.Polygon.url,
+      wallet.address,
+      '0x1043561A8829300000',
+    );
     await addFundsToAccount(Tenderly.Optimism.url, wallet.address);
 
     const signUp = new SignUpPage(page);
@@ -90,7 +102,7 @@ test.beforeAll(
     walletPage = new WalletPage(page);
 
     await networkController.addCustomNetwork(Tenderly.Mainnet);
-    await networkController.addCustomNetwork(Tenderly.Abritrum);
+    await networkController.addCustomNetwork(Tenderly.Polygon);
     await networkController.addCustomNetwork(Tenderly.Optimism);
     await walletPage.importAccount(wallet.privateKey);
   },
@@ -119,14 +131,17 @@ testSet.forEach((options) => {
           });
         } else {
           log.error(`\tERROR: Transaction did not complete. Skipping test`);
+          await a.waitForTimeout(100000);
           test.skip();
         }
       } else {
         log.error(`\tERROR: No quotes found on. Skipping test`);
+        await a.waitForTimeout(100000);
         test.skip();
       }
     } else {
       log.error(`\tERROR: Error while entering the quote. Skipping test`);
+      await a.waitForTimeout(100000);
       test.skip();
     }
   });

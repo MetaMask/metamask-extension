@@ -16,11 +16,11 @@ export const Tenderly = {
     chainID: '10',
     symbol: 'ETH',
   },
-  Abritrum: {
-    name: 'Arbitrum One',
+  Polygon: {
+    name: 'Polygon',
     rpcName: '',
-    url: 'https://virtual.arbitrum.rpc.tenderly.co/7d364996-41a7-4da6-a552-a19ab1ef9173',
-    chainID: '42161',
+    url: 'https://virtual.polygon.rpc.tenderly.co/e834a81e-69ba-49e9-a6a5-be5b6eea3cdc',
+    chainID: '137',
     symbol: 'ETH',
   },
 };
