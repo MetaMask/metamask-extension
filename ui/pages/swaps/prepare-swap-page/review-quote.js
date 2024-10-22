@@ -58,8 +58,9 @@ import {
   getUSDConversionRate,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
+  getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
@@ -240,7 +241,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
+  );
+  const smartTransactionsPreferenceEnabled = useSelector(
+    getSmartTransactionsPreferenceEnabled,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const swapsSTXLoading = useSelector(getSwapsSTXLoading);
@@ -280,7 +284,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const unsignedTransaction = usedQuote.trade;
   const { isGasIncludedTrade } = usedQuote;
   const isSmartTransaction =
-    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
+    useSelector(getSmartTransactionsPreferenceEnabled) &&
+    currentSmartTransactionsEnabled;
 
   const [slippageErrorKey] = useState(() => {
     const slippage = Number(fetchParams?.slippage);
@@ -377,7 +382,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       chainId,
       smartTransactionEstimatedGas:
         smartTransactionsEnabled &&
-        smartTransactionsOptInStatus &&
+        smartTransactionsPreferenceEnabled &&
         smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
       multiLayerL1ApprovalFeeTotal,
@@ -394,7 +399,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     smartTransactionFees?.tradeTxFees,
     nativeCurrencySymbol,
     smartTransactionsEnabled,
-    smartTransactionsOptInStatus,
+    smartTransactionsPreferenceEnabled,
     multiLayerL1ApprovalFeeTotal,
   ]);
 
@@ -887,7 +892,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       (currentSmartTransactionsEnabled &&
         (currentSmartTransactionsError || smartTransactionsError)) ||
       (currentSmartTransactionsEnabled &&
-        smartTransactionsOptInStatus &&
+        smartTransactionsPreferenceEnabled &&
         !smartTransactionFees?.tradeTxFees),
   );
 
@@ -1136,7 +1141,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               initialAggId={usedQuote.aggregator}
               onQuoteDetailsIsOpened={trackQuoteDetailsOpened}
               hideEstimatedGasFee={
-                smartTransactionsEnabled && smartTransactionsOptInStatus
+                smartTransactionsEnabled && smartTransactionsPreferenceEnabled
               }
             />
           )

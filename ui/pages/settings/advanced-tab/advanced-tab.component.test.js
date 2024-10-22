@@ -9,7 +9,7 @@ import AdvancedTab from '.';
 const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
 const mockSetShowFiatConversionOnTestnetsPreference = jest.fn();
-const mockSetStxOptIn = jest.fn();
+const mockSetStxPrefEnabled = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
   return {
@@ -17,7 +17,7 @@ jest.mock('../../../store/actions.ts', () => {
     setShowTestNetworks: () => mockSetShowTestNetworks,
     setShowFiatConversionOnTestnetsPreference: () =>
       mockSetShowFiatConversionOnTestnetsPreference,
-    setSmartTransactionsOptInStatus: () => mockSetStxOptIn,
+    setSmartTransactionsPreferenceEnabled: () => mockSetStxPrefEnabled,
   };
 });
 
@@ -102,7 +102,7 @@ describe('AdvancedTab Component', () => {
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const toggleButton = queryByTestId('settings-page-stx-opt-in-toggle');
       fireEvent.click(toggleButton);
-      expect(mockSetStxOptIn).toHaveBeenCalled();
+      expect(mockSetStxPrefEnabled).toHaveBeenCalled();
     });
   });
 });
