@@ -2,35 +2,43 @@ import { JsonRpcError } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  validateAndNormalizeScopes,
-  bucketScopes,
   KnownRpcMethods,
   KnownNotifications,
+  Caip25Authorization,
+  ScopesObject,
 } from '@metamask/multichain';
+import * as Multichain from '@metamask/multichain';
+import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import { CaveatTypes } from '../../../../../../shared/constants/permissions';
-import { shouldEmitDappViewedEvent } from '../../../util';
+import * as Util from '../../../util';
 import { PermissionNames } from '../../../../controllers/permissions';
-import { processScopedProperties, validateAndAddEip3085 } from './helpers';
-import { walletCreateSessionHandler } from './handler';
+import * as Helpers from './helpers';
+import { walletCreateSession } from './handler';
 
 jest.mock('../../../util', () => ({
   ...jest.requireActual('../../../util'),
   shouldEmitDappViewedEvent: jest.fn(),
 }));
+const MockUtil = jest.mocked(Util);
 
 jest.mock('@metamask/multichain', () => ({
   ...jest.requireActual('@metamask/multichain'),
   validateAndNormalizeScopes: jest.fn(),
   bucketScopes: jest.fn(),
 }));
+const MockMultichain = jest.mocked(Multichain);
 
 jest.mock('./helpers', () => ({
   ...jest.requireActual('./helpers'),
   validateAndAddEip3085: jest.fn(),
   processScopedProperties: jest.fn(),
 }));
+const MockHelpers = jest.mocked(Helpers);
 
 const baseRequest = {
+  jsonrpc: '2.0' as const,
+  id: 0,
+  method: 'wallet_createSession',
   origin: 'http://test.com',
   params: {
     requiredScopes: {
@@ -62,7 +70,7 @@ const createMockedHandler = () => {
   });
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
-  const addNetwork = jest.fn().mockResolvedValue();
+  const addNetwork = jest.fn().mockResolvedValue(undefined);
   const removeNetwork = jest.fn();
   const sendMetrics = jest.fn();
   const metamaskState = {
@@ -75,9 +83,17 @@ const createMockedHandler = () => {
     },
   };
   const listAccounts = jest.fn().mockReturnValue([]);
-  const response = {};
-  const handler = (request) =>
-    walletCreateSessionHandler(request, response, next, end, {
+  const response = {
+    jsonrpc: '2.0' as const,
+    id: 0,
+  } as unknown as JsonRpcSuccess<{
+    sessionScopes: ScopesObject;
+    sessionProperties?: Record<string, Json>;
+  }>;
+  const handler = (
+    request: JsonRpcRequest<Caip25Authorization> & { origin: string },
+  ) =>
+    walletCreateSession.implementation(request, response, next, end, {
       findNetworkClientIdByChainId,
       requestPermissionApprovalForOrigin,
       grantPermissions,
@@ -106,11 +122,11 @@ const createMockedHandler = () => {
 
 describe('wallet_createSession', () => {
   beforeEach(() => {
-    validateAndNormalizeScopes.mockReturnValue({
+    MockMultichain.validateAndNormalizeScopes.mockReturnValue({
       normalizedRequiredScopes: {},
       normalizedOptionalScopes: {},
     });
-    bucketScopes.mockReturnValue({
+    MockMultichain.bucketScopes.mockReturnValue({
       supportedScopes: {},
       supportableScopes: {},
       unsupportableScopes: {},
@@ -142,20 +158,28 @@ describe('wallet_createSession', () => {
       params: {
         ...baseRequest.params,
         optionalScopes: {
-          foo: 'bar',
+          foo: {
+            methods: [],
+            notifications: [],
+          },
         },
       },
     });
 
-    expect(validateAndNormalizeScopes).toHaveBeenCalledWith(
+    expect(MockMultichain.validateAndNormalizeScopes).toHaveBeenCalledWith(
       baseRequest.params.requiredScopes,
-      { foo: 'bar' },
+      {
+        foo: {
+          methods: [],
+          notifications: [],
+        },
+      },
     );
   });
 
   it('throws an error when processing scopes fails', async () => {
     const { handler, end } = createMockedHandler();
-    validateAndNormalizeScopes.mockImplementation(() => {
+    MockMultichain.validateAndNormalizeScopes.mockImplementation(() => {
       throw new Error('failed to process scopes');
     });
     await handler(baseRequest);
@@ -164,7 +188,7 @@ describe('wallet_createSession', () => {
 
   it('processes the scopedProperties', async () => {
     const { handler } = createMockedHandler();
-    validateAndNormalizeScopes.mockReturnValue({
+    MockMultichain.validateAndNormalizeScopes.mockReturnValue({
       normalizedRequiredScopes: {
         'eip155:1': {
           methods: ['eth_chainId'],
@@ -190,7 +214,7 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(processScopedProperties).toHaveBeenCalledWith(
+    expect(MockHelpers.processScopedProperties).toHaveBeenCalledWith(
       {
         'eip155:1': {
           methods: ['eth_chainId'],
@@ -211,7 +235,7 @@ describe('wallet_createSession', () => {
 
   it('throws an error when processing scopedProperties fails', async () => {
     const { handler, end } = createMockedHandler();
-    processScopedProperties.mockImplementation(() => {
+    MockHelpers.processScopedProperties.mockImplementation(() => {
       throw new Error('failed to process scoped properties');
     });
     await handler(baseRequest);
@@ -222,7 +246,7 @@ describe('wallet_createSession', () => {
 
   it('buckets the required scopes', async () => {
     const { handler } = createMockedHandler();
-    validateAndNormalizeScopes.mockReturnValue({
+    MockMultichain.validateAndNormalizeScopes.mockReturnValue({
       normalizedRequiredScopes: {
         'eip155:1': {
           methods: ['eth_chainId'],
@@ -234,7 +258,7 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(bucketScopes).toHaveBeenNthCalledWith(
+    expect(MockMultichain.bucketScopes).toHaveBeenNthCalledWith(
       1,
       {
         'eip155:1': {
@@ -250,16 +274,16 @@ describe('wallet_createSession', () => {
     );
 
     const isChainIdSupportedBody =
-      bucketScopes.mock.calls[0][1].isChainIdSupported.toString();
+      MockMultichain.bucketScopes.mock.calls[0][1].isChainIdSupported.toString();
     expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
     const isChainIdSupportableBody =
-      bucketScopes.mock.calls[0][1].isChainIdSupportable.toString();
+      MockMultichain.bucketScopes.mock.calls[0][1].isChainIdSupportable.toString();
     expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
   it('buckets the optional scopes', async () => {
     const { handler } = createMockedHandler();
-    validateAndNormalizeScopes.mockReturnValue({
+    MockMultichain.validateAndNormalizeScopes.mockReturnValue({
       normalizedRequiredScopes: {},
       normalizedOptionalScopes: {
         'eip155:100': {
@@ -271,7 +295,7 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(bucketScopes).toHaveBeenNthCalledWith(
+    expect(MockMultichain.bucketScopes).toHaveBeenNthCalledWith(
       2,
       {
         'eip155:100': {
@@ -287,10 +311,10 @@ describe('wallet_createSession', () => {
     );
 
     const isChainIdSupportedBody =
-      bucketScopes.mock.calls[1][1].isChainIdSupported.toString();
+      MockMultichain.bucketScopes.mock.calls[1][1].isChainIdSupported.toString();
     expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
     const isChainIdSupportableBody =
-      bucketScopes.mock.calls[1][1].isChainIdSupportable.toString();
+      MockMultichain.bucketScopes.mock.calls[1][1].isChainIdSupportable.toString();
     expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
@@ -309,7 +333,7 @@ describe('wallet_createSession', () => {
       { address: '0x3' },
       { address: '0x4' },
     ]);
-    bucketScopes
+    MockMultichain.bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
           'eip155:1337': {
@@ -369,7 +393,7 @@ describe('wallet_createSession', () => {
   it('validates and upserts EIP 3085 scoped properties when matching sessionScope is defined', async () => {
     const { handler, findNetworkClientIdByChainId, addNetwork } =
       createMockedHandler();
-    bucketScopes
+    MockMultichain.bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
           'eip155:1': {
@@ -386,6 +410,13 @@ describe('wallet_createSession', () => {
         supportableScopes: {},
         unsupportableScopes: {},
       });
+    MockHelpers.processScopedProperties.mockReturnValue({
+      'eip155:1': {
+        eip3085: {
+          foo: 'bar',
+        },
+      },
+    });
     await handler({
       ...baseRequest,
       params: {
@@ -400,7 +431,7 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(validateAndAddEip3085).toHaveBeenCalledWith({
+    expect(MockHelpers.validateAndAddEip3085).toHaveBeenCalledWith({
       eip3085Params: { foo: 'bar' },
       addNetwork,
       findNetworkClientIdByChainId,
@@ -409,7 +440,7 @@ describe('wallet_createSession', () => {
 
   it('does not validate and upsert EIP 3085 scoped properties when there is no matching sessionScope', async () => {
     const { handler } = createMockedHandler();
-    bucketScopes
+    MockMultichain.bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
           'eip155:1': {
@@ -440,13 +471,13 @@ describe('wallet_createSession', () => {
       },
     });
 
-    expect(validateAndAddEip3085).not.toHaveBeenCalled();
+    expect(MockHelpers.validateAndAddEip3085).not.toHaveBeenCalled();
   });
 
   it('grants the CAIP-25 permission for the supported scopes and accounts that were approved', async () => {
     const { handler, grantPermissions, requestPermissionApprovalForOrigin } =
       createMockedHandler();
-    bucketScopes
+    MockMultichain.bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
           'eip155:5': {
@@ -528,9 +559,9 @@ describe('wallet_createSession', () => {
   });
 
   it('emits the dapp viewed metrics event', async () => {
-    shouldEmitDappViewedEvent.mockReturnValue(true);
+    MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
     const { handler, sendMetrics } = createMockedHandler();
-    bucketScopes.mockReturnValue({
+    MockMultichain.bucketScopes.mockReturnValue({
       supportedScopes: {},
       supportableScopes: {},
       unsupportableScopes: {},
@@ -554,7 +585,7 @@ describe('wallet_createSession', () => {
   it('returns the session ID, properties, and merged scopes', async () => {
     const { handler, requestPermissionApprovalForOrigin, response } =
       createMockedHandler();
-    bucketScopes
+    MockMultichain.bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
           'eip155:5': {
@@ -615,12 +646,13 @@ describe('wallet_createSession', () => {
 
   it('reverts any upserted network clients if the request fails', async () => {
     const { handler, removeNetwork, grantPermissions } = createMockedHandler();
-    bucketScopes
+    MockMultichain.bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
           'eip155:1': {
             methods: [],
             notifications: [],
+            accounts: [],
           },
         },
         supportableScopes: {},
@@ -631,14 +663,14 @@ describe('wallet_createSession', () => {
         supportableScopes: {},
         unsupportableScopes: {},
       });
-    processScopedProperties.mockReturnValue({
+    MockHelpers.processScopedProperties.mockReturnValue({
       'eip155:1': {
         eip3085: {
           foo: 'bar',
         },
       },
     });
-    validateAndAddEip3085.mockReturnValue('0xdeadbeef');
+    MockHelpers.validateAndAddEip3085.mockResolvedValue('0xdeadbeef');
     grantPermissions.mockImplementation(() => {
       throw new Error('failed to grant permission');
     });
