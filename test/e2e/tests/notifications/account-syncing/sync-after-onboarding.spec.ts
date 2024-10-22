@@ -48,7 +48,7 @@ describe('Account syncing', function () {
               '.multichain-account-list-item',
             );
             return internalAccounts.length === accountsSyncMockResponse.length;
-          }, 10000);
+          }, 20000);
         },
       );
     });

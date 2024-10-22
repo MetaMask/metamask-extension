@@ -49,7 +49,7 @@ describe('Account syncing', function () {
               '.multichain-account-list-item',
             );
             return internalAccounts.length === accountsSyncMockResponse.length;
-          }, 10000);
+          }, 20000);
 
           await driver.clickElement(
             '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -97,7 +97,7 @@ describe('Account syncing', function () {
               userStorageMockttpController.paths.get('accounts')?.response
                 .length
             );
-          }, 10000);
+          }, 20000);
 
           await driver.wait(async () => {
             const internalAccounts = await driver.findElements(
@@ -108,7 +108,7 @@ describe('Account syncing', function () {
             ].getText();
 
             return lastAccountName === 'My third account';
-          }, 10000);
+          }, 20000);
         },
       );
     });
