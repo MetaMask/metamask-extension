@@ -71,7 +71,7 @@
     max-width: inherit;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
 
   &__primary-balance {
@@ -136,7 +136,7 @@
     max-width: inherit;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
 
   &__primary-balance {
