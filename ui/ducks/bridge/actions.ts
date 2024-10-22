@@ -23,7 +23,7 @@ import {
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
   ChainId,
-  FeeType,
+  QuoteMetadata,
   QuoteRequest,
   QuoteResponse,
   TxData,
@@ -38,6 +38,8 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import { bridgeSlice } from './bridge';
@@ -161,7 +163,7 @@ export const fetchToExchangeRates = async (
 };
 
 export const submitBridgeTransaction = (
-  quoteResponse: QuoteResponse,
+  quoteResponse: QuoteResponse & QuoteMetadata,
   history: ReturnType<typeof useHistory>,
   maxFeePerGas: undefined | string,
   maxPriorityFeePerGas: undefined | string,
@@ -242,9 +244,7 @@ export const submitBridgeTransaction = (
 
       // quote.srcTokenAmount is actually after the fees
       // so we need to add fees back in for total allowance to give
-      const sentAmount = new BigNumber(quoteResponse.quote.srcTokenAmount)
-        .plus(quoteResponse.quote.feeData[FeeType.METABRIDGE].amount)
-        .toString();
+      const sentAmount = quoteResponse.sentAmount.raw;
 
       const shouldResetApproval = allowance.lt(sentAmount) && allowance.gt(0);
 
@@ -299,9 +299,7 @@ export const submitBridgeTransaction = (
     }: {
       approvalTxId: string | undefined;
     }) => {
-      const sentAmount = new BigNumber(quoteResponse.quote.srcTokenAmount).plus(
-        quoteResponse.quote.feeData[FeeType.METABRIDGE].amount,
-      );
+      const sentAmount = quoteResponse.sentAmount.raw;
       const sentAmountDec = new Numeric(sentAmount, 10)
         .shiftedBy(quoteResponse.quote.srcAsset.decimals)
         .toString();
