@@ -119,7 +119,7 @@ export type Preferences = {
     order: string;
     sortCallback: string;
   };
-  tokenNetworkFilter: Record<string, string>;
+  tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
 };
 
