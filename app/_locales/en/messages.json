@@ -231,23 +231,6 @@
   "addCustomNetwork": {
     "message": "Add custom network"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "This will allow this network to be used within MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask does not verify custom networks."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Learn about $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "scams and network security risks",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Allow this site to add a network?"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4668,6 +4651,9 @@
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
+  "securityMessageLinkForNetworks": {
+    "message": "network scams and security risks"
+  },
   "securityPrivacyPath": {
     "message": "Settings > Security & Privacy."
   },
@@ -5237,9 +5223,6 @@
   "snapsUIError": {
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "someNetworksMayPoseSecurity": {
-    "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
   },
   "somethingDoesntLookRight": {
     "message": "Something doesn't look right? $1",
@@ -6324,9 +6307,6 @@
   "unknown": {
     "message": "Unknown"
   },
-  "unknownChainWarning": {
-    "message": "We can’t verify custom networks. To avoid malicious providers from recording your network activity, only add networks you trust."
-  },
   "unknownCollection": {
     "message": "Unnamed collection"
   },
@@ -6455,9 +6435,6 @@
   "viewActivity": {
     "message": "View activity"
   },
-  "viewAllDetails": {
-    "message": "View all details"
-  },
   "viewAllQuotes": {
     "message": "view all quotes"
   },
@@ -6539,6 +6516,10 @@
   },
   "watchEthereumAccountsToggle": {
     "message": "Watch Ethereum Accounts (Beta)"
+  },
+  "watchOutMessage": {
+    "message": "Beware of $1.",
+    "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
   "weak": {
     "message": "Weak"
