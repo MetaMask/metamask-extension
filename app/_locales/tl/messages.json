@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "Magdagdag ng custom na network"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Magpapahintulot ito sa network na ito na gamitin sa loob ng MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "Ang MetaMask ay hindi nagve-verify ng mga custom na network."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Alamin ang tungkol sa $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "mga panloloko at panganib ng seguridad ng network",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Payagan ang site na ito na magdagdag ng network?"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Idagdag lamang ang RPC provider na ito kung sigurado kang mapagkakatiwalaan ito. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4858,9 +4841,6 @@
     "message": "Makipag-ugnayan sa mga tagalikha ng $1 para sa karagdagang suporta.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "Maaaring magdulot ang ilang network ng mga panganib sa seguridad at/o pagkapribado. Unawain ang mga panganib bago idagdag o gamitin ang isang network."
-  },
   "somethingDoesntLookRight": {
     "message": "Mayroon bang hindi tama? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -6006,9 +5986,6 @@
   },
   "viewActivity": {
     "message": "Tingnan ang aktibidad"
-  },
-  "viewAllDetails": {
-    "message": "Tingnan ang lahat ng detalye"
   },
   "viewAllQuotes": {
     "message": "tingnan ang lahat ng quote"
