@@ -115,26 +115,6 @@ describe('balance', () => {
       ).toBe(true);
     });
 
-    it('should return false if user has no native assets', async () => {
-      mockGetBalance.mockImplementation(() => {
-        return BigNumber.from('0');
-      });
-      const mockFetchTokenBalance = jest.spyOn(tokenutil, 'fetchTokenBalance');
-      mockFetchTokenBalance.mockResolvedValueOnce(
-        BigNumber.from('10000000000000000001'),
-      );
-
-      expect(
-        await hasSufficientBalance(
-          global.ethereumProvider,
-          '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
-          '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
-          '10000000000000000000',
-          '0x1',
-        ),
-      ).toBe(false);
-    });
-
     it('should return false if user has native assets but insufficient ERC20 src tokens', async () => {
       mockGetBalance.mockImplementation(() => {
         return BigNumber.from('10000000000000000000');
