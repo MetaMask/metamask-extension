@@ -90,14 +90,16 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
   TokenBucketPriority,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   QUOTES_EXPIRED_ERROR,
   MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
+import {
+  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
+} from '../../../../shared/constants/common';
 import {
   resetSwapsPostFetchState,
   ignoreTokens,
@@ -444,12 +446,12 @@ export default function PrepareSwapPage({
     null, // no holderAddress
     {
       blockExplorerUrl:
-        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+        CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
     },
   );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
+    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
       t('etherscan')
     : t('etherscan');
 
