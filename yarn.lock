@@ -5015,9 +5015,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:11.3.0":
-  version: 11.3.0
-  resolution: "@metamask/controller-utils@npm:11.3.0"
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.0.2, @metamask/controller-utils@npm:^11.1.0, @metamask/controller-utils@npm:^11.2.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.0":
+  version: 11.4.0
+  resolution: "@metamask/controller-utils@npm:11.4.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -5028,24 +5028,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/3200228d1f4ea5fa095228db4e5050529caf0470e072382eb8f7571bb9b07515516ca9e846b7751388399d9ae967e4985dafd6120902ef6c998e98f4eb36d964
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@patch:@metamask/controller-utils@npm%3A11.3.0#~/.yarn/patches/@metamask-controller-utils-npm-11.3.0-7971498570.patch":
-  version: 11.3.0
-  resolution: "@metamask/controller-utils@patch:@metamask/controller-utils@npm%3A11.3.0#~/.yarn/patches/@metamask-controller-utils-npm-11.3.0-7971498570.patch::version=11.3.0&hash=9c5e87"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^9.1.0"
-    "@spruceid/siwe-parser": "npm:2.1.0"
-    "@types/bn.js": "npm:^5.1.5"
-    bn.js: "npm:^5.2.1"
-    eth-ens-namehash: "npm:^2.0.8"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/841bd38835a298f38b1a56e34ead97da1a55c60a27fa2ec6f4bafb28f43b49d4683ce21129c43f7cfc368804431b181299c457408bb4d69a4a1871e0d62fc846
+  checksum: 10/f34d24880eab264bddaa5bef21afaecb206db6978364565d0f7b7a54b1d411f129eb84175041df3be8a66394c2d49e83b6648b5cbde6f34662a60fc553c31458
   languageName: node
   linkType: hard
 
@@ -26119,7 +26102,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
-    "@metamask/controller-utils": "patch:@metamask/controller-utils@npm%3A11.3.0#~/.yarn/patches/@metamask-controller-utils-npm-11.3.0-7971498570.patch"
+    "@metamask/controller-utils": "npm:^11.4.0"
     "@metamask/design-tokens": "npm:^4.0.0"
     "@metamask/ens-controller": "npm:^13.0.0"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"

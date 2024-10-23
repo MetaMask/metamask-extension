@@ -264,12 +264,7 @@
     "@metamask/network-controller@npm:^17.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^20.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
-    "path-to-regexp": "1.9.0",
-    "@metamask/controller-utils@npm:^11.3.0": "patch:@metamask/controller-utils@npm%3A11.3.0#~/.yarn/patches/@metamask-controller-utils-npm-11.3.0-7971498570.patch",
-    "@metamask/controller-utils@npm:^11.2.0": "patch:@metamask/controller-utils@npm%3A11.3.0#~/.yarn/patches/@metamask-controller-utils-npm-11.3.0-7971498570.patch",
-    "@metamask/controller-utils@npm:^11.1.0": "patch:@metamask/controller-utils@npm%3A11.3.0#~/.yarn/patches/@metamask-controller-utils-npm-11.3.0-7971498570.patch",
-    "@metamask/controller-utils@npm:^11.0.0": "patch:@metamask/controller-utils@npm%3A11.3.0#~/.yarn/patches/@metamask-controller-utils-npm-11.3.0-7971498570.patch",
-    "@metamask/controller-utils@npm:^11.0.2": "patch:@metamask/controller-utils@npm%3A11.3.0#~/.yarn/patches/@metamask-controller-utils-npm-11.3.0-7971498570.patch"
+    "path-to-regexp": "1.9.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -310,7 +305,7 @@
     "@metamask/bitcoin-wallet-snap": "^0.8.1",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "patch:@metamask/controller-utils@npm%3A11.3.0#~/.yarn/patches/@metamask-controller-utils-npm-11.3.0-7971498570.patch",
+    "@metamask/controller-utils": "^11.4.0",
     "@metamask/design-tokens": "^4.0.0",
     "@metamask/ens-controller": "^13.0.0",
     "@metamask/ens-resolver-snap": "^0.1.2",
