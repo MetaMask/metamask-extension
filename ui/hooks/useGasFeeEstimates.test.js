@@ -8,7 +8,6 @@ import {
   getIsNetworkBusyByChainId,
 } from '../ducks/metamask/metamask';
 import {
-  gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
   getNetworkConfigurationByNetworkClientId,
 } from '../store/actions';
