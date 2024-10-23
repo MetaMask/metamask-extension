@@ -119,18 +119,18 @@ describe('BTC Account - Send', function (this: Suite) {
           css: '[disabled]',
         });
 
-        await driver.clickElement({
-          text: 'Max',
-          tag: 'button',
-        });
-
-        await driver.delay(500);
-
         // Set the recipient address (ourself in this case).
         await driver.pasteIntoField(
           `input[placeholder="${SendFlowPlaceHolders.RECIPIENT}"]`,
           DEFAULT_BTC_ACCOUNT,
         );
+
+        await driver.delay(500);
+
+        await driver.clickElement({
+          text: 'Max',
+          tag: 'button',
+        });
 
         // From here, the "summary panel" should have some information about the fees and total.
         await driver.waitForSelector({
