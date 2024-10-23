@@ -286,6 +286,5 @@ export async function getTransactionRequest(mockServer: Mockttp) {
       return body.method === 'sendrawtransaction';
     },
   );
-  // TODO: check for the response as well.
-  assert(transactionRequest !== undefined);
+  return transactionRequest;
 }

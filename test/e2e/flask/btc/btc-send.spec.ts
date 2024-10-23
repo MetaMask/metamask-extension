@@ -60,7 +60,8 @@ describe('BTC Account - Send', function (this: Suite) {
           text: 'Bitcoin activity is not supported',
         });
 
-        await getTransactionRequest(mockServer);
+        const transaction = await getTransactionRequest(mockServer);
+        assert(transaction !== undefined);
       },
     );
   });
@@ -120,7 +121,8 @@ describe('BTC Account - Send', function (this: Suite) {
           text: 'Bitcoin activity is not supported',
         });
 
-        await getTransactionRequest(mockServer);
+        const transaction = await getTransactionRequest(mockServer);
+        assert(transaction !== undefined);
       },
     );
   });
