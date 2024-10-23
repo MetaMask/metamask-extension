@@ -6,6 +6,8 @@ import {
   getUseExternalServices,
 } from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -16,7 +18,6 @@ import {
 import {
   ABOUT_US_ROUTE,
   ADVANCED_ROUTE,
-  ALERTS_ROUTE,
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
@@ -32,6 +33,7 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { toggleNetworkMenu } from '../../store/actions';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -39,7 +41,6 @@ const ROUTES_TO_I18N_KEYS = {
   [ADD_NETWORK_ROUTE]: 'networks',
   [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',
-  [ALERTS_ROUTE]: 'alerts',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
@@ -116,4 +117,13 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default compose(withRouter, connect(mapStateToProps))(Settings);
+function mapDispatchToProps(dispatch) {
+  return {
+    toggleNetworkMenu: (payload) => dispatch(toggleNetworkMenu(payload)),
+  };
+}
+
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
+)(Settings);

@@ -27,7 +27,7 @@ export type GeneralAlertProps = {
   provider?: SecurityProvider;
   reportUrl?: string;
   severity: AlertSeverity;
-  title: string;
+  title?: string;
 };
 
 function ReportLink({

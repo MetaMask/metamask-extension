@@ -153,10 +153,6 @@
   "failed": {
     "message": "Tonbe"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Enpòte dosye ki pa travay? Klike la a!",
     "description": "Helps user import their account from a JSON file"
@@ -236,9 +232,6 @@
   "invalidAddressRecipient": {
     "message": "Moun ki resevwa adrès la pa valab"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI pa valab"
-  },
   "invalidRPC": {
     "message": "RPC URI pa valab"
   },
@@ -317,9 +310,6 @@
   "next": {
     "message": "Aprè sa"
   },
-  "noAddressForName": {
-    "message": "Pa gen adrès ki etabli pou non sa a."
-  },
   "noConversionRateAvailable": {
     "message": "Pa gen okenn Konvèsyon Disponib"
   },
@@ -362,12 +352,6 @@
   },
   "prev": {
     "message": "Avan"
-  },
-  "primaryCurrencySetting": {
-    "message": "Lajan ou itilize pi plis la"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Chwazi ETH pou bay priyorite montre valè nan ETH. Chwazi Fiat priyorite montre valè nan lajan ou chwazi a."
   },
   "privacyMsg": {
     "message": "Règleman sou enfòmasyon prive"
@@ -553,9 +537,6 @@
   },
   "unlockMessage": {
     "message": "Entènèt desantralize a ap tann"
-  },
-  "updatedWithDate": {
-    "message": "Mete ajou $1"
   },
   "urlErrorMsg": {
     "message": "URIs mande pou apwopriye prefiks HTTP / HTTPS a."

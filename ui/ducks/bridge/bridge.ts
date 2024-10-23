@@ -1,15 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { Hex } from '@metamask/utils';
 import { swapsSlice } from '../swaps/swaps';
-import { RPCDefinition } from '../../../shared/constants/network';
+import { SwapsTokenObject } from '../../../shared/constants/swaps';
+import { SwapsEthToken } from '../../selectors';
 
-// Only states that are not in swaps slice
 export type BridgeState = {
-  toChain: RPCDefinition | null;
+  toChainId: Hex | null;
+  fromToken: SwapsTokenObject | SwapsEthToken | null;
+  toToken: SwapsTokenObject | SwapsEthToken | null;
+  fromTokenInputValue: string | null;
 };
 
 const initialState: BridgeState = {
-  toChain: null,
+  toChainId: null,
+  fromToken: null,
+  toToken: null,
+  fromTokenInputValue: null,
 };
 
 const bridgeSlice = createSlice({
@@ -17,9 +24,27 @@ const bridgeSlice = createSlice({
   initialState: { ...initialState },
   reducers: {
     ...swapsSlice.reducer,
-    setToChain: (state, action) => {
-      state.toChain = action.payload;
+    setToChainId: (state, action) => {
+      state.toChainId = action.payload;
     },
+    setFromToken: (state, action) => {
+      state.fromToken = action.payload;
+    },
+    setToToken: (state, action) => {
+      state.toToken = action.payload;
+    },
+    setFromTokenInputValue: (state, action) => {
+      state.fromTokenInputValue = action.payload;
+    },
+    resetInputFields: () => ({
+      ...initialState,
+    }),
+    switchToAndFromTokens: (state, { payload }) => ({
+      toChainId: payload,
+      fromToken: state.toToken,
+      toToken: state.fromToken,
+      fromTokenInputValue: null,
+    }),
   },
 });
 

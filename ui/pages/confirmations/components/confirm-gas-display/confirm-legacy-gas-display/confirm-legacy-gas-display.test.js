@@ -21,9 +21,6 @@ const mmState = {
         balance: '0x1F4',
       },
     },
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-    },
   },
   confirmTransaction: {
     txData: {

@@ -25,6 +25,8 @@ import { footer } from './footer';
 import { container } from './container';
 import { selector } from './selector';
 import { icon } from './icon';
+import { section } from './section';
+import { avatar } from './avatar';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -37,6 +39,7 @@ export const COMPONENT_MAPPING = {
   Copyable: copyable,
   Row: row,
   Address: address,
+  Avatar: avatar,
   Button: button,
   FileInput: fileInput,
   Form: form,
@@ -54,4 +57,5 @@ export const COMPONENT_MAPPING = {
   Footer: footer,
   Container: container,
   Selector: selector,
+  Section: section,
 };

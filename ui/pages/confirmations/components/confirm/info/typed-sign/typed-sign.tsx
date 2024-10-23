@@ -12,12 +12,12 @@ import {
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { SignatureRequestType } from '../../../../types/confirm';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
 } from '../../../../utils';
+import { fetchErc20Decimals } from '../../../../utils/token';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
@@ -43,16 +43,15 @@ const TypedSignInfo: React.FC = () => {
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
+  const chainId = currentConfirmation.chainId as string;
 
   useEffect(() => {
     (async () => {
       if (!isPermit && !isOrder) {
         return;
       }
-      const tokenDetails = await getTokenStandardAndDetails(verifyingContract);
-      const tokenDecimals = tokenDetails?.decimals;
-
-      setDecimals(parseInt(tokenDecimals ?? '0', 10));
+      const tokenDecimals = await fetchErc20Decimals(verifyingContract);
+      setDecimals(tokenDecimals);
     })();
   }, [verifyingContract]);
 
@@ -63,7 +62,7 @@ const TypedSignInfo: React.FC = () => {
         {isPermit && (
           <>
             <ConfirmInfoRow label={t('spender')}>
-              <ConfirmInfoRowAddress address={spender} />
+              <ConfirmInfoRowAddress address={spender} chainId={chainId} />
             </ConfirmInfoRow>
             <ConfirmInfoRowDivider />
           </>
@@ -78,7 +77,10 @@ const TypedSignInfo: React.FC = () => {
         </ConfirmInfoAlertRow>
         {isValidAddress(verifyingContract) && (
           <ConfirmInfoRow label={t('interactingWith')}>
-            <ConfirmInfoRowAddress address={verifyingContract} />
+            <ConfirmInfoRowAddress
+              address={verifyingContract}
+              chainId={chainId}
+            />
           </ConfirmInfoRow>
         )}
       </ConfirmInfoSection>
@@ -87,6 +89,7 @@ const TypedSignInfo: React.FC = () => {
           <ConfirmInfoRowTypedSignData
             data={currentConfirmation.msgParams?.data as string}
             tokenDecimals={decimals}
+            chainId={chainId}
           />
         </ConfirmInfoRow>
       </ConfirmInfoSection>

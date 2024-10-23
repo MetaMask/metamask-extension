@@ -22,11 +22,12 @@ import { useFallbackDisplayName } from './hook';
 
 export type ConfirmInfoRowAddressProps = {
   address: string;
+  chainId: string;
   isSnapUsingThis?: boolean;
 };
 
 export const ConfirmInfoRowAddress = memo(
-  ({ address, isSnapUsingThis }: ConfirmInfoRowAddressProps) => {
+  ({ address, chainId, isSnapUsingThis }: ConfirmInfoRowAddressProps) => {
     const isPetNamesEnabled = useSelector(getPetnamesEnabled);
     const { displayName, hexAddress } = useFallbackDisplayName(address);
     const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
@@ -44,7 +45,12 @@ export const ConfirmInfoRowAddress = memo(
           // component can support variations. See this comment for context: //
           // https://github.com/MetaMask/metamask-extension/pull/23487#discussion_r1525055546
           isPetNamesEnabled && !isSnapUsingThis ? (
-            <Name value={hexAddress} type={NameType.ETHEREUM_ADDRESS} />
+            <Name
+              value={hexAddress}
+              type={NameType.ETHEREUM_ADDRESS}
+              preferContractSymbol
+              variation={chainId}
+            />
           ) : (
             <>
               <Box

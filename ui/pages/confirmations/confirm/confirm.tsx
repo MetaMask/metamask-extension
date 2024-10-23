@@ -1,8 +1,9 @@
-import React, { ReactNode } from 'react';
 import { ReactNodeLike } from 'prop-types';
+import React, { ReactNode } from 'react';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
+import NoteToTrader from '../../../components/institutional/note-to-trader';
 ///: END:ONLY_INCLUDE_IF
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -15,11 +16,11 @@ import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
 import { LedgerInfo } from '../components/confirm/ledger-info';
 import { Nav } from '../components/confirm/nav';
+import { NetworkChangeToast } from '../components/confirm/network-change-toast';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
-import { NetworkChangeToast } from '../components/confirm/network-change-toast';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
 
 const EIP1559TransactionGasModal = () => {
@@ -63,6 +64,11 @@ const Confirm = () => (
               <Title />
               <Info />
               <PluggableSection />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                <NoteToTrader />
+                ///: END:ONLY_INCLUDE_IF
+              }
             </ScrollToBottom>
             <Footer />
             <NetworkChangeToast />

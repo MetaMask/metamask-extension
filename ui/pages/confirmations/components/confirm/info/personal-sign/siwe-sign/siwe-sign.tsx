@@ -26,12 +26,12 @@ const SIWESignInfo: React.FC = () => {
   const {
     address,
     chainId,
-    domain,
     issuedAt,
     nonce,
     requestId,
     statement,
     resources,
+    uri,
     version,
   } = siweMessage;
   const hexChainId = toHex(chainId);
@@ -44,13 +44,13 @@ const SIWESignInfo: React.FC = () => {
         <ConfirmInfoRowText text={statement || ''} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweURI')}>
-        <ConfirmInfoRowText text={domain} />
+        <ConfirmInfoRowText text={uri} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweNetwork')}>
         <ConfirmInfoRowText text={network} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('account')}>
-        <ConfirmInfoRowAddress address={address} />
+        <ConfirmInfoRowAddress address={address} chainId={hexChainId} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('version')}>
         <ConfirmInfoRowText text={version} />
@@ -63,7 +63,9 @@ const SIWESignInfo: React.FC = () => {
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
         <ConfirmInfoRowDate
-          date={DateTime.fromISO(issuedAt).toJSDate().getTime()}
+          unixTimestamp={DateTime.fromISO(issuedAt, {
+            zone: 'utc',
+          }).toUnixInteger()}
         />
       </ConfirmInfoRow>
       {requestId && (

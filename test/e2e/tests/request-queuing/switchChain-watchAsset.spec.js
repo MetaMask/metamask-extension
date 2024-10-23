@@ -8,6 +8,7 @@ const {
   withFixtures,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { DAPP_URL } = require('../../constants');
 
 describe('Request Queue SwitchChain -> WatchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -20,7 +21,6 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .withPreferencesControllerUseRequestQueueEnabled()
-          .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -42,17 +42,35 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         );
         await logInWithBalanceValidation(driver, ganacheServer);
 
-        await openDapp(driver, contractAddress);
+        await openDapp(driver, contractAddress, DAPP_URL);
+
+        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElement('#connectButton');
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Switch Ethereum Chain
-        await driver.clickElement('#switchEthereumChain');
+        const switchEthereumChainRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x539' }],
+        });
 
-        await driver.waitUntilXWindowHandles(3);
+        await driver.executeScript(
+          `window.ethereum.request(${switchEthereumChainRequest})`,
+        );
 
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
-          text: 'Allow this site to switch the network?',
-          tag: 'h3',
+          text: 'Use your enabled networks',
+          tag: 'p',
         });
 
         // Switch back to test dapp
@@ -68,10 +86,10 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
 
         // Confirm Switch Network
         await driver.findClickableElement({
-          text: 'Switch network',
+          text: 'Confirm',
           tag: 'button',
         });
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
       },

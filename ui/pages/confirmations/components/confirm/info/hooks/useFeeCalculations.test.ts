@@ -45,14 +45,14 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "estimatedFeeFiat": "$2.20",
-        "estimatedFeeNative": "0.004 ETH",
+        "estimatedFeeFiat": "$0.04",
+        "estimatedFeeNative": "0.0001 ETH",
         "l1FeeFiat": "",
         "l1FeeNative": "",
         "l2FeeFiat": "",
         "l2FeeNative": "",
-        "maxFeeFiat": "$4.23",
-        "maxFeeNative": "0.0076 ETH",
+        "maxFeeFiat": "$0.07",
+        "maxFeeNative": "0.0001 ETH",
       }
     `);
   });
@@ -77,8 +77,8 @@ describe('useFeeCalculations', () => {
         "l1FeeNative": "0.0045 ETH",
         "l2FeeFiat": "$0.04",
         "l2FeeNative": "0.0001 ETH",
-        "maxFeeFiat": "$4.23",
-        "maxFeeNative": "0.0076 ETH",
+        "maxFeeFiat": "$0.07",
+        "maxFeeNative": "0.0001 ETH",
       }
     `);
   });

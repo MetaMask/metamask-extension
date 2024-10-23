@@ -38,7 +38,28 @@ async function runHook(state: Record<string, unknown>) {
 describe('useDecodedTransactionData', () => {
   const decodeTransactionDataMock = jest.mocked(decodeTransactionData);
 
-  it('returns undefined if no transaction data', async () => {
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([undefined, null, '', '0x', '0X'])(
+    'returns undefined if transaction data is %s',
+    async (data: string) => {
+      const result = await runHook(
+        getMockConfirmStateForTransaction({
+          id: '123',
+          chainId: CHAIN_ID_MOCK,
+          type: TransactionType.contractInteraction,
+          status: TransactionStatus.unapproved,
+          txParams: {
+            data,
+            to: CONTRACT_ADDRESS_MOCK,
+          } as TransactionParams,
+        }),
+      );
+
+      expect(result).toStrictEqual({ pending: false, value: undefined });
+    },
+  );
+
+  it('returns undefined if no transaction to', async () => {
     const result = await runHook(
       getMockConfirmStateForTransaction({
         id: '123',
@@ -46,8 +67,8 @@ describe('useDecodedTransactionData', () => {
         type: TransactionType.contractInteraction,
         status: TransactionStatus.unapproved,
         txParams: {
-          data: '',
-          to: CONTRACT_ADDRESS_MOCK,
+          data: TRANSACTION_DATA_UNISWAP,
+          to: undefined,
         } as TransactionParams,
       }),
     );

@@ -8,14 +8,14 @@ import React, {
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { Display, TextVariant } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
 import NameDetails from './name-details/name-details';
@@ -27,6 +27,12 @@ export type NameProps = {
   /** Whether this is being rendered inside the NameDetails modal. */
   internal?: boolean;
 
+  /**
+   * Applies to recognized contracts with no petname saved:
+   * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
+   */
+  preferContractSymbol?: boolean;
+
   /** The type of value, e.g. NameType.ETHEREUM_ADDRESS */
   type: NameType;
 
@@ -34,10 +40,10 @@ export type NameProps = {
   value: string;
 
   /**
-   * Applies to recognized contracts with no petname saved:
-   * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
+   * The variation of the value.
+   * Such as the chain ID if the `type` is an Ethereum address.
    */
-  preferContractSymbol?: boolean;
+  variation: string;
 };
 
 function formatValue(value: string, type: NameType): string {
@@ -61,15 +67,17 @@ const Name = memo(
     disableEdit,
     internal,
     preferContractSymbol = false,
+    variation,
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
-    const { name, hasPetname } = useDisplayName(
+    const { name, hasPetname, image } = useDisplayName({
       value,
       type,
       preferContractSymbol,
-    );
+      variation,
+    });
 
     useEffect(() => {
       if (internal) {
@@ -98,9 +106,14 @@ const Name = memo(
     const hasDisplayName = Boolean(name);
 
     return (
-      <div>
+      <Box display={Display.Flex}>
         {!disableEdit && modalOpen && (
-          <NameDetails value={value} type={type} onClose={handleModalClose} />
+          <NameDetails
+            value={value}
+            type={type}
+            variation={variation}
+            onClose={handleModalClose}
+          />
         )}
         <div
           className={classnames({
@@ -112,7 +125,7 @@ const Name = memo(
           onClick={handleClick}
         >
           {hasDisplayName ? (
-            <Identicon address={value} diameter={16} />
+            <Identicon address={value} diameter={16} image={image} />
           ) : (
             <Icon
               name={IconName.Question}
@@ -130,7 +143,7 @@ const Name = memo(
             </Text>
           )}
         </div>
-      </div>
+      </Box>
     );
   },
 );

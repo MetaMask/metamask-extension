@@ -1,10 +1,17 @@
+@use "design-system";
+
 .snap-ui-renderer {
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
   &__content {
     margin-bottom: 0 !important;
   }
 
   &__container {
     & > *:first-child {
+      gap: 16px;
       padding: 16px;
     }
   }
@@ -23,7 +30,24 @@
   }
 
   &__input > .mm-text-field {
+    min-height: 48px;
+    border-radius: 8px;
     border-color: var(--color-border-muted);
+
+    & .mm-icon {
+      top: 0;
+    }
+
+    .mm-text--overflow-wrap-anywhere {
+      overflow-wrap: normal;
+    }
+
+    .snap-ui-renderer__image {
+      min-width: 24px;
+      max-width: 36px;
+      min-height: 24px;
+      max-height: 36px;
+    }
   }
 
   &__panel {
@@ -52,20 +76,16 @@
   &__footer {
     margin-top: auto;
 
-    &-centered {
-      margin-top: auto;
-
-      & button {
-        &:first-child {
-          margin-right: 0;
-        }
-      }
+    @include design-system.screen-sm-min {
+      max-width: $width-screen-sm-min;
     }
 
-    & button {
-      &:first-child {
-        margin-right: 16px;
-      }
+    @include design-system.screen-md-min {
+      max-width: $width-screen-md-min;
+    }
+
+    @include design-system.screen-lg-min {
+      max-width: $width-screen-lg-min;
     }
   }
 }

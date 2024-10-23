@@ -4,6 +4,7 @@ import { NetworkStatus } from '@metamask/network-controller';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
 import { Box } from '../../../../components/component-library';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 const STORE_MOCK = {
   ...testData,
@@ -22,6 +23,18 @@ const STORE_MOCK = {
         status: NetworkStatus.Available,
       },
     },
+    ...mockNetworkState({
+      id: 'testNetworkClientId',
+      rpcUrl: 'https://testrpc.com',
+      chainId: '0x1',
+      nickname: 'mainnet',
+      name: 'mainnet',
+      blockExplorerUrl: 'https://etherscan.io',
+      metadata: {
+        EIPS: { 1559: true },
+        status: NetworkStatus.Available,
+      },
+    }),
     pendingApprovals: {
       testId: {
         id: 'testId',

@@ -65,9 +65,9 @@ describe('useApproveTokenSimulation', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "formattedTokenNum": 7,
+        "formattedSpendingCap": 7,
         "pending": undefined,
-        "tokenAmount": "#7",
+        "spendingCap": "#7",
         "value": {
           "data": [
             {
@@ -131,9 +131,9 @@ describe('useApproveTokenSimulation', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "formattedTokenNum": "1,000,000,000,000,000",
+        "formattedSpendingCap": "1,000,000,000,000,000",
         "pending": undefined,
-        "tokenAmount": "UNLIMITED MESSAGE",
+        "spendingCap": "UNLIMITED MESSAGE",
         "value": {
           "data": [
             {

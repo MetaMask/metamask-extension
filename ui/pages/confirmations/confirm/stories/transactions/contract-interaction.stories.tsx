@@ -1,3 +1,4 @@
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import ConfirmPage from '../../confirm';
 import { CONFIRM_PAGE_DECORATOR, ConfirmStoryTemplate } from '../utils';
 import {
@@ -19,9 +20,10 @@ export const DefaultStory = () => {
   const confirmation = genUnapprovedContractInteractionConfirmation({
     address: FROM,
     txData: DEPOSIT_METHOD_DATA,
+    chainId: '0x5',
   });
 
-  return ConfirmStoryTemplate(confirmation);
+  return ConfirmStoryTemplate(getMockConfirmStateForTransaction(confirmation));
 };
 
 DefaultStory.storyName = 'Default';
@@ -31,11 +33,13 @@ export const UserOperationStory = () => {
     ...genUnapprovedContractInteractionConfirmation({
       address: FROM,
       txData: DEPOSIT_METHOD_DATA,
+      chainId: '0x5',
     }),
     isUserOperation: true,
   };
 
-  return ConfirmStoryTemplate(confirmation, {
+  const confirmState = getMockConfirmStateForTransaction(confirmation, {
+    metamask: {},
     preferences: {
       ...mockState.metamask.preferences,
       petnamesEnabled: true,
@@ -48,6 +52,8 @@ export const UserOperationStory = () => {
       },
     },
   });
+
+  return ConfirmStoryTemplate(confirmState);
 };
 
 UserOperationStory.storyName = 'User Operation';

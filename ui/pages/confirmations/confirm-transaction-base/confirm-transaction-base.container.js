@@ -29,6 +29,7 @@ import {
   updateEditableParams,
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
+  setNextNonce,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -44,7 +45,6 @@ import {
   getIsEthGasPriceFetched,
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
-  getPreferences,
   doesAddressRequireLedgerHidConnection,
   getTokenList,
   getEnsResolutionByAddress,
@@ -59,10 +59,10 @@ import {
 } from '../../../selectors';
 import {
   getCurrentChainSupportsSmartTransactions,
-  getSmartTransactionsOptInStatus,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getSmartTransactionsEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -80,6 +80,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getEnvironmentType,
   ///: END:ONLY_INCLUDE_IF
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
 
 import {
@@ -183,7 +185,8 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
-  const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+  const smartTransactionsPreferenceEnabled =
+    getSmartTransactionsPreferenceEnabled(state);
   const currentChainSupportsSmartTransactions =
     getCurrentChainSupportsSmartTransactions(state);
 
@@ -263,7 +266,6 @@ const mapStateToProps = (state, ownProps) => {
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPriceFetched = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
-  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
@@ -344,7 +346,6 @@ const mapStateToProps = (state, ownProps) => {
     noGasPrice,
     supportsEIP1559,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
-    useNativeCurrencyAsPrimaryCurrency,
     maxFeePerGas: gasEstimationObject.maxFeePerGas,
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
@@ -364,7 +365,7 @@ const mapStateToProps = (state, ownProps) => {
     isUserOpContractDeployError,
     useMaxValue,
     maxValue,
-    smartTransactionsOptInStatus,
+    smartTransactionsPreferenceEnabled,
     currentChainSupportsSmartTransactions,
     hasPriorityApprovalRequest,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -429,6 +430,7 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(fetchSmartTransactionsLiveness());
     },
     getNextNonce: () => dispatch(getNextNonce()),
+    setNextNonce: (val) => dispatch(setNextNonce(val)),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {

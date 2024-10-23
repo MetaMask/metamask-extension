@@ -9,6 +9,17 @@ import { clearConfirmTransaction } from '../ducks/confirm-transaction/confirm-tr
 import { getAccountType } from '../selectors/selectors';
 import { mmiActionsFactory } from '../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../store/institutional/institution-actions';
+import {
+  getIsNoteToTraderSupported,
+  getIsCustodianPublishesTransactionSupported,
+  State,
+} from '../selectors/institutional/selectors';
+import { useConfirmContext } from '../pages/confirmations/context/confirm';
+import { getConfirmationSender } from '../pages/confirmations/components/confirm/utils';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { getSmartTransactionsEnabled } from '../../shared/modules/selectors';
+import { CHAIN_ID_TO_RPC_URL_MAP } from '../../shared/constants/network';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 
 type MMITransactionMeta = TransactionMeta & {
   txParams: { from: string };
@@ -23,12 +34,51 @@ export function useMMICustodySendTransaction() {
   const accountType = useSelector(getAccountType);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
-  const custodyTransactionFn = async (_transactionData: TransactionMeta) => {
+  const { currentConfirmation } = useConfirmContext() as unknown as {
+    currentConfirmation: TransactionMeta | undefined;
+  };
+  const { from } = getConfirmationSender(currentConfirmation);
+  const fromChecksumHexAddress = toChecksumHexAddress(from || '');
+
+  const isNoteToTraderSupported = useSelector((state: State) =>
+    getIsNoteToTraderSupported(state, fromChecksumHexAddress),
+  );
+
+  const custodianPublishesTransaction = useSelector((state: State) =>
+    getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress),
+  );
+
+  const isSmartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+
+  const { chainId, rpcUrl: customRpcUrl } =
+    useSelector(getProviderConfig) || {};
+
+  const builtinRpcUrl =
+    CHAIN_ID_TO_RPC_URL_MAP[chainId as keyof typeof CHAIN_ID_TO_RPC_URL_MAP];
+
+  const rpcUrl = customRpcUrl || builtinRpcUrl;
+
+  const custodyTransactionFn = async (
+    _transactionData: TransactionMeta,
+    noteToTraderMessage: string,
+  ) => {
     const confirmation = _transactionData as MMITransactionMeta;
 
     if (confirmation && accountType === AccountType.CUSTODY) {
       confirmation.custodyStatus = CustodyStatus.CREATED;
       confirmation.metadata = confirmation.metadata || {};
+
+      if (isNoteToTraderSupported) {
+        confirmation.metadata.note = noteToTraderMessage;
+      }
+
+      if (isSmartTransactionsEnabled) {
+        confirmation.origin += '#smartTransaction';
+      }
+
+      confirmation.metadata.custodianPublishesTransaction =
+        custodianPublishesTransaction;
+      confirmation.metadata.rpcUrl = rpcUrl;
 
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
 

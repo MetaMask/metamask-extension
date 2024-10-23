@@ -40,10 +40,14 @@ import {
 import {
   getBlockaidMetricsProps,
   getSwapAndSendMetricsProps,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
 import {
   REDESIGN_DEV_TRANSACTION_TYPES,
   REDESIGN_USER_TRANSACTION_TYPES,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/pages/confirmations/utils';
 import {
   getSnapAndHardwareInfoForMetrics,
@@ -812,10 +816,10 @@ async function buildEventFragmentProperties({
 
   let contractMethodName;
   if (transactionMeta.txParams.data) {
-    const { name } = await transactionMetricsRequest.getMethodData(
+    const methodData = await transactionMetricsRequest.getMethodData(
       transactionMeta.txParams.data,
     );
-    contractMethodName = name;
+    contractMethodName = methodData?.name;
   }
 
   // TODO: Replace `any` with type

@@ -118,7 +118,9 @@ describe('useCurrentConfirmation', () => {
       redesignedConfirmationsEnabled: true,
     });
 
-    expect(currentConfirmation).toStrictEqual(MESSAGE_MOCK);
+    expect(currentConfirmation).toStrictEqual(
+      expect.objectContaining(MESSAGE_MOCK),
+    );
   });
 
   it('return transaction matching latest pending approval ID', () => {
@@ -144,7 +146,9 @@ describe('useCurrentConfirmation', () => {
       redesignedConfirmationsEnabled: true,
     });
 
-    expect(currentConfirmation).toStrictEqual(MESSAGE_MOCK);
+    expect(currentConfirmation).toStrictEqual(
+      expect.objectContaining(MESSAGE_MOCK),
+    );
   });
 
   it('returns transaction matching ID param', () => {
@@ -225,10 +229,12 @@ describe('useCurrentConfirmation', () => {
       redesignedConfirmationsEnabled: true,
     });
 
-    expect(currentConfirmation).toStrictEqual({
-      id: APPROVAL_MOCK.id,
-      msgParams: { siwe: { isSIWEMessage: true } },
-    });
+    expect(currentConfirmation).toStrictEqual(
+      expect.objectContaining({
+        id: APPROVAL_MOCK.id,
+        msgParams: { siwe: { isSIWEMessage: true } },
+      }),
+    );
   });
 
   it('returns undefined if developer and user settings are enabled and transaction has incorrect type', () => {
@@ -295,33 +301,6 @@ describe('useCurrentConfirmation', () => {
     });
 
     it('returns undefined if redesign developer setting is disabled, user setting is enabled and transaction has correct type', () => {
-      const currentConfirmation = runHook({
-        pendingApprovals: [
-          { ...APPROVAL_MOCK, type: ApprovalType.Transaction },
-        ],
-        redesignedConfirmationsEnabled: true,
-        transaction: {
-          ...TRANSACTION_MOCK,
-          type: TransactionType.contractInteraction,
-        },
-        isRedesignedConfirmationsDeveloperEnabled: false,
-      });
-
-      expect(currentConfirmation).toBeUndefined();
-    });
-  });
-
-  describe('useCurrentConfirmation with MM build type env var (MMI)', () => {
-    beforeAll(() => {
-      jest.resetModules();
-      process.env.METAMASK_BUILD_TYPE = 'mmi';
-    });
-
-    afterAll(() => {
-      process.env.METAMASK_BUILD_TYPE = 'main';
-    });
-
-    it('returns undefined if build type is MMI, user setting is enabled and transaction has correct type', () => {
       const currentConfirmation = runHook({
         pendingApprovals: [
           { ...APPROVAL_MOCK, type: ApprovalType.Transaction },
