@@ -1362,9 +1362,14 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-export const getRemoteTokenList = createDeepEqualSelector(
+export const selectERC20TokensByChain = createDeepEqualSelector(
+  (state) => state.metamask.tokensChainsCache,
+  (erc20TokensByChain) => erc20TokensByChain,
+);
+
+export const selectERC20Tokens = createDeepEqualSelector(
   (state) => state.metamask.tokenList,
-  (remoteTokenList) => remoteTokenList,
+  (erc20Tokens) => erc20Tokens,
 );
 
 /**
@@ -1374,26 +1379,12 @@ export const getRemoteTokenList = createDeepEqualSelector(
  * @type {() => object}
  */
 export const getTokenList = createSelector(
-  getRemoteTokenList,
+  selectERC20Tokens,
   getIsTokenDetectionInactiveOnMainnet,
   (remoteTokenList, isTokenDetectionInactiveOnMainnet) =>
     isTokenDetectionInactiveOnMainnet
       ? STATIC_MAINNET_TOKEN_LIST
       : remoteTokenList,
-);
-
-/**
- * Returns a memoized selector that gets contract info.
- *
- * @param state - The Redux store state.
- * @param addresses - An array of contract addresses.
- * @returns {Array} A map of contract info, keyed by address.
- */
-export const getRemoteTokens = createSelector(
-  getRemoteTokenList,
-  (_state, addresses) => addresses,
-  (remoteTokenList, addresses) =>
-    addresses.map((address) => remoteTokenList[address?.toLowerCase()]),
 );
 
 export const getMemoizedMetadataContract = createSelector(

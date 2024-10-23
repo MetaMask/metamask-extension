@@ -22,11 +22,12 @@ import { useFallbackDisplayName } from './hook';
 
 export type ConfirmInfoRowAddressProps = {
   address: string;
+  chainId: string;
   isSnapUsingThis?: boolean;
 };
 
 export const ConfirmInfoRowAddress = memo(
-  ({ address, isSnapUsingThis }: ConfirmInfoRowAddressProps) => {
+  ({ address, chainId, isSnapUsingThis }: ConfirmInfoRowAddressProps) => {
     const isPetNamesEnabled = useSelector(getPetnamesEnabled);
     const { displayName, hexAddress } = useFallbackDisplayName(address);
     const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
@@ -48,6 +49,7 @@ export const ConfirmInfoRowAddress = memo(
               value={hexAddress}
               type={NameType.ETHEREUM_ADDRESS}
               preferContractSymbol
+              variation={chainId}
             />
           ) : (
             <>
